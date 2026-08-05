@@ -1,0 +1,656 @@
+/* ═══════════════════════════════════════════════════════════════
+   BABY LAND — anim.css · споделеният анимационен слой (план 22)
+
+   ЗАРЕЖДА СЕ ПОСЛЕДЕН (след touch.css) → печели специфичността при
+   равенство, точно като touch.css за пипаемостта.
+
+   ЖЕЛЯЗНО:
+   1) Само transform / opacity / filter — нула layout-thrash (без
+      width/height/top/left/margin). 60fps на телефон.
+   2) Всеки блок има reduced-motion изход в дъното на файла.
+   3) Стъпва ИЗЦЯЛО върху вече съществуващия ритъм (cardIn, chipIn,
+      countUp в fx.js) — една система, не втора.
+
+   4 ПРИНЦИПА (глаголи): ВЛИЗА · ПИПА · ИЗБИРА/УСПЯВА · БРОИ.
+   ═══════════════════════════════════════════════════════════════ */
+
+/* ─────────────────────────────────────────────────────────
+   ТОКЕНИ — една азбука за времена и криви. Ползвай ги навсякъде.
+   ───────────────────────────────────────────────────────── */
+:root {
+  --bl-t-press:  120ms;   /* натискане — моментален отскок */
+  --bl-t-soft:   200ms;   /* микро-преход, отговор, смяна на фон */
+  --bl-t-enter:  320ms;   /* влизане / изскачане */
+  /* всяко меко влизане и затваряне (същата крива като cardIn/roIn/pgb) */
+  --bl-ease-soft:   cubic-bezier(.22, 1, .36, 1);
+  /* избор и успех — кратък overshoot-скок (същата крива като .set-dot) */
+  --bl-ease-spring: cubic-bezier(.34, 1.56, .64, 1);
+}
+
+
+/* ═════════════ ПРИНЦИП 2 — ПИПА (моментален натиск) ═════════════
+   Един ритъм на допир, нула изключения. Разширява глобалния
+   :active scale(.96) от rooms.css:621 върху новите/пропуснатите
+   пипаеми повърхности. Моментален, безопасен, работи и при reduce. */
+.st-seg:active,
+.rm-item:active,
+.fb-btn:active,
+.ask-send:active,
+.ask-mic:active,
+.ask-chip:active,
+.ro-sos:active,
+.ro-inputbar button:active,
+.sec-chip:active,
+.toc-b:active,
+.set-tgl:active,
+.plus-item:active,
+.gl-row:active {
+  transform: scale(.96);
+}
+/* палецът горе/долу потъва малко по-дълбоко — усеща се като „щрак" */
+.fb-btn:active { transform: scale(.9); }
+
+/* фокус за клавиатура/достъпност върху новите повърхности
+   (в тон с .ro-tab:focus-visible от rooms.css) */
+.sec-chip:focus-visible,
+.fb-btn:focus-visible,
+.rm-item:focus-visible,
+.toc-b:focus-visible,
+.plus-item:focus-visible {
+  outline: 3px solid rgba(242, 145, 189, .5);
+  outline-offset: 2px;
+}
+
+/* меко повдигане само на устройства с истинско посочване (мишка) —
+   на телефон hover „залепва" след допир, затова го изолираме */
+@media (hover: hover) and (pointer: fine) {
+  .sec-chip:hover { transform: translateY(-2px); }
+  .fb-btn:hover   { transform: translateY(-2px); }
+  .rm-item:hover  { transform: translateY(-2px); }
+}
+
+
+/* ═════════════ SCROLL-REVEAL на картите (изрично поискано) ═════════════
+   Дългите стаи (Здраве, Захранване) капват stagger-а на 10 → картите
+   под сгъвката вече са „изиграли" влизането, преди мама да стигне.
+   [ревю] Самото криене/показване го върши js/anim.js ИЗЦЯЛО с inline стилове
+   (opacity/transform + transition) върху .is-pending/.is-in, за да чисти следите
+   на transitionend без мигане. Затова тук НЯМА .anim-reveal клас — той беше
+   мъртъв (никой не го закачаше). Под reduced-motion anim.js изобщо не крие. */
+
+
+/* ═════════════ ПРИНЦИП 1 — ВЛИЗА ═════════════ */
+
+/* .sec-chip — единствената безжизнена пипаема повърхност: досега без
+   влизане/натиск. Мек вход + натискът горе. */
+@keyframes chipInSoft {
+  from { opacity: 0; transform: translateY(6px); }
+  to   { opacity: 1; transform: none; }
+}
+.sec-nav .sec-chip {
+  transition: transform var(--bl-t-press) ease, background var(--bl-t-soft) var(--bl-ease-soft);
+  animation: chipInSoft var(--bl-t-enter) var(--bl-ease-soft) backwards;
+}
+.sec-nav .sec-chip:nth-child(1) { animation-delay: 0ms; }
+.sec-nav .sec-chip:nth-child(2) { animation-delay: 35ms; }
+.sec-nav .sec-chip:nth-child(3) { animation-delay: 70ms; }
+.sec-nav .sec-chip:nth-child(4) { animation-delay: 105ms; }
+.sec-nav .sec-chip:nth-child(5) { animation-delay: 140ms; }
+.sec-nav .sec-chip:nth-child(6) { animation-delay: 175ms; }
+.sec-nav .sec-chip:nth-child(7) { animation-delay: 210ms; }
+.sec-nav .sec-chip:nth-child(8) { animation-delay: 245ms; }
+
+/* „ти си тук" — активният чип свети докато скролваш (scrollspy).
+   js/anim.js слага .on на чипа на секцията под върха на екрана.
+   [ревю-безопасно] НЕ затъмняваме останалите (иначе при reduce, където
+   скролспаят не тече, всички биха останали блед̀и) — активният ИЗПЪКВА
+   чрез scale+цвят, другите са си нормални. */
+.sec-nav .sec-chip.on  {
+  transform: scale(1.06);
+  background: var(--pink-soft);
+  color: var(--pink-text);
+}
+
+/* Заглавията на секциите се „сглобяват", а разделителят се тегли. */
+@keyframes secHeadIn {
+  from { opacity: 0; transform: translateX(-6px); }
+  to   { opacity: 1; transform: none; }
+}
+.sec-head {
+  animation: secHeadIn var(--bl-t-enter) var(--bl-ease-soft) backwards;
+}
+.sec-head::after {
+  transform-origin: left center;
+  animation: secLineDraw 520ms var(--bl-ease-soft) 60ms backwards;
+}
+@keyframes secLineDraw {
+  from { transform: scaleX(0); }
+  to   { transform: scaleX(1); }
+}
+
+
+/* ═════════════ ПРИНЦИП 3 — ИЗБИРА / УСПЯВА (кратък pop, веднъж) ═════════════ */
+
+/* Общ „скок" — преизползван за медальон, палец, чекин. Спринг, веднъж. */
+@keyframes medalPop {
+  from { opacity: 0; transform: scale(.6); }
+  60%  { opacity: 1; }
+  to   { opacity: 1; transform: scale(1); }
+}
+
+/* Медальоните пред заглавието подскачат веднъж — вързани за влизането
+   на картата, значи умират с нея, без луп. */
+.jr-card.card-in .jr-medal {
+  animation: medalPop 500ms var(--bl-ease-spring) 100ms backwards;
+}
+
+/* Палецът горе/долу за помощничката: избор = празник. */
+.fb-btn {
+  transition: transform var(--bl-t-press) var(--bl-ease-spring), background var(--bl-t-soft) ease;
+}
+.fb-btn.on { animation: medalPop 400ms var(--bl-ease-spring); }
+
+/* Отговорът / „✓ Запазено" влиза меко — емоционалният момент на успеха. */
+@keyframes replyFade {
+  from { opacity: 0; transform: translateY(4px); }
+  to   { opacity: 1; transform: none; }
+}
+.bl-rp-in { animation: replyFade var(--bl-t-soft) var(--bl-ease-soft); }
+
+
+/* ═════════════ МЕК ПОКАЗ ПРИ РАЗГъВАНЕ (без height-thrash) ═════════════
+   Сгъването остава display-моментално (правило 1). При разгъване
+   съдържанието изплува меко. polish.js слага .just-open и я маха на
+   animationend. Заглавието НЕ мърда — то е котвата. */
+@keyframes revealSoft {
+  from { opacity: 0; transform: translateY(8px); }
+  to   { opacity: 1; transform: none; }
+}
+.jr-card.just-open > *:not(.jr-title) {
+  animation: revealSoft 280ms var(--bl-ease-soft) backwards;
+}
+
+
+/* ═════════════ ЖИВ ЩРИХ ПО ТИТУЛНАТА ЛЕНТА (дискретно, веднъж) ═════════════
+   Тесен светъл проблясък по горните 5px, синхронно с влизането.
+   НЕ се плъзга извън картата (без overflow клип — да не режем падащото
+   листче от „Скъсай листа"): свети на място чрез opacity + scaleX. */
+.jr-card { position: relative; }
+.jr-card.card-in::after {
+  content: '';
+  position: absolute;
+  top: 0; left: 0;
+  width: 100%; height: 5px;
+  border-radius: 22px 22px 0 0;
+  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, .85), transparent);
+  transform-origin: left center;
+  pointer-events: none;
+  opacity: 0;   /* [ревю-blocker] без това ::after остава opacity:1 СЛЕД анимацията → постоянен бял бар на всяка карта. barSheen (backwards) поема входа. */
+  animation: barSheen 900ms var(--bl-ease-soft) 150ms backwards;
+}
+@keyframes barSheen {
+  0%   { opacity: 0; transform: scaleX(.35); }
+  40%  { opacity: .7; transform: scaleX(1); }
+  100% { opacity: 0; transform: scaleX(1); }
+}
+
+
+/* ═════════════ ЖИВОТ В ЧАТА (дискретно, не разсейва) ═════════════ */
+
+/* тиха точка-пулс „● на линия" — НИСЪК контраст, не силата на askPulse.
+   [ревю] „●" е обвито в <span class="dot"> в askfield.js — ::before нямаше
+   съдържание, затова тук е само .dot. */
+.ask-live .dot {
+  display: inline-block;
+  animation: liveBreath 2.4s ease-in-out infinite;
+  transform-origin: center;
+}
+@keyframes liveBreath {
+  0%, 100% { transform: scale(1);    opacity: .75; }
+  50%      { transform: scale(1.15); opacity: 1; }
+}
+
+/* малкият аватар до балона влиза заедно с мехура.
+   [ревю-major] keyframe-ът е ПРЕИМЕНУВАН на avaIn — msgIn вече съществува в
+   style.css:1228 и движи самите чат-балони; съвпадащото име ги чупеше. */
+@keyframes avaIn {
+  from { opacity: 0; transform: translateY(6px) scale(.9); }
+  to   { opacity: 1; transform: none; }
+}
+.msg-ava { animation: avaIn var(--bl-t-soft) var(--bl-ease-soft) backwards; }
+
+
+/* ═════════════ ЖИВИЯТ ГЕРОЙ НА СТАЯТА (roomhero.js) ═════════════
+   count-up-а върши fx.js (data-cnt хук). Тук само мек вход на прогреса,
+   за да не изниква рязко числото „Разгледани N от M". */
+.rh-prog { animation: replyFade var(--bl-t-soft) var(--bl-ease-soft) backwards; }
+
+
+/* ═══════════ 🎡 ПЪТЕКАТА НА ЧАКАНЕТО СЕ ЧЕРТАЕ (проход 1 тема 7) ═══════════
+   Дотук изминатата линия просто изникваше. Сега се РИСУВА пред очите на мама,
+   а милите спирки цъфват една по една по нея. preg20.js подава inline
+   stroke-dasharray (изминатото%) + начален stroke-dashoffset = дължината му
+   (значи скрита); тук anim-ът смъква offset→0 forwards → линията се тегли.
+   var() в @keyframes НЕ интерполира без @property — затова to е статична 0.
+   Само stroke-dashoffset — нула layout-thrash. */
+.pg20-done {
+  animation: pg20Draw 1.3s var(--bl-ease-soft, cubic-bezier(.22,1,.36,1)) .25s forwards;
+}
+@keyframes pg20Draw { to { stroke-dashoffset: 0; } }
+/* цъфналите милестоуни изникват меко ПО пътя (само opacity — групата се
+   позиционира с transform от JS, него не го пипаме) */
+.pg20-ms.bloom { animation: msBloom .5s ease backwards; }
+.pg20-ms.bloom:nth-of-type(2) { animation-delay: .35s; }
+.pg20-ms.bloom:nth-of-type(3) { animation-delay: .5s; }
+.pg20-ms.bloom:nth-of-type(4) { animation-delay: .65s; }
+.pg20-ms.bloom:nth-of-type(5) { animation-delay: .8s; }
+.pg20-ms.bloom:nth-of-type(6) { animation-delay: .95s; }
+@keyframes msBloom { from { opacity: 0; } to { opacity: 1; } }
+
+
+/* ═══════════ 🌈 ДЪГАТА НА СЕДМИЦАТА СЕ ЧЕРТАЕ (проход 1 тема 7) ═══════════
+   Досега цветът просто светваше. Сега, щом мама отбележи цвят, дъгата се
+   РИСУВА (pathLength=1 → еднакво за всеки радиус). Сивата→цветната смяна е
+   мек преход; включената дъга се тегли от 0. Само stroke — нула thrash. */
+.rb-arc { transition: stroke var(--bl-t-soft) ease; }
+.rb-arc.rb-on {
+  stroke-dasharray: 1;
+  animation: rbDraw .6s var(--bl-ease-soft) forwards;
+}
+@keyframes rbDraw { from { stroke-dashoffset: 1; } to { stroke-dashoffset: 0; } }
+
+
+/* ═══════════ 🕐 ЧАСОВНИКЪТ НА СЪНЯ ОЖИВЯВА (проход 1 тема 7) ═══════════
+   Замразена снимка → дъгите на съня се теглят при показване, а „сега"-точката
+   тихо диша, за да личи, че кръгът е ЖИВ и следи текущия час. */
+.sc24-seg { stroke-dasharray: 1; animation: rbDraw .7s var(--bl-ease-soft) backwards; }
+.sc24-seg:nth-of-type(2) { animation-delay: .1s; }
+.sc24-seg:nth-of-type(3) { animation-delay: .2s; }
+.sc24-seg:nth-of-type(4) { animation-delay: .3s; }
+.sc24-seg:nth-of-type(5) { animation-delay: .4s; }
+.sc24-now {
+  transform-box: fill-box;
+  transform-origin: center;
+  animation: liveBreath 2.6s ease-in-out infinite;
+}
+
+
+/* ═══════════ 🌡️ ТЕМПЕРАТУРНАТА ПРИСЪДА ПРИСТИГА (проход 1 тема 7) ═══════════
+   Цветът се сменя меко (спокойно→кехлибар→червено), а самата присъда пулсва
+   веднъж щом СЕ ПРОМЕНИ — не на всяка цифра. Урок: смяната на класа рестартира
+   анимацията само ако е махнат преди това (reflow между remove и add в JS). */
+.tmp-out { transition: background-color var(--bl-t-soft) ease, border-color var(--bl-t-soft) ease, color var(--bl-t-soft) ease; }
+.tmp-out.tv-pop { animation: tvPop .4s var(--bl-ease-spring); }
+@keyframes tvPop {
+  from { opacity: .35; transform: scale(.96); }
+  to   { opacity: 1;   transform: none; }
+}
+
+
+/* ═══════════ 📜 СПИСЪЦИТЕ ВЛИЗАТ СТЪПАЛОВИДНО (проход 1 тема 7 · #47) ═══════════
+   Рекорди/история/редове влизаха плоски — всички наведнъж. Сега капят един
+   по един (replyFade, вече дефиниран). Слагаш класа .bl-stagger на контейнера,
+   децата му се степенуват. Преизползваемо, само opacity/transform. */
+.bl-stagger > * { animation: replyFade var(--bl-t-enter) var(--bl-ease-soft) backwards; }
+.bl-stagger > *:nth-child(1) { animation-delay: .03s; }
+.bl-stagger > *:nth-child(2) { animation-delay: .08s; }
+.bl-stagger > *:nth-child(3) { animation-delay: .13s; }
+.bl-stagger > *:nth-child(4) { animation-delay: .18s; }
+.bl-stagger > *:nth-child(5) { animation-delay: .23s; }
+.bl-stagger > *:nth-child(6) { animation-delay: .28s; }
+.bl-stagger > *:nth-child(7) { animation-delay: .33s; }
+.bl-stagger > *:nth-child(n+8) { animation-delay: .38s; }
+
+
+/* ═══════════ 🚨 СОС-БУТОНЪТ В ГЕРОЯ НА ЗДРАВЕ (проход 1 · #41) ═══════════
+   Беше плосък текст „номерата са по-долу"; сега е истински бутон — отваря
+   центъра със СОС номерата. Топло-спешен, ясно натискаем, пълна ширина. */
+.rh-sos-jump {
+  display: block;
+  width: 100%;
+  margin-top: 8px;
+  padding: 11px 14px;
+  border: 1.5px solid rgba(229, 107, 164, .5);
+  border-radius: 14px;
+  background: rgba(255, 236, 244, .9);
+  color: var(--pink-text, #b23a70);
+  font: inherit;
+  font-weight: 700;
+  text-align: center;
+  cursor: pointer;
+  transition: transform var(--bl-t-press) var(--bl-ease-spring), background var(--bl-t-soft) ease;
+}
+.rh-sos-jump:active { transform: scale(.97); }
+@media (hover: hover) and (pointer: fine) {
+  .rh-sos-jump:hover { background: rgba(255, 224, 236, 1); }
+}
+:root[data-theme="dark"] .rh-sos-jump,
+[data-theme="dark"] .rh-sos-jump {
+  background: rgba(74, 40, 55, .6);
+  color: #ffc4dd;
+  border-color: rgba(229, 107, 164, .55);
+}
+
+
+/* ═══════════ 🎨 АКЦЕНТЪТ НА СТАЯТА — една азбука за всичко ново ═══════════
+   Персона-класът е вече на .ro-panel (helper.js:1117) → децата наследяват.
+   Всяка нова украса чете var(--rmx-a)/var(--rmx-b) и се обагря по стаята БЕЗ JS. */
+.ro-peach  { --rmx-a: #f7a8cb; --rmx-b: #fde8d8; }
+.ro-sky    { --rmx-a: #8fc0e8; --rmx-b: #d9eaf8; }
+.ro-carrot { --rmx-a: #f7b98d; --rmx-b: #fde3c8; }
+.ro-green  { --rmx-a: #9fd8c6; --rmx-b: #ddf3ec; }
+.ro-lav    { --rmx-a: #cbbcec; --rmx-b: #eae3f7; }
+.ro-sun    { --rmx-a: #f5d47e; --rmx-b: #fdf3d7; }
+.ro-mint   { --rmx-a: #9fd8c6; --rmx-b: #e2f4ee; }
+.ro-rose   { --rmx-a: #f291bd; --rmx-b: #fde8f1; }
+.ro-cork   { --rmx-a: #d9bd90; --rmx-b: #f5ecdc; }
+/* тъмна тема: акцентът остава жив, мекият фон потъмнява по стаята */
+[data-theme="dark"] .ro-peach  { --rmx-b: #3e2a35; }
+[data-theme="dark"] .ro-sky    { --rmx-b: #232f45; }
+[data-theme="dark"] .ro-carrot { --rmx-b: #3e2f22; }
+[data-theme="dark"] .ro-green  { --rmx-b: #223a32; }
+[data-theme="dark"] .ro-lav    { --rmx-b: #2c2542; }
+[data-theme="dark"] .ro-sun    { --rmx-b: #3c3422; }
+[data-theme="dark"] .ro-mint   { --rmx-b: #223a32; }
+[data-theme="dark"] .ro-rose   { --rmx-b: #3e2435; }
+[data-theme="dark"] .ro-cork   { --rmx-b: #38301f; }
+
+/* ═══════════ 🚪 ПОРТАЛЪТ — входът в стая е събитие (П5 А1) ═══════════ */
+.rmx-veil {
+  position: absolute; inset: 0; z-index: 90;
+  pointer-events: none; overflow: hidden; border-radius: inherit;
+  perspective: 900px; perspective-origin: 50% 50%;   /* П5-Д A5: капакът се разтваря в дълбочина */
+}
+.rmx-half {
+  position: absolute; left: 0; width: 100%; height: 52%;
+  background: linear-gradient(180deg, var(--rmx-b, #fde8f1), var(--rmx-a, #f7a8cb));
+  animation: rmxPartTop 720ms var(--bl-ease-soft) 120ms forwards;
+}
+.rmx-top { top: 0; transform-origin: 50% 0; }
+.rmx-bot {
+  bottom: 0; transform-origin: 50% 100%;
+  background: linear-gradient(0deg, var(--rmx-b, #fde8f1), var(--rmx-a, #f7a8cb));
+  animation-name: rmxPartBot;
+}
+@keyframes rmxPartTop { to { transform: translateY(-104%) rotateX(38deg); } }
+@keyframes rmxPartBot { to { transform: translateY(104%) rotateX(-38deg); } }
+/* трите одежди на ЕДНИЯ механизъм */
+.rmx-cloud .rmx-top { border-radius: 0 0 55% 45% / 0 0 46px 40px; }
+.rmx-cloud .rmx-bot { border-radius: 45% 55% 0 0 / 40px 46px 0 0; }
+.rmx-bloom .rmx-top { border-radius: 0 0 50% 50% / 0 0 70px 70px; }
+.rmx-bloom .rmx-bot { border-radius: 50% 50% 0 0 / 70px 70px 0 0; }
+.rmx-star .rmx-half {
+  background-image:
+    radial-gradient(2px 2px at 18% 40%, rgba(255,255,255,.9), transparent),
+    radial-gradient(1.6px 1.6px at 62% 22%, rgba(255,255,255,.8), transparent),
+    radial-gradient(2px 2px at 84% 64%, rgba(255,255,255,.85), transparent),
+    radial-gradient(1.4px 1.4px at 38% 76%, rgba(255,255,255,.7), transparent),
+    linear-gradient(180deg, var(--rmx-b, #eae3f7), var(--rmx-a, #cbbcec));
+}
+/* печатът на помощничката: изгрява със спринг и се разтваря */
+.rmx-seal {
+  position: absolute; left: 50%; top: 50%;
+  font-size: 54px; line-height: 1;
+  opacity: 0; transform: translate(-50%, -50%) perspective(700px) translateZ(-260px) scale(.9);
+  filter: drop-shadow(0 6px 14px rgba(0, 0, 0, .18));
+  animation: rmxSealDepth 760ms var(--bl-ease-spring) forwards;   /* П5-Д A5: печатът лети НАПРЕД от дълбочина */
+}
+@keyframes rmxSealDepth {
+  0%   { opacity: 0; transform: translate(-50%, -50%) perspective(700px) translateZ(-260px) scale(.9); }
+  40%  { opacity: 1; transform: translate(-50%, -50%) perspective(700px) translateZ(40px)   scale(1); }
+  70%  { opacity: 1; transform: translate(-50%, -50%) perspective(700px) translateZ(0)      scale(1); }
+  100% { opacity: 0; transform: translate(-50%, -50%) perspective(700px) translateZ(90px)   scale(1.5); }
+}
+[data-theme="dark"] .rmx-half { opacity: .96; }
+
+/* ═══════════ 🃏 ДЪЛБОЧИНЕН ХОСТ + ВХОД ОТ Z (П5-Д A1) ═══════════
+   Една transform-верига; вход, скрол-паралакс (A2) и герой-плаване (A4) събират
+   РАЗЛИЧНИ променливи → composited, без конфликт за transform. Картите спират
+   да са плоски — долитат от дълбочина (visionOS-lite). */
+@property --rmx-inO  { syntax: '<number>'; inherits: false; initial-value: 1; }
+@property --rmx-inY  { syntax: '<length>'; inherits: false; initial-value: 0px; }
+@property --rmx-inZ  { syntax: '<length>'; inherits: false; initial-value: 0px; }
+@property --rmx-inRx { syntax: '<angle>';  inherits: false; initial-value: 0deg; }
+@property --rmx-inRy { syntax: '<angle>';  inherits: false; initial-value: 0deg; }
+@property --rmx-tz   { syntax: '<length>'; inherits: false; initial-value: 0px; }
+@property --rmx-rx   { syntax: '<angle>';  inherits: false; initial-value: 0deg; }
+/* --rmx-tz-base се АНИМИРА (rmxHeroFloat, ред 488-489). Нерегистрирана custom
+   property се интерполира дискретно — героят щракаше между 22 и 32px вместо да
+   диша. Същият капан е описан с думи на ред 234 в този файл. */
+@property --rmx-tz-base { syntax: '<length>'; inherits: false; initial-value: 0px; }
+
+#roRoom > .jr-card {
+  transform:
+    perspective(var(--rmx-persp, 1150px))
+    translateY(var(--rmx-inY, 0px))
+    rotateY(var(--rmx-inRy, 0deg))
+    translateZ(calc(var(--rmx-tz, 0px) + var(--rmx-inZ, 0px) + var(--rmx-tz-base, 0px)))
+    rotateX(calc(var(--rmx-rx, 0deg) + var(--rmx-inRx, 0deg)));
+  transform-origin: 50% 100%;
+  opacity: var(--rmx-inO, 1);
+  backface-visibility: hidden;
+  will-change: transform;
+  position: relative; z-index: 1;   /* над аврората (rmx-aurora z-index:0) */
+}
+@keyframes rmxDepthInL {
+  0%   { --rmx-inO: 0; --rmx-inY: 26px; --rmx-inZ: -140px; --rmx-inRx: 8deg; --rmx-inRy: -5deg; }
+  60%  { --rmx-inO: 1; }
+  100% { --rmx-inO: 1; --rmx-inY: 0px;  --rmx-inZ: 0px;    --rmx-inRx: 0deg; --rmx-inRy: 0deg; }
+}
+@keyframes rmxDepthInR {
+  0%   { --rmx-inO: 0; --rmx-inY: 26px; --rmx-inZ: -140px; --rmx-inRx: 8deg; --rmx-inRy: 5deg; }
+  60%  { --rmx-inO: 1; }
+  100% { --rmx-inO: 1; --rmx-inY: 0px;  --rmx-inZ: 0px;    --rmx-inRx: 0deg; --rmx-inRy: 0deg; }
+}
+#roRoom > .jr-card { animation-name: rmxDepthInL; animation-duration: .62s; }
+#roRoom > .jr-card:nth-child(even) { animation-name: rmxDepthInR; }
+#roRoom > .jr-card:nth-child(5) { animation-delay: .26s; }
+#roRoom > .jr-card:nth-child(n+6) { animation-delay: .3s; }
+/* героят изгрява по-дълбоко и застава НАПРЕД (базата остава за плаването A4) */
+#roRoom > .jr-card.rh-hero,
+#roRoom > .jr-card.pg20-hero { --rmx-tz-base: 24px; animation-name: rmxHeroDepthIn; animation-duration: .7s; }
+@keyframes rmxHeroDepthIn {
+  0%   { --rmx-inO: 0; --rmx-inY: 30px; --rmx-inZ: -180px; --rmx-inRx: 10deg; }
+  70%  { --rmx-inO: 1; --rmx-inY: -3px; --rmx-inZ: 8px;     --rmx-inRx: -1deg; }
+  100% { --rmx-inO: 1; --rmx-inY: 0px;  --rmx-inZ: 0px;     --rmx-inRx: 0deg; }
+}
+[data-theme="dark"] #roRoom > .jr-card { --rmx-persp: 1000px; }
+
+/* ═══════════ 🌀 СКРОЛ-ПАРАЛАКС ПО ДЪЛБОЧИНА (П5-Д A2) — 100% CSS, компоситорен ═══════════
+   Тече само докато картата е в екрана; анимира само --rmx-tz/--rmx-rx → събира се
+   с входа в хоста. Пропуска се тихо на webview без animation-timeline:view(). */
+@supports (animation-timeline: view()) {
+  @media (prefers-reduced-motion: no-preference) {
+    #roRoom > .jr-card {
+      animation-name: rmxDepthInL, rmxScrollDepth;
+      animation-duration: .62s, auto;
+      animation-timeline: auto, view(block);
+      animation-range: normal, cover 0% cover 100%;
+      animation-fill-mode: both, both;
+    }
+    #roRoom > .jr-card:nth-child(even) { animation-name: rmxDepthInR, rmxScrollDepth; }
+    @keyframes rmxScrollDepth {
+      0%   { --rmx-rx: 7deg;  --rmx-tz: -90px; }
+      50%  { --rmx-rx: 0deg;  --rmx-tz: 0px;   }
+      100% { --rmx-rx: -6deg; --rmx-tz: -70px; }
+    }
+  }
+  [data-theme="dark"] #roRoom > .jr-card { animation-range: normal, cover 6% cover 94%; }
+}
+
+/* ═══════════ 👑 ГЕРОЯТ ЛЕВИТИРА (П5-Д A4) ═══════════ */
+@media (prefers-reduced-motion: no-preference) {
+  #roRoom > .jr-card.rh-hero,
+  #roRoom > .jr-card.pg20-hero {
+    animation-name: rmxHeroDepthIn, rmxHeroFloat;
+    animation-duration: .7s, 6s;
+    animation-iteration-count: 1, infinite;
+    animation-delay: 0s, .7s;
+    animation-timing-function: var(--bl-ease-spring), ease-in-out;
+  }
+  @keyframes rmxHeroFloat {
+    0%, 100% { --rmx-tz-base: 22px; }
+    50%      { --rmx-tz-base: 32px; }
+  }
+}
+@supports (animation-timeline: view()) {
+  @media (prefers-reduced-motion: no-preference) {
+    #roRoom > .jr-card.rh-hero,
+    #roRoom > .jr-card.pg20-hero {
+      animation-name: rmxHeroDepthIn, rmxScrollDepth, rmxHeroFloat;
+      animation-duration: .7s, auto, 6s;
+      animation-timeline: auto, view(block), auto;
+      animation-iteration-count: 1, 1, infinite;
+      animation-delay: 0s, 0s, .7s;
+    }
+  }
+}
+[data-theme="dark"] #roRoom > .jr-card.rh-hero { --rmx-tz-base: 20px; }
+
+/* ═══════════ 🎈 НИШКАТА НА СТАЯТА (П5 А3) ═══════════ */
+.rmx-thread {
+  position: absolute; top: 0; left: 0; width: 100%; height: 4px;
+  z-index: 40; pointer-events: none;
+  background: rgba(120, 100, 150, .12);
+  transition: opacity var(--bl-t-soft) ease;
+}
+.rmx-fill {
+  position: absolute; inset: 0;
+  transform: scaleX(0); transform-origin: left center;
+  background: linear-gradient(90deg, var(--rmx-b, #fde8f1), var(--rmx-a, #f291bd));
+  transition: transform .18s linear;   /* коприненото догонване */
+}
+.rmx-walker {
+  position: absolute; top: -6px; left: 3px;
+  font-size: 13px; line-height: 1;
+  transform: translateX(0);
+  transition: transform .18s linear;
+  filter: drop-shadow(0 1px 2px rgba(0, 0, 0, .18));
+}
+.rmx-walker.rmx-done { animation: medalPop 500ms var(--bl-ease-spring); }
+/* в чата и статиите нишката се снишава (setTab слага data-tab на панела) */
+.ro-panel:not([data-tab="room"]) .rmx-thread { opacity: 0; }
+[data-theme="dark"] .rmx-thread { background: rgba(255, 255, 255, .1); }
+
+/* ═══════════ 📱 ДОЛНАТА ЛЕНТА ОЖИВЯВА (П5, брифът на арт-директора) ═══════════
+   Най-докосваният елемент: активното грейва с цвета НА СВОЯТА стая (азбуката),
+   иконата пружинира, SOS има собствен тих пулс-ореол. Само transform/opacity. */
+.bn-item { --bn-a: #f291bd; }
+.bn-item[data-room="Моето бебе"]      { --bn-a: #8fc0e8; }
+.bn-item[data-room="Дневник на мама"] { --bn-a: #cbbcec; }
+.bn-item[data-room="Здраве и SOS"]    { --bn-a: #9fd8c6; }
+.bn-item { position: relative; }
+.bn-item span { transition: transform var(--bl-t-press) var(--bl-ease-spring); }
+.bn-item:active span { transform: scale(.8); }
+.bn-item.bn-active span {
+  animation: bnBloom .5s var(--bl-ease-spring);
+  transform: translateY(-2px) scale(1.08);
+}
+@keyframes bnBloom {
+  0%   { transform: translateY(0) scale(1); }
+  45%  { transform: translateY(-5px) scale(1.22) rotate(-4deg); }
+  100% { transform: translateY(-2px) scale(1.08); }
+}
+/* активното грейва в цвета на стаята си — мек ореол зад иконата */
+.bn-item::before {
+  content: ''; position: absolute; left: 50%; top: 4px;
+  width: 34px; height: 34px; margin-left: -17px; border-radius: 50%;
+  background: radial-gradient(circle, var(--bn-a), transparent 72%);
+  opacity: 0; transform: scale(.5); pointer-events: none;
+  transition: opacity .3s ease, transform .35s var(--bl-ease-spring);
+}
+.bn-item.bn-active::before { opacity: .45; transform: scale(1); }
+[data-theme="dark"] .bn-item.bn-active::before { opacity: .3; }
+/* SOS: собствен тих пулс-ореол — вика тихо, без да плаши */
+.bn-item[data-room="Здраве и SOS"]::before {
+  opacity: .22; transform: scale(.9);
+  animation: bnSosPulse 3.2s ease-in-out infinite;
+}
+@keyframes bnSosPulse {
+  0%, 100% { opacity: .14; transform: scale(.82); }
+  50%      { opacity: .34; transform: scale(1.05); }
+}
+
+/* ═══════════ ✨ ИСКРАТА НА СТАЯТА (П5 А4) ═══════════ */
+.rmx-sparklayer { position: fixed; inset: 0; pointer-events: none; z-index: 510; overflow: hidden; }
+.rmx-spark {
+  position: absolute; font-size: 17px; line-height: 1;
+  opacity: 0; transform: translate(-50%, -50%) scale(.5);
+  animation: rmxSparkUp .8s var(--bl-ease-soft) forwards;
+  filter: drop-shadow(0 1px 2px rgba(0, 0, 0, .12));
+}
+@keyframes rmxSparkUp {
+  0%   { opacity: 0; transform: translate(-50%, -50%) scale(.5) rotate(0deg); }
+  25%  { opacity: 1; }
+  100% { opacity: 0; transform: translate(-50%, -160%) scale(1.15) rotate(var(--sp-r, 14deg)); }
+}
+/* кръгчето на допира (инжектирано от anim.js) — цветът на стаята;
+   .bl-anim-layer .bl-ripple (0,2,0) бие инжектираното .bl-ripple (0,1,0) */
+.bl-anim-layer .bl-ripple { background: var(--rmx-tap, rgba(150, 130, 180, .28)); }
+[data-theme="dark"] .rmx-spark { filter: drop-shadow(0 1px 3px rgba(0, 0, 0, .5)); }
+
+/* ═══ 🌌 АВРОРАТА НА СТАЯТА — фонът диша в цвета на стаята (П5-Д B1) ═══
+   Мека БАВНА мъгла зад #roRoom. Само transform/opacity, без animiran blur. */
+#roRoom { position: relative; z-index: 1; }
+.rmx-aurora {
+  position: absolute; inset: 0; z-index: 0;
+  pointer-events: none; overflow: hidden; border-radius: inherit;
+  opacity: 0; animation: rmxAuroraFade 1.2s var(--bl-ease-soft, cubic-bezier(.22,1,.36,1)) .15s forwards;
+}
+@keyframes rmxAuroraFade { to { opacity: 1; } }
+.rmx-blob {
+  position: absolute; width: 62%; aspect-ratio: 1; border-radius: 50%;
+  will-change: transform;
+  background: radial-gradient(circle, var(--rmx-a, #f7a8cb) 0%, transparent 70%);
+  background: radial-gradient(circle at 50% 50%, var(--rmx-a, #f7a8cb) 0%,
+    color-mix(in srgb, var(--rmx-a, #f7a8cb) 40%, transparent) 38%, transparent 70%);
+}
+.rmx-blob.b1 { top: -14%; left: -10%; opacity: calc(.16 + var(--rmx-scroll, 0) * .18); animation: rmxDrift1 26s ease-in-out infinite; }
+.rmx-blob.b2 { bottom: -18%; right: -12%; opacity: calc(.24 + var(--rmx-scroll, 0) * .14); animation: rmxDrift2 32s ease-in-out infinite;
+  background: radial-gradient(circle, var(--rmx-b, #fde8f1) 0%, transparent 72%);
+  background: radial-gradient(circle at 50% 50%, var(--rmx-b, #fde8f1) 0%,
+    color-mix(in srgb, var(--rmx-b, #fde8f1) 45%, transparent) 40%, transparent 72%); }
+.rmx-blob.b3 { top: 30%; left: 24%; width: 48%; opacity: .18; animation: rmxDrift3 38s ease-in-out infinite; }
+@keyframes rmxDrift1 { 0%,100% { transform: translate3d(0,0,0) scale(1); } 50% { transform: translate3d(8%,6%,0) scale(1.12); } }
+@keyframes rmxDrift2 { 0%,100% { transform: translate3d(0,0,0) scale(1.05); } 50% { transform: translate3d(-7%,-5%,0) scale(.92); } }
+@keyframes rmxDrift3 { 0%,100% { transform: translate3d(0,0,0) rotate(0deg) scale(1); } 50% { transform: translate3d(4%,-6%,0) rotate(8deg) scale(1.1); } }
+[data-theme="dark"] .rmx-blob.b3 { opacity: .14; }
+@media (prefers-reduced-motion: reduce) { .rmx-blob { animation: none !important; } }
+
+/* ════════════════════════════════════════════════════════════════
+   НАМАЛЕНО ДВИЖЕНИЕ — уморена майка в 3ч не бива да получи вертиго.
+   Всичко пада до мигновено; :active остава (безопасен, не е движение).
+   КЛЮЧОВО: нулираме и скритите reveal-състояния, за да НЕ остане
+   съдържание невидимо!
+   ════════════════════════════════════════════════════════════════ */
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: .01ms !important;
+    animation-iteration-count: 1 !important;
+    /* проход 3 T36: нулирай и delay-а — иначе backwards-анимациите (bl-stagger,
+       sec-chip, milestone bloom) държат съдържанието невидимо до ~1сек и то
+       светва на вълни, точно ефектът, който reduce трябва да премахне. */
+    animation-delay: 0s !important;
+    transition-duration: .01ms !important;
+    transition-delay: 0s !important;
+    scroll-behavior: auto !important;
+  }
+  /* нищо да не остане скрито — anim.js вече не крие под reduce, но за всеки
+     случай гасим и inline-подготвените карти */
+  .jr-card.is-pending {
+    opacity: 1 !important;
+    transform: none !important;
+  }
+  /* живите луупове замръзват напълно */
+  .ask-live .dot {
+    animation: none !important;
+    opacity: 1 !important;
+    transform: none !important;
+  }
+  .jr-card.card-in::after { animation: none !important; opacity: 0 !important; }
+  /* П5: порталът, нишката и искрите изобщо не се показват (JS не ги монтира) */
+  .rmx-veil, .rmx-thread, .rmx-sparklayer, .rmx-spark { display: none !important; }
+  /* П5-Д: сваляме дълбочинния композитен слой при reduce (картата сяда на идентитет) */
+  #roRoom > .jr-card { will-change: auto !important; --rmx-tz-base: 0px !important; }
+  .rmx-aurora { display: none !important; }
+}

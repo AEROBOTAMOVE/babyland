@@ -1,0 +1,17 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512">
+  <!-- проход 3 S4: maskable вариант — плътен квадратен фон (системата слага формата)
+       + логото смалено до ~62% около центъра, за да е в 20% safe zone. Ъгловите
+       звездички са махнати (те попадаха в зоната на отрязване). -->
+  <rect width="512" height="512" fill="#fdeef6"/>
+  <g transform="translate(256,256) scale(0.62) translate(-256,-256)">
+    <ellipse cx="256" cy="216" rx="140" ry="164" fill="#f5b1d1"/>
+    <ellipse cx="256" cy="216" rx="87" ry="152" fill="#fbd3e6"/>
+    <ellipse cx="256" cy="216" rx="39" ry="146" fill="#70a8db"/>
+    <rect x="80" y="330" width="352" height="60" fill="#fdeef6"/>
+    <polygon points="212,328 300,328 282,366 230,366" fill="#ee8fbe"/>
+    <path d="M230 366 L237 412 M282 366 L275 412" stroke="#b78957" stroke-width="7" fill="none"/>
+    <rect x="221" y="410" width="70" height="60" rx="15" fill="#c99a63"/>
+    <path d="M225 430 h62 M225 450 h62 M256 413 v54" stroke="#a97c48" stroke-width="5"/>
+    <ellipse cx="163" cy="140" rx="24" ry="45" fill="#ffffff" opacity="0.55" transform="rotate(-14 163 140)"/>
+  </g>
+</svg>

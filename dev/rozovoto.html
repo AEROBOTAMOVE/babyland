@@ -1,0 +1,98 @@
+<!doctype html>
+<meta charset="utf-8">
+<title>Розовото: преди и сега</title>
+<style>
+  body { font-family: system-ui, sans-serif; background:#fdfbff; color:#3a3550;
+         margin:0; padding:24px; max-width:760px; }
+  h1 { font-size:20px; margin:0 0 4px; }
+  p.sub { color:#6f6980; font-size:14px; margin:0 0 22px; }
+  .двойка { display:grid; grid-template-columns:1fr 1fr; gap:14px; margin-bottom:26px; }
+  .кутия { border:1px solid #e8e0ea; border-radius:16px; padding:14px; background:#fff; }
+  .етикет { font-size:12px; font-weight:700; color:#6f6980; margin:0 0 8px; letter-spacing:.02em; }
+  .btn { display:block; width:100%; border:0; color:#fff; font-weight:700; font-size:14.5px;
+         padding:13px; border-radius:16px; font-family:inherit; }
+  .стар { background:linear-gradient(135deg,#f7a8cb,#e56ba4); }
+  .нов  { background:linear-gradient(135deg,#d1487f,#b83a70); }
+  .чип  { display:inline-block; color:#fff; font-weight:700; font-size:12.5px;
+          padding:8px 14px; border-radius:999px; margin:6px 6px 0 0; }
+  .чипс { background:linear-gradient(90deg,#f7a8cb,#b9a7e0); }
+  .чипн { background:linear-gradient(90deg,#d1487f,#7d5fc0); }
+  .сос  { display:block; width:100%; border:0; color:#fff; font-weight:800; font-size:15px;
+          padding:14px; border-radius:16px; margin-top:8px; }
+  .сосс { background:linear-gradient(135deg,#ff5b5b,#d32f2f); }
+  .сосн { background:linear-gradient(135deg,#c62828,#a01818); }
+  .k { font-size:12px; color:#6f6980; margin:8px 0 0; }
+  .k b { color:#3a3550; }
+  .лошо b { color:#b83a70; }
+  .текст { font-size:13px; line-height:1.6; }
+  .с-стар { color:#8b84a3; }
+  .с-нов  { color:#6f6980; }
+  footer { margin-top:30px; font-size:13px; color:#6f6980; line-height:1.7;
+           border-top:1px solid #e8e0ea; padding-top:16px; }
+</style>
+
+<h1>Розовото: преди и сега</h1>
+<p class="sub">Смених го, защото белият текст върху старото даваше контраст 3.01 — под прага за четене.
+Ако не ти харесва, връща се с един ред. Виж и кажи.</p>
+
+<div class="двойка">
+  <div class="кутия">
+    <p class="етикет">ПРЕДИ</p>
+    <button class="btn стар">Запази бележката 📌</button>
+    <p class="k лошо">бял текст: <b>3.01 : 1</b></p>
+  </div>
+  <div class="кутия">
+    <p class="етикет">СЕГА</p>
+    <button class="btn нов">Запази бележката 📌</button>
+    <p class="k">бял текст: <b>4.6 : 1</b></p>
+  </div>
+</div>
+
+<div class="двойка">
+  <div class="кутия">
+    <p class="етикет">ЧИПОВЕ — ПРЕДИ</p>
+    <span class="чип чипс">писмо</span><span class="чип чипс">снимка</span>
+    <p class="k лошо">бял текст: <b>2.01 : 1</b></p>
+  </div>
+  <div class="кутия">
+    <p class="етикет">ЧИПОВЕ — СЕГА</p>
+    <span class="чип чипн">писмо</span><span class="чип чипн">снимка</span>
+    <p class="k">бял текст: <b>4.9 : 1</b></p>
+  </div>
+</div>
+
+<div class="двойка">
+  <div class="кутия">
+    <p class="етикет">БУТОНЪТ ЗА 112 — ПРЕДИ</p>
+    <button class="сос сосс">🚨 112 веднага</button>
+    <p class="k лошо">бял текст: <b>3.89 : 1</b></p>
+  </div>
+  <div class="кутия">
+    <p class="етикет">БУТОНЪТ ЗА 112 — СЕГА</p>
+    <button class="сос сосн">🚨 112 веднага</button>
+    <p class="k">бял текст: <b>5.5 : 1</b></p>
+  </div>
+</div>
+
+<div class="двойка">
+  <div class="кутия">
+    <p class="етикет">ПОДЗАГЛАВИЯТА — ПРЕДИ</p>
+    <p class="текст с-стар">на 7 месеца и 1 ден · бърз запис с едно докосване ·
+       6+ мокри пелени на ден е важен знак, че бебето получава достатъчно</p>
+    <p class="k лошо"><b>3.54 : 1</b></p>
+  </div>
+  <div class="кутия">
+    <p class="етикет">ПОДЗАГЛАВИЯТА — СЕГА</p>
+    <p class="текст с-нов">на 7 месеца и 1 ден · бърз запис с едно докосване ·
+       6+ мокри пелени на ден е важен знак, че бебето получава достатъчно</p>
+    <p class="k"><b>5.24 : 1</b></p>
+  </div>
+</div>
+
+<footer>
+  <strong>Защо изобщо.</strong> Измерих всеки видим текст в 9-те стаи, в двете теми — 2309 надписа в светла,
+  2223 в тъмна. Под прага бяха <strong>565 в светла</strong> и <strong>166 в тъмна</strong>.
+  Сега са 0 и 0.<br><br>
+  <strong>Какво не съм видял.</strong> Панелът на браузъра е скрит — не мога да направя снимка.
+  Числата са мерени, изгледът е сметнат. Затова ти го пращам.
+</footer>

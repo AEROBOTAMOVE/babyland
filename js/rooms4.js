@@ -1,0 +1,295 @@
+// ═══════════════════════════════════════════════════════════
+// ROOMS 4 — още по едно съкровище за всяка стая (одит-вълна)
+// 💧 вода • 🍼 изпито днес • 🎲 какво за обяд • 🧰 аптечка-старт
+// 📊 месецът в числа • 🏅 витрина на гордостта • 🔦 нощна лампа
+// ═══════════════════════════════════════════════════════════
+(function () {
+  'use strict';
+
+  const load = (k, d) => { try { const v = JSON.parse(localStorage.getItem(k)); if (v == null) return d; if (Array.isArray(d) !== Array.isArray(v)) return d; if (d && typeof d === 'object' && (!v || typeof v !== 'object')) return d; return v; } catch (e) { return d; } };
+  const save = (k, v) => { try { localStorage.setItem(k, JSON.stringify(v)); } catch (e) { return false; } return true; };
+  const localDate = d => d.getFullYear() + '-' + String(d.getMonth() + 1).padStart(2, '0') + '-' + String(d.getDate()).padStart(2, '0');
+  const today = () => localDate(new Date());
+  const el = (t, c, h) => { const n = document.createElement(t); if (c) n.className = c; if (h !== undefined) n.innerHTML = h; return n; };
+  const esc = s => String(s || '').replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;').replace(/'/g, '&#39;');
+  const card = t => { const c = el('section', 'jr-card'); c.appendChild(el('h4', 'jr-title', t)); return c; };
+  const fx = () => window.BL_FX || { confetti() {}, cheer() {}, buzz() {}, pop() {}, chime() {} };
+  const MOODS = ['😩', '😔', '😐', '🙂', '🥰'];
+
+  // ── 🤰 💧 Чаши вода днес (броим изпитото, не недостига) ──
+  function waterCard() {
+    // 🤍 29.07 (обиколка): expect.js е писан ТОЧНО за да спре тези карти
+    //    след загуба, но пазачът стоеше само на symptomCard. Жена, натиснала
+    //    „Спри тихо броенето“, продължаваше да бъде посрещана с „чакаме него“.
+    if (window.BL_EXPECT && BL_EXPECT.paused && BL_EXPECT.paused()) return null;
+    // 🔴 05.08 (одит г08, №224): подзаглавието беше „пиеш за двама“ — точно
+    //    митът, който самото приложение развенчава на две други места
+    //    (wisdom.js: „Яде се ЗА двама, не КОЛКОТО двама“; kb.js: „не «за
+    //    двама»“). А редът отдолу пишеше „5 / 8 чаши днес“: число, което не
+    //    идва отникъде в кода, и сметка за онова, което мама НЕ е изпила.
+    //    Чашките остават за цъкане; присъдата отпада.
+    const c = card('Вода днес 💧 <span class="jr-sub">жаждата идва със закъснение — изпреварвай я</span>');
+    // ⚖️ г09-скептик: първата поправка смени САМО текстовете. Отдолу остана
+    //    `GOAL = 8` — редът се рисуваше винаги с осем чашки, значи при три
+    //    изпити мама виждаше ПЕТ ПРАЗНИ 🥛. Това е буквално броене на онова,
+    //    което не е направила, а числото 8 пак нямаше произход. Редът вече
+    //    РАСТЕ: нейните чашки + една празна за следващата. Без таван, без
+    //    финална линия.
+    let data = load('bl_water', { d: today(), n: 0 });
+    if (data.d !== today()) data = { d: today(), n: 0 };
+    const row = el('div', 'wt-row');
+    const note = el('p', 'cs-note', '');
+    function draw() {
+      row.innerHTML = '';
+      for (let i = 0; i <= data.n; i++) {
+        const пълна = i < data.n;
+        const b = el('button', 'wt-cup' + (пълна ? ' full' : ''), пълна ? '💧' : '🥛');
+        b.type = 'button';
+        b.addEventListener('click', () => {
+          if (data.d !== today()) { data = { d: today(), n: 0 }; }   // виж бележката при мл
+          data.n = i < data.n ? i : i + 1; // цъкаш последната пълна → маха я
+          save('bl_water', data); draw();
+          // празникът е за ЗАПОЧНАТОТО, не за някакъв изпълнен норматив
+          if (data.n === 1) { fx().confetti(row); fx().cheer('Първата за днес 💧'); }
+          else fx().buzz(6);
+        });
+        row.appendChild(b);
+      }
+      note.innerHTML = data.n
+        ? `Досега днес: <strong>${data.n}</strong> ${data.n === 1 ? 'чаша' : 'чаши'} 💧`
+        : 'Цъкни чашка, щом изпиеш една. Без сметка накрая. 💧';
+    }
+    draw();
+    c.appendChild(row); c.appendChild(note);
+    return c;
+  }
+
+  // ── 🍼 Изпито днес (мл при шише/смесено хранене) ──
+  function mlCard() {
+    const c = card('Изпито днес 🍼 <span class="jr-sub">за шишето и смесеното — броим милилитрите</span>');
+    let data = load('bl_ml', { d: today(), n: 0 });
+    if (data.d !== today()) data = { d: today(), n: 0 };
+    const big = el('div', 'ml-big', '');
+    const row = el('div', 'jr-quick');
+    [30, 60, 90, 120].forEach(v => {
+      const b = el('button', 'jr-chip', '+' + v + ' мл'); b.type = 'button';
+      b.addEventListener('click', () => {
+        if (data.d !== today()) data = { d: today(), n: 0 };   // полунощ мина, докато картата стоеше отворена
+        data.n += v; save('bl_ml', data); draw(); fx().buzz(8);
+      });
+      row.appendChild(b);
+    });
+    const undo = el('button', 'jr-chip', '↺'); undo.type = 'button'; undo.title = 'нулирай днес';
+    undo.addEventListener('click', () => { (window.BL_UI ? BL_UI.confirm('Нулиране на днешните милилитри?', { emoji: '💧', okText: 'Нулирай', cancelText: 'Отказ' }) : Promise.resolve(confirm('Нулиране на днешните милилитри?'))).then(да => { if (да) { data.n = 0; save('bl_ml', data); draw(); } }); });
+    row.appendChild(undo);
+    function draw() { big.innerHTML = `<strong>${data.n}</strong> мл днес`; }
+    draw();
+    c.appendChild(big); c.appendChild(row);
+    // проход 3 T25: изравнено с решението в базата (kb mb-kolko-mliako / zh-milk-qty),
+    // които НАРОЧНО вече не дават число — рамката е на кутията и при педиатъра.
+    c.appendChild(el('p', 'jr-privacy', 'Ориентир: при изцяло шише дневното количество се смята по килограмите — точната рамка е на кутията и при педиатъра (виж „Колко мляко…“ при Мира).'));
+    return c;
+  }
+
+  // ── 🎲 Какво за обяд? (идея от опитаното + рецептите) ──
+  function lunchCard() {
+    const c = card('Какво за обяд? 🎲 <span class="jr-sub">завърти, когато главата е празна, а бебето гладно</span>');
+    const btn = el('button', 'jr-btn', '🎲 Дай идея!'); btn.type = 'button';
+    const out = el('div', 'lc-out');
+    const COMBOS = [
+      ['тиквичка', 'картоф'], ['морков', 'ориз'], ['тиква', 'овес'], ['броколи', 'картоф'],
+      ['ябълка', 'овес'], ['банан', 'авокадо'], ['пилешко', 'морков', 'ориз'], ['круша', 'овес']
+    ];
+    btn.addEventListener('click', () => {
+      // 🚨 22.07 (армия): картата предлагаше „пилешко + морков + ориз“ и на
+      //   4-месечно бебе — твърда храна преди захранването изобщо да е почнало.
+      //   И вадеше „любими“, без да гледа дали после е имало РЕАКЦИЯ.
+      const дневник = load('bl_tried', {});
+      const реакция = k => /⚠️|🤢/.test(дневник[k] || '');      // отбелязана реакция или отказ
+      const възраст = (function () {
+        try { const b = JSON.parse(localStorage.getItem('bl_baby') || '{}');
+          const a = b.birth && window.BL_AGE ? BL_AGE(b.birth) : null;
+          // 🔴 05.08 (одит г08, №39): тук се четеше КАЛЕНДАРНАТА възраст, а
+          //    календарът на храните две карти по-горе мери по КОРИГИРАНАТА
+          //    (rooms2.js, заради недоносените). Бебе на 32-ра седмица, 7
+          //    календарни / 5 коригирани месеца: календарът честно казваше
+          //    „още нищо“, а тази карта в същия екран предлагаше пилешко.
+          return a ? (a.devMonths != null ? a.devMonths : a.months) : null; } catch (e) { return null; }
+      })();
+      if (възраст != null && възраст < 6) {
+        out.innerHTML = '<div class="lc-idea pop">🍼 На тази възраст обядът още е мляко.<br>' +
+          // 05.08 (одит г06, №242): пращаше „по-горе“, а „Готови ли сме?“ е в
+          // кътче „🍓 Храните“, което order4.js слага ПОД „🥄 Днес на масата“,
+          // където живее тази карта. Мама скролваше нагоре към празно място.
+          '<span class="lc-sub">Захранването започва около 6-ия месец и когато бебето покаже трите знака. Виж „Готови ли сме?“ по-долу. 💛</span></div>';
+        fx().buzz(8);
+        return;
+      }
+      const tried = Object.keys(дневник).filter(k => (дневник[k] || '').includes('😋') && !реакция(k));
+      let idea;
+      if (tried.length >= 2 && Math.random() < 0.5) {
+        const a = tried[Math.floor(Math.random() * tried.length)];
+        let b = tried[Math.floor(Math.random() * tried.length)];
+        if (b === a) b = null;
+        idea = '💜 От любимите ви: <strong>' + esc(a) + (b ? ' + ' + esc(b) : '') + '</strong>';
+      } else {
+        // класиката също минава през дневника: каквото е дало реакция, отпада
+        const чисти = COMBOS.filter(cmb => !cmb.some(реакция));
+        const източник = чисти.length ? чисти : COMBOS;
+        const cmb = източник[Math.floor(Math.random() * източник.length)];
+        idea = '🎲 Класика: <strong>' + cmb.map(esc).join(' + ') + '</strong>';
+        // 22.07 (армия): комбинацията дава 2-3 храни наведнъж, а собственото
+        //   правило на приложението е новото да се дава ПООТДЕЛНО няколко дни —
+        //   иначе, ако има реакция, не се разбира от какво. Ако някоя от
+        //   продуктите е още непозната, казваме го.
+        const непознати = cmb.filter(х => !дневник[х]);
+        if (непознати.length) {
+          idea += '<br><span class="lc-sub">💛 ' + непознати.map(esc).join(' и ') +
+            (непознати.length === 1 ? ' е нова за вас' : ' са нови за вас') +
+            ' — дай я сама 2-3 дни, преди да я смесваш. Така ще знаеш от какво е, ако има реакция.</span>';
+        }
+      }
+      out.innerHTML = `<div class="lc-idea pop">${idea}<br><span class="lc-sub">Рецептите-карти по-долу знаят как. 👩‍🍳</span></div>`;
+      fx().buzz(8);
+    });
+    c.appendChild(btn); c.appendChild(out);
+    return c;
+  }
+
+  // ── 🧰 Аптечка бърз старт (готов списък с 1 докосване) ──
+  const PHARMACY_START = ['Термометър', 'Физиологичен серум', 'Назален аспиратор', 'Пробиотик (по лекарско)', 'Крем за подсичане', 'Стерилни марли', 'Спринцовка-дозатор', 'Пинсета за кърлежи'];
+  function pharmacyStartCard() {
+    const c = card('Аптечка бърз старт 🧰 <span class="jr-sub">основните 8 — добави ги с едно докосване</span>');
+    const items = load('bl_pharmacy', []);
+    const row = el('div', 'jr-quick');
+    PHARMACY_START.forEach(n => {
+      const has = () => load('bl_pharmacy', []).some(x => x.n === n);
+      const b = el('button', 'jr-chip' + (has() ? ' on' : ''), (has() ? '✓ ' : '+ ') + n); b.type = 'button';
+      b.addEventListener('click', () => {
+        const cur = load('bl_pharmacy', []);
+        // 22.07: второто докосване мълчеше — мама не знаеше дали го е добавила
+        if (cur.some(x => x.n === n)) { fx().cheer('„' + n + '“ вече е в аптечката ✔'); return; }
+        cur.push({ n, exp: '' }); save('bl_pharmacy', cur);
+        b.textContent = '✓ ' + n; b.classList.add('on'); fx().buzz(8);
+      });
+      row.appendChild(b);
+    });
+    c.appendChild(row);
+    // сверено наживо: след секциониране „Аптечката вкъщи" е НАД тази карта
+    // (одит-флот П23, проход 2 №18)
+    c.appendChild(el('p', 'jr-privacy', 'Появяват се в „Аптечката вкъщи“ по-горе — там сложи и сроковете.'));
+    return c;
+  }
+
+  // ── 📊 Месецът ми в числа (Луна брои вместо теб) ──
+  function monthStatsCard() {
+    const c = card('Месецът ти в числа 📊 <span class="jr-sub">Луна брои — ти само живееш</span>');
+    const now = new Date();
+    const pref = now.getFullYear() + '-' + String(now.getMonth() + 1).padStart(2, '0');
+    const cks = Object.entries(load('bl_checkins', {})).filter(([d]) => d.startsWith(pref));
+    if (!cks.length) { c.appendChild(el('p', 'jr-privacy', 'Първата минутка за теб този месец ще запали числата тук. ✨')); return c; }
+    const avgE = Math.round(cks.reduce((s, [, r]) => s + (r.e || 0), 0) / cks.length);
+    const moodCnt = {};
+    const wordCnt = {};
+    cks.forEach(([, r]) => {
+      moodCnt[r.m] = (moodCnt[r.m] || 0) + 1;
+      const w = (r.w || '').trim().toLowerCase(); if (w) wordCnt[w] = (wordCnt[w] || 0) + 1;
+    });
+    const topMood = Object.entries(moodCnt).sort((a, b) => b[1] - a[1])[0];
+    const topWord = Object.entries(wordCnt).sort((a, b) => b[1] - a[1])[0];
+    // #24: локален месец от двете страни — toISOString дава UTC и събитие около
+    // полунощ в края на месеца падаше в съседния месец спрямо локалния pref.
+    const локаленМесец = ts => { const d = new Date(ts); return d.getFullYear() + '-' + String(d.getMonth() + 1).padStart(2, '0'); };
+    const river = window.BL_RIVER ? BL_RIVER.collect().filter(x => локаленМесец(x.ts) === pref).length : 0;
+    const grid = el('div', 'ms-grid');
+    [[MOODS[topMood[0]], 'най-честото лице'], [`<span data-cnt="${cks.length}">${cks.length}</span>`, 'минутки за теб'], [`<span data-cnt="${avgE}">${avgE}</span>%`, 'средна енергия']]
+      .concat(topWord ? [['„' + esc(topWord[0]) + '“', 'думата на месеца']] : [])
+      .concat(river ? [[`<span data-cnt="${river}">${river}</span>`, 'мига в Реката']] : [])
+      .forEach(([v, lbl]) => grid.appendChild(el('div', 'ms-stat', `<strong>${v}</strong><span>${lbl}</span>`)));
+    c.appendChild(grid);
+    setTimeout(() => { if (window.BL_FX) BL_FX.countUp(grid); }, 350); // числата отброяват след скелетона
+    return c;
+  }
+
+  // ── 🏅 Витрина на гордостта (последните разцъфнали неща) ──
+  function prideCard() {
+    const c = card('Витрина на гордостта 🏅 <span class="jr-sub">последните големи мигове, под стъкло</span>');
+    const items = [];
+    Object.entries(load('bl_ms_d', {})).forEach(([id, ts]) => {
+      const lbl = { motor: '🤸 ново движение', fine: '✋ фина магия', speech: '🗣️ говор-стъпка', social: '💛 социално чудо' }[id.split('_')[1]];
+      items.push({ ts, txt: lbl + ' (~' + id.split('_')[0] + ' м.)' });
+    });
+    Object.entries(load('bl_firsts', {})).forEach(([f, d]) => { if (d) items.push({ ts: new Date(d).getTime(), txt: '🌟 ' + f }); });
+    Object.entries(load('bl_teeth_d', {})).forEach(([, ts]) => items.push({ ts, txt: '🦷 ново зъбче' }));
+    items.sort((a, b) => b.ts - a.ts);
+    if (!items.length) { c.appendChild(el('p', 'jr-privacy', 'Първото „за първи път“ ще застане тук на пиедестал. 🏅')); return c; }
+    const list = el('div', 'pd-list');
+    items.slice(0, 4).forEach((it, i) => {
+      list.appendChild(el('div', 'pd-row' + (i === 0 ? ' pd-top' : ''),
+        `<span class="pd-medal">${i === 0 ? '🥇' : i === 1 ? '🥈' : i === 2 ? '🥉' : '🎖️'}</span><span class="pd-txt">${esc(it.txt)}</span><span class="pd-d">${new Date(it.ts).toLocaleDateString('bg-BG')}</span>`));
+    });
+    c.appendChild(list);
+    return c;
+  }
+
+  // ── 🔦 Нощна лампа (мек червен екран за нощните хранения) ──
+  function openLamp() {
+    let lamp = document.getElementById('blLamp');
+    if (!lamp) {
+      lamp = el('div', 'bl-lamp'); lamp.id = 'blLamp';
+      lamp.innerHTML = '<span class="bl-lamp-hint">докосни, за да изгасиш</span>';
+      document.body.appendChild(lamp);
+      lamp.addEventListener('click', () => {
+        lamp.hidden = true; document.body.style.overflow = '';
+        // 22.07 (армия): без това екранът оставаше буден и СЛЕД изгасяне на
+        // лампата — цяла нощ, на батерия. Всяко ново палене искаше още един lock.
+        if (lamp._lock) { try { lamp._lock.release(); } catch (e) {} lamp._lock = null; }
+      });
+    }
+    lamp.hidden = false;
+    // екранът не заспива — но пазим sentinel-а, за да можем да го пуснем
+    try {
+      if (navigator.wakeLock && !lamp._lock) {
+        navigator.wakeLock.request('screen').then(s => { lamp._lock = s; }).catch(() => {});
+      }
+    } catch (e) {}
+    if (window.BL_FX) BL_FX.buzz(8);
+  }
+  window.BL_LAMP = openLamp; // и за прекия път от иконата на телефона
+
+  function nightLampCard() {
+    const c = card('Нощна лампа 🔦 <span class="jr-sub">мека светлина от телефона — без да будиш никого</span>');
+    const btn = el('button', 'jr-btn', '🔦 Включи нощната лампа'); btn.type = 'button';
+    btn.addEventListener('click', openLamp);
+    c.appendChild(btn);
+    // 🔴 05.08 (одит г08, №313): пишеше „безвредна за съня“ — абсолютна
+    //    гаранция без нито един източник, а мама я чете като разрешение да
+    //    остави лампата да свети дълго. Приложението формулира същото
+    //    сравнително на друго място (wisdom.js). Тук — също сравнително.
+    c.appendChild(el('p', 'jr-privacy', 'Топла тъмночервена светлина — вижда се достатъчно за пелена и буди по-малко от бялата или синята светлина на екрана. Дръж я кратко. Екранът остава буден, докато е включена.'));
+    return c;
+  }
+
+  // ── регистрация ──
+  // 🔴🔴 04.08 (обиколка): картите, които се пазят от паузата след загуба,
+  //    връщат null — а тук се подаваха право на appendChild. Проверено наживо
+  //    с BL_EXPECT.pause(): цялата стая „Бременност“ ГЪРМЕШЕ с
+  //    „appendChild: parameter 1 is not of type Node“ и не се рисуваше.
+  //    Тоест жена, която току-що е загубила, отваря стаята и вижда празно.
+  //    Дефектът е мой — от пласта с пазачите. Затова добавям пазач и тук:
+  //    null просто не се добавя.
+  const сложи = (r, карта) => { if (карта) r.appendChild(карта); };
+  const PACKS4 = {
+    'Бременност': r => сложи(r, waterCard()),
+    'Моето бебе': r => сложи(r, mlCard()),
+    'Захранване': r => сложи(r, lunchCard()),
+    'Здраве и SOS': r => сложи(r, pharmacyStartCard()),
+    'Дневник на мама': r => сложи(r, monthStatsCard()),
+    'Развитие и игри': r => сложи(r, prideCard()),
+    'Инструменти': r => сложи(r, nightLampCard())
+  };
+  Object.keys(PACKS4).forEach(room => {
+    const base = window.ROOM_FEATURES && window.ROOM_FEATURES[room];
+    if (base) window.ROOM_FEATURES[room] = root => { base(root); PACKS4[room](root); };
+  });
+})();

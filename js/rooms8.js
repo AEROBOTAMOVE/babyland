@@ -1,0 +1,376 @@
+// ═══════════════════════════════════════════════════════════
+// ROOMS 8 — ЪПГРЕЙДИТЕ ПО СТАИ, ТРЕТИ ПАКЕТ (план 19, част 4)
+//
+// ⏳ 4.1.2  Истински ли са контракциите   ❓ 4.1.11 Въпроси за прегледа
+// 🤰 4.1.13 Този месец боли това          😴 4.2.3  Регресите
+// 🤱 4.2.11 Коя гърда е наред             👵 4.2.6  Кой го гледа днес
+// 💊 4.4.1  Аптечката по възраст          🥜 4.3.1  Алергените: график
+//
+// ЖЕЛЯЗНО: аптечката изброява КАКВО да има, не КОЛКО се дава. Дозата е на
+// педиатъра. Контракциите не поставят диагноза — броят и пращат при човек.
+// ═══════════════════════════════════════════════════════════
+(function () {
+  'use strict';
+
+  const load = (k, d) => { try { const v = JSON.parse(localStorage.getItem(k)); if (v == null) return d; if (Array.isArray(d) !== Array.isArray(v)) return d; if (d && typeof d === 'object' && (!v || typeof v !== 'object')) return d; return v; } catch (e) { return d; } };
+  const save = (k, v) => { try { localStorage.setItem(k, JSON.stringify(v)); } catch (e) {} };
+  const localDate = d => d.getFullYear() + '-' + String(d.getMonth() + 1).padStart(2, '0') + '-' + String(d.getDate()).padStart(2, '0');
+  const today = () => localDate(new Date());
+  const el = (t, c, h) => { const n = document.createElement(t); if (c) n.className = c; if (h !== undefined) n.innerHTML = h; return n; };
+  const esc = s => String(s == null ? '' : s).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;').replace(/'/g, '&#39;');
+  const card = t => { const c = el('section', 'jr-card'); c.appendChild(el('h4', 'jr-title', t)); return c; };
+  const sub = s => '<span class="jr-sub">' + s + '</span>';
+  const fx = () => window.BL_FX || { confetti() {}, cheer() {}, buzz() {} };
+  const getBaby = () => load('bl_baby', { name: '', sex: '', birth: '' });
+  const age = () => { const b = getBaby(); return b.birth && window.BL_AGE ? BL_AGE(b.birth) : null; };
+  const pregWeek = () => {
+    const lmp = window.BL_EXPECT ? BL_EXPECT.lmp() : load('bl_lmp', '');
+    if (!lmp) return null;
+    const w = Math.floor((Date.now() - new Date(lmp)) / 604800000);
+    return (w >= 1 && w <= 45) ? w : null;
+  };
+
+  // ═══════════ ⏳ 4.1.2 ИСТИНСКИ ЛИ СА КОНТРАКЦИИТЕ ═══════════
+  // Не диагноза — подредба на това, което тя вече усеща.
+
+  const ВЪПРОСИ = [
+    { q: 'Идват ли на равни интервали?', да: 'истински', не: 'тренировъчни' },
+    { q: 'Стават ли по-чести с времето?', да: 'истински', не: 'тренировъчни' },
+    { q: 'Стават ли по-СИЛНИ, а не само по-чести?', да: 'истински', не: 'тренировъчни' },
+    { q: 'Остават ли, когато смениш позата или тръгнеш да ходиш?', да: 'истински', не: 'тренировъчни' },
+    { q: 'Усещаш ли ги да тръгват от кръста и да обхващат корема отпред?', да: 'истински', не: 'тренировъчни' },
+    { q: 'Топла вана / почивка — минават ли?', да: 'тренировъчни', не: 'истински' }
+  ];
+
+  function contractionsCard() {
+    if (!pregWeek()) return null;
+    const c = card('Истински ли са? ⏳ ' + sub('шест въпроса, честен отговор'));
+    const отг = {};
+    ВЪПРОСИ.forEach((в, i) => {
+      const row = el('div', 'ct-row');
+      row.innerHTML = `<span class="ct-q">${esc(в.q)}</span>`;
+      const g = el('div', 'ct-btns');
+      ['да', 'не'].forEach(x => {
+        const b = el('button', 'ct-b', x.toUpperCase()); b.type = 'button';
+        b.addEventListener('click', () => {
+          g.querySelectorAll('.ct-b').forEach(y => y.classList.remove('on'));
+          b.classList.add('on'); отг[i] = x; преброй();
+        });
+        g.appendChild(b);
+      });
+      row.appendChild(g);
+      c.appendChild(row);
+    });
+    const out = el('div', 'ct-out', '<p class="jr-privacy">Отговори на въпросите — ще ти кажа какво излиза.</p>');
+    c.appendChild(out);
+
+    function преброй() {
+      const дадени = Object.keys(отг).length;
+      if (малкоОтговори(дадени)) return;
+      let и = 0;
+      Object.keys(отг).forEach(k => { if (ВЪПРОСИ[k][отг[k]] === 'истински') и++; });
+      const дял = и / дадени;
+      if (дял >= 0.7) {
+        out.innerHTML = `<p class="ct-real">Звучи като <strong>истински контракции</strong>.</p>
+          <p class="jr-privacy">Правилото <strong>5-1-1</strong>: на всеки 5 минути, всяка по около минута, така цял час → време е да тръгвате. Ако водите изтекат или има кървене — тръгвай веднага, без да броиш.</p>`;
+      } else if (дял <= 0.3) {
+        out.innerHTML = `<p class="ct-fake">Звучи като <strong>тренировъчни</strong> (Брекстън-Хикс).</p>
+          <p class="jr-privacy">Пий вода, легни на лявата страна, почини. Те са репетиция — тялото ти се готви. Ако се променят, питай ме пак.</p>`;
+      } else {
+        out.innerHTML = `<p class="ct-mid">Смесено е — <strong>рано е да се каже</strong>.</p>
+          <p class="jr-privacy">Засечи ги за един час и питай пак. При съмнение звънни на акушерката или в родилното — те за това са там и не се дразнят.</p>`;
+      }
+    }
+    function малкоОтговори(n) {
+      if (n >= 4) return false;
+      out.innerHTML = `<p class="jr-privacy">Отговорени: ${n} от 6. Дай поне четири, за да е честно.</p>`;
+      return true;
+    }
+    return c;
+  }
+
+  // ═══════════ ❓ 4.1.11 ВЪПРОСИ ЗА ПРЕГЛЕДА ═══════════
+
+  const ЗА_ПРЕГЛЕДА = [
+    [0, 12, ['Кои изследвания ми предстоят и защо?', 'Каква фолиева киселина и докога?', 'Кои от лекарствата ми мога да продължа?', 'Какво НЕ бива да ям при мен конкретно?', 'При какви симптоми да звънна веднага?']],
+    [13, 27, ['Как върви растежът спрямо седмицата?', 'Кръвното и белтъкът наред ли са?', 'Трябва ли ми желязо според кръвната картина?', 'Мога ли да пътувам и докога?', 'Кога е морфологичното ехо?']],
+    [28, 35, ['Как е позицията на бебето?', 'Кога започваме прегледи всяка седмица?', 'Какви са знаците за преждевременно раждане?', 'Как да броя движенията правилно?', 'В коя болница и с кого раждам?']],
+    [36, 45, ['Отворена ли е шийката и има ли значение?', 'Кога тръгвам за болницата?', 'Какво носим и какво дават те?', 'Какви са вариантите за обезболяване?', 'Ако мине терминът — какво следва?']]
+  ];
+
+  function askDocCard() {
+    const w = pregWeek();
+    if (!w) return null;
+    const набор = ЗА_ПРЕГЛЕДА.find(([a, b]) => w >= a && w <= b) || ЗА_ПРЕГЛЕДА[0];
+    const c = card('Въпроси за прегледа ❓ ' + sub('за твоята ' + w + '-та седмица'));
+    c.appendChild(el('p', 'jr-privacy', 'В кабинета половината въпроси се забравят. Отметни тези, които си задала.'));
+    const мои = load('bl_qdoc', {});
+    набор[2].forEach((q, i) => {
+      const ключ = w + '|' + i;
+      const r = el('button', 'qd-row' + (мои[ключ] ? ' done' : ''));
+      r.type = 'button';
+      r.innerHTML = `<span class="jr-check">${мои[ключ] ? '✔' : ''}</span><span>${esc(q)}</span>`;
+      r.addEventListener('click', () => {
+        мои[ключ] = !мои[ключ]; save('bl_qdoc', мои);
+        r.classList.toggle('done'); r.querySelector('.jr-check').textContent = мои[ключ] ? '✔' : '';
+        fx().buzz(6);
+      });
+      c.appendChild(r);
+    });
+    const своя = el('textarea', 'jr-paper'); своя.rows = 2;
+    своя.placeholder = 'Мой въпрос…';
+    своя.value = load('bl_qdoc_my', '');
+    своя.addEventListener('input', () => save('bl_qdoc_my', своя.value));
+    c.appendChild(своя);
+    return c;
+  }
+
+  // ═══════════ 🤰 4.1.13 ТОЗИ МЕСЕЦ БОЛИ ТОВА ═══════════
+
+  const БОЛИ = [
+    [1, 13, '🤢', ['Гадене по всяко време на деня (не само сутрин)', 'Гърдите болят при най-лекото докосване', 'Умора, каквато не си познавала', 'Миризмите станаха врагове', 'Ходиш до тоалетна на всеки час']],
+    [14, 27, '💫', ['Кръстът започва да се обажда', 'Замайване при рязко ставане', 'Кървящи венци при миене', 'Запушен нос без да си настинала', 'Първите киселини']],
+    [28, 45, '😮‍💨', ['Лек задух при усилие (по стълбите) — но задух В ПОКОЙ не е от този списък', 'Киселини на макс', 'Крампи в краката нощем', 'Отоци по краката вечер', 'Тазът се разхлабва и боли при обръщане', 'Не можеш да си намериш място за спане']]
+  ];
+
+  function achesCard() {
+    const w = pregWeek();
+    if (!w) return null;
+    const набор = БОЛИ.find(([a, b]) => w >= a && w <= b) || БОЛИ[0];
+    const c = card('Този месец боли това ' + набор[2] + ' ' + sub('честно, без разкрасяване'));
+    c.appendChild(el('p', 'jr-privacy', 'Всичко тук е <strong>обичайно</strong> за твоя период. Не е приятно, но е нормално — и минава.'));
+    const ul = el('ul', 'ah-list');
+    ul.innerHTML = набор[3].map(x => `<li>${esc(x)}</li>`).join('');
+    c.appendChild(ul);
+    c.appendChild(el('p', 'jr-privacy',
+      '🚨 <strong>Това НЕ е от списъка:</strong> силно главоболие със зрителни смущения · внезапен оток на лицето и ръцете · болка под ребрата вдясно · кървене · спрели или намалели движения · силен сърбеж по дланите и стъпалата · внезапен или засилващ се задух, задух в покой · болка, оток или зачервяване в прасеца. При тях — звъни на лекаря си, не чакай прегледа.'));
+    return c;
+  }
+
+  // ═══════════ 😴 4.2.3 РЕГРЕСИТЕ ═══════════
+
+  const РЕГРЕСИ = [
+    [4, 'Големият. Сънят се преустройва завинаги — оттук нататък спи като възрастен, на цикли. Затова се буди между тях.'],
+    [8, 'Пълзи, седи, открива, че светът продължава и без нея. Мозъкът работи нощем.'],
+    [12, 'Прохождане и първи думи. Тялото учи, сънят страда.'],
+    [18, 'Волята се появи. „Не“ е новата любима дума. Тежък е за всички.'],
+    [24, 'Въображение, страхове, кошмари. Нощта става интересна и малко страшна.']
+  ];
+
+  function regressCard() {
+    const a = age();
+    if (!a) return null;
+    const м = a.devMonths;
+    const c = card('Регресите 😴 ' + sub('когато „всичко се разпадна за нищо“'));
+    c.appendChild(el('p', 'jr-privacy',
+      'Регресът не е повреда. Той е <strong>скок напред</strong> — мозъкът учи нещо голямо и няма ресурс за спане. Трае 2-6 седмици и после нещата се улягат.'));
+    let вътре = null;
+    РЕГРЕСИ.forEach(([м2, оп]) => {
+      const сега = Math.abs(м - м2) < 1.2;
+      if (сега) вътре = м2;
+      // 😴 rgz-: класът rg-row/rg-now е ЗАЕТ от „Кога обикновено 📊“ (rooms17.js
+      //    + rooms.css:1342/1352) — там rg-row е flex-ред с три деца, а rg-now е
+      //    абсолютно позициониран 2px маркер. Двата компонента се разваляха
+      //    взаимно; тази карта носи собствен префикс.
+      const r = el('div', 'rgz-row' + (сега ? ' rgz-now' : '') + (м > м2 + 1.2 ? ' rgz-past' : ''));
+      r.innerHTML = `<span class="rg-m">${м2} мес.</span><span class="rg-t">${esc(оп)}</span>`;
+      c.appendChild(r);
+    });
+    c.appendChild(el('p', вътре ? 'rg-hit' : 'jr-privacy', вътре
+      ? `📍 <strong>Сега си точно в ${вътре}-месечния.</strong> Не си направила нищо грешно. Не сменяй всичко — просто изкарай тези седмици.`
+      : 'В момента не си в регрес. Ако нощта се разпадне без причина — върни се и виж дали не наближава някой.'));
+    return c;
+  }
+
+  // ═══════════ 🤱 4.2.11 КОЯ ГЪРДА Е НАРЕД ═══════════
+
+  function breastCard() {
+    const a = age();
+    if (a && a.devMonths > 24) return null;
+    const c = card('Коя гърда е наред 🤱 ' + sub('дребно. спасително.'));
+    const st = load('bl_breast', { last: '', ts: 0 });
+    // 🔗 страната се отбелязва още на две места: „Кога яде за последно?“ (bl_feed,
+    //    s: left/right) и кърмене-таймерът (bl_nursing, s: Л/Д). Картата обещава да
+    //    помни вместо мозъка в 4 сутринта — значи чете и техните следи, не само своята.
+    const отвън = () => {
+      let най = null;
+      const f = load('bl_feed', null);
+      if (f && f.t && (f.s === 'left' || f.s === 'right')) най = { last: f.s === 'left' ? 'L' : 'R', ts: f.t };
+      const n = load('bl_nursing', []);
+      n.forEach(x => {
+        if (!x || !x.ts || (x.s !== 'Л' && x.s !== 'Д')) return;
+        if (!най || x.ts > най.ts) най = { last: x.s === 'Л' ? 'L' : 'R', ts: x.ts };
+      });
+      return най;
+    };
+    const out = el('p', 'br-now', '');
+    const реши = () => {
+      const в = отвън();
+      const т = (в && в.ts > (st.ts || 0)) ? в : st;
+      if (!т.last) { out.innerHTML = 'Още не сме почнали. Отбележи първото кърмене.'; return; }
+      const мин = Math.max(0, Math.round((Date.now() - т.ts) / 60000));
+      const кога = мин < 60 ? мин + ' мин.' : Math.round(мин / 60) + ' ч.';
+      out.innerHTML = `Последно: <strong>${т.last === 'L' ? 'лява' : 'дясна'}</strong> преди ${кога}.<br>
+        Сега е ред на <strong class="br-next">${т.last === 'L' ? 'ДЯСНАТА' : 'ЛЯВАТА'}</strong>.`;
+    };
+    const row = el('div', 'jr-quick');
+    [['L', '⬅️ Лява'], ['R', 'Дясна ➡️']].forEach(([к, име]) => {
+      const b = el('button', 'jr-btn br-b', име); b.type = 'button';
+      b.addEventListener('click', () => {
+        st.last = к; st.ts = Date.now(); save('bl_breast', st); реши(); fx().buzz(8);
+      });
+      row.appendChild(b);
+    });
+    c.appendChild(out); c.appendChild(row); реши();
+    c.appendChild(el('p', 'jr-privacy', 'Мозъкът в 4 сутринта не помни. Това копче помни вместо него.'));
+    return c;
+  }
+
+  // ═══════════ 👵 4.2.6 КОЙ ГО ГЛЕДА ДНЕС ═══════════
+
+  function sitterCard() {
+    const b = getBaby();
+    const a = age();
+    if (!b.birth) return null;
+    const c = card('Кой го гледа днес 👵 ' + sub('лист за баба или бавачка — за печат'));
+    c.appendChild(el('p', 'jr-privacy', 'Попълни веднъж. Разпечатай или покажи екрана. Хората не помнят, а ти няма да си там.'));
+    const п = load('bl_sitter', { режим: '', яде: '', спи: '', успокоява: '', забрани: '', тел: '' });
+    const ПОЛЕТА = [
+      ['режим', 'Дневният ритъм (кога спи, кога яде)'],
+      ['яде', 'Какво и колко яде'],
+      ['спи', 'Как заспива (ритуал)'],
+      ['успокоява', 'Какво го успокоява, когато плаче'],
+      ['забрани', 'Какво НЕ бива (храни, играчки, места)'],
+      ['тел', 'Телефони при нужда']
+    ];
+    ПОЛЕТА.forEach(([к, л]) => {
+      c.appendChild(el('label', 'bb-lbl', л));
+      const t = el('textarea', 'jr-paper'); t.rows = 2; t.value = п[к] || '';
+      t.addEventListener('input', () => { п[к] = t.value; save('bl_sitter', п); });
+      c.appendChild(t);
+    });
+    const pr = el('button', 'jr-btn', '🖨️ Разпечатай листа'); pr.type = 'button';
+    pr.addEventListener('click', () => {
+      const w = window.open('', '_blank');
+      if (!w) return;
+      const ред = (л, v) => `<h3>${esc(л)}</h3><p>${esc(v || '—').replace(/\n/g, '<br>')}</p>`;
+      w.document.write(`<meta charset="utf-8"><title>Лист за ${esc(b.name) || 'бебето'}</title>
+        <style>body{font-family:sans-serif;padding:28px;line-height:1.6}h1{margin:0 0 4px}h3{margin:16px 0 2px;font-size:.95rem;color:#666}p{margin:0;font-size:1.05rem}</style>
+        <h1>${esc(b.name) || 'Бебето'}</h1>
+        <p><strong>${a ? esc(a.text) : ''}</strong>${a && a.corr ? ' · коригирана: ' + esc(a.corr.text) : ''}</p>
+        ${ПОЛЕТА.map(([к, л]) => ред(л, п[к])).join('')}
+        <h3>При спешност</h3><p><strong>112</strong></p>`);
+      w.document.close(); w.print();
+    });
+    c.appendChild(pr);
+    return c;
+  }
+
+  // ═══════════ 💊 4.4.1 АПТЕЧКАТА ПО ВЪЗРАСТ ═══════════
+
+  const АПТЕЧКА = [
+    ['Винаги', ['Термометър (за под мишница или челен)', 'Физиологичен разтвор на ампули', 'Аспиратор за нос', 'Стерилни марли и лепенки', 'Ножичка с тъпи върхове', 'Дигитален часовник или телефон (за броене)']],
+    ['От 0 мес.', ['Крем за под пелената', 'Мокри кърпички без аромат', 'Термофор/гел за колики (по преценка)', 'Пила за нокти (не ножичка в началото)']],
+    ['От 4 мес.', ['Гел за венци — само след питане на педиатъра', 'Гризалка за хладилник']],
+    ['От 6 мес.', ['Лепенки с картинки (болят по-малко)', 'Слънцезащитен крем за бебета']],
+    ['От 12 мес.', ['Хладен компрес за цицини', 'Антисептик за рани — воден, не спиртен']]
+  ];
+
+  function medkitCard() {
+    const c = card('Аптечката 💊 ' + sub('какво да има вкъщи'));
+    c.appendChild(el('p', 'jr-privacy',
+      '⚠️ Тук пише <strong>какво</strong>, не <strong>колко</strong>. Никакво лекарство не се дава по интернет — дозата е по тегло и я казва педиатърът.'));
+    const мои = load('bl_medkit', {});
+    АПТЕЧКА.forEach(([кога, неща]) => {
+      c.appendChild(el('p', 'mk-h', кога));
+      неща.forEach((н, i) => {
+        const к = кога + '|' + i;
+        const r = el('button', 'qd-row' + (мои[к] ? ' done' : '')); r.type = 'button';
+        r.innerHTML = `<span class="jr-check">${мои[к] ? '✔' : ''}</span><span>${esc(н)}</span>`;
+        r.addEventListener('click', () => {
+          мои[к] = !мои[к]; save('bl_medkit', мои);
+          r.classList.toggle('done'); r.querySelector('.jr-check').textContent = мои[к] ? '✔' : '';
+        });
+        c.appendChild(r);
+      });
+    });
+    return c;
+  }
+
+  // ═══════════ 🥜 4.3.1 АЛЕРГЕНИТЕ: ГРАФИК ═══════════
+
+  const АЛЕРГЕНИ = [
+    ['🥚', 'Яйце', 'Добре сварено, ЦЯЛО — и белтък, и жълтък. Никога рохко.'],
+    ['🥜', 'Фъстък', 'НИКОГА цял фъстък. Само гладко масло, размазано тънко.'],
+    ['🌾', 'Глутен', 'Малко количество, редовно — така се учи да го приема.'],
+    ['🐟', 'Риба', 'Без кости, добре сварена.'],
+    ['🥛', 'Млечно', 'Кисело мляко и сирене може; краве мляко за ПИЕНЕ — след годинката.'],
+    ['🌰', 'Ядки', 'Само смлени или като масло. Целите са задавяне.'],
+    ['🦐', 'Морски дарове', 'Като всеки алерген — по правилото, добре сварени и обелени.'],
+    ['🫘', 'Соя', 'Като всичко друго — малко и по правилото.']
+  ];
+
+  function allergensCard() {
+    const c = card('Алергените 🥜 ' + sub('правилото на трите дни'));
+    c.appendChild(el('p', 'jr-privacy',
+      'Днес се знае обратното на това, което са учили бабите: <strong>отлагането не пази</strong>. Ранното въвеждане (около 6 мес., заедно с другите храни) намалява риска.'));
+    const пр = el('div', 'al-rule');
+    пр.innerHTML = '<strong>Правилото:</strong> едно ново нещо · сутрин или на обяд (не вечер) · малко количество · после 3 дни без друго ново. Така, ако има реакция, знаеш от какво е.';
+    c.appendChild(пр);
+    const мои = load('bl_allerg', {});
+    // ⏱ правилото на трите дни само се обещаваше — датите се пишеха, но никой не ги
+    //    броеше. Тук се брои: колко дни има от последното ново. Само отброяване.
+    const брояч = el('p', 'al-rule', '');
+    const обнови = () => {
+      const дати = Object.keys(мои).map(k => мои[k]).filter(Boolean).sort();
+      if (!дати.length) { брояч.innerHTML = 'Още нямаш отбелязано нищо тук. Щом дадеш първото ново — отметни го и ще ти броя дните.'; return; }
+      const посл = дати[дати.length - 1];
+      const д = Math.floor((new Date(today()) - new Date(посл)) / 86400000);
+      if (!isFinite(д)) { брояч.innerHTML = 'Последното ново е отбелязано. Броим от него — 3 дни без друго ново.'; return; }
+      const думи = д === 1 ? 'един ден' : д + ' дни';
+      брояч.innerHTML = д <= 0
+        ? 'Последното ново беше <strong>днес</strong> 🕐 Следващото — след 3 дни.'
+        : (д >= 3
+          ? `Последното ново беше преди ${думи}. <strong>Може ново ✅</strong>`
+          : `Последното ново беше преди ${думи} 🕐 Още ${3 - д === 1 ? 'един ден' : (3 - д) + ' дни'} без друго ново.`);
+    };
+    c.appendChild(брояч); обнови();
+    АЛЕРГЕНИ.forEach(([e, име, бел]) => {
+      const r = el('div', 'al-row' + (мои[име] ? ' done' : ''));
+      r.innerHTML = `<span class="al-e">${e}</span>
+        <span class="al-n">${esc(име)}<br><small>${esc(бел)}</small></span>
+        <span class="al-d">${мои[име] ? '✔ ' + esc(мои[име]) : ''}</span>`;
+      r.addEventListener('click', () => {
+        if (мои[име]) delete мои[име]; else мои[име] = today();
+        save('bl_allerg', мои);
+        r.classList.toggle('done');
+        r.querySelector('.al-d').textContent = мои[име] ? '✔ ' + мои[име] : '';
+        обнови();
+        fx().buzz(6);
+      });
+      c.appendChild(r);
+    });
+    c.appendChild(el('p', 'jr-privacy',
+      '🚨 Отича лице/устни · обрив със затруднено дишане · повръщане с отпуснатост → <strong>112</strong>. Лек обрив само около устата често е дразнене от киселото, не алергия — но кажи на педиатъра.'));
+    return c;
+  }
+
+  // ═══════════ свързване ═══════════
+
+  const ПАКЕТИ = {
+    'Бременност': root => {
+      [contractionsCard, askDocCard, achesCard].forEach(f => { const c = f(); if (c) root.appendChild(c); });
+    },
+    'Моето бебе': root => {
+      [regressCard, breastCard, sitterCard].forEach(f => { const c = f(); if (c) root.appendChild(c); });
+    },
+    'Здраве и SOS': root => { root.appendChild(medkitCard()); },
+    'Захранване': root => { root.appendChild(allergensCard()); }
+  };
+
+  Object.keys(ПАКЕТИ).forEach(стая => {
+    const база = window.ROOM_FEATURES && window.ROOM_FEATURES[стая];
+    if (!база) return;
+    window.ROOM_FEATURES[стая] = root => { база(root); ПАКЕТИ[стая](root); };
+  });
+})();

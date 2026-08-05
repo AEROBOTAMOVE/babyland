@@ -1,0 +1,294 @@
+/* ═══════════════════════════════════════════════════════
+   BABY LAND — тъмен режим (за нощните хранения 🌙)
+   ═══════════════════════════════════════════════════════ */
+
+.theme-toggle {
+  position: fixed;
+  top: 14px; right: 14px;
+  z-index: 200;
+  width: 44px; height: 44px;
+  border-radius: 50%;
+  border: none;
+  background: rgba(255, 255, 255, 0.85);
+  backdrop-filter: blur(8px);
+  font-size: 20px;
+  cursor: pointer;
+  box-shadow: 0 6px 16px rgba(150, 130, 180, 0.3);
+  transition: transform 0.25s ease;
+}
+.theme-toggle:hover { transform: scale(1.12) rotate(-12deg); }
+
+/* 🕳️ 22.07 (жива обиколка): --card и --line НИКОГА не са били дефинирани.
+   25 места в CSS пишат `var(--card, #fff)` и всичките падаха на резервното
+   бяло — включително в тъмна тема. Затова картата „Как да ме добавиш на
+   телефона“ беше бяла кутия със светъл текст: контраст 1.20, нечетимо.
+   Дефинираме ги веднъж и за двете теми — всяко бъдещо var(--card) е наред. */
+:root { --card: #ffffff; --line: #e8e0ea; }
+:root[data-theme="dark"] { --ink: #ece8f5; --ink-soft: #a49dbb; --card: #241f38; --line: #3a3352; }
+
+[data-theme="dark"] body {
+  background: linear-gradient(180deg, #1b1830 0%, #201c33 35%, #1a1826 65%, #171c26 100%);
+}
+[data-theme="dark"] .theme-toggle { background: rgba(50, 45, 74, 0.9); }
+
+/* акварелните петна по-тихи в тъмно */
+[data-theme="dark"] .blob { opacity: 0.32; }
+[data-theme="dark"] .cloud { opacity: 0.12; }
+
+/* основни повърхности */
+[data-theme="dark"] .room-card,
+[data-theme="dark"] .jr-card,
+[data-theme="dark"] .ro-panel,
+[data-theme="dark"] .art-panel,
+[data-theme="dark"] .art-card,
+[data-theme="dark"] .step,
+[data-theme="dark"] .td-inner,
+[data-theme="dark"] .platform-toggle,
+[data-theme="dark"] .modal {
+  background: #2a2640 !important;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.35);
+}
+/* 🌅 05.08: „Тази седмица" и голямата покана носят и .jr-card — а редът
+   отгоре е с !important и гасеше топлия им фон. Нощем сърцето на стаята
+   изглеждаше като всяка друга сива карта. По-висока специфичност + important,
+   и тонът ляга ВЪРХУ тъмната карта, а не вместо нея. */
+[data-theme="dark"] .jr-card.pg20-hero,
+[data-theme="dark"] .jr-card.pg20-invite {
+  background: linear-gradient(150deg, rgba(247,168,203,.1), rgba(141,120,216,.14)), #2a2640 !important;
+}
+[data-theme="dark"] .td-inner { border-color: rgba(242, 145, 189, 0.14); }
+/* одит-флот П23: графиката на растежа светеше с бял фон нощем. Кривите/точката/
+   оста са светли → тъмен фон ги пази видими. */
+[data-theme="dark"] .bb-chart { background: #221d36; }
+
+/* по-меки вътрешни плочки */
+[data-theme="dark"] .msg.bot .msg-bubble,
+[data-theme="dark"] .jr-mood,
+[data-theme="dark"] .jr-win,
+[data-theme="dark"] .jr-day,
+[data-theme="dark"] .vx-row,
+[data-theme="dark"] .fd-card,
+[data-theme="dark"] .dv-msrow,
+[data-theme="dark"] .dv-firstrow,
+[data-theme="dark"] .bb-dipbox,
+[data-theme="dark"] .sos-list li,
+[data-theme="dark"] .fd-pill,
+[data-theme="dark"] .ro-chip,
+[data-theme="dark"] .td-chip,
+[data-theme="dark"] .ro-tab,
+[data-theme="dark"] .pt-btn,
+[data-theme="dark"] .bb-histrow,
+[data-theme="dark"] .fd-del,
+[data-theme="dark"] .jr-chip {
+  background: #342f4e !important;
+  color: var(--ink);
+  border-color: #423b60;
+}
+[data-theme="dark"] .jr-win.done,
+[data-theme="dark"] .vx-row.done,
+[data-theme="dark"] .dv-msrow.done { background: #2b4038 !important; }
+/* 🔴 г09/244: „опитано“ стоеше В СЪЩИЯ блок като неопитаното — фонът падаше
+   заради !important, рамката заради специфичност. Нощем мрежата с храните беше
+   равна стена от еднакви правоъгълници и мама не виждаше с един поглед кои са
+   минали. Същият зелен език като .jr-win.done. */
+[data-theme="dark"] .fd-card.tried { background: #2b4038 !important; border-color: #4d7a66; }
+
+/* полета за въвеждане */
+[data-theme="dark"] .jr-word,
+[data-theme="dark"] .art-search,
+[data-theme="dark"] .ro-inputbar input,
+[data-theme="dark"] .jr-paper {
+  background: #221d36 !important;
+  color: var(--ink);
+  border-color: #40395c;
+}
+[data-theme="dark"] .jr-paper { background: repeating-linear-gradient(180deg, #221d36 0 26px, #2a2440 26px 27px) !important; }
+/* 💥 05.08: самият лист беше потъмнен, ЛЕНТИТЕ от скъсването — не. В 3 през
+   нощта „СКЪСАЙ ГО!" пускаше пет БЕЛИ правоъгълника през тъмния екран и
+   думите на мама изчезваха в тях. Същата хартия, същата нощ. */
+[data-theme="dark"] .jr-strip { background: #221d36; box-shadow: 0 4px 10px rgba(0, 0, 0, .45); }
+/* изречението след скъсването стои само 6 секунди — трябва да се прочете */
+[data-theme="dark"] .jr-after { color: #c3b1ea; }
+
+/* ленти/долни барове */
+[data-theme="dark"] .ro-inputbar,
+[data-theme="dark"] .ro-disc,
+[data-theme="dark"] .art-disc { background: #2a2640; }
+[data-theme="dark"] .bottom-nav { background: rgba(42, 38, 64, 0.92); }
+[data-theme="dark"] .journal-strip { background: linear-gradient(135deg, #241f38, #2c1f30); }
+
+/* топли акцентни ленти */
+[data-theme="dark"] .td-tip,
+[data-theme="dark"] .ro-note { background: #3a3320; color: #ecd9a6; }
+[data-theme="dark"] .dv-flag { background: #3a3320; color: #ecd9a6; }
+
+/* заглавни ленти на стаите/четеца — леко потъмнени */
+[data-theme="dark"] .ro-head,
+[data-theme="dark"] .art-head { filter: brightness(0.62) saturate(1.1); }
+
+/* сцените в картите — мъничко по-тихи */
+[data-theme="dark"] .scene-wrap { filter: brightness(0.86); }
+
+/* чекчета/кръгчета */
+[data-theme="dark"] .jr-check { background: #221d36; }
+[data-theme="dark"] .bb-dipbtn { background: #221d36; }
+
+/* тексове, които са тъмни върху светло */
+/* „·" на неотбелязания ден беше #6c6488 → 2.30:1: поканата „докосни ден"
+   не се виждаше нощем. Същото семейство, но различимо.
+   ⚖️ г09-скептик: първата поправка сложи #9a92b5 = 4.30:1 върху #342f4e и се
+   оправда с „18px значи едър текст". НЕ Е: прагът за едър текст е 24px (или
+   18.66px удебелен), а .jr-day (rooms.css:181) е 18px без font-weight. Тоест
+   4.30 пада под 4.5. #a29abd дава 4.75:1 — минимумът, без да вика. */
+[data-theme="dark"] .jr-day { color: #a29abd; }
+[data-theme="dark"] .fd-tap { color: #6c6488; }
+
+@media (prefers-color-scheme: dark) {
+  /* ако някой отвори за пръв път нощем и няма избор — оставаме светли по подразбиране;
+     потребителят решава с бутона. (тук нарочно без авто-превключване) */
+}
+
+/* ═══ 🌙 НОЩНИЯТ ВИД (12.11) — различен от тъмната тема ═══
+   Тъмната тема е избор. Нощта е състояние: 3 сутринта, една ръка, свикнало
+   с тъмното око. Затова: по-топли цветове (без синьо — то буди), по-едри
+   цели, по-нисък контраст. */
+.bl-night {
+  --night-warm: #f5ede4;
+}
+.bl-night body { filter: sepia(.12) brightness(.94); }
+.bl-night .jr-btn, .bl-night .jr-chip, .bl-night .ro-chip {
+  min-height: 44px;                    /* 12.11.1: по-едри цели за една ръка */
+  padding-top: 11px; padding-bottom: 11px;
+}
+.bl-night .fa-chip { min-height: 66px; }
+.bl-night .msg-bubble { font-size: 1.02rem; line-height: 1.65; }
+.bl-night .jr-sub, .bl-night .jr-privacy { opacity: .72; }   /* по-малко шум */
+/* 12.11.2: синьото буди — гасим го в акцентите */
+.bl-night .pgb-fill, .bl-night .bg-fill, .bl-night .hd-bar, .bl-night .kc-bar {
+  background: linear-gradient(90deg, #e8b4c8, #dcc0a8) !important;
+}
+
+/* 🖋 05.08: генераторът на имена остана единствената СВЕТЛА карта нощем —
+   твърд бледорозов градиент, а върху него светлият --ink. Тъмен вариант в
+   същите два тона. */
+[data-theme="dark"] .tl-namecard { background: linear-gradient(135deg, #3a2b3a, #2f2a48); }
+[data-theme="dark"] .tl-fav { background: #342f4e; color: #f7a8cb; }
+
+/* ── rooms11-13: тъмна тема ── */
+[data-theme="dark"] .cl-b { border-color: rgba(255,255,255,.28); }
+[data-theme="dark"] .cl-row, [data-theme="dark"] .fl-row,
+[data-theme="dark"] .tl-row, [data-theme="dark"] .mb-row { border-bottom-color: rgba(255,255,255,.14); }
+[data-theme="dark"] .nm-b { background: rgba(255,255,255,.07); }
+[data-theme="dark"] .mb-bar { background: rgba(255,255,255,.1); }
+[data-theme="dark"] .nm-verd.nm-mid { background: rgba(255,255,255,.08); }
+[data-theme="dark"] .fl-back { background: rgba(76,175,80,.16); }
+
+/* проход 3 (живи находки при рендер-тест): температурната присъда светеше в
+   тъмната тема (светли фонове ok/warn/red) + „Xч Yм" на съня-часовника беше
+   тъмно-сиво върху тъмна карта → нечетимо. */
+[data-theme="dark"] .tmp-ok { background: rgba(76,175,80,.16); color: #a8e0bd; }
+[data-theme="dark"] .tmp-warn { background: rgba(240,180,60,.16); color: #f2ce8a; }
+[data-theme="dark"] .tmp-red { background: rgba(229,74,60,.18); color: #ffb3ab; }
+[data-theme="dark"] .sc24-tot { fill: #cfc4e4; }
+[data-theme="dark"] .sc24-lbl { fill: #b9b0d0; }
+
+/* проход 4: неизядените дъги на седмицата светят в тъмна тема (SVG stroke атрибут
+   #e8e2f0 → CSS печели над presentation attribute) */
+[data-theme="dark"] .rb-arc:not(.rb-on) { stroke: #3a3452; }
+
+/* 🌙 22.07 (жива обиколка): балончето-шепот над къщичките на началната имаше
+   ТВЪРД бял фон (hero.css), а `color: var(--ink)` в тъмна тема става светъл.
+   Резултат: бяло върху бяло, контраст 1.20 — мама докосва къщичка и не вижда
+   нищо. Тъмна кутия за тъмна нощ. */
+[data-theme="dark"] .ld-tip {
+  background: #2a2640;
+  color: var(--ink);
+  box-shadow: 0 10px 26px rgba(0, 0, 0, 0.45);
+}
+[data-theme="dark"] .ld-tip em { color: #c4a5dc; }
+
+/* долната лента: в тъмна тема остава мекият светъл тон (в светла е #6b6483) */
+[data-theme="dark"] .bn-item:not(.bn-active) { color: var(--ink-soft); }
+
+/* ═══════════════════════════════════════════════════════
+   🌙 05.08 — БЯЛО ВЪРХУ БЯЛО (жива обиколка в тъмна тема)
+   Същият дефект като --card/--line по-горе, само че по-широк:
+   --soft НЕ Е ДЕФИНИРАНА НИКЪДЕ. 22 реда пишат
+   `background: var(--soft, #faf6fb)` и всичките падат на
+   твърдото светло резервно — включително в тъмна тема, където
+   текстът вече е почти бял. Контраст 1.13:1.
+   Измерено наживо: 166 нечетими текста в 9-те стаи, най-тежко
+   в Захранване (71), Развитие (25) и Инструменти (23).
+   Редовете с етапите, тракерите и чек-листите бяха ПРАЗНИ ПОЛЕТА.
+   ═══════════════════════════════════════════════════════ */
+:root[data-theme="dark"] {
+  --soft:      #262138;   /* повърхност вътре в карта */
+  --mint-soft: #1e352f;
+  --wm-soft:   #2c2340;
+  --lav-soft:  #322a4e;
+}
+
+/* трите, които не минават през променлива, а през твърдо бяло */
+[data-theme="dark"] .jr-note,
+[data-theme="dark"] .bb-sexbtn {
+  background: #262138;
+  border-color: #3a3352;
+  color: var(--ink);
+}
+[data-theme="dark"] .bb-sexbtn.on { color: #fff; }   /* избраният си остава розов */
+
+/* твърде бледи за тъмен фон — вдигнати точно колкото трябва */
+[data-theme="dark"] .fd-tap    { color: #a79fbd; }
+[data-theme="dark"] .ask-live  { color: #5fd3b4; }
+[data-theme="dark"] .pg20-calw { color: #b3a4d1; }
+[data-theme="dark"] .wm-sign   { opacity: .82; }
+[data-theme="dark"] .fd-from,
+[data-theme="dark"] .vx-when   { color: #f291bd; }
+
+/* последните 26 от живото измерване:
+   .pb-item е <button> с `font: inherit`, но БЕЗ color → браузърът слага
+   своя ButtonText (черно). В светло не личи, в тъмно 11 документа изчезват. */
+[data-theme="dark"] .pb-item { color: var(--ink); }
+[data-theme="dark"] .wm-sign { color: #d9a9c7; opacity: .85; }   /* --wm-plum е тъмна слива */
+[data-theme="dark"] .vx-near { background: #a83a70; }            /* бяло върху светло розово беше 2.2:1 */
+
+/* ⚖️ 05.08 — ОБРАТНАТА ПОСОКА.
+   Потъмняването за светла тема (контраст срещу бяло) обръща знака в тъмна:
+   тъмно розово/лилаво върху тъмен фон пада на 2.5–3.1. Измерено, не предположено. */
+[data-theme="dark"] .rp-from,
+[data-theme="dark"] .fd-from,
+[data-theme="dark"] .vx-when,
+/* .jr-reply и .jr-mnote минаха на --pink-text (#a82a5c) заради светлата тема.
+   Върху тъмната карта това е почти черно розово — тук взимат тона на братята си.
+   Самата променлива НЕ се пипа: .bn-item.bn-active и .sec-chip.on стоят върху
+   --pink-soft (светло) и в тъмна тема — светъл текст там би ги изтрил. */
+[data-theme="dark"] .jr-reply,
+[data-theme="dark"] .jr-mnote,
+[data-theme="dark"] .dv-mstitle { color: #f291bd; }
+[data-theme="dark"] .db-big     { color: #c3b1ea; }
+[data-theme="dark"] .fd-badge   { color: #6fd3a8; }
+[data-theme="dark"] .pg20-calw  { color: #b3a4d1; }
+[data-theme="dark"] .br-circle span,
+[data-theme="dark"] .br-word    { color: #ece8f5; }
+[data-theme="dark"] .fs-tab,
+[data-theme="dark"] .fs-name    { color: var(--ink); }
+/* моят собствен .fs-row слагаше 42% БЯЛО върху тъмната карта → сив фон,
+   светъл текст, 3.15:1. Полупрозрачно бяло не е неутрално в тъмна тема. */
+[data-theme="dark"] .fs-row  { background: rgba(255,255,255,0.07); }
+[data-theme="dark"] .fs-tabs { background: none; }
+[data-theme="dark"] .fs-tab  { background: rgba(255,255,255,0.07); }
+[data-theme="dark"] .fs-tab.is-on { background: rgba(255,255,255,0.14); }
+/* неактивният таб беше на opacity .62 → 2.86:1. Разликата „избран/неизбран“
+   я носи фонът и мащабът, не избледняването на текста. */
+[data-theme="dark"] .fs-tab { opacity: .88; }
+/* ▾ стрелката е ЕДИНСТВЕНИЯТ знак, че редът се отваря. На тъмно .5 я скрива. */
+[data-theme="dark"] .fs-arrow { opacity: .82; }
+[data-theme="dark"] .fs-body  { opacity: 1; }
+[data-theme="dark"] .art-read { color: #b9a7e0; }
+
+/* 📄 05.08 — ЗАГЛАВНАТА ЛЕНТА НА СТАТИЯТА нямаше тъмен вариант:
+   linear-gradient(#eae3f7, #f0eaf9) — светла лавандула — а заглавието
+   ползва var(--ink), който в тъмна тема е почти бял. Измерено: k=1.00.
+   Отваряш статия нощем и заглавието ѝ просто го няма. */
+[data-theme="dark"] .art-head { background: linear-gradient(135deg, #2b2545, #322a4e); }
+[data-theme="dark"] .art-body h5 { color: #f291bd; }   /* потъмненото за светла тема пада на 2.8 в тъмна */

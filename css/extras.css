@@ -1,0 +1,203 @@
+/* ═══════════════════════════════════════════════════════
+   EXTRAS — картички, звуци, дъх, капсули, медальони, ПИН…
+   ═══════════════════════════════════════════════════════ */
+
+/* Сподели споменче */
+.shm-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-bottom: 10px; }
+.shm-btn {
+  border: 1.5px solid var(--lav-soft); background: #fff; cursor: pointer;
+  font-family: inherit; font-size: 12px; font-weight: 800; color: var(--ink);
+  padding: 10px 8px; border-radius: 14px; line-height: 1.3;
+  display: flex; flex-direction: column; align-items: center; gap: 4px;
+  transition: transform 0.2s ease, background 0.2s ease;
+}
+.shm-btn span { font-size: 24px; }
+.shm-btn:hover { transform: translateY(-3px); background: var(--pink-soft); }
+
+/* Звуци за сън */
+.snd-btn.on, .snd-t.on { background: linear-gradient(135deg, #b9a7e0, #8d75c9); border-color: transparent; color: #fff; }
+
+/* SOS дъх + ПИН обвивка */
+.br-overlay {
+  position: fixed; inset: 0; z-index: 300;
+  background: rgba(35, 30, 55, 0.82); backdrop-filter: blur(10px);
+  display: flex; align-items: center; justify-content: center;
+}
+.br-overlay[hidden] { display: none; }
+.br-box { text-align: center; padding: 24px; }
+.br-circle {
+  width: 160px; height: 160px; margin: 0 auto 22px;
+  border-radius: 50%;
+  background: radial-gradient(circle at 35% 30%, #fbd3e6, #b9a7e0);
+  box-shadow: 0 0 60px rgba(185, 167, 224, 0.55);
+  display: flex; align-items: center; justify-content: center;
+  transform: scale(1);
+  transition: transform 4s ease-in-out;
+}
+.br-circle span { font-family: 'Comfortaa', 'Comfortaa-fallback', sans-serif; font-weight: 700; font-size: 17px; color: #fff; text-shadow: 0 1px 6px rgba(0,0,0,0.25); }
+.br-circle.br-in  { transform: scale(1.45); }
+.br-circle.br-out { transform: scale(0.85); }
+.br-count { color: #cfc0ec; font-weight: 800; font-size: 13px; margin-bottom: 16px; }
+.br-close { max-width: 220px; margin: 0 auto; }
+
+/* Писма-капсули */
+.cp-list { margin-top: 12px; display: flex; flex-direction: column; gap: 8px; }
+.cp-row {
+  display: flex; align-items: center; gap: 10px;
+  background: #faf8ff; border-radius: 14px; padding: 11px 14px;
+}
+.cp-row.cp-open { background: var(--sun-soft); }
+.cp-env { font-size: 24px; flex: none; }
+.cp-info { flex: 1; font-size: 13px; color: var(--ink); }
+.cp-info small { display: block; font-weight: 700; color: var(--ink-soft); font-size: 11px; }
+.cp-txt { margin-top: 6px; font-weight: 600; line-height: 1.5; white-space: pre-wrap; }
+.cp-lock { font-size: 16px; }
+
+/* Медальончета */
+.bg-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
+.bg-badge {
+  text-align: center; background: #f3f1f8; border-radius: 16px; padding: 12px 8px;
+  filter: grayscale(1) opacity(0.55);
+  display: flex; flex-direction: column; gap: 2px;
+}
+.bg-badge.got { filter: none; background: linear-gradient(135deg, #fdf3d7, #fbe9f2); box-shadow: 0 4px 14px rgba(245, 212, 126, 0.35); }
+.bg-e { font-size: 26px; }
+.bg-badge strong { font-size: 12px; color: var(--ink); font-family: 'Comfortaa', 'Comfortaa-fallback', sans-serif; }
+.bg-badge small { font-size: 10px; font-weight: 700; color: var(--ink-soft); }
+
+/* Приказка */
+.st-out { margin-top: 12px; }
+.st-story { background: linear-gradient(135deg, #fbf7ff, #fdf3f9); border-radius: 16px; padding: 16px; }
+.st-story.pop { animation: jrIn 0.5s cubic-bezier(0.34,1.56,0.64,1); }
+.st-story p { font-size: 14px; font-weight: 600; color: var(--ink); line-height: 1.65; margin-bottom: 8px; }
+.st-read { margin-top: 4px; }
+
+/* ПИН пад */
+.pin-box { background: #2a2640; border-radius: 26px; padding: 26px 30px; }
+.pin-title { font-family: 'Comfortaa', 'Comfortaa-fallback', sans-serif; font-weight: 700; color: #ece8f5; margin-bottom: 16px; }
+.pin-dots { display: flex; gap: 12px; justify-content: center; margin-bottom: 18px; }
+.pin-dots span { width: 14px; height: 14px; border-radius: 50%; background: #453e63; transition: background 0.15s ease, transform 0.15s ease; }
+.pin-dots span.f { background: var(--pink); transform: scale(1.2); }
+.pin-pad { display: grid; grid-template-columns: repeat(3, 64px); gap: 10px; justify-content: center; margin-bottom: 14px; }
+.pin-pad button {
+  height: 54px; border: none; border-radius: 16px; cursor: pointer;
+  background: #383253; color: #ece8f5;
+  font-family: 'Comfortaa', 'Comfortaa-fallback', sans-serif; font-size: 20px; font-weight: 700;
+  transition: transform 0.12s ease, background 0.15s ease;
+}
+.pin-pad button:hover { background: #453e63; }
+.pin-pad button:active { transform: scale(0.92); }
+.pin-box.shake { animation: pinShake 0.4s ease; }
+@keyframes pinShake { 0%,100% {transform:translateX(0);} 25% {transform:translateX(-10px);} 50% {transform:translateX(9px);} 75% {transform:translateX(-6px);} }
+
+/* Микрофон в чата */
+.ro-mic {
+  border: none; flex: none;
+  width: 46px; height: 46px; border-radius: 50%;
+  background: #f2eef8; font-size: 17px; cursor: pointer;
+  transition: transform 0.2s ease, background 0.2s ease;
+}
+.ro-mic:hover { transform: scale(1.08); }
+.ro-mic.rec { background: #ffd7d7; animation: micPulse 1.2s ease-in-out infinite; }
+@keyframes micPulse { 0%,100% {box-shadow: 0 0 0 0 rgba(224,86,86,0.45);} 50% {box-shadow: 0 0 0 10px rgba(224,86,86,0);} }
+
+/* тъмен режим за новите елементи */
+[data-theme="dark"] .shm-btn { background: #342f4e; border-color: #423b60; }
+[data-theme="dark"] .cp-row { background: #241f38; }
+[data-theme="dark"] .cp-row.cp-open { background: #3a3320; }
+[data-theme="dark"] .bg-badge { background: #241f38; }
+[data-theme="dark"] .bg-badge.got { background: linear-gradient(135deg, #3a3320, #3a2536); }
+[data-theme="dark"] .st-story { background: #241f38; }
+[data-theme="dark"] .ro-mic { background: #342f4e; }
+
+@media (prefers-reduced-motion: reduce) {
+  .br-circle { transition: none; }
+  .pin-box.shake, .ro-mic.rec { animation: none; }
+}
+
+/* ═══════════ ВЪЛНА 2: registry, кръг на съня, фото, балончета, песни ═══════════ */
+
+.rg-presets { flex-wrap: wrap; justify-content: flex-start; margin: 8px 0; }
+.rg-t { flex: 1; }
+.jr-win .nt-del { margin-left: auto; }
+
+.sc24-box { text-align: center; }
+.sc24 { width: min(240px, 70vw); height: auto; }
+.sc24-lbl { font-family: 'Nunito', 'Nunito-fallback', sans-serif; font-size: 9px; font-weight: 800; fill: #a9a2bd; }
+.sc24-mid { font-size: 22px; }
+.sc24-tot { font-family: 'Comfortaa', 'Comfortaa-fallback', sans-serif; font-size: 14px; font-weight: 700; fill: #5a5470; }
+
+.pho-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 8px; }
+.pho-cell {
+  position: relative; aspect-ratio: 1; border: none; border-radius: 14px;
+  overflow: hidden; cursor: pointer; background: #f7f4fc; padding: 0;
+  transition: transform 0.2s ease;
+}
+.pho-cell:hover { transform: scale(1.05); }
+.pho-cell img { width: 100%; height: 100%; object-fit: cover; display: block; }
+.pho-cell.empty { border: 2px dashed var(--lav-soft); }
+.pho-plus { font-size: 22px; color: var(--lav); display: block; }
+.pho-m {
+  position: absolute; bottom: 4px; left: 50%; transform: translateX(-50%);
+  font-size: 9.5px; font-weight: 800; color: #fff;
+  background: rgba(90, 84, 112, 0.65); padding: 2px 8px; border-radius: 999px; white-space: nowrap;
+}
+.pho-cell.empty .pho-m { color: var(--ink-soft); background: transparent; }
+.pho-viewbox { text-align: center; max-width: 92vw; }
+.pho-viewbox img { max-width: 88vw; max-height: 64vh; border-radius: 18px; box-shadow: 0 20px 60px rgba(0,0,0,0.45); }
+.pho-viewbox p { color: #ece8f5; font-weight: 800; margin: 12px 0; }
+.pho-viewbox .jr-quick { justify-content: center; }
+
+.bub-overlay {
+  position: fixed; inset: 0; z-index: 320; overflow: hidden;
+  background: linear-gradient(180deg, #2a2640, #1b1830);
+}
+.bub-overlay[hidden] { display: none; }
+.bub-hud {
+  position: absolute; top: 14px; left: 50%; transform: translateX(-50%);
+  z-index: 5; display: flex; align-items: center; gap: 10px;
+  color: #ece8f5; font-weight: 800; font-size: 15px;
+  background: rgba(255,255,255,0.08); padding: 8px 16px; border-radius: 999px;
+}
+.bub {
+  position: absolute; bottom: -90px; border: none; border-radius: 50%;
+  cursor: pointer; opacity: 0.92;
+  box-shadow: inset -6px -8px 14px rgba(0,0,0,0.12), inset 6px 8px 14px rgba(255,255,255,0.5);
+  animation: bubRise linear forwards;
+}
+@keyframes bubRise { to { transform: translateY(calc(-100vh - 120px)); } }
+.bub.pop { animation: bubPop 0.22s ease-out forwards; }
+@keyframes bubPop { to { transform: scale(1.7); opacity: 0; } }
+.bub-done {
+  position: absolute; inset: 0; display: flex; flex-direction: column;
+  align-items: center; justify-content: center; gap: 8px; z-index: 6;
+}
+.bub-done p { color: #fff; font-family: 'Comfortaa', 'Comfortaa-fallback', sans-serif; font-size: 24px; font-weight: 700; }
+.bub-done .bub-sub { font-size: 15px; color: #cfc0ec; font-family: 'Nunito', 'Nunito-fallback', sans-serif; }
+.bub-done .jr-btn { max-width: 220px; margin-top: 10px; }
+
+.lul-out { margin-top: 10px; }
+.lul-text { background: linear-gradient(135deg, #fbf7ff, #fdf3f9); border-radius: 16px; padding: 16px; margin-bottom: 10px; }
+.lul-text.pop { animation: jrIn 0.4s ease; }
+.lul-text p { font-size: 16px; font-weight: 700; color: var(--ink); line-height: 1.7; text-align: center; }
+
+.shop-bridge { background: linear-gradient(135deg, #fdf3d7, #fde8d8); text-align: center; }
+.shop-txt { font-size: 14px; font-weight: 700; color: var(--ink); margin-bottom: 12px; line-height: 1.5; }
+.shop-btn { text-decoration: none; max-width: 260px; margin: 0 auto; }
+
+html.big-font { zoom: 1.14; }
+
+[data-theme="dark"] .lul-text { background: #241f38; }
+[data-theme="dark"] .pho-cell { background: #241f38; }
+[data-theme="dark"] .shop-bridge { background: linear-gradient(135deg, #3a3320, #3a2b28); }
+
+/* 🔑 05.08 — изходът при забравен ПИН (виж js/extras.js pinAsk) */
+.pin-forgot {
+  display: block; margin: 12px auto 0; padding: 10px 16px; min-height: 44px;
+  background: none; border: 0; color: #cfc6ff; font: inherit; font-size: .92rem;
+  text-decoration: underline; text-underline-offset: 3px; cursor: pointer;
+}
+.pin-exit { margin-top: 14px; text-align: left; max-width: 300px; }
+.pin-exit p { color: #e8e3ff; font-size: .9rem; line-height: 1.55; margin: 0 0 10px; }
+.pin-exit .jr-btn { width: 100%; margin-bottom: 8px; }
+.pin-exit .jr-chip { width: 100%; }

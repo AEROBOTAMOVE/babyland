@@ -1,0 +1,1610 @@
+/* ═══════════════════════════════════════════════════════
+   BABY LAND — стилове и анимации (v3: паралакс светове)
+   Палитра по логото: меки акварелни пастели
+   ═══════════════════════════════════════════════════════ */
+
+:root {
+  --pink:       #f291bd;
+  --pink-deep:  #e56ba4;
+  --pink-soft:  #fbd9e9;
+  --pink-text:  #a82a5c;   /* същото розово, но четимо: 5.1 контраст върху --pink-soft */
+  --blue:       #6aa8d8;
+  --blue-deep:  #4f8fc4;
+  --blue-soft:  #d9eaf8;
+  --lav:        #b9a7e0;
+  --lav-soft:   #eae3f7;
+  --mint:       #9fd8c6;
+  --mint-soft:  #ddf3ec;
+  --peach:      #f7b98d;
+  --peach-soft: #fde8d8;
+  --sun:        #f5d47e;
+  --sun-soft:   #fdf3d7;
+  --ink:        #5a5470;
+  /* 🔎 05.08 (живо измерване, светла тема): #8b84a3 дава контраст 3.54:1
+     срещу бяло — под прага 4.5 за дребен текст. 354 надписа в 9-те стаи
+     бяха под прага, най-вече .jr-sub и .jr-privacy — тоест ПОДЗАГЛАВИЯТА
+     и обясненията, точно текстът, който майка чете уморена в полумрак.
+     #767089 дава 4.72 и остава също толкова мек на око. */
+  --ink-soft:   #6f6980;
+  --white:      #ffffff;
+  --shadow:     0 10px 30px rgba(150, 130, 180, 0.18);
+  --radius:     26px;
+}
+
+* { margin: 0; padding: 0; box-sizing: border-box; }
+
+html { scroll-behavior: smooth; }
+
+body {
+  font-family: 'Nunito', 'Nunito-fallback', sans-serif;
+  color: var(--ink);
+  background: linear-gradient(180deg, #fdf3f9 0%, #f3f2fc 35%, #ecf5fb 65%, #eaf7f2 100%);
+  min-height: 100vh;
+  overflow-x: hidden;
+  line-height: 1.55;
+  -webkit-font-smoothing: antialiased;
+}
+
+h1, h2, h3 { font-family: 'Comfortaa', 'Comfortaa-fallback', 'Nunito', sans-serif; }
+
+/* ═══════════════ НЕБЕТО — фонов слой ═══════════════ */
+
+.sky { position: fixed; inset: 0; z-index: -1; overflow: hidden; pointer-events: none; }
+
+.blob {
+  position: absolute;
+  border-radius: 50%;
+  opacity: 0.75;
+  animation: blobDrift 30s ease-in-out infinite alternate;
+  will-change: transform;
+}
+.blob-pink { width: 55vw; height: 55vw; background: radial-gradient(circle, #f9cde2 0%, rgba(249,205,226,0) 70%); top: -12%; left: -12%; }
+.blob-blue { width: 50vw; height: 50vw; background: radial-gradient(circle, #cfe4f7 0%, rgba(207,228,247,0) 70%); top: 20%; right: -15%; animation-delay: -7s; }
+.blob-mint { width: 45vw; height: 45vw; background: radial-gradient(circle, #d2efe4 0%, rgba(210,239,228,0) 70%); bottom: -10%; left: 5%;  animation-delay: -13s; }
+.blob-lav  { width: 40vw; height: 40vw; background: radial-gradient(circle, #e3d9f5 0%, rgba(227,217,245,0) 70%); bottom: 25%; right: 20%; animation-delay: -20s; }
+
+@keyframes blobDrift {
+  0%   { transform: translate(0, 0) scale(1); }
+  50%  { transform: translate(4vw, -3vh) scale(1.08); }
+  100% { transform: translate(-3vw, 3vh) scale(0.95); }
+}
+
+.cloud {
+  position: absolute;
+  background: var(--white);
+  border-radius: 100px;
+  opacity: 0.85;
+  box-shadow: 0 8px 24px rgba(160, 140, 190, 0.10);
+  animation: cloudDrift linear infinite;
+}
+.cloud::before, .cloud::after {
+  content: '';
+  position: absolute;
+  background: inherit;
+  border-radius: 50%;
+}
+.cloud::before { width: 55%; height: 160%; left: 14%; bottom: 28%; }
+.cloud::after  { width: 40%; height: 120%; right: 12%; bottom: 40%; }
+
+.cloud-1 { width: 190px; height: 56px; top: 12%;  animation-duration: 65s; }
+.cloud-2 { width: 130px; height: 40px; top: 32%;  animation-duration: 85s; animation-delay: -30s; opacity: 0.65; }
+.cloud-3 { width: 240px; height: 68px; top: 55%;  animation-duration: 75s; animation-delay: -50s; opacity: 0.7; }
+.cloud-4 { width: 110px; height: 34px; top: 74%;  animation-duration: 95s; animation-delay: -15s; opacity: 0.55; }
+.cloud-5 { width: 160px; height: 48px; top: 88%;  animation-duration: 70s; animation-delay: -60s; opacity: 0.6; }
+
+@keyframes cloudDrift {
+  from { transform: translateX(-280px); }
+  to   { transform: translateX(calc(100vw + 280px)); }
+}
+
+.star {
+  position: absolute;
+  font-size: 15px;
+  color: var(--lav);
+  animation: twinkle 3.6s ease-in-out infinite;
+}
+.s1 { top: 8%;  left: 12%; color: var(--pink); }
+.s2 { top: 18%; left: 78%; animation-delay: -1s; }
+.s3 { top: 40%; left: 8%;  color: var(--mint); animation-delay: -2s; font-size: 12px; }
+.s4 { top: 50%; left: 90%; color: var(--pink); animation-delay: -0.5s; }
+.s5 { top: 66%; left: 15%; animation-delay: -2.6s; font-size: 12px; }
+.s6 { top: 78%; left: 82%; color: var(--sun); animation-delay: -1.8s; }
+.s7 { top: 28%; left: 45%; animation-delay: -3s; font-size: 11px; }
+.s8 { top: 90%; left: 40%; color: var(--blue); animation-delay: -1.4s; }
+
+@keyframes twinkle {
+  0%, 100% { opacity: 0.25; transform: scale(0.8) rotate(0deg); }
+  50%      { opacity: 1;    transform: scale(1.25) rotate(20deg); }
+}
+/* мигане само с прозрачност — за SVG елементи със собствен transform */
+@keyframes twinkleOp {
+  0%, 100% { opacity: 0.2; }
+  50%      { opacity: 1; }
+}
+
+
+.mini-balloon {
+  position: absolute;
+  width: 44px;
+  opacity: 0.5;
+  animation: miniFloat ease-in-out infinite alternate;
+}
+.mb-1 { left: 6%;  top: 60%; animation-duration: 7s; }
+.mb-2 { left: 88%; top: 22%; animation-duration: 9s;  animation-delay: -3s; width: 34px; }
+.mb-3 { left: 75%; top: 72%; animation-duration: 8s;  animation-delay: -5s; width: 28px; opacity: 0.35; }
+
+@keyframes miniFloat {
+  from { transform: translateY(0) rotate(-4deg); }
+  to   { transform: translateY(-38px) rotate(4deg); }
+}
+
+/* ═══════════════ ГЕРОЙ: ВЕКТОРНОТО ЛОГО ═══════════════ */
+
+.hero {
+  min-height: 100svh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 30px 20px 70px;
+  text-align: center;
+}
+.hero-inner { max-width: 720px; width: 100%; }
+
+.logo-stage { position: relative; display: inline-block; }
+
+.logo-art {
+  width: min(560px, 94vw);
+  height: auto;
+  display: block;
+  animation: logoFloat 7s ease-in-out infinite;
+}
+@keyframes logoFloat {
+  0%, 100% { transform: translateY(0); }
+  50%      { transform: translateY(-12px); }
+}
+
+.lg-baby, .lg-land {
+  font-family: 'Pacifico', 'Comfortaa', cursive;
+  font-size: 97px;
+  paint-order: stroke fill;
+  stroke: #ffffff;
+  stroke-width: 12px;
+  stroke-linejoin: round;
+}
+.lg-baby { fill: url(#gTextPink); }
+.lg-land { fill: url(#gTextBlue); }
+
+.lg-cloud { animation: lgCloudBob 7s ease-in-out infinite; }
+@keyframes lgCloudBob {
+  0%, 100% { transform: translateY(0); }
+  50%      { transform: translateY(-4px); }
+}
+
+.lg-balloon { transform-origin: 445px 60px; animation: lgBalloon 5.5s ease-in-out infinite; }
+@keyframes lgBalloon {
+  0%, 100% { transform: translateY(0)     rotate(-2.4deg); }
+  50%      { transform: translateY(-14px) rotate(2.8deg); }
+}
+
+.lg-face { transform-origin: 322px 404px; animation: lgFace 6s ease-in-out infinite; }
+@keyframes lgFace {
+  0%, 100% { transform: rotate(-2deg); }
+  50%      { transform: rotate(2.4deg); }
+}
+.lg-eye { transform-origin: center; transform-box: fill-box; animation: lgBlink 5.2s ease-in-out infinite; }
+.lg-eye.e2 { animation-delay: 0.05s; }
+@keyframes lgBlink {
+  0%, 91%, 100% { transform: scaleY(1); }
+  94%, 96%      { transform: scaleY(0.15); }
+}
+
+.lg-spk, .lg-dot { animation: twinkleOp 3.2s ease-in-out infinite; }
+.lg-spk.k2, .lg-dot.d2 { animation-delay: -1.1s; }
+.lg-spk.k3, .lg-dot.d3 { animation-delay: -2.1s; }
+.lg-dot.d4 { animation-delay: -0.6s; }
+
+.logo-spark {
+  position: absolute;
+  color: var(--pink);
+  font-size: 20px;
+  animation: twinkle 3s ease-in-out infinite;
+  pointer-events: none;
+}
+.lsp1 { top: 10%;  left: -3%; }
+.lsp2 { top: 44%; right: -4%; color: var(--lav); animation-delay: -1.2s; }
+.lsp3 { bottom: 8%; left: 6%; color: var(--mint); animation-delay: -2.2s; font-size: 15px; }
+
+.tagline {
+  font-size: clamp(17px, 3.4vw, 21px);
+  font-weight: 600;
+  color: var(--ink);
+  margin: 6px 0 28px;
+}
+.tagline em { color: var(--pink-deep); font-style: normal; font-weight: 800; }
+
+.hero-cta { display: flex; gap: 14px; justify-content: center; flex-wrap: wrap; }
+
+.btn {
+  position: relative;
+  overflow: hidden;
+  display: inline-block;
+  font-family: 'Comfortaa', 'Comfortaa-fallback', sans-serif;
+  font-weight: 700;
+  font-size: 16px;
+  padding: 15px 28px;
+  border-radius: 999px;
+  border: none;
+  cursor: pointer;
+  text-decoration: none;
+  transition: transform 0.25s ease, box-shadow 0.25s ease;
+}
+.btn:hover  { transform: translateY(-4px); }
+/* проход 4: истинско „натискане навътре" (беше -1px = още нагоре, усещаше се обратно) */
+.btn:active { transform: scale(.97); }
+.btn-shine {
+  position: absolute;
+  top: -10%; left: -30%;
+  width: 26%; height: 120%;
+  background: linear-gradient(105deg, transparent, rgba(255,255,255,0.75), transparent);
+  transform: skewX(-18deg);
+  animation: btnShine 4.6s ease-in-out infinite;
+  pointer-events: none;
+}
+/* проход 3 T32: left → transform (compositor-only). Елементът е 26% широк, пътят
+   left:-30%→130% = 160% от бутона = ~616% от собствената му ширина. skewX се
+   повтаря във всеки кадър, защото transform се презаписва изцяло. left остава -30%. */
+@keyframes btnShine {
+  0%, 64% { transform: translateX(0) skewX(-18deg); }
+  82%, 100% { transform: translateX(616%) skewX(-18deg); }
+}
+.btn-pink {
+  background: linear-gradient(135deg, #f7a8cb, var(--pink-deep));
+  color: var(--white);
+  box-shadow: 0 10px 24px rgba(229, 107, 164, 0.4);
+}
+.btn-blue {
+  background: linear-gradient(135deg, #8fc0e8, var(--blue-deep));
+  color: var(--white);
+  box-shadow: 0 10px 24px rgba(79, 143, 196, 0.4);
+}
+.btn-blue .btn-shine { animation-delay: -2.3s; }
+
+.scroll-hint {
+  width: 28px; height: 46px;
+  border: 3px solid var(--lav);
+  border-radius: 999px;
+  margin: 42px auto 0;
+  opacity: 0.7;
+}
+.scroll-hint span {
+  display: block;
+  width: 6px; height: 6px;
+  background: var(--lav);
+  border-radius: 50%;
+  margin: 8px auto 0;
+  animation: scrollDot 1.8s ease-in-out infinite;
+}
+@keyframes scrollDot {
+  0%   { transform: translateY(0);    opacity: 1; }
+  70%  { transform: translateY(18px); opacity: 0; }
+  100% { transform: translateY(0);    opacity: 0; }
+}
+
+/* ═══════════════ ОБЩИ ЗАГЛАВИЯ ═══════════════ */
+
+.section-title {
+  text-align: center;
+  font-size: clamp(26px, 5.4vw, 38px);
+  font-weight: 700;
+  color: var(--ink);
+  margin-bottom: 12px;
+}
+.section-sub {
+  text-align: center;
+  font-size: clamp(15px, 3vw, 18px);
+  color: var(--ink-soft);
+  max-width: 560px;
+  margin: 0 auto 40px;
+}
+
+.wobble { display: inline-block; animation: wobble 3s ease-in-out infinite; }
+@keyframes wobble {
+  0%, 100% { transform: rotate(-8deg); }
+  50%      { transform: rotate(10deg) scale(1.1); }
+}
+
+.pulse-heart { display: inline-block; animation: pulseHeart 1.6s ease-in-out infinite; }
+@keyframes pulseHeart {
+  0%, 100% { transform: scale(1); }
+  30%      { transform: scale(1.25); }
+  45%      { transform: scale(1.05); }
+  60%      { transform: scale(1.2); }
+}
+
+.reveal {
+  opacity: 0;
+  transform: translateY(36px) rotate(-1.2deg);
+  transition: opacity 0.7s ease, transform 0.7s cubic-bezier(0.22, 1, 0.36, 1);
+}
+.reveal.shown { opacity: 1; transform: none; }
+
+/* ═══════════════ СТАИТЕ — картите (3D наклон) ═══════════════ */
+
+.rooms { padding: 30px 20px 70px; max-width: 1100px; margin: 0 auto; }
+
+.room-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(290px, 1fr));
+  gap: 22px;
+  perspective: 1200px;
+}
+
+.room-card {
+  position: relative;
+  text-align: left;
+  font-family: inherit;
+  border: none;
+  cursor: pointer;
+  border-radius: var(--radius);
+  padding: 0 0 58px;
+  background: var(--white);
+  box-shadow: var(--shadow);
+  transform: perspective(1000px) rotateX(var(--rx, 0deg)) rotateY(var(--ry, 0deg)) translateY(var(--ty, 0px));
+  transition: transform 0.22s ease-out, box-shadow 0.3s ease;
+  overflow: hidden;
+}
+.room-card::before {
+  content: '';
+  position: absolute;
+  inset: 0 0 auto 0;
+  height: 7px;
+  z-index: 4;
+}
+.rc-peach::before  { background: linear-gradient(90deg, var(--peach), var(--peach-soft)); }
+.rc-sky::before    { background: linear-gradient(90deg, var(--blue),  var(--blue-soft)); }
+.rc-carrot::before { background: linear-gradient(90deg, #f0a35e, var(--peach-soft)); }
+.rc-green::before  { background: linear-gradient(90deg, var(--mint),  var(--mint-soft)); }
+.rc-lav::before    { background: linear-gradient(90deg, var(--lav),   var(--lav-soft)); }
+.rc-sun::before    { background: linear-gradient(90deg, var(--sun),   var(--sun-soft)); }
+.rc-mint::before   { background: linear-gradient(90deg, var(--mint),  var(--blue-soft)); }
+/* стая 8 — жената: наситена роза и злато, НАРОЧНО различни от бебешките тонове */
+.rc-rose::before   { background: linear-gradient(90deg, #d1487f, #e0b978); }
+/* стая 9 — лабораторията: корк и червен конец */
+.rc-cork::before   { background: linear-gradient(90deg, var(--sun), var(--pink-deep)); }
+
+.room-card:hover, .room-card:focus-visible { --ty: -10px; }
+.room-card:active { --ty: -4px; }
+/* картите имат собствен вход + 3D наклон (надделява над .reveal.shown) */
+.room-card.reveal { opacity: 0; transform: perspective(1000px) translateY(36px) rotate(-1.2deg); }
+.room-card.reveal.shown {
+  opacity: 1;
+  transform: perspective(1000px) rotateX(var(--rx, 0deg)) rotateY(var(--ry, 0deg)) translateY(var(--ty, 0px));
+}
+.rc-rose:hover   { box-shadow: 0 26px 52px rgba(209, 72, 127, 0.38); }
+.rc-cork:hover   { box-shadow: 0 26px 52px rgba(183, 138, 82, 0.42); }
+.rc-peach:hover  { box-shadow: 0 26px 52px rgba(247, 185, 141, 0.45); }
+.rc-sky:hover    { box-shadow: 0 26px 52px rgba(106, 168, 216, 0.42); }
+.rc-carrot:hover { box-shadow: 0 26px 52px rgba(240, 163, 94, 0.42); }
+.rc-green:hover  { box-shadow: 0 26px 52px rgba(159, 216, 198, 0.5); }
+.rc-lav:hover    { box-shadow: 0 26px 52px rgba(185, 167, 224, 0.48); }
+.rc-sun:hover    { box-shadow: 0 26px 52px rgba(245, 212, 126, 0.5); }
+.rc-mint:hover   { box-shadow: 0 26px 52px rgba(159, 216, 198, 0.48); }
+
+.room-card h3 {
+  font-size: 20px;
+  margin: 14px 24px 8px;
+  color: var(--ink);
+}
+.room-card p {
+  font-size: 14.5px;
+  color: var(--ink-soft);
+  font-weight: 600;
+  margin: 0 24px;
+}
+
+.room-badge {
+  position: absolute;
+  bottom: 16px;
+  left: 24px;
+  font-size: 12.5px;
+  font-weight: 800;
+  padding: 5px 13px;
+  border-radius: 999px;
+  background: var(--lav-soft);
+  color: var(--ink-soft);
+}
+/* проход 3 T39: .badge-star беше осиротял (никой не го закача) и носеше 2 безкрайни
+   анимации, вкл. забранената left-shimmer. Изтрит целият блок + keyframes. */
+
+.rc-crown { border: 2px solid var(--lav-soft); }
+.crown-badge {
+  position: absolute;
+  top: 14px; right: 16px;
+  font-size: 26px;
+  z-index: 5;
+  animation: crownShine 3s ease-in-out infinite;
+}
+@keyframes crownShine {
+  0%, 100% { transform: rotate(-8deg) scale(1); }
+  50%      { transform: rotate(8deg)  scale(1.15); }
+}
+
+/* ═══════════════ СЦЕНИТЕ — общи (паралакс светове) ═══════════════ */
+
+.scene-wrap {
+  position: relative;
+  width: 100%;
+  overflow: hidden;
+  border-radius: var(--radius) var(--radius) 0 0;
+}
+.scene { display: block; width: 100%; height: auto; position: relative; z-index: 1; }
+/* въртяща се светлинна аура под сцената */
+.scene-wrap::before {
+  content: '';
+  position: absolute;
+  left: -55%; top: -105%;
+  width: 210%; aspect-ratio: 1;
+  border-radius: 50%;
+  background: conic-gradient(from 0deg,
+    transparent 0%, rgba(255,255,255,0.55) 9%, transparent 20%,
+    transparent 30%, rgba(255,255,255,0.4) 42%, transparent 53%,
+    transparent 64%, rgba(255,255,255,0.5) 76%, transparent 88%, transparent 100%);
+  opacity: 0.6;
+  z-index: 0;
+  pointer-events: none;
+}
+.play .scene-wrap::before { animation: auroraSpin 26s linear infinite; }
+@keyframes auroraSpin { to { transform: rotate(360deg); } }
+.scene-wrap::after {
+  content: '';
+  position: absolute; inset: 0;
+  background: radial-gradient(130% 100% at 50% 0%, transparent 58%, rgba(110, 92, 145, 0.10));
+  z-index: 2;
+  pointer-events: none;
+}
+.rc-peach  .scene-wrap { background: linear-gradient(180deg, #fdf0e4, #fff9f4); }
+.rc-sky    .scene-wrap { background: linear-gradient(180deg, #e9f3fc, #f7fbff); }
+.rc-carrot .scene-wrap { background: linear-gradient(180deg, #fdeedd, #fff8f0); }
+.rc-green  .scene-wrap { background: linear-gradient(180deg, #e4f5ee, #f6fcf9); }
+.rc-lav    .scene-wrap { background: linear-gradient(180deg, #f0eaf9, #faf8fe); }
+.rc-sun    .scene-wrap { background: linear-gradient(180deg, #fdf5dd, #fffbef); }
+.rc-mint   .scene-wrap { background: linear-gradient(180deg, #e2f4ee, #f2fbf7); }
+
+/* паралакс слоеве: следват пръста/мишката с различна дълбочина */
+.lyr { transition: transform 0.25s ease-out; }
+.lyr-bg  { transform: translate(calc(var(--px, 0) * 6px),  calc(var(--py, 0) * 5px)); }
+.lyr-mid { transform: translate(calc(var(--px, 0) * 13px), calc(var(--py, 0) * 9px)); }
+.lyr-fg  { transform: translate(calc(var(--px, 0) * 22px), calc(var(--py, 0) * 15px)); }
+
+/* искри и боке */
+.tw { animation: twinkleOp 3.2s ease-in-out infinite; }
+.tw.t2 { animation-delay: -1.1s; }
+.tw.t3 { animation-delay: -2.2s; }
+.tw.t4 { animation-delay: -0.6s; }
+.bok { opacity: 0.4; animation: bokFloat 6s ease-in-out infinite alternate; }
+.bok.b2 { animation-delay: -2s; }
+.bok.b3 { animation-delay: -4s; }
+@keyframes bokFloat {
+  from { transform: translate(0, 0); }
+  to   { transform: translate(4px, -9px); }
+}
+/* облачета във фона на сцените */
+
+
+/* ═══ ПРЕМИУМ СЛОЙ: лъчи, орбити, стъклени чипове, светеща аура ═══ */
+
+/* въртящите се лъчи зад героите */
+
+
+/* стъклените чипове — като от истинско приложение */
+.gchip-t { font-family: 'Nunito', 'Nunito-fallback', sans-serif; font-size: 12px; font-weight: 800; fill: #5a5470; }
+.gchip { opacity: 0; transform-origin: center; transform-box: fill-box; }
+.play .gchip { animation: chipIn 0.7s cubic-bezier(0.34, 1.56, 0.64, 1) 1.1s forwards; }
+@keyframes chipIn {
+  0%   { opacity: 0; transform: translateY(12px) scale(0.85); }
+  100% { opacity: 1; transform: translateY(0) scale(1); }
+}
+.gfl { transform-origin: center; transform-box: fill-box; }
+.play .gfl { animation: chipFloat 5s ease-in-out 1.8s infinite alternate; }
+@keyframes chipFloat {
+  from { transform: translateY(0)    rotate(-0.8deg); }
+  to   { transform: translateY(-6px) rotate(1deg); }
+}
+
+/* светещите ореоли зад героите дишат */
+.play .scene circle[fill^="url(#gGlow"] { animation: glowPulse 4.4s ease-in-out infinite; transform-origin: center; transform-box: fill-box; }
+@keyframes glowPulse {
+  0%, 100% { transform: scale(1);    opacity: 0.85; }
+  50%      { transform: scale(1.22); opacity: 1; }
+}
+
+/* 05.08 РЕВИЗИЯ: тук стоеше самотна „}" — остатък от изтрит блок.
+   Не беше безобидна: браузърът ИЗЯЖДА правилото веднага след нея.
+   Проверено в браузър: „.aaa{} } .bbb{} .ccc{}" дава само .aaa и .ccc.
+   Тоест подскокът при докосване на стаята (.room-card.burst .scene)
+   изобщо не влизаше в CSSOM — @keyframes sceneJiggle стоеше неизползван. */
+
+/* докосване: сцената подскача радостно */
+.room-card.burst .scene {
+  animation: sceneJiggle 0.55s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+@keyframes sceneJiggle {
+  0%   { transform: scale(1); }
+  30%  { transform: scale(1.06) rotate(-1.6deg); }
+  60%  { transform: scale(0.98) rotate(1.2deg); }
+  100% { transform: scale(1); }
+}
+
+/* частици при докосване (създават се от JS) */
+.burst-layer { position: absolute; inset: 0; pointer-events: none; z-index: 6; }
+.burst-layer span {
+  position: absolute;
+  top: 26%; left: 50%;
+  font-size: 20px;
+  opacity: 0;
+  animation: burstFly 0.9s cubic-bezier(0.16, 0.84, 0.44, 1) forwards;
+}
+.burst-layer span:nth-child(1) { --bx: -74px; --by: -52px; --br: -40deg; animation-delay: 0s; }
+.burst-layer span:nth-child(2) { --bx: -40px; --by: -76px; --br: 25deg;  animation-delay: 0.03s; }
+.burst-layer span:nth-child(3) { --bx:  6px;  --by: -84px; --br: -20deg; animation-delay: 0.06s; }
+.burst-layer span:nth-child(4) { --bx:  50px; --by: -70px; --br: 35deg;  animation-delay: 0.02s; }
+.burst-layer span:nth-child(5) { --bx:  82px; --by: -44px; --br: -30deg; animation-delay: 0.05s; }
+.burst-layer span:nth-child(6) { --bx: -60px; --by: -14px; --br: 45deg;  animation-delay: 0.08s; }
+.burst-layer span:nth-child(7) { --bx:  64px; --by: -8px;  --br: -45deg; animation-delay: 0.07s; }
+.burst-layer span:nth-child(8) { --bx:  0px;  --by: -40px; --br: 15deg;  animation-delay: 0.1s; }
+@keyframes burstFly {
+  0%   { opacity: 0; transform: translate(-50%, 0) scale(0.4) rotate(0deg); }
+  15%  { opacity: 1; }
+  100% { opacity: 0; transform: translate(calc(-50% + var(--bx)), var(--by)) scale(1.15) rotate(var(--br)); }
+}
+
+/* ═══ Сцена 1: Бременност — ЕХОГРАФЪТ ═══ */
+
+
+/* ═══════════════ ДНЕВНИК — ДЕМО ЛЕНТА ═══════════════ */
+
+.journal-strip {
+  background: linear-gradient(135deg, #f3ebfb 0%, #fdeef6 100%);
+  padding: 64px 20px;
+  margin: 20px 0;
+}
+.journal-inner { max-width: 640px; margin: 0 auto; text-align: center; }
+
+.mood-row {
+  display: flex;
+  justify-content: center;
+  gap: clamp(8px, 2.4vw, 18px);
+  margin-bottom: 18px;
+}
+.mood {
+  font-size: clamp(34px, 8vw, 48px);
+  background: var(--white);
+  border: none;
+  border-radius: 50%;
+  width:  clamp(60px, 13vw, 84px);
+  height: clamp(60px, 13vw, 84px);
+  cursor: pointer;
+  box-shadow: var(--shadow);
+  transition: transform 0.25s cubic-bezier(0.34, 1.56, 0.64, 1);
+  line-height: 1;
+}
+.mood:hover { transform: translateY(-8px) scale(1.12); }
+.mood.picked {
+  transform: scale(1.18);
+  box-shadow: 0 0 0 5px var(--pink-soft), 0 14px 30px rgba(229, 107, 164, 0.35);
+}
+
+.mood-reply {
+  min-height: 34px;
+  font-size: clamp(16px, 3.4vw, 20px);
+  font-weight: 800;
+  color: var(--pink-deep);
+}
+.mood-reply.pop { animation: replyPop 0.5s cubic-bezier(0.34, 1.56, 0.64, 1); }
+@keyframes replyPop {
+  0%   { opacity: 0; transform: translateY(14px) scale(0.9); }
+  100% { opacity: 1; transform: translateY(0)    scale(1); }
+}
+
+.journal-note {
+  margin-top: 18px;
+  font-size: 14px;
+  color: var(--ink-soft);
+  font-weight: 600;
+}
+
+/* ═══════════════ ИНСТАЛИРАНЕ: ТЕЛЕФОНЪТ-ФИЛМЧЕ ═══════════════ */
+
+.install { padding: 60px 20px 80px; max-width: 900px; margin: 0 auto; }
+
+.phone-stage { text-align: center; }
+
+.platform-toggle {
+  display: inline-flex;
+  gap: 4px;
+  background: var(--white);
+  border-radius: 999px;
+  padding: 5px;
+  box-shadow: var(--shadow);
+  margin-bottom: 26px;
+}
+.pt-btn {
+  font-family: 'Comfortaa', 'Comfortaa-fallback', sans-serif;
+  font-weight: 700;
+  font-size: 14px;
+  border: none;
+  background: transparent;
+  color: var(--ink-soft);
+  padding: 9px 22px;
+  border-radius: 999px;
+  cursor: pointer;
+  transition: background 0.25s ease, color 0.25s ease;
+}
+.pt-btn.active { background: linear-gradient(135deg, #f7a8cb, var(--pink-deep)); color: var(--white); }
+
+.phone-movie { display: inline-block; position: relative; }
+.phone-float { animation: phoneIdle 6s ease-in-out infinite; }
+@keyframes phoneIdle {
+  0%, 100% { transform: translateY(0); }
+  50%      { transform: translateY(-8px); }
+}
+.phone-svg {
+  width: min(280px, 64vw);
+  height: auto;
+  filter: drop-shadow(0 24px 44px rgba(120, 100, 160, 0.35));
+}
+
+/* платформа: кое меню се вижда */
+.ph-menu-ios, .ph-dd-ios { display: none; }
+.ios .ph-menu-ios { display: block; }
+.ios .ph-menu-and { display: none; }
+.ios .ph-dd-ios { display: block; }
+.ios .ph-dd-and { display: none; }
+
+/* master timeline: 12s, три акта (0-30%, 30-62%, 62-100%).
+   Всеки елемент от филма носи клас .tl */
+.tl {
+  animation-duration: 12s;
+  animation-iteration-count: infinite;
+  animation-timing-function: ease-in-out;
+  animation-play-state: paused;
+  animation-delay: var(--seek, 0s);
+}
+.play .tl { animation-play-state: running; }
+
+.ph-shop { animation-name: phShop; }
+@keyframes phShop {
+  0%, 17%  { transform: translateX(0); opacity: 1; }
+  24%      { transform: translateX(-235px); opacity: 1; }
+  25%, 95% { transform: translateX(-235px); opacity: 0; }
+  96%      { transform: translateX(0); opacity: 0; }
+  100%     { transform: translateX(0); opacity: 1; }
+}
+.ph-app { animation-name: phApp; transform: translateX(235px); opacity: 0; }
+@keyframes phApp {
+  0%, 16%  { transform: translateX(235px); opacity: 0.95; }
+  24%      { transform: translateX(0); opacity: 1; }
+  62%      { transform: translateX(0); opacity: 1; }
+  67%      { transform: translateX(0); opacity: 0; }
+  100%     { transform: translateX(235px); opacity: 0; }
+}
+.ph-home { animation-name: phHome; opacity: 0; }
+@keyframes phHome {
+  0%, 62%  { opacity: 0; }
+  67%, 94% { opacity: 1; }
+  98%,100% { opacity: 0; }
+}
+
+.ph-linkbtn { animation-name: phLink; transform-origin: 130px 247px; transform-box: view-box; }
+@keyframes phLink {
+  0%, 5%    { transform: scale(1); }
+  8%        { transform: scale(1.05); }
+  10.5%     { transform: scale(1); }
+  12%       { transform: scale(0.94); }
+  13.5%,100%{ transform: scale(1); }
+}
+.ph-shine { animation-name: phShine; }
+@keyframes phShine {
+  0%, 4%   { transform: translateX(0) skewX(-18deg); opacity: 0; }
+  5%       { opacity: 0.45; }
+  11%      { transform: translateX(300px) skewX(-18deg); opacity: 0.45; }
+  12%,100% { transform: translateX(300px) skewX(-18deg); opacity: 0; }
+}
+
+.ph-menu-and .tl, .ph-menu-ios .tl { animation-name: phMenuPulse; transform-origin: center; transform-box: fill-box; }
+@keyframes phMenuPulse {
+  0%, 30%   { transform: scale(1); }
+  33%       { transform: scale(1.5); }
+  36%       { transform: scale(1); }
+  38.5%     { transform: scale(1.4); }
+  41%, 100% { transform: scale(1); }
+}
+
+.ph-dropdown { animation-name: phDrop; opacity: 0; transform-origin: 226px 92px; transform-box: view-box; }
+.ph-dd-ios { transform-origin: 130px 500px; }
+@keyframes phDrop {
+  0%, 41%   { opacity: 0; transform: scaleY(0.3); }
+  44.5%     { opacity: 1; transform: scaleY(1.06); }
+  46%, 58%  { opacity: 1; transform: scaleY(1); }
+  61%, 100% { opacity: 0; transform: scaleY(0.94); }
+}
+.ph-dd-hot { animation-name: phHot; transform-origin: center; transform-box: fill-box; }
+@keyframes phHot {
+  0%, 45%   { transform: scale(1); }
+  48%       { transform: scale(1.06); }
+  50%       { transform: scale(1); }
+  53%       { transform: scale(1.06); }
+  55.5%     { transform: scale(0.95); }
+  57%, 100% { transform: scale(1); }
+}
+
+.ap-card { opacity: 0; transform-origin: center; transform-box: fill-box; }
+.ac1 { animation-name: phCard1; }
+.ac2 { animation-name: phCard2; }
+.ac3 { animation-name: phCard3; }
+.ac4 { animation-name: phCard4; }
+@keyframes phCard1 {
+  0%, 23%  { opacity: 0; transform: translateY(14px) scale(0.92); }
+  27%, 62% { opacity: 1; transform: translateY(0) scale(1); }
+  67%,100% { opacity: 1; }
+}
+@keyframes phCard2 {
+  0%, 24.5%{ opacity: 0; transform: translateY(14px) scale(0.92); }
+  28.5%,62%{ opacity: 1; transform: translateY(0) scale(1); }
+  67%,100% { opacity: 1; }
+}
+@keyframes phCard3 {
+  0%, 26%  { opacity: 0; transform: translateY(14px) scale(0.92); }
+  30%, 62% { opacity: 1; transform: translateY(0) scale(1); }
+  67%,100% { opacity: 1; }
+}
+@keyframes phCard4 {
+  0%, 27.5%{ opacity: 0; transform: translateY(14px) scale(0.92); }
+  31.5%,62%{ opacity: 1; transform: translateY(0) scale(1); }
+  67%,100% { opacity: 1; }
+}
+
+/* сърчицата в мини-приложението — собствен живот */
+.ph-heart { opacity: 0; transform-origin: center; transform-box: fill-box; animation: phHeartRise 3.6s ease-in infinite; animation-play-state: paused; }
+.play .ph-heart { animation-play-state: running; }
+.ph-heart.hh2 { animation-delay: -1.8s; }
+@keyframes phHeartRise {
+  0%   { opacity: 0;   transform: translateY(0) scale(0.8); }
+  15%  { opacity: 0.9; }
+  70%  { opacity: 0.4; }
+  100% { opacity: 0;   transform: translateY(-30px) scale(1.05); }
+}
+
+.ph-newicon { animation-name: phIcon; opacity: 0; transform-box: view-box; }
+@keyframes phIcon {
+  0%, 68%  { opacity: 0; transform: translateY(-180px); }
+  69%      { opacity: 1; transform: translateY(-180px); }
+  74%      { opacity: 1; transform: translateY(0) scaleY(1); }
+  75.5%    { transform: translateY(1px) scaleY(0.9) scaleX(1.08); }
+  78%      { transform: translateY(-14px) scale(1); }
+  81%      { transform: translateY(0) scaleY(0.96) scaleX(1.03); }
+  83.5%    { transform: translateY(-5px) scale(1); }
+  86%, 96% { opacity: 1; transform: translateY(0) scale(1); }
+  98%,100% { opacity: 0; transform: translateY(0); }
+}
+.ph-iconlabel { animation-name: phLabel; opacity: 0; }
+@keyframes phLabel { 0%,84% {opacity:0;} 88%,95% {opacity:1;} 99%,100% {opacity:0;} }
+
+.ph-icon-glow { animation-name: phGlow; opacity: 0; transform-origin: 166px 166px; transform-box: view-box; }
+@keyframes phGlow {
+  0%, 82%  { opacity: 0; transform: scale(0.5); }
+  85%      { opacity: 0.9; transform: scale(1); }
+  93%,100% { opacity: 0; transform: scale(1.7); }
+}
+.ph-glow2 { animation-name: phGlow2; }
+@keyframes phGlow2 {
+  0%, 84%  { opacity: 0; transform: scale(0.5); }
+  87%      { opacity: 0.7; transform: scale(1.15); }
+  95%,100% { opacity: 0; transform: scale(1.95); }
+}
+
+.ph-confetti circle.tl { animation-name: phConfetti; opacity: 0; transform-origin: center; transform-box: fill-box; }
+.ph-confetti circle.tl:nth-of-type(2) { animation-name: phConfetti2; }
+.ph-confetti circle.tl:nth-of-type(3) { animation-name: phConfetti3; }
+.ph-confetti circle.tl:nth-of-type(4) { animation-name: phConfetti2; }
+.ph-confetti circle.tl:nth-of-type(5) { animation-name: phConfetti3; }
+.ph-confetti rect.tl { animation-name: phConfettiR; opacity: 0; transform-origin: center; transform-box: fill-box; }
+.ph-confetti rect.tl:nth-of-type(2) { animation-name: phConfettiR2; }
+@keyframes phConfetti {
+  0%, 81%  { opacity: 0; transform: translateY(6px) scale(0.3); }
+  84%      { opacity: 1; transform: translateY(-6px) scale(1.2); }
+  94%,100% { opacity: 0; transform: translateY(-20px) scale(0.6); }
+}
+@keyframes phConfetti2 {
+  0%, 82%  { opacity: 0; transform: translate(4px, 8px) scale(0.3); }
+  86%      { opacity: 1; transform: translate(-3px, -8px) scale(1.25); }
+  95%,100% { opacity: 0; transform: translate(-8px, -22px) scale(0.5); }
+}
+@keyframes phConfetti3 {
+  0%, 83%  { opacity: 0; transform: translate(-5px, 6px) scale(0.3); }
+  87%      { opacity: 1; transform: translate(4px, -10px) scale(1.1); }
+  96%,100% { opacity: 0; transform: translate(9px, -24px) scale(0.5); }
+}
+@keyframes phConfettiR {
+  0%, 81%  { opacity: 0; transform: translateY(8px) rotate(0deg); }
+  85%      { opacity: 1; transform: translateY(-10px) rotate(140deg); }
+  95%,100% { opacity: 0; transform: translateY(-26px) rotate(300deg); }
+}
+@keyframes phConfettiR2 {
+  0%, 83%  { opacity: 0; transform: translateY(8px) rotate(0deg); }
+  87%      { opacity: 1; transform: translateY(-12px) rotate(-160deg); }
+  96%,100% { opacity: 0; transform: translateY(-28px) rotate(-320deg); }
+}
+.ph-done  { animation-name: phDone; opacity: 0; }
+.ph-done2 { animation-name: phDone2; opacity: 0; }
+@keyframes phDone  { 0%,83% {opacity:0;} 87%,95% {opacity:1;} 99%,100% {opacity:0;} }
+@keyframes phDone2 { 0%,86% {opacity:0;} 90%,95% {opacity:1;} 99%,100% {opacity:0;} }
+
+/* пръстчето */
+.ph-finger { animation-name: phFingerAnd; transform: translate(310px, 560px); transform-box: view-box; }
+@keyframes phFingerAnd {
+  0%       { transform: translate(310px, 560px); }
+  6%       { transform: translate(150px, 280px); }
+  11%      { transform: translate(130px, 247px); }
+  12%      { transform: translate(130px, 247px) scale(0.85); }
+  13.5%    { transform: translate(130px, 247px); }
+  20%      { transform: translate(238px, 330px); }
+  30%      { transform: translate(248px, 140px); }
+  36%      { transform: translate(220px, 76px); }
+  39.5%    { transform: translate(220px, 76px); }
+  40.5%    { transform: translate(220px, 76px) scale(0.85); }
+  42%      { transform: translate(220px, 76px); }
+  50%      { transform: translate(172px, 152px); }
+  54.5%    { transform: translate(164px, 150px); }
+  55.5%    { transform: translate(164px, 150px) scale(0.85); }
+  57%      { transform: translate(164px, 150px); }
+  66%      { transform: translate(310px, 400px); }
+  100%     { transform: translate(310px, 560px); }
+}
+.ios .ph-finger { animation-name: phFingerIos; }
+@keyframes phFingerIos {
+  0%       { transform: translate(310px, 560px); }
+  6%       { transform: translate(150px, 280px); }
+  11%      { transform: translate(130px, 247px); }
+  12%      { transform: translate(130px, 247px) scale(0.85); }
+  13.5%    { transform: translate(130px, 247px); }
+  20%      { transform: translate(238px, 330px); }
+  30%      { transform: translate(244px, 140px); }
+  36%      { transform: translate(214px, 77px); }
+  39.5%    { transform: translate(214px, 77px); }
+  40.5%    { transform: translate(214px, 77px) scale(0.85); }
+  42%      { transform: translate(214px, 77px); }
+  50%      { transform: translate(146px, 400px); }
+  54.5%    { transform: translate(130px, 423px); }
+  55.5%    { transform: translate(130px, 423px) scale(0.85); }
+  57%      { transform: translate(130px, 423px); }
+  66%      { transform: translate(310px, 490px); }
+  100%     { transform: translate(310px, 560px); }
+}
+.ph-tapwave { animation-name: phWave; opacity: 0; transform-origin: center; transform-box: fill-box; }
+.ph-wave2 { animation-name: phWave2; }
+@keyframes phWave {
+  0%, 12%   { opacity: 0; transform: scale(0.5); }
+  12.5%     { opacity: 0.9; transform: scale(0.6); }
+  16%       { opacity: 0; transform: scale(2); }
+  40%       { opacity: 0; transform: scale(0.5); }
+  40.5%     { opacity: 0.9; transform: scale(0.6); }
+  44%       { opacity: 0; transform: scale(2); }
+  55%       { opacity: 0; transform: scale(0.5); }
+  55.5%     { opacity: 0.9; transform: scale(0.6); }
+  59%       { opacity: 0; transform: scale(2); }
+  60%, 100% { opacity: 0; }
+}
+@keyframes phWave2 {
+  0%, 12.5% { opacity: 0; transform: scale(0.5); }
+  13%       { opacity: 0.6; transform: scale(0.7); }
+  17.5%     { opacity: 0; transform: scale(2.5); }
+  40.5%     { opacity: 0; transform: scale(0.5); }
+  41%       { opacity: 0.6; transform: scale(0.7); }
+  45.5%     { opacity: 0; transform: scale(2.5); }
+  55.5%     { opacity: 0; transform: scale(0.5); }
+  56%       { opacity: 0.6; transform: scale(0.7); }
+  60.5%     { opacity: 0; transform: scale(2.5); }
+  61%, 100% { opacity: 0; }
+}
+
+/* надписите под телефона */
+.movie-captions { position: relative; height: 54px; margin-top: 18px; }
+.mc {
+  position: absolute;
+  inset: 0;
+  font-size: 15.5px;
+  font-weight: 700;
+  color: var(--ink);
+  opacity: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 4px;
+}
+.mc strong {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 24px; height: 24px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, var(--pink), var(--lav));
+  color: var(--white);
+  font-size: 13px;
+  margin-right: 6px;
+}
+.mc1 { animation-name: mcAct1; }
+.mc2 { animation-name: mcAct2; }
+.mc3 { animation-name: mcAct3; }
+/* платформените варианти — след .mc, за да надделеят над display:flex */
+.phone-stage:not(.ios) .mc-ios { display: none; }
+.phone-stage.ios .mc-and { display: none; }
+@keyframes mcAct1 { 0%,2% {opacity:0; transform:translateY(8px);} 5%,26% {opacity:1; transform:translateY(0);} 30%,100% {opacity:0;} }
+@keyframes mcAct2 { 0%,30% {opacity:0; transform:translateY(8px);} 34%,58% {opacity:1; transform:translateY(0);} 62%,100% {opacity:0;} }
+@keyframes mcAct3 { 0%,62% {opacity:0; transform:translateY(8px);} 66%,95% {opacity:1; transform:translateY(0);} 99%,100% {opacity:0;} }
+
+/* прогрес-точките */
+.movie-dots { display: flex; gap: 10px; justify-content: center; margin-top: 6px; }
+.mdot {
+  position: relative;
+  width: 34px; height: 10px;
+  border-radius: 999px;
+  border: none;
+  background: #e4def0;
+  cursor: pointer;
+  overflow: hidden;
+  transition: transform 0.2s ease;
+}
+.mdot:hover { transform: scale(1.15); }
+.mdot::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  border-radius: 999px;
+  background: linear-gradient(90deg, var(--pink), var(--pink-deep));
+  transform: scaleX(0);
+  transform-origin: left;
+  animation-duration: 12s;
+  animation-iteration-count: infinite;
+  animation-timing-function: linear;
+  animation-play-state: paused;
+  animation-delay: var(--seek, 0s);
+}
+.play .mdot::after { animation-play-state: running; }
+.md1::after { animation-name: mdFill1; }
+.md2::after { animation-name: mdFill2; }
+.md3::after { animation-name: mdFill3; }
+@keyframes mdFill1 { 0% {transform:scaleX(0);} 30% {transform:scaleX(1);} 30.1%,100% {transform:scaleX(0);} }
+@keyframes mdFill2 { 0%,30% {transform:scaleX(0);} 62% {transform:scaleX(1);} 62.1%,100% {transform:scaleX(0);} }
+@keyframes mdFill3 { 0%,62% {transform:scaleX(0);} 100% {transform:scaleX(1);} }
+
+/* ═══════════════ ФУТЪР ═══════════════ */
+
+.footer {
+  text-align: center;
+  padding: 46px 20px calc(60px + 74px);
+}
+.footer-balloon {
+  width: 52px;
+  animation: footBalloon 6s ease-in-out infinite;
+  margin-bottom: 10px;
+}
+@keyframes footBalloon {
+  0%, 100% { transform: translateY(0)     rotate(-3deg); }
+  50%      { transform: translateY(-16px) rotate(3.5deg); }
+}
+.footer-love { font-weight: 800; font-size: 17px; margin-bottom: 10px; }
+.footer-disclaimer { font-size: 13px; color: var(--ink-soft); margin-bottom: 12px; }
+.footer-year { font-size: 12.5px; color: var(--ink-soft); opacity: 0.8; }
+
+/* ═══════════════ ДОЛНА НАВИГАЦИЯ ═══════════════ */
+
+.bottom-nav {
+  position: fixed;
+  bottom: 14px;
+  left: 50%;
+  transform: translateX(-50%);
+  display: flex;
+  gap: 4px;
+  background: rgba(255, 255, 255, 0.92);
+  backdrop-filter: blur(12px);
+  border-radius: 999px;
+  padding: 8px 12px;
+  box-shadow: 0 12px 32px rgba(150, 130, 180, 0.3);
+  z-index: 50;
+}
+.bn-item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1px;
+  /* 22.07 (жива обиколка): четирите ленти са <a>, а „Профил“ е <button> —
+     и само той получаваше системния сив фон на браузъра (#f0f0f0). В тъмна
+     тема това беше светло петно със сив текст върху него: нечетимо.
+     Нулираме бутонските подразбирания, за да изглеждат петте еднакво. */
+  background: transparent;
+  border: 0;
+  font-family: inherit;
+  cursor: pointer;
+  font-size: 11px;
+  font-weight: 800;
+  /* не var(--ink-soft): при 11px върху полупрозрачната лента той дава 2.59.
+     Същият тон, само по-наситен — 5.6 контраст, а лентата остава дискретна.
+     Пипаме САМО тук, за да не мърдаме --ink-soft на другите 100 места. */
+  color: #6b6483;
+  text-decoration: none;
+  padding: 6px 13px;
+  border-radius: 999px;
+  transition: background 0.25s ease, color 0.25s ease, transform 0.25s ease;
+}
+.bn-item span { font-size: 20px; }
+.bn-item:hover { transform: translateY(-3px); }
+.bn-item.bn-active, .bn-item:hover {
+  background: var(--pink-soft);
+  /* --pink-deep върху --pink-soft дава контраст 2.3 при 11px — не се чете.
+     Марковото розово остава навсякъде другаде; тук взимаме по-наситения му тон. */
+  color: var(--pink-text);
+}
+
+/* ═══════════════ МОДАЛ ═══════════════ */
+
+.modal-backdrop[hidden] { display: none; }
+.modal-backdrop {
+  position: fixed;
+  inset: 0;
+  background: rgba(90, 84, 112, 0.4);
+  backdrop-filter: blur(6px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 100;
+  padding: 24px;
+}
+.modal {
+  background: var(--white);
+  border-radius: 34px;
+  padding: 40px 34px 34px;
+  max-width: 420px;
+  text-align: center;
+  box-shadow: 0 30px 80px rgba(90, 84, 112, 0.4);
+  animation: modalPop 0.45s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+@keyframes modalPop {
+  from { opacity: 0; transform: scale(0.7) translateY(30px); }
+  to   { opacity: 1; transform: scale(1)   translateY(0); }
+}
+.modal-emoji { font-size: 56px; display: block; margin-bottom: 12px; animation: wobble 2.4s ease-in-out infinite; }
+.modal h3 { font-size: 23px; margin-bottom: 10px; }
+.modal p  { color: var(--ink-soft); font-weight: 600; margin-bottom: 22px; }
+
+/* ═══════════════ ДРЕБНИ ЕКРАНИ ═══════════════ */
+
+@media (max-width: 480px) {
+  .hero { padding-top: 20px; }
+  .lg-baby, .lg-land { stroke-width: 13px; }
+}
+
+/* ═══════════════ НАМАЛЕНО ДВИЖЕНИЕ ═══════════════ */
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.15s !important;
+  }
+  .reveal { opacity: 1; transform: none; }
+  .lyr-bg, .lyr-mid, .lyr-fg { transform: none; }
+  .room-card { transform: none; }
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  .ap-card { opacity: 1; }
+  .ph-shop { opacity: 1; }
+  
+  .gchip { opacity: 1; }
+  
+  .burst-layer { display: none; }
+}
+
+/* ═══════════════ СТАЯТА: ПОМОЩНИКЪТ НА МАМА ═══════════════ */
+
+.room-overlay[hidden] { display: none; }
+.room-overlay {
+  position: fixed; inset: 0;
+  background: rgba(90, 84, 112, 0.42);
+  backdrop-filter: blur(7px);
+  z-index: 120;
+  display: flex; align-items: center; justify-content: center;
+}
+.ro-panel {
+  width: 100%; height: 100%;
+  max-width: 560px;
+  background: linear-gradient(180deg, #fdfbff, #f7f4fc);
+  display: flex; flex-direction: column;
+  overflow: hidden;
+  animation: roIn 0.45s cubic-bezier(0.22, 1, 0.36, 1);
+}
+@media (min-width: 600px) {
+  .ro-panel { height: min(88vh, 760px); border-radius: 30px; box-shadow: 0 40px 90px rgba(60, 50, 90, 0.45); }
+}
+@keyframes roIn {
+  from { opacity: 0; transform: translateY(46px) scale(0.96); }
+  to   { opacity: 1; transform: translateY(0) scale(1); }
+}
+
+.ro-head {
+  display: flex; align-items: center; gap: 12px;
+  padding: 14px 16px;
+}
+.ro-peach  .ro-head { background: linear-gradient(135deg, #fde8d8, #fdf0e4); }
+.ro-sky    .ro-head { background: linear-gradient(135deg, #d9eaf8, #e9f3fc); }
+.ro-carrot .ro-head { background: linear-gradient(135deg, #fde3c8, #fdeedd); }
+.ro-green  .ro-head { background: linear-gradient(135deg, #ddf3ec, #e4f5ee); }
+.ro-lav    .ro-head { background: linear-gradient(135deg, #eae3f7, #f0eaf9); }
+.ro-sun    .ro-head { background: linear-gradient(135deg, #fdf3d7, #fdf5dd); }
+.ro-mint   .ro-head { background: linear-gradient(135deg, #ddf3ec, #e2f4ee); }
+
+.ro-nav {
+  border: none; background: rgba(255,255,255,0.7);
+  width: 38px; height: 38px; border-radius: 50%;
+  font-size: 17px; color: var(--ink);
+  cursor: pointer; flex: none;
+  transition: transform 0.2s ease;
+}
+.ro-nav:hover { transform: scale(1.1); }
+/* проход 3 T5: 🆘 в главата на всяка стая — СОС на едно докосване (задържане→112).
+   Леко розово-червен фон за разпознаваемост; без анимация (статичен).
+   ro-who се разтяга (flex), затова 🆘 и ✕ сядат заедно вдясно. */
+.ro-sosbtn { background: rgba(242,145,189,0.22); margin-right: 6px; }
+.ro-sosbtn:hover { background: rgba(242,145,189,0.34); }
+/* 04.08 (обиколка): тихият ред при ПРЕДПАЗЕН въпрос за спешност. Мама пита
+   „страх ме е да не се задави“ — не ѝ крещим 112, но числото стои под текста.
+   По-дребно и по-бледо от отговора: присъства, не вика. */
+.ro-quiet { font-size: 0.88em; opacity: 0.72; }
+.ro-quiet a { color: inherit; font-weight: 700; text-decoration: underline; }
+
+.ro-avatar {
+  position: relative; flex: none;
+  width: 46px; height: 58px;
+  display: inline-block;
+  animation: roAvaFloat 4s ease-in-out infinite;
+}
+.ro-avatar .ro-balloon { width: 100%; height: auto; display: block; }
+.ro-avatar .ro-badge {
+  position: absolute; right: -7px; bottom: 2px;
+  font-size: 17px;
+  filter: drop-shadow(0 2px 3px rgba(0,0,0,0.15));
+}
+@keyframes roAvaFloat {
+  0%, 100% { transform: translateY(0) rotate(-2deg); }
+  50%      { transform: translateY(-4px) rotate(2deg); }
+}
+
+.ro-who { flex: 1; min-width: 0; }
+.ro-name { font-family: 'Comfortaa', 'Comfortaa-fallback', sans-serif; font-weight: 700; font-size: 19px; color: var(--ink); }
+.ro-sub  { font-size: 12px; font-weight: 700; color: var(--ink-soft); }
+
+.ro-note {
+  font-size: 12.5px; font-weight: 700;
+  color: var(--ink-soft);
+  background: #fff8e8;
+  padding: 7px 16px;
+  border-top: 1px solid #f5ecd2;
+  border-bottom: 1px solid #f5ecd2;
+}
+
+.ro-chat {
+  flex: 1;
+  min-height: 0;
+  overflow-y: auto;
+  padding: 18px 14px 8px;
+  display: flex; flex-direction: column; gap: 10px;
+  overscroll-behavior: contain;
+}
+.msg { display: flex; align-items: flex-end; gap: 8px; }
+.msg.user { justify-content: flex-end; }
+.msg-ava { position: relative; width: 26px; flex: none; }
+.msg-ava .ro-balloon { width: 100%; height: auto; display: block; }
+.msg-ava .ro-badge { position: absolute; right: -6px; bottom: -3px; font-size: 11px; }
+.msg-bubble {
+  max-width: 78%;
+  padding: 11px 15px;
+  border-radius: 19px;
+  font-size: 14.5px; font-weight: 600;
+  line-height: 1.5;
+  color: var(--ink);
+  animation: msgIn 0.35s cubic-bezier(0.34, 1.3, 0.64, 1);
+}
+.msg.bot .msg-bubble {
+  background: #ffffff;
+  border-bottom-left-radius: 6px;
+  box-shadow: 0 3px 12px rgba(150, 130, 180, 0.14);
+}
+.msg.user .msg-bubble {
+  background: linear-gradient(135deg, #f7a8cb, var(--pink-deep));
+  color: #ffffff;
+  border-bottom-right-radius: 6px;
+  box-shadow: 0 4px 14px rgba(229, 107, 164, 0.32);
+}
+@keyframes msgIn {
+  from { opacity: 0; transform: translateY(10px) scale(0.96); }
+  to   { opacity: 1; transform: translateY(0) scale(1); }
+}
+
+.msg-bubble.typing { display: inline-flex; gap: 5px; padding: 14px 16px; }
+.msg-bubble.typing span {
+  width: 7px; height: 7px; border-radius: 50%;
+  background: var(--lav);
+  animation: typDot 1.1s ease-in-out infinite;
+}
+.msg-bubble.typing span:nth-child(2) { animation-delay: 0.15s; }
+.msg-bubble.typing span:nth-child(3) { animation-delay: 0.3s; }
+@keyframes typDot {
+  0%, 60%, 100% { transform: translateY(0); opacity: 0.45; }
+  30%           { transform: translateY(-5px); opacity: 1; }
+}
+
+.ro-sos {
+  display: inline-block;
+  margin-top: 4px;
+  background: #ffe3e3;
+  color: #c0392b;
+  font-weight: 800;
+  padding: 8px 16px;
+  border-radius: 999px;
+  text-decoration: none;
+}
+
+.ro-chips {
+  display: flex; flex-wrap: nowrap; gap: 8px;
+  padding: 8px 14px;
+  overflow-x: auto;
+  scrollbar-width: none;
+  flex: none;
+}
+.ro-chips::-webkit-scrollbar { display: none; }
+.ro-chip { white-space: nowrap; flex: none; }
+.ro-chip {
+  border: none;
+  background: #ffffff;
+  border: 1.5px solid var(--lav-soft);
+  color: var(--ink);
+  font-family: inherit;
+  font-size: 12.5px; font-weight: 800;
+  padding: 8px 14px;
+  border-radius: 999px;
+  cursor: pointer;
+  transition: transform 0.2s ease, background 0.2s ease;
+  animation: msgIn 0.4s ease both;
+}
+.ro-chip:hover { transform: translateY(-2px); background: var(--pink-soft); }
+
+.ro-inputbar {
+  display: flex; gap: 8px;
+  padding: 10px 14px;
+  background: #ffffff;
+  border-top: 1px solid #efe9f7;
+}
+.ro-inputbar input {
+  flex: 1;
+  border: 2px solid var(--lav-soft);
+  border-radius: 999px;
+  padding: 11px 18px;
+  font-family: inherit;
+  font-size: 14.5px; font-weight: 600;
+  color: var(--ink);
+  outline: none;
+  transition: border-color 0.2s ease;
+}
+.ro-inputbar input:focus { border-color: var(--pink); }
+.ro-inputbar button {
+  border: none; flex: none;
+  width: 46px; height: 46px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, #f7a8cb, var(--pink-deep));
+  color: #fff; font-size: 17px;
+  cursor: pointer;
+  box-shadow: 0 6px 14px rgba(229, 107, 164, 0.35);
+  transition: transform 0.2s ease;
+}
+.ro-inputbar button:hover { transform: scale(1.08); }
+.ro-disc {
+  font-size: 10.5px; font-weight: 700;
+  color: var(--ink-soft);
+  text-align: center;
+  padding: 5px 14px 9px;
+  background: #ffffff;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .ro-panel, .msg-bubble, .ro-chip { animation: none; }
+  .ro-avatar { animation: none; }
+}
+
+/* ═══════════════ „ДНЕС“ — умен начален екран ═══════════════ */
+.today { max-width: 620px; margin: 0 auto; padding: 10px 20px 0; }
+.today[hidden] { display: none; }
+.td-inner {
+  background: linear-gradient(135deg, #ffffff, #fdf3f9);
+  border-radius: 26px; padding: 20px 22px;
+  box-shadow: 0 14px 40px rgba(150,130,180,0.2);
+  border: 1.5px solid rgba(242,145,189,0.18);
+}
+.td-top { display: flex; align-items: center; gap: 14px; margin-bottom: 12px; }
+.td-ava { width: 40px; height: 56px; flex: none; animation: roAvaFloat 4s ease-in-out infinite; }
+.td-ava svg { width: 100%; height: auto; display: block; }
+/* проход 4 [33]: растящото силуетче — позата се сменя с месеците */
+.bb-sil { fill: var(--pink); filter: drop-shadow(0 2px 4px rgba(229,107,164,.28)); }
+.bb-ava { transform-origin: bottom center; }
+.bb-ava-pop .bb-sil { animation: bbSilPop .7s cubic-bezier(.34,1.56,.64,1); transform-box: fill-box; transform-origin: bottom center; }
+@keyframes bbSilPop { 0% { transform: scale(.4); opacity: .3; } 60% { transform: scale(1.15); opacity: 1; } 100% { transform: scale(1); } }
+[data-theme="dark"] .bb-sil { fill: #f291bd; }
+@media (prefers-reduced-motion: reduce) { .bb-ava-pop .bb-sil { animation: none; } }
+.td-hello { font-family: 'Comfortaa', 'Comfortaa-fallback', sans-serif; font-size: 15px; font-weight: 700; color: var(--pink-deep); }
+.td-age { font-size: 17px; font-weight: 700; color: var(--ink); }
+.td-tip {
+  background: #fff8e8; border-radius: 16px; padding: 13px 16px;
+  font-size: 14px; font-weight: 700; color: #8a6f3f; line-height: 1.5; margin-bottom: 12px;
+}
+.td-chips { display: flex; flex-wrap: wrap; gap: 8px; }
+.td-chip {
+  border: 1.5px solid var(--lav-soft); background: #fff; cursor: pointer;
+  font-family: inherit; font-size: 12.5px; font-weight: 800; color: var(--ink);
+  padding: 9px 15px; border-radius: 999px; transition: transform 0.2s ease, background 0.2s ease;
+}
+.td-chip:hover { transform: translateY(-2px); background: var(--pink-soft); }
+.td-accent { background: linear-gradient(135deg, #f7a8cb, var(--pink-deep)); color: #fff; border-color: transparent; }
+
+/* ═══════════════ СЕСИЯ 1: баджове „готова“, приветствие, onboarding ═══════════════ */
+
+/* баджът „Готова ✨ Влез →“ */
+.room-ready {
+  display: inline-flex; align-items: center; gap: 7px;
+  background: linear-gradient(135deg, var(--mint-soft), var(--pink-soft));
+  color: var(--ink-soft);
+}
+.rr-go { color: var(--pink-deep); font-weight: 800; transition: transform 0.28s cubic-bezier(0.34,1.56,0.64,1); }
+.room-card:hover .rr-go, .room-card:focus-visible .rr-go { transform: translateX(5px); }
+
+/* CTA в демо-дневника */
+.journal-open { margin: 6px auto 4px; }
+
+/* приветствен вид на „Днес“ (без профил) */
+.td-welcome { text-align: center; }
+.td-welcome .td-ava { width: 46px; height: 62px; margin: 0 auto 6px; }
+.td-whello { font-family: 'Comfortaa', 'Comfortaa-fallback', sans-serif; font-size: 20px; font-weight: 700; color: var(--pink-deep); margin-bottom: 8px; }
+.td-wtext { font-size: 14.5px; font-weight: 600; color: var(--ink-soft); line-height: 1.55; margin-bottom: 16px; }
+.td-onb { display: inline-block; }
+
+/* onboarding overlay */
+.onb-overlay[hidden] { display: none; }
+.onb-overlay {
+  position: fixed; inset: 0; z-index: 160;
+  background: rgba(90,84,112,0.5); backdrop-filter: blur(8px);
+  display: flex; align-items: center; justify-content: center; padding: 22px;
+}
+.onb-card {
+  width: 100%; max-width: 420px;
+  background: linear-gradient(180deg, #ffffff, #fdf3f9);
+  border-radius: 30px; padding: 28px 26px 22px; text-align: center;
+  box-shadow: 0 34px 80px rgba(60,50,90,0.42);
+  animation: onbIn 0.5s cubic-bezier(0.34,1.4,0.64,1);
+}
+@keyframes onbIn { from { opacity: 0; transform: translateY(40px) scale(0.94); } to { opacity: 1; transform: none; } }
+.onb-ava { display: inline-block; width: 52px; height: 66px; animation: roAvaFloat 4s ease-in-out infinite; }
+.onb-ava svg { width: 100%; height: auto; display: block; }
+.onb-title { font-family: 'Comfortaa', 'Comfortaa-fallback', sans-serif; font-size: 23px; color: var(--pink-deep); margin: 6px 0 8px; }
+.onb-text { font-size: 14px; font-weight: 600; color: var(--ink-soft); line-height: 1.55; margin-bottom: 16px; }
+.onb-card .jr-word { text-align: center; }
+.onb-sex { display: flex; gap: 8px; margin: 6px 0 10px; }
+.onb-sexbtn {
+  flex: 1; border: 1.5px solid var(--lav-soft); background: #fff;
+  font-family: inherit; font-size: 13px; font-weight: 800; color: var(--ink);
+  padding: 11px 6px; border-radius: 14px; cursor: pointer; transition: transform 0.2s ease, opacity 0.2s ease, background-color 0.2s ease, border-color 0.2s ease;
+}
+.onb-sexbtn.on { background: linear-gradient(135deg, #f7a8cb, var(--pink-deep)); border-color: transparent; color: #fff; }
+.onb-lbl { display: block; text-align: left; font-size: 12.5px; font-weight: 800; color: var(--ink-soft); margin: 4px 0 4px; }
+.onb-lbl-soft { font-weight: 600; opacity: .68; font-size: 11.5px; margin-top: 10px; }
+.onb-save { display: block; width: 100%; margin-top: 6px; }
+.onb-skip { display: block; width: 100%; margin-top: 8px; border: none; background: transparent; color: var(--ink-soft); font-family: inherit; font-size: 13px; font-weight: 700; cursor: pointer; padding: 8px; }
+.onb-skip:hover { color: var(--pink-deep); }
+
+/* тъмен режим за новите неща */
+[data-theme="dark"] .onb-card { background: #2a2640; }
+[data-theme="dark"] .onb-sexbtn { background: #342f4e; border-color: #423b60; color: var(--ink); }
+[data-theme="dark"] .room-ready { background: linear-gradient(135deg, #2b4038, #4a2f42); }
+
+
+/* робустност: onboarding скролва на ниски екрани */
+.onb-card { max-height: 92vh; overflow-y: auto; }
+
+
+/* ═══════════════ СЕСИЯ 3: конфети, празници ═══════════════ */
+.fx-layer { position: fixed; inset: 0; pointer-events: none; z-index: 300; overflow: hidden; }
+.fx-conf { position: absolute; width: 9px; height: 9px; border-radius: 2px; animation: fxConf 1.2s cubic-bezier(0.2,0.75,0.4,1) forwards; }
+@keyframes fxConf {
+  0% { opacity: 1; transform: translate(0,0) rotate(0deg); }
+  100% { opacity: 0; transform: translate(var(--dx), calc(var(--dy) + 150px)) rotate(var(--rot)); }
+}
+.fx-cheer {
+  position: fixed; left: 50%; top: 20%; transform: translateX(-50%);
+  background: linear-gradient(135deg, #f7a8cb, #e56ba4); color: #fff;
+  font-family: 'Comfortaa', 'Comfortaa-fallback', sans-serif; font-weight: 700; font-size: 16px;
+  padding: 12px 24px; border-radius: 999px; z-index: 301;
+  box-shadow: 0 14px 34px rgba(229,107,164,0.5); white-space: nowrap;
+  animation: fxCheer 2.4s ease forwards;
+}
+@keyframes fxCheer {
+  0% { opacity: 0; transform: translateX(-50%) translateY(24px) scale(0.8); }
+  12%, 80% { opacity: 1; transform: translateX(-50%) translateY(0) scale(1); }
+  100% { opacity: 0; transform: translateX(-50%) translateY(-16px) scale(1); }
+}
+.td-cheer {
+  background: linear-gradient(135deg, #fdeef6, #fdf3d7);
+  border-radius: 14px; padding: 11px 14px; margin-bottom: 12px;
+  font-size: 13.5px; font-weight: 700; color: var(--pink-deep);
+  animation: bbPop 0.6s cubic-bezier(0.34,1.56,0.64,1);
+}
+[data-theme="dark"] .td-cheer { background: linear-gradient(135deg, #3a2b36, #3a3320); }
+
+/* ═══════════════ ГЛОБАЛНА ТЪРСАЧКА ═══════════════ */
+.search-trigger {
+  display: block; width: min(560px, 92%); margin: 0 auto 30px;
+  border: 1.5px solid var(--lav-soft); background: #fff; cursor: text;
+  font-family: inherit; font-size: 14.5px; font-weight: 600; color: var(--ink-soft);
+  text-align: left; padding: 14px 20px; border-radius: 999px;
+  box-shadow: 0 6px 20px rgba(150,130,180,0.12); transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+.search-trigger:hover { transform: translateY(-2px); box-shadow: 0 10px 26px rgba(150,130,180,0.2); }
+
+.search-overlay[hidden] { display: none; }
+.search-overlay {
+  position: fixed; inset: 0; z-index: 150;
+  background: rgba(90,84,112,0.5); backdrop-filter: blur(8px);
+  display: flex; align-items: flex-start; justify-content: center; padding: 40px 18px;
+}
+.search-panel {
+  width: 100%; max-width: 560px; max-height: 86vh;
+  background: linear-gradient(180deg, #fffdff, #f8f5fd);
+  border-radius: 26px; overflow: hidden; display: flex; flex-direction: column;
+  box-shadow: 0 34px 80px rgba(60,50,90,0.42); animation: onbIn 0.4s cubic-bezier(0.22,1,0.36,1);
+}
+.search-bar { display: flex; align-items: center; gap: 8px; padding: 14px 16px; border-bottom: 1px solid #efe9f7; }
+.search-ico { font-size: 18px; }
+.search-bar input { flex: 1; border: none; outline: none; background: transparent; font-family: inherit; font-size: 16px; font-weight: 600; color: var(--ink); }
+.search-close { border: none; background: #f2eef8; width: 32px; height: 32px; border-radius: 50%; cursor: pointer; color: var(--ink); font-size: 14px; flex: none; }
+.search-results { overflow-y: auto; padding: 8px; }
+.search-hint { padding: 26px 20px; text-align: center; font-size: 13.5px; font-weight: 600; color: var(--ink-soft); line-height: 1.5; }
+.search-res {
+  width: 100%; display: flex; align-items: center; gap: 12px; text-align: left;
+  border: none; background: transparent; cursor: pointer; font-family: inherit;
+  padding: 11px 12px; border-radius: 14px; transition: background 0.15s ease;
+}
+.search-res:hover { background: var(--pink-soft); }
+.sr-e { font-size: 24px; flex: none; }
+.sr-txt { flex: 1; display: flex; flex-direction: column; }
+.sr-label { font-size: 14.5px; font-weight: 700; color: var(--ink); }
+.sr-sub { font-size: 11.5px; font-weight: 600; color: var(--ink-soft); }
+.sr-arr { color: var(--pink-deep); font-weight: 800; }
+
+[data-theme="dark"] .search-trigger { background: #2a2640; border-color: #423b60; }
+[data-theme="dark"] .search-panel { background: #2a2640; }
+[data-theme="dark"] .search-bar { border-color: #40395c; }
+[data-theme="dark"] .search-close { background: #342f4e; }
+[data-theme="dark"] .search-res:hover { background: #342f4e; }
+
+/* 🤍 номерът „за душата“ в чата — по-мек от 112 */
+.ro-sos.ro-soul { background: #efeaff; color: #5b4a9e; }
+
+/* 0.1.4: SOS в навигацията — по-голяма зона за пръст + подсказка за дългото натискане */
+.bottom-nav .bn-sos { padding-top: 6px; padding-bottom: 6px; margin: -6px 0; position: relative; }
+.bottom-nav .bn-sos span { transform: scale(1.15); }
+
+/* проход 4: СОС задържане → зареждащ пръстен (само transform/opacity) */
+.sos-charging { position: relative; }
+.sos-charging::after {
+  content: ''; position: absolute; inset: -4px; border-radius: 50%;
+  border: 2.5px solid var(--pink-deep, #d1487f); pointer-events: none;
+  animation: sosCharge .6s linear forwards;
+}
+@keyframes sosCharge { from { transform: scale(.4); opacity: .25; } to { transform: scale(1); opacity: .95; } }
+@media (prefers-reduced-motion: reduce) { .sos-charging::after { animation: none; opacity: .6; } }
+
+/* ═══════════ 🫁 feedsafe — задавяне в „Захранване" (04.08) ═══════════
+   Само transform/opacity. Никакво движение при prefers-reduced-motion. */
+.fs-tabs { display: flex; gap: 8px; margin: 10px 0 0; }
+.fs-tab {
+  flex: 1; padding: 10px 8px; border: 0; border-radius: 14px; cursor: pointer;
+  font: inherit; font-size: 14px; font-weight: 700; color: var(--ink);
+  background: rgba(255,255,255,0.42);
+  transition: transform 0.18s ease, opacity 0.18s ease;
+  opacity: 0.62;
+}
+.fs-tab.is-on { opacity: 1; transform: scale(1.03); }
+.fs-tab:active { transform: scale(0.97); }
+.fs-pane { margin-top: 10px; padding: 12px 14px; border-radius: 16px; }
+.fs-pane.fs-ok    { background: rgba(129,199,132,0.16); }
+.fs-pane.fs-alarm { background: rgba(239,83,80,0.14); }
+.fs-pt { margin: 0 0 8px; font-size: 13px; font-weight: 700; opacity: 0.78; }
+.fs-ul { margin: 0; padding-left: 20px; }
+.fs-ul li { margin: 6px 0; line-height: 1.5; }
+.fs-table li { margin: 8px 0; }
+.fs-steps { display: block; width: 100%; margin-top: 12px; text-align: center; cursor: pointer; }
+.fs-foot { margin: 10px 0 0; font-size: 13px; opacity: 0.74; line-height: 1.5; }
+
+.fs-list { display: flex; flex-direction: column; gap: 8px; margin-top: 10px; }
+.fs-row {
+  display: block; width: 100%; text-align: left; cursor: pointer;
+  padding: 11px 13px; border: 0; border-radius: 14px; font: inherit; color: var(--ink);
+  background: rgba(255,255,255,0.42);
+  transition: transform 0.18s ease;
+}
+.fs-row:active { transform: scale(0.985); }
+.fs-head { display: flex; align-items: center; gap: 9px; }
+.fs-emo { font-size: 19px; flex: none; }
+.fs-name { flex: 1; font-weight: 600; line-height: 1.35; }
+.fs-arrow { flex: none; opacity: 0.5; transition: transform 0.22s ease; }
+.fs-row.is-open .fs-arrow { transform: rotate(180deg); }
+.fs-body { display: block; margin-top: 8px; line-height: 1.55; opacity: 0.9; }
+
+@media (prefers-reduced-motion: reduce) {
+  .fs-tab, .fs-row, .fs-arrow { transition: none; }
+  .fs-tab.is-on, .fs-tab:active, .fs-row:active { transform: none; }
+  .fs-row.is-open .fs-arrow { transform: none; }
+}
+/* 04.08: бъдещият флаг е по-блед — очакване, не мярка.
+   🔎 05.08: „по-блед" го правеше нечетим — opacity гасеше и текста, и кутията
+   към бялата карта (≈2.9:1). Разликата „сега / после" я носи по-тихият фон,
+   не избледняването. Редът казва кога да се допиташ до лекар — той трябва
+   да се чете.
+   Двоен клас, за да бие .dv-flag от rooms.css (същата тежест, по-късен файл).
+   🔴 05.08 (скептик г03): `.dv-flag-soon { font-size }` беше МЪРТЪВ ред — с
+   еднаква тежест, но в по-ранен файл от `.dv-flag { font-size: 12px }`.
+   Измерено живо: и двата флага дават 12px. А ако беше проработил, щеше да
+   УВЕЛИЧИ шрифта (0.94em се смята спрямо РОДИТЕЛЯ, ~16px → 15px), тоест
+   обратното на замисленото. Махнат; разликата „сега / после" я носи фонът
+   плюс тих кант отляво, който се вижда и в двете теми. */
+.dv-flag.dv-flag-soon { background: #fbf6e6; border-left: 3px solid #d3b06a; }
+/* Тъмната тема НЕ бива да зависи от реда на файловете: `[data-theme] .dv-flag`
+   в dark.css е със СЪЩАТА тежест като двойния клас горе и печели само защото
+   се зарежда по-късно. Мести ли се някой <link>, светлият фон остава с
+   бежовия текст на нощта = светло върху светло. Затова изрично: */
+[data-theme="dark"] .dv-flag.dv-flag-soon { background: #3a3320; }
+
+/* 🔎 05.08 — редът за 112 беше 4.49:1 върху своя блед фон (мерено живо,
+   и в двете теми). Един тон по-тъмно червено → 5.3:1. */
+.ro-sos { color: #a5281c; }
+
+/* ═══════════════════════════════════════════════════════
+   🏠 05.08 — НАЧАЛНИЯТ ЕКРАН. Измерен живо ЗА ПЪРВИ ПЪТ днес:
+   30 нечетими надписа върху повърхността, която всяка майка
+   вижда първа. „Влез →“ на всяка от 9-те стаи беше 2.45:1.
+   ═══════════════════════════════════════════════════════ */
+.td-whello          { color: #c0396f; }   /* 2.89:1 (20px bold, праг 3) */
+.rr-go              { color: #b8356b; }   /* 2.45:1 — × 9 стаи */
+.room-badge.room-read { color: #5f5a70; } /* 4.26:1 */
+.btn-pink           { background: linear-gradient(135deg, #d1487f, #b83a70); } /* бяло = 2.35:1 */
+.room-ready         { color: #5a5470; }   /* --ink-soft върху мента+розово = 4.26 */
+.pt-btn.active      { background: linear-gradient(135deg, #d1487f, #b83a70); } /* 2.35 */
+
+/* 🌙 ОБРАТНАТА ПОСОКА (същият урок като при стаите):
+   потъмненото за светла тема изчезва в тъмна. Измерено, не предположено. */
+[data-theme="dark"] .td-whello { color: #f291bd; }   /* беше 2.8 в тъмно */
+[data-theme="dark"] .rr-go     { color: #f7a8cb; }   /* 2.08 × 9 стаи */
+[data-theme="dark"] .room-ready { color: #ded9ec; }  /* 4.49 */
+/* 👶 05.08 — „Здравей, мамо! 🌸“ на онбординга: 23px, но НЕ е bold,
+   значи прагът е 4.5, не 3. Мереше 2.89 — първото изречение,
+   което майката вижда, когато отваря приложението за пръв път. */
+.onb-title { color: #c0396f; }
+[data-theme="dark"] .onb-title { color: #f291bd; }

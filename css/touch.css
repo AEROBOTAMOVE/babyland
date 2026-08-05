@@ -1,0 +1,240 @@
+/* ══════════════════════════════════════════════════════════════
+   👆 ПИПАЕМОСТТА — глобалният пас (план 21, блок Ж)
+
+   ЗАРЕЖДА СЕ ПОСЛЕДЕН. И това е целият смисъл на файла.
+   Първия път сложих тези правила в rooms.css — и не станаха. Причината:
+   rooms.css е 3-ти, а mega.css (дето живеят .toc-b и .sec-chip) е 6-ти.
+   При еднаква специфичност печели ПОСЛЕДНИЯТ. Оттук нататък всяко
+   правило „минимална цел“ живее ТУК, за да няма повече изненади.
+
+   Числата са от бота (dev/audit.js), не от око:
+     .jr-chip 277 · .toc-b 217 · .gl-row 48 · .sec-chip 47 · .ask-chip 27 ·
+     .tk-b 24 · .cl-b 24 · .th-tooth 20 · .wt-o 12 · .wm-lrow 12
+
+   40px е минимумът за пръст на майка, която държи бебе с другата ръка.
+   ══════════════════════════════════════════════════════════════ */
+
+/* ── КОРЕНЪТ на прелелите: лентата се ПРЕНАСЯ, не излиза от екрана.
+   ⚠️ САМО хоризонтални чип-ленти. .gl-list е ВЕРТИКАЛЕН списък (речник) —
+   flex-wrap там нареди редовете хоризонтално и те излязоха от екрана
+   (регресия 8→146 прелели). Него го оставяме на мира. ── */
+.jr-quick, .toc-row { flex-wrap: wrap; justify-content: flex-start; align-items: stretch; }
+/* речник-редовете да не преливат: пълна ширина, съдържанието се свива */
+.gl-row { width: 100%; box-sizing: border-box; min-width: 0; }
+.gl-term { min-width: 0; overflow: hidden; text-overflow: ellipsis; }
+
+/* ── всичко, което пръст пипа: ≥44px.
+   44, не 40: flex-items се свиват с ~2px (cross-axis subpixel), а прагът
+   за пипаемост е 40 — така реалната височина остава ≥42, над прага. ── */
+.jr-chip,
+.toc-b,
+.sec-chip,
+.ask-chip,
+.gl-row,
+.tk-b,
+.cl-b,
+.wt-o,
+.wm-lrow,
+.rv-emob,
+.rv-f,
+.art-fsb,
+.qd-row,
+.ct-b,
+.jr-win,
+.np-b,
+.sp-cat,
+.rg-mark,
+.hs-chip,
+.nt-del,
+.nt-mic,
+.fb-btn,
+.jr-caprow,
+.mn-cell,
+.fs-tab,
+.rm-item {
+  min-height: 44px;
+  box-sizing: border-box;
+}
+/* „+" при диапазоните имаше min-height, но явна width: 28px — висок и тесен,
+   колкото нокът. Явни 44×44, не `auto`: измерено в браузъра, `width:auto` в
+   flex-реда даваше 62px и кръгът ставаше елипса. */
+.rg-mark { width: 44px; height: 44px; min-width: 44px; }
+/* ‹ › ✕ в бебешките оверлеи са един тесен глиф в padding: 8px 14px → ~34px.
+   Мама държи бебето с другата ръка; вместо „напред" уцелва „затвори". */
+.bg-bar .jr-chip { min-width: 44px; }
+/* проход 3 T38: 👍/👎 под отговора на помощничката бяха гол емоджи-бутон
+   (~26-30px) — под прага за пръст. Ширина + центриране + по-голямо емоджи. */
+.fb-btn {
+  min-width: 44px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 18px;
+}
+/* тези са inline-flex, за да центрират текста във вече по-високата кутия */
+.jr-chip, .toc-b, .sec-chip, .ask-chip, .tk-b, .cl-b, .rv-f {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+/* 🚨 22.07, жива обиколка: цената на реда отгоре. `display` от авторски CSS
+   бие вградения `[hidden] { display:none }` на браузъра — и всеки чип, който
+   кодът крие с hidden, оставаше НА ЕКРАНА. Мама виждаше празен бутон-призрак
+   в „Кога яде за последно?“, а „↺ Върни последното“ висеше завинаги, вместо
+   да изчезне след 10 секунди — покана да върне запис, който не съществува.
+   hidden значи скрито. Точка. */
+[hidden] { display: none !important; }
+.toc-b, .sec-chip { padding: 8px 12px; }
+.tk-b, .cl-b { padding: 8px 12px; }
+
+/* „↩ последно попитах…“ под чата беше 18px висок текстов ред — най-малката
+   цел в цялото приложение. Расте кутията, не буквите: редът си остава дискретен,
+   но пръст го хваща. (жива обиколка 22.07, единствената истинска малка цел) */
+.ask-last { min-height: 44px; display: flex; align-items: center; }
+
+/* 🌙 нощният режим в заглавието на кърмене-таймера беше 19px — а точно него
+   мама търси в 3 през нощта, на тъмно, с една ръка. Расте целта, емоджито си
+   остава дискретно. (жива обиколка 22.07) */
+.nr-night { min-width: 44px; min-height: 44px; display: inline-flex; align-items: center; justify-content: center; }
+
+/* седмичните точки в „Сънят/Пелени днес“ бяха 39.x — на косъм под прага */
+.jr-day { min-height: 44px; box-sizing: border-box; display: flex; align-items: center; justify-content: center; }
+
+/* зъбчето е мъничко по дизайн — расте ЦЕЛТА, не рисунката */
+.th-tooth { min-width: 40px; min-height: 40px; padding: 8px; }
+/* дъгата от зъби: 10 цели по 40px не се събират в тесен телефон (318px) и
+   последните стърчаха 59px извън картата → пренасяме на втори ред. Дъгата
+   пак се чете, а всеки зъб остава уцелваем. */
+.th-arch { flex-wrap: wrap; }
+
+/* 🗑 изтрий бележка — беше смачкан на 10px ширина (flex-съсед го изяждаше).
+   Важен бутон е — ако мама не го уцели, бележката не се трие; ако уцели
+   съседа, трие погрешната. Дай му ясна цел и не го оставяй да се свива. */
+.nt-del { min-width: 40px; flex-shrink: 0; display: inline-flex; align-items: center; justify-content: center; }
+/* ± на брояча в „Моето бебе“ (пелени/храна) — беше 30×30, под прага.
+   Майка с бебе на ръка натиска с палец — 40×40 е минимумът.
+   ⚠️ По-големите бутони направиха реда от 2 кутии по-широк от екрана
+   (+89px). Затова: редът се ПРЕНАСЯ на тесен телефон (всяка кутия цял ред),
+   а кутията може да се свива (min-width:0) — иначе flex:1 не помага. */
+.bb-dip { flex-wrap: wrap; }
+.bb-dipbox { min-width: 0; }
+.bb-dipbtn { min-width: 40px; min-height: 40px; }
+
+/* безкласовите ± бутони на размерите — mega.css им слага явен height:24px,
+   затова min-height не стигаше. #roRoom печели специфичността и махаме
+   твърдата височина. */
+#roRoom .wd-ctl button, .qa-step button, .nm-vote {
+  min-width: 40px; min-height: 40px; height: auto;
+}
+/* „Уголеми текста“ (jr-btn в тесен ред) — да не се свива */
+.jr-btn { min-height: 40px; }
+
+/* затварящите ✕ — най-търсеният бутон на всеки оверлей */
+.rm-x, .rv-close, .prof-close, .bs-b, .bo-no {
+  min-width: 40px; min-height: 40px;
+  display: inline-flex; align-items: center; justify-content: center;
+}
+
+/* ── тесните екрани: гридовете се свиват, вместо да изтласкват ── */
+.wp-box, .wd-grid, .wp-c, .wd-cell, .wd-ctl, .wd-sz { max-width: 100%; min-width: 0; }
+.pho-grid, .bg-sgrid, .np-grid, .yg-grid, .sy-grid { min-width: 0; }
+.wp-box, .wd-grid { overflow-x: auto; }
+
+/* ── профилът (одит-флот П23, проход 2 №14): цел-чипове, аватар-табове,
+   ✏️ и ✕ бяха 16-28px — под пръста на майка с бебе на ръка ── */
+.prof-gadd, .prof-avtab, .prof-av {
+  min-height: 40px; box-sizing: border-box;
+  display: inline-flex; align-items: center; justify-content: center;
+}
+.prof-edit, .prof-gx {
+  min-width: 40px; min-height: 40px;
+  display: inline-flex; align-items: center; justify-content: center;
+}
+
+/* ── BL_UI: топлите вградени диалози (проход 2 тема 6) ── */
+.bl-ui-row { display: flex; gap: 8px; margin-top: 16px; }
+.bl-ui-row .jr-btn { flex: 1; min-height: 44px; }
+.bl-ui-cancel { background: rgba(125,107,189,.12); color: var(--ink, #4a3f66); }
+.bl-ui-danger { background: linear-gradient(135deg, #e8657f, #d64b6b); }
+.bl-ui-text { white-space: normal; word-break: break-word; }
+[data-theme="dark"] .bl-ui-cancel { background: rgba(255,255,255,.09); color: #ece8f5; }
+
+/* ⚠️ Изключения — НЕ пипаме:
+   .pin-btn (📍) е нарочно мъничък, стои в ъгъла на заглавието и не бива
+   да го изяжда. .bub (балончетата в играта) са цел на игра, не бутон. */
+
+/* 👉 „тук съм“ — полето, което бутонът чака да напълни. Мек пулс, без червено:
+   не е грешка на мама, а подсещане. Само transform/box-shadow → без прерисуване. */
+.bl-нужно {
+  animation: blNuzhno .55s ease-out 2;
+  border-color: var(--pink-soft, #f7a8cb) !important;
+}
+@keyframes blNuzhno {
+  0%, 100% { box-shadow: 0 0 0 0 rgba(247, 168, 203, 0); }
+  40%      { box-shadow: 0 0 0 4px rgba(247, 168, 203, .35); }
+}
+@media (prefers-reduced-motion: reduce) {
+  .bl-нужно { animation: none; box-shadow: 0 0 0 3px rgba(247, 168, 203, .35); }
+}
+
+/* 🎁 пресет, който вече е в списъка за подаръци — приглушен, с отметка */
+.rg-presets .rg-added { opacity: .55; border-style: solid; }
+
+/* ✕ „махни този ред“ (jr-x) няма собствено CSS правило никъде — рендерираше се
+   гол бутон 21px. Точно него мама натиска, за да изтрие грешен запис: ако не
+   го уцели, трие съседния или нищо. 40px цел, същият дискретен вид.
+   (армия 22.07 — единствената истинска малка цел извън нарочно малкия 📌) */
+.jr-x {
+  min-width: 40px; min-height: 40px;
+  display: inline-flex; align-items: center; justify-content: center;
+  background: transparent; border: 0; cursor: pointer;
+  font-size: 15px; line-height: 1; padding: 0;
+  /* 🔴 05.08 (СКЕПТИКЪТ към №211): .jr-x нямаше НИКАКЪВ color — падаше на
+     браузърния `buttontext` (почти черно). №211 сложи ✕ ВЪТРЕ в .fd-pill, а
+     тъмната тема боядисва пилюлката #342f4e (dark.css:75) → черно върху
+     тъмнолилаво. Измерено живо в браузъра, ефективен цвят след прозрачността:
+       преди:  светла 4.48:1 · ТЪМНА 1.66:1   ← ✕-ът беше невидим нощем
+       само color:var(--ink) при .55: светла 2.43 · тъмна 4.35 ← смяна на счупено
+       color:var(--ink) + opacity .85:  светла 4.50 · тъмна 8.06 ← без загуба
+     Затова двете вървят ЗАЕДНО: голият цвят щеше да счупи светлата тема.
+     Лекува и всички стари .jr-x, които мълчаливо страдаха от същото. */
+  color: var(--ink); opacity: .85;
+}
+.jr-x:hover, .jr-x:focus-visible { opacity: 1; }
+
+/* ✕ на реда в историята на растежа — 19px. Последната цел под прага. */
+.bb-del { min-width: 40px; min-height: 40px; display: inline-flex; align-items: center; justify-content: center; }
+
+/* ── 05.08 (одит г06, №128): три цели, на които горният списък даде само
+   min-height, без ШИРИНА. Височина без ширина не е цел — става ивица.
+
+   .sp-cat (кръгчетата за вид разход) носи в rooms.css твърди width/height:32px.
+   min-height:44 отгоре го правеше кутия 32×44 — кръгът ставаше елипса и шестте
+   стояха залепени по 3px. Явни 44×44 (същото лечение като .rg-mark по-горе),
+   защото 40 щеше да остане под min-height:44 и елипсата да се запази. Редът се
+   ПРЕНАСЯ: 6×44 + гапове не се събират в 320px телефон.
+
+   .nt-mic (🎤 до бележника) е прозрачен бутон с font-size:17 → ~23px ширина, а
+   съседът му .nt-del получи min-width:40 още на ред 113. Мама с бебе на ръка
+   бута микрофона и уцелва кошчето.
+
+   .tl-fav („💜 Запази“ под предложеното име) изобщо не фигурираше тук:
+   padding 8px + 12.5px шрифт ≈ 31px висок. ── */
+.sp-cats { flex-wrap: wrap; }
+.sp-cat {
+  width: 44px; height: 44px; min-width: 44px;
+  display: inline-flex; align-items: center; justify-content: center;
+  flex-shrink: 0;
+}
+.nt-mic {
+  min-width: 40px; flex-shrink: 0;
+  display: inline-flex; align-items: center; justify-content: center;
+}
+.tl-fav {
+  min-height: 40px; min-width: 40px;
+  display: inline-flex; align-items: center; justify-content: center;
+}
+
+/* хапчетата в „Алергия-паспорт“ вече носят ✕ (одит г06, №211). .jr-x е 40px
+   цел — без това подравняване тя щеше да разкъса хапчето по вертикала. */
+.ap-pill { display: inline-flex; align-items: center; gap: 2px; padding-right: 4px; }

@@ -1,0 +1,1082 @@
+/* ═══════════════════════════════════════════════════════════
+   MEGA — стиловете на наблъскването (план 12, Н1–Н9)
+   Реката • Съзвездието • Кърмене • Дъгата • Дървото • Печат…
+   ═══════════════════════════════════════════════════════════ */
+
+/* ── 🌊 РЕКАТА ── */
+.rv-overlay {
+  position: fixed; inset: 0; z-index: 300;
+  background: rgba(40, 30, 70, 0.55); backdrop-filter: blur(6px);
+  display: flex; align-items: center; justify-content: center;
+}
+.rv-overlay[hidden] { display: none; }
+.rv-panel {
+  width: min(560px, 94vw); height: min(86vh, 720px);
+  background: linear-gradient(180deg, #fdfbff, #f2ecfa);
+  border-radius: 26px; display: flex; flex-direction: column; overflow: hidden;
+  box-shadow: 0 40px 90px rgba(40, 30, 70, 0.5);
+  animation: roIn 0.4s cubic-bezier(0.22, 1, 0.36, 1);
+}
+.rv-head { display: flex; align-items: center; gap: 10px; padding: 14px 18px; border-bottom: 1.5px solid #eee4f6; }
+.rv-head h3 { font-family: 'Comfortaa', 'Comfortaa-fallback', sans-serif; font-size: 17px; color: var(--ink); flex: 1; }
+.rv-count { font-size: 12px; font-weight: 800; color: var(--pink-deep); background: #fdeef6; padding: 3px 10px; border-radius: 999px; }
+.rv-close { border: none; background: #f3ebfb; width: 32px; height: 32px; border-radius: 50%; cursor: pointer; font-size: 14px; color: var(--ink); }
+.rv-scroll { flex: 1; overflow-y: auto; padding: 6px 18px 22px; scrollbar-width: thin; }
+.rv-month {
+  position: sticky; top: 0; z-index: 2;
+  margin: 14px 0 8px; padding: 5px 12px; display: inline-block;
+  background: linear-gradient(90deg, #f7a8cb, #b9a7e0); color: #fff;
+  font-size: 12px; font-weight: 800; border-radius: 999px; text-transform: capitalize;
+}
+.rv-row {
+  display: flex; gap: 10px; align-items: flex-start;
+  padding: 9px 0 9px 6px; position: relative;
+}
+.rv-row::before { content: ''; position: absolute; left: 15px; top: 34px; bottom: -6px; width: 2px; background: #e7dcf3; }
+.rv-row:last-child::before { display: none; }
+.rv-e { font-size: 19px; flex: none; width: 22px; text-align: center; position: relative; z-index: 1; background: inherit; }
+.rv-body { flex: 1; min-width: 0; }
+.rv-txt { font-size: 13.5px; font-weight: 700; color: var(--ink); line-height: 1.45; display: block; word-break: break-word; }
+.rv-img { display: block; margin-top: 6px; width: 92px; height: 92px; object-fit: cover; border-radius: 12px; box-shadow: 0 6px 14px rgba(90, 60, 120, 0.2); }
+.rv-d { font-size: 10.5px; font-weight: 700; color: var(--ink-soft); }
+.rv-big .rv-txt { font-size: 15px; color: var(--pink-deep); }
+.rv-big .rv-e { font-size: 24px; }
+.rv-empty, .rv-source { font-size: 13px; font-weight: 700; color: var(--ink-soft); line-height: 1.6; padding: 18px 6px; text-align: center; }
+.rv-card .rv-wave { display: block; text-align: center; color: #b9a7e0; letter-spacing: 4px; font-size: 15px; animation: rvFlow 3s linear infinite; }
+@keyframes rvFlow { 0% { transform: translateX(-6px); } 50% { transform: translateX(6px); } 100% { transform: translateX(-6px); } }
+
+/* „Днес преди…“ на Днес */
+.tm-card {
+  margin-top: 12px; width: 100%; display: flex; align-items: center; gap: 10px;
+  border: 1.5px dashed #c3b1ea; background: #f6effc; cursor: pointer;
+  border-radius: 16px; padding: 10px 13px; font-family: inherit; text-align: left;
+  transition: transform 0.2s ease;
+}
+.tm-card:hover { transform: translateY(-2px); }
+.tm-tag { font-size: 11px; font-weight: 800; color: #7a5fb0; white-space: nowrap; }
+.tm-e { font-size: 20px; }
+.tm-img { width: 40px; height: 40px; object-fit: cover; border-radius: 10px; }
+.tm-txt { font-size: 12.5px; font-weight: 700; color: var(--ink); }
+
+/* ── 🌌 СЪЗВЕЗДИЕТО ── */
+.cs-nav { display: flex; align-items: center; justify-content: space-between; gap: 8px; margin-bottom: 8px; }
+.cs-lbl { font-size: 13px; font-weight: 800; color: var(--ink); text-transform: capitalize; }
+.cs-svg { width: 100%; display: block; }
+.cs-sky { fill: #241f45; }
+.cs-dust { fill: #ffffff; opacity: 0.35; }
+.cs-line { stroke: rgba(255, 255, 255, 0.22); stroke-width: 1; }
+.cs-star { animation: csTw 2.6s ease-in-out infinite; }
+@keyframes csTw { 0%, 100% { opacity: 1; } 50% { opacity: 0.55; } }
+.cs-note { font-size: 12.5px; font-weight: 700; color: var(--ink-soft); margin-top: 8px; line-height: 1.5; }
+
+/* ── ☁️ ОБЛАКЪТ ── */
+.wc-cloud { display: flex; flex-wrap: wrap; gap: 8px 12px; align-items: baseline; justify-content: center; padding: 10px 4px; }
+.wc-w { font-weight: 800; line-height: 1; min-width: 0; overflow-wrap: anywhere; }
+
+/* ── 📸 Снимка на деня ── */
+.dp-today {
+  width: 100%; border: 1.5px dashed #c3b1ea; background: #faf6ff; cursor: pointer;
+  border-radius: 16px; padding: 12px; display: flex; flex-direction: column; align-items: center; gap: 6px;
+  font-family: inherit; font-size: 12.5px; font-weight: 800; color: var(--ink-soft);
+}
+.dp-today img { width: 120px; height: 120px; object-fit: cover; border-radius: 14px; }
+.dp-plus { font-size: 30px; color: #b9a7e0; line-height: 1; }
+.dp-strip { display: flex; gap: 8px; margin-top: 10px; overflow-x: auto; padding-bottom: 4px; }
+.dp-cell { border: none; background: none; cursor: pointer; flex: none; display: flex; flex-direction: column; gap: 2px; font-family: inherit; font-size: 10px; font-weight: 700; color: var(--ink-soft); }
+.dp-cell img { width: 52px; height: 52px; object-fit: cover; border-radius: 10px; }
+
+/* ── 💌 Писма между нас ── */
+.lt-thread { margin-top: 12px; display: flex; flex-direction: column; gap: 8px; }
+.lt-row { display: flex; }
+.lt-row.lt-tati { justify-content: flex-end; }
+.lt-bub {
+  max-width: 82%; padding: 9px 13px; border-radius: 16px 16px 16px 5px;
+  background: #fdeef6; font-size: 13px; font-weight: 600; color: var(--ink); line-height: 1.45;
+}
+.lt-tati .lt-bub { background: #e8f1fb; border-radius: 16px 16px 5px 16px; }
+.lt-who { display: block; font-size: 10.5px; font-weight: 800; color: var(--ink-soft); margin-bottom: 2px; }
+.lt-d { display: block; font-size: 10px; font-weight: 700; color: var(--ink-soft); margin-top: 3px; text-align: right; }
+
+/* ── 🤰 Бременност ── */
+.pw-svg { width: 100%; display: block; background: #faf8ff; border-radius: 14px; }
+.pw-line { fill: none; stroke: #f291bd; stroke-width: 2.4; stroke-linecap: round; }
+.pw-dot { fill: #b9a7e0; }
+.sy-grid { margin-top: 8px; display: grid; grid-template-columns: 1fr 1fr; gap: 6px; overflow: visible; }  /* В1.2: беше лента извън екрана */
+.sy-grid .jr-chip { width: 100%; justify-content: flex-start; text-align: left; }
+.sy-hist { margin-top: 10px; display: flex; flex-direction: column; gap: 5px; }
+.sy-hrow { font-size: 12px; font-weight: 700; color: var(--ink-soft); }
+.lb-open { background: linear-gradient(135deg, #fdeef6, #f3ebfb); border-radius: 16px; padding: 14px 16px; }
+.lb-txt { font-size: 14px; font-weight: 600; color: var(--ink); line-height: 1.6; white-space: pre-wrap; }
+.lb-d { margin-top: 8px; font-size: 12px; font-weight: 800; color: var(--pink-deep); }
+.pr-locked { background: #f3ebfb; color: #7a5fb0; }
+.nm-list { margin-top: 10px; display: flex; flex-direction: column; gap: 7px; }
+.nm-row { display: flex; align-items: center; gap: 8px; background: #faf8ff; border-radius: 12px; padding: 8px 12px; }
+.nm-name { flex: 1; font-size: 14.5px; color: var(--ink); }
+.nm-vote { border: 1.5px solid var(--lav-soft); background: #fff; border-radius: 999px; padding: 5px 10px; cursor: pointer; font-family: inherit; font-size: 12px; font-weight: 800; color: var(--ink); }
+
+/* ── 🍼 Моето бебе ── */
+.nr-disp {
+  text-align: center; font-family: 'Comfortaa', 'Comfortaa-fallback', sans-serif; font-size: 34px; font-weight: 700;
+  color: var(--ink-soft); padding: 8px 0; letter-spacing: 2px;
+  /* проход 4: моноширинни цифри — иначе най-гледаният таймер (кърмене) подскача
+     хоризонтално всяка секунда, защото Comfortaa е пропорционален. */
+  font-variant-numeric: tabular-nums;
+}
+.nr-disp.run { color: var(--pink-deep); animation: csTw 1.6s ease-in-out infinite; }
+.nr-hist { margin-top: 8px; }
+.nr-hrow { font-size: 12.5px; font-weight: 700; color: var(--ink-soft); padding: 3px 0; }
+.wp-box { overflow-x: auto; }
+.wp-grid { display: grid; grid-template-columns: 30px repeat(7, 1fr); gap: 4px; min-width: 300px; }
+.wp-h { font-size: 10px; font-weight: 800; color: var(--ink-soft); text-align: center; }
+.wp-l { font-size: 13px; text-align: center; }
+.wp-c { background: #faf8ff; border-radius: 8px; text-align: center; font-size: 12px; font-weight: 800; color: var(--ink); padding: 5px 0; }
+.rc-list { display: flex; flex-direction: column; gap: 7px; }
+.rc-row { background: linear-gradient(90deg, #fdf3d7, #fdeef6); border-radius: 12px; padding: 9px 13px; font-size: 13px; font-weight: 700; color: var(--ink); }
+
+/* ── 🥄 Захранване ── */
+/* auto-fit, не repeat(7,1fr): на 360px вътре в картата остават 296px и седем
+   твърди колони даваха ~38px на клетка — под прага за пръст. Сега клетката
+   никога не пада под 44px; на тесен екран седмицата се пренася на втори ред,
+   на широк остава един ред от седем. */
+.mn-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(44px, 1fr)); gap: 5px; }
+.mn-cell { border: none; background: #faf8ff; border-radius: 12px; padding: 8px 3px; cursor: pointer; font-family: inherit; display: flex; flex-direction: column; gap: 3px; align-items: center; }
+.mn-cell.today { outline: 2px solid #f0a8d0; }
+.mn-day { font-size: 10px; font-weight: 800; color: var(--ink-soft); }
+.mn-val { font-size: 11px; font-weight: 800; color: var(--pink-deep); word-break: break-word; }
+.mn-picker { margin-top: 10px; background: #faf6ff; border-radius: 14px; padding: 10px 12px; }
+.rp-list { margin-top: 10px; display: flex; flex-direction: column; gap: 10px; }
+.rp-card { background: #faf8ff; border-radius: 16px; padding: 12px 14px; }
+.rp-top { display: flex; align-items: center; gap: 8px; font-size: 14.5px; color: var(--ink); }
+.rp-e { font-size: 20px; }
+.rp-from { margin-left: auto; font-size: 11px; font-weight: 800; color: var(--pink-deep); }
+.rp-ing { font-size: 12px; font-weight: 700; color: var(--ink-soft); margin: 4px 0; }
+.rp-how { font-size: 13px; font-weight: 600; color: var(--ink); line-height: 1.5; margin-bottom: 6px; }
+.rb-svg { width: min(220px, 70%); display: block; margin: 4px auto; }
+.rb-on { filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.12)); }
+.rb-box { text-align: center; }
+.ap-pill { background: #fdeef6; }
+
+/* ── 🩺 Здраве ── */
+.tp-38 { stroke: #e8574f; stroke-width: 1; stroke-dasharray: 4 4; }
+.tp-lbl { font-size: 8px; fill: #e8574f; font-weight: 800; }
+.tp-line { fill: none; stroke: #8fc0e8; stroke-width: 2.4; stroke-linecap: round; }
+.tp-hot { fill: #e8574f; }
+.ph-date { max-width: 130px; }
+.nt-row.ph-exp { outline: 1.5px solid #e8574f; }
+.nt-row.ph-soon { outline: 1.5px dashed #f2913d; }
+
+/* ── 🧸 Развитие ── */
+.st-svg { width: 100%; display: block; }
+.st-trunk { stroke: #9a7050; stroke-width: 7; fill: none; stroke-linecap: round; }
+.st-branch { stroke: #9a7050; stroke-width: 3.4; fill: none; stroke-linecap: round; }
+.st-ground { fill: #dff0e3; }
+.st-bloom { animation: stBloom 0.7s cubic-bezier(0.34, 1.56, 0.64, 1) backwards; }
+@keyframes stBloom { from { transform: scale(0); opacity: 0; } to { transform: scale(1); opacity: 1; } }
+.st-legend { text-align: center; font-size: 12px; font-weight: 700; color: var(--ink-soft); margin-top: 4px; }
+.st-box { text-align: center; }
+
+/* ── 🛠️ Инструменти ── */
+.cv-row { display: flex; align-items: center; gap: 8px; }
+.cv-eq { font-size: 16px; font-weight: 800; color: var(--lav); }
+.cv-tbl { font-size: 12.5px; font-weight: 700; color: var(--ink-soft); line-height: 1.7; background: #faf8ff; border-radius: 12px; padding: 9px 12px; }
+.gl-bar { position: relative; height: 30px; background: #f0eaf8; border-radius: 999px; overflow: hidden; margin: 8px 0; }
+.gl-fill { height: 100%; background: linear-gradient(90deg, #f7a8cb, #b9a7e0); border-radius: 999px; transition: width 0.6s cubic-bezier(0.22, 1, 0.36, 1); }
+.gl-txt { position: absolute; inset: 0; display: flex; align-items: center; justify-content: center; font-size: 12px; font-weight: 800; color: var(--ink); }
+.wd-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 7px; }
+.wd-cell { background: #faf8ff; border-radius: 12px; padding: 8px 6px; text-align: center; }
+.wd-sz { font-size: 13px; font-weight: 800; color: var(--pink-deep); }
+.wd-ctl { display: flex; align-items: center; justify-content: center; gap: 7px; margin-top: 4px; }
+.wd-ctl button { border: none; background: #f0eaf8; width: 24px; height: 24px; border-radius: 50%; cursor: pointer; font-weight: 800; color: var(--ink); }
+.wd-ctl strong { font-size: 14px; color: var(--ink); min-width: 16px; }
+
+/* ── 🎙️ Гласови записи ── */
+.vc-list { margin-top: 10px; display: flex; flex-direction: column; gap: 8px; }
+.vc-row { display: flex; align-items: center; gap: 8px; background: #faf8ff; border-radius: 12px; padding: 8px 10px; flex-wrap: wrap; }
+.vc-row audio { flex: 1; min-width: 150px; height: 34px; }
+.vc-lbl { font-size: 12px; font-weight: 800; color: var(--pink-deep); }
+.vc-meta { font-size: 11px; font-weight: 700; color: var(--ink-soft); display: flex; align-items: center; gap: 5px; }
+.vc-rec.rec { background: linear-gradient(90deg, #e8574f, #f2913d); animation: csTw 1s ease-in-out infinite; }
+
+/* ── 🖨️ ПЕЧАТНИЯТ ОВЕРЛЕЙ ── */
+.pr-holder {
+  position: fixed; inset: 0; z-index: 400;
+  background: rgba(40, 30, 70, 0.55); backdrop-filter: blur(6px);
+  overflow-y: auto; padding: 20px 12px;
+}
+.pr-holder[hidden] { display: none; }
+.pr-sheetwrap { max-width: 640px; margin: 0 auto; }
+.pr-bar { display: flex; justify-content: flex-end; gap: 8px; margin-bottom: 10px; }
+.pr-bar .jr-chip { background: #fff; }
+.pr-sheet {
+  background: #fff; border-radius: 18px; padding: 28px 30px;
+  box-shadow: 0 30px 70px rgba(40, 30, 70, 0.45);
+  color: #3a3350; font-size: 14px; line-height: 1.6;
+}
+.pr-head { text-align: center; margin-bottom: 16px; }
+.pr-logo { font-family: 'Comfortaa', 'Comfortaa-fallback', sans-serif; font-size: 13px; font-weight: 700; color: #b9a7e0; }
+.pr-sheet h2 { font-family: 'Comfortaa', 'Comfortaa-fallback', sans-serif; font-size: 21px; color: #3a3350; margin-top: 4px; }
+.pr-sheet h3 { font-size: 15px; margin: 14px 0 6px; color: #7a5fb0; }
+.pr-big { font-size: 16px; font-weight: 800; margin-bottom: 10px; }
+.pr-list { padding-left: 20px; display: flex; flex-direction: column; gap: 5px; }
+.pr-note { margin-top: 14px; font-size: 12.5px; color: #8a80a0; }
+.pr-foot { margin-top: 22px; text-align: center; font-size: 11px; color: #b0a8c5; }
+
+/* Годишникът */
+.yb-book { padding: 0; overflow: hidden; }
+.yb-cover {
+  background: linear-gradient(160deg, #fdeef6, #e8e0f8);
+  text-align: center; padding: 60px 24px 50px;
+}
+.yb-balloon { font-size: 52px; animation: fabBob 3.4s ease-in-out infinite; }
+.yb-cover h1 { font-family: 'Comfortaa', 'Comfortaa-fallback', sans-serif; font-size: 34px; color: #3a3350; margin: 10px 0 4px; }
+.yb-sub { font-size: 15px; font-weight: 700; color: #7a5fb0; }
+.yb-year { margin-top: 14px; font-size: 13px; font-weight: 800; color: #b9a7e0; letter-spacing: 4px; }
+.yb-page { padding: 26px 30px; border-top: 1.5px dashed #e7dcf3; }
+.yb-page h2 { font-family: 'Comfortaa', 'Comfortaa-fallback', sans-serif; font-size: 19px; color: #3a3350; margin-bottom: 12px; }
+.yb-photogrid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; }
+.yb-photogrid figure { margin: 0; }
+.yb-photogrid img { width: 100%; aspect-ratio: 1; object-fit: cover; border-radius: 12px; }
+.yb-photogrid figcaption { font-size: 10.5px; font-weight: 700; color: #8a80a0; text-align: center; margin-top: 3px; }
+.yb-lex { margin-bottom: 10px; font-size: 13.5px; }
+.yb-q { font-weight: 800; color: #7a5fb0; font-size: 12px; }
+.yb-stats { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; }
+.yb-stat { background: #faf6ff; border-radius: 14px; padding: 12px 8px; text-align: center; display: flex; flex-direction: column; gap: 2px; }
+.yb-se { font-size: 20px; }
+.yb-stat strong { font-size: 20px; color: #3a3350; }
+.yb-stat span:last-child { font-size: 10.5px; font-weight: 700; color: #8a80a0; }
+.yb-line { background: #faf8ff; border-radius: 12px; padding: 10px 13px; margin-bottom: 8px; font-size: 13px; }
+.yb-ld { display: block; font-size: 10.5px; color: #b0a8c5; margin-top: 4px; }
+.yb-end { text-align: center; font-size: 13px; color: #8a80a0; }
+
+/* ── ROOMS4: вода • мл • обяд • месец-числа • гордост • лампа ── */
+.wt-row { display: flex; gap: 6px; flex-wrap: wrap; }
+.wt-cup { border: none; background: #faf8ff; border-radius: 12px; width: 42px; height: 46px; font-size: 20px; cursor: pointer; transition: transform 0.2s ease; }
+.wt-cup.full { background: #e3f2fd; }
+.wt-cup:active { transform: scale(0.9); }
+.ml-big { text-align: center; font-size: 15px; font-weight: 700; color: var(--ink-soft); padding: 6px 0 10px; }
+.ml-big strong { font-family: 'Comfortaa', 'Comfortaa-fallback', sans-serif; font-size: 32px; color: var(--pink-deep); }
+.lc-out { margin-top: 10px; }
+.lc-idea { background: linear-gradient(135deg, #fdf3d7, #fdeef6); border-radius: 14px; padding: 12px 15px; font-size: 14px; font-weight: 700; color: var(--ink); line-height: 1.5; }
+.lc-idea.pop { animation: jrIn 0.45s cubic-bezier(0.34,1.56,0.64,1); }
+.lc-sub { font-size: 11.5px; font-weight: 700; color: var(--ink-soft); }
+/* minmax(0,1fr) + min-width:0 + overflow-wrap: в една от клетките влиза
+   „думата на месеца“, която мама сама е написала. С голото 1fr колоната не
+   може да слезе под min-content и дълга дума изнасяше цялата стая настрани. */
+.ms-grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 8px; }
+.ms-stat { background: #faf8ff; border-radius: 14px; padding: 11px 6px; text-align: center; display: flex; flex-direction: column; gap: 2px; min-width: 0; }
+.ms-stat strong { font-size: 18px; color: var(--ink); overflow-wrap: anywhere; }
+.ms-stat span { font-size: 10.5px; font-weight: 700; color: var(--ink-soft); }
+.pd-list { display: flex; flex-direction: column; gap: 7px; }
+.pd-row { display: flex; align-items: center; gap: 9px; background: #faf8ff; border-radius: 12px; padding: 9px 12px; }
+.pd-row.pd-top { background: linear-gradient(90deg, #fdf3d7, #fdeef6); }
+.pd-medal { font-size: 18px; }
+.pd-txt { flex: 1; font-size: 13px; font-weight: 700; color: var(--ink); }
+.pd-d { font-size: 10.5px; font-weight: 700; color: var(--ink-soft); }
+.bl-lamp {
+  position: fixed; inset: 0; z-index: 999;
+  background: #3d0f0a; cursor: pointer;
+  display: flex; align-items: flex-end; justify-content: center;
+}
+.bl-lamp[hidden] { display: none; }
+/* това е ЕДИНСТВЕНИЯТ изход от лампата — на .4 контрастът върху #3d0f0a е
+   2.45:1 и надписът се губи. Тонът остава нощен, четивността се връща. */
+.bl-lamp-hint { color: rgba(255, 190, 165, 0.72); font-size: 12px; font-weight: 700; padding-bottom: 26px; }
+[data-theme="dark"] .wt-cup { background: #241f38; }
+[data-theme="dark"] .wt-cup.full { background: #1e3a52; }
+[data-theme="dark"] .ms-stat, [data-theme="dark"] .pd-row { background: #241f38; }
+[data-theme="dark"] .pd-row.pd-top, [data-theme="dark"] .lc-idea { background: linear-gradient(90deg, #3a3320, #3a2b3a); }
+
+/* ── 📅 Д2: календарният център ── */
+.ev-list { display: flex; flex-direction: column; gap: 7px; margin-bottom: 10px; }
+.ev-row { display: flex; align-items: center; gap: 10px; background: #faf8ff; border-radius: 13px; padding: 10px 13px; }
+.ev-row.soon { background: #fff3e6; outline: 1.5px solid #f2c48d; }
+.ev-e { font-size: 18px; }
+.ev-t { flex: 1; font-size: 13.5px; font-weight: 800; color: var(--ink); }
+.ev-t small { display: block; font-size: 11px; font-weight: 700; color: var(--ink-soft); }
+[data-theme="dark"] .ev-row { background: #241f38; }
+[data-theme="dark"] .ev-row.soon { background: #3a3320; outline-color: #6a5a35; }
+
+/* ── 🤒 болничният епизод ── */
+.ep-box { display: flex; flex-direction: column; gap: 6px; }
+.ep-row { display: flex; align-items: center; gap: 9px; background: #faf8ff; border-radius: 11px; padding: 8px 12px; font-size: 13px; font-weight: 700; color: var(--ink); }
+.ep-row.hot { background: #fdeaea; }
+.ep-t { flex: 1; }
+.ep-d { font-size: 10.5px; font-weight: 700; color: var(--ink-soft); }
+[data-theme="dark"] .ep-row { background: #241f38; }
+[data-theme="dark"] .ep-row.hot { background: #442a2a; }
+
+/* ── Днес: пазач, игра, дайджест ── */
+.td-guard { margin-top: 12px; background: #fdeaea; border: 1.5px solid #eec7c7; border-radius: 14px; padding: 10px 13px; font-size: 12.5px; font-weight: 700; color: #a13a3a; line-height: 1.5; }
+.td-game { margin-top: 12px; background: #f0f7ee; border-radius: 14px; padding: 10px 13px; font-size: 12.5px; font-weight: 700; color: #3f6b45; line-height: 1.5; }
+.td-game span { font-size: 15px; }
+.td-digest { margin-top: 12px; font-size: 12.5px; font-weight: 800; color: var(--ink); display: flex; flex-wrap: wrap; gap: 7px; align-items: center; }
+[data-theme="dark"] .td-guard { background: #442a2a; border-color: #5a3d3d; color: #f0a8a8; }
+[data-theme="dark"] .td-game { background: #23402f; color: #8fd0aa; }
+
+/* ── 🌙 нощен режим на кърмене-таймера ── */
+.nr-night { border: none; background: transparent; cursor: pointer; font-size: 14px; margin-left: 6px; opacity: 0.6; }
+.jr-card.nr-dark { background: #1d1930 !important; }
+.jr-card.nr-dark .nr-disp { font-size: 52px; color: #f0a8d0; }
+/* .nr-forgot p е питането „Таймерът върви от N часа. Заспахте ли?“ — то няма
+   собствен цвят (rooms.css:1738) и в нощния вид оставаше тъмно върху #1d1930 */
+.jr-card.nr-dark .jr-title, .jr-card.nr-dark .jr-sub, .jr-card.nr-dark .nr-hrow, .jr-card.nr-dark .jr-privacy, .jr-card.nr-dark .nr-forgot p { color: #b0a8c5 !important; }
+.jr-card.nr-dark .jr-chip { background: #342f4e; border-color: #4a4270; color: #ece8f5; }
+
+/* ── 🎤 диктовка в бележките ── */
+.nt-mic { border: none; background: transparent; cursor: pointer; font-size: 17px; margin-left: 8px; opacity: 0.7; }
+.nt-mic.rec { animation: csTw 0.8s ease-in-out infinite; opacity: 1; }
+
+/* ── 🧱 Д1: лениво рендиране — стаите се отварят мигновено ── */
+.ro-room .jr-card { content-visibility: auto; contain-intrinsic-size: auto 220px; }
+
+/* ═══════════ 💬 ПРИЯТЕЛСКОТО ПОЛЕ (търсачката) ═══════════ */
+
+/* тригерът долу на стаите */
+.search-trigger {
+  font-weight: 800 !important;
+  background: linear-gradient(100deg, #fdeef6, #f6effc) !important;
+  border: 1.5px dashed #c3b1ea !important;
+  transition: transform 0.25s ease, box-shadow 0.25s ease;
+}
+.search-trigger:hover { transform: translateY(-2px); box-shadow: 0 10px 26px rgba(150, 130, 180, 0.25); }
+[data-theme="dark"] .search-trigger { background: linear-gradient(100deg, #3a2b3a, #2f2a48) !important; border-color: #574d80 !important; }
+
+/* полето */
+.search-bar { align-items: center; }
+.sf-mic { border: none; background: transparent; cursor: pointer; font-size: 18px; opacity: 0.65; padding: 0 4px; }
+.sf-mic.rec { animation: csTw 0.8s ease-in-out infinite; opacity: 1; }
+
+/* поздравът на балончето */
+.sf-greet { display: flex; gap: 11px; align-items: flex-start; padding: 6px 2px 12px; }
+.sf-ava { width: 40px; flex: none; animation: meetBob 3.4s ease-in-out infinite; }
+.sf-ava svg { width: 100%; height: auto; display: block; filter: drop-shadow(0 6px 10px rgba(90, 60, 120, 0.25)); }
+.sf-ava-s { width: 30px; }
+.sf-bub {
+  flex: 1; background: #fff; border-radius: 16px 16px 16px 5px;
+  padding: 11px 14px; font-size: 13.5px; font-weight: 600; color: var(--ink); line-height: 1.55;
+  box-shadow: 0 6px 18px rgba(90, 60, 120, 0.14);
+  animation: jrIn 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+.sf-lead { font-size: 12.5px; font-weight: 700; color: var(--ink-soft); margin: 2px 2px 8px; }
+.sf-ideas { display: flex; flex-wrap: wrap; gap: 7px; }
+.sf-idea {
+  border: 1.5px solid var(--lav-soft); background: #fff; cursor: pointer; font-family: inherit;
+  font-size: 12.5px; font-weight: 700; color: var(--ink);
+  border-radius: 999px; padding: 8px 13px;
+  transition: transform 0.2s ease, background 0.2s ease;
+}
+.sf-idea:hover { transform: translateY(-2px); background: #faf6ff; }
+
+/* отговорът */
+.sf-answer { display: flex; gap: 9px; align-items: flex-start; margin-bottom: 12px; }
+.sf-answer .sf-bub { border-radius: 14px 14px 14px 4px; }
+.sf-ans .sf-bub { background: linear-gradient(135deg, #ffffff, #fdf7fb); }
+.sf-chat .sf-bub { background: linear-gradient(135deg, #f6effc, #fdeef6); }
+.sf-sos .sf-bub { background: linear-gradient(135deg, #fdeaea, #fde5e5); color: #a13a3a; }
+.sf-112 { display: inline-block; margin-top: 9px; }
+.sf-more {
+  display: block; margin-top: 9px; width: 100%;
+  border: none; cursor: pointer; font-family: inherit;
+  background: linear-gradient(90deg, #f7a8cb, #b9a7e0); color: #fff;
+  font-size: 12.5px; font-weight: 800; border-radius: 999px; padding: 9px 14px;
+  box-shadow: 0 6px 16px rgba(150, 100, 170, 0.3);
+  transition: transform 0.2s ease;
+}
+.sf-more:hover { transform: translateY(-2px); }
+.sf-found { font-size: 12px; font-weight: 800; color: var(--ink-soft); margin: 4px 2px 8px; }
+
+[data-theme="dark"] .sf-bub { background: #2a2542; }
+[data-theme="dark"] .sf-ans .sf-bub { background: linear-gradient(135deg, #2a2542, #322a4a); }
+[data-theme="dark"] .sf-chat .sf-bub { background: linear-gradient(135deg, #2f2a48, #3a2b3a); }
+[data-theme="dark"] .sf-sos .sf-bub { background: linear-gradient(135deg, #442a2a, #3d2424); color: #f0a8a8; }
+[data-theme="dark"] .sf-idea { background: #2a2542; border-color: #4a4270; color: #ece8f5; }
+
+@media (prefers-reduced-motion: reduce) { .sf-ava, .sf-bub, .sf-mic.rec { animation: none; } }
+
+/* ── 🆘 СОС-ЦЕНТЪРЪТ ── */
+.sos-ov {
+  position: fixed; inset: 0; z-index: 600;
+  background: rgba(60, 20, 30, 0.65); backdrop-filter: blur(8px);
+  display: flex; align-items: center; justify-content: center; padding: 16px;
+}
+.sos-ov[hidden] { display: none; }
+.sos-panel {
+  width: min(420px, 94vw); max-height: 92vh; overflow-y: auto;
+  background: linear-gradient(170deg, #fff6f6, #fdeef0);
+  border-radius: 26px; padding: 18px;
+  box-shadow: 0 40px 90px rgba(60, 20, 30, 0.55);
+  animation: roIn 0.35s cubic-bezier(0.22, 1, 0.36, 1);
+}
+.sos-head { display: flex; align-items: center; gap: 8px; margin-bottom: 12px; }
+.sos-head h3 { font-family: 'Comfortaa', 'Comfortaa-fallback', sans-serif; font-size: 19px; color: #a13a3a; flex: 1; }
+.sos-edit { border: 1.5px solid #eec7c7; background: #fff; border-radius: 999px; padding: 6px 12px; cursor: pointer; font-family: inherit; font-size: 12px; font-weight: 800; color: #a13a3a; }
+.sos-x { border: none; background: #f6e0e0; width: 32px; height: 32px; border-radius: 50%; cursor: pointer; font-size: 14px; color: #a13a3a; }
+.sos-list { display: flex; flex-direction: column; gap: 9px; }
+.sos-big {
+  display: block; text-decoration: none; text-align: center;
+  border-radius: 18px; padding: 15px 14px;
+  font-family: 'Comfortaa', 'Comfortaa-fallback', sans-serif; font-size: 17px; font-weight: 700; color: #fff;
+  background: linear-gradient(135deg, #e8574f, #c73e4a);
+  box-shadow: 0 10px 26px rgba(200, 60, 70, 0.4);
+  transition: transform 0.15s ease;
+}
+.sos-big:active { transform: scale(0.97); }
+.sos-big span { display: block; font-family: 'Nunito', 'Nunito-fallback', sans-serif; font-size: 11.5px; font-weight: 700; opacity: 0.9; margin-top: 3px; }
+.sos-big.sos-112 { font-size: 21px; animation: sosPulse 2.2s ease-in-out infinite; }
+@keyframes sosPulse { 0%, 100% { box-shadow: 0 10px 26px rgba(200, 60, 70, 0.4); } 50% { box-shadow: 0 10px 34px rgba(200, 60, 70, 0.7); } }
+.sos-big.sos-fast { background: linear-gradient(135deg, #f2913d, #e8574f); }
+.sos-big:not(.sos-112):not(.sos-fast) { background: linear-gradient(135deg, #8a6f9e, #6f5b85); box-shadow: 0 8px 20px rgba(111, 91, 133, 0.35); font-size: 15px; }
+.sos-row {
+  display: flex; align-items: center; gap: 11px; text-decoration: none;
+  background: #fff; border: 1.5px solid #f2dede; border-radius: 15px; padding: 11px 13px;
+  cursor: pointer; font-family: inherit; width: 100%; text-align: left;
+}
+.sos-row .sos-e { font-size: 20px; }
+.sos-nm { flex: 1; font-size: 14.5px; font-weight: 800; color: #5a3350; }
+.sos-nm small { display: block; font-size: 11.5px; font-weight: 700; color: #b08a9a; }
+.sos-go { font-size: 17px; }
+.sos-row.sos-empty { border-style: dashed; opacity: 0.85; }
+.sos-editrow { display: flex; align-items: center; gap: 7px; background: #fff; border-radius: 15px; padding: 9px 11px; }
+.sos-in { flex: 1; min-width: 0; border: 1.5px solid #f0dada; border-radius: 10px; padding: 8px 10px; font-family: inherit; font-size: 13px; font-weight: 600; }
+.sos-in-p { max-width: 130px; }
+.sos-tips { margin: 12px 2px 8px; font-size: 11.5px; font-weight: 700; color: #b08a9a; line-height: 1.6; text-align: center; }
+.sos-roomlink { width: 100%; border: none; background: transparent; cursor: pointer; font-family: inherit; font-size: 12.5px; font-weight: 800; color: #a13a3a; padding: 8px; text-decoration: underline; }
+[data-theme="dark"] .sos-panel { background: linear-gradient(170deg, #34222a, #2a1c24); }
+[data-theme="dark"] .sos-head h3, [data-theme="dark"] .sos-roomlink { color: #f0a8a8; }
+[data-theme="dark"] .sos-edit { background: #442e36; border-color: #5a3d46; color: #f0a8a8; }
+[data-theme="dark"] .sos-x { background: #442e36; color: #f0a8a8; }
+[data-theme="dark"] .sos-row, [data-theme="dark"] .sos-editrow { background: #3a2830; border-color: #4d353d; }
+[data-theme="dark"] .sos-nm { color: #f0d8e0; }
+[data-theme="dark"] .sos-in { background: #2a1c24; border-color: #4d353d; color: #f0d8e0; }
+@media (prefers-reduced-motion: reduce) { .sos-big.sos-112 { animation: none; } }
+
+/* ── ⏱️ време за четене на статия ── */
+.art-read { font-size: 11px; font-weight: 800; color: var(--lav); margin-left: auto; }
+.art-tagrow { display: flex; align-items: center; gap: 6px; flex-wrap: wrap; }
+
+/* ── 🧿 Мит или истина? + трикът на деня ── */
+.qz-q { font-size: 15px; font-weight: 800; color: var(--ink); line-height: 1.5; margin: 4px 0 12px; }
+.qz-b { flex: 1; }
+.qz-b.qz-t { background: linear-gradient(135deg, #8fd0ba, #9fc8ef); }
+.qz-res { border-radius: 14px; padding: 12px 14px; font-size: 13.5px; font-weight: 600; line-height: 1.55; margin-bottom: 10px; animation: jrIn 0.4s cubic-bezier(0.34,1.56,0.64,1); }
+.qz-res.ok { background: #eefaf1; color: #2e7d4f; }
+.qz-res.no { background: #fdeef6; color: #b0446e; }
+.td-trick {
+  margin-top: 12px; background: #fff8e8; border-radius: 14px; padding: 10px 13px;
+  font-size: 12.5px; font-weight: 700; color: #8a6f3f; line-height: 1.5;
+}
+.td-trick span { font-size: 15px; }
+[data-theme="dark"] .qz-res.ok { background: #23402f; color: #8fd0aa; }
+[data-theme="dark"] .qz-res.no { background: #3a2b3a; color: #f0a8d0; }
+[data-theme="dark"] .td-trick { background: #3a3320; color: #ecd9a6; }
+
+/* 📏 предпазна мрежа за дългите заглавия: дори ако някъде мине цяло
+   заглавие, чипът не бива да е по-широк от екрана. 72vw оставя място
+   да се вижда, че вдясно има още чипове. */
+.ro-chip { max-width: 72vw; overflow: hidden; text-overflow: ellipsis; }
+
+/* ── 📚 чипче към Голямата библиотека ── */
+.ro-chip-lib {
+  background: linear-gradient(90deg, #f6effc, #fdeef6) !important;
+  border-color: #c3b1ea !important;
+}
+
+/* ── ТЪМНА ТЕМА ── */
+[data-theme="dark"] .ro-chip-lib { background: linear-gradient(90deg, #2f2a48, #3a2b3a) !important; border-color: #574d80 !important; }
+
+[data-theme="dark"] .rv-panel { background: linear-gradient(180deg, #221d3a, #1a1630); }
+[data-theme="dark"] .rv-head { border-color: #342f4e; }
+[data-theme="dark"] .rv-count { background: #342f4e; }
+[data-theme="dark"] .rv-close { background: #342f4e; color: #ece8f5; }
+[data-theme="dark"] .rv-row::before { background: #3a3355; }
+[data-theme="dark"] .tm-card { background: #2a2542; border-color: #4a4270; }
+[data-theme="dark"] .lt-bub { background: #3a2b3a; }
+[data-theme="dark"] .lt-tati .lt-bub { background: #253347; }
+[data-theme="dark"] .pw-svg, [data-theme="dark"] .wp-c, [data-theme="dark"] .mn-cell,
+[data-theme="dark"] .rp-card, [data-theme="dark"] .nm-row, [data-theme="dark"] .vc-row,
+[data-theme="dark"] .cv-tbl, [data-theme="dark"] .wd-cell, [data-theme="dark"] .mn-picker { background: #241f38; }
+[data-theme="dark"] .rc-row { background: linear-gradient(90deg, #3a3320, #3a2b3a); }
+[data-theme="dark"] .dp-today { background: #2a2542; border-color: #4a4270; }
+[data-theme="dark"] .lb-open { background: linear-gradient(135deg, #3a2b3a, #2f2a48); }
+[data-theme="dark"] .pr-locked { background: #2f2a48; color: #c3b1ea; }
+[data-theme="dark"] .gl-bar { background: #342f4e; }
+[data-theme="dark"] .wd-ctl button { background: #3a3355; color: #ece8f5; }
+[data-theme="dark"] .nm-vote { background: #2a2542; border-color: #4a4270; color: #ece8f5; }
+[data-theme="dark"] .st-ground { fill: #23402f; }
+
+/* ── ПЕЧАТ: само листът излиза на хартия ── */
+@media print {
+  body.printing-open > *:not(#printHolder) { display: none !important; }
+  .pr-holder { position: static !important; background: none !important; padding: 0 !important; overflow: visible !important; }
+  .pr-sheetwrap { max-width: none; }
+  .no-print { display: none !important; }
+  .pr-sheet { box-shadow: none !important; border-radius: 0 !important; padding: 10mm !important; }
+  .yb-page { page-break-inside: avoid; }
+  .yb-cover { page-break-after: always; }
+}
+
+/* ═══════════ ГОЛЯМОТО ИЗГЛАЖДАНЕ (план 13) ═══════════ */
+
+/* Ш1: секции */
+.sec-nav { display: flex; gap: 6px; flex-wrap: wrap; padding: 2px 0 8px; }  /* В1.1: беше sticky и висеше над всичко при скрол */
+.sec-chip { border: 1.5px solid var(--lav-soft); background: #fff; border-radius: 999px; padding: 6px 12px; font-family: inherit; font-size: 11.5px; font-weight: 800; color: var(--ink); cursor: pointer; }
+.sec-head {
+  margin: 16px 2px 2px; font-size: 12px; font-weight: 800; color: var(--ink-soft);
+  letter-spacing: 0.4px; display: flex; align-items: center; gap: 8px;
+}
+.sec-head::after { content: ''; flex: 1; height: 1.5px; background: linear-gradient(90deg, #e7dcf3, transparent); border-radius: 2px; }
+
+/* ═══════════ 🤰 БРЕМЕННОСТ: прогресът по пътя ═══════════ */
+.pgb { margin-top: 14px; }
+.pgb-track {
+  position: relative; height: 12px; border-radius: 999px;
+  background: #f0eaf8; overflow: visible;
+}
+.pgb-fill {
+  height: 100%; border-radius: 999px;
+  background: linear-gradient(90deg, #f7a8cb, #b9a7e0);
+  /* проход 3 T35: transition:width беше мъртъв (inline width не се променя след
+     създаване), а pgbGrow с width:0 !important в keyframe се игнорира (spec).
+     Анимираме transform:scaleX вместо забраненото width — израстването оживя. */
+  transform-origin: left;
+  animation: pgbGrow 1.4s cubic-bezier(0.22, 1, 0.36, 1);
+}
+@keyframes pgbGrow { from { transform: scaleX(0); } }
+.pgb-baby {
+  position: absolute; top: -9px; font-size: 20px;
+  animation: pgbBob 2.8s ease-in-out infinite;
+  filter: drop-shadow(0 3px 5px rgba(150, 100, 170, 0.35));
+}
+@keyframes pgbBob { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-4px); } }
+.pgb-tick { position: absolute; top: -2px; width: 2px; height: 16px; background: rgba(255, 255, 255, 0.9); border-radius: 2px; }
+.pgb-legend { display: flex; justify-content: space-between; margin-top: 7px; }
+.pgb-legend span { font-size: 10px; font-weight: 800; color: var(--ink-soft); opacity: 0.5; }
+.pgb-legend span.on { opacity: 1; color: var(--pink-deep); }
+.pgb-txt { margin-top: 6px; font-size: 12.5px; font-weight: 700; color: var(--ink-soft); text-align: center; }
+[data-theme="dark"] .pgb-track { background: #342f4e; }
+[data-theme="dark"] .pgb-tick { background: rgba(36, 31, 56, 0.9); }
+@media (prefers-reduced-motion: reduce) { .pgb-fill, .pgb-baby { animation: none; } }
+
+/* ═══════════ 🧸 РАЗВИТИЕ: изборът на мама ═══════════ */
+.dv-flabel { font-size: 11.5px; font-weight: 800; color: var(--ink-soft); margin: 10px 2px 5px; }
+.dv-actrow { margin-top: 10px; }
+.dv-favs { margin-top: 12px; }
+/* .jr-quick.dv-mrow — специфичност 0,2,0, за да бие css/touch.css:21
+   (.jr-quick { flex-wrap: wrap }), който се зарежда след mega.css */
+.jr-quick.dv-mrow { overflow-x: auto; flex-wrap: nowrap; padding-bottom: 4px; scrollbar-width: none; }
+.dv-mrow::-webkit-scrollbar { display: none; }
+.dv-mrow .jr-chip { flex: none; }
+.dv-ms2 { margin-top: 10px; }
+.st-keep { margin-top: 10px; }
+.lul-fav { margin-top: 10px; }
+.qz-theme { display: block; }
+
+/* 📖 съдържанието на стаята + брояч на секциите */
+.sec-n {
+  display: inline-block; margin-left: 4px;
+  background: var(--lav-soft); color: var(--ink-soft);
+  font-size: 9.5px; font-weight: 800; border-radius: 999px; padding: 1px 6px;
+}
+.toc-card { background: linear-gradient(160deg, #faf6ff, #fdeef6) !important; }
+.toc-g { margin-top: 9px; }
+.toc-h { font-size: 11.5px; font-weight: 800; color: var(--ink-soft); margin-bottom: 5px; }
+.toc-row { display: flex; flex-wrap: wrap; gap: 5px; }
+.toc-b {
+  border: 1.5px solid rgba(195, 177, 234, 0.4); background: #fff; cursor: pointer; font-family: inherit;
+  font-size: 11.5px; font-weight: 700; color: var(--ink);
+  border-radius: 999px; padding: 6px 11px;
+  transition: transform 0.18s ease, background 0.18s ease;
+}
+.toc-b:hover { transform: translateY(-2px); background: #faf6ff; }
+.jr-card.toc-flash { animation: tocFlash 1.1s ease; }
+@keyframes tocFlash {
+  0%, 100% { box-shadow: 0 6px 18px rgba(150, 130, 180, 0.14); }
+  30% { box-shadow: 0 0 0 3px #f0a8d0, 0 10px 30px rgba(240, 168, 208, 0.5); }
+}
+[data-theme="dark"] .toc-card { background: linear-gradient(160deg, #2a2542, #3a2b3a) !important; }
+[data-theme="dark"] .toc-b { background: #241f38; border-color: #4a4270; color: #ece8f5; }
+[data-theme="dark"] .sec-n { background: #3a3355; }
+
+/* Ш1: сгъване + закачане */
+.jr-title.foldable { cursor: pointer; user-select: none; position: relative; padding-right: 46px; }
+.jr-title.foldable::after {
+  content: '▾'; position: absolute; right: 26px; top: 2px;
+  color: var(--lav); font-size: 13px; transition: transform 0.25s ease;
+}
+.jr-card.folded .jr-title.foldable::after { transform: rotate(-90deg); }
+.jr-card.folded > *:not(.jr-title) { display: none; }
+.jr-card.folded { padding-bottom: 12px; }
+.pin-btn {
+  position: absolute; right: 0; top: -2px;
+  border: none; background: transparent; cursor: pointer; font-size: 14px;
+  opacity: 0.45; transition: opacity 0.2s ease, transform 0.2s ease;
+}
+/* 🔴 04.08 (обиколка на 360px): пинът мереше 18×18 пиксела и стои на ВСЯКА
+   карта. touch.css изрично казва да не се уголемява — иначе изяжда заглавието,
+   и това решение е право. Затова расте само ПИПАЕМАТА ЗОНА, невидимо:
+   псевдоелемент 44×44 около него. Иконата си остава мъничка, палецът я улучва.
+   (Само ::after — нула промяна в потока, нула прерисуване.) */
+.pin-btn::after {
+  content: ''; position: absolute; left: 50%; top: 50%;
+  width: 44px; height: 44px; transform: translate(-50%, -50%);
+}
+.pin-btn.on { opacity: 1; transform: rotate(-14deg) scale(1.15); }
+.jr-title { position: relative; }
+
+/* Ш2: стъпаловидно влизане на картите */
+.jr-card.card-in { animation: cardIn 0.45s cubic-bezier(0.22, 1, 0.36, 1) backwards; }
+@keyframes cardIn { from { opacity: 0; transform: translateY(14px) scale(0.985); } to { opacity: 1; transform: none; } }
+
+/* Ш2: реката тече, съзвездието се рисува, медалите блестят, конфети-емоджи */
+.rv-row { animation: rvIn 0.4s ease backwards; }
+.rv-row:nth-child(-n+14) { animation-delay: calc(var(--i, 0) * 0ms); }
+@keyframes rvIn { from { opacity: 0; transform: translateX(-8px); } to { opacity: 1; transform: none; } }
+.cs-line { stroke-dasharray: 60; stroke-dashoffset: 60; animation: csDraw 1.6s ease forwards; }
+@keyframes csDraw { to { stroke-dashoffset: 0; } }
+.pd-top .pd-medal { animation: medalShine 3.5s ease-in-out infinite; }
+@keyframes medalShine { 0%, 88%, 100% { filter: none; transform: none; } 92% { filter: brightness(1.5) drop-shadow(0 0 6px #f5d47e); transform: rotate(-8deg) scale(1.15); } }
+.fx-conf.fx-emoji { background: transparent !important; font-size: 15px; line-height: 1; }
+.wt-cup.full { animation: cupPop 0.35s cubic-bezier(0.34, 1.56, 0.64, 1); }
+@keyframes cupPop { 50% { transform: scale(1.18) rotate(-6deg); } }
+
+/* Ш3: медальони на заглавията */
+.jr-medal {
+  display: inline-flex; align-items: center; justify-content: center;
+  width: 30px; height: 30px; margin-right: 8px; flex: none;
+  font-size: 15px; border-radius: 50%; vertical-align: -8px;
+  background: var(--roombar, linear-gradient(135deg, #fdeef6, #f0eaf8));
+  box-shadow: inset 0 0 0 1.5px rgba(255, 255, 255, 0.6), 0 2px 6px rgba(150, 130, 180, 0.18);
+}
+
+/* Ш4: „+“ бързи действия */
+.plus-wrap { position: fixed; left: 14px; bottom: 84px; z-index: 90; display: flex; flex-direction: column-reverse; align-items: flex-start; gap: 8px; }
+.plus-btn {
+  width: 52px; height: 52px; border: none; border-radius: 50%; cursor: pointer;
+  background: linear-gradient(135deg, #f7a8cb, #b9a7e0); color: #fff;
+  font-size: 28px; line-height: 1; font-weight: 700;
+  box-shadow: 0 10px 24px rgba(150, 100, 170, 0.4);
+  transition: transform 0.25s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+.plus-btn.open { transform: rotate(45deg); }
+.plus-menu { display: flex; flex-direction: column; gap: 7px; }
+.plus-menu[hidden] { display: none; }
+.plus-item {
+  border: none; cursor: pointer; text-align: left; font-family: inherit;
+  background: #fff; border-radius: 999px; padding: 9px 15px;
+  font-size: 13px; font-weight: 800; color: var(--ink);
+  box-shadow: 0 8px 20px rgba(90, 60, 120, 0.25);
+  animation: cardIn 0.3s ease backwards;
+}
+
+/* Ш5: дневният бриф + нудж-точката */
+.brief-card {
+  display: flex; align-items: flex-start; gap: 9px;
+  background: linear-gradient(135deg, #f0eaf8, #fdeef6);
+  border-radius: 16px; padding: 11px 13px; margin-bottom: 12px;
+}
+.brief-moon { font-size: 20px; }
+.brief-txt { flex: 1; font-size: 12.5px; font-weight: 700; color: var(--ink); line-height: 1.5; }
+.brief-x { border: none; background: transparent; cursor: pointer; color: var(--ink-soft); font-size: 12px; }
+.ro-fab-dot {
+  position: absolute; top: 2px; right: 0;
+  width: 13px; height: 13px; border-radius: 50%;
+  background: #e8574f; border: 2.5px solid #fff;
+  animation: csTw 1.6s ease-in-out infinite;
+}
+.ro-fab-hint.show { opacity: 1 !important; }
+
+/* Ш7: настройки */
+.set-grid { display: grid; grid-template-columns: 1fr; gap: 8px; }
+.set-tgl {
+  display: flex; align-items: center; justify-content: space-between;
+  border: none; cursor: pointer; font-family: inherit; text-align: left;
+  background: #faf8ff; border-radius: 14px; padding: 12px 14px;
+  font-size: 13.5px; font-weight: 800; color: var(--ink);
+}
+.set-dot { width: 38px; height: 22px; border-radius: 999px; background: #e3ddef; position: relative; transition: background 0.25s ease; flex: none; }
+/* топчето се плъзга с transform, не с left: left праща всеки кадър обратно
+   през разположението; transform стои на композитора */
+.set-dot::after { content: ''; position: absolute; top: 3px; left: 3px; width: 16px; height: 16px; border-radius: 50%; background: #fff; transition: transform 0.25s cubic-bezier(0.34, 1.56, 0.64, 1); }
+.set-tgl.on .set-dot { background: linear-gradient(90deg, #f7a8cb, #b9a7e0); }
+.set-tgl.on .set-dot::after { transform: translateX(16px); }   /* 16 = 19 − 3 */
+
+/* Годишник: корица със снимка */
+.yb-coverimg { width: 130px; height: 130px; object-fit: cover; border-radius: 50%; border: 5px solid #fff; box-shadow: 0 14px 30px rgba(90, 60, 120, 0.3); }
+
+/* тъмна тема за новото */
+[data-theme="dark"] .sec-chip { background: #2a2542; border-color: #4a4270; color: #ece8f5; }
+[data-theme="dark"] .sec-head::after { background: linear-gradient(90deg, #3a3355, transparent); }
+[data-theme="dark"] .plus-item { background: #342f4e; color: #ece8f5; }
+[data-theme="dark"] .brief-card { background: linear-gradient(135deg, #2f2a48, #3a2b3a); }
+[data-theme="dark"] .set-tgl { background: #241f38; }
+[data-theme="dark"] .set-dot { background: #3a3355; }
+[data-theme="dark"] .jr-medal { box-shadow: inset 0 0 0 1.5px rgba(255, 255, 255, 0.12), 0 2px 6px rgba(0, 0, 0, 0.3); }
+
+@media (prefers-reduced-motion: reduce) {
+  .cs-star, .nr-disp.run, .vc-rec.rec, .rv-card .rv-wave, .st-bloom, .yb-balloon { animation: none; }
+  .jr-card.card-in, .rv-row, .cs-line, .pd-top .pd-medal, .wt-cup.full, .plus-item { animation: none; }
+}
+
+/* 🤍 Паузата на очакването (М−0б, одит 11) — тиха, не алармена.
+   Никакво червено, никакви удивителни: това не е предупреждение. */
+.set-quiet { margin-top: 14px; padding-top: 12px; border-top: 1px dashed var(--line, #e8e0ea); }
+.set-quiet-btn {
+  width: 100%; padding: 11px 14px; border: 1px solid var(--line, #e8e0ea);
+  border-radius: 14px; background: var(--card, #fff); color: var(--ink, #4a4458);
+  font: inherit; font-size: .92rem; text-align: left; cursor: pointer;
+  transition: background .18s ease, border-color .18s ease;
+}
+.set-quiet-btn:hover, .set-quiet-btn:focus-visible { background: var(--soft, #faf6fb); border-color: #d9cfe0; }
+.set-quiet .jr-privacy { margin-top: 7px; }
+
+/* 👶 Коригираната възраст (М1, одит 11) — информация, не тревога */
+.bb-corr {
+  margin: 8px 0 0; padding: 9px 11px; border-radius: 12px;
+  background: var(--soft, #faf6fb); border: 1px dashed var(--line, #e8e0ea);
+  font-size: .84rem; line-height: 1.45; color: var(--ink, #4a4458);
+}
+.bb-corr:empty { display: none; }
+.bb-corr small { opacity: .75; }
+
+/* ═══ ROOMS 6 — ъпгрейдите по стаи (план 19, част 4) ═══ */
+
+/* 🚑 Първа помощ — едри цели, защото ръцете треперят */
+.fa-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; margin-top: 10px; }
+.fa-chip {
+  display: flex; flex-direction: column; align-items: center; gap: 5px;
+  padding: 12px 6px; border: 1px solid var(--line, #e8e0ea); border-radius: 14px;
+  background: var(--card, #fff); color: var(--ink, #4a4458); font: inherit;
+  font-size: .74rem; line-height: 1.2; text-align: center; cursor: pointer;
+  transition: transform .15s ease, border-color .15s ease;
+}
+.fa-chip:hover, .fa-chip:focus-visible { transform: translateY(-2px); border-color: #f7a8cb; }
+.fa-e { font-size: 1.5rem; }
+.fa-box { max-width: 460px; text-align: left; }
+.fa-title { font-size: 1.15rem; font-weight: 700; margin: 0 0 8px; }
+.fa-when { font-size: .85rem; margin: 0 0 10px; opacity: .9; }
+.fa-steps { margin: 0 0 10px; padding-left: 20px; }
+.fa-steps li { font-size: .88rem; line-height: 1.5; margin-bottom: 7px; }
+.fa-never {
+  font-size: .84rem; padding: 8px 10px; border-radius: 10px;
+  background: rgba(224, 90, 90, .09); border: 1px solid rgba(224, 90, 90, .25); margin: 0 0 12px;
+}
+.fa-sos { display: block; text-align: center; margin-bottom: 8px; }
+
+/* 🩺 Кой лекар за какво */
+.wd-row { display: grid; grid-template-columns: 1fr; gap: 3px; padding: 9px 11px; border-radius: 12px; background: var(--soft, #faf6fb); margin-top: 7px; }
+.wd-row.wd-sos { background: rgba(224, 90, 90, .09); border: 1px solid rgba(224, 90, 90, .28); }
+.wd-who { font-weight: 700; font-size: .9rem; }
+.wd-what { font-size: .8rem; line-height: 1.45; opacity: .88; }
+
+/* 💉 След ваксината */
+.av-grid { display: grid; grid-template-columns: 1fr; gap: 8px; margin-top: 8px; }
+@media (min-width: 520px) { .av-grid { grid-template-columns: 1fr 1fr; } }
+.av-col { padding: 10px 12px; border-radius: 12px; }
+.av-ok { background: rgba(120, 190, 130, .1); border: 1px solid rgba(120, 190, 130, .28); }
+.av-no { background: rgba(224, 90, 90, .09); border: 1px solid rgba(224, 90, 90, .28); }
+.av-h { margin: 0 0 6px; font-weight: 700; font-size: .86rem; }
+.av-col ul { margin: 0; padding-left: 18px; }
+.av-col li { font-size: .8rem; line-height: 1.5; }
+
+/* 🌙 Съня до термина */
+.sl-big { font-size: 1.35rem; text-align: center; margin: 12px 0 4px; }
+.sl-big strong { font-size: 2.1rem; color: #b9a7e0; }
+
+/* 📊 Спрямо вчера */
+.vy-row { display: grid; grid-template-columns: 1fr auto auto; gap: 8px; align-items: center; padding: 8px 10px; border-radius: 10px; background: var(--soft, #faf6fb); margin-top: 6px; }
+.vy-n { font-size: .86rem; }
+.vy-v { font-weight: 700; }
+.vy-d { font-size: .76rem; padding: 2px 7px; border-radius: 8px; }
+.vy-up { background: rgba(120, 190, 130, .18); }
+.vy-dn { background: rgba(224, 150, 90, .18); }
+.vy-same { background: rgba(150, 150, 160, .14); }
+
+/* 🥄 Порцията с очи */
+.pt-row { display: grid; grid-template-columns: 1fr auto; gap: 10px; padding: 8px 10px; border-radius: 10px; background: var(--soft, #faf6fb); margin-top: 6px; font-size: .84rem; }
+.pt-m { opacity: .85; text-align: right; }
+
+/* 😭 Плачът — текстът отлита и не се връща */
+.cry-away { transition: opacity .6s ease, transform .6s ease; opacity: 0; transform: translateY(-14px); }
+
+/* 🧳 Чантата: % готовност */
+.bg-prog { margin: 8px 0 4px; }
+.bg-track { height: 9px; border-radius: 6px; background: var(--soft, #f0e8f2); overflow: hidden; }
+.bg-fill { height: 100%; border-radius: 6px; background: linear-gradient(90deg, #f7a8cb, #b9a7e0); transition: width .5s ease; }
+.bg-txt { font-size: .82rem; margin: 6px 0 0; opacity: .9; }
+
+/* ═══ ROOMS 7 — втори пакет ъпгрейди ═══ */
+
+/* ⏱️ Играта за 5 минути */
+.g5-box { padding: 12px 14px; border-radius: 14px; background: var(--soft, #faf6fb); margin-top: 8px; }
+.g5-t { font-weight: 700; font-size: 1rem; margin: 0 0 6px; }
+.g5-d { font-size: .87rem; line-height: 1.55; margin: 0; }
+.g5-clock { text-align: center; font-size: 1.6rem; font-weight: 700; margin: 8px 0 0; color: #b9a7e0; min-height: 1.2em; }
+
+/* 🥄 От каквото имам вкъщи */
+.hs-grid { display: flex; flex-wrap: wrap; gap: 6px; margin: 10px 0; }
+.hs-chip { padding: 7px 13px; border-radius: 999px; border: 1px solid var(--line, #e8e0ea); background: var(--card, #fff); color: var(--ink, #4a4458); font: inherit; font-size: .82rem; cursor: pointer; }
+.hs-chip:hover { border-color: #f7a8cb; }
+.hs-out { min-height: 40px; }
+.hs-h { font-weight: 700; margin: 0 0 4px; }
+.hs-out ul { margin: 0; padding-left: 18px; }
+.hs-out li { font-size: .84rem; line-height: 1.5; }
+
+/* 👵 Игрите на баба */
+.bg-game { border: 1px solid var(--line, #e8e0ea); border-radius: 12px; padding: 8px 11px; margin-top: 7px; background: var(--card, #fff); }
+.bg-game summary { cursor: pointer; font-weight: 600; font-size: .9rem; }
+.bg-how { font-size: .85rem; line-height: 1.55; margin: 8px 0 6px; }
+.bg-why { font-size: .8rem; opacity: .85; margin: 0; }
+
+/* 🩺 Сигналите */
+.sg-row { display: grid; grid-template-columns: 62px 1fr; gap: 8px; padding: 8px 10px; border-radius: 10px; background: var(--soft, #faf6fb); margin-top: 6px; }
+.sg-row.sg-now { border: 1px solid #f7a8cb; background: rgba(247, 168, 203, .12); }
+.sg-m { font-weight: 700; font-size: .8rem; }
+.sg-t { font-size: .8rem; line-height: 1.5; }
+
+/* 🚗 Столчето */
+.cs-row { display: grid; grid-template-columns: 82px 1fr; gap: 4px 8px; padding: 8px 10px; border-radius: 10px; background: var(--soft, #faf6fb); margin-top: 6px; }
+.cs-g { font-weight: 700; font-size: .82rem; }
+.cs-kg { font-size: .78rem; opacity: .8; }
+.cs-h { grid-column: 1 / -1; font-size: .82rem; font-weight: 600; }
+.cs-rules { margin-top: 10px; padding: 10px 12px; border-radius: 12px; background: rgba(247, 168, 203, .1); border: 1px solid rgba(247, 168, 203, .3); }
+.cs-rules ul { margin: 0; padding-left: 18px; }
+.cs-rules li { font-size: .82rem; line-height: 1.55; margin-bottom: 5px; }
+
+/* 🗑️ Изтрий всичко */
+.wipe-btn { background: linear-gradient(90deg, #e07a7a, #d06060) !important; color: #fff !important; }
+
+/* 💇 Косопадът */
+.hr-row { display: grid; grid-template-columns: 130px 1fr; gap: 8px; padding: 8px 10px; border-radius: 10px; background: var(--soft, #faf6fb); margin-top: 6px; }
+.hr-k { font-weight: 700; font-size: .78rem; }
+.hr-o { font-size: .82rem; line-height: 1.5; }
+
+/* 🔬 Опитът на седмицата */
+.we-box { padding: 12px 14px; border-radius: 14px; background: var(--soft, #faf6fb); margin-top: 8px; }
+.we-t { font-weight: 700; margin: 0 0 5px; }
+.we-q { font-size: .88rem; margin: 0; opacity: .9; }
+
+/* ═══ ROOMS 8 — трети пакет ═══ */
+
+/* ⏳ Контракциите */
+.ct-row { display: grid; grid-template-columns: 1fr auto; gap: 8px; align-items: center; padding: 8px 10px; border-radius: 10px; background: var(--soft, #faf6fb); margin-top: 6px; }
+.ct-q { font-size: .83rem; line-height: 1.45; }
+.ct-btns { display: flex; gap: 4px; }
+.ct-b { padding: 5px 11px; border-radius: 8px; border: 1px solid var(--line, #e8e0ea); background: var(--card, #fff); color: var(--ink, #4a4458); font: inherit; font-size: .72rem; font-weight: 700; cursor: pointer; }
+.ct-b.on { background: linear-gradient(90deg, #f7a8cb, #b9a7e0); color: #fff; border-color: transparent; }
+.ct-out { margin-top: 10px; }
+.ct-real, .ct-fake, .ct-mid { font-size: .95rem; margin: 0 0 6px; padding: 9px 11px; border-radius: 10px; }
+.ct-real { background: rgba(247, 168, 203, .18); border: 1px solid #f7a8cb; }
+.ct-fake { background: rgba(120, 190, 130, .12); border: 1px solid rgba(120, 190, 130, .35); }
+.ct-mid { background: rgba(224, 190, 90, .12); border: 1px solid rgba(224, 190, 90, .35); }
+
+/* ❓ Въпроси за прегледа + аптечка (общ ред-чеклист) */
+.qd-row { display: flex; gap: 8px; align-items: flex-start; width: 100%; text-align: left; padding: 8px 10px; border-radius: 10px; border: 1px solid var(--line, #e8e0ea); background: var(--card, #fff); color: var(--ink, #4a4458); font: inherit; font-size: .84rem; line-height: 1.45; cursor: pointer; margin-top: 5px; }
+.qd-row.done { opacity: .55; }
+.qd-row.done span:last-child { text-decoration: line-through; }
+.mk-h { font-weight: 700; font-size: .84rem; margin: 12px 0 2px; opacity: .75; }
+
+/* 🤰 Този месец боли това */
+.ah-list { margin: 8px 0; padding-left: 20px; }
+.ah-list li { font-size: .85rem; line-height: 1.6; }
+
+/* 😴 Регресите — префикс rgz-, защото rg-row/rg-now са на „Кога обикновено 📊“
+   (rooms.css:1342 и 1352). Двата компонента се биеха: гридът тук чупеше
+   трикракия ред там, а абсолютният маркер там свиваше този ред до 2px. */
+.rgz-row { display: grid; grid-template-columns: 62px 1fr; gap: 8px; padding: 8px 10px; border-radius: 10px; background: var(--soft, #faf6fb); margin-top: 6px; }
+.rgz-row.rgz-now { border: 1px solid #f7a8cb; background: rgba(247, 168, 203, .14); }
+.rgz-row.rgz-past { opacity: .5; }
+.rg-m { font-weight: 700; font-size: .8rem; }
+.rg-t { font-size: .81rem; line-height: 1.5; }
+.rg-hit { font-size: .86rem; margin: 10px 0 0; padding: 9px 11px; border-radius: 10px; background: rgba(247, 168, 203, .14); border: 1px solid #f7a8cb; }
+
+/* 🤱 Коя гърда */
+.br-now { font-size: .95rem; text-align: center; margin: 10px 0; line-height: 1.7; }
+.br-next { color: #b9a7e0; font-size: 1.15rem; }
+.br-b { flex: 1; }
+
+/* 🥜 Алергените */
+.al-rule { font-size: .82rem; line-height: 1.55; padding: 9px 11px; border-radius: 10px; background: rgba(247, 168, 203, .1); border: 1px solid rgba(247, 168, 203, .3); margin: 8px 0; }
+.al-row { display: grid; grid-template-columns: 30px 1fr auto; gap: 8px; align-items: center; padding: 8px 10px; border-radius: 10px; background: var(--soft, #faf6fb); margin-top: 5px; cursor: pointer; }
+.al-row.done { background: rgba(120, 190, 130, .12); }
+.al-e { font-size: 1.25rem; }
+.al-n { font-size: .84rem; line-height: 1.35; }
+.al-n small { opacity: .75; font-size: .72rem; }
+.al-d { font-size: .72rem; opacity: .8; white-space: nowrap; }
+
+/* ═══ ROOMS 9 — четвърти пакет ═══ */
+
+/* 🌡️ Термометърът */
+.th-row { display: grid; grid-template-columns: 108px 1fr; gap: 8px; padding: 8px 10px; border-radius: 10px; background: var(--soft, #faf6fb); margin-top: 6px; }
+.th-k { font-weight: 700; font-size: .8rem; }
+.th-o { font-size: .81rem; line-height: 1.5; }
+
+/* 🥄 12-те трика */
+.tk-row { display: grid; grid-template-columns: 1fr auto; gap: 8px; align-items: center; padding: 9px 11px; border-radius: 10px; background: var(--soft, #faf6fb); margin-top: 6px; }
+.tk-row.tk-yes { background: rgba(120, 190, 130, .14); }
+.tk-row.tk-no { opacity: .5; }
+.tk-t { font-size: .84rem; line-height: 1.4; }
+.tk-t small { opacity: .72; font-size: .72rem; }
+.tk-btns { display: flex; gap: 4px; }
+.tk-b { padding: 4px 8px; border-radius: 8px; border: 1px solid var(--line, #e8e0ea); background: var(--card, #fff); font-size: .85rem; cursor: pointer; }
+
+/* 🧊 Фризерът */
+.fz-row { border: 1px solid var(--line, #e8e0ea); border-radius: 12px; padding: 8px 11px; margin-top: 6px; background: var(--card, #fff); }
+.fz-row summary { cursor: pointer; font-size: .86rem; }
+.fz-s { font-size: .72rem; opacity: .75; }
+.fz-b { font-size: .8rem; margin: 7px 0 0; line-height: 1.5; }
+
+/* 📏 Размерите */
+.sz-table { margin-top: 8px; overflow-x: auto; }
+/* width:max-content + min-width:100% — редът е по-широк от картата и се скролва
+   в .sz-table; без това фонът и розовата рамка „това си ти сега“ свършваха на
+   ръба на екрана, а последната колона висеше гола отвън. */
+.sz-head, .sz-row { display: grid; grid-template-columns: 76px 62px 66px 62px 1fr; gap: 4px; padding: 6px 8px; font-size: .75rem; width: max-content; min-width: 100%; box-sizing: border-box; }
+.sz-head { font-weight: 700; opacity: .7; border-bottom: 1px solid var(--line, #e8e0ea); }
+.sz-row { border-radius: 8px; }
+.sz-row:nth-child(odd) { background: var(--soft, #faf6fb); }
+.sz-row.sz-now { background: rgba(247, 168, 203, .18); border: 1px solid #f7a8cb; font-weight: 700; }
+
+/* ✈️ Пътуването */
+.tv-out ul { margin: 10px 0 0; padding-left: 18px; }
+.tv-out li { font-size: .83rem; line-height: 1.55; margin-bottom: 5px; }
+.jr-chip.on { background: linear-gradient(90deg, #f7a8cb, #b9a7e0); color: #fff; border-color: transparent; }
+
+/* 🧸 Ротацията */
+.rt-now { font-size: .92rem; margin: 10px 0; }
+
+/* 🧠 Невидимият товар */
+.ld-row { display: grid; grid-template-columns: 1fr auto; gap: 8px; align-items: center; padding: 7px 10px; border-radius: 10px; background: var(--soft, #faf6fb); margin-top: 5px; }
+.ld-t { font-size: .81rem; line-height: 1.4; }
+.ld-out { font-size: 1rem; margin: 12px 0 0; padding: 10px 12px; border-radius: 12px; background: rgba(247, 168, 203, .1); border: 1px solid rgba(247, 168, 203, .3); }
+.ld-out strong { font-size: 1.5rem; color: #b9a7e0; }
+
+/* 💑 Партньорът */
+.pn-txt { font-size: .95rem; line-height: 1.6; padding: 12px 14px; border-radius: 14px; background: var(--soft, #faf6fb); margin: 8px 0; }
+
+/* ═══ ROOMS 10 — пети пакет ═══ */
+.fr-old { padding: 10px 12px; border-radius: 12px; background: rgba(185, 167, 224, .12); border: 1px solid rgba(185, 167, 224, .35); margin-bottom: 10px; }
+.fr-h { font-size: .82rem; margin: 0 0 6px; }
+.fr-q { font-size: .95rem; font-style: italic; margin: 0 0 6px; line-height: 1.5; }
+
+.kc-grid { display: flex; align-items: flex-end; gap: 2px; height: 78px; margin: 10px 0 6px; }
+.kc-col { flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: flex-end; height: 100%; }
+.kc-bar { width: 100%; height: var(--h, 4%); border-radius: 3px 3px 0 0; background: linear-gradient(180deg, #f7a8cb, #b9a7e0); }
+.kc-bar.kc-top { background: linear-gradient(180deg, #f78ab8, #9a7fd0); }
+.kc-l { font-size: .55rem; opacity: .6; margin-top: 2px; }
+
+.db-big { font-size: 2rem; font-weight: 700; text-align: center; color: #b9a7e0; margin: 10px 0 4px; }
+
+.hd-grid { display: flex; align-items: flex-end; gap: 5px; height: 84px; margin: 10px 0 6px; }
+.hd-col { flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: flex-end; height: 100%; }
+.hd-bar { width: 100%; height: var(--h, 6%); border-radius: 5px 5px 0 0; background: linear-gradient(180deg, #b9a7e0, #f7a8cb); }
+.hd-col.hd-worst .hd-bar { background: linear-gradient(180deg, #e07a7a, #d06060); }
+.hd-l { font-size: .62rem; opacity: .7; margin-top: 3px; }
+
+.bk-row { display: grid; grid-template-columns: 28px 1fr; gap: 9px; padding: 9px 10px; border-radius: 10px; background: var(--soft, #faf6fb); margin-top: 6px; }
+.bk-row.bk-now { border: 1px solid #f7a8cb; background: rgba(247, 168, 203, .13); }
+.bk-row.bk-past { opacity: .5; }
+.bk-e { font-size: 1.3rem; }
+.bk-t { font-size: .84rem; line-height: 1.45; }
+.bk-t small { opacity: .78; font-size: .74rem; }
+
+/* 🛍️ Мостчето към магазина (12.1) — тихо, честно, не крещи */
+.shop-bridge {
+  display: flex; align-items: center; gap: 10px; flex-wrap: wrap;
+  padding: 10px 13px; margin: 8px 0 12px;
+  border: 1px dashed var(--line, #e8e0ea); border-radius: 14px;
+  background: var(--soft, #faf6fb);
+}
+.shop-lbl { width: 100%; margin: 0; font-size: .68rem; opacity: .6; letter-spacing: .3px; }
+.shop-txt { flex: 1; min-width: 140px; margin: 0; font-size: .82rem; line-height: 1.45; }
+.shop-btn {
+  padding: 7px 14px; border-radius: 999px; text-decoration: none;
+  background: var(--card, #fff); border: 1px solid var(--line, #e8e0ea);
+  color: var(--ink, #4a4458); font-size: .8rem; white-space: nowrap;
+}
+.shop-btn:hover { border-color: #f7a8cb; }
+.shop-off { background: none; border: 0; color: var(--ink, #4a4458); opacity: .45; font: inherit; font-size: .7rem; cursor: pointer; text-decoration: underline; }
+.shop-off:hover { opacity: .8; }
+
+/* 🫁 Дишай с формата (12.5.2) */
+.br-stage { display: flex; justify-content: center; padding: 18px 0; }
+.br-circle {
+  width: 96px; height: 96px; border-radius: 50%;
+  background: radial-gradient(circle, rgba(185,167,224,.35), rgba(247,168,203,.25));
+  display: flex; align-items: center; justify-content: center;
+  transition: transform 4s ease-in-out;
+}
+.br-word { font-size: .82rem; text-align: center; }
+.br-circle.br-in { transform: scale(1.7); transition: transform 4s ease-in; }
+.br-circle.br-hold { transform: scale(1.7); transition: transform 7s linear; }
+.br-circle.br-out { transform: scale(1); transition: transform 8s ease-out; }
+
+/* 🧠 Подреди мислите */
+.bd-out { margin-top: 10px; }
+.bd-ask { padding: 10px 12px; border-radius: 12px; background: var(--soft, #faf6fb); margin-top: 8px; }
+.bd-q { font-size: .9rem; margin: 0 0 8px; font-weight: 600; }
+.bd-bucket { margin-top: 10px; }
+.bd-h { font-size: .82rem; font-weight: 700; margin: 0 0 4px; opacity: .8; }
+.bd-item { font-size: .84rem; margin: 2px 0; padding-left: 4px; }
+
+/* 📸 Хъбът на снимките (12.12) */
+.ph-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 4px; margin-top: 10px; }
+.ph-cell { position: relative; aspect-ratio: 1; border-radius: 8px; overflow: hidden; background: var(--soft, #f0e8f2); }
+.ph-cell img { width: 100%; height: 100%; object-fit: cover; }
+.ph-tag { position: absolute; bottom: 2px; right: 3px; font-size: .8rem; filter: drop-shadow(0 1px 1px rgba(0,0,0,.4)); }
+
+/* 💾 Паметта честно (10.1.3 + 10.1.4) */
+.st-warn { padding: 10px 12px; border-radius: 12px; font-size: .85rem; line-height: 1.5; margin: 8px 0; }
+.st-warn-y { background: rgba(224, 190, 90, .14); border: 1px solid rgba(224, 190, 90, .4); }
+.st-warn-r { background: rgba(224, 90, 90, .12); border: 1px solid rgba(224, 90, 90, .4); }
+.st-row { display: grid; grid-template-columns: 1fr 70px auto; gap: 8px; align-items: center; padding: 6px 4px; font-size: .82rem; }
+.st-name { line-height: 1.3; }
+.st-bar { height: 7px; border-radius: 5px; background: var(--soft, #f0e8f2); overflow: hidden; }
+.st-fill { display: block; height: 100%; background: linear-gradient(90deg, #b9a7e0, #f7a8cb); }
+.st-size { font-size: .74rem; opacity: .75; white-space: nowrap; text-align: right; }
+
+/* ── 12.9.7: ръчното добавяне на миг в реката ── */
+.rv-add { padding: 10px 18px; border-bottom: 1.5px solid #eee4f6; }
+.rv-addrow { display: flex; align-items: center; gap: 6px; flex-wrap: wrap; }
+.rv-emo { display: flex; gap: 3px; flex-shrink: 0; }
+.rv-emob { width: 30px; height: 30px; border-radius: 50%; border: 1.5px solid transparent;
+  background: transparent; font-size: 16px; cursor: pointer; opacity: .5; }
+.rv-emob.on { opacity: 1; border-color: var(--pink-deep, #e56ba4); background: rgba(229,107,164,.1); }
+.rv-addinp { flex: 1; min-width: 120px; padding: 8px 12px; border-radius: 999px; font: inherit; font-size: 13px;
+  border: 1.5px solid rgba(229,107,164,.25); }
+.rv-addinp:focus { outline: none; border-color: var(--pink-deep, #e56ba4); }
+.rv-addbtn { width: 34px; height: 34px; border-radius: 50%; border: 0; cursor: pointer; flex-shrink: 0;
+  background: linear-gradient(135deg, #f7a8cb, var(--pink-deep, #e56ba4)); color: #fff; font-size: 18px; line-height: 1; }
+[data-theme="dark"] .rv-add { border-color: #342f4e; }
+[data-theme="dark"] .rv-addinp { background: rgba(0,0,0,.25); color: #efe9ff; border-color: rgba(229,107,164,.3); }
+
+/* 🔎 05.08 — mega.css се зарежда СЛЕД rooms.css и връщаше светлия градиент:
+   бял текст върху розово→лавандула = 2.01:1, измерено живо в 28 чипа. */
+.jr-chip.on { background: linear-gradient(90deg, #d1487f, #9b7fd4); }
+.rp-from { color: #c9407a; }              /* --pink-deep на 11px → 2.86:1 */
+
+/* 🔎 05.08 — последните 69 от живото измерване (светла тема).
+   Всяко число долу е измерено в браузъра, не преценено на око. */
+.jr-chip.on   { background: linear-gradient(90deg, #d1487f, #7d5fc0); } /* 3.91 → 4.9 */
+.rp-from      { color: #c0396f; }                                      /* 4.43 → 5.18 */
+.db-big       { color: #7256b0; }                                      /* 2.17 → 5.72 */
+.qz-b.qz-t    { color: #1f3b33; }        /* бяло върху пастел 1.76 → тъмен текст */
+.wipe-btn     { background: linear-gradient(90deg, #c14a4a, #a83a3a) !important; } /* 3.32 → 5.4 */
+.br-circle span, .br-word { color: #4a4462; }  /* extras.css слагаше бяло върху почти бял кръг = 1.21 */
+.art-read { color: #6b5aa0; }                    /* 05.08: --lav върху бяло = 2.09 */
+
+/* ═══════════════════════════════════════════════════════
+   🆘 05.08 — СОС ЦЕНТЪРЪТ И ТЪРСЕНЕТО. Не са мерени досега.
+   Това е екранът, който майката отваря с треперещи ръце.
+   „Говори бавно · кажи АДРЕСА“ — точно инструкцията как да
+   говори с оператора — беше 2.76:1.
+   ═══════════════════════════════════════════════════════ */
+.sos-tips        { color: #7d4f61; }   /* беше #b08a9a → 2.76 */
+.sos-nm small    { color: #7d4f61; }   /* подредът под номера → 3.02/4.20 */
+.sf-more         { background: linear-gradient(135deg, #c0396f, #7d5fc0); } /* бяло = 2.01 */
+[data-theme="dark"] .sos-tips,
+[data-theme="dark"] .sos-nm small { color: #dcb8c6; }
+/* 🆘 самият бутон 112: бяло върху #e8574f→#c73e4a. Големият надпис минава
+   (21px bold), но подредът „пожар · спешна помощ · полиция“ е 11.5px и
+   падаше на 4.20:1. Един тон по-наситено червено — бутонът си остава
+   червен, подредът става четим. Измерено, не преценено. */
+.sos-big { background: linear-gradient(135deg, #cf3f37, #a92f3a); }

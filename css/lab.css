@@ -1,0 +1,212 @@
+/* ═══════════════════════════════════════════════════════════
+   СТАЯ 9 — ЛАБОРАТОРИЯТА 🔬
+   Корк, червен конец и жълто листче. Изглежда като дъска в кухня,
+   не като лаборатория — защото това не е наука, а твоите вечери.
+   ═══════════════════════════════════════════════════════════ */
+
+:root {
+  --lb-cork: var(--sun);
+  --lb-red:  var(--pink-deep);
+  --lb-note: var(--sun-soft);
+  --lb-ink:  #7d5f3c;
+}
+
+.lb-intro { margin: 0 0 12px; font-size: 14.5px; line-height: 1.6; }
+.lb-q {
+  margin: 4px 0 12px;
+  font-size: 17px;
+  font-weight: 700;
+  font-family: 'Comfortaa', 'Comfortaa-fallback', sans-serif;
+  line-height: 1.45;
+}
+/* 🔎 г07/331: opacity: 0.7 върху --ink даваше ~3.46:1 на бяло — под прага 4.5
+   за дребен текст. Явен цвят вместо прозрачност; същата мекота, четимо. */
+.lb-step { margin: 10px 0 6px; font-size: 13px; font-weight: 700; opacity: 1; color: #6c6683; }
+.lb-arm, .lb-rate { font-size: 15px; padding: 10px 16px; }
+
+/* отметнато за днес */
+.lb-done {
+  background: linear-gradient(135deg, #e2f0e0, #d6ecd2);
+  border: 2px solid #9cc294;
+  border-radius: 14px;
+  padding: 12px 14px;
+  font-size: 14.5px;
+  line-height: 1.6;
+  animation: lbPop 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+[data-theme="dark"] .lb-done { background: linear-gradient(135deg, #2c3f2a, #24331f); border-color: #4f7048; }
+.lb-done small { opacity: 0.7; }
+@keyframes lbPop { 0% { transform: scale(0.94); opacity: 0; } 100% { transform: scale(1); opacity: 1; } }
+
+/* лентата с вечерите */
+.lb-bar { display: flex; gap: 5px; margin: 10px 0; }
+.lb-bar i {
+  flex: 1;
+  height: 10px;
+  border-radius: 5px;
+  background: #e6dccb;
+  transition: background 0.3s ease;
+}
+.lb-bar i.on { background: linear-gradient(90deg, var(--lb-cork), var(--lb-red)); }
+[data-theme="dark"] .lb-bar i { background: #40382c; }
+.lb-prog { margin: 6px 0 0; font-size: 14px; }
+
+/* забравеният опит — без укор */
+.lb-forgot {
+  margin: 12px 0 0;
+  background: #fdf3e2;
+  border: 1px dashed #d8bb8a;
+  border-radius: 12px;
+  padding: 10px 12px;
+}
+[data-theme="dark"] .lb-forgot { background: #3a3226; border-color: #6b5a42; }
+.lb-forgot p { margin: 0 0 8px; font-size: 13.5px; line-height: 1.55; }
+.lb-stop { margin-top: 10px; }
+
+/* готовите опити */
+.lb-ready { display: flex; flex-direction: column; gap: 8px; margin: 6px 0 12px; }
+.lb-card {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  text-align: left;
+  width: 100%;
+  background: var(--lb-note);
+  border: 1.5px solid #e0c878;
+  border-radius: 12px;
+  padding: 10px 12px;
+  cursor: pointer;
+  font: inherit;
+  color: inherit;
+  transition: transform 0.15s ease, box-shadow 0.15s ease;
+}
+.lb-card:hover { transform: translateY(-2px); box-shadow: 0 8px 18px rgba(183, 138, 82, 0.28); }
+[data-theme="dark"] .lb-card { background: #3d3722; border-color: #6b5a2f; }
+.lb-e { font-size: 24px; flex: none; }
+.lb-card strong { display: block; font-size: 14px; line-height: 1.4; }
+/* 🔎 г07/331: редчето, което казва ЗАЩО да правиш този опит, беше ~2.97:1 върху
+   кремавото — на слънце изчезва и мама избира само по заглавие. */
+.lb-card small { display: block; font-size: 12px; opacity: 1; color: #6b5a3c; margin-top: 2px; line-height: 1.4; }
+
+/* стоп-правилото за медицинското */
+.lb-warn {
+  margin: 10px 0 0;
+  background: #fdecec;
+  border: 2px solid var(--lb-red);
+  border-radius: 12px;
+  padding: 11px 13px;
+  font-size: 13.5px;
+  line-height: 1.6;
+  animation: lbShake 0.4s;
+}
+[data-theme="dark"] .lb-warn { background: #3d2222; }
+@keyframes lbShake {
+  0%, 100% { transform: translateX(0); }
+  25% { transform: translateX(-5px); }
+  75% { transform: translateX(5px); }
+}
+
+/* присъдата */
+.lb-verdict {
+  border-radius: 14px;
+  padding: 14px;
+  border: 2px solid;
+  animation: lbPop 0.5s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+.lb-verdict strong { display: block; font-family: 'Comfortaa', 'Comfortaa-fallback', sans-serif; font-size: 16px; margin-bottom: 6px; }
+.lb-verdict p { margin: 0; font-size: 14px; line-height: 1.65; }
+.lb-num { display: inline-block; margin-top: 6px; font-size: 13.5px; opacity: 0.85; }
+.lb-yes  { background: var(--mint-soft); border-color: var(--mint); }
+.lb-no   { background: var(--pink-soft); border-color: var(--pink); }
+.lb-same { background: var(--lav-soft); border-color: var(--lav); }
+.lb-thin { background: var(--peach-soft); border-color: var(--peach); }
+[data-theme="dark"] .lb-yes  { background: #2c3f2a; border-color: #4f7048; }
+[data-theme="dark"] .lb-no   { background: #3d2222; border-color: #7a4444; }
+[data-theme="dark"] .lb-same { background: #2c2f3a; border-color: #4c5266; }
+[data-theme="dark"] .lb-thin { background: #3a3226; border-color: #6b5a42; }
+
+/* бабиният мит */
+.lb-myth {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  background: var(--lb-note);
+  border: 1.5px dashed #d8bb8a;
+  border-radius: 14px;
+  padding: 12px 14px;
+  margin-bottom: 10px;
+}
+[data-theme="dark"] .lb-myth { background: #3d3722; border-color: #6b5a42; }
+.lb-myth span { font-size: 28px; flex: none; }
+.lb-myth p { margin: 0; font-size: 14.5px; line-height: 1.55; font-style: italic; }
+/* 🔎 г07/74 + г07/331: .lb-kind носи най-мекия глас в приложението — включително
+   „💚 Ако нещо е извън лентата — това НЕ е диагноза“. Той беше НАЙ-БЛЕДИЯТ текст
+   в картата (~3.46:1). Утешението не бива да е по-слабо от тревогата.
+   Цветът е неутрален, защото същият клас носи и 💜-редовете в стая 8. */
+.lb-kind { margin: 10px 0 0; font-size: 12.5px; opacity: 1; color: #6b6483; line-height: 1.5; }
+
+/* тетрадката */
+.lb-notes { display: flex; flex-direction: column; gap: 8px; }
+.lb-note {
+  display: flex;
+  align-items: center;
+  gap: 11px;
+  border-radius: 12px;
+  padding: 10px 12px;
+  border-left: 4px solid;
+}
+.lb-note span { font-size: 20px; flex: none; }
+.lb-note strong { display: block; font-size: 14px; line-height: 1.4; }
+.lb-note small { display: block; font-size: 12px; opacity: 0.65; margin-top: 2px; }
+.lb-note.lb-yes  { border-left-color: var(--mint); }
+.lb-note.lb-no   { border-left-color: var(--pink); }
+.lb-note.lb-same { border-left-color: var(--lav); }
+.lb-note.lb-thin { border-left-color: var(--peach); }
+
+@media (prefers-reduced-motion: reduce) {
+  .lb-done, .lb-verdict, .lb-warn { animation: none; }
+}
+
+/* 5.10: подсказката от Захранване/Развитие — маркирана различно от простия избор */
+.lb-cross { margin: 10px 0; padding: 10px; border-radius: 16px;
+  background: linear-gradient(135deg, var(--lb-note), #fff); border: 1.5px dashed var(--lb-cork); }
+.lb-crosswhy { margin: 0 0 8px; font-size: 12.5px; font-weight: 700; color: var(--lb-ink); }
+.lb-crossbtn { width: 100%; box-shadow: 0 0 0 2px var(--lb-cork) inset; }
+
+/* ═══ 🇧🇬 Български обичаи (obichai.js) — топъл пътеводител в Лабораторията ═══
+   Разгъващи се редове по конвенцията .cm-row + собствен списък „обичаите на
+   твоя род". Само цветове/отстъпи — никакви анимирани размери. */
+.ob-list { margin: 10px 0 4px; }
+.ob-row { background: #fdf6e8; border: 1px solid #e8d9b8; }
+.ob-row summary { color: #7a5c1f; }
+.ob-row p { color: #4a3a20; margin: 0 10px 10px; line-height: 1.55; }
+.ob-row p strong { color: #8a6520; }
+.ob-mine { margin-top: 14px; padding-top: 12px; border-top: 1px dashed #e0cfa8; }
+.ob-mylist { margin: 6px 0; }
+.ob-myrow { display: flex; align-items: center; gap: 8px; padding: 7px 10px; margin: 5px 0;
+  background: #fffaf0; border: 1px solid #ecdcbb; border-radius: 10px; }
+.ob-mytxt { flex: 1; color: #4a3a20; line-height: 1.45; }
+/* 👆 г07/333: .jr-chip дава min-height: 44px (touch.css), но min-WIDTH нямаше
+   никъде, а padding-ът е свит до 9px — ✕-то до записания семеен обичай беше
+   ~30px широко. Същият праг като .jr-x. */
+.ob-del { flex: none; min-width: 40px; padding: 2px 9px; opacity: .65; }
+.ob-del:hover { opacity: 1; }
+
+[data-theme="dark"] .ob-row { background: #3a3324; border-color: #6b5a34; }
+[data-theme="dark"] .ob-row summary { color: #e8cf95; }
+[data-theme="dark"] .ob-row p { color: #ddd3c0; }
+[data-theme="dark"] .ob-row p strong { color: #f0d9a0; }
+[data-theme="dark"] .ob-mine { border-top-color: #5a4c30; }
+[data-theme="dark"] .ob-myrow { background: #352f22; border-color: #5f5133; }
+[data-theme="dark"] .ob-mytxt { color: #ddd3c0; }
+
+/* 🌙 г07/332: подсказката от друга стая („🔗 От Захранване: …“) имаше твърд #fff
+   в градиента — между тъмните карти светваше цял бял правоъгълник. */
+[data-theme="dark"] .lb-cross { background: linear-gradient(135deg, #3a3324, #2f2a1e); border-color: #6b5a34; }
+[data-theme="dark"] .lb-crosswhy { color: #e8cf95; }
+
+/* 🌙 г07/74 + г07/331: новите явни цветове горе са мислени за светла тема —
+   нощем трябва да им се даде светъл вариант, иначе се просмукват в тъмното. */
+[data-theme="dark"] .lb-kind,
+[data-theme="dark"] .lb-step { color: var(--ink-soft); }
+[data-theme="dark"] .lb-card small { color: #ddd3c0; }

@@ -1,0 +1,368 @@
+/* ═══════════════════════════════════════════════════════════
+   HERO — ВЪЗДУШНАТА СТРАНА „БЕЙБИ ЛЕНД“ 🎈🏝️
+   Жива летяща страна: балон-къщички (7-те стаи), балон-водач
+   с плакат, дишащи хълмове на паралакс, пътечка от звезден прах.
+   ═══════════════════════════════════════════════════════════ */
+
+/* ── РАМКАТА стои на място; страната вътре е по-дълга и се плъзга ── */
+.land-frame {
+  position: relative; width: min(880px, 96vw); height: clamp(260px, 44vw, 360px);
+  margin: 14px auto 4px; border-radius: 28px; overflow: hidden;
+  background: linear-gradient(180deg, rgba(255, 255, 255, 0.16), rgba(255, 255, 255, 0.42));
+  box-shadow: inset 0 0 0 1.5px rgba(255, 255, 255, 0.5), 0 24px 60px rgba(150, 120, 180, 0.22);
+  opacity: 0; transform: translateY(22px) scale(0.985);
+  transition: opacity 0.7s ease, transform 0.7s cubic-bezier(0.22, 1, 0.36, 1);
+  cursor: grab;
+  touch-action: pan-y;             /* пръстът нагоре-надолу си скролва страницата */
+}
+.land-frame.shown { opacity: 1; transform: none; }
+.land-frame.grabbing { cursor: grabbing; }
+
+.land {
+  position: absolute; inset: 0 auto 0 0; height: 100%;
+  --lx: 0; --ly: 0;
+  will-change: transform;
+}
+
+/* цветове на хълмовете по небето */
+.land { --ld-far: #e7ddf3; --ld-near: #cfe8d6; }
+header.hero.sky-dawn  .land { --ld-far: #f3ddce; --ld-near: #ecd9c0; }
+header.hero.sky-dusk  .land { --ld-far: #ddccee; --ld-near: #eacfd8; }
+header.hero.sky-night .land { --ld-far: #3a3060; --ld-near: #2e2850; }
+
+/* ── П1: трети, най-далечен пласт + светлинен орб + въздушен воал ── */
+.ld-farthest { height: 58%; opacity: 0.9; }
+.land { --ld-fst: #efe9f8; }
+header.hero.sky-dawn  .land { --ld-fst: #f9ece1; }
+header.hero.sky-dusk  .land { --ld-fst: #e9dcf1; }
+header.hero.sky-night .land { --ld-fst: #2b2452; }
+
+/* слънцето/луната като СВЕТЛИНА, не емоджи */
+.ld-orb {
+  position: absolute; left: 14%; top: 6%; width: 130px; height: 130px;
+  border-radius: 50%; pointer-events: none; will-change: transform;
+  background: radial-gradient(circle, rgba(255, 241, 205, 0.9), rgba(255, 241, 205, 0) 66%);
+  animation: ldOrb 7s ease-in-out infinite;
+}
+@keyframes ldOrb { 0%, 100% { opacity: 0.6; } 50% { opacity: 1; } } /* САМО opacity — transform-ът е на JS-паралакса */
+header.hero.sky-dawn  .ld-orb { left: 8%;  top: 26%; background: radial-gradient(circle, rgba(255, 205, 170, 0.95), rgba(255, 205, 170, 0) 66%); }
+header.hero.sky-dusk  .ld-orb { left: 64%; top: 20%; background: radial-gradient(circle, rgba(255, 190, 200, 0.8), rgba(214, 180, 255, 0) 68%); }
+header.hero.sky-night .ld-orb { left: 70%; top: 4%;  background: radial-gradient(circle, rgba(220, 225, 255, 0.55), rgba(220, 225, 255, 0) 62%); }
+
+/* мъглицата, която прави дълбочината (като в анимационен филм) */
+.ld-haze {
+  position: absolute; inset: 0; pointer-events: none;
+  background: linear-gradient(180deg, rgba(255, 255, 255, 0) 34%, rgba(255, 255, 255, 0.26) 72%, rgba(255, 255, 255, 0) 100%);
+}
+/* тъмна тема = sky-night (skyMode в home.js прави dark → night) + изричен дубъл */
+header.hero.sky-night .ld-haze,
+[data-theme="dark"] .ld-haze { background: linear-gradient(180deg, rgba(120, 110, 190, 0) 34%, rgba(120, 110, 190, 0.16) 72%, rgba(120, 110, 190, 0) 100%); }
+[data-theme="dark"] .land { --ld-fst: #2b2452; }
+[data-theme="dark"] .ld-orb { left: 70%; top: 4%; background: radial-gradient(circle, rgba(220, 225, 255, 0.55), rgba(220, 225, 255, 0) 62%); }
+header.hero.sky-night .land-frame {
+  background: linear-gradient(180deg, rgba(30, 25, 60, 0.25), rgba(30, 25, 60, 0.5));
+  box-shadow: inset 0 0 0 1.5px rgba(255, 255, 255, 0.12), 0 24px 60px rgba(10, 5, 30, 0.5);
+}
+
+/* ── хълмовете ──
+   X-а им се движи от JS при плъзгане: далечните изостават най-много,
+   близките по-малко, къщичките вървят с пръста. Оттам е дълбочината. */
+.land-hills { position: absolute; left: -6%; right: -6%; width: 112%; bottom: 0; will-change: transform; }
+.ld-far  { height: 46%; }
+.ld-near { height: 32%; }
+
+/* ── точките: къде си в страната ── */
+.ld-dots {
+  position: absolute; left: 50%; bottom: 8px; transform: translateX(-50%);
+  display: flex; gap: 6px; z-index: 6; pointer-events: none;
+}
+.ld-dots i {
+  width: 6px; height: 6px; border-radius: 50%;
+  background: rgba(255, 255, 255, 0.45);
+  box-shadow: 0 1px 3px rgba(90, 60, 90, 0.25);
+  transition: width 0.25s ease, background 0.25s ease;
+}
+.ld-dots i.on { width: 18px; border-radius: 3px; background: #ffffff; }
+header.hero.sky-night .ld-dots i { background: rgba(255, 255, 255, 0.3); }
+header.hero.sky-night .ld-dots i.on { background: rgba(255, 255, 255, 0.9); }
+
+/* ── подсказката: само докато не е плъзнала ── */
+.ld-swipe {
+  position: absolute; right: 12px; bottom: 10px; z-index: 6;
+  font-size: 12px; font-weight: 700; color: #6b4a63;
+  background: rgba(255, 255, 255, 0.82);
+  border-radius: 999px; padding: 4px 10px;
+  pointer-events: none;
+  animation: ldSwipe 2.4s ease-in-out infinite;
+}
+.land-frame.slid .ld-swipe { opacity: 0; animation: none; transition: opacity 0.4s ease; }
+@keyframes ldSwipe {
+  0%, 100% { transform: translateX(0); opacity: 0.9; }
+  50%      { transform: translateX(-7px); opacity: 1; }
+}
+header.hero.sky-night .ld-swipe { background: rgba(50, 40, 80, 0.8); color: #f0e6ff; }
+.land-path { position: absolute; inset: 0; width: 100%; height: 100%; pointer-events: none; }
+.ld-dash { animation: ldDash 30s linear infinite; }
+@keyframes ldDash { to { stroke-dashoffset: -300; } }
+
+/* ── балонът-водач с плаката ── */
+.ld-pilot {
+  position: absolute; top: 6%; left: -18%; z-index: 6; pointer-events: none;
+  display: flex; align-items: center; gap: 6px;
+  animation: ldFly 30s linear infinite;
+}
+.ld-pilot-b { width: 44px; height: auto; filter: drop-shadow(0 10px 16px rgba(90, 60, 120, 0.35)); animation: ldBob 3.4s ease-in-out infinite; }
+.ld-banner {
+  order: -1;
+  background: rgba(255, 255, 255, 0.92); color: #7a5fb0;
+  font-size: 11.5px; font-weight: 800; white-space: nowrap;
+  padding: 6px 13px; border-radius: 999px 4px 4px 999px;
+  box-shadow: 0 6px 16px rgba(90, 60, 120, 0.25);
+  animation: ldBannerSway 3.4s ease-in-out infinite;
+}
+@keyframes ldFly {
+  0%   { transform: translateX(0) translateY(0); }
+  45%  { transform: translateX(78vw) translateY(14px); }
+  50%  { transform: translateX(80vw) translateY(12px) scaleX(1); }
+  55%  { transform: translateX(78vw) translateY(10px); }
+  100% { transform: translateX(-20vw) translateY(0); }
+}
+@keyframes ldBob { 0%, 100% { translate: 0 0; rotate: -3deg; } 50% { translate: 0 -7px; rotate: 3deg; } }
+@keyframes ldBannerSway { 0%, 100% { rotate: -1.5deg; } 50% { rotate: 1.5deg; } }
+.ld-trail { position: absolute; left: -12px; top: 55%; font-size: 10px; color: #f0c8e0; animation: ldTrail 1.8s ease-out infinite; }
+.ld-trail.t2 { animation-delay: 0.6s; font-size: 8px; }
+.ld-trail.t3 { animation-delay: 1.2s; font-size: 9px; }
+@keyframes ldTrail { 0% { opacity: 1; transform: translate(0, 0) scale(1); } 100% { opacity: 0; transform: translate(-34px, 14px) scale(0.4); } }
+
+/* ── балон-къщичките ── */
+.ld-house {
+  position: absolute; z-index: 5; border: none; background: transparent; cursor: pointer;
+  width: 74px; padding: 0; font-family: inherit;
+  transform: translate(-50%, 0) scale(var(--sc, 1));
+  animation: ldHouseBob 5.2s ease-in-out infinite;
+  transition: filter 0.25s ease;
+  -webkit-tap-highlight-color: transparent;
+}
+.ld-house.ld-d1 { z-index: 7; }
+.ld-house.ld-d2 { z-index: 5; }
+.ld-house.ld-d3 { z-index: 3; opacity: 0.94; }
+/* паралакс по дълбочина */
+.ld-d1 { translate: calc(var(--lx) * 16px) calc(var(--ly) * 8px); }
+.ld-d2 { translate: calc(var(--lx) * 9px) calc(var(--ly) * 5px); }
+.ld-d3 { translate: calc(var(--lx) * 4px) calc(var(--ly) * 2px); }
+/* П5 H2: и хълмовете влизат в дълбочината — движат се ОБРАТНО на къщичките */
+.ld-far   { translate: calc(var(--lx, 0) * -12px) calc(var(--ly, 0) * -5px); }
+.ld-near  { translate: calc(var(--lx, 0) * -6px) calc(var(--ly, 0) * -2px); }
+.ld-pilot { translate: calc(var(--lx, 0) * 11px) calc(var(--ly, 0) * 6px); }
+/* проход 3 T31: 9 къщички правеха reflow всеки кадър с margin-top. Пренасяме
+   base transform (translate+scale) в keyframes и bob-ваме с translateY — паралаксът
+   на редове 120-122 е на отделното свойство `translate` и не се пипа. var(--sc) е
+   константа между кадрите (резолвва се per-element), интерполира само Y. */
+@keyframes ldHouseBob {
+  0%, 100% { transform: translate(-50%, 0) scale(var(--sc, 1)); }
+  50%      { transform: translate(-50%, -9px) scale(var(--sc, 1)); }
+}
+.ld-hb { width: 100%; height: auto; display: block; filter: drop-shadow(0 12px 18px rgba(90, 60, 120, 0.28)); }
+.ld-he { position: absolute; top: 14px; left: 50%; transform: translateX(-50%); font-size: 19px; pointer-events: none; }
+.ld-hn {
+  display: block; margin-top: 3px;
+  font-size: 10.5px; font-weight: 800; color: var(--ink);
+  background: rgba(255, 255, 255, 0.85); border-radius: 999px; padding: 3px 8px;
+  box-shadow: 0 4px 10px rgba(90, 60, 120, 0.15);
+  white-space: nowrap;
+}
+header.hero.sky-night .ld-hn { background: rgba(45, 38, 70, 0.85); color: #ece8f5; }
+/* цветовете на балоните — палитрата на стаите */
+/* цветовете на 9-те балона; последните два са по-наситени — това са стаите,
+   които не са за бебето, а за нея */
+.land { --h0: #f7b0cd; --h1: #9fc8ef; --h2: #f6b56b; --h3: #8fd0ba; --h4: #f5d47e;
+        --h5: #9fd8c6; --h6: #c3b1ea; --h7: #d1487f; --h8: #e0a838; }
+.ld-house:hover { filter: brightness(1.06); }
+.ld-house:hover .ld-hb { filter: drop-shadow(0 16px 26px rgba(150, 90, 170, 0.45)); }
+.ld-house:hover { animation-play-state: paused; }
+/* шепотът при hover (десктоп) */
+.ld-tip {
+  position: absolute; bottom: calc(100% + 8px); left: 50%; transform: translateX(-50%) translateY(4px);
+  background: #fff; color: var(--ink); text-align: center;
+  font-size: 11px; font-weight: 700; line-height: 1.45;
+  border-radius: 13px; padding: 8px 12px; white-space: nowrap;
+  box-shadow: 0 10px 26px rgba(90, 60, 120, 0.3);
+  opacity: 0; pointer-events: none; transition: opacity 0.25s ease, transform 0.25s ease;
+  z-index: 20;
+}
+/* „докосни и влез →“ беше #b085c9 върху бяло = контраст 2.98, под четимото
+   за 10px текст. По-наситено лилаво: същият тон, 5.0 контраст. (обиколка 22.07) */
+.ld-tip em { display: block; font-style: normal; font-size: 10px; color: #8a5fa8; margin-top: 2px; }
+@media (hover: hover) { .ld-house:hover .ld-tip { opacity: 1; transform: translateX(-50%) translateY(0); } }
+/* излитане при докосване */
+.ld-house.ld-lift { animation: ldLift 0.5s cubic-bezier(0.4, 0, 1, 1) forwards; }
+/* проход 3 T31: излитането също на transform (forwards замества base-анимацията) */
+/* П5 H5: излитането е ДЪГА — накланя се, пораства към теб и чезне в небето */
+@keyframes ldLift {
+  38% { transform: translate(-46%, -30px) rotate(6deg) scale(calc(var(--sc, 1) * 1.14)); opacity: 1; }
+  to  { transform: translate(-60%, -110px) rotate(-9deg) scale(calc(var(--sc, 1) * 1.32)); opacity: 0; }
+}
+
+/* облачетата */
+.ld-cloud { position: absolute; left: -12%; z-index: 4; opacity: 0.8; pointer-events: none; animation: ldDrift linear infinite; }
+@keyframes ldDrift { from { transform: translateX(-8vw); } to { transform: translateX(100vw); } }
+
+/* мобилно: по-плътна страна */
+@media (max-width: 640px) {
+  .land-frame { height: 300px; }
+  .ld-house { width: 60px; }
+  .ld-hn { font-size: 9px; }
+  .ld-banner { font-size: 10px; padding: 5px 10px; }
+}
+
+/* ── CTA MAX (запазени) ── */
+.hero-cta-max { display: flex; flex-direction: column; align-items: center; gap: 10px; margin-top: 20px; }
+.cta-main {
+  position: relative; overflow: hidden; text-decoration: none; text-align: center;
+  font-family: 'Comfortaa', 'Comfortaa-fallback', sans-serif; font-size: 16px; font-weight: 700; color: #fff;
+  background: linear-gradient(100deg, #f27daf, #8f79c9);
+  border-radius: 999px; padding: 14px 30px;
+  box-shadow: 0 14px 34px rgba(190, 100, 160, 0.45);
+  transition: transform 0.25s cubic-bezier(0.34, 1.56, 0.64, 1), box-shadow 0.25s ease;
+  animation: ctaGlow 3s ease-in-out infinite;
+}
+.cta-main:hover { transform: translateY(-3px) scale(1.03); box-shadow: 0 20px 44px rgba(190, 100, 160, 0.6); }
+@keyframes ctaGlow { 0%, 100% { box-shadow: 0 14px 34px rgba(190, 100, 160, 0.45); } 50% { box-shadow: 0 14px 42px rgba(190, 100, 160, 0.7); } }
+.cta-row { display: flex; gap: 9px; align-items: stretch; }
+.cta-mini {
+  text-decoration: none; display: flex; align-items: center;
+  font-size: 13px; font-weight: 800; color: var(--ink);
+  background: rgba(255, 255, 255, 0.8); border: 1.5px solid rgba(195, 177, 234, 0.5);
+  border-radius: 999px; padding: 10px 18px;
+  transition: transform 0.2s ease;
+}
+.cta-mini:hover { transform: translateY(-2px); }
+.cta-sos {
+  border: 1.5px solid rgba(232, 87, 79, 0.45); cursor: pointer; font-family: inherit;
+  font-size: 13px; font-weight: 800; color: #c73e4a;
+  background: rgba(255, 255, 255, 0.8); border-radius: 999px; padding: 10px 16px;
+  transition: transform 0.2s ease;
+}
+.cta-sos:hover { transform: translateY(-2px); background: #fff0f0; }
+.cta-truth { font-size: 11.5px; font-weight: 700; color: var(--ink-soft); line-height: 1.6; max-width: 400px; text-align: center; }
+header.hero.sky-night .cta-mini { background: rgba(50, 42, 75, 0.7); color: #ece8f5; }
+header.hero.sky-night .cta-sos { background: rgba(60, 40, 60, 0.6); }
+header.hero.sky-night .cta-truth { color: #b0a8c5; }
+
+@media (prefers-reduced-motion: reduce) {
+  .ld-pilot, .ld-pilot-b, .ld-banner, .ld-trail, .ld-house, .ld-cloud, .ld-dash, .cta-main { animation: none; }
+  .ld-pilot { left: 30%; }
+  .ld-d1, .ld-d2, .ld-d3, .ld-far, .ld-near, .ld-pilot { translate: 0 0; }
+  .ld-swipe { animation: none; }
+  .land-frame { transition: none; }
+  .ld-orb { animation: none; opacity: 0.75; }
+}
+
+/* ── 8.1: значки, нощни прозорчета, времето, намигане ── */
+.ld-badge { position: absolute; top: -4px; right: -6px; width: 22px; height: 22px;
+  border-radius: 50%; display: flex; align-items: center; justify-content: center;
+  font-size: 11px; background: #fff; box-shadow: 0 2px 8px rgba(0,0,0,.22);
+  animation: ldBadge 2.4s ease infinite; }
+@keyframes ldBadge { 0%,100% { transform: scale(1); } 50% { transform: scale(1.14); } }
+.ld-night .ld-hb rect[fill="#b98d5f"] { fill: #ffd98a; filter: drop-shadow(0 0 5px rgba(255,214,120,.85)); }
+.ld-drop { position: absolute; top: -8%; z-index: 4; font-size: 11px; opacity: .7;
+  pointer-events: none; animation: ldFall linear infinite; }
+.ld-snow { font-size: 13px; }
+@keyframes ldFall { to { transform: translateY(118%) translateX(14px); } }
+.ld-wx { position: absolute; right: 10px; top: 10px; z-index: 6; width: 30px; height: 30px;
+  border-radius: 50%; border: none; cursor: pointer; font-size: 13px;
+  background: rgba(255,255,255,.72); box-shadow: 0 2px 8px rgba(0,0,0,.15); }
+.logo-wink { animation: logoWink .7s ease; }
+@keyframes logoWink { 0%,100% { transform: none; } 30% { transform: rotate(-7deg) scale(1.08); } 60% { transform: rotate(5deg) scale(1.04); } }
+@media (prefers-reduced-motion: reduce) { .ld-drop { display: none; } }
+
+/* проход 4: къщичка с чакащо (чекин/опит/изтекло лекарство) свети с мек ореол —
+   въздушната страна става водач „днес те чакат тук". Само transform/opacity. */
+.ld-house.ld-attn::before {
+  content: ''; position: absolute; left: 50%; top: 38%;
+  width: 68px; height: 68px; margin: -34px 0 0 -34px; border-radius: 50%;
+  background: radial-gradient(circle, rgba(242,145,189,.5), rgba(242,145,189,0) 70%);
+  pointer-events: none; z-index: -1;
+  animation: ldAttn 2.4s ease-in-out infinite;
+}
+@keyframes ldAttn { 0%, 100% { transform: scale(.7); opacity: .35; } 50% { transform: scale(1.15); opacity: .8; } }
+@media (prefers-reduced-motion: reduce) { .ld-house.ld-attn::before { animation: none; opacity: .5; } }
+
+/* ── П5 H4: водачът-персонаж — JS кара, CSS-полетът мълчи ── */
+.ld-pilot-live { animation: none; left: 0; top: 0; will-change: transform; }
+.ld-banner.ld-note {
+  animation: ldNote 0.45s cubic-bezier(0.34, 1.56, 0.64, 1);
+  background: #fff3fa; color: #d1487f;
+}
+@keyframes ldNote { from { transform: scale(0.7); opacity: 0; } }
+header.hero.sky-night .ld-banner.ld-note,
+[data-theme="dark"] .ld-banner.ld-note { background: #3a2b4a; color: #f7a8cb; }
+@media (prefers-reduced-motion: reduce) {
+  .ld-pilot-live, .ld-banner.ld-note { animation: none; }
+}
+
+/* ── П5 H5: ирисът — влиташ в къщичката, събуждаш се в стаята ── */
+.ld-iris {
+  position: fixed; width: 44px; height: 44px; margin: -22px 0 0 -22px;
+  border-radius: 50%; z-index: 4000; pointer-events: none;
+  transform: scale(0); opacity: 0.97;
+  animation: ldIris 0.6s cubic-bezier(0.55, 0, 0.45, 1) forwards;
+  transition: opacity 0.55s ease;
+}
+@keyframes ldIris { to { transform: scale(90); } }
+.ld-iris.ld-iris-out { opacity: 0; }
+[data-theme="dark"] .ld-iris { filter: brightness(0.68) saturate(0.85); }
+@media (prefers-reduced-motion: reduce) {
+  .ld-iris { display: none; }
+  .ld-house.ld-lift { animation: none; }
+}
+
+/* ── П5-резерв H3: къщичките са ВЪРЗАНИ балони — светът тръгва, те се накланят ── */
+.ld-hb {
+  rotate: var(--lean, 0deg);
+  transform-origin: 50% 8%;                 /* окачени за върха на балона */
+  transition: scale 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+.ld-d1 .ld-hb { rotate: calc(var(--lean, 0deg) * 1.35); }  /* предните люлеят повече */
+.ld-d3 .ld-hb { rotate: calc(var(--lean, 0deg) * 0.7); }   /* задните — по-лениво */
+.ld-house:hover .ld-hb { scale: 1.06; }                    /* пружинно придърпване */
+
+/* нощем прозорчето трепти като свещ */
+.ld-night .ld-hb rect[fill="#b98d5f"] { animation: ldWinFlick 5s ease-in-out infinite; }
+@keyframes ldWinFlick { 0%, 100% { opacity: 1; } 47% { opacity: 0.8; } 53% { opacity: 0.96; } 71% { opacity: 0.85; } }
+
+@media (prefers-reduced-motion: reduce) {
+  .ld-hb, .ld-d1 .ld-hb, .ld-d3 .ld-hb { rotate: 0deg; scale: 1; transition: none; animation: none; }
+  .ld-night .ld-hb rect[fill="#b98d5f"] { animation: none; }
+}
+
+/* ── П5-резерв П6: нощен живот — светулки и падаща звезда (само тъмна тема) ── */
+.ld-fire {
+  position: absolute; z-index: 4; font-size: 9px; pointer-events: none;
+  opacity: 0; animation: ldFire 6s ease-in-out infinite;
+}
+@keyframes ldFire {
+  0%, 100% { transform: translate(0, 0); opacity: 0.1; }
+  30%      { transform: translate(10px, -16px); opacity: 0.95; }
+  60%      { transform: translate(-8px, -30px); opacity: 0.4; }
+  85%      { transform: translate(6px, -10px); opacity: 0.8; }
+}
+.ld-shoot {
+  position: absolute; z-index: 2; font-size: 12px; color: #fff; pointer-events: none;
+  text-shadow: 0 0 8px rgba(255, 255, 255, 0.8);
+  animation: ldShoot 1.7s ease-in forwards;
+}
+@keyframes ldShoot {
+  0%   { transform: translate(0, 0) scale(1); opacity: 0; }
+  12%  { opacity: 1; }
+  100% { transform: translate(180px, 90px) scale(0.4); opacity: 0; }
+}
+@media (prefers-reduced-motion: reduce) { .ld-fire, .ld-shoot { display: none; } }
+
+/* 🏠 05.08 — „Разгледай всичко“ беше 3.08:1 (бяло върху розово-лилаво) */
+.cta-main { background: linear-gradient(100deg, #c0396f, #6f57ab); }
+/* 🌙 05.08 — СОС бутонът на началния екран беше 2.53:1 в тъмна тема */
+[data-theme="dark"] .cta-sos { color: #ffb4ac; border-color: rgba(255,140,130,.55); }
+/* 🔴 корекция на собствената ми поправка: .ld-banner има фон rgba(255,255,255,.92) —
+   посветляването на ТЕКСТА го направи бяло върху бяло (1.04). Тъмнее ФОНЪТ. */
+[data-theme="dark"] .ld-banner { background: rgba(46, 40, 68, 0.94); color: var(--ink); }

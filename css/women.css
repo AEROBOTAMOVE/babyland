@@ -1,0 +1,359 @@
+/* ═══════════════════════════════════════════════════════════
+   СТАЯ 8 — ЖЕНАТА В МЕН 💃
+   Палитрата е НАРОЧНО различна от останалите стаи: наситена роза, слива
+   и злато вместо бебешки пастели. Мама трябва да усети с очите си, че е
+   влязла някъде другаде — и че тук правилата са други.
+   ═══════════════════════════════════════════════════════════ */
+
+:root {
+  --wm-rose: #d1487f;
+  --wm-plum: #6b3a5e;
+  --wm-gold: #e0b978;
+  --wm-soft: #fbeef5;
+}
+
+/* ── лентата, която пази границата ──
+   Всяка мистична карта я носи. Тя е обещанието, че тук никой не те лъже:
+   това е игра, а сериозното е в стаята на Вита. */
+.wm-band { margin: -4px 0 10px; }
+.wm-fun {
+  display: inline-block;
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.2px;
+  color: var(--wm-plum);
+  background: linear-gradient(90deg, #f6e2ef, #f9edd8);
+  border: 1px dashed #d9a9c6;
+  border-radius: 999px;
+  padding: 3px 10px;
+}
+[data-theme="dark"] .wm-fun {
+  color: #f0d9e8;
+  background: linear-gradient(90deg, #4a2a40, #4d3f2a);
+  border-color: #7d5a70;
+}
+
+/* ── коя си ти ── */
+.wm-me {
+  margin: 8px 0 0;
+  font-size: 15px;
+  color: var(--wm-plum);
+}
+[data-theme="dark"] .wm-me { color: #f2d7e8; }
+
+/* ── хороскопът ── */
+.wm-horo {
+  margin: 4px 0 10px;
+  font-size: 16px;
+  line-height: 1.55;
+  font-style: italic;
+  color: #4a3550;
+}
+[data-theme="dark"] .wm-horo { color: #ecd9f0; }
+.wm-elem {
+  margin: 0;
+  font-size: 13.5px;
+  line-height: 1.7;
+  background: var(--wm-soft);
+  border-radius: 12px;
+  padding: 10px 12px;
+}
+[data-theme="dark"] .wm-elem { background: #3a2436; }
+
+/* ── картата на деня ── */
+.wm-draw { font-size: 15px; padding: 10px 16px; }
+.wm-card-box { margin: 10px 0 6px; }
+.wm-tarot {
+  text-align: center;
+  background: linear-gradient(160deg, #fdf6fb, #f4e6f2);
+  border: 2px solid var(--wm-gold);
+  border-radius: 18px;
+  padding: 16px 14px;
+  animation: wmFlip 0.6s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+[data-theme="dark"] .wm-tarot { background: linear-gradient(160deg, #3d2a3a, #2f2130); }
+.wm-te { font-size: 40px; display: block; line-height: 1.1; }
+.wm-tarot strong {
+  display: block;
+  font-family: 'Comfortaa', 'Comfortaa-fallback', sans-serif;
+  font-size: 17px;
+  color: var(--wm-rose);
+  margin: 4px 0 6px;
+}
+.wm-tarot p { margin: 0; font-size: 14px; line-height: 1.55; }
+@keyframes wmFlip {
+  0%   { transform: rotateY(80deg) scale(0.9); opacity: 0; }
+  100% { transform: rotateY(0) scale(1); opacity: 1; }
+}
+.wm-seen { margin: 8px 0 0; font-size: 13px; }
+.wm-mini { font-size: 15px; letter-spacing: 2px; line-height: 1.9; }
+.wm-dim { opacity: 0.28; }
+
+/* ── числото ── */
+.wm-num { display: flex; align-items: center; gap: 14px; }
+.wm-nbig {
+  font-family: 'Comfortaa', 'Comfortaa-fallback', sans-serif;
+  font-size: 48px;
+  font-weight: 700;
+  line-height: 1;
+  background: linear-gradient(135deg, var(--wm-rose), var(--wm-gold));
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+  flex: none;
+  min-width: 56px;
+  text-align: center;
+}
+.wm-num strong { font-family: 'Comfortaa', 'Comfortaa-fallback', sans-serif; font-size: 15px; color: var(--wm-plum); }
+[data-theme="dark"] .wm-num strong { color: #f0cde3; }
+.wm-num p { margin: 3px 0 0; font-size: 14px; line-height: 1.55; }
+.wm-py {
+  margin: 12px 0 0;
+  font-size: 13.5px;
+  line-height: 1.6;
+  background: var(--wm-soft);
+  border-radius: 12px;
+  padding: 10px 12px;
+}
+[data-theme="dark"] .wm-py { background: #3a2436; }
+
+/* ── луната ── */
+.wm-moon { display: flex; align-items: center; gap: 14px; }
+.wm-mbig { font-size: 44px; line-height: 1; flex: none; }
+.wm-moon strong { font-family: 'Comfortaa', 'Comfortaa-fallback', sans-serif; font-size: 15px; color: var(--wm-plum); }
+[data-theme="dark"] .wm-moon strong { color: #f0cde3; }
+.wm-moon p { margin: 3px 0 0; font-size: 14px; line-height: 1.55; }
+.wm-wishes { margin-top: 10px; }
+.wm-wishes p {
+  margin: 0 0 6px;
+  font-size: 13.5px;
+  background: var(--wm-soft);
+  border-radius: 10px;
+  padding: 7px 10px;
+}
+[data-theme="dark"] .wm-wishes p { background: #3a2436; }
+.wm-wishes small { opacity: 0.55; margin-left: 6px; }
+
+/* ── вие двете ── */
+.wm-match { display: flex; align-items: center; justify-content: center; gap: 16px; margin: 6px 0 10px; }
+.wm-mrow { text-align: center; }
+.wm-mrow span { font-size: 34px; display: block; line-height: 1.1; }
+.wm-mrow small { font-size: 11.5px; opacity: 0.75; line-height: 1.35; display: block; margin-top: 2px; }
+.wm-amp { font-size: 20px; opacity: 0.65; }
+.wm-mtxt {
+  margin: 0;
+  font-size: 14px;
+  line-height: 1.6;
+  text-align: center;
+  font-style: italic;
+  color: #4a3550;
+}
+[data-theme="dark"] .wm-mtxt { color: #ecd9f0; }
+.wm-chin {
+  margin: 12px 0 0;
+  font-size: 13.5px;
+  line-height: 1.6;
+  background: var(--wm-soft);
+  border-radius: 12px;
+  padding: 10px 12px;
+}
+[data-theme="dark"] .wm-chin { background: #3a2436; }
+
+/* ── ангелските числа ── */
+.wm-angel { font-size: 15px; padding: 9px 16px; }
+.wm-angeln { margin: 8px 0 0; font-size: 14px; }
+
+@media (prefers-reduced-motion: reduce) {
+  .wm-tarot { animation: none; }
+}
+
+/* ── rooms11: огледало, тест, значения, седмичен хороскоп ── */
+.mr-grid { display: flex; flex-wrap: wrap; gap: 4px; margin-top: 8px; }
+.mr-day { font-size: 16px; line-height: 1; }
+.wt-block { margin: 12px 0; }
+.wt-q { font-weight: 600; margin: 0 0 6px; color: var(--wm-plum); }
+.wt-opts { display: flex; flex-direction: column; gap: 6px; }
+.wt-o { text-align: left; padding: 9px 12px; border: 1px solid rgba(209,72,127,.3);
+  border-radius: 12px; background: var(--wm-soft); color: #4a2b3d; font-size: 14px; cursor: pointer; }
+.wt-o.on { background: var(--wm-rose); color: #fff; border-color: var(--wm-rose); }
+.wt-out:empty { display: none; }
+.wt-result { margin-top: 12px; padding: 14px; border-radius: 14px;
+  background: linear-gradient(135deg, var(--wm-soft), #fff); border: 1px solid var(--wm-gold); }
+.wt-name { font-size: 17px; font-weight: 700; color: var(--wm-rose); margin: 0 0 6px; }
+.wt-desc { margin: 0; color: #4a2b3d; line-height: 1.5; }
+.cm-row { margin: 6px 0; border-radius: 10px; background: var(--wm-soft); padding: 2px 4px; }
+.cm-row summary { cursor: pointer; padding: 8px 10px; font-weight: 600; color: var(--wm-plum); }
+.cm-row p { margin: 0 10px 10px; color: #4a2b3d; line-height: 1.5; }
+.wh-text { font-size: 15px; line-height: 1.6; color: #4a2b3d; background: var(--wm-soft);
+  padding: 12px 14px; border-radius: 12px; border-left: 3px solid var(--wm-gold); }
+
+/* ── rooms11: хронологията (Лабораторията) ── */
+.tl-row { display: flex; align-items: center; gap: 8px; padding: 6px 0; border-bottom: 1px dashed rgba(0,0,0,.08); }
+.tl-date { font-size: 12px; opacity: .6; white-space: nowrap; font-variant-numeric: tabular-nums; }
+.tl-txt { flex: 1; font-size: 14px; }
+
+/* ── rooms12: ритуал, места, комплименти ── */
+.rt-box { display: flex; gap: 12px; align-items: flex-start; padding: 14px; margin: 10px 0;
+  border-radius: 14px; background: linear-gradient(135deg, var(--wm-soft), #fff); border: 1px solid var(--wm-gold); }
+.rt-e { font-size: 30px; line-height: 1; }
+.rt-t { margin: 0 0 4px; font-weight: 700; color: var(--wm-plum); font-size: 15px; }
+.rt-d { margin: 0; font-size: 13.5px; color: #6b5560; line-height: 1.5; }
+.rt-out { margin: 8px 0 0; font-size: 14px; color: var(--wm-rose); font-weight: 600; }
+.rt-out:empty { display: none; }
+
+.pl-h { margin: 10px 0 4px; font-weight: 700; color: var(--wm-plum); font-size: 14px; }
+.pl-n { opacity: .55; font-weight: 400; }
+.pl-grid { display: flex; flex-wrap: wrap; gap: 6px; }
+/* 🔴 05.08 (скептикът към г07/296): №296 вдигна .pl-x на 40×40, но остави
+   вертикалния padding на хапчето — 6+6+40+2 = 54px висок лозунг вместо
+   хапче (беше ~32px). Същата сметка, която .ap-pill вече е направила в
+   touch.css:240: щом детето е 40px цел, родителят му сваля padding-а и
+   поема височината. Хапчето става 42px — цел и то, без да набъбва. */
+.pl-pin { display: inline-flex; align-items: center; gap: 4px; padding: 0 4px 0 11px;
+  min-height: 40px;
+  border-radius: 999px; background: var(--wm-soft); border: 1px solid rgba(209,72,127,.25);
+  font-size: 13.5px; color: #4a2b3d; }
+.pl-want { border-style: dashed; opacity: .85; cursor: pointer; }
+.pl-want:hover { opacity: 1; border-color: var(--wm-rose); }
+/* 👆 г07/296: ✕-то беше глиф ~15×16px, долепен до текста на етикета — мама с
+   бебе на ръка или не го уцелва, или трие съседното място. Същият праг и същата
+   причина като .jr-x в touch.css (там е записано с цял коментар). */
+.pl-x { border: 0; background: none; cursor: pointer; opacity: .4; font-size: 15px; line-height: 1;
+  padding: 0 2px; color: inherit;
+  min-width: 40px; min-height: 40px;
+  display: inline-flex; align-items: center; justify-content: center; }
+.pl-x:hover { opacity: 1; color: var(--wm-rose); }
+
+.cp-why { margin: 0 0 6px; font-size: 13.5px; color: var(--wm-rose); font-weight: 600; }
+.cp-box { padding: 14px 16px; border-radius: 14px; background: var(--wm-soft); border-left: 3px solid var(--wm-rose); margin-bottom: 8px; }
+.cp-t { margin: 0 0 6px; font-size: 16px; line-height: 1.5; color: #4a2b3d; font-style: italic; }
+.cp-w { margin: 0; font-size: 12.5px; opacity: .65; }
+
+/* ── CV: тонът ── */
+.jr-chip.wm-tone-on { background: var(--wm-rose); color: #fff; border-color: var(--wm-rose); }
+
+/* 1.4.6: подписът на Ния (и на Ема в obichai.js) — дребен, курсив, не крещи.
+   🔴 05.08 (скептикът към г07/332): №332 сметна прозрачността за ТЪМНАТА тема („.85
+   даваше 4.47:1, затова 1“) и остави светлата на .62. Сметката на светло:
+   #6b3a5e при .62 върху #fff дава ефективно rgb(163,133,155) → 3.29:1 при
+   11.5px — под прага, същият дефект, само в другата тема. При .85 ефективното
+   е rgb(129,88,118) → 5.85:1 и подписът пак не крещи. */
+.wm-sign { display: inline-block; font-size: 11.5px; font-style: italic; opacity: .85;
+  color: var(--wm-plum); margin: 2px 0; }
+
+/* 3.4.5: 5-те минути — досега БЕЗ никакъв стил (гола купчина текст) */
+.wm-rit { display: flex; flex-direction: column; gap: 6px; margin: 6px 0; }
+.wm-ritrow { display: flex; align-items: center; gap: 10px; padding: 8px 10px;
+  border-radius: 12px; background: var(--wm-soft); }
+.wm-ritrow span { font-size: 20px; flex-shrink: 0; }
+.wm-ritrow p { margin: 0; font-size: 13px; line-height: 1.45; color: #4a2b3d; }
+.wm-rittoday { background: linear-gradient(135deg, var(--wm-soft), #fff);
+  border: 1.5px solid var(--wm-gold); padding: 12px; flex-wrap: wrap; }
+.wm-rittoday p { flex: 1; min-width: 140px; font-weight: 600; font-size: 14px; }
+[data-theme="dark"] .wm-ritrow p { color: #efe9ff; }
+
+/* ── одит-флот П23: тъмна тема за rooms11/12 + „5-те минути" ──
+   Тези карти бяха СВЕТЛИ ОСТРОВИ с тъмен текст на тъмен фон (нечетими нощем).
+   var(--wm-soft) и #fff-градиентите оставаха светли, а текстът #4a2b3d/#6b5560
+   тъмен. Тук ги обръщаме към тъмна повърхност + светъл текст. */
+[data-theme="dark"] .wt-o,
+[data-theme="dark"] .cm-row,
+[data-theme="dark"] .wh-text,
+[data-theme="dark"] .pl-pin,
+[data-theme="dark"] .cp-box,
+[data-theme="dark"] .wm-ritrow { background: #342f4e; border-color: rgba(209,72,127,.35); }
+[data-theme="dark"] .wt-result,
+[data-theme="dark"] .rt-box,
+[data-theme="dark"] .wm-rittoday { background: linear-gradient(135deg, #342f4e, #2a2640); border-color: rgba(224,185,120,.4); }
+[data-theme="dark"] .wt-o,
+[data-theme="dark"] .wt-desc,
+[data-theme="dark"] .cm-row p,
+[data-theme="dark"] .wh-text,
+[data-theme="dark"] .pl-pin,
+[data-theme="dark"] .cp-t,
+[data-theme="dark"] .wm-rittoday p { color: var(--ink); }
+[data-theme="dark"] .rt-d { color: var(--ink-soft); }
+[data-theme="dark"] .wt-q,
+[data-theme="dark"] .rt-t,
+[data-theme="dark"] .pl-h,
+[data-theme="dark"] .cm-row summary { color: #d9b8d0; }
+
+/* 🔎 05.08 — бял текст върху --wm-rose даваше 4.25:1 (измерено живо) */
+.jr-chip.wm-tone-on { background: #b03a6e; border-color: #b03a6e; }
+/* 🚨 бутонът за 112 беше 3.89:1 (бяло върху #ff5b5b→#d32f2f).
+   Точно този бутон се натиска с треперещи ръце — тъмночервено, 5.5:1. */
+.wm-sosb.wm-sosb-red { background: linear-gradient(135deg, #c62828, #a01818); }
+
+/* 🌙 г07/297: тъмната тема сменяше фона на картите, но --wm-rose (#d1487f)
+   оставаше — ~3.1:1 върху сливата. А това е ИМЕТО на изтеглената карта и на
+   резултата от теста, точно това, което окото търси първо. По-светла роза. */
+[data-theme="dark"] .wm-tarot strong,
+[data-theme="dark"] .wt-name,
+[data-theme="dark"] .rt-out,
+[data-theme="dark"] .cp-why { color: #f19cc0; }
+
+/* 🌙 г07/332: подписът на Ема под обичаите нямаше тъмна версия — --wm-plum
+   (#6b3a5e) на тъмна карта е тъмно върху тъмно и картата свършва без глас. */
+[data-theme="dark"] .wm-sign { color: var(--ink-soft); opacity: 1; }
+
+/* ⏱️ г08/108: „3 минути свободно писане“ рисуваше лента и я пълнеше всяка
+   секунда (women3.js), но .wm-timer нямаше НИТО ЕДНО правило — под бутона
+   имаше празно място. Без transition: ширината се обновява веднъж в секунда
+   и това е сметнато движение, не анимация. */
+.wm-timer {
+  height: 6px;
+  border-radius: 999px;
+  background: var(--wm-soft);
+  overflow: hidden;
+  margin: 8px 0;
+}
+[data-theme="dark"] .wm-timer { background: #3a2436; }
+.wm-timer i {
+  display: block;
+  height: 100%;
+  width: 0;
+  background: linear-gradient(90deg, var(--wm-rose), var(--wm-gold));
+}
+
+/* 🎨 г13/107: „Цветовете ми 🎨“ рисуваше палитрата като <i style="background:…">,
+   но .wm-pal/.wm-swatch/.wm-swatch i нямаха НИТО ЕДНО правило. <i> е inline и
+   празен — без размер няма кутия, значи цветните кръгчета, заради които е
+   направена цялата карта, изобщо не се появяваха след петте въпроса. */
+.wm-pal { margin-top: 12px; padding: 12px; border-radius: 14px; background: var(--wm-soft); }
+.wm-pal strong, .wm-pal small { display: block; }
+.wm-pal strong { font-size: 15px; color: #4a2b3d; }
+.wm-pal small { color: #6b5560; }
+.wm-pal p { margin: 6px 0 0; font-size: 13.5px; line-height: 1.5; color: #4a2b3d; }
+.wm-swatch { display: flex; flex-wrap: wrap; gap: 6px; margin: 8px 0; }
+.wm-swatch i { display: block; flex: none; width: 34px; height: 34px; border-radius: 50%;
+  border: 1px solid rgba(0, 0, 0, .08); }
+[data-theme="dark"] .wm-pal { background: #342f4e; }
+[data-theme="dark"] .wm-pal strong,
+[data-theme="dark"] .wm-pal p { color: var(--ink); }
+[data-theme="dark"] .wm-pal small { color: var(--ink-soft); }
+
+/* 🔘 г13/191: „Кога последно… ⏳“ (12 реда) и „CV на майката 📄“ (24 реда) са
+   <button>-и, а .wm-lrow/.wm-cvrow и вътрешните .wm-le/.wm-lt/.wm-lb нямаха
+   нито едно правило — двете най-емоционални карти излизаха като стълба от
+   системни сиви Windows бутони със слепен текст вътре. По образеца на
+   .wm-ritrow по-горе. */
+.wm-last, .wm-cv { display: flex; flex-direction: column; gap: 8px; margin: 6px 0; }
+.wm-lrow, .wm-cvrow { display: flex; align-items: center; gap: 10px; width: 100%;
+  border: 0; background: var(--wm-soft); border-radius: 14px; padding: 11px 14px;
+  font-family: inherit; font-size: 14px; text-align: left; color: #4a2b3d; cursor: pointer; }
+.wm-le { flex: none; font-size: 20px; }
+.wm-lt { flex: 1; display: flex; flex-direction: column; }
+.wm-lt small { font-size: 12px; opacity: .7; }
+/* 🔴 05.08 (скептикът към №191): opacity .6 върху #4a2b3d/#fbeef5 дава 3.53:1
+   при 12px — под прага 4.5 за дребен текст, тоест същият дефект, който №184
+   лови другаде. .78 запазва подчинения тон и мери 5.79:1 в светла и 7.05:1 в
+   тъмна тема. Изчислено по WCAG с истинските стойности на променливите. */
+.wm-lb { margin-left: auto; flex: none; font-size: 12px; opacity: .78; }
+.wm-cvrow .jr-check { flex: none; width: 1.2em; }
+.wm-cvrow div { flex: 1; display: flex; flex-direction: column; }
+.wm-cvrow small { font-size: 12px; line-height: 1.4; opacity: .75; }
+.wm-cvrow.on { background: linear-gradient(135deg, var(--wm-soft), #fff);
+  box-shadow: inset 0 0 0 1px var(--wm-gold); }
+[data-theme="dark"] .wm-lrow,
+[data-theme="dark"] .wm-cvrow { background: #342f4e; color: var(--ink); }
+[data-theme="dark"] .wm-cvrow.on { background: linear-gradient(135deg, #342f4e, #2a2640); }

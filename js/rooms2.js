@@ -1,0 +1,1934 @@
+// ═══════════════════════════════════════════════════════════
+// СТАИТЕ — инструменти (Етап 1а/1б): Моето бебе, Бременност,
+// Захранване, Развитие и игри, Инструменти. Всичко локално.
+// ═══════════════════════════════════════════════════════════
+
+(function () {
+  'use strict';
+
+  const D = window.BL_DATA;
+  const load = (k, d) => { try { const v = JSON.parse(localStorage.getItem(k)); if (v == null) return d; if (Array.isArray(d) !== Array.isArray(v)) return d; if (d && typeof d === 'object' && (!v || typeof v !== 'object')) return d; return v; } catch (e) { return d; } };
+  const save = (k, v) => { try { localStorage.setItem(k, JSON.stringify(v)); } catch (e) {} };
+  const localDate = d => d.getFullYear() + '-' + String(d.getMonth() + 1).padStart(2, '0') + '-' + String(d.getDate()).padStart(2, '0');
+  const today = () => localDate(new Date());
+  const el = (tag, cls, html) => { const n = document.createElement(tag); if (cls) n.className = cls; if (html !== undefined) n.innerHTML = html; return n; };
+  const card = (titleHtml) => { const c = el('section', 'jr-card'); c.appendChild(el('h4', 'jr-title', titleHtml)); return c; };
+  // ⚠️ 22.07 (армия): този файл викаше fx() на два реда (десетото ритниче и
+  //   пърхането), но НИКОГА не го е дефинирал — 'use strict' → ReferenceError,
+  //   който прекъсваше обработчика точно на празничния момент. Всеки друг
+  //   модул си има този хелпър локално; тук просто липсваше.
+  const fx = () => window.BL_FX || { confetti() {}, cheer() {}, buzz() {} };
+
+  // ── Споделен профил на бебето ──
+  function getBaby() {
+      // 🔴 04.08: подразбирането беше 'girl' → момчетата се мереха по
+      //    ЖЕНСКИТЕ криви на СЗО, а бутонът 👧 светеше като избран, така
+      //    че мама нямаше как да разбере, че приложението е решило вместо
+      //    нея. Сега празно = още не е казано и картата пита.
+      return load('bl_baby', { name: '', sex: '', birth: '' });
+    }
+  // ═══ М1 (одит 11): КОРИГИРАНАТА ВЪЗРАСТ ═══
+  //
+  // Бебе, родено на 32-ра седмица, е дошло 8 седмици по-рано. На 4 месеца
+  // календарно то е на 2 месеца коригирано — и се учи като двумесечно.
+  // Досега мерехме по рождената дата и всеки ден казвахме на майката на
+  // недоносено дете, че то „изостава“. Тя вече е най-уплашената от всички.
+  //
+  // Правилото: коригира се до 2 години, после спира (така е и при лекарите).
+  // Коригираме РАЗВИТИЕТО и РАСТЕЖА — но не и рождения ден: той си е негов.
+  function pretermWeeks() {
+    const w = +load('bl_preterm', 0);
+    return (w >= 24 && w <= 36) ? w : 0;      // под 24 и над 36 не коригираме
+  }
+
+  function ageFromBirth(birth) {
+    if (!birth) return null;
+    const b = new Date(birth), now = new Date();
+    if (isNaN(b) || b > now) return null;
+    const totalDays = Math.floor((now - b) / 86400000);
+    const months = totalDays / 30.4375;
+    let ym = now.getFullYear() * 12 + now.getMonth() - (b.getFullYear() * 12 + b.getMonth());
+    if (now.getDate() < b.getDate()) ym--;
+    // 🚨 22.07 (армия, RED): котвата преливаше. `new Date(2026, 1, 31)` НЕ се
+    //   клампва — става 3 март. За бебе, родено на 31-во число, разликата
+    //   ставаше ОТРИЦАТЕЛНА и мама четеше „1 месец и -2 дни“ — на началния
+    //   екран, в бележката за прегледа и в картичката за бабата. Проектът си
+    //   има готовото клампване (BL_DATE.addMonths), само че тук не се ползваше.
+    const котва = window.BL_DATE
+      ? BL_DATE.addMonths(b, ym)
+      : (function () {
+          const край = new Date(b.getFullYear(), b.getMonth() + ym + 1, 0).getDate();
+          return new Date(b.getFullYear(), b.getMonth() + ym, Math.min(b.getDate(), край));
+        })();
+    const days = Math.max(0, Math.floor((now - котва) / 86400000));
+    const a = { months, totalDays, ym, days,
+      // „мес“ + „а“ правеше „4 меса“. Правилното е месец / месеца.
+      text: ym < 1 ? `${totalDays} дни` : `${ym} ${ym === 1 ? 'месец' : 'месеца'}${days ? ' и ' + days + (days === 1 ? ' ден' : ' дни') : ''}` };
+
+    const pw = pretermWeeks();
+    a.preterm = pw || 0;
+    if (pw && totalDays < 730) {                       // коригира се до 2 години
+      const назад = (40 - pw) * 7;                     // колко дни по-рано е дошло
+      const cd = Math.max(0, totalDays - назад);
+      const cm = cd / 30.4375;
+      a.corr = { totalDays: cd, months: cm, ym: Math.floor(cm),
+        text: cm < 1 ? `${cd} дни` : `${Math.floor(cm)} ${Math.floor(cm) === 1 ? 'месец' : 'месеца'}` };
+      a.devMonths = cm;                                // по това се мери РАЗВИТИЕТО
+      a.note = `на ${a.text} · <strong>${a.corr.text} коригирани</strong> — мерим по тях`;
+    } else {
+      a.corr = null;
+      a.devMonths = months;
+      a.note = '';
+    }
+    return a;
+  }
+
+  // ═══════════════ 🍼 МОЕТО БЕБЕ (Мира) ═══════════════
+
+  function renderBaby(root) {
+    const baby = getBaby();
+
+    // 1. Профил
+    const c1 = card('Профилът на бебето <span class="jr-sub">попълни веднъж — всичко се настройва само</span>');
+    const nameI = el('input', 'jr-word'); nameI.placeholder = 'Име (по желание)…'; nameI.value = baby.name;
+    c1.appendChild(nameI);
+    const sexRow = el('div', 'bb-sex');
+    [['girl', '👧 Момиче'], ['boy', '👦 Момче']].forEach(([v, lbl]) => {
+      const b = el('button', 'bb-sexbtn' + (baby.sex && baby.sex === v ? ' on' : ''), lbl);
+      b.type = 'button';
+      b.addEventListener('click', () => { sexRow.querySelectorAll('.bb-sexbtn').forEach(x => x.classList.remove('on')); b.classList.add('on'); baby.sex = v; persist(); });
+      sexRow.appendChild(b);
+    });
+    c1.appendChild(el('label', 'bb-lbl', 'Пол:')); c1.appendChild(sexRow);
+    c1.appendChild(el('label', 'bb-lbl', 'Рождена дата:'));
+    const dateI = el('input', 'jr-word'); dateI.type = 'date'; dateI.max = today(); dateI.value = baby.birth;
+    c1.appendChild(dateI);
+    const ageOut = el('p', 'bb-age', '');
+    c1.appendChild(ageOut);
+
+    // ── М1: роди ли се преди термина? ──
+    // Пита се тихо и по избор. Ако мама не пипне нищо — нищо не се променя.
+    // Но ако бебето е дошло по-рано, всичко за развитието се мери оттук.
+    c1.appendChild(el('label', 'bb-lbl', 'Роди ли се преди термина? <span class="jr-sub">по избор — за да не го мерим с чужд аршин</span>'));
+    const pwRow = el('div', 'bb-sex');
+    const PW = [[0, 'На термин'], [36, '36 с.'], [34, '34 с.'], [32, '32 с.'], [30, '30 с.'], [28, '28 с. или по-рано']];
+    PW.forEach(([v, lbl]) => {
+      const b = el('button', 'bb-sexbtn' + (+load('bl_preterm', 0) === v ? ' on' : ''), lbl);
+      b.type = 'button';
+      b.addEventListener('click', () => {
+        pwRow.querySelectorAll('.bb-sexbtn').forEach(x => x.classList.remove('on'));
+        b.classList.add('on');
+        save('bl_preterm', v === 28 ? 28 : v);
+        refreshAge();
+      });
+      pwRow.appendChild(b);
+    });
+    c1.appendChild(pwRow);
+    const corrOut = el('p', 'bb-corr', '');
+    c1.appendChild(corrOut);
+
+    function persist() { baby.name = nameI.value.trim(); baby.birth = dateI.value; save('bl_baby', baby); refreshAge(); }
+    function refreshAge() {
+      const a = ageFromBirth(baby.birth);
+      ageOut.innerHTML = a ? `🎂 ${esc(baby.name) || 'Бебето'} е на <strong>${esc(a.text)}</strong>` : 'Въведи рождена дата, за да смятам възрастта.';
+      // Честно: показваме и двете числа, за да знае мама по кое мерим
+      // Родът се съгласува: „Марти е дошЪЛ“, „Ния е дошЛА“, „бебето е дошЛО“.
+      const кой = esc(baby.name) || 'бебето';
+      const дошло = (!baby.name || !baby.sex) ? 'дошло' : (baby.sex === 'boy' ? 'дошъл' : 'дошла');
+      corrOut.innerHTML = (a && a.corr)
+        ? `👶 Коригирана възраст: <strong>${esc(a.corr.text)}</strong>. По нея мерим развитието, игрите, съня и растежа — защото ${кой} е ${дошло} по-рано и се учи от термина си. <br><small>Ваксините остават по календарната дата — те не се коригират.</small>`
+        : '';
+    }
+    nameI.addEventListener('input', persist); dateI.addEventListener('change', persist); refreshAge();
+    root.appendChild(c1);
+
+    // 2. Калкулатор на растежа (СЗО)
+    const c2 = card('Калкулатор на растежа ⭐ <span class="jr-sub">къде е бебето спрямо кривите на СЗО</span>');
+    const inRow = el('div', 'bb-grow');
+    const wI = el('input', 'jr-word'); wI.type = 'number'; wI.step = '0.1'; wI.placeholder = 'Тегло (кг)…';
+    const mI = el('input', 'jr-word'); mI.type = 'number'; mI.step = '1'; mI.min = '0'; mI.max = '24';
+    const a0 = ageFromBirth(baby.birth);
+    mI.placeholder = 'Възраст (месеци)…'; if (a0) mI.value = Math.round(a0.devMonths); // М1: СЗО кривите искат КОРИГИРАНА възраст
+    inRow.appendChild(wI); inRow.appendChild(mI);
+    c2.appendChild(inRow);
+    const calcBtn = el('button', 'jr-btn', 'Изчисли 📊'); calcBtn.type = 'button';
+    c2.appendChild(calcBtn);
+    const chartBox = el('div', 'bb-chartbox'); c2.appendChild(chartBox);
+    chartBox.innerHTML = '<div class="bb-empty">📊<span>Въведи тегло и възраст, и ще нарисувам къде е бебето върху кривите на СЗО.</span></div>';
+    // проход 4 [28]: тапни точка на кривата → изрича стойността си (мама вижда петно,
+    // но иска числото — сега всяко мерене си казва „на N мес · W кг").
+    const chartTip = el('p', 'bb-charttip', ''); chartTip.hidden = true; c2.appendChild(chartTip);
+    chartBox.addEventListener('click', e => {
+      const pt = e.target.closest('.bb-pt'); if (!pt) return;
+      const m = pt.getAttribute('data-m'), w = pt.getAttribute('data-w'), now = pt.getAttribute('data-now');
+      chartTip.textContent = (now ? '📍 Сега' : '•') + ` на ${m} мес · ${w} кг`;
+      chartTip.hidden = false;
+      chartBox.querySelectorAll('.bb-pt.sel').forEach(p => p.classList.remove('sel'));
+      pt.classList.add('sel');
+    });
+    const resOut = el('p', 'bb-res', ''); c2.appendChild(resOut);
+    const histBox = el('div', 'bb-hist bl-stagger'); c2.appendChild(histBox);
+
+    function whoPct(sex, ageM, val) {
+      const w = D.who, g = sex === 'boy' ? w.boys : w.girls, M = w.months;
+      const a = Math.max(M[0], Math.min(M[M.length - 1], ageM));
+      let i = 0; while (i < M.length - 1 && M[i + 1] < a) i++;
+      const t = (a - M[i]) / ((M[i + 1] - M[i]) || 1);
+      const bands = ['p3', 'p15', 'p50', 'p85', 'p97'], pc = [3, 15, 50, 85, 97];
+      const bv = bands.map(b => g[b][i] + t * (g[b][i + 1] - g[b][i]));
+      if (val <= bv[0]) return { p: 3, lt: true, bv };
+      if (val >= bv[4]) return { p: 97, gt: true, bv };
+      let j = 0; while (j < 4 && bv[j + 1] < val) j++;
+      const tt = (val - bv[j]) / ((bv[j + 1] - bv[j]) || 1);
+      return { p: Math.round(pc[j] + tt * (pc[j + 1] - pc[j])), bv };
+    }
+    function drawChart(sex, ageM, val) {
+      const w = D.who, g = sex === 'boy' ? w.boys : w.girls, M = w.months;
+      const W = 300, H = 180, pl = 26, pr = 10, pt = 10, pb = 22;
+      const xmax = 24, ymin = 2, ymax = 16;
+      const X = m => pl + (m / xmax) * (W - pl - pr);
+      const Y = kg => pt + (1 - (kg - ymin) / (ymax - ymin)) * (H - pt - pb);
+      const colors = { p3: '#a8cdec', p15: '#cbbcec', p50: '#f291bd', p85: '#cbbcec', p97: '#a8cdec' };
+      let svg = `<svg viewBox="0 0 ${W} ${H}" class="bb-chart">`;
+      for (let kg = 4; kg <= 16; kg += 4) svg += `<line x1="${pl}" y1="${Y(kg)}" x2="${W - pr}" y2="${Y(kg)}" stroke="#eef0f7"/><text x="${pl - 4}" y="${Y(kg) + 3}" class="bb-ax" text-anchor="end">${kg}</text>`;
+      [0, 6, 12, 18, 24].forEach(m => svg += `<text x="${X(m)}" y="${H - 7}" class="bb-ax" text-anchor="middle">${m}м</text>`);
+      ['p97', 'p85', 'p50', 'p15', 'p3'].forEach(b => {
+        const pts = M.map(m => `${X(m)},${Y(g[b][M.indexOf(m)])}`).join(' ');
+        svg += `<polyline points="${pts}" fill="none" stroke="${colors[b]}" stroke-width="${b === 'p50' ? 2.4 : 1.6}" stroke-linecap="round" opacity="${b === 'p50' ? 1 : 0.7}"/>`;
+      });
+      const px = X(Math.min(24, ageM)), py = Y(Math.max(2, Math.min(16, val)));
+      // #35: картата проповядва „важна е ПОСОКАТА" — значи покажи я. Свързваме
+      // миналите мерения (bl_growth) + сегашното в пунктирана следа, за да се вижда
+      // траекторията, а не самотна точка. Малките точки = минало, голямата = сега.
+      const hist = load('bl_growth', []);
+      const histPts = hist.map(h => [X(Math.min(24, +h.m || 0)), Y(Math.max(2, Math.min(16, +h.w || 2))), h.m, h.w]);
+      const allPts = histPts.concat([[px, py]]);
+      if (allPts.length > 1) {
+        svg += `<polyline points="${allPts.map(p => p[0].toFixed(1) + ',' + p[1].toFixed(1)).join(' ')}" fill="none" stroke="#e56ba4" stroke-width="2" stroke-dasharray="3 4" opacity=".8"/>`;
+        // проход 4 [28]: невидим по-голям кръг за лесен тап + видимата точица
+        histPts.forEach(p => svg += `<circle class="bb-pt" data-m="${p[2]}" data-w="${p[3]}" cx="${p[0].toFixed(1)}" cy="${p[1].toFixed(1)}" r="11" fill="transparent" style="cursor:pointer"/><circle cx="${p[0].toFixed(1)}" cy="${p[1].toFixed(1)}" r="3.5" fill="#e56ba4" opacity=".5" pointer-events="none"/>`);
+      }
+      svg += `<circle class="bb-pt" data-m="${(+ageM).toFixed(1)}" data-w="${(+val).toFixed(2)}" data-now="1" cx="${px}" cy="${py}" r="13" fill="transparent" style="cursor:pointer"/><g class="bb-now" pointer-events="none"><circle cx="${px}" cy="${py}" r="8" fill="#fff" stroke="#e56ba4" stroke-width="2.5"/><circle cx="${px}" cy="${py}" r="3" fill="#e56ba4"/></g>`;  // проход 4: точката „бебето е тук" пулсва веднъж + тапваема [28]
+      svg += `</svg>`;
+      return svg;
+    }
+    function bandWord(p) {
+      if (p <= 3) return 'дребничко, но ако си върви по кривата — расте си отлично';
+      if (p >= 97) return 'едричко бебе — юнак';
+      if (p < 15) return 'по-крехичко от средното — напълно нормално';
+      if (p > 85) return 'по-едричко от средното — чудесно';
+      return 'точно в милото средно';
+    }
+    calcBtn.addEventListener('click', () => {
+      const val = parseFloat(wI.value), ageM = parseFloat(mI.value);
+      if (isNaN(val) || val <= 0) { resOut.textContent = 'Въведи тегло в кг 😊'; return; }
+      if (val > 30) { resOut.textContent = 'Хм, ' + val + ' кг е тегло на голям юнак, не на бебе 😊 Провери числото (напр. 7.2).'; return; }
+      if (val < 0.4) { resOut.textContent = 'Това изглежда като грамове — въведи в килограми (напр. 3.2). 😊'; return; }
+      if (isNaN(ageM) || ageM < 0 || ageM > 24) { resOut.textContent = 'Възрастта е между 0 и 24 месеца.'; return; }
+      // Кривите на СЗО за момчета и момичета са РАЗЛИЧНИ. Без пол не смятаме —
+      // по-добре един въпрос, отколкото число, сметнато по чужда крива.
+      if (!baby.sex || (baby.sex !== 'boy' && baby.sex !== 'girl')) {
+        resOut.innerHTML = 'Кажи ми първо момче ли е, или момиче — кривите на СЗО са различни за двете и числото щеше да е подвеждащо. Изборът е в картата „Профилът на бебето“ — първата в тази стая. 💜';
+        chartBox.innerHTML = '';
+        return;
+      }
+      const r = whoPct(baby.sex, ageM, val);
+      chartBox.innerHTML = drawChart(baby.sex, ageM, val);
+      const nm = baby.name || 'Бебето';
+      const pref = r.lt ? 'под 3-ия' : r.gt ? 'над 97-ия' : `<span data-cnt="${r.p}">${r.p}</span>-ия`;
+      // проход 4: изричаме ПОСОКАТА (картата я обещава). Сравняваме с предишното мерене.
+      const пред = load('bl_growth', []);
+      const prev = пред.length ? пред[пред.length - 1] : null;
+      let посока = '';
+      if (prev && prev.w != null && prev.p != null) {
+        const dw = val - (+prev.w), dp = r.p - (+prev.p);
+        const тегло = dw > 0.02 ? `качи <span data-cnt="${Math.round(dw * 1000)}">${Math.round(dw * 1000)}</span> г от миналото мерене`
+          : Math.abs(dw) <= 0.02 ? 'теглото се задържа' : 'този път е малко по-леко';
+        const крива = dp >= 8 ? ' и се покатери нагоре по кривата 📈'
+          : dp <= -12 ? ' и е малко под предишната крива — спомени го спокойно на педиатъра 💛'
+          : ' и си върви стабилно по своята крива 💚';
+        посока = `<span class="bb-dir">${тегло}${крива}.</span>`;
+      } else {
+        посока = `<span class="bb-dir">Първо мерене — от следващия път ще ти показвам посоката 💚</span>`;
+      }
+      // проход 4 [24-аналогия]: шеговита битова мярка (огледало на плод-размера) —
+      // топло, не медицинско. „тежи колкото 🥬 зелка" се помни, число — не.
+      const обект = kg => kg < 3.5 ? ['🍞', 'самун топъл хляб'] : kg < 4.5 ? ['🥬', 'зелка'] : kg < 5.5 ? ['🐰', 'пухкаво зайче'] : kg < 6.5 ? ['🐱', 'коте'] : kg < 8 ? ['🎃', 'голяма тиква'] : kg < 10 ? ['🐕', 'палаво кутре'] : kg < 12 ? ['🍉', 'диня'] : ['🎒', 'пълна раничка'];
+      const [ем, им] = обект(val);
+      const аналог = `<span class="bb-analogy">🤍 ${esc(nm)} сега тежи горе-долу колкото ${ем} <strong>${им}</strong> — цели <strong>${val}</strong> кг обич.</span>`;
+      // 🤍 „ако си върви по кривата — расте си отлично" е невъзможно да е вярно
+      //    при ПЪРВО мерене: крива още няма. А точно под 3-ия персентил това
+      //    успокоение затваря разговора с педиатъра, преди да е започнал.
+      const присъда = (r.lt && !prev)
+        ? 'дребничко — само по себе си първото число не значи нищо, защото още няма крива, по която да се чете. Покажи го на педиатъра, за да го впише'
+        : bandWord(r.p);
+      resOut.innerHTML = `${esc(nm)} е около <strong>${pref} персентил</strong> — ${r.lt ? 'по-дребно от' : r.gt ? 'по-едро от' : 'по-голямо от ' + r.p + ' от 100 бебета на тази възраст'}${r.lt || r.gt ? ' повечето връстници' : ''}. ${присъда}. ${посока}${аналог}<br><span class="bb-note">Всичко между кривите е нормално — важна е ПОСОКАТА, не точката. Официалното мерене прави педиатърът.</span>`;
+      resOut.classList.remove('bb-pop'); void resOut.offsetWidth; resOut.classList.add('bb-pop');
+      if (window.BL_FX) BL_FX.countUp(resOut); // числото отброява до персентила
+      const hist = load('bl_growth', []);
+      hist.push({ d: today(), m: Math.round(ageM * 10) / 10, w: val, p: r.p });
+      save('bl_growth', hist.slice(-24));
+      drawHist();
+    });
+    function drawHist() {
+      const hist = load('bl_growth', []);
+      if (!hist.length) { histBox.innerHTML = ''; return; }
+      // проход 4 [23]: всеки ред е триещ се — уморена майка често записва грешна мярка
+      // (двоен тап), а грешката иначе трови кривата ѝ завинаги. ✕ → BL_UI.confirm.
+      histBox.innerHTML = '<p class="jr-weekcap">История: <span class="jr-sub">(✕ маха сгрешен ред)</span></p>' + hist.slice(-6).reverse().map((h, i) =>
+        `<div class="bb-histrow"><span>${h.d}</span><span>${h.m} мес</span><span>${h.w} кг</span><span class="bb-hp" title="персентил">п${h.p}</span><button type="button" class="bb-del" data-i="${hist.length - 1 - i}" aria-label="Изтрий този ред">✕</button></div>`).join('');
+    }
+    histBox.addEventListener('click', e => {
+      const b = e.target.closest('.bb-del'); if (!b) return;
+      const i = +b.dataset.i, hist = load('bl_growth', []);
+      const row = hist[i]; if (!row) return;
+      const дел = () => { hist.splice(i, 1); save('bl_growth', hist); drawHist(); if (window.BL_FX) BL_FX.buzz(8); };
+      const питай = (window.BL_UI && BL_UI.confirm)
+        ? BL_UI.confirm(`Да махна ли „${row.m} мес · ${row.w} кг"?`, { okText: 'Махни', danger: true })
+        : Promise.resolve(confirm(`Да махна ли „${row.m} мес · ${row.w} кг"?`));
+      питай.then(да => { if (да) дел(); });
+    });
+    drawHist();
+    root.appendChild(c2);
+
+    // 3. Хранене — кога беше последното
+    const c3 = card('Кога яде за последно? 🍼 <span class="jr-sub">бърз запис с 1 докосване (за мерене с време — кърмене-таймерът)</span>');
+    const feedOut = el('p', 'bb-feed', ''); c3.appendChild(feedOut);
+    // проход 4: жива прогноза напред от НЕЙНИЯ ритъм — спира гадаенето в 13:00.
+    const predOut = el('p', 'bb-feed bb-pred', ''); c3.appendChild(predOut);
+    const feedRow = el('div', 'jr-quick');
+    // проход 3 T10: грешен тап в 3ч заместваше безвъзвратно реалното „преди 2ч, лявата".
+    const sideWord = s => s === 'left' ? 'лявата гърда' : s === 'right' ? 'дясната гърда' : 'шише';
+    let undoPrev = null, undoTimer = null;
+    const undoChip = el('button', 'jr-chip', ''); undoChip.type = 'button'; undoChip.hidden = true;
+    [['left', '🤱 Ляво'], ['right', '🤱 Дясно'], ['bottle', '🍼 Шише']].forEach(([v, lbl]) => {
+      const b = el('button', 'jr-chip', lbl); b.type = 'button';
+      b.addEventListener('click', () => {
+        const prev = load('bl_feed', null);
+        save('bl_feed', { t: Date.now(), s: v });
+        const fl = load('bl_feedlog', []); fl.push(Date.now()); save('bl_feedlog', fl.slice(-16));  // ротиращ лог само с времена — за прогнозата
+        refreshFeed();
+        if (prev) {
+          undoPrev = prev;
+          const mm = Math.floor((Date.now() - prev.t) / 60000);
+          undoChip.textContent = `↺ Върни предишното (${sideWord(prev.s)}, преди ${Math.floor(mm / 60) ? Math.floor(mm / 60) + ' ч ' : ''}${mm % 60} мин)`;
+          undoChip.hidden = false;
+          clearTimeout(undoTimer); undoTimer = setTimeout(() => { undoChip.hidden = true; }, 10000);
+        }
+      });
+      feedRow.appendChild(b);
+    });
+    undoChip.addEventListener('click', () => {
+      if (undoPrev) {
+        save('bl_feed', undoPrev);
+        // ↺ отмяната връщаше bl_feed, но времето оставаше в bl_feedlog завинаги —
+        //    и после се броеше в прогнозата и на 24-часовия кръг. Махаме и следата.
+        const fl = load('bl_feedlog', []); fl.pop(); save('bl_feedlog', fl);
+        refreshFeed();
+      }
+      undoChip.hidden = true; clearTimeout(undoTimer);
+    });
+    c3.appendChild(feedRow); c3.appendChild(undoChip);
+    function refreshFeed() {
+      const f = load('bl_feed', null);
+      if (!f) { feedOut.innerHTML = 'Още няма отбелязано хранене. Бутни отдолу при следващото. 👇'; predOut.innerHTML = ''; return; }
+      const mins = Math.floor((Date.now() - f.t) / 60000);
+      const h = Math.floor(mins / 60), m = mins % 60;
+      feedOut.innerHTML = `Последно (${sideWord(f.s)}) преди <strong>${h ? h + ' ч ' : ''}${m} мин</strong>.`;
+      // проход 4: прогноза напред от медианния интервал (три извора, дедуп на близнаци <60с)
+      const ts = [...load('bl_nursing', []).map(x => x.ts), ...load('bl_feedlog', []), f.t].filter(Boolean).sort((a, b) => a - b);
+      const uniq = ts.filter((x, i) => i === 0 || x - ts[i - 1] > 60000);
+      if (uniq.length < 4) { predOut.innerHTML = 'Събирам ритъма ти — след няколко хранения ще подсказвам кога обикновено е следващото. 💜'; predOut.style.opacity = ''; return; }
+      const ints = []; for (let i = 1; i < uniq.length; i++) ints.push(uniq[i] - uniq[i - 1]);
+      const посл = ints.slice(-7).sort((a, b) => a - b);
+      const median = посл[Math.floor(посл.length / 2)];
+      const next = f.t + median, remain = Math.round((next - Date.now()) / 60000);
+      const nd = new Date(next), час = String(nd.getHours()).padStart(2, '0') + ':' + String(nd.getMinutes()).padStart(2, '0');
+      if (remain > 0) {
+        predOut.innerHTML = `Обикновено следващото е около <strong>${час}</strong> · след ~${Math.floor(remain / 60) ? Math.floor(remain / 60) + 'ч ' : ''}${remain % 60}м 🍼<br><small>ориентир от твоите записи — бебето води.</small>`;
+        predOut.style.opacity = remain < 20 ? String(0.55 + 0.45 * (remain / 20)) : '';
+      } else {
+        predOut.innerHTML = `Обикновено вече наближава — но всяко бебе е различно, храни когато поиска. 💜`;
+        predOut.style.opacity = '';
+      }
+    }
+    refreshFeed();
+    // T10: размразяване — „преди X мин" се обновява, докато стаята е отворена
+    const feedTick = setInterval(() => { if (!feedOut.isConnected) { clearInterval(feedTick); return; } refreshFeed(); }, 60000);
+    const onFeedVis = () => { if (!feedOut.isConnected) { document.removeEventListener('visibilitychange', onFeedVis); return; } if (!document.hidden) refreshFeed(); };
+    document.addEventListener('visibilitychange', onFeedVis);
+    root.appendChild(c3);
+
+    // 4. Пелени днес
+    const c4 = card('Пелени днес 💧 <span class="jr-sub">важен знак, че бебето се храни добре</span>');
+    const dip = load('bl_diapers', {}); const t = today(); if (!dip[t]) dip[t] = { wet: 0, dirty: 0 };
+    // 🕛 датата се смята при ВСЕКИ клик, не веднъж при рисуването. Стая, отворена
+    //    в 23:50, пишеше нощната пелена в 00:20 на ВЧЕРАШНИЯ ден — и на сутринта
+    //    „Пелени днес" показваше 0. Заедно с това четем склада наново (друга
+    //    карта може да е писала междувременно).
+    const дневник = () => { const д = today(); const o = load('bl_diapers', {}); if (!o[д] || typeof o[д] !== 'object') o[д] = { wet: 0, dirty: 0 }; return { д, o }; };
+    const grid = el('div', 'bb-dip');
+    [['wet', '💧 Мокри'], ['dirty', '💩 Каки']].forEach(([k, lbl]) => {
+      const box = el('div', 'bb-dipbox');
+      box.appendChild(el('span', 'bb-diplbl', lbl));
+      const minus = el('button', 'bb-dipbtn', '−'); minus.type = 'button';
+      const num = el('span', 'bb-dipnum', dip[t][k]);
+      const plus = el('button', 'bb-dipbtn', '+'); plus.type = 'button';
+      minus.addEventListener('click', () => { const { д, o } = дневник(); o[д][k] = Math.max(0, (o[д][k] || 0) - 1); num.textContent = o[д][k]; save('bl_diapers', o); });
+      plus.addEventListener('click', () => { const { д, o } = дневник(); o[д][k] = (o[д][k] || 0) + 1; num.textContent = o[д][k]; save('bl_diapers', o); box.classList.add('pp'); setTimeout(() => box.classList.remove('pp'), 300); });
+      box.appendChild(minus); box.appendChild(num); box.appendChild(plus);
+      grid.appendChild(box);
+    });
+    c4.appendChild(grid);
+    c4.appendChild(el('p', 'jr-privacy', '6+ мокри пелени на ден = млякото стига. 💪'));
+    root.appendChild(c4);
+
+    // 5. Сън днес
+    const c5 = card('Сънят днес 😴 <span class="jr-sub">натисни при заспиване и при събуждане</span>');
+    const sleepBtn = el('button', 'jr-btn', ''); sleepBtn.type = 'button';
+    // проход 4: жив прозорец за следващата дрямка — мистерия №1 на уморената майка.
+    const sleepWin = el('p', 'bb-feed bb-sleepwin', '');
+    const sleepOut = el('p', 'bb-feed', '');
+    function sleepData() {
+      const t = today();   // 🕛 стаята може да е отворена от снощи — датата се пита СЕГА
+      let s = load('bl_sleep', { d: t, segs: [], open: null });
+      if (s.d !== t) {
+        // проход 3 T7: рендер СЛЕД полунощ без презареждане — нека sleephist разцепи
+        // и прибере отворения нощен сън (DRY), после четем наново. Ако все пак не е
+        // днешен (изоставен стар брояч) — нулираме честно.
+        if (window.BL_SLEEPHIST && BL_SLEEPHIST.прибери) { BL_SLEEPHIST.прибери(); s = load('bl_sleep', { d: t, segs: [], open: null }); }
+        if (s.d !== t) s = { d: t, segs: [], open: null };
+      }
+      return s;
+    }
+    // 🔴 04.08: отвореният брояч се прибавяше без таван — забравено докосване
+    //    надуваше „Днес“ до колкото минат часовете. Над 14 часа буден брояч не
+    //    е сън, а забравяне: не се брои, но и не се трие мълчаливо (виж
+    //    забравенСън по-долу — картата го казва и пита).
+    const ТАВАН_СЪН = 14 * 3600000;
+    function забравенСън(s) { return !!(s.open && Date.now() - s.open > ТАВАН_СЪН); }
+    function totalSleep(s) {
+      let ms = s.segs.reduce((a, x) => a + (x.e - x.s), 0);
+      if (s.open && !забравенСън(s)) ms += Date.now() - s.open;
+      const m = Math.floor(ms / 60000); return `${Math.floor(m / 60)} ч ${m % 60} мин`;
+    }
+    // възрастов прозорец на будност (мека рамка — всяко бебе е различно)
+    function прозорец(am) {
+      const d = am ? (am.devMonths != null ? am.devMonths : am.months) : 6;
+      if (d < 3) return [45, 60]; if (d < 6) return [60, 120]; if (d < 12) return [120, 180]; return [180, 240];
+    }
+    const fmtЧ = m => (m >= 60 ? Math.floor(m / 60) + 'ч ' : '') + (m % 60) + 'м';
+    function refreshSleep() {
+      const s = sleepData();
+      sleepBtn.textContent = s.open ? '🌅 Събуди се' : '😴 Заспа';
+      sleepBtn.classList.toggle('running', !!s.open);
+      const am = ageFromBirth(baby.birth);
+      // 🤍 нормата се лепеше до нейния сбор винаги. При два натиснати бутона
+      //    „2 ч 40 мин · типично ~14–17 ч" изглежда като присъда за бебето,
+      //    а е присъда за копчето. Нормата идва чак когато денят е що-годе
+      //    отбелязан; дотогава казваме честно какво брои сборът.
+      const отрязъци = s.segs.length + (s.open && !забравенСън(s) ? 1 : 0);
+      const typ = (am && отрязъци >= 3) ? (am.devMonths < 3 ? '~14–17 ч' : am.devMonths < 6 ? '~13–15 ч' : am.months < 12 ? '~12–14 ч' : '~11–14 ч') : '';
+      sleepOut.innerHTML = `Днес: <strong>${totalSleep(s)}</strong>` +
+        (typ ? ' · типично за възрастта: ' + typ : '<br><small>броя само това, което си отбелязала.</small>');
+      // жив прозорец
+      const [lo, hi] = прозорец(am);
+      if (s.open) {
+        const мин = Math.floor((Date.now() - s.open) / 60000);
+        sleepWin.innerHTML = `🌙 ${esc(baby.name || 'Бебето')} спи вече <strong>${fmtЧ(мин)}</strong> · дрямките обикновено са ~${lo}–${hi} мин`;
+      } else {
+        const котва = s.segs.length ? s.segs[s.segs.length - 1].e : null;
+        if (!котва) {
+          sleepWin.innerHTML = `Отбележи събуждането долу 👇 и ще ти казвам кога наближава следващата дрямка.`;
+        } else {
+          const буден = Math.floor((Date.now() - котва) / 60000);
+          if (буден > hi * 2) {
+            // 🤍 мълчанието не е будно бебе. Над двоен прозорец по-вероятно е
+            //    просто да не е натиснато копче — това не е повод за укор.
+            sleepWin.innerHTML = `😴 Отдавна не сме отбелязвали сън. Кажи ми, като заспи — броя само това, което ми дадеш. 💜`;
+          } else if (буден > hi) {
+            sleepWin.innerHTML = `👀 Будно от <strong>${fmtЧ(буден)}</strong> — май мина прозорецът. Хвани първия знак за умора: търкане на очи, прозявка, забавяне.`;
+          } else {
+            const около = new Date(котва + (lo + hi) / 2 * 60000);
+            const hh = String(около.getHours()).padStart(2, '0') + ':' + String(около.getMinutes()).padStart(2, '0');
+            sleepWin.innerHTML = `🌙 Будно от <strong>${fmtЧ(буден)}</strong> · сънливостта наближава ~${hh} <small>(ориентир)</small>`;
+          }
+        }
+      }
+    }
+    sleepBtn.addEventListener('click', () => {
+      const s = sleepData();
+      if (s.open) {
+        // 🔴 04.08: „🌅 Събуди се“ след забравен брояч записваше 15-часов сън
+        //    като истински. Сега прекалено дългият отрязък НЕ влиза в
+        //    историята — но и не изчезва мълчаливо: казваме ѝ какво стана.
+        if (забравенСън(s)) {
+          const колко = fmtЧ(Math.floor((Date.now() - s.open) / 60000));   // ПРЕДИ да занулим
+          s.open = null; save('bl_sleep', s); refreshSleep();
+          sleepOut.innerHTML = '⏱️ Броячът стоя пуснат <strong>' + колко +
+            '</strong> — толкова дълъг сън не го записвам, защото по-вероятно е просто да е останал включен. Нищо не си объркала; само не искам да ти показвам числа, които не са истина. 💜';
+          return;
+        }
+        s.segs.push({ s: s.open, e: Date.now() }); s.open = null;
+      } else s.open = Date.now();
+      save('bl_sleep', s); refreshSleep();
+    });
+    c5.appendChild(sleepBtn); c5.appendChild(sleepWin); c5.appendChild(sleepOut); refreshSleep();
+    // жив ъпдейт всяка минута (self-correcting, чисти се при откачане) + при връщане
+    const winTick = setInterval(() => { if (!sleepWin.isConnected) { clearInterval(winTick); return; } refreshSleep(); }, 60000);
+    const onSleepVis = () => { if (!sleepWin.isConnected) { document.removeEventListener('visibilitychange', onSleepVis); return; } if (!document.hidden) refreshSleep(); };
+    document.addEventListener('visibilitychange', onSleepVis);
+    root.appendChild(c5);
+
+    // 5б. проход 4 [36]: 24-часовият кръг — висцералният пулс на ЕДИН ден.
+    // Точки = хранения, дъги = сън, стрелка = сега. С един поглед в 3 сутринта:
+    // кога беше последното хранене, колко дълга беше дрямката, къде сме сега.
+    const cClock = card('Денят на един кръг 🕛 <span class="jr-sub">хранения, сън и „сега" за днес</span>');
+    const clockBox = el('div', 'bb-clockbox');
+    cClock.appendChild(clockBox);
+    const clockLeg = el('p', 'bb-clocklegend', '🍼 хранене · 🌙 сън · 📍 сега');
+    cClock.appendChild(clockLeg);
+    function рисувайЧасовник() {
+      const cx = 90, cy = 90;
+      const день0 = new Date(); день0.setHours(0, 0, 0, 0); const d0 = день0.getTime();
+      const днес = ts => ts >= d0 && ts < d0 + 86400000;
+      const ъгъл = ts => { const dt = new Date(ts); return ((dt.getHours() * 60 + dt.getMinutes()) / 1440) * 2 * Math.PI; };
+      const точка = (a, r) => [cx + r * Math.sin(a), cy - r * Math.cos(a)];
+      const дъга = (a0, a1, r) => { const [x0, y0] = точка(a0, r), [x1, y1] = точка(a1, r); const big = (a1 - a0) > Math.PI ? 1 : 0; return `M ${x0.toFixed(1)} ${y0.toFixed(1)} A ${r} ${r} 0 ${big} 1 ${x1.toFixed(1)} ${y1.toFixed(1)}`; };
+      let svg = '<svg viewBox="0 0 180 180" class="bb-clock">';
+      svg += `<circle cx="${cx}" cy="${cy}" r="72" fill="#fbfaff" stroke="#ece7f6" stroke-width="1.5"/>`;
+      // часови отметки на всеки 3 часа
+      for (let h = 0; h < 24; h += 3) { const a = (h / 24) * 2 * Math.PI; const [ox, oy] = точка(a, 72), [ix, iy] = точка(a, 66); svg += `<line x1="${ox.toFixed(1)}" y1="${oy.toFixed(1)}" x2="${ix.toFixed(1)}" y2="${iy.toFixed(1)}" stroke="#d8d0ea" stroke-width="1.5"/>`; }
+      [[0, '00'], [6, '06'], [12, '12'], [18, '18']].forEach(([h, l]) => { const a = (h / 24) * 2 * Math.PI; const [lx, ly] = точка(a, 55); svg += `<text x="${lx.toFixed(1)}" y="${(ly + 3).toFixed(1)}" class="bb-cnum" text-anchor="middle">${l}</text>`; });
+      // сън — дъги (пълни + отворен като тлееща)
+      const s = sleepData();
+      s.segs.forEach(seg => { if (днес(seg.s)) svg += `<path d="${дъга(ъгъл(seg.s), ъгъл(Math.min(seg.e, d0 + 86399000)), 44)}" fill="none" stroke="#b9a7e6" stroke-width="7" stroke-linecap="round" opacity=".85"/>`; });
+      if (s.open && днес(s.open)) svg += `<path d="${дъга(ъгъл(s.open), ъгъл(Date.now()), 44)}" fill="none" stroke="#b9a7e6" stroke-width="7" stroke-linecap="round" stroke-dasharray="2 4" opacity=".9"/>`;
+      // хранения — точки
+      const feeds = [...load('bl_nursing', []).map(x => x.ts), ...load('bl_feedlog', []), (load('bl_feed', null) || {}).t].filter(x => x && днес(x));
+      const uniq = [...new Set(feeds.map(x => Math.round(x / 300000)))].map(x => x * 300000);  // групирай на 5 мин
+      uniq.forEach(ts => { const [x, y] = точка(ъгъл(ts), 58); svg += `<circle cx="${x.toFixed(1)}" cy="${y.toFixed(1)}" r="4" fill="#e56ba4" stroke="#fff" stroke-width="1.5"/>`; });
+      // стрелка „сега"
+      const [hx, hy] = точка(ъгъл(Date.now()), 68);
+      svg += `<line x1="${cx}" y1="${cy}" x2="${hx.toFixed(1)}" y2="${hy.toFixed(1)}" stroke="#8a63d2" stroke-width="2.5" stroke-linecap="round"/><circle cx="${cx}" cy="${cy}" r="4" fill="#8a63d2"/>`;
+      svg += `<circle cx="${hx.toFixed(1)}" cy="${hy.toFixed(1)}" r="3.5" fill="#8a63d2"/>`;
+      svg += '</svg>';
+      const празно = !uniq.length && !s.segs.length && !s.open;
+      clockBox.innerHTML = svg + (празно ? '<p class="bb-clockempty">Още няма записи за днес — отбележи хранене или сън горе и денят ще се появи тук. 🤍</p>' : '');
+    }
+    рисувайЧасовник();
+    const clockTick = setInterval(() => { if (!clockBox.isConnected) { clearInterval(clockTick); return; } рисувайЧасовник(); }, 60000);
+    const onClockVis = () => { if (!clockBox.isConnected) { document.removeEventListener('visibilitychange', onClockVis); return; } if (!document.hidden) рисувайЧасовник(); };
+    document.addEventListener('visibilitychange', onClockVis);
+    root.appendChild(cClock);
+
+    // 6. Зъбки
+    const c6 = card('Първите зъбки 🦷 <span class="jr-sub">докосни зъбче, което е пробило</span>');
+    const teeth = load('bl_teeth', []);
+    const teethSet = new Set(teeth);
+    const upper = ['🦷', '🦷', '🦷', '🦷', '🦷', '🦷', '🦷', '🦷', '🦷', '🦷'];
+    const arches = [['Горни', 0], ['Долни', 10]];
+    arches.forEach(([lbl, off]) => {
+      c6.appendChild(el('span', 'bb-diplbl', lbl));
+      const rowE = el('div', 'th-arch');
+      for (let i = 0; i < 10; i++) {
+        const idx = off + i;
+        const tth = el('button', 'th-tooth' + (teethSet.has(idx) ? ' in' : ''), '🦷'); tth.type = 'button';
+        tth.addEventListener('click', () => {
+          if (teethSet.has(idx)) {
+            teethSet.delete(idx);
+            // 🦷 отметката назад чистеше само брояча. Датата оставаше и Реката
+            //    („Ново зъбче проби!") и Витрината пазеха завинаги събитие,
+            //    което не се е случило — без откъде да се махне.
+            const thd = load('bl_teeth_d', {});
+            if (thd[idx]) { delete thd[idx]; save('bl_teeth_d', thd); }
+          } else {
+            teethSet.add(idx); tth.classList.add('pp'); setTimeout(() => tth.classList.remove('pp'), 300);
+            const thd = load('bl_teeth_d', {});
+            if (!thd[idx]) { thd[idx] = Date.now(); save('bl_teeth_d', thd); } // зъбчето в Реката
+            if (window.BL_FX) { BL_FX.confetti(tth, 16); BL_FX.buzz(14); }
+          }
+          tth.classList.toggle('in');
+          save('bl_teeth', [...teethSet]); thCount();
+        });
+        rowE.appendChild(tth);
+      }
+      c6.appendChild(rowE);
+    });
+    const thc = el('p', 'bb-feed', '');
+    function thCount() { thc.innerHTML = `Пробили: <strong>${teethSet.size} / 20</strong>. Първите обикновено са долните предни, около 6–10 м.`; }
+    thCount();
+    c6.appendChild(thc);
+    root.appendChild(c6);
+  }
+
+  // ═══════════════ 🤰 БРЕМЕННОСТ (Мила) ═══════════════
+
+  function renderPregnancy(root) {
+    // Б10.1: СЕДМИЦАТА НА СТАЯТА минава през вратаря BL_EXPECT.
+    // При „пауза на очакването“ той връща '' — и всичко, което брои,
+    // мълчи. Дотук term/ритания/контракции четяха bl_lmp НАПРАВО и
+    // течаха покрай паузата — точно пред жената, която спря броенето.
+    const датата20 = () => (window.BL_EXPECT ? BL_EXPECT.lmp() : load('bl_lmp', ''));
+    const седмицаСега = () => {
+      const l = датата20();
+      if (!l) return 0;
+      const d = new Date(l);
+      if (isNaN(d)) return 0;
+      return Math.floor((Date.now() - d) / 604800000);
+    };
+    const наПауза = () => !!(window.BL_EXPECT && BL_EXPECT.paused());
+
+    // 1. Калкулатор на термина + седмица
+    // 🔴 04.08 (одит г01): онбордингът пита само за ОЧАКВАНАТА ДАТА и записва
+    //    bl_lmp = ОДР − 280 дни. Тук същата дата ѝ се връщаше с етикет „първи
+    //    ден на последната менструация“ — тоест приложението представяше своя
+    //    сметка като НЕЙНИ думи. Ако тя „поправи“ на истинската си ПМ, цялата
+    //    пътека и всички прегледи скачат с две седмици. Датата вече се нарича
+    //    с това, което е: датата, по която броим.
+    const c1 = card('Кога е терминът? 🗓️ <span class="jr-sub">по първия ден на цикъла — или изчислена от термина</span>');
+    const lmpI = el('input', 'jr-word'); lmpI.type = 'date'; lmpI.max = today();
+    lmpI.value = load('bl_lmp', '');
+    const етикетДата = el('label', 'bb-lbl', 'Дата, по която броим (първи ден на цикъла или изчислена от термина):');
+    c1.appendChild(етикетДата);
+    c1.appendChild(lmpI);
+    // Б2.4: датата е въведена → полето се сгъва в един ред „промени“
+    if (lmpI.value && !наПауза()) {
+      етикетДата.hidden = true; lmpI.hidden = true;
+      const промени = el('button', 'jr-chip pg-edit', '✏️ Промени датата'); промени.type = 'button';
+      промени.addEventListener('click', () => { етикетДата.hidden = false; lmpI.hidden = false; промени.remove(); });
+      c1.appendChild(промени);
+    }
+    const out = el('div', 'pg-out'); c1.appendChild(out);
+    function calc() {
+      // 🤍 calc() се вика и при просто отваряне на стаята. Празното поле се
+      //    записваше като низа "" — а той е ИСТИНА за localStorage. Оттам
+      //    BL_EXPECT.has() почваше да лъже и на жена без дата изгряваше
+      //    „спри тихо броенето до термина". Празно = нищо записано.
+      if (lmpI.value) save('bl_lmp', lmpI.value);
+      else { try { localStorage.removeItem('bl_lmp'); } catch (e) {} }
+      // Б10.1: на пауза броенето мълчи — картата не смята нищо
+      if (наПауза()) { out.innerHTML = ''; return; }
+      const lmp = new Date(lmpI.value);
+      if (!lmpI.value || isNaN(lmp)) { out.innerHTML = ''; return; }
+      const days = Math.floor((Date.now() - lmp) / 86400000);
+      const week = Math.floor(days / 7);
+      if (week < 1 || week > 45) { out.innerHTML = '<p class="bb-res">Провери датата — извън обхвата на бременност.</p>'; return; }
+      const edd = new Date(lmp.getTime() + 280 * 86400000);
+      const left = Math.ceil((edd - Date.now()) / 86400000);
+      const tri = week <= 13 ? 'първи' : week <= 27 ? 'втори' : 'трети';
+      const fruit = D.pregWeeks[Math.min(42, Math.max(4, week))] || ['—', '·'];
+      let noteKey = 4; Object.keys(D.pregNotes).map(Number).forEach(k => { if (k <= week) noteKey = k; });
+      const note = D.pregNotes[noteKey];
+      out.innerHTML =
+        `<div class="pg-hero"><span class="pg-fruit">${fruit[1]}</span><div><div class="pg-week">Седмица <span data-cnt="${week}">${week}</span></div>` +
+        `<div class="pg-sub">${tri} триместър · термин ${edd.toLocaleDateString('bg-BG')}</div></div></div>` +
+        `<p class="pg-size">Бебето е горе-долу колкото <strong>${fruit[0]}</strong>.</p>` +
+        `<div class="pg-note"><p>👶 <strong>Бебето:</strong> ${note.baby}</p><p>🌸 <strong>Ти:</strong> ${note.mama}</p><p>💡 <strong>Съвет:</strong> ${note.tip}</p></div>` +
+        `<p class="pg-left">${left > 0 ? 'Остават около <strong><span data-cnt="' + left + '">' + left + '</span> дни</strong> 🎈' : 'Терминът мина — бебето идва всеки момент! 💜'}</p>`;
+      if (window.BL_FX) BL_FX.countUp(out); // седмицата и дните отброяват
+    }
+    lmpI.addEventListener('change', calc); calc();
+    // Б10.1: на пауза терминът не се показва изобщо — датата ѝ си стои
+    // записана, но нищо не брои и нищо не пита. Връщането е в настройките.
+    if (!наПауза()) root.appendChild(c1);
+
+    // 2. Брояч на ритания
+    const c2 = card('Брояч на ритания 👣 <span class="jr-sub">твоят ритъм — не чуждо число</span>');
+    const kickBig = el('button', 'pg-kick', '👣<span>Ритна!</span>'); kickBig.type = 'button';
+    const kickOut = el('p', 'bb-res', '');
+    const kickHist = el('div', 'pg-kickhist', '');
+    // проход 4 [24]: пръстен от 10 точици, който се пълни при всеки тап — кръг,
+    // който расте, се чете с един поглед по-добре от число и дава напредък.
+    const kickRing = el('div', 'pg-kickring', Array.from({ length: 10 }, (_, i) => `<span class="kd" data-i="${i}"></span>`).join(''));
+    const светниПръстен = () => kickRing.querySelectorAll('.kd').forEach((d, i) => d.classList.toggle('on', i < kickCount));
+    // проход 3 T12: декларацията беше изпаднала при рефакторинг → първият клик
+    // на „Ритна!" при ≥26-та седмица хвърляше ReferenceError и броячът мълчеше.
+    let kickCount = 0, kickStart = 0;
+    // В1.4: сесиите се ПАЗЯТ. Досега kickCount живееше само на екрана —
+    // мама брои 10 ритания, излиза от стаята и всичко изчезваше.
+    function рисувайИстория() {
+      const дни = load('bl_kicks', []);
+      if (!дни.length) { kickHist.innerHTML = ''; return; }
+      // проход 4: личната база — постоянството е смисълът на броенето. Само мека,
+      // положителна рамка (по-бавно НЕ алармира с число — там пращаме към Вита).
+      let средно = '';
+      if (дни.length >= 3) {
+        const m = дни.map(x => x.mins).filter(v => v > 0).sort((a, b) => a - b);
+        const med = m[Math.floor(m.length / 2)];
+        средно = `<p class="jr-privacy">Твоите десетки идват средно за ~<strong>${med}</strong> мин. Ако усетиш ясно по-малко движение от обичайното — питай Вита или лекаря. 💚</p>`;
+      }
+      kickHist.innerHTML = средно + '<p class="jr-weekcap">Последни десетки:</p>' + дни.slice(-5).reverse().map(x =>
+        `<p class="nr-hrow">👣 10 за <strong>${x.mins} мин</strong> · ${new Date(x.ts).toLocaleDateString('bg-BG')} ${new Date(x.ts).toLocaleTimeString('bg-BG', { hour: '2-digit', minute: '2-digit' })}</p>`).join('');
+    }
+    const с2сед = седмицаСега();
+    kickBig.addEventListener('click', () => {
+      // В1.3: преди 26-та бутонът НЕ е мъртъв — превръща цъкането в спомен.
+      // Мама е усетила нещо и е посегнала — това Е първото пърхане.
+      if (с2сед > 0 && с2сед < 26) {
+        // ⚖️ същата карта казваше „от ~26-та" на един ред и „редовно става към
+        //    28-та" на друг. Държим ЕДНО число — 26-та, както е и гейтът горе
+        //    и сгъването в preg20 — защото по-ранното броене е по-безопасната
+        //    посока за жената, а не по-късното.
+        kickOut.innerHTML = 'Рано е за БРОЕНЕ (то тръгва към ~26-та) — но щом посягаш, значи го УСЕЩАШ. Това пърхане е злато ✨ Записах го в Историята ви.';
+        const река = load('bl_river_manual', []);
+        const днес = new Date().toISOString().slice(0, 10);
+        if (!река.some(x => x && x.пърхане === днес)) {
+          река.push({ ts: Date.now(), e: '🫧', t: 'Първите пърхания — ' + с2сед + '-та седмица', пърхане: днес });
+          save('bl_river_manual', река);
+          fx().confetti(kickOut);
+        }
+        kickBig.classList.add('pp'); setTimeout(() => kickBig.classList.remove('pp'), 500);
+        return;
+      }
+      if (!kickCount) kickStart = Date.now();
+      kickCount++;
+      if (kickCount >= 10) {
+        const mins = Math.round((Date.now() - kickStart) / 60000) || 1;
+        // 🤍 тук стоеше „обикновено 10 усещаш за под 2 часа" — чуждо число без
+        //    произход, което успокояваше точно жената, чиито десетки днес идват
+        //    четири пъти по-бавно от обичайното ѝ. Сравнението със СОБСТВЕНАТА
+        //    ѝ база е в рисувайИстория() и то е това, което значи нещо.
+        kickOut.innerHTML = `🎉 10 движения за <strong>${mins} мин</strong>! Браво, бебче.`;
+        kickBig.querySelector('span').textContent = 'Отначало';
+        светниПръстен();                          // всичките 10 светят за миг
+        kickRing.classList.add('full'); setTimeout(() => kickRing.classList.remove('full'), 1200);
+        kickCount = 0;
+        // В1.4: десетката се записва — данните на мама значат нещо
+        const дни = load('bl_kicks', []);
+        дни.push({ ts: Date.now(), mins });
+        save('bl_kicks', дни.slice(-40));
+        рисувайИстория();
+        fx().confetti(kickOut);                  // Б8.4: 10-то ритниче се празнува
+      } else {
+        kickOut.textContent = `${kickCount} / 10 движения…`;
+        kickBig.querySelector('span').textContent = 'Ритна! (' + kickCount + ')';
+        светниПръстен();
+        if (window.BL_FX) BL_FX.buzz(6);   // проход 4: нежен тактилен цък (мама брои с очи затворени)
+      }
+      kickBig.classList.add('pp'); setTimeout(() => kickBig.classList.remove('pp'), 200);
+    });
+    if (с2сед > 0 && с2сед < 26) {
+      kickOut.innerHTML = 'Броенето е за след <strong>~26-та седмица</strong> (ти си в ' + с2сед + '-та). Но усетиш ли пърхане — цъкни, ще го запомним като спомен. 🤍';
+    }
+    c2.appendChild(kickBig);
+    if (с2сед === 0 || с2сед >= 26) c2.appendChild(kickRing);   // пръстенът само в режим на броене
+    c2.appendChild(kickOut); c2.appendChild(kickHist);
+    рисувайИстория();
+    // 🤍 при раждане preg20 маха само bl_lmp. Пауза няма → досега родилата
+    //    майка отваряше „Бременност" и я посрещаше броячът на ритания с
+    //    дневника от последните ѝ дни. Няма жива дата — картите мълчат.
+    //    Данните НЕ се трият (принципът на expect.js:10-11), само не се рисуват.
+    if (!наПауза() && датата20()) root.appendChild(c2);   // Б10.1
+
+    // 3. Брояч на контракции
+    const c3 = card('Брояч на контракции ⏱️ <span class="jr-sub">правилото 5-1-1 те пази</span>');
+    const conBtn = el('button', 'jr-btn', '▶ Започна контракция'); conBtn.type = 'button';
+    const conOut = el('div', 'pg-contract', '');
+    let conRunning = false, conStart = 0;
+    // Б8.8: по време на контракция — дишащ кръг „вдишай… издишай“ (4-4).
+    // Не е украса: воденото дишане реално помага през вълната.
+    const дъх = el('div', 'pg-breath');
+    дъх.setAttribute('aria-live', 'polite'); дъх.setAttribute('aria-label', 'дишане и брояч на контракцията');   // проход 4: озвучаване за незрящи
+    // проход 3 T29: жива секунда-стрелка — правилото 5-1-1 иска контракции по ~1мин,
+    // а без брояч раждащата няма как да прецени в реално време колко трае вълната.
+    дъх.innerHTML = '<span class="pg-breath-c"></span><span class="pg-breath-t">вдишай…</span><span class="pg-breath-s"></span>';
+    дъх.hidden = true;
+    let дъхТик = null, секТик = null;
+    // 🕛 започнатата вълна живееше САМО в екранни променливи. Раждащата отваря
+    //    чата да пита нещо, стаята се пресъздава от нулата (helper.js) и вълната
+    //    изчезва — а двата интервала остават да тикат върху откачен елемент.
+    //    Сега стартът се пази в склада (както bl_nursing_open при кърменето),
+    //    а всеки тик умира заедно с картата си.
+    function сприТикове() { if (дъхТик) { clearInterval(дъхТик); дъхТик = null; } if (секТик) { clearInterval(секТик); секТик = null; } }
+    function пусниВълна(t0) {
+      conStart = t0; conRunning = true;
+      conBtn.textContent = '⏹ Свърши контракция'; conBtn.classList.add('running');
+      дъх.hidden = false;
+      let вд = true;
+      const надпис = дъх.querySelector('.pg-breath-t');
+      const сек = дъх.querySelector('.pg-breath-s');
+      сек.textContent = Math.round((Date.now() - conStart) / 1000) + ' с';   // смятаме от conStart → самокоригира се след заключен екран
+      сприТикове();
+      дъхТик = setInterval(() => { if (!дъх.isConnected) { сприТикове(); return; } вд = !вд; надпис.textContent = вд ? 'вдишай…' : 'издишай…'; }, 4000);
+      секТик = setInterval(() => { if (!дъх.isConnected) { сприТикове(); return; } сек.textContent = Math.round((Date.now() - conStart) / 1000) + ' с'; }, 1000);
+    }
+    conBtn.addEventListener('click', () => {
+      const log = load('bl_contract', []);
+      if (!conRunning) {
+        if (window.BL_FX) BL_FX.buzz(12);   // проход 4: раждащата засича вълните през болка — да ЗНАЕ, че е регистрирано
+        пусниВълна(Date.now());
+        save('bl_contract_open', { t0: conStart });
+      }
+      else {
+        conRunning = false; conBtn.textContent = '▶ Започна контракция'; conBtn.classList.remove('running');
+        if (window.BL_FX) BL_FX.buzz(12);   // проход 4: край на вълната — тактилно потвърждение
+        дъх.hidden = true; сприТикове();
+        try { localStorage.removeItem('bl_contract_open'); } catch (e) {}
+        const dur = Math.round((Date.now() - conStart) / 1000);
+        const prev = log.length ? log[log.length - 1].start : null;
+        const interval = prev ? Math.round((conStart - prev) / 60000) : null;
+        log.push({ start: conStart, dur, interval });
+        save('bl_contract', log.slice(-12));
+        drawCon();
+      }
+    });
+    function drawCon() {
+      const log = load('bl_contract', []);
+      if (!log.length) { conOut.innerHTML = '<p class="jr-privacy">Натисни при започване и при спиране на всяка контракция.</p>'; return; }
+      const last3 = log.slice(-3);
+      const avgInt = last3.filter(x => x.interval).reduce((a, x, _, arr) => a + x.interval / arr.length, 0);
+      const avgDur = last3.reduce((a, x) => a + x.dur / last3.length, 0);
+      let rows = log.slice(-5).reverse().map(x =>
+        `<div class="bb-histrow"><span>${new Date(x.start).toLocaleTimeString('bg-BG', { hour: '2-digit', minute: '2-digit' })}</span><span>${x.dur}с</span><span>${x.interval ? 'през ' + x.interval + ' мин' : 'първа'}</span></div>`).join('');
+      let alert = '';
+      // Б1.2: правилото 5-1-1 е за ТЕРМИНА. Преди 37-та седмица редовните
+      // контракции са друга история — там не се чака 5-1-1, а се звъни.
+      const сег = седмицаСега();
+      if (сег > 0 && сег < 37 && log.length >= 3 && avgInt && avgInt <= 12) {
+        alert = '<p class="pg-alarm">🚨 Редовни контракции преди <strong>37-та седмица</strong> са повод да звъннеш на лекаря си <strong>СЕГА</strong> — не изчаквай 5-1-1.<br><a class="ro-sos" href="tel:112">📞 112 при силна болка/кървене</a></p>';
+      } else if (avgInt && avgInt <= 5 && avgDur >= 45) {
+        // ⏱️ това се палеше след ТРИ засечени вълни — тоест около 10-15 минути
+        //    наблюдение — а текстът твърдеше „по ~1 мин, от известно време",
+        //    докато прагът е 45 секунди. Правилото 5-1-1 иска цял ЧАС. Текстът
+        //    вече казва точно каквото е измерено, без да я праща напразно.
+        //    ⏱️ 05.08 (скептик): „около 5 минути" беше пак чуждо число — прагът е
+        //    „5 или по-малко", а при измерени 2 минути текстът звучеше по-спокойно
+        //    от истината. Числото идва от НЕЙНИТЕ вълни.
+        const инт = Math.max(1, Math.round(avgInt));
+        alert = '<p class="pg-alarm">⏱️ Стяганията ти вече се редят на около <strong>' + инт + (инт === 1 ? ' минута' : ' минути') + '</strong>. Засичай още — правилото 5-1-1 гледа цял час — и се обади на екипа си, за да знаят кога да те чакат. При изтекли води, кървене или ако усещаш, че е време: тръгвай, не чакай брояча.</p>';
+      }
+      conOut.innerHTML = alert + rows;
+    }
+    // Б1.2: и ПРЕДИ първото броене жената в 22-ра трябва да знае правилото
+    const сегК = седмицаСега();
+    if (сегК > 0 && сегК < 37) {
+      c3.appendChild(el('p', 'jr-privacy pg-preterm',
+        '⚠️ Ти си в ' + сегК + '-та седмица. Редовни контракции <strong>преди 37-та</strong> не се броят по 5-1-1 — звънни на лекаря си веднага.'));
+    }
+    c3.appendChild(conBtn); c3.appendChild(дъх); c3.appendChild(conOut); drawCon();
+    if (!наПауза() && датата20()) root.appendChild(c3);   // Б10.1 + жива дата
+    // връщане в стаята посред вълна: намираме я, където я оставихме.
+    // Над час е забравено копче, не контракция — маркерът пада, дневникът остава.
+    const отворена = load('bl_contract_open', null);
+    if (отворена && отворена.t0 && дъх.isConnected && Date.now() - отворена.t0 < 3600000) пусниВълна(отворена.t0);
+    else if (отворена) { try { localStorage.removeItem('bl_contract_open'); } catch (e) {} }
+
+    // 4. Чанта за болницата
+    // 🤍 29.07 (обиколка): чантата беше ИЗВЪН пазачите — жена след загуба я
+    //    виждаше с лентата „🎉 Чантата е готова. Сега само чакаме него.“
+    if (!наПауза() && датата20()) root.appendChild(checklistCard('Чанта за родилния дом 🧳', 'bl_bag_hospital', [
+      'Документи: лична карта, здравна книжка, изследвания', 'Нощници с копчета отпред + халат + чехли',
+      'Тоалетни принадлежности', 'Дълги дамски превръзки (следродилни)', 'Удобни памучни бикини (тъмни)',
+      'Сутиени за кърмене + подплънки', 'Дрешки за бебето (бодита, ританки, шапчица)',
+      'Пелени за новородено + мокри кърпички', 'Одеялце за изписване', 'Зарядно с ДЪЛЪГ кабел + лека храна'
+    ]));
+  }
+
+  // ═══════════════ 🥄 ЗАХРАНВАНЕ (Малина) ═══════════════
+
+  function renderFeeding(root) {
+    // 1. Готови ли сме
+    root.appendChild(checklistCard('Готови ли сме за захранване? ✅', 'bl_ready', [
+      'Бебето е около 6-месечно', 'Седи стабилно с малко опора', 'Държи главата си уверено',
+      'Гледа лакомо как ядете и посяга', 'Изчезнал е рефлексът да избутва с езиче'
+    ]));
+
+    // 2. Календар на храните
+    const c2 = card('Календар на храните 🍓 <span class="jr-sub">кое кога и как се дава</span>');
+    const a = ageFromBirth(getBaby().birth);
+    const filterRow = el('div', 'jr-quick fd-filter');
+    const cats = ['Всички', 'Зеленчук', 'Плод', 'Белтъчини', 'Зърнени', 'Млечни', 'Алергени', 'Мои'];
+    const tried = load('bl_tried', {});
+    let curCat = 'Всички', ageCap = a ? Math.round(a.devMonths) : 12;
+    const grid = el('div', 'fd-grid');
+    cats.forEach(cat => {
+      const b = el('button', 'jr-chip' + (cat === 'Всички' ? ' on' : ''), cat); b.type = 'button';
+      b.addEventListener('click', () => { filterRow.querySelectorAll('.jr-chip').forEach(x => x.classList.remove('on')); b.classList.add('on'); curCat = cat; draw(); });
+      filterRow.appendChild(b);
+    });
+    c2.appendChild(filterRow);
+    const ageNote = el('p', 'fd-agenote', ''); c2.appendChild(ageNote);
+    c2.appendChild(grid);
+    function draw() {
+      // ageCap е devMonths = КОРИГИРАНАТА възраст (недоносени). Беше сметната и
+      // забравена, а филтърът ползваше календарната — точно за най-уплашената
+      // група показваше храни твърде рано (одит-флот П23, проход 2 №5).
+      ageNote.innerHTML = curCat === 'Мои'
+        ? 'Твоите храни — показвам ги всичките, дори записаните за по-нататък. С ✕ се махат.'
+        : (a ? `Показвам подходящи за <strong>${ageCap} месеца${a.corr ? ' (коригирани)' : ''}</strong> (и по-рано). Задай рождена дата в „Моето бебе“ за прецизност.` : 'Показвам всички. Задай рождена дата в „Моето бебе“ за филтър по възраст.');
+      grid.innerHTML = '';
+      const allFoods = D.foods.concat(load('bl_custom_foods', []));
+      // „Алергени" маркерът е f.alrg (⚠️), не категория — старият f.cat==='Алергени'
+      // хващаше 1 храна (одит-флот П23, проход 2 №4)
+      // ✕ 05.08 (скептик, nr 210): под чипа „Мои" възрастовият филтър НЕ важи.
+      //    Иначе собственият ѝ запис („Мед · от 12 м.", записан от майка с
+      //    новородено) изчезва от мрежата и кошчето става недостижимо чак до
+      //    годинката — тоест еднопосочната врата остава отворена точно за
+      //    случая, който я откри. Календарът по възраст („Всички" и
+      //    категориите) си остава непокътнат — там нищо не изгрява по-рано.
+      allFoods.filter(f => (curCat === 'Всички' || (curCat === 'Алергени' ? !!f.alrg : f.cat === curCat)) && (curCat === 'Мои' || !a || f.from <= ageCap + 0.5))
+        .forEach(f => {
+          const done = tried[f.n];
+          const cardE = el('button', 'fd-card' + (done ? ' tried' : ''));
+          cardE.type = 'button';
+          // 🔒 22.07 (армия, RED): в този списък влизат и храните, които МАМА
+          // сама е добавила („Добави своя храна“ → bl_custom_foods) — тоест
+          // нейн свободен текст, който досега влизаше суров в innerHTML.
+          // Името и начинът на поднасяне минават през esc().
+          cardE.innerHTML = `<span class="fd-emoji">${esc(f.e)}</span><span class="fd-name">${esc(f.n)}${f.alrg ? ' ⚠️' : ''}</span>` +
+            `<span class="fd-from">от ${esc(f.from)} м.</span><span class="fd-how">${esc(f.how)}</span>` +
+            (done ? `<span class="fd-badge">${esc(done)}</span>` : '<span class="fd-tap">докосни: опитахме!</span>');
+          cardE.addEventListener('click', () => cycleTried(f.n, cardE));
+          // ✕ 05.08: „Добави своя храна" беше еднопосочна врата — сгрешено име
+          //    („Тиквичкаа") оставаше в календара и в дневника за педиатъра
+          //    завинаги. Кошчето е само на нейните записи, жестът е като в
+          //    obichai.js. Официалните храни не се трият.
+          if (f.cat === 'Мои') {
+            const wrap = el('div', 'fd-wrap');
+            const del = el('button', 'fd-del', '✕'); del.type = 'button';
+            del.setAttribute('aria-label', 'Махни „' + f.n + '“ от моите храни');
+            del.addEventListener('click', () => {
+              const махни = () => {
+                save('bl_custom_foods', load('bl_custom_foods', []).filter(x => !x || x.n !== f.n));
+                if (tried[f.n] != null) { delete tried[f.n]; save('bl_tried', tried); }
+                const td = load('bl_tried_d', {});
+                if (td[f.n] != null) { delete td[f.n]; save('bl_tried_d', td); }
+                draw(); drawTried();
+              };
+              if (window.BL_UI && BL_UI.confirm) BL_UI.confirm('Да махна ли „' + f.n + '“ от твоите храни?', { okText: 'Махни', danger: true }).then(да => { if (да) махни(); });
+              else махни();
+            });
+            wrap.appendChild(cardE); wrap.appendChild(del);
+            grid.appendChild(wrap);
+          } else grid.appendChild(cardE);
+        });
+      if (!grid.children.length) grid.appendChild(el('p', 'jr-privacy', 'За тази възраст още няма храни в списъка.'));
+    }
+    const REACT = ['😋 хареса', '😐 неутрално', '🤢 отказа', '⚠️ реакция'];
+    function cycleTried(name, cardE) {
+      const cur = tried[name];
+      // проход 4: първият вкус на нова храна е истински милестоун — празнува се като зъбче.
+      if (!cur && window.BL_FX) { BL_FX.confetti(cardE, 16); BL_FX.buzz(14); }
+      const idx = cur ? (REACT.indexOf(cur) + 1) % (REACT.length + 1) : 0;
+      if (idx >= REACT.length) delete tried[name]; else tried[name] = REACT[idx];
+      save('bl_tried', tried); draw();
+      drawTried();   // дневникът долу се опреснява НА ЖИВО (проход 2 №3)
+      const td = load('bl_tried_d', {}); // датата тръгва към Реката
+      if (tried[name]) { if (!td[name]) { td[name] = Date.now(); save('bl_tried_d', td); } }
+      // 🥄 обиколката до края („докосни: опитахме!") чистеше реакцията, но
+      //    датата оставаше и в Реката завинаги стоеше „🥄 Опитахме Ягода" с
+      //    празно място отзад — спомен за нещо, което не се е случило.
+      else if (td[name]) { delete td[name]; save('bl_tried_d', td); }
+      // (тук стоеше cardE.classList.add('pp') — мъртъв код: draw() по-горе вече
+      //  е пресъздал всички картички и cardE е откачен от документа.)
+    }
+    draw();
+    root.appendChild(c2);
+
+    // 3. Опитани + алергени
+    const c3 = card('Дневник на опитаното 📓 <span class="jr-sub">готов за консултацията с педиатъра</span>');
+    const triedOut = el('div', 'fd-triedlist'); c3.appendChild(triedOut);
+    function drawTried() {
+      const keys = Object.keys(load('bl_tried', {}));
+      const tr = load('bl_tried', {});
+      triedOut.innerHTML = keys.length
+        ? keys.map(k => `<span class="fd-pill">${esc(k)}: ${esc(tr[k])}</span>`).join('')
+        : '<p class="jr-privacy">Отбележи храни горе с докосване — реакциите се събират тук.</p>';
+    }
+    drawTried();
+    // preview refresh: re-draw on room re-entry is enough; keep simple
+    root.appendChild(c3);
+
+    // одит-флот П23, проход 2: статичната „8-те големи алергена" беше дубликат
+    // на интерактивната „Алергените 🥜" (rooms8.js) в СЪЩАТА стая — същите 8
+    // алергена + същото правило „сутрин · после 3 дни" + същото 112. Махната;
+    // интерактивната е функционален надмножество (проследява кое си въвела).
+
+    // 5. Добави своя храна (къстъм!)
+    const c5 = card('Добави своя храна ➕ <span class="jr-sub">твоят календар, твоите храни</span>');
+    const nameI2 = el('input', 'jr-word'); nameI2.type = 'text'; nameI2.maxLength = 30; nameI2.placeholder = 'Име на храната… (напр. „Дюля“)';
+    const monI = el('input', 'jr-word'); monI.type = 'number'; monI.min = 4; monI.max = 24; monI.placeholder = 'От кой месец…';
+    const howI = el('input', 'jr-word'); howI.type = 'text'; howI.maxLength = 90; howI.placeholder = 'Как се поднася… (по желание)';
+    // ⚠️ 05.08: формата нямаше отметка за алерген, а записът тръгваше със
+    //    заковано alrg:false. „Фъстъчен тахан" излизаше чист, без ⚠️, и не
+    //    влизаше във филтъра „Алергени" — все едно приложението го е проверило.
+    const alrgL = el('label', 'fd-alrgchk', '');
+    const alrgI = el('input'); alrgI.type = 'checkbox';
+    alrgL.appendChild(alrgI);
+    alrgL.appendChild(el('span', '', ' ⚠️ Това е алерген (яйце, краве мляко, ядки, фъстък, риба, соя, пшеница, сусам)'));
+    const бележка5 = el('p', 'jr-privacy fd-rule', ''); бележка5.hidden = true;
+    // 🔒 замразените правила важат и за храна, която мама сама си пише — иначе
+    //    „🏠 Мед · от 4 м." застава до тиквичката все едно приложението го
+    //    препоръчва, докато същото приложение другаде държи обратното.
+    const ЗАМРАЗЕНИ = [
+      { д: ['мед'], от: 12, т: 'Мед не се дава преди навършена 1 година — никога, дори капчица. Записах го от 12-ия месец.' },
+      { д: ['сол'], от: 12, т: 'Сол не се добавя преди годинката — бъбречетата още не я поемат. Записах го от 12-ия месец.' },
+      { д: ['захар'], от: 12, т: 'Захар не се добавя преди годинката. Записах го от 12-ия месец.' },
+      { д: ['краве мляко', 'прясно мляко'], от: 12, т: 'Краве мляко за ПИЕНЕ е след годинката (в готвено ястие може по-рано). Записах го от 12-ия месец.' },
+      { д: ['вода'], от: 6, т: 'Вода преди 6 месеца не се дава — млякото стига напълно. Записах я от 6-ия месец.' }
+    ];
+    const addB = el('button', 'jr-btn', 'Добави в календара 🍽️'); addB.type = 'button';
+    addB.addEventListener('click', () => {
+      const n = nameI2.value.trim();
+      if (!n) return;
+      const cf = load('bl_custom_foods', []);
+      // min/max в HTML не важат за ръчно напечатано число: „-3“ минаваше и
+      //    картата излизаше „от -3 м.“
+      let m = parseInt(monI.value); if (isNaN(m)) m = 6;
+      m = Math.min(24, Math.max(4, m));
+      const ниско = n.toLowerCase();
+      if (D.foods.concat(cf).some(x => x && String(x.n).trim().toLowerCase() === ниско)) {
+        бележка5.textContent = '💛 „' + n + '“ вече е в календара — не я записвам втори път, за да не се раздвои дневникът ти.';
+        бележка5.hidden = false;
+        return;
+      }
+      let правило = null;
+      ЗАМРАЗЕНИ.forEach(з => { if (!правило && з.д.some(x => ниско.includes(x)) && m < з.от) правило = з; });
+      if (правило) { m = правило.от; бележка5.textContent = '💛 ' + правило.т; бележка5.hidden = false; }
+      else бележка5.hidden = true;
+      cf.push({ n, e: '🏠', from: m, cat: 'Мои', alrg: alrgI.checked, how: howI.value.trim() || 'Добавена от теб.' });
+      save('bl_custom_foods', cf);
+      nameI2.value = ''; monI.value = ''; howI.value = ''; alrgI.checked = false;
+      // 🍽️ банерът казваше „в календара!“ и когато записът не се вижда никъде —
+      //    скрит от активен чип или от възрастовия филтър. Отваряме „Мои“ и,
+      //    ако още е рано, го казваме честно.
+      curCat = 'Мои';
+      filterRow.querySelectorAll('.jr-chip').forEach(x => x.classList.toggle('on', x.textContent === 'Мои'));
+      draw();
+      const рано = !!a && m > ageCap + 0.5;
+      if (window.BL_FX) {
+        BL_FX.buzz(12);
+        BL_FX.cheer(рано ? '„' + n + '“ е записана за ' + m + ' м. Стои при „Мои“; в календара по възраст влиза, когато дойде времето. 🍽️' : '„' + n + '“ е в календара! 🍽️');
+      }
+    });
+    c5.appendChild(nameI2); c5.appendChild(monI); c5.appendChild(howI); c5.appendChild(alrgL); c5.appendChild(addB); c5.appendChild(бележка5);
+    root.appendChild(c5);
+  }
+
+  // ═══════════════ 🧸 РАЗВИТИЕ И ИГРИ (Искра) ═══════════════
+
+  function renderDevelopment(root) {
+    const a = ageFromBirth(getBaby().birth);
+
+    // 🤰 05.08: без рождена дата стаята рисуваше `ms[4]` — тоест ШЕСТИЯ месец —
+    //    и слагаше отдолу праговия флаг за него. Редовете са бутони: жена в
+    //    8-ма седмица можеше да отметне „социална усмивка" и в bl_ms_d да
+    //    легне дата за несъществуващо бебе. Стаята се събужда с раждането.
+    if (!a && window.BL_EXPECT && BL_EXPECT.lmp && BL_EXPECT.lmp()) {
+      const c0 = card('Тук ще е неговото развитие 🧸');
+      c0.appendChild(el('p', 'jr-privacy', 'Стаята се събужда с раждането. Тогава заедно ще пълним първите усмивки, обръщания и стъпки — и нищо от тях няма да се загуби. Дотогава няма какво да отмяташ. 💜'));
+      root.appendChild(c0);
+      return;
+    }
+
+    // 1. Етапи за възрастта
+    const c1 = card('Какво умее сега? 📈 <span class="jr-sub">прозорците са ШИРОКИ — не е състезание</span>');
+    const ms = D.milestones;
+    // 🤍 05.08 (скептик, №207 докрай): пазачът горе хващаше само БРЕМЕННАТА.
+    //    Мама без попълнена рождена дата (нова, или изтрила я) пак получаваше
+    //    ШЕСТИЯ месец като „сега“ — с бутони, които пишат в bl_ms_done и
+    //    bl_ms_d, и с праговия флаг „👀 …питай лекаря“ към чужд месец. Без
+    //    дата няма „сега“: казваме го и не даваме какво да се отмята.
+    if (!a) {
+      c1.appendChild(el('p', 'jr-privacy', 'Кажи ми рождената дата в „Моето бебе“ и тук ще застанат неговите месеци — с това, което обикновено се случва точно тогава. Без нея бих ти показала чужди, а прозорците са широки и сравнението не помага на никого. 💜'));
+      root.appendChild(c1);
+    } else {
+    const pick = ms.reduce((best, x) => Math.abs(x.m - a.devMonths) < Math.abs(best.m - a.devMonths) ? x : best, ms[0]);
+    const done = load('bl_ms_done', {});
+    const rows = [['motor', '🤸 Едро моторно'], ['fine', '✋ Фино моторно'], ['speech', '🗣️ Говор'], ['social', '💛 Социално']];
+    const msBox = el('div', 'dv-ms');
+    msBox.innerHTML = `<p class="dv-mstitle">Около ${pick.m}-ия месец:</p>`;
+    rows.forEach(([k, lbl]) => {
+      const id = pick.m + '_' + k;
+      const r = el('button', 'dv-msrow' + (done[id] ? ' done' : ''));
+      r.type = 'button';
+      r.innerHTML = `<span class="jr-check">${done[id] ? '✔' : ''}</span><span class="dv-mslbl">${lbl}</span><span class="dv-mstxt">${pick[k]}</span>`;
+      r.addEventListener('click', () => {
+        // 🔴 г07/59 (огледално на dev.js:209): махнеш ли отметката, датата в
+        //    bl_ms_d оставаше. Дървото забравяше умението, а Витрината, Реката
+        //    и хапчето на банера продължаваха да го броят. Изключването чисти
+        //    и датата.
+        //    Четем bl_ms_done ПРЯСНО (както dev.js): картата с диапазоните
+        //    (rooms17.js) стои в СЪЩАТА стая и също пише в него — копието от
+        //    рисуването щеше да залее нейния запис.
+        const d = load('bl_ms_done', {});
+        d[id] = !d[id]; save('bl_ms_done', d);
+        const md = load('bl_ms_d', {});
+        if (d[id]) { if (!md[id]) md[id] = Date.now(); } else { delete md[id]; } // за Реката и Дървото
+        save('bl_ms_d', md);
+        r.classList.toggle('done'); r.querySelector('.jr-check').textContent = d[id] ? '✔' : '';
+      });
+      msBox.appendChild(r);
+    });
+    let flag = ''; Object.keys(D.milestoneFlags).map(Number).forEach(fk => { if (pick.m >= fk) flag = D.milestoneFlags[fk]; });
+    if (flag) msBox.appendChild(el('p', 'dv-flag', '👀 ' + flag));
+    c1.appendChild(msBox);
+    root.appendChild(c1);
+    }
+
+    // 2. Какво да правим днес
+    const c2 = card('Какво да правим днес? ✨ <span class="jr-sub">завърти вълшебния бутон</span>');
+    const needRow = el('div', 'jr-quick');
+    let need = 'всичко';
+    [['всичко', '🎲 Каквото и да е'], ['нищо', '🙌 Нищо специално'], ['кухня', '🍳 Кухненски неща'], ['хартия', '📄 Хартия'], ['плат', '🧻 Платчета']].forEach(([v, lbl]) => {
+      const b = el('button', 'jr-chip' + (v === 'всичко' ? ' on' : ''), lbl); b.type = 'button';
+      b.addEventListener('click', () => { needRow.querySelectorAll('.jr-chip').forEach(x => x.classList.remove('on')); b.classList.add('on'); need = v; });
+      needRow.appendChild(b);
+    });
+    c2.appendChild(needRow);
+    const spin = el('button', 'jr-btn', '🎡 Дай ни идея!'); spin.type = 'button';
+    c2.appendChild(spin);
+    const actOut = el('div', 'dv-act', ''); c2.appendChild(actOut);
+    spin.addEventListener('click', () => {
+      const am = a ? a.devMonths : 8;
+      let pool = D.activities.filter(x => am >= x.a0 && am <= x.a1 && (need === 'всичко' || x.need === need));
+      if (!pool.length) pool = D.activities.filter(x => need === 'всичко' || x.need === need);
+      if (!pool.length) pool = D.activities;
+      const act = pool[Math.floor(Math.random() * pool.length)];
+      actOut.innerHTML = `<div class="dv-actcard"><h5>${act.t}</h5><p>${act.x}</p></div>`;
+      actOut.firstChild.classList.add('pop');
+    });
+    root.appendChild(c2);
+
+    // 3. Първите пъти
+    const firsts = ['😊 Първа усмивка', '🙃 Първо обръщане', '🦷 Първо зъбче', '🪑 Първо сядане', '🚼 Първо пълзене', '🗣️ Първа дума', '👣 Първа стъпка'];
+    const fdata = load('bl_firsts', {});
+    const c3 = card('Първите пъти 🌟 <span class="jr-sub">злато за спомените</span>');
+    const fBox = el('div', 'dv-firsts');
+    firsts.forEach(f => {
+      const row = el('div', 'dv-firstrow');
+      const lbl = el('span', 'dv-firstlbl', f);
+      const di = el('input', 'jr-word'); di.type = 'date'; di.max = today(); di.value = fdata[f] || '';
+      di.addEventListener('change', () => { if (di.value) fdata[f] = di.value; else delete fdata[f]; save('bl_firsts', fdata); if (di.value) { row.classList.add('pp'); setTimeout(() => row.classList.remove('pp'), 400); if (window.BL_FX) { BL_FX.confetti(row); BL_FX.cheer(f.replace(/^\S+\s/, '') + '! 🎉'); } } });
+      row.appendChild(lbl); row.appendChild(di);
+      fBox.appendChild(row);
+    });
+    c3.appendChild(fBox);
+    root.appendChild(c3);
+  }
+
+  // ═══════════════ 🛠️ ИНСТРУМЕНТИ (Дара) ═══════════════
+
+  function renderTools(root) {
+    // 1. Размери дрешки
+    const c1 = card('Размер на дрешки 📏 <span class="jr-sub">по възраст (или по ръст)</span>');
+    const sizes = [[0, '50–56'], [1, '56'], [2, '62'], [4, '68'], [6, '74'], [9, '80'], [12, '86'], [18, '92'], [24, '98']];
+    const mI = el('input', 'jr-word'); mI.type = 'number'; mI.min = 0; mI.max = 36; mI.placeholder = 'Възраст в месеци…';
+    const a = ageFromBirth(getBaby().birth); if (a) mI.value = Math.round(a.devMonths); // М1: коригирана
+    c1.appendChild(mI);
+    const sOut = el('p', 'bb-res', '');
+    function sizeFor(m) { let s = sizes[0][1]; sizes.forEach(([mm, ss]) => { if (m >= mm) s = ss; }); return s; }
+    function calcSize() { const m = parseInt(mI.value); if (isNaN(m)) { sOut.innerHTML = ''; return; } sOut.innerHTML = `Ориентировъчно размер <strong>${sizeFor(m)}</strong>. Бебешките номера са ръст в см — взимай с размер напред за подаръци.`; }
+    mI.addEventListener('input', calcSize); calcSize();
+    c1.appendChild(sOut);
+    root.appendChild(c1);
+
+    // 2. Бебешки бюджет
+    const c2 = card('Бебешки бюджет 💰 <span class="jr-sub">честно и успокояващо</span>');
+    // 💰 05.08: подразбирането беше {pel:80, other:60} и на празна памет
+    //    картата посрещаше жената, която тъкмо смята дали ще се справи, с
+    //    „~1680 лв за първата година“ — сметка, изречена като нейна, от числа,
+    //    които никой не я е питал. Полетата тръгват празни; сборът идва след
+    //    първото ѝ число.
+    const b = load('bl_budget', {});
+    const fields = [['pel', 'Пелени / месец', 'напр. 80'], ['milk', 'Адаптирано мляко / месец', 'при кърмене — 0'], ['other', 'Други (дрешки, хигиена…)', 'напр. 60']];
+    fields.forEach(([k, lbl, ph]) => {
+      // 💰 клас bg-row, не sos-row: mega.css:418 .sos-row е редът-контакт от
+      //    спешната карта (бяла кутия, розово-червена рамка, cursor:pointer) и
+      //    бие rooms.css при равна специфичност — езикът на тревогата стоеше
+      //    върху картата за пари.
+      const row = el('div', 'bg-row');
+      row.appendChild(el('span', 'bg-lbl', lbl));
+      const i = el('input', 'jr-word'); i.type = 'number'; i.min = 0; i.placeholder = ph;
+      i.value = (b[k] == null ? '' : b[k]); i.style.maxWidth = '90px';
+      i.addEventListener('input', () => { if (i.value === '') delete b[k]; else b[k] = parseInt(i.value) || 0; save('bl_budget', b); total(); });
+      row.appendChild(i); row.appendChild(el('span', 'bg-lv', 'лв'));
+      c2.appendChild(row);
+    });
+    const tOut = el('p', 'bg-total', ''); c2.appendChild(tOut);
+    function total() {
+      const дадени = ['pel', 'milk', 'other'].filter(k => b[k] != null);
+      if (!дадени.length) { tOut.innerHTML = '<span class="bb-note">Попълни каквото знаеш — сборът се появява тук. Числата са твоите, не моите.</span>'; return; }
+      const s = дадени.reduce((a2, k) => a2 + (+b[k] || 0), 0);
+      tOut.innerHTML = `Около <strong>${s} лв / месец</strong> · ~${s * 12} лв за първата година.<br><span class="bb-note">Сметнато само от попълненото. При кърмене млякото пада на 0 — най-голямата икономия.</span>`;
+    }
+    total();
+    root.appendChild(c2);
+
+    // 3. Генератор на имена
+    const c3 = card('Генератор на имена 👶 <span class="jr-sub">завърти рулетката!</span>');
+    // 👶 05.08: тук стоеше `gSex = 'girl'` и чипът „👧 Момиче" се раждаше
+    //    светнат — на майка, която чака момче и вече го е записала в профила.
+    //    Профилът е питан; при неизвестен пол не решаваме вместо нея.
+    //    (gLen се задаваше и НИКОГА не се ползваше — махнат.)
+    const полът = getBaby().sex;
+    let gSex = (полът === 'boy' || полът === 'girl') ? полът : '', gStyle = 'всички';
+    const r1 = el('div', 'jr-quick');
+    [['girl', '👧 Момиче'], ['boy', '👦 Момче']].forEach(([v, l]) => { const bb = el('button', 'jr-chip' + (v === gSex ? ' on' : ''), l); bb.type = 'button'; bb.addEventListener('click', () => { r1.querySelectorAll('.jr-chip').forEach(x => x.classList.remove('on')); bb.classList.add('on'); gSex = v; }); r1.appendChild(bb); });
+    c3.appendChild(r1);
+    const r2 = el('div', 'jr-quick');
+    [['всички', 'Всякакви'], ['класическо', 'Класически'], ['модерно', 'Модерни'], ['традиционно', 'Традиционни']].forEach(([v, l]) => { const bb = el('button', 'jr-chip' + (v === 'всички' ? ' on' : ''), l); bb.type = 'button'; bb.addEventListener('click', () => { r2.querySelectorAll('.jr-chip').forEach(x => x.classList.remove('on')); bb.classList.add('on'); gStyle = v; }); r2.appendChild(bb); });
+    c3.appendChild(r2);
+    const spin = el('button', 'jr-btn', '🎰 Завърти!'); spin.type = 'button';
+    c3.appendChild(spin);
+    const nOut = el('div', 'tl-name', ''); c3.appendChild(nOut);
+    const favBox = el('div', 'tl-favs', ''); c3.appendChild(favBox);
+    function drawFavs() { const f = load('bl_fav_names', []); favBox.innerHTML = f.length ? '<p class="jr-weekcap">Любими:</p>' + f.map(x => `<span class="fd-pill">💜 ${x}</span>`).join('') : ''; }
+    spin.addEventListener('click', () => {
+      if (!gSex) { nOut.innerHTML = '<p class="jr-privacy">Избери горе момиче или момче — още не знам кого чакате, а имената са различни. 💜</p>'; return; }
+      let pool = D.names[gSex].filter(x => gStyle === 'всички' || x.s === gStyle);
+      if (!pool.length) pool = D.names[gSex];
+      const pk = pool[Math.floor(Math.random() * pool.length)];
+      nOut.innerHTML = `<div class="tl-namecard pop"><span class="tl-nn">${pk.n}</span><span class="tl-nd">${pk.s}${pk.d !== '—' ? ' · имен ден ' + pk.d : ''}</span><button class="tl-fav" type="button">💜 Запази</button></div>`;
+      nOut.querySelector('.tl-fav').addEventListener('click', () => {
+        const f = load('bl_fav_names', []); if (!f.includes(pk.n)) { f.push(pk.n); save('bl_fav_names', f); drawFavs(); }
+      });
+    });
+    drawFavs();
+    root.appendChild(c3);
+
+    // 4. Чеклисти
+    // 🔁 отметките се пазеха по НОМЕР на списъка (bl_chk_0/1/2). Добавен или
+    //    преместен чеклист в data.js разместваше чужди отметки между списъци —
+    //    същият капан, който вече ухапа ваксините (миграцията е по-долу в файла).
+    //    Ключът вече идва от името; старият индекс се пренася веднъж.
+    Object.keys(D.checklists).forEach((name, i) => {
+      const ключ = 'bl_chk_' + name.replace(/\s+/g, '_');
+      try {
+        if (localStorage.getItem(ключ) === null && localStorage.getItem('bl_chk_' + i) !== null) {
+          localStorage.setItem(ключ, localStorage.getItem('bl_chk_' + i));
+        }
+      } catch (e) {}
+      root.appendChild(checklistCard(name, ключ, D.checklists[name]));
+    });
+
+    // 4.5 Резервно копие
+    const cb = card('Резервно копие 💾 <span class="jr-sub">за смяна на телефон</span>');
+    const expBtn = el('button', 'jr-btn', '⬇️ Свали копие'); expBtn.type = 'button';
+    const заклБел = el('p', 'jr-privacy', ''); заклБел.hidden = true;   // остава на екрана след заключено копие
+    const медБел = el('p', 'jr-privacy', ''); медБел.hidden = true;   // честната равносметка на копието
+    // 🔴 05.08 (одит г08, №200): снимките и гласовите живеят в IndexedDB и се
+    //    четат в паметта чак когато BL_STORE.init приключи (секунди при стотици
+    //    MB). Копие, натиснато през първите секунди след отваряне, тръгваше с
+    //    ПРАЗНА медия — файл от килобайти вместо мегабайти, без нито дума за
+    //    това. Мама го разбираше чак на новия телефон. Сега чакаме, казваме, че
+    //    чакаме, и накрая казваме честно колко е влязло.
+    expBtn.addEventListener('click', async () => {
+      expBtn.disabled = true; expBtn.textContent = '📸 Събирам снимките…';
+      try { if (window.BL_STORE && BL_STORE.init) await BL_STORE.init; } catch (e) {}
+      expBtn.disabled = false;
+      // 🔴 05.08 (одит г14, №362): целият път на износа беше без try/catch.
+      //    RangeError от JSON.stringify върху две години снимки отхвърляше
+      //    обещанието мълчаливо — мама натиска, нищо не се случва, бутонът си
+      //    стои същият. Сега казваме, и то с причината, която най-често е вярна.
+      try {
+      const dump = {};
+      // 🔒 М−2: ключалката НЕ пътува. Тя пази ТОЗИ телефон, не файла — а ако
+      // тръгне с копието, само дава на всеки, който има файла, още едно нещо
+      // за отгатване. На новия телефон мама си слага нова ключалка.
+      const НЕ_В_КОПИЕТО = /^(bl_pin|bl_pin_h)$/;
+      // 3.1.5: докато ключалката стои заключена, тайните не тръгват никъде —
+      // дори в копието. Отключи (влез в Дневника с ПИН-а) и свали пак.
+      // 05.08: + rage/maika/money — същият катинар (secrets.js), същият файл.
+      const ЗАКЛЮЧЕНИ = /^(bl_wm_diary|bl_wm_confess|bl_wm_sins|bl_wm_rage|bl_wm_maika|bl_wm_money)$/;
+      const тайно = window.BL_PIN && BL_PIN.has && BL_PIN.has() && !BL_PIN.unlocked();
+      for (let i = 0; i < localStorage.length; i++) {
+        const k = localStorage.key(i);
+        if (!k.startsWith('bl_') || НЕ_В_КОПИЕТО.test(k)) continue;
+        if (тайно && ЗАКЛЮЧЕНИ.test(k)) continue;
+        dump[k] = localStorage.getItem(k);
+      }
+      const медия = window.BL_STORE ? BL_STORE.mediaDump() : {};
+      Object.assign(dump, медия); // снимките и звуците — също в копието
+      const медKB = Math.round(Object.keys(медия).reduce((s, k) => s + String(медия[k] || '').length, 0) / 1024);
+      const blob = new Blob([JSON.stringify({ app: 'BabyLand', date: new Date().toISOString(), data: dump }, null, 2)], { type: 'application/json' });
+      const url = URL.createObjectURL(blob);
+      // 🔴 05.08 (одит г14, №361): връзката не влизаше в документа — на част от
+      //    мобилните браузъри click() върху нея не сваля нищо изобщо.
+      const a2 = document.createElement('a'); a2.href = url; a2.download = 'baby-land-копие.json';
+      document.body.appendChild(a2); a2.click(); a2.remove();
+      setTimeout(() => URL.revokeObjectURL(url), 1000);
+      // 🔴 05.08 (одит г14, №120): при заключена ключалка дневникът и изповедите
+      //    НЕ влизат — това копие е непълно. Непълното не гаси напомнянето за
+      //    архив и не отключва медальона „Пазителка“.
+      save(тайно ? 'bl_backup_partial_last' : 'bl_backup_last', today()); // напомнянето на „Днес“ знае кога е било
+      // 🔒 05.08: „Свалено (без тайните 🔒)“ се пишеше седем реда по-горе и
+      //    ВЕДНАГА се презаписваше от „Свалено! 💜“ — в същия синхронен блок.
+      //    Мама виждаше само зеленото, сменяше телефона и там дневникът и
+      //    изповедите ги нямаше. Надписът е един, а обяснението остава на
+      //    екрана, докато не свали пак.
+      expBtn.textContent = тайно ? 'Изпратено (без тайните 🔒)' : 'Изпратено към Изтегляния 💜';
+      setTimeout(() => expBtn.textContent = '⬇️ Свали копие', 2600);
+      if (тайно) {
+        заклБел.textContent = '🔒 Дневникът и изповедите са заключени и НЕ влязоха в този файл. Отключи ги с ПИН-а и свали копието пак, за да тръгнат и те с теб.';
+        заклБел.hidden = false;
+      } else заклБел.hidden = true;
+      медБел.textContent = (медKB > 0
+        ? 'Вътре са и снимките, и гласовите — около ' + (медKB > 1024 ? (медKB / 1024).toFixed(1) + ' MB' : медKB + ' KB') + ' от тях. Пази файла на сигурно място. 💜'
+        : 'Този файл носи записките ти. Снимки и гласови засега няма записани.') +
+        ' Провери го в „Изтегляния“ на телефона — казва се „baby-land-копие.json“.';
+      медБел.hidden = false;
+      } catch (e) {
+        expBtn.disabled = false;
+        expBtn.textContent = 'Не се получи 😕';
+        setTimeout(() => expBtn.textContent = '⬇️ Свали копие', 3200);
+        медБел.textContent = 'Копието не тръгна. Най-честата причина е място на телефона — освободи малко и пробвай пак. Записките ти са си тук, нищо не е загубено. 💜';
+        медБел.hidden = false;
+      }
+    });
+    cb.appendChild(expBtn); cb.appendChild(заклБел); cb.appendChild(медБел);
+    const impLbl = el('label', 'jr-btn tl-imp', '⬆️ Възстанови от файл');
+    const impInp = el('input'); impInp.type = 'file'; impInp.accept = 'application/json'; impInp.style.display = 'none';
+    impInp.addEventListener('change', () => {
+      const file = impInp.files[0]; if (!file) return;
+      const rd = new FileReader();
+      // 🔴🔴 04.08 (обиколка, армия Инструменти): този вход беше сляп на три
+      //    места, докато СЪЩИЯТ файл през профила (js/profile.js:366-396) се
+      //    обработва правилно:
+      //     1) ЗАКЛЮЧЕНО копие → `parsed.data` е низ (base64), Object.keys(низ)
+      //        дава ['0','1','2'…], нула ключа започват с bl_ → НИЩО не се
+      //        записва, а надписът пак казваше „Възстановено!“. Мама сменя
+      //        телефона, вижда зелено, отваря стаите — празни. И може вече да
+      //        е изтрила стария телефон.
+      //     2) Никакво преброяване: чужд или повреден файл също казваше
+      //        „Възстановено“.
+      //     3) ЗАМЕНЯШЕ всичко без нито един въпрос и без презареждане — старо
+      //        копие изтриваше месеци дневник мълчаливо, а вече отворените
+      //        карти държаха старите обекти и записваха обратно върху внесеното.
+      rd.onload = async () => {
+        try {
+          let parsed = JSON.parse(rd.result);
+          if (window.BL_CRYPTO && BL_CRYPTO.заключенЛи && BL_CRYPTO.заключенЛи(parsed)) {
+            const парола = await BL_CRYPTO.питайЗаПарола('стар');
+            if (!парола) { impLbl.textContent = '⬆️ Възстанови от файл'; return; }
+            impLbl.textContent = '🔓 Отключвам…';
+            try { parsed = JSON.parse(await BL_CRYPTO.отключи(parsed, парола)); }
+            catch (e) {
+              impLbl.textContent = 'Грешна парола 🔐';
+              setTimeout(() => impLbl.textContent = '⬆️ Възстанови от файл', 2600); return;
+            }
+          }
+          const dd = parsed.data || parsed;
+          // 🔴 05.08 (одит г14, №133): bl_vax_schema се записва при самото
+          //    зареждане на тази стая, bl_tz — при всяко пускане. На чисто нов
+          //    телефон „същ“ беше вече 2 и червеното изскачаше винаги.
+          const ПРОПУСНИ = /^(bl_theme|bl_sounds|bl_onboard|bl_onboarded|bl_font|bl_pin|bl_pin_set|bl_seen_cards|bl_carduse|bl_tz|bl_vax_schema|bl_backup_last|bl_backup_partial_last|bl_tour_done)/;
+          let същ = 0;
+          for (let i = 0; i < localStorage.length; i++) {
+            const k = localStorage.key(i);
+            if (k && k.startsWith('bl_') && !ПРОПУСНИ.test(k)) {
+              const v = localStorage.getItem(k);
+              if (v && v !== '{}' && v !== '[]' && v !== '""') същ++;
+            }
+          }
+          if (същ > 0 && window.BL_UI && BL_UI.confirm) {
+            // 🔴 05.08 (одит г14, №132): диалогът обещаваше замяна, а долният
+            //    ред прави сливане — каквото го няма в копието, си остава тук.
+            const ок = await BL_UI.confirm('', {
+              title: 'Преди да го качим', emoji: '💾', okText: 'Качи копието', cancelText: 'Откажи', danger: true,
+              text: 'Тук вече има записи на този телефон (' + същ + ' неща). Каквото е в копието, ще застане отгоре. Записите от този телефон, които ги няма в копието, остават.\n\nАко това е грешен телефон — по-добре Откажи.'
+            });
+            if (!ок) { impLbl.textContent = '⬆️ Възстанови от файл'; return; }
+          }
+          let бр = 0;
+          Object.keys(dd).forEach(k => { if (k.startsWith('bl_')) { localStorage.setItem(k, dd[k]); бр++; } });
+          if (!бр) {                                   // нищо не влезе — НЕ лъжем
+            impLbl.textContent = 'Файлът не носи данни от Бейби Ленд 😕';
+            setTimeout(() => impLbl.textContent = '⬆️ Възстанови от файл', 2600); return;
+          }
+          impLbl.textContent = '✔ Влезе! Зареждам всичко…';
+          const изчакай = (window.BL_STORE && BL_STORE.flush) ? BL_STORE.flush() : Promise.resolve();
+          изчакай.then(() => setTimeout(() => location.reload(), 400));
+          return;
+        } catch (e) { impLbl.textContent = 'Файлът не е разпознат 😕'; }
+        setTimeout(() => impLbl.textContent = '⬆️ Възстанови от файл', 2600);
+      };
+      rd.readAsText(file);
+    });
+    impLbl.appendChild(impInp);
+    cb.appendChild(impLbl);
+    cb.appendChild(el('p', 'jr-privacy', '🔒 Копието е обикновен файл на твоя телефон. Пази го, ако сменяш устройство.'));
+    root.appendChild(cb);
+
+    // 5. Майчинство (BG)
+    const c5 = card('Майчинството накратко 🇧🇬 <span class="jr-sub">ориентир — сверявай с НОИ</span>');
+    c5.appendChild(el('ul', 'sos-list',
+      '<li><strong>45 дни</strong> преди термина започва отпускът по бременност и раждане.</li>' +
+      '<li><strong>410 дни</strong> общо обезщетение за бременност, раждане и отглеждане (при осигуряване).</li>' +
+      '<li>След 410-те дни — обезщетение за отглеждане до 2-годишна възраст.</li>' +
+      '<li>Бащата има право на отпуск при раждане — питай работодателя за сроковете.</li>'));
+    c5.appendChild(el('p', 'jr-privacy', 'Сроковете и сумите се менят — с библиотеката идва актуален помощник със стъпките и документите.'));
+    root.appendChild(c5);
+  }
+
+  // ═══════════════ 🩺 ЗДРАВЕ И SOS (Вита) ═══════════════
+
+  window.BL_VACCINES = null; // попълва се долу — календарният център ги чете
+  // ⚠️ Ориентировъчен ред — точния график води личният лекар по актуалния
+  // календар. Синхронизиран 22.07 с библиотечните статии за календара
+  // (ранните приеми = комбинираната ШЕСТкомпонентна; бустерът на 16-ия месец
+  // = ПЕТкомпонентната). Преди тук пишеше „Петкомпонентна" и за ранните
+  // приеми — противоречеше на статиите в същото приложение.
+  const VACCINES = [
+    { m: 0,  n: 'Хепатит Б (1-ви прием) + БЦЖ', d: 'в родилния дом, първите часове/дни' },
+    { m: 2,  n: 'Шесткомпонентна (1) + Пневмококова (1)', d: 'около 6-та седмица — точния ден казва лекарят' },
+    { m: 3,  n: 'Шесткомпонентна (2)', d: 'около 10-та седмица' },
+    { m: 4,  n: 'Шесткомпонентна (3) + Пневмококова (2)', d: 'около 14-та седмица' },
+    { m: 7,  n: 'Проверка за белега от БЦЖ', d: 'ако няма белег — лекарят преценява по-нататък' },
+    { m: 12, n: 'Пневмококова (3-ти прием)', d: '' },
+    { m: 13, n: 'Морбили-Паротит-Рубеола (МПР)', d: '' },
+    { m: 16, n: 'Петкомпонентна', d: 'следващият прием по календара' }
+  ];
+  window.BL_VACCINES = VACCINES;
+
+  // 🔁 Миграция на отметките (22.07): bl_vax пази „сложена ли е“ по ИНДЕКС, а
+  // редът на календара се промени. Без това мама щеше да види чужди отметки.
+  // Старият ред → новия; двата приема Хепатит Б (стари 1 и 5) вече влизат в
+  // комбинираната ваксина, затова отпадат. Върви веднъж, пази стария запис.
+  (function мигрирайВаксини() {
+    try {
+      if (localStorage.getItem('bl_vax_schema') === '2') return;
+      const старо = load('bl_vax', null);
+      if (старо && typeof старо === 'object') {
+        localStorage.setItem('bl_vax_old', JSON.stringify(старо));   // резерв, ако потрябва
+        const карта = { 0: 0, 2: 1, 3: 2, 4: 3, 6: 5, 7: 6, 8: 7 };
+        const ново = {};
+        Object.keys(карта).forEach(с => { if (старо[с]) ново[карта[с]] = true; });
+        save('bl_vax', ново);
+      }
+      localStorage.setItem('bl_vax_schema', '2');
+    } catch (e) {}
+  })();
+
+  function renderHealth(root) {
+    // 1. Имунизационен календар
+    const c1 = card('Имунизационен календар 💉 <span class="jr-sub">по официалния български график</span>');
+    const baby = getBaby();
+    const a = ageFromBirth(baby.birth);
+    const done = load('bl_vax', {});
+    if (!baby.birth) c1.appendChild(el('p', 'jr-privacy', 'Задай рождена дата в „Моето бебе“ и ще ти сметна датите. Засега — общият график:'));
+    const vlist = el('div', 'vx-list');
+    VACCINES.forEach((v, i) => {
+      let dateStr = '';
+      if (baby.birth) { const dd = BL_DATE.addMonths(baby.birth, v.m); dateStr = dd.toLocaleDateString('bg-BG'); }
+      const isDone = done[i];
+      // 💉 05.08 (скептик, близнакът на чипа в „Днес“, ред 1629): същото
+      //    правило важи и ТУК. Редът на приема в родилния дом (m:0) светваше
+      //    „наближава!“ на майка с бебе на 11 дни — само защото отметката е
+      //    празна, а тя се пълни единствено с нейно докосване. Празно поле не
+      //    е доказателство: родилният прием не се подсеща.
+      const near = a && !isDone && v.m > 0 && Math.abs(a.months - v.m) < 1;
+      const row = el('button', 'vx-row' + (isDone ? ' done' : '') + (near ? ' near' : ''));
+      row.type = 'button';
+      row.innerHTML = `<span class="jr-check">${isDone ? '✔' : ''}</span>` +
+        `<span class="vx-when">${v.m === 0 ? 'Раждане' : v.m + ' мес'}</span>` +
+        `<span class="vx-name">${v.n}${v.d ? '<br><small>' + v.d + '</small>' : ''}${dateStr ? '<br><small>≈ ' + dateStr + '</small>' : ''}${near ? ' <span class="vx-near">наближава!</span>' : ''}</span>`;
+      row.addEventListener('click', () => { done[i] = !done[i]; save('bl_vax', done); row.classList.toggle('done'); row.querySelector('.jr-check').textContent = done[i] ? '✔' : ''; if (done[i]) row.classList.remove('near'); });
+      vlist.appendChild(row);
+    });
+    c1.appendChild(vlist);
+    c1.appendChild(el('p', 'jr-privacy', '⚠️ Ориентир — точните дати и ваксини определя личният лекар по актуалния календар на МЗ.'));
+    root.appendChild(c1);
+
+    // 2. Температурен ориентир
+    const c2 = card('Температурен ориентир 🌡️ <span class="jr-sub">кога е спокойно и кога — веднага лекар</span>');
+    const ageRow = el('div', 'jr-quick');
+    // 🌡️ 22.07 (мега одит): без рождена дата се подразбираше band=2, тоест
+    // НАЙ-ХЛАБАВОТО правило („над 6 месеца“). Никога не подразбирай хлабавото
+    // при спешна тема — без дата говорим по най-строгото и го КАЗВАМЕ.
+    const безДата = !a;
+    let band = a ? (a.months < 3 ? 0 : a.months < 6 ? 1 : 2) : 0;
+    [['под 3 мес', 0], ['3–6 мес', 1], ['над 6 мес', 2]].forEach(([lbl, v]) => {
+      const b = el('button', 'jr-chip' + (v === band ? ' on' : ''), lbl); b.type = 'button';
+      b.setAttribute('aria-pressed', v === band ? 'true' : 'false');   // проход 4: избраната възраст се озвучава
+      b.addEventListener('click', () => { ageRow.querySelectorAll('.jr-chip').forEach(x => { x.classList.remove('on'); x.setAttribute('aria-pressed', 'false'); }); b.classList.add('on'); b.setAttribute('aria-pressed', 'true'); band = v; evalTemp(); });
+      ageRow.appendChild(b);
+    });
+    c2.appendChild(ageRow);
+    if (безДата) {
+      c2.appendChild(el('p', 'jr-hint', 'Още не знам възрастта на бебето, затова говоря по НАЙ-СТРОГОТО правило (под 3 месеца). Избери възрастта горе или попълни рождената дата, за да съм точна.'));
+    }
+    const tI = el('input', 'jr-word'); tI.type = 'number'; tI.step = '0.1'; tI.placeholder = 'Температура (°C)…';
+    c2.appendChild(tI);
+    const tOut = el('div', 'tmp-out', '');
+    tOut.setAttribute('aria-live', 'polite');   // проход 4: присъдата се озвучава за незрящи майки
+    c2.appendChild(tOut);
+    // проход 3 T28: 1-тап запис в температурния дневник — иначе мама в 3ч пише
+    // числото тук за присъдата И втори път в „Температурен дневник" за графиката.
+    const tSave = el('button', 'jr-chip', '📌 Запиши в дневника'); tSave.type = 'button'; tSave.hidden = true;
+    c2.appendChild(tSave);
+    tSave.addEventListener('click', () => {
+      const t = parseFloat(tI.value);
+      if (isNaN(t) || t < 34 || t > 43) return;
+      const arr = load('bl_temps', []); arr.push({ v: t, ts: Date.now() }); save('bl_temps', arr.slice(-80));  // същия shape/cap като rooms3 tempCard
+      tSave.dataset.saved = String(t); tSave.disabled = true; tSave.textContent = '✔ Записано — посоката е в дневника 🌡️';
+      if (window.BL_FX) BL_FX.buzz(10);
+    });
+    let prevTmp = '';
+    function evalTemp() {
+      const t = parseFloat(tI.value);
+      if (isNaN(t)) { tOut.innerHTML = ''; tOut.className = 'tmp-out'; prevTmp = ''; tSave.hidden = true; return; }
+      let cls = 'tmp-ok', msg;
+      if (band === 0 && t >= 38) { cls = 'tmp-red'; msg = '🚨 Под 3 месеца всяка температура над 38° е за ЛЕКАР ВЕДНАГА. Не изчаквай.'; }
+      else if (t >= 40) { cls = 'tmp-red'; msg = '🚨 Много висока температура — свържи се с лекар/спешна помощ.'; }
+      else if (band === 1 && t >= 39) { cls = 'tmp-warn'; msg = '⚠️ Над 39° на тази възраст — обади се на лекар, особено ако детето изглежда болно.'; }
+      else if (t >= 38) { cls = 'tmp-warn'; msg = 'Има температура. Гледай ДЕТЕТО: пие ли, мокри ли са пелените, успокоява ли се? Много течности, леки дрешки, гушкане. Ако трае 3 дни или се влошава — лекар.'; }
+      else if (t >= 37.5) { cls = 'tmp-ok'; msg = 'Леко повишена (субфебрилна). Наблюдавай, дай течности, не увивай много.'; }
+      else { cls = 'tmp-ok'; msg = 'В нормата. 😊 Ако нещо друго те тревожи — питай Вита или лекаря.'; }
+      tOut.innerHTML = msg + '<br><span class="bb-note">Дозите лекарства определя лекар/фармацевт по теглото — не приложение.</span>';
+      tOut.className = 'tmp-out ' + cls;
+      // T28: чипът се отключва при валидна стойност; нова стойност = нов запис позволен
+      const ok = t >= 34 && t <= 43;
+      tSave.hidden = !ok;
+      if (ok && tSave.dataset.saved !== String(t)) { tSave.disabled = false; tSave.textContent = '📌 Запиши в дневника'; }
+      // присъдата „пристига" с мек pop само когато СЕ ПРОМЕНИ (не на всяка цифра)
+      if (cls !== prevTmp) {
+        tOut.classList.remove('tv-pop'); void tOut.offsetWidth; tOut.classList.add('tv-pop');
+        prevTmp = cls;
+      }
+    }
+    tI.addEventListener('input', evalTemp); evalTemp();
+    root.appendChild(c2);
+
+    // 3. SOS
+    const c3 = el('section', 'jr-card');
+    c3.appendChild(el('h4', 'jr-title', 'При спешност 🆘 <span class="jr-sub">едно докосване — работи и без интернет</span>'));
+    const b112 = el('a', 'sos-btn', '📞 Обади се на 112<span class="sos-cap">спешна помощ — денонощно</span>');
+    b112.href = 'tel:112';
+    c3.appendChild(b112);
+    const sos = load('bl_sos', { pedName: '', pedPhone: '', closeName: '', closePhone: '' });
+    function contactRow(nk, pk, ph) {
+      const row = el('div', 'sos-row');
+      const ni = el('input', 'jr-word'); ni.placeholder = ph; ni.value = sos[nk];
+      const pi = el('input', 'jr-word'); pi.placeholder = 'телефон…'; pi.type = 'tel'; pi.value = sos[pk];
+      const call = el('a', 'sos-call', '📞');
+      // read-merge-write: СОС-центърът (sos.js) пише в СЪЩИЯ bl_sos; ако тук
+      // запишем стария обект наведнъж, ще изтрием редактираното там (одит-флот
+      // П23, проход 2 №19). Пипаме само нашите 2 полета.
+      function sync() { const cur = load('bl_sos', {}); cur[nk] = ni.value.trim(); cur[pk] = pi.value.trim(); save('bl_sos', cur); sos[nk] = cur[nk]; sos[pk] = cur[pk]; if (cur[pk]) { call.href = 'tel:' + cur[pk]; call.classList.add('on'); } else { call.removeAttribute('href'); call.classList.remove('on'); } }
+      ni.addEventListener('input', sync); pi.addEventListener('input', sync); sync();
+      row.appendChild(ni); row.appendChild(pi); row.appendChild(call);
+      return row;
+    }
+    c3.appendChild(el('p', 'bb-lbl', 'Моите номера (попълни отсега):'));
+    c3.appendChild(contactRow('pedName', 'pedPhone', 'Нашият педиатър…'));
+    c3.appendChild(contactRow('closeName', 'closePhone', 'Близък човек…'));
+    root.appendChild(c3);
+
+    const c4 = card('Докато чакаш помощ 💗');
+    c4.appendChild(el('ul', 'sos-list',
+      '<li>Дишай бавно — бебето усеща твоето спокойствие.</li>' +
+      '<li>Говори тихо на бебето, дръж го близо.</li>' +
+      '<li>Приготви: лична карта, здравния картон, лекарствата, които е приемало.</li>' +
+      '<li>Отключи вратата, светни лампата отвън, ако е тъмно.</li>'));
+    root.appendChild(c4);
+  }
+
+  // ── общ помощник: чеклист карта ──
+  function checklistCard(title, key, items) {
+    const c = card(title);
+    const state = load(key, {});
+    const list = el('div', 'jr-wins');
+    let doneN = 0;
+    const capt = el('p', 'chk-count', '');
+    items.forEach((it, i) => {
+      const row = el('button', 'jr-win' + (state[i] ? ' done' : ''));
+      row.type = 'button';
+      row.innerHTML = `<span class="jr-check">${state[i] ? '✔' : ''}</span> ${it}`;
+      if (state[i]) doneN++;
+      row.addEventListener('click', () => {
+        const was = doneN;
+        state[i] = !state[i]; save(key, state);
+        row.classList.toggle('done'); row.querySelector('.jr-check').textContent = state[i] ? '✔' : '';
+        if (state[i]) { row.classList.add('pop'); setTimeout(() => row.classList.remove('pop'), 400); }
+        doneN += state[i] ? 1 : -1; updateCap();
+        if (window.BL_FX) { BL_FX.buzz(10); if (was < items.length && doneN === items.length) { BL_FX.confetti(row); BL_FX.cheer('Готово! 🎉'); } }
+      });
+      list.appendChild(row);
+    });
+    // 🤍 „0 / 5 готови“ посрещаше майка с дете на седем месеца, което вече яде —
+    //    изпит по готовност вместо помощ, и брояч на това, което НЕ е направила.
+    //    Недокоснатият списък мълчи; броенето тръгва с първата ѝ отметка.
+    function updateCap() { capt.textContent = doneN ? `${doneN} / ${items.length} готови${doneN === items.length ? ' — браво! 🎉' : ''}` : ''; }
+    updateCap();
+    c.appendChild(capt); c.appendChild(list);
+    return c;
+  }
+
+  // ═══════════════ „ДНЕС“ — умен начален екран ═══════════════
+
+  // 💡 05.08: изборът беше чисто календарен — датата в месеца, без нито един
+  //    поглед към бебето. Майка на единайсет дни четеше „слагай бебето сънливо,
+  //    но будно, учи се да заспива само“ (значи го греша от първия ден) и на
+  //    другия ден „един нов алерген сутрин“. Всеки съвет вече носи прозореца, в
+  //    който изобщо има смисъл — a0/a1 в месеци, както при D.activities.
+  //    За първите седмици остават нещата, които важат от първия ден.
+  const DAY_TIPS = [
+    { a0: 0, a1: 36, t: 'Пий вода всеки път, щом кърмиш или храниш бебето — жаждата дебне. 💧' },
+    { a0: 0, a1: 36, t: 'Ако днес ти се отворят пет минути за теб — вземи ги без вина. Не е лукс. 🌸' },
+    { a0: 1, a1: 12, t: 'Времето по коремче (tummy time) е малка гимнастика за големи мускулчета. 💪' },
+    { a0: 0, a1: 36, t: 'Говори на бебето през целия ден — това е най-мощният урок по говорене. 🗣️' },
+    { a0: 3, a1: 36, t: 'Ритуалът преди сън прави чудеса: същият ред всяка вечер. 🌙' },
+    { a0: 6, a1: 36, t: 'Намръщената муцунка при нова храна е реакция на новото, не отказ. 🥄' },
+    { a0: 0, a1: 36, t: 'Гушкането никога не е „разглезване“ — то гради сигурност. 🤗' },
+    { a0: 0, a1: 36, t: 'Ако денят е тежък — това не те прави лоша майка. Утре е нов ден. 💜' },
+    { a0: 0, a1: 12, t: '6+ мокри пелени на ден значи, че млякото стига. Спокойно. ✅' },
+    { a0: 3, a1: 36, t: 'Слагай бебето сънливо, но будно — учи се да заспива само. 😴' },
+    { a0: 6, a1: 24, t: 'Един нов алерген сутрин, после изчакай 3 дни. Внимателно и спокойно. 🍳' },
+    { a0: 0, a1: 36, t: 'Ако има кого да помолиш — помоли. „Не мога сама“ е сила, не слабост. 🤝' },
+    { a0: 0, a1: 4, t: 'Черно-белите картинки са безплатно шоу за новородено. 👀' },
+    { a0: 2, a1: 36, t: 'Смей се с бебето — смехът е първата им любима песен. 😂' }
+  ];
+
+  // проход 4 [33]: мъничко силуетче, което сменя позата с месеците (свито →
+  // главичка → сяда → изправя се → на крака). Чисто визуално, БЕЗ твърдение
+  // „твоето бебе вече сяда" (недоносено може да е зад графика) — за недоносени
+  // ползва коригираната възраст. Всеки нов етап се появява с тих pop.
+  function bebeAva(a) {
+    const m = (a && a.devMonths != null) ? a.devMonths : (a ? a.months : 0);
+    const st = m < 3 ? 0 : m < 6 ? 1 : m < 9 ? 2 : m < 12 ? 3 : 4;
+    const poses = [
+      '<circle cx="24" cy="16" r="9"/><ellipse cx="24" cy="39" rx="14" ry="11"/>',                                    // свито новородено
+      '<circle cx="15" cy="21" r="8"/><rect x="11" y="31" width="30" height="12" rx="6"/>',                            // държи главичка (по коремче)
+      '<circle cx="24" cy="14" r="8"/><path d="M13 45 Q24 23 35 45 Z"/>',                                              // седи
+      '<circle cx="24" cy="12" r="7"/><rect x="19" y="18" width="10" height="20" rx="5"/><rect x="19" y="38" width="4" height="13" rx="2"/><rect x="25" y="38" width="4" height="13" rx="2"/>',  // изправя се
+      '<circle cx="24" cy="11" r="7"/><rect x="19" y="17" width="10" height="18" rx="5"/><rect x="14" y="34" width="4" height="14" rx="2" transform="rotate(-13 16 41)"/><rect x="30" y="34" width="4" height="14" rx="2" transform="rotate(13 32 41)"/>'  // прохожда
+    ];
+    let pop = '';
+    try { const prev = load('bl_baby_stage', -1); if (st > prev) pop = ' bb-ava-pop'; save('bl_baby_stage', st); } catch (e) {}
+    return `<div class="td-ava bb-ava${pop}"><svg viewBox="0 0 48 56" class="bb-sil" aria-hidden="true">${poses[st]}</svg></div>`;
+  }
+
+  function renderToday(container) {
+    const baby = getBaby();
+    const a = ageFromBirth(baby.birth);
+    if (!a) {
+      // 🤰 бременен дом (одит-флот П23, проход 2 №2): има ли bl_lmp, „Днес"
+      // посреща със седмицата — не с „кажи ми за бебето" (задънен край, който
+      // при това кани бременната да добави несъществуващо бебе). През
+      // BL_EXPECT.lmp() → на пауза (загуба) връща '' и НЕ показваме седмици.
+      const lmp = (window.BL_EXPECT && BL_EXPECT.lmp) ? BL_EXPECT.lmp() : String(load('bl_lmp', '') || '').replace(/^"|"$/g, '');
+      if (lmp && !isNaN(new Date(lmp))) {
+        const w = Math.max(1, Math.floor((Date.now() - new Date(lmp)) / 604800000));
+        const дни = Math.max(0, Math.ceil((new Date(lmp).getTime() + 280 * 86400000 - Date.now()) / 86400000));
+        const плод = ((window.BL_DATA || {}).pregWeeks || {})[Math.min(42, Math.max(4, w))] || ['—', '🤍'];
+        container.innerHTML =
+          `<div class="td-inner td-welcome reveal">
+            <div class="td-ava"><svg viewBox="0 0 60 96"><use href="#balloonShape"/></svg></div>
+            <div class="td-whello">Седмица ${w} 🤰</div>
+            <p class="td-wtext">Бебето е колкото ${esc(плод[0])} ${плод[1]}${дни > 0 ? ` · още <strong>${дни}</strong> ${дни === 1 ? 'ден' : 'дни'} до срещата` : ' · всеки момент! 💜'}</p>
+            <button class="btn btn-pink td-onb" type="button"><span class="btn-shine"></span>🤰 Отвори „Бременност“</button>
+          </div>`;
+        container.querySelector('.td-onb').addEventListener('click', () => { if (window.MamaHelper) MamaHelper.open('Бременност'); });
+        return true;
+      }
+      // приветствие за нови майки — без профил още
+      container.innerHTML =
+        `<div class="td-inner td-welcome reveal">
+          <div class="td-ava"><svg viewBox="0 0 60 96"><use href="#balloonShape"/></svg></div>
+          <div class="td-whello">Здравей, мамо! 🌸</div>
+          <p class="td-wtext">Дай да те опозная — кажи ми мъничко за бебето и ще ти помагам лично: растеж, хранене, ваксини, съвети за деня.</p>
+          <button class="btn btn-pink td-onb" type="button"><span class="btn-shine"></span>✨ Запознай ме с бебето</button>
+        </div>`;
+      container.querySelector('.td-onb').addEventListener('click', () => { if (window.BL_ONBOARD) BL_ONBOARD.open(); });
+      return true;
+    }
+
+    const h = new Date().getHours();
+    const hello = h < 5 ? 'Будна в малките часове' : h < 11 ? 'Добро утро' : h < 18 ? 'Здравей' : 'Добър вечер';
+    const nm = baby.name || 'Бебето';
+    const пулСъвети = DAY_TIPS.filter(x => !a || (a.devMonths >= x.a0 && a.devMonths <= x.a1));
+    const съвети = пулСъвети.length ? пулСъвети : DAY_TIPS;
+    const tip = съвети[(new Date().getDate() + new Date().getMonth()) % съвети.length].t;
+
+    let chips = '';
+    const f = load('bl_feed', null);
+    if (f) { const mm = Math.floor((Date.now() - f.t) / 60000); chips += `<button class="td-chip" data-room="Моето бебе">🍼 Хранене преди ${Math.floor(mm / 60) ? Math.floor(mm / 60) + 'ч ' : ''}${mm % 60}м</button>`; }
+    if (baby.birth) {
+      const vax = load('bl_vax', {});
+      let next = null;
+      // 💉 05.08: първият запис (m:0) е приемът, сложен В РОДИЛНИЯ ДОМ. Празна
+      //    отметка в приложение, инсталирано вчера, не е доказателство, че го
+      //    няма — а чипът светеше в акцентен вид „Ваксина-прозорец е отворен“
+      //    на майка с бебе на 11 дни. Родилният прием не влиза в тревогата.
+      VACCINES.forEach((v, i) => { if (!vax[i] && next === null && v.m > 0 && v.m >= a.months - 0.5) next = v; });
+      if (next) {
+        const dd = BL_DATE.addMonths(baby.birth, next.m);
+        chips += dd < new Date()
+          ? `<button class="td-chip td-accent" data-room="Здраве и SOS">💉 Ваксина-прозорец е отворен — виж календара</button>`
+          : `<button class="td-chip" data-room="Здраве и SOS">💉 Ваксина ≈ ${dd.toLocaleDateString('bg-BG')}</button>`;
+      }
+    }
+    const ci = load('bl_checkins', {})[today()];
+    if (ci) chips += `<button class="td-chip" data-room="Дневник на мама">${['😩', '😔', '😐', '🙂', '🥰'][ci.m]} Минутката за теб — взета ✔</button>`;
+    else chips += `<button class="td-chip td-accent" data-room="Дневник на мама">💜 Как си днес?</button>`;
+    if (window.BL_TODAY_EXTRAS) chips += BL_TODAY_EXTRAS(baby, a);
+
+    // месечнина / рожден ден 🎉
+    // 16.3.1: ⚠️ бебе, родено на 31-во, НЕ празнуваше в 30-дневните месеци
+    // (сравнявахме голи дати). Сега месечнината идва от BL_DATE.addMonths
+    // (клампва към края) — и мило си казва защо е „по-рано“.
+    let banner = '';
+    const bd = new Date(baby.birth), now = new Date();
+    let празнуваме = false, клампнато = false, мес = a.ym;
+    if (window.BL_DATE) {
+      // при клампване празникът пада ПО-РАНО от голата дата (28<31), затова
+      // се проверяват И текущият, И следващият месец — с истинската му бройка
+      const дн = д => д.getFullYear() + '-' + д.getMonth() + '-' + д.getDate();
+      [a.ym, a.ym + 1].forEach(м => {
+        if (м < 1) return;
+        const д = BL_DATE.addMonths(baby.birth, м);
+        if (дн(д) === дн(now)) { празнуваме = true; клампнато = д.getDate() !== bd.getDate(); мес = м; }
+      });
+    } else if (bd.getDate() === now.getDate() && a.ym >= 1) { празнуваме = true; мес = a.ym; }
+    if (празнуваме) {
+      const label = мес % 12 === 0 ? (мес / 12) + (мес / 12 === 1 ? ' годинка' : ' годинки') : мес + '-месечнина';
+      banner = `<div class="td-cheer">🎉 Днес ${esc(nm)} празнува <strong>${esc(label)}</strong>! Прегърни го от нас. 💜${клампнато ? '<br><small>Днес е ' + now.getDate() + '-и, защото този месец е по-къс — месечнината не се губи. 😉</small>' : ''}</div>`;
+      if (load('bl_cheer_day', '') !== today()) { save('bl_cheer_day', today()); setTimeout(() => window.BL_FX && BL_FX.confetti(), 700); }
+    }
+
+    container.innerHTML =
+      `<div class="td-inner reveal">
+        <div class="td-top">
+          ${bebeAva(a)}
+          <div><div class="td-hello">${hello}! 🌸</div><div class="td-age">${esc(nm)} е на <strong>${esc(a.text)}</strong></div></div>
+        </div>
+        ${banner}
+        <div class="td-tip">💡 ${tip}</div>
+        <div class="td-chips">${chips}</div>
+      </div>`;
+    container.querySelectorAll('.td-chip[data-room]').forEach(b => b.addEventListener('click', () => { if (window.MamaHelper) MamaHelper.open(b.dataset.room); }));
+    if (window.BL_TODAY_BIND) BL_TODAY_BIND(container, baby, a);
+    return true;
+  }
+  window.BL_HOME = { render: renderToday };
+  window.BL_AGE = ageFromBirth;
+
+  // ═══════════════ ✍️ БЕЛИТЕ ПОЛЕТА — свободни бележки навсякъде ═══════════════
+
+  // 14.4.5: esc() гърмеше на undefined (внесено/повредено копие с друга
+  // форма на данните) и събаряше цялата стая. Сега приема всичко.
+  const esc = s => String(s == null ? '' : s).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;').replace(/'/g, '&#39;').replace(/\n/g, '<br>');
+
+  function notesCard(title, sub, key, ph) {
+    const c = card(title + ' <span class="jr-sub">' + sub + '</span>');
+    const ta = el('textarea', 'jr-paper'); ta.rows = 3; ta.placeholder = ph;
+    ta.dataset.draft = 'bl_draft_' + key;          // черновата се пази на мига (даже да затвориш)
+    ta.value = load('bl_draft_' + key, '');
+    const btn = el('button', 'jr-btn', 'Запази бележката 📌'); btn.type = 'button';
+    // 🎤 диктовка направо в полето (за ръце, заети с бебе)
+    const SR = window.SpeechRecognition || window.webkitSpeechRecognition;
+    if (SR) {
+      const mic = el('button', 'nt-mic', '🎤'); mic.type = 'button'; mic.setAttribute('aria-label', 'Издиктувай');
+      let rec = null;
+      mic.addEventListener('click', () => {
+        if (rec) { rec.stop(); return; }
+        rec = new SR(); rec.lang = 'bg-BG';
+        mic.classList.add('rec');
+        rec.onresult = e => { ta.value = (ta.value ? ta.value + ' ' : '') + e.results[0][0].transcript; ta.dispatchEvent(new Event('input', { bubbles: true })); };
+        rec.onend = () => { mic.classList.remove('rec'); rec = null; };
+        rec.onerror = () => { mic.classList.remove('rec'); rec = null; };
+        try { rec.start(); } catch (e) { mic.classList.remove('rec'); rec = null; }
+      });
+      c.appendChild(mic);
+    }
+    const list = el('div', 'nt-list');
+    const notes = load(key, []);
+    function draw() {
+      list.innerHTML = notes.length ? '' : '<p class="jr-privacy">Твоето бяло поле — пиши каквото искаш, колкото искаш. 🤍</p>';
+      notes.slice().reverse().forEach((n, ri) => {
+        const idx = notes.length - 1 - ri;
+        const row = el('div', 'nt-row');
+        row.innerHTML = `<div class="nt-txt">${esc(n.t)}</div><div class="nt-meta"><span>${new Date(n.d).toLocaleDateString('bg-BG')}</span><button class="nt-del" type="button" aria-label="Изтрий">🗑</button></div>`;
+        row.querySelector('.nt-del').addEventListener('click', () => { notes.splice(idx, 1); save(key, notes); draw(); });
+        list.appendChild(row);
+      });
+    }
+    btn.addEventListener('click', () => {
+      const v = ta.value.trim(); if (!v) return;
+      notes.push({ t: v, d: Date.now() }); save(key, notes);
+      ta.value = ''; save('bl_draft_' + key, '');
+      draw();
+      if (window.BL_FX) BL_FX.buzz(10);
+      if (key === 'bl_freepage' && window.refreshToday) refreshToday(); // разходката брои реда веднага
+    });
+    draw();
+    c.appendChild(ta); c.appendChild(btn); c.appendChild(list);
+    return c;
+  }
+
+  window.BL_NOTES_CARD = notesCard;
+
+  // ── прогрес-пръстен (кръгче „7/12“) ──
+  function ringSvg(done, total) {
+    const R = 15, C = 2 * Math.PI * R, f = total ? done / total : 0;
+    return `<svg class="bl-ring" viewBox="0 0 40 40" aria-hidden="true">
+      <circle cx="20" cy="20" r="${R}" fill="none" stroke="#eee7f6" stroke-width="5"/>
+      <circle cx="20" cy="20" r="${R}" fill="none" stroke="url(#ringGrad)" stroke-width="5" stroke-linecap="round"
+        stroke-dasharray="${C.toFixed(1)}" stroke-dashoffset="${(C * (1 - f)).toFixed(1)}" transform="rotate(-90 20 20)"/>
+      <defs><linearGradient id="ringGrad" x1="0" y1="0" x2="1" y2="1">
+        <stop offset="0" stop-color="#f7a8cb"/><stop offset="1" stop-color="#b9a7e0"/>
+      </linearGradient></defs>
+      <text x="20" y="24" text-anchor="middle" class="bl-ring-t">${done}</text>
+    </svg>`;
+  }
+  window.BL_RING = ringSvg;
+
+  // ── Лексикон на бебето (за спомен) ──
+  function babyLexCard() {
+    const c = card('Лексиконът на бебето 🌟 <span class="jr-sub">попълни го — след години е съкровище</span>');
+    const lex = load('bl_baby_lexicon', {});
+    // 12.13.8: и тати има глас — втора колона със свой отговор
+    const dad = load('bl_baby_lexicon_dad', {});
+    let двама = load('bl_lex_dad_on', false);
+    const prog = el('p', 'chk-count chk-ringrow', '');
+    c.appendChild(prog);
+    // превключвател: показвай ли колоната на тати
+    const тог = el('button', 'jr-chip lx-dadtog', двама ? '👨 Тати пише — скрий' : '👨 Нека и тати попълни');
+    тог.type = 'button';
+    тог.addEventListener('click', () => { двама = !двама; save('bl_lex_dad_on', двама); тог.textContent = двама ? '👨 Тати пише — скрий' : '👨 Нека и тати попълни'; c.querySelectorAll('.lx-dad').forEach(x => x.hidden = !двама); });
+    c.appendChild(тог);
+    D.babyLex.forEach(q => {
+      c.appendChild(el('label', 'onb-lbl', q));
+      const inp = el('textarea', 'jr-paper lx-inp'); inp.rows = 1; inp.placeholder = '🌸 мама…';
+      inp.value = lex[q] || '';
+      inp.addEventListener('input', () => {
+        if (inp.value.trim()) lex[q] = inp.value.trim(); else delete lex[q];
+        save('bl_baby_lexicon', lex); upd();
+        const ld = load('bl_lex_d', {});
+        if (lex[q] && !ld[q]) { ld[q] = Date.now(); save('bl_lex_d', ld); } // отговорът в Реката
+      });
+      inp.addEventListener('change', () => {
+        if (Object.keys(lex).length === D.babyLex.length && window.BL_FX && !load('bl_lex_done', false)) {
+          save('bl_lex_done', true); BL_FX.confetti(c); BL_FX.cheer('Лексиконът е пълен! 🌟');
+        }
+      });
+      c.appendChild(inp);
+      const inpD = el('textarea', 'jr-paper lx-inp lx-dad'); inpD.rows = 1; inpD.placeholder = '👨 тати…';
+      inpD.value = dad[q] || ''; inpD.hidden = !двама;
+      inpD.addEventListener('input', () => { if (inpD.value.trim()) dad[q] = inpD.value.trim(); else delete dad[q]; save('bl_baby_lexicon_dad', dad); });
+      c.appendChild(inpD);
+    });
+    function upd() {
+      const n = Object.keys(lex).length;
+      prog.innerHTML = ringSvg(n, D.babyLex.length) + `<span>${n} / ${D.babyLex.length} попълнени</span>`;
+    }
+    upd();
+    return c;
+  }
+
+  // ── Речник на мама (термините, човешки) ──
+  function glossaryCard() {
+    const c = card('Речник на мама 📖 <span class="jr-sub">какво значат всички тези думи</span>');
+    const si = el('input', 'jr-word'); si.type = 'text'; si.placeholder = '🔍 Търси термин… (напр. „персентил“)';
+    c.appendChild(si);
+    const list = el('div', 'gl-list');
+    c.appendChild(list);
+    function draw(q) {
+      const nq = (q || '').toLowerCase();
+      list.innerHTML = '';
+      D.glossary.filter(g => !nq || (g.t + ' ' + g.d).toLowerCase().includes(nq)).forEach(g => {
+        const row = el('button', 'gl-row'); row.type = 'button';
+        row.innerHTML = `<span class="gl-term">${g.t}</span><span class="gl-arr">▾</span><span class="gl-def">${g.d}</span>`;
+        row.addEventListener('click', () => row.classList.toggle('open'));
+        list.appendChild(row);
+      });
+      if (!list.children.length) list.appendChild(el('p', 'jr-privacy', 'Няма такъв термин още — питай помощничката!'));
+    }
+    si.addEventListener('input', () => draw(si.value));
+    draw('');
+    return c;
+  }
+
+  // ── Моите списъци (къстъм чеклисти) ──
+  function customListsCard(root) {
+    const c = card('Моите списъци ✍️ <span class="jr-sub">създай си собствен чеклист за каквото искаш</span>');
+    const row = el('div', 'jr-addrow');
+    const inp = el('input', 'jr-word'); inp.type = 'text'; inp.maxLength = 40; inp.placeholder = 'Име на нов списък… (напр. „За морето“)';
+    const btn = el('button', 'jr-chip', '+ Създай'); btn.type = 'button';
+    row.appendChild(inp); row.appendChild(btn);
+    c.appendChild(row);
+    const holder = el('div', 'cl-holder');
+    c.appendChild(holder);
+    const lists = load('bl_custom_lists', []);
+    function drawAll() {
+      holder.innerHTML = '';
+      if (!lists.length) { holder.appendChild(el('p', 'jr-privacy', 'Списък за пътуване, за гости, за бабата… — твой избор, твои точки.')); return; }
+      lists.forEach((L, li) => holder.appendChild(oneList(L, li)));
+    }
+    function oneList(L, li) {
+      const box = el('div', 'cl-box');
+      const head = el('div', 'cl-head');
+      head.innerHTML = `<strong>${esc(L.name)}</strong><span>${L.items.filter(i => i.done).length}/${L.items.length}</span>`;
+      const del = el('button', 'nt-del', '🗑'); del.type = 'button';
+      del.addEventListener('click', () => { (window.BL_UI ? BL_UI.confirm('Да изтрия ли списъка „' + L.name + '“?', { emoji: '🗑', okText: 'Изтрий', cancelText: 'Остави', danger: true }) : Promise.resolve(confirm('Да изтрия ли списъка „' + L.name + '“?'))).then(да => { if (да) { lists.splice(li, 1); save('bl_custom_lists', lists); drawAll(); } }); });
+      head.appendChild(del);
+      box.appendChild(head);
+      const ul = el('div', 'jr-wins');
+      L.items.forEach((it, ii) => {
+        const r = el('button', 'jr-win' + (it.done ? ' done' : '')); r.type = 'button';
+        r.innerHTML = `<span class="jr-check">${it.done ? '✔' : ''}</span> ${esc(it.t)}`;
+        r.addEventListener('click', () => {
+          it.done = !it.done; save('bl_custom_lists', lists);
+          r.classList.toggle('done'); r.querySelector('.jr-check').textContent = it.done ? '✔' : '';
+          head.querySelector('span').textContent = L.items.filter(x => x.done).length + '/' + L.items.length;
+          if (it.done && L.items.every(x => x.done) && window.BL_FX) { BL_FX.confetti(r); BL_FX.cheer('Списъкът е готов! 🎉'); }
+        });
+        ul.appendChild(r);
+      });
+      box.appendChild(ul);
+      const ar = el('div', 'jr-addrow');
+      const ai = el('input', 'jr-word'); ai.type = 'text'; ai.maxLength = 80; ai.placeholder = 'Добави точка…';
+      const ab = el('button', 'jr-chip', '+'); ab.type = 'button';
+      ab.addEventListener('click', () => { const v = ai.value.trim(); if (!v) return; L.items.push({ t: v, done: false }); save('bl_custom_lists', lists); drawAll(); });
+      ai.addEventListener('keydown', e => { if (e.key === 'Enter') { e.preventDefault(); ab.click(); } });
+      ar.appendChild(ai); ar.appendChild(ab);
+      box.appendChild(ar);
+      return box;
+    }
+    btn.addEventListener('click', () => {
+      const v = inp.value.trim(); if (!v) return;
+      lists.push({ name: v, items: [] }); save('bl_custom_lists', lists);
+      inp.value = ''; drawAll();
+    });
+    drawAll();
+    return c;
+  }
+
+  // допълнения по стаи (белите полета + лексиконите)
+  const EXTRAS = {
+    // 🤍 preg20 обикновено поглъща тази карта в „Прегледът“ — но точно при
+    //    ПАУЗА (загуба) сливането не става (preg20.js: `if (стари.length &&
+    //    !наПауза())`) и полето оцелява само̀ в иначе празната стая, поканило
+    //    я да си запише въпроси за следващия преглед по бременност.
+    'Бременност': r => {
+      if (window.BL_EXPECT && BL_EXPECT.paused && BL_EXPECT.paused()) return;
+      r.appendChild(notesCard('Въпроси за лекаря 📝', 'запиши ги, преди да излетят от главата', 'bl_notes_preg', 'Напр.: „Нормално ли е да…?“ — свободен текст, твоето поле.'));
+    },
+    'Моето бебе': r => { r.appendChild(babyLexCard()); r.appendChild(notesCard('Бележник за бебето 📝', 'каквото искаш да не забравиш', 'bl_notes_baby', 'Свободен текст — навици, смешки, наблюдения…')); },
+    'Захранване': r => r.appendChild(notesCard('Хранителни бележки 📝', 'реакции, любими комбинации, рецепти', 'bl_notes_food', 'Напр.: „Тиквичка + картоф = хит! Ябълката само печена.“')),
+    'Здраве и SOS': r => r.appendChild(notesCard('Здравни бележки 📝', 'симптоми, какво каза лекарят', 'bl_notes_health', 'Дата, симптом, съвет на лекаря — да го имаш под ръка.')),
+    'Развитие и игри': r => r.appendChild(notesCard('Мигове за спомен 📝', 'малките неща, които не искаш да забравиш', 'bl_notes_dev', 'Днес направи нещо ново…')),
+    'Дневник на мама': r => r.appendChild(notesCard('Свободна страница ✍️', 'без структура, без правила — само ти', 'bl_freepage', 'Пиши каквото ти е на сърцето…')),
+    'Инструменти': r => { r.appendChild(customListsCard()); r.appendChild(glossaryCard()); }
+  };
+
+  // ── регистрация ──
+  function reg() {
+    if (!window.ROOM_FEATURES) window.ROOM_FEATURES = {};
+    Object.assign(window.ROOM_FEATURES, {
+      'Моето бебе': renderBaby,
+      'Бременност': renderPregnancy,
+      'Захранване': renderFeeding,
+      'Развитие и игри': renderDevelopment,
+      'Инструменти': renderTools,
+      'Здраве и SOS': renderHealth
+    });
+    Object.keys(EXTRAS).forEach(room => {
+      const base = window.ROOM_FEATURES[room];
+      if (base) window.ROOM_FEATURES[room] = root => { base(root); EXTRAS[room](root); };
+    });
+  }
+  reg();
+})();

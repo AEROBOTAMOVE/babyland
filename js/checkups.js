@@ -1,0 +1,338 @@
+// ═══════════════════════════════════════════════════════════
+// 🩺 ТРИ ТРАКЕРА (одит 22.07) — пренос на вече доказани модели
+//
+// 1) ПРОФИЛАКТИЧНИТЕ ПРЕГЛЕДИ на бебето (bl_baby_checkups)
+//    Огледален пренос на „Календарчето на прегледите" от бременността
+//    (preg20). Възрастите са ОРИЕНТИРИ — личният лекар води графика.
+//
+// 2) ПОДГОТОВКА ЗА ПРЕГЛЕД (снапшот) — събира в един екран числата, които
+//    мама вече е записала (тегло, температури, зъбки, етапи), че да не ги
+//    търси в кабинета. Нищо ново не се пита — само се събира.
+//    Вътре в него стои и „Какво искам да го попитам 💭“ (bl_doc_questions).
+//    СЪЩИЯТ списък се показва самостоятелно и в „Здраве и SOS“ и
+//    „Захранване“ — там, където въпросът реално хрумва. Един ключ, един
+//    списък, три врати към него.
+//
+// 3) ЦИКЪЛЪТ СЕ ВРЪЩА (bl_period) — тиха лична хроника в „Жената в мен".
+//
+// Всичко локално. Без дози, без диагнози.
+// ═══════════════════════════════════════════════════════════
+(function () {
+  'use strict';
+  const load = (k, d) => { try { const v = JSON.parse(localStorage.getItem(k)); if (v == null) return d; if (Array.isArray(d) !== Array.isArray(v)) return d; return v; } catch (e) { return d; } };
+  const save = (k, v) => { try { localStorage.setItem(k, JSON.stringify(v)); } catch (e) {} };
+  const el = (t, c, h) => { const n = document.createElement(t); if (c) n.className = c; if (h !== undefined) n.innerHTML = h; return n; };
+  const card = t => { const c = el('section', 'jr-card'); c.appendChild(el('h4', 'jr-title', t)); return c; };
+  const esc = s => String(s == null ? '' : s).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;').replace(/'/g, '&#39;');
+  const fx = () => window.BL_FX || { buzz: function () {} };
+  const дата = ts => { const d = new Date(ts); return d.getDate() + '.' + (d.getMonth() + 1) + '.' + d.getFullYear(); };
+  function възрастМесеци() {
+    try {
+      const b = JSON.parse(localStorage.getItem('bl_baby') || '{}');
+      if (!b.birth) return null;
+      if (window.BL_AGE) { const a = BL_AGE(b.birth); if (a && a.months != null) return a.months; }
+      return Math.floor((Date.now() - new Date(b.birth).getTime()) / 2629800000);
+    } catch (e) { return null; }
+  }
+
+  // ═══════════ 1) ПРОФИЛАКТИЧНИТЕ ПРЕГЛЕДИ ═══════════
+  // [месец-от, месец-до, емоджи, име, какво обикновено се гледа]
+  const ПРЕГЛЕДИ = [
+    [0, 0, '🏠', 'Първите дни у дома', 'тегло, пъпче, жълтеница, кърмене — патронажна сестра или личен лекар'],
+    [1, 1, '👶', 'На 1 месец', 'растеж, рефлекси, как върви храненето, въпросите ти'],
+    [2, 2, '💉', 'На 2 месеца', 'преглед и първите ваксини по календара'],
+    [3, 3, '📏', 'На 3 месеца', 'растеж, ваксини, вдига ли главичка'],
+    [4, 4, '🌱', 'На 4 месеца', 'растеж, ваксини, обръща ли се, следи ли с очи'],
+    [6, 6, '🥄', 'На 6 месеца', 'растеж, седи ли с опора, време за захранване, витамини'],
+    [9, 9, '🚼', 'На 9 месеца', 'растеж, пълзи ли, хваща ли с пръстчета, храна с парченца'],
+    [12, 12, '🎂', 'На годинка', 'растеж, изправяне/прохождане, първи думички, ваксини'],
+    [15, 18, '🧸', 'Към 15–18 месеца', 'ходене, речник, самостоятелност, ваксини'],
+    [24, 24, '🎈', 'На 2 години', 'растеж, говор, поведение, зъбки'],
+    [36, 36, '🖍️', 'На 3 години', 'растеж, говор и разбиране, зрение и слух, готовност за градина']
+  ];
+
+  function прегледиКарта(root) {
+    const c = card('Профилактичните прегледи 🩺 <span class="jr-sub">кое кога — ориентири, личният лекар води</span>');
+    const m = възрастМесеци();
+    const бях = load('bl_baby_checkups', {});
+    // кой ред да свети: точното попадение по възраст, а ако сме „между" два
+    // прегледа (напр. 5 месеца) — светва СЛЕДВАЩИЯТ предстоящ, за да знае мама
+    // накъде гледа, вместо да не свети нищо.
+    let индексСега = -1;
+    if (m != null) {
+      индексСега = ПРЕГЛЕДИ.findIndex(([от, до]) => m >= от && m <= до);
+      if (индексСега < 0) индексСега = ПРЕГЛЕДИ.findIndex(([от]) => от > m);
+    }
+    ПРЕГЛЕДИ.forEach(([от, до, е, име, какво], i) => {
+      const мина = m != null && m > до;
+      const сега = i === индексСега;
+      const r = el('button', 'pg20-calrow' + (бях[i] ? ' done' : '') + (сега ? ' now' : '') + (мина && !бях[i] ? ' past' : ''));
+      r.type = 'button';
+      r.innerHTML = '<span class="pg20-calw">' + (от === до ? от + ' м.' : от + '–' + до + ' м.') + '</span>' +
+        '<span class="pg20-cale">' + е + '</span>' +
+        '<span class="pg20-calt"><strong>' + esc(име) + '</strong><small>' + esc(какво) + '</small></span>' +
+        '<span class="jr-check">' + (бях[i] ? '✔' : '') + '</span>';
+      r.addEventListener('click', () => {
+        const б = load('bl_baby_checkups', {});
+        б[i] = !б[i]; save('bl_baby_checkups', б);
+        r.classList.toggle('done');
+        r.querySelector('.jr-check').textContent = б[i] ? '✔' : '';
+        fx().buzz(6);
+      });
+      c.appendChild(r);
+    });
+    c.appendChild(el('p', 'jr-privacy', 'Месеците са „обикновено около“ — точния график и ваксините ги води твоят личен лекар. Отметни ✔ където сте били.'));
+    root.appendChild(c);
+  }
+
+  // ═══════════ ВЪПРОСИТЕ КЪМ ЛЕКАРЯ — ЕДИН списък, няколко стаи ═══════════
+  // Ключът е един (bl_doc_questions), значи и списъкът е един: където и да го
+  // запише мама, стои навсякъде. Затова кутията е извадена тук — веднъж
+  // написана, показвана и вътре в „Готова за прегледа“, и като самостоятелна
+  // карта в стаите, където въпросът реално хрумва.
+  //   опции.самостоятелна — без вътрешното заглавие (картата вече го носи)
+  //   опции.пример        — какво да пише в празното поле в тази стая
+  function въпросиБокс(опции) {
+    const o = опции || {};
+    const вбокс = el('div', o.самостоятелна ? 'ck-qs' : 'ck-q');
+    if (!o.самостоятелна) вбокс.appendChild(el('h5', 'jr-elabel', 'Какво искам да го попитам 💭'));
+    const списък = el('div', 'ck-qlist');
+    function рисувайВъпроси() {
+      const q = load('bl_doc_questions', []);
+      списък.innerHTML = '';
+      if (!q.length) { списък.appendChild(el('p', 'jr-hint', 'Хрумне ли ти въпрос в 3 през нощта — запиши го тук. В кабинета всичко се забравя.')); return; }
+      q.forEach((x, i) => {
+        const ред2 = el('div', 'ob-myrow');
+        ред2.appendChild(el('span', 'ob-mytxt', esc(x)));
+        const del = el('button', 'jr-chip ob-del', '✕'); del.type = 'button';
+        del.setAttribute('aria-label', 'Изтрий въпроса');
+        del.addEventListener('click', () => {
+          // Списъкът е общ за няколко стаи — щом може да е бил пипнат другаде,
+          // трием ТОЗИ въпрос, а не „каквото стои на позиция i“.
+          const д = load('bl_doc_questions', []);
+          const j = д[i] === x ? i : д.indexOf(x);
+          if (j < 0) { рисувайВъпроси(); return; }
+          д.splice(j, 1); save('bl_doc_questions', д); рисувайВъпроси();
+        });
+        ред2.appendChild(del);
+        списък.appendChild(ред2);
+      });
+    }
+    вбокс.appendChild(списък);
+    const addRow = el('div', 'jr-addrow');
+    const inp = el('input'); inp.type = 'text'; inp.maxLength = 200; inp.className = 'jr-word';
+    inp.placeholder = o.пример || 'напр. „Защо се буди в 4 всяка нощ?“';
+    inp.setAttribute('aria-label', 'Запиши въпрос към лекаря');
+    const add = el('button', 'jr-chip', '+ Добави'); add.type = 'button';
+    function запиши() {
+      const v = inp.value.trim(); if (!v) return;
+      const q = load('bl_doc_questions', []); q.push(v); save('bl_doc_questions', q.slice(-30));
+      inp.value = ''; рисувайВъпроси(); fx().buzz(8);
+    }
+    add.addEventListener('click', запиши);
+    inp.addEventListener('keydown', e => { if (e.key === 'Enter') { e.preventDefault(); запиши(); } });
+    addRow.appendChild(inp); addRow.appendChild(add);
+    вбокс.appendChild(addRow);
+    рисувайВъпроси();
+    return вбокс;
+  }
+
+  // Самостоятелната карта — за стаите извън „Моето бебе“.
+  // Подзаглавието носи „питам педиатъра“ нарочно: order4.js подрежда картите по
+  // ТЕКСТА на заглавието и така тази отива в кътчето „🩺 За лекаря“.
+  function въпросиКарта(root, пример) {
+    const c = card('Какво искам да го попитам 💭 <span class="jr-sub">питам педиатъра — записано сега, докато ти е в главата</span>');
+    c.appendChild(въпросиБокс({ самостоятелна: true, пример: пример }));
+    c.appendChild(el('p', 'jr-privacy', 'Списъкът е един и същ навсякъде — където и да запишеш въпроса, ще го намериш и в „Готова за прегледа“ при „Моето бебе“. 💜'));
+    root.appendChild(c);
+  }
+
+  // ═══════════ 2) ПОДГОТОВКА ЗА ПРЕГЛЕД (снапшот) ═══════════
+  function снапшотКарта(root) {
+    const c = card('Готова за прегледа 📋 <span class="jr-sub">числата ти, събрани на едно място — за да не ги търсиш в кабинета</span>');
+    const кутия = el('div', 'ck-snap');
+
+    function ред(е, заглавие, стойност) {
+      const r = el('div', 'ck-srow');
+      // .ck-st е класът на личицата по дъгата в дневника — тук е .ck-sti,
+      // иначе неговите правила лягаха върху този ред (и обратно).
+      r.innerHTML = '<span class="ck-se">' + е + '</span><span class="ck-sti"><strong>' + esc(заглавие) + '</strong><small>' + стойност + '</small></span>';
+      return r;
+    }
+
+    function рисувай() {
+      кутия.innerHTML = '';
+      let имаНещо = false;
+
+      // тегло — последно измерване
+      const g = load('bl_growth', []);
+      if (g.length) {
+        имаНещо = true;
+        const last = g[g.length - 1];
+        let txt = 'последно: <strong>' + esc(String(last.w)) + ' кг</strong>';
+        if (last.p != null) txt += ' · около ' + esc(String(last.p)) + '-и персентил';
+        if (last.d) txt += ' · ' + esc(String(last.d));
+        if (g.length > 1) {
+          const пред = g[g.length - 2];
+          const разлика = Math.round((last.w - пред.w) * 100) / 100;
+          if (!isNaN(разлика)) txt += '<br>от предишното: ' + (разлика >= 0 ? '+' : '') + разлика + ' кг';
+        }
+        кутия.appendChild(ред('⚖️', 'Тегло', txt));
+      }
+
+      // температури — последните няколко
+      const t = load('bl_temps', []);
+      if (t.length) {
+        имаНещо = true;
+        const посл = t.slice(-5).reverse()
+          .map(x => esc(String(x.v)) + '° (' + дата(x.ts) + ')').join(' · ');
+        кутия.appendChild(ред('🌡️', 'Последни температури', посл));
+      }
+
+      // зъбки
+      const z = load('bl_teeth', []);
+      if (z.length) { имаНещо = true; кутия.appendChild(ред('🦷', 'Зъбки', 'изникнали: <strong>' + z.length + '</strong>')); }
+
+      // етапи — колко отметнати
+      const ms = load('bl_ms_done', {});
+      const бр = Object.keys(ms).filter(k => ms[k]).length;
+      if (бр) { имаНещо = true; кутия.appendChild(ред('🌱', 'Етапи', 'отметнати: <strong>' + бр + '</strong> (виж „Развитие“)')); }
+
+      // пелени днес — знак за хранене/хидратация
+      const dp = load('bl_diapers', {});
+      const днес = (function () { const d = new Date(); return d.getFullYear() + '-' + String(d.getMonth() + 1).padStart(2, '0') + '-' + String(d.getDate()).padStart(2, '0'); })();
+      if (dp[днес]) {
+        имаНещо = true;
+        кутия.appendChild(ред('💧', 'Пелени днес', 'мокри: <strong>' + (dp[днес].wet || 0) + '</strong> · каки: <strong>' + (dp[днес].dirty || 0) + '</strong>'));
+      }
+
+      if (!имаНещо) {
+        кутия.appendChild(el('p', 'jr-hint', 'Тук ще се събере само това, което вече си записала другаде — тегло, температури, зъбки, етапи. Още няма нищо, но щом почнеш да отбелязваш, ще го намираш готово.'));
+      }
+    }
+    рисувай();
+    c.appendChild(кутия);
+
+    // въпросите към лекаря — свои, запазват се (същата кутия, която стои и
+    // самостоятелно в „Здраве и SOS“ и „Захранване“ — списъкът е един)
+    c.appendChild(въпросиБокс());
+
+    c.appendChild(el('p', 'jr-privacy', 'Нищо от това не заменя прегледа — просто ти спестява „ама колко беше теглото…“ пред лекаря. 💜'));
+    root.appendChild(c);
+  }
+
+  // ═══════════ 3) ЦИКЪЛЪТ СЕ ВРЪЩА (Жената в мен) ═══════════
+  function цикълКарта(root) {
+    const c = card('Цикълът се връща 🌙 <span class="jr-sub">тиха лична хроника — само за теб</span>');
+    const out = el('p', 'bb-feed', '');
+    const списък = el('p', 'bb-feed'); списък.style.opacity = '.85'; списък.style.fontSize = '.92em';
+
+    function рисувай() {
+      const log = load('bl_period', []);
+      if (!log.length) {
+        out.innerHTML = 'Още няма отбелязано. Върне ли се цикълът — отбележи тук и ще ти помня ритъма.';
+        списък.innerHTML = '';
+        return;
+      }
+      const посл = log[log.length - 1];
+      const дни = Math.floor((Date.now() - посл) / 86400000);
+      out.innerHTML = 'Последно отбелязано: <strong>' + дата(посл) + '</strong>' +
+        (дни === 0 ? ' (днес)' : дни === 1 ? ' (вчера)' : ' — преди ' + дни + ' дни');
+      if (log.length >= 3) {
+        const инт = [];
+        for (let i = 1; i < log.length; i++) инт.push(Math.round((log[i] - log[i - 1]) / 86400000));
+        const посл3 = инт.slice(-3).sort((a, b) => a - b);
+        const мед = посл3[Math.floor(посл3.length / 2)];
+        if (мед > 10 && мед < 90) списък.innerHTML = 'Твоят ритъм напоследък: около <strong>' + мед + ' дни</strong> между отбелязванията.';
+        else списък.innerHTML = 'Първите цикли след раждане често са неравни — това е нормално.';
+      } else {
+        списък.innerHTML = 'След още няколко отбелязвания ще виждаш ритъма си.';
+      }
+    }
+
+    c.appendChild(out); c.appendChild(списък);
+    const row = el('div', 'jr-quick');
+    const b = el('button', 'jr-chip', '🌙 Върна се днес'); b.type = 'button';
+    b.addEventListener('click', () => {
+      const log = load('bl_period', []);
+      const днес = Date.now();
+      if (log.length && (днес - log[log.length - 1]) < 86400000 * 3) return;  // без дубли в 3 дни
+      log.push(днес); save('bl_period', log.slice(-24));
+      рисувай(); fx().buzz(8);
+    });
+    const undo = el('button', 'jr-chip', '↺ Върни последното'); undo.type = 'button';
+    undo.addEventListener('click', () => {
+      const log = load('bl_period', []);
+      if (log.length) { log.pop(); save('bl_period', log); рисувай(); }
+    });
+    row.appendChild(b); row.appendChild(undo);
+    c.appendChild(row);
+    рисувай();
+    c.appendChild(el('p', 'jr-privacy', 'При кърмене цикълът може да се върне след месеци — или да подрани. И двете са нормални. Помни: може да забременееш и ПРЕДИ първия цикъл. 💜'));
+    root.appendChild(c);
+  }
+
+  // 🔴 г13/162: „Прегледите“ и снапшот-картата се закачаха на DOMContentLoaded —
+  //   тоест СЛЕД като polish.js вече е опаковал стаята с organize(). Лепяха се
+  //   НАД готовата подредба: висяха под всички заглавия на кътчета, съдържанието
+  //   горе не ги изброяваше, търсенето в стаята ги пропускаше. Синхронно, като
+  //   rooms8.js. (rooms2.js вече е регистрирал „Моето бебе“ преди този файл.)
+  if (window.ROOM_FEATURES && window.ROOM_FEATURES['Моето бебе']) {
+    const o = window.ROOM_FEATURES['Моето бебе'];
+    window.ROOM_FEATURES['Моето бебе'] = function (root) {
+      o(root);
+      try { прегледиКарта(root); } catch (e) {}
+      try { снапшотКарта(root); } catch (e) {}
+    };
+  }
+
+  // 💭 Въпросът към лекаря не хрумва в „Моето бебе“. Хрумва в 23:40 в „Здраве
+  //   и SOS“ (детето гори, утре е работен ден) и на масата в „Захранване“
+  //   (първата реакция към нова храна). Дотук списъкът живееше само в снапшота
+  //   при „Моето бебе“ — тоест мама трябваше да СЕ СЕТИ да отиде другаде.
+  //   Списъкът е ЕДИН (bl_doc_questions), стаите са три.
+  //   Синхронно, както „Моето бебе“: rooms2.js регистрира и двете стаи в reg()
+  //   и се зарежда ПРЕДИ този файл в index.html. Проверено и че никой след нас
+  //   не ПРЕЗАПИСВА тези две стаи (=), а само ги ОБВИВА: feedsafe.js, order4.js,
+  //   rooms3–rooms19. Ако някой ден някой присвои направо — картата изчезва
+  //   мълчаливо, точно както щеше да стане тук с „Жената в мен“ (виж долу).
+  const ВЪПРОСИ_СТАИ = {
+    'Здраве и SOS': 'напр. „Този обрив трябва ли да се гледа?“',
+    'Захранване': 'напр. „Кога да пробваме яйце?“'
+  };
+  Object.keys(ВЪПРОСИ_СТАИ).forEach(стая => {
+    if (!window.ROOM_FEATURES || !window.ROOM_FEATURES[стая]) return;
+    const о = window.ROOM_FEATURES[стая];
+    const пример = ВЪПРОСИ_СТАИ[стая];
+    window.ROOM_FEATURES[стая] = function (root) {
+      о(root);
+      try { въпросиКарта(root, пример); } catch (e) {}
+    };
+  });
+
+  // „Жената в мен“ ОСТАВА на DOMContentLoaded: women.js се зарежда СЛЕД този
+  // файл и ПРИСВОЯВА стаята (women.js: `ROOM_FEATURES['Жената в мен'] = base`),
+  // а не я обвива — синхронно закачане тук би било изтрито безследно.
+  //
+  // 🔴 05.08: но точно затова тази карта беше улучена от г13/162 — същия дефект,
+  //   който по-горе е поправен за другите две. polish.js обвива ВСИЧКИ стаи
+  //   синхронно при зареждане (polish.js: `base(root); organize(root, room)`).
+  //   Нашето обвиване идва на DOMContentLoaded, тоест ОТВЪН polish — значи
+  //   цикълКарта се лепеше СЛЕД като organize() вече е подредил кътчетата.
+  //   Измерено в браузъра: картата беше последното дете на стаята (68 от 69),
+  //   под заглавието „👑 Короната“, извън всички кътчета.
+  //   Лек: рисуваме я ПРЕДИ веригата, в още празния root. Тогава organize()
+  //   я вижда като нормална карта и я слага в своето кътче (order8.js → w4
+  //   „🕵️‍♀️ Тайните“, при „Моят преглед“).
+  //   Път назад: разменяш двата реда обратно (o2(root) първи).
+  document.addEventListener('DOMContentLoaded', () => {
+    if (!window.ROOM_FEATURES) return;
+    if (window.ROOM_FEATURES['Жената в мен']) {
+      const o2 = window.ROOM_FEATURES['Жената в мен'];
+      window.ROOM_FEATURES['Жената в мен'] = function (root) {
+        try { цикълКарта(root); } catch (e) {}
+        o2(root);
+      };
+    }
+  });
+})();
