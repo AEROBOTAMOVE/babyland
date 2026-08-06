@@ -1,102 +1,84 @@
 // ═══════════════════════════════════════════════════════════
-// 📱 ПЛАВНО — спира анимациите, които не се виждат
+// 📱 ПЛАВНО — тишина, докато мама скролва
 //
-// Защо (05.08): собственикът каза „скролът е труден, цялата страница
-// пулсира". Измерено на живо при 360px: началният екран носи ~1860
-// елемента и 72 РАЗЛИЧНИ безкрайни анимации — облаци, звездички,
-// блобове, ореоли, полюшващи се къщички. Повечето са далеч под
-// прегъвката, но браузърът ги смята на всеки кадър така или иначе.
-// На слаб Android това е точно усещането „лепне и пулсира".
+// Собственикът каза: „скролът е труден, цялата страница пулсира".
+// Измерено на живо при 360px на ЖИВИЯ адрес:
+//   · ~1860 елемента на началния екран
+//   · 72 РАЗЛИЧНИ безкрайни анимации, 145 работещи едновременно
 //
-// Лекът не е да махнем красотата, а да я СПРЕМ, докато не се вижда.
-// IntersectionObserver + animation-play-state: paused.
+// ПЪРВИЯТ МИ ОПИТ БЕШЕ ГРЕШЕН и го пиша тук, за да не се повтори:
+// пазех анимациите с IntersectionObserver, за да спират „извън екрана".
+// Хвана 16 елемента и спря НУЛА — защото цялата атмосфера (.sky) е
+// `position: fixed`, тоест винаги е в кадър. Наблюдението по видимост
+// е сляпо точно за слоя, който тежи най-много.
 //
-// ПЪТ НАЗАД: махни реда за този файл от index.html — нищо друго не
-// зависи от него. Класът, който слага, не мени вида, само паузата.
+// Истинският лек е по ВРЕМЕ, не по място: докато пръстът се движи,
+// браузърът има само една работа — да рисува страницата. Всичко
+// останало чака 180 мс след последното движение.
+//
+// ПЪТ НАЗАД: махни реда за този файл от index.html. Нищо не зависи
+// от него; класът само пауза, не мени вид.
 // ═══════════════════════════════════════════════════════════
 (function () {
   'use strict';
 
-  // Който е поискал по-малко движение, вече е обслужен от CSS —
-  // тук няма какво да правим, а и не бива да пипаме нищо.
-  var малкоДвижение = window.matchMedia &&
-                      matchMedia('(prefers-reduced-motion: reduce)').matches;
-  if (малкоДвижение || !('IntersectionObserver' in window)) return;
+  if (window.matchMedia && matchMedia('(prefers-reduced-motion: reduce)').matches) return;
 
-  var СТИЛ = 'bl-pauza';
+  var КЛАС = 'bl-tiho';
   var s = document.createElement('style');
   s.textContent =
-    '.' + СТИЛ + ', .' + СТИЛ + ' * { animation-play-state: paused !important; }';
+    'html.' + КЛАС + ' *, html.' + КЛАС + ' *::before, html.' + КЛАС + ' *::after {' +
+    '  animation-play-state: paused !important;' +
+    '}';
   document.head.appendChild(s);
 
-  // Наблюдаваме едрите атмосферни слоеве и всяка карта — не всеки
-  // елемент поотделно. Пауза върху родителя спира и децата му.
-  var ЦЕЛИ = [
-    '.sky', '.sky-layer', '.hero-inner', '.land-frame',
-    '.jr-card', '.room-card', '.horo-ring', '.d24-wheel',
-    '.meet', '.room-grid', '.rmx-aurora', '.tour-box'
-  ].join(',');
+  var h = document.documentElement;
+  var t = 0, тихо = false, спирания = 0;
 
-  var набл = new IntersectionObserver(function (записи) {
-    for (var i = 0; i < записи.length; i++) {
-      var з = записи[i];
-      з.target.classList.toggle(СТИЛ, !з.isIntersecting);
-    }
-  }, {
-    // 200px запас: анимацията тръгва преди елементът да се появи,
-    // за да не се вижда как „щраква" при скрол
-    rootMargin: '200px 0px 200px 0px',
-    threshold: 0
+  function утихни() {
+    if (!тихо) { h.classList.add(КЛАС); тихо = true; спирания++; }
+    clearTimeout(t);
+    t = setTimeout(оживи, 180);
+  }
+  function оживи() {
+    if (тихо) { h.classList.remove(КЛАС); тихо = false; }
+  }
+
+  // passive: жестът не се бави заради нас
+  var опции = { passive: true };
+  addEventListener('scroll', утихни, опции);
+  addEventListener('touchmove', утихни, опции);
+  addEventListener('wheel', утихни, опции);
+
+  // Скрит таб → нищо не се движи. Пести батерия, докато мама
+  // е излязла да види бебето.
+  document.addEventListener('visibilitychange', function () {
+    if (document.hidden) { clearTimeout(t); h.classList.add(КЛАС); тихо = true; }
+    else оживи();
   });
 
-  var гледани = 0;
-
-  function поеми(корен) {
-    var възли = (корен || document).querySelectorAll(ЦЕЛИ);
-    for (var i = 0; i < възли.length; i++) {
-      if (възли[i].__blПлавно) continue;
-      възли[i].__blПлавно = true;
-      набл.observe(възли[i]);
-      гледани++;
-    }
-  }
-
-  function старт() {
-    поеми(document);
-    // Стаите се раждат след като мама влезе в тях — новите карти
-    // трябва да влязат под наблюдение сами.
-    if ('MutationObserver' in window) {
-      new MutationObserver(function (m) {
-        for (var i = 0; i < m.length; i++) {
-          for (var j = 0; j < m[i].addedNodes.length; j++) {
-            var n = m[i].addedNodes[j];
-            if (n.nodeType === 1) {
-              if (n.matches && n.matches(ЦЕЛИ) && !n.__blПлавно) {
-                n.__blПлавно = true; набл.observe(n); гледани++;
-              }
-              поеми(n);
-            }
-          }
-        }
-      }).observe(document.body, { childList: true, subtree: true });
-    }
-  }
-
-  if (document.readyState === 'loading') {
-    document.addEventListener('DOMContentLoaded', старт);
-  } else {
-    старт();
-  }
-
-  // Отчита се и КОЛКО гледа — пазач, който не казва броя, е декорация.
+  // Отчита се и КОЛКО пъти е спирал — брояч без брой е декорация.
   window.BL_ПЛАВНО = {
-    брой: function () { return гледани; },
-    спрени: function () { return document.querySelectorAll('.' + СТИЛ).length; },
+    тихо: function () { return тихо; },
+    спирания: function () { return спирания; },
+    провери: function () {
+      var върви = 0, всички = 0;
+      var els = document.body.querySelectorAll('*');
+      for (var i = 0; i < els.length; i++) {
+        var c = getComputedStyle(els[i]);
+        if (c.animationName === 'none') continue;
+        всички++;
+        if (c.animationPlayState === 'running') върви++;
+      }
+      return { прегледани: els.length, с_анимация: всички,
+               вървят_сега: върви, тихо: тихо, спирания: спирания };
+    },
     изключи: function () {
-      набл.disconnect();
-      var сп = document.querySelectorAll('.' + СТИЛ);
-      for (var i = 0; i < сп.length; i++) сп[i].classList.remove(СТИЛ);
-      return 'наблюдението е спряно, всичко пак се движи';
+      removeEventListener('scroll', утихни, опции);
+      removeEventListener('touchmove', утихни, опции);
+      removeEventListener('wheel', утихни, опции);
+      оживи();
+      return 'паузата при скрол е изключена';
     }
   };
 })();
