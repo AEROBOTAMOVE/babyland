@@ -81,6 +81,9 @@
           if (window.BL_FX && BL_FX.countUp) BL_FX.countUp(c);
         });
         const del = el('button', 'jr-x', '✕'); del.type = 'button';
+        // ♿ 11.08 (клавиатура-четец): цял списък от еднакви „✕" — четецът не
+        //    казваше кое ще махне, а тапът е необратим.
+        del.setAttribute('aria-label', 'Махни „' + it.t + '“ от списъка');
         del.addEventListener('click', () => { items.splice(i, 1); save('bl_wm_bucket', items); draw(); });
         row.appendChild(b); row.appendChild(del); list.appendChild(row);
       });
@@ -88,6 +91,7 @@
     const row = el('div', 'jr-addrow');
     const inp = el('input', 'jr-word'); inp.placeholder = 'искам да…'; inp.maxLength = 70;
     const add = el('button', 'jr-chip', '+'); add.type = 'button';
+    add.setAttribute('aria-label', 'Добави го в списъка „искам да“');
     const put = () => { const v = inp.value.trim(); if (!v) return; items.push({ t: v }); save('bl_wm_bucket', items); inp.value = ''; draw(); };
     add.addEventListener('click', put);
     inp.addEventListener('keydown', e => { if (e.key === 'Enter') { e.preventDefault(); put(); } });
@@ -184,6 +188,7 @@
         const row = el('div', 'wm-secret');
         row.innerHTML = '<p>🌟 ' + esc(it.t) + '</p><small>' + it.d + '</small>';
         const del = el('button', 'jr-x', '✕'); del.type = 'button';
+        del.setAttribute('aria-label', 'Махни „' + it.t + '“ от първите пъти');
         del.addEventListener('click', () => { items.splice(i, 1); save('bl_wm_firsts', items); draw(); });
         row.appendChild(del); list.appendChild(row);
       });
@@ -191,6 +196,7 @@
     const row = el('div', 'jr-addrow');
     const inp = el('input', 'jr-word'); inp.placeholder = 'за пръв път…'; inp.maxLength = 70;
     const add = el('button', 'jr-chip', '+'); add.type = 'button';
+    add.setAttribute('aria-label', 'Добави го в „за пръв път“');
     const put = () => {
       const v = inp.value.trim(); if (!v) return;
       items.push({ t: v, d: today() }); save('bl_wm_firsts', items); inp.value = ''; draw();
@@ -551,6 +557,7 @@
         const row = el('div', 'wm-cbub');
         row.innerHTML = '<p>„' + esc(it.t) + '“</p><small>— ' + esc(it.w || 'някой') + ' · ' + it.d + '</small>';
         const del = el('button', 'jr-x', '✕'); del.type = 'button';
+        del.setAttribute('aria-label', 'Махни комплимента от ' + (it.w || 'някой'));
         del.addEventListener('click', () => { items.splice(i, 1); save('bl_wm_compl', items); draw(); });
         row.appendChild(del); list.appendChild(row);
       });
@@ -559,6 +566,7 @@
     const t = el('input', 'jr-word'); t.placeholder = 'какво ти казаха…'; t.maxLength = 90;
     const w = el('input', 'jr-word wm-who'); w.placeholder = 'кой'; w.maxLength = 20;
     const add = el('button', 'jr-chip', '+'); add.type = 'button';
+    add.setAttribute('aria-label', 'Запази комплимента');
     add.addEventListener('click', () => {
       const v = t.value.trim(); if (!v) return;
       items.push({ t: v, w: w.value.trim(), d: today() }); save('bl_wm_compl', items);
@@ -575,7 +583,10 @@
     [['was', 'Коя бях', '🌸'], ['am', 'Коя съм', '💜'], ['will', 'Коя ставам', '👑']].forEach(([k, t, e]) => {
       const w = el('div', 'wm-trip');
       w.appendChild(el('p', 'wm-qt', e + ' ' + t));
+      // ♿ 11.08 (клавиатура-четец): трите полета стояха под заглавия, които не
+      //    сочат към тях — четецът четеше „поле за текст" три пъти подред.
       const ta = el('textarea', 'jr-note'); ta.rows = 2; ta.value = d[k] || '';
+      ta.setAttribute('aria-label', t);
       ta.addEventListener('change', () => { d[k] = ta.value; save('bl_wm_trip', d); });
       w.appendChild(ta); c.appendChild(w);
     });

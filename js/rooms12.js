@@ -202,7 +202,7 @@
         row.innerHTML = `<span class="fl-t">${esc(x.t)}</span>
           <span class="fl-d">спря ${esc(x.d)}${x.back ? ' · върна се ' + esc(x.back) : ''}</span>
           <button class="jr-chip fl-b" type="button">${x.back ? '↩ не, пак спря' : '✔ върна се'}</button>
-          <button class="nt-del" type="button">🗑</button>`;
+          <button class="nt-del" type="button" aria-label="Махни „${esc(x.t)}“ от списъка">🗑</button>`;
         row.querySelector('.fl-b').addEventListener('click', () => {
           x.back = x.back ? '' : today();
           if (x.back) { fx().confetti(); fx().buzz(12); }
@@ -298,6 +298,7 @@
       catch (e) {
         out.textContent = 'Телефонът не дава да го копирам сама. Ето го — задръж върху текста и го копирай:';
         const t = el('textarea', 'jr-word rt-text'); t.readOnly = true; t.rows = 5; t.value = текст;
+        t.setAttribute('aria-label', 'Текстът за копиране');
         out.appendChild(t);
         try { t.focus(); t.select(); } catch (e2) {}
       }

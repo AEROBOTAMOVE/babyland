@@ -43,6 +43,9 @@
 
     const file = el('input'); file.type = 'file'; file.accept = 'image/*'; file.style.display = 'none';
     const wInp = el('input', 'jr-word'); wInp.type = 'number'; wInp.min = 4; wInp.max = 42; wInp.value = седмица; wInp.style.maxWidth = '86px';
+    // ♿ 11.08 (клавиатура-четец): числото стоеше без име — четецът казваше само
+    //    „поле за число" и не личеше, че се пита за седмицата.
+    wInp.setAttribute('aria-label', 'Коя седмица е ехото');
     const note = el('input', 'jr-word'); note.placeholder = 'Какво видяхме? („маха с ръчичка“)'; note.maxLength = 90;
     const btn = el('label', 'jr-btn', '🩻 Добави ехо-снимка');
     btn.appendChild(file);
@@ -287,7 +290,12 @@
     // ⚠️ картата „Пелени днес“ създава {wet:0,dirty:0} при ВСЯКО отваряне на
     // стаята — дни, в които мама само е погледнала, стоят като нули. Ако ги
     // броим, средното лъже надолу. Затова: само дни с реален запис.
-    const дниП = Object.keys(пелени).filter(d => { const x = пелени[d] || {}; return (+x.wet || 0) + (+x.dirty || 0) > 0; });
+    // 🟡 11.08 (обиколка във времето): същият капан като rooms10.js — ден-ключ с
+    //    БЪДЕЩА дата (сверяващ се телефонен часовник) влизаше в средното на
+    //    „типичния ви ден“. Не се трие нищо: денят се брои, щом настъпи.
+    //    ПЪТ НАЗАД: махни `&& d <= днесП`.
+    const днесП = today();
+    const дниП = Object.keys(пелени).filter(d => { const x = пелени[d] || {}; return (+x.wet || 0) + (+x.dirty || 0) > 0 && d <= днесП; });
     if (дниП.length >= 3) {
       const общо = дниП.reduce((s, d) => { const x = пелени[d] || {}; return s + (+x.wet || 0) + (+x.dirty || 0); }, 0);
       редове.push(['💧', 'пелени', Math.round(общо / дниП.length) + ' бр.', 'средно на ден, от ' + дниП.length + ' записани дни']);

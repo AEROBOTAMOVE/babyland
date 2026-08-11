@@ -1,0 +1,11 @@
+{
+  "version": "0.0.1",
+  "configurations": [
+    {
+      "name": "babyland",
+      "runtimeExecutable": "perl",
+      "runtimeArgs": ["dev/statichttp.pl", "8794"],
+      "port": 8794
+    }
+  ]
+}

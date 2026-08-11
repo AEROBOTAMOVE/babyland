@@ -1,4 +1,75 @@
 // ═══════════════════════════════════════════════════════════
+// 👀 НАБЛЮДАТЕЛЯТ НА „ПОЯВЯВАНЕТО" — тук, а не в js/app.js
+//
+// ЗАЩО ЖИВЕЕ В ЧУЖД ФАЙЛ (11.08, измерено, не предположено):
+//   .reveal е opacity:0 (css/style.css:324). Единственият, който му слагаше
+//   .shown, беше IntersectionObserver-ът в js/app.js — а app.js е скрипт
+//   №91 от 93, и деветдесет и трите са БЛОКИРАЩИ (0 с defer/async, броено
+//   в жив браузър). Тоест всичко на екрана чакаше 3.2 MB JavaScript.
+//
+//   Измерено на localhost, БЕЗ мрежова забава (Resource Timing):
+//     js/store.js  (скрипт №2)  готов на 102 ms
+//     js/app.js    (скрипт №91) готов на 451 ms
+//   → 4.4 пъти по-рано. На 3G разликата не е 350 ms, а секунди: store.js е
+//     9 KB и идва пръв, докато app.js чака да се изтеглят всичките 3.2 MB.
+//
+//   Не е само първият екран: наблюдателят работи и при СКРОЛ. Затова
+//   местенето на самия наблюдател лекува и това, което мама доскролва през
+//   тези секунди — нещо, което CSS-заобикалката за героя не може.
+//
+// ТОВА Е КВАРТИРАНТ. Мястото му е в собствен файл, но нов <script> ред
+// иска index.html, който е заключен. Щом главният сложи defer на скриптовете
+// (истинският лек), този блок може да се върне в app.js.
+//
+// ПЪТ НАЗАД: изтрий целия блок и върни в js/app.js старите редове:
+//   const revealEls = document.querySelectorAll('.reveal');
+//   const io = new IntersectionObserver(...); revealEls.forEach(el => io.observe(el));
+// Нищо друго не зависи от него освен онези 2 реда в app.js.
+// ═══════════════════════════════════════════════════════════
+(function () {
+  'use strict';
+
+  // Без IntersectionObserver (много стар телефон) нищо да не остане скрито.
+  if (!('IntersectionObserver' in window)) {
+    const всички = () => document.querySelectorAll('.reveal').forEach(el => el.classList.add('shown'));
+    всички();
+    window.BL_REVEAL = { sweep: всички, observe: всички };
+    return;
+  }
+
+  const видяни = new WeakSet();   // за да не наблюдаваме един елемент два пъти
+
+  const io = new IntersectionObserver((entries) => {
+    entries.forEach((entry) => {
+      if (!entry.isIntersecting) return;
+      const el = entry.target;
+      // стъпаловидно: всяко следващо братче тръгва 90 ms по-късно
+      const братя = el.parentElement
+        ? [...el.parentElement.children].filter(c => c.classList.contains('reveal'))
+        : [];
+      const idx = братя.indexOf(el);
+      el.style.transitionDelay = `${Math.max(0, idx) * 90}ms`;
+      el.classList.add('shown');
+      io.unobserve(el);
+    });
+  }, { threshold: 0.15 });
+
+  function observe(el) {
+    if (!el || видяни.has(el)) return;
+    видяни.add(el);
+    io.observe(el);
+  }
+
+  // досбира всички .reveal, които още не са под наблюдение
+  function sweep(root) {
+    (root || document).querySelectorAll('.reveal').forEach(observe);
+  }
+
+  sweep();                                  // статичните от index.html — веднага
+  window.BL_REVEAL = { sweep, observe };    // app.js досбира появилите се после
+})();
+
+// ═══════════════════════════════════════════════════════════
 // STORE — желязната основа (план 15, Д1) 🧱
 // Снимките и звуците се местят ТИХО от localStorage (5 MB таван)
 // в IndexedDB (стотици MB). Никой друг модул не се променя:

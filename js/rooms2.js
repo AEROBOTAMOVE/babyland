@@ -1157,6 +1157,9 @@
       const row = el('div', 'dv-firstrow');
       const lbl = el('span', 'dv-firstlbl', f);
       const di = el('input', 'jr-word'); di.type = 'date'; di.max = today(); di.value = fdata[f] || '';
+      // ♿ 11.08 (клавиатура-четец): етикетът стои в съседен <span>, който не сочи
+      //    към полето — четецът редеше седем пъти „поле за дата" едно след друго.
+      di.setAttribute('aria-label', 'Дата: ' + f);
       di.addEventListener('change', () => { if (di.value) fdata[f] = di.value; else delete fdata[f]; save('bl_firsts', fdata); if (di.value) { row.classList.add('pp'); setTimeout(() => row.classList.remove('pp'), 400); if (window.BL_FX) { BL_FX.confetti(row); BL_FX.cheer(f.replace(/^\S+\s/, '') + '! 🎉'); } } });
       row.appendChild(lbl); row.appendChild(di);
       fBox.appendChild(row);
@@ -2050,6 +2053,9 @@
       const head = el('div', 'cl-head');
       head.innerHTML = `<strong>${esc(L.name)}</strong><span>${L.items.filter(i => i.done).length}/${L.items.length}</span>`;
       const del = el('button', 'nt-del', '🗑'); del.type = 'button';
+      // ♿ 11.08 (клавиатура-четец): кошчето беше само картинка — при няколко
+      //    списъка четецът не казваше КОЙ ще изтрие.
+      del.setAttribute('aria-label', 'Изтрий списъка „' + L.name + '“');
       del.addEventListener('click', () => { (window.BL_UI ? BL_UI.confirm('Да изтрия ли списъка „' + L.name + '“?', { emoji: '🗑', okText: 'Изтрий', cancelText: 'Остави', danger: true }) : Promise.resolve(confirm('Да изтрия ли списъка „' + L.name + '“?'))).then(да => { if (да) { lists.splice(li, 1); save('bl_custom_lists', lists); drawAll(); } }); });
       head.appendChild(del);
       box.appendChild(head);
@@ -2068,7 +2074,9 @@
       box.appendChild(ul);
       const ar = el('div', 'jr-addrow');
       const ai = el('input', 'jr-word'); ai.type = 'text'; ai.maxLength = 80; ai.placeholder = 'Добави точка…';
+      ai.setAttribute('aria-label', 'Нова точка в „' + L.name + '“');
       const ab = el('button', 'jr-chip', '+'); ab.type = 'button';
+      ab.setAttribute('aria-label', 'Добави точката в „' + L.name + '“');
       ab.addEventListener('click', () => { const v = ai.value.trim(); if (!v) return; L.items.push({ t: v, done: false }); save('bl_custom_lists', lists); drawAll(); });
       ai.addEventListener('keydown', e => { if (e.key === 'Enter') { e.preventDefault(); ab.click(); } });
       ar.appendChild(ai); ar.appendChild(ab);

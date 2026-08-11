@@ -452,9 +452,9 @@
         // Б8.5: водещото име носи коронка — гласуването значи нещо
         const корона = място === 0 && (it.m + it.t) > 0 ? ' 👑' : '';
         row.innerHTML = `<strong class="nm-name">${esc(it.n)}${корона}</strong>
-          <button class="nm-vote" data-w="m" type="button">🌸 ${+it.m || 0}</button>
-          <button class="nm-vote" data-w="t" type="button">💙 ${+it.t || 0}</button>
-          <button class="nt-del" type="button">🗑</button>`;
+          <button class="nm-vote" data-w="m" type="button" aria-label="Първи глас за „${esc(it.n)}“">🌸 ${+it.m || 0}</button>
+          <button class="nm-vote" data-w="t" type="button" aria-label="Втори глас за „${esc(it.n)}“">💙 ${+it.t || 0}</button>
+          <button class="nt-del" type="button" aria-label="Махни името „${esc(it.n)}“">🗑</button>`;
         row.querySelectorAll('.nm-vote').forEach(b => b.addEventListener('click', () => {
           // броячът НЕ бива да зацикля на 6-то докосване (одит-флот П23, проход
           // 2 №16): 6-ти глас връщаше на 0 и короната скачаше тихо на друго име
@@ -491,7 +491,7 @@
       items.slice().reverse().forEach((it, ri) => {
         const idx = items.length - 1 - ri;
         const row = el('div', 'nt-row');
-        row.innerHTML = `<div class="nt-txt">🎵 ${esc(it.t)}</div><div class="nt-meta"><span>${dstr(it.d)}</span><button class="nt-del" type="button">🗑</button></div>`;
+        row.innerHTML = `<div class="nt-txt">🎵 ${esc(it.t)}</div><div class="nt-meta"><span>${dstr(it.d)}</span><button class="nt-del" type="button" aria-label="Махни „${esc(it.t)}“ от списъка">🗑</button></div>`;
         row.querySelector('.nt-del').addEventListener('click', () => { items.splice(idx, 1); save('bl_playlist', items); draw(); });
         list.appendChild(row);
       });
@@ -639,7 +639,13 @@
     const nur = load('bl_nursing', []);
     if (nur.length) { const m = nur.reduce((a, x) => x.dur > a.dur ? x : a); const durTxt = m.dur >= 60 ? Math.round(m.dur / 60) + ' мин' : m.dur + ' сек'; recs.push(`🤱 Най-дълго хранене: <strong>${durTxt}</strong> (${dstr(m.ts)})`); }
     const dip = load('bl_diapers', {});
-    const dk = Object.keys(dip);
+    // 🟡 11.08 (обиколка във времето): рекордът се вадеше и от ден-ключ с БЪДЕЩА
+    //    дата. Измерено наживо: bl_diapers['2026-08-13'] при днешна дата 11.08 →
+    //    „💧 Пелени-рекорд: 11 за ден (13.08.2026 г.)“ — рекорд, постигнат
+    //    вдругиден. Нищо не се трие: щом денят дойде, рекордът си идва сам.
+    //    ПЪТ НАЗАД: върни `const dk = Object.keys(dip);`.
+    const днесРек = today();
+    const dk = Object.keys(dip).filter(k => k <= днесРек);
     // 🟡 11.08 (обиколка във времето): датата тук излизаше сурова („2026-08-13“),
     //    а редът точно над нея пише „13.08.2026 г.“ — един и същи ден, два езика.
     //    Ключът е 'YYYY-MM-DD'; 'T12:00' пази деня при всяка часова зона.
@@ -791,7 +797,10 @@
   }
 
   // 🌈 Дъгата на седмицата
-  const RAINBOW = [['red', '🍅', '#e8574f'], ['orange', '🥕', '#f2913d'], ['yellow', '🍌', '#f2c53d'], ['green', '🥦', '#5cab6d'], ['purple', '🫐', '#8a6fc9'], ['white', '🥛', '#c9c3bd']];
+  // ♿ 11.08 (клавиатура-четец): шестте чипа бяха само емоджи, а единственото им
+  //    име беше `title = 'Ядохме ' + k` — тоест „Ядохме red". Четвъртата колонка е
+  //    името по нашенски: то влиза и във видимата подсказка, и в името за четеца.
+  const RAINBOW = [['red', '🍅', '#e8574f', 'червено'], ['orange', '🥕', '#f2913d', 'оранжево'], ['yellow', '🍌', '#f2c53d', 'жълто'], ['green', '🥦', '#5cab6d', 'зелено'], ['purple', '🫐', '#8a6fc9', 'лилаво'], ['white', '🥛', '#c9c3bd', 'бяло']];
   function rainbowCard() {
     const c = card('Дъгата на седмицата 🌈 <span class="jr-sub">яжте цветовете — дъгата се пълни</span>');
     const data = load('bl_rainbow', {});
@@ -812,9 +821,11 @@
     svg += `</svg><p class="cs-note rb-count">${data.cols.length} / ${RAINBOW.length} цвята тази седмица</p>`;
     box.innerHTML = svg;
     const colOf = k => (RAINBOW.find(x => x[0] === k) || [])[2] || '#e8e2f0';
-    RAINBOW.forEach(([k, e]) => {
+    RAINBOW.forEach(([k, e, , име]) => {
       const b = el('button', 'jr-chip' + (data.cols.includes(k) ? ' on' : ''), e); b.type = 'button';
-      b.title = 'Ядохме ' + k;
+      b.title = 'Ядохме ' + име;
+      b.setAttribute('aria-label', 'Ядохме ' + име);
+      b.setAttribute('aria-pressed', data.cols.includes(k) ? 'true' : 'false');
       b.addEventListener('click', () => {
         const path = box.querySelector(`path[data-k="${k}"]`);
         if (data.cols.includes(k)) {
@@ -828,6 +839,7 @@
         save('bl_rainbow', data);
         const n = box.querySelector('.rb-count'); if (n) n.textContent = `${data.cols.length} / ${RAINBOW.length} цвята тази седмица`;
         b.classList.toggle('on');
+        b.setAttribute('aria-pressed', data.cols.includes(k) ? 'true' : 'false');
       });
       row.appendChild(b);
     });
@@ -867,6 +879,7 @@
     const addRow = el('div', 'jr-addrow');
     const inp = el('input', 'jr-word'); inp.placeholder = 'добави алерген ръчно…'; inp.maxLength = 30;
     const add = el('button', 'jr-chip', '+'); add.type = 'button';
+    add.setAttribute('aria-label', 'Добави алергена в паспорта');
     add.addEventListener('click', () => { const v = inp.value.trim(); if (!v) return; manual.push(v); save('bl_allergy_manual', manual); inp.value = ''; draw(); });
     addRow.appendChild(inp); addRow.appendChild(add);
     const pr = el('button', 'jr-btn', '🖨️ Направи картичката'); pr.type = 'button';
@@ -908,6 +921,7 @@
     let items = load('bl_temps', []);
     const row = el('div', 'jr-addrow');
     const inp = el('input', 'jr-word'); inp.type = 'number'; inp.step = '0.1'; inp.placeholder = '37.2…';
+    inp.setAttribute('aria-label', 'Температура в градуси');
     const add = el('button', 'jr-chip', '+ Запиши'); add.type = 'button';
     row.appendChild(inp); row.appendChild(add);
     const box = el('div', 'tp-box');
@@ -966,7 +980,7 @@
       items.slice(-8).reverse().forEach((it, ri) => {
         const idx = items.length - 1 - items.slice(-8).reverse().indexOf(it) - 0; // stable enough for delete-by-object
         const row = el('div', 'nt-row');
-        row.innerHTML = `<div class="nt-txt">💊 ${esc(it.n)}</div><div class="nt-meta"><span>${new Date(it.ts).toLocaleString('bg-BG')}</span><button class="nt-del" type="button">🗑</button></div>`;
+        row.innerHTML = `<div class="nt-txt">💊 ${esc(it.n)}</div><div class="nt-meta"><span>${new Date(it.ts).toLocaleString('bg-BG')}</span><button class="nt-del" type="button" aria-label="Махни записа „${esc(it.n)}“">🗑</button></div>`;
         row.querySelector('.nt-del').addEventListener('click', () => { const i = items.indexOf(it); if (i > -1) items.splice(i, 1); save('bl_meds', items); draw(); });
         list.appendChild(row);
       });
@@ -1025,7 +1039,11 @@
     const addRow = el('div', 'jr-addrow');
     const inp = el('input', 'jr-word'); inp.placeholder = 'напр. „физиологичен серум“'; inp.maxLength = 40;
     const dt = el('input', 'jr-word ph-date'); dt.type = 'date';
+    // ♿ 11.08 (клавиатура-четец): при type=date подсказката не се показва — полето
+    //    стоеше без име, а „+" не казваше какво добавя.
+    dt.setAttribute('aria-label', 'Дата на изтичане');
     const add = el('button', 'jr-chip', '+'); add.type = 'button';
+    add.setAttribute('aria-label', 'Добави го в аптечката');
     addRow.appendChild(inp); addRow.appendChild(dt); addRow.appendChild(add);
     const list = el('div', 'nt-list');
     // 🔴 11.08 (обиколка като майка): „Аптечка бърз старт“ пише направо в
@@ -1049,7 +1067,7 @@
           else if (dl < 30) { expCls = ' ph-soon'; expTxt = '⏳ изтича до месец'; }
         }
         const row = el('div', 'nt-row' + expCls);
-        row.innerHTML = `<div class="nt-txt">${esc(it.n)}</div><div class="nt-meta"><span>${expTxt}</span><button class="nt-del" type="button">🗑</button></div>`;
+        row.innerHTML = `<div class="nt-txt">${esc(it.n)}</div><div class="nt-meta"><span>${expTxt}</span><button class="nt-del" type="button" aria-label="Махни „${esc(it.n)}“ от аптечката">🗑</button></div>`;
         row.querySelector('.nt-del').addEventListener('click', () => { items.splice(idx, 1); save('bl_pharmacy', items); draw(); });
         list.appendChild(row);
       });
@@ -1100,6 +1118,7 @@
     const addRow = el('div', 'jr-addrow');
     const inp = el('input', 'jr-word'); inp.placeholder = 'заглавие…'; inp.maxLength = 60;
     const add = el('button', 'jr-chip', '+'); add.type = 'button';
+    add.setAttribute('aria-label', 'Добави книжката в списъка');
     addRow.appendChild(inp); addRow.appendChild(add);
     const list = el('div', 'nt-list');
     add.addEventListener('click', () => {
@@ -1111,7 +1130,7 @@
       items.slice().sort((a, b) => b.fav - a.fav).forEach(it => {
         const row = el('div', 'nt-row');
         row.innerHTML = `<div class="nt-txt">📖 ${esc(it.t)} ${it.fav ? '💜' : ''}</div>
-          <div class="nt-meta"><button class="jr-chip bk-fav" type="button">${it.fav ? 'Любима 💜' : 'направи любима'}</button><button class="nt-del" type="button">🗑</button></div>`;
+          <div class="nt-meta"><button class="jr-chip bk-fav" type="button" aria-label="${it.fav ? 'Махни „' + esc(it.t) + '“ от любимите' : 'Направи „' + esc(it.t) + '“ любима'}">${it.fav ? 'Любима 💜' : 'направи любима'}</button><button class="nt-del" type="button" aria-label="Махни „${esc(it.t)}“ от книжките">🗑</button></div>`;
         row.querySelector('.bk-fav').addEventListener('click', () => { it.fav = !it.fav; save('bl_books', items); draw(); });
         row.querySelector('.nt-del').addEventListener('click', () => { items.splice(items.indexOf(it), 1); save('bl_books', items); draw(); });
         list.appendChild(row);
@@ -1128,7 +1147,11 @@
     const c = card('Конвертори 🔄 <span class="jr-sub">мл ↔ унции · размери · вода за банята</span>');
     const r1 = el('div', 'cv-row');
     const ml = el('input', 'jr-word'); ml.type = 'number'; ml.placeholder = 'мл';
+    ml.setAttribute('aria-label', 'Милилитри');
     const oz = el('input', 'jr-word'); oz.type = 'number'; oz.placeholder = 'oz';
+    // ♿ 11.08 (клавиатура-четец): подсказката „oz" е чуждица — четецът я срича
+    //    буква по буква и не се разбира, че са унции.
+    oz.setAttribute('aria-label', 'Унции');
     ml.addEventListener('input', () => { oz.value = ml.value ? (ml.value / 29.5735).toFixed(1) : ''; });
     oz.addEventListener('input', () => { ml.value = oz.value ? Math.round(oz.value * 29.5735) : ''; });
     r1.appendChild(ml); r1.appendChild(el('span', 'cv-eq', '↔')); r1.appendChild(oz);

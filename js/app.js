@@ -43,20 +43,13 @@ document.addEventListener('visibilitychange', () => { if (!document.hidden) refr
 })();
 
 // ── Появяване на елементите при скрол (стъпаловидно) ──
-const revealEls = document.querySelectorAll('.reveal');
-const io = new IntersectionObserver((entries) => {
-  entries.forEach((entry) => {
-    if (entry.isIntersecting) {
-      const el = entry.target;
-      const siblings = [...el.parentElement.children].filter(c => c.classList.contains('reveal'));
-      const idx = siblings.indexOf(el);
-      el.style.transitionDelay = `${Math.max(0, idx) * 90}ms`;
-      el.classList.add('shown');
-      io.unobserve(el);
-    }
-  });
-}, { threshold: 0.15 });
-revealEls.forEach(el => io.observe(el));
+// Наблюдателят вече е вдигнат в js/store.js — скрипт №2 от 93, не №91 — за да
+// не чака целият екран 3.2 MB JavaScript (измерено: 102 ms срещу 451 ms на
+// localhost). Тук само досбираме .reveal-ите, появили се между двата скрипта.
+// Резервата не е „нищо": ако store.js липсва, показваме всичко, вместо мама да
+// гледа празна страница.
+if (window.BL_REVEAL) BL_REVEAL.sweep();
+else document.querySelectorAll('.reveal').forEach(el => el.classList.add('shown'));
 
 // ── Диригент на сцените: играят само когато се виждат ──
 // (SMIL пътечките тръгват с beginElement, за да са в синхрон с CSS цикъла)

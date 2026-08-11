@@ -213,6 +213,10 @@
     const spawner = setInterval(() => {
       if (!alive) return;
       const b = el('button', 'bub'); b.type = 'button';
+      // ♿ 11.08 (клавиатура-четец): балончетата са безименни бутони, които сами
+      //    се раждат и умират — четецът ги брои като „бутон, бутон, бутон" и
+      //    затрупва изхода. Играта е чисто визуална: не влизат в обхождането.
+      b.setAttribute('aria-hidden', 'true'); b.tabIndex = -1;
       const size = 44 + Math.random() * 40;
       b.style.cssText = `left:${5 + Math.random() * 85}%; width:${size}px; height:${size}px; background:${colors[Math.floor(Math.random() * colors.length)]}; animation-duration:${4.5 + Math.random() * 3}s;`;
       b.addEventListener('pointerdown', () => {

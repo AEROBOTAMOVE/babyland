@@ -105,7 +105,7 @@
       st.slice().reverse().forEach((x, ri) => {
         const i = st.length - 1 - ri;
         const row = el('div', 'nl-row');
-        row.innerHTML = `<span class="nl-x">🚫</span><span class="nl-t">${esc(x.t)}</span><button class="nt-del" type="button">🗑</button>`;
+        row.innerHTML = `<span class="nl-x">🚫</span><span class="nl-t">${esc(x.t)}</span><button class="nt-del" type="button" aria-label="Махни „${esc(x.t)}“ от списъка">🗑</button>`;
         row.querySelector('.nt-del').addEventListener('click', () => { st.splice(i, 1); save('bl_wm_notlist', st); рисувай(); });
         list.appendChild(row);
       });

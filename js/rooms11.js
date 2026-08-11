@@ -168,7 +168,7 @@
       st.slice().reverse().slice(0, 20).forEach((x, ri) => {
         const i = st.length - 1 - ri;
         const row = el('div', 'tl-row');
-        row.innerHTML = `<span class="tl-date">${x.d}</span><span class="tl-txt">${esc(x.t)}</span><button class="nt-del" type="button" data-i="${i}">🗑</button>`;
+        row.innerHTML = `<span class="tl-date">${x.d}</span><span class="tl-txt">${esc(x.t)}</span><button class="nt-del" type="button" data-i="${i}" aria-label="Махни „${esc(x.t)}“ от ${esc(x.d)}">🗑</button>`;
         row.querySelector('.nt-del').addEventListener('click', () => { st.splice(i, 1); save('bl_lab_timeline', st); рисувай(); });
         list.appendChild(row);
       });

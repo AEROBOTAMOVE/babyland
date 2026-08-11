@@ -327,7 +327,7 @@
       st.slice().reverse().slice(0, 12).forEach((x, ri) => {
         const i = st.length - 1 - ri;
         const row = el('div', 'lg-row');
-        row.innerHTML = `<span class="lg-e">😄</span><span class="lg-t">${esc(x.t)}<small>${esc(x.d)}</small></span><button class="nt-del" type="button">🗑</button>`;
+        row.innerHTML = `<span class="lg-e">😄</span><span class="lg-t">${esc(x.t)}<small>${esc(x.d)}</small></span><button class="nt-del" type="button" aria-label="Махни „${esc(x.t)}“ от ${esc(x.d)}">🗑</button>`;
         row.querySelector('.nt-del').addEventListener('click', () => { st.splice(i, 1); save('bl_laughs', st); рисувай(); });
         list.appendChild(row);
       });

@@ -45,6 +45,11 @@
         const пълна = i < data.n;
         const b = el('button', 'wt-cup' + (пълна ? ' full' : ''), пълна ? '💧' : '🥛');
         b.type = 'button';
+        // ♿ 11.08 (клавиатура-четец): чашките бяха само картинка — четецът редеше
+        //    „бутон, бутон, бутон" и не се разбираше коя по ред е. Състоянието
+        //    върви през aria-pressed, за да не се брои какво НЕ е изпито.
+        b.setAttribute('aria-label', 'Чаша ' + (i + 1));
+        b.setAttribute('aria-pressed', пълна ? 'true' : 'false');
         b.addEventListener('click', () => {
           if (data.d !== today()) { data = { d: today(), n: 0 }; }   // виж бележката при мл
           data.n = i < data.n ? i : i + 1; // цъкаш последната пълна → маха я

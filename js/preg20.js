@@ -199,6 +199,9 @@
     // 1) датата (от „Следващият преглед“, същият ключ bl_events)
     const ред = el('div', 'jr-addrow');
     const dt = el('input', 'jr-word'); dt.type = 'date'; dt.min = new Date().toISOString().slice(0, 10);
+    // ♿ 11.08 (клавиатура-четец): при type=date подсказка не се показва — полето
+    //    стоеше без име.
+    dt.setAttribute('aria-label', 'Дата на следващия преглед');
     const зап = el('button', 'jr-chip', 'Запази датата'); зап.type = 'button';
     ред.appendChild(dt); ред.appendChild(зап);
     const инфо = el('p', 'cs-note', '');
@@ -340,6 +343,9 @@
     c.innerHTML = `<h4 class="jr-title">Спомен на седмицата 🫧 <span class="jr-sub">едно изречение — после струва злато</span></h4>
       <p class="cs-note">${esc(с[2])}</p>`;
     const п = el('textarea', 'jr-paper'); п.rows = 2; п.maxLength = 300;
+    // ♿ 11.08 (клавиатура-четец): полето стоеше под заглавие, което не сочи към
+    //    него — четецът казваше само „поле за текст".
+    п.setAttribute('aria-label', 'Споменът от тази седмица');
     п.value = запазени[ключ] || '';
     const б = el('button', 'jr-chip', запазени[ключ] ? '✔ Записано — промени' : '💜 Запиши го'); б.type = 'button';
     б.addEventListener('click', () => {

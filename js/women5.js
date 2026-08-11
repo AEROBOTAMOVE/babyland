@@ -85,6 +85,8 @@
     });
     действия.appendChild(принт);
     const дата = el('input', 'jr-word'); дата.type = 'date'; дата.min = today();
+    // ♿ 11.08 (клавиатура-четец): при type=date подсказка не се показва.
+    дата.setAttribute('aria-label', 'Дата на твоя преглед');
     const запиши = el('button', 'jr-chip', '📅 Запиши датата'); запиши.type = 'button';
     запиши.addEventListener('click', () => {
       if (!дата.value) return;
@@ -196,6 +198,7 @@
 
     const ред = el('div', 'jr-addrow');
     const дата = el('input', 'jr-word'); дата.type = 'date'; дата.min = today(); дата.value = st.date || '';
+    дата.setAttribute('aria-label', 'Датата на твоята вечер');
     const какво = el('input', 'jr-word'); какво.placeholder = 'какво…'; какво.maxLength = 60; какво.value = st.what || '';
     ред.appendChild(дата); ред.appendChild(какво);
     const линия = el('p', 'wm-evline', '');

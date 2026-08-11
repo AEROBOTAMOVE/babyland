@@ -58,6 +58,9 @@
           опции.запази(); рисувай();
         });
         const трий = el('button', 'jr-x', '✕'); трий.type = 'button';
+        // ♿ 11.08 (клавиатура-четец): списъкът дава десетина еднакви „✕" — четецът
+        //    не казваше кое ще махне, а тапът е необратим.
+        трий.setAttribute('aria-label', 'Махни „' + (typeof x === 'string' ? x : x.t) + '“');
         трий.addEventListener('click', () => { данни.splice(i, 1); опции.запази(); рисувай(); });
         ред.appendChild(б); ред.appendChild(трий); кутия.appendChild(ред);
       });
@@ -176,6 +179,8 @@
 
     const редД = el('div', 'jr-addrow');
     const дата = el('input', 'jr-word'); дата.type = 'date'; дата.value = st.date || '';
+    // ♿ 11.08 (клавиатура-четец): при type=date подсказка не се показва.
+    дата.setAttribute('aria-label', 'Първият работен ден');
     редД.appendChild(дата);
     const лента = el('div', 'wm-count');
     const рисувайЛента = () => {
@@ -223,6 +228,9 @@
       'В телефона ти има хиляда снимки на него и нито една на теб с него. Знам защо: ти държиш телефона, косата ти е мазна и си казала „ще се снимам, като отслабна“. Само че той след двайсет години няма да търси снимка, на която си слаба. Ще търси снимка, на която те има.'));
     const st = load('bl_wm_inframe', {});
     const слот = el('button', 'wm-slot'); слот.type = 'button';
+    // ♿ 11.08 (клавиатура-четец): голямото квадратче е бутон, който отваря
+    //    галерията — а при първо рисуване стои празно и няма как да се разбере.
+    слот.setAttribute('aria-label', 'Сложи снимка на теб за този месец');
     const лента = el('div', 'wm-strip');
     const вход = el('input'); вход.type = 'file'; вход.accept = 'image/*'; вход.hidden = true;
 
@@ -366,6 +374,7 @@
         const ред = el('div', 'jr-winrow');
         ред.innerHTML = '<span class="jr-win">„' + esc(x.t) + '“</span>';
         const трий = el('button', 'jr-x', '✕'); трий.type = 'button';
+        трий.setAttribute('aria-label', 'Махни „' + x.t + '“');
         трий.addEventListener('click', () => { st.splice(i, 1); save('bl_wm_replies', st); рисувайМои(); });
         ред.appendChild(трий); мои.appendChild(ред);
       });
@@ -373,6 +382,7 @@
     const ред = el('div', 'jr-addrow');
     const вход = el('input', 'jr-word'); вход.placeholder = 'моето изречение…'; вход.maxLength = 140;
     const плюс = el('button', 'jr-chip', '+'); плюс.type = 'button';
+    плюс.setAttribute('aria-label', 'Запази моето изречение');
     const сложи = () => { const v = вход.value.trim(); if (!v) return; st.push({ t: v.slice(0, 140), d: today() }); save('bl_wm_replies', st); вход.value = ''; рисувайМои(); fx().buzz(10); };
     плюс.addEventListener('click', сложи);
     вход.addEventListener('keydown', e => { if (e.key === 'Enter') { e.preventDefault(); сложи(); } });

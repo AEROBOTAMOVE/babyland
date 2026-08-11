@@ -134,7 +134,7 @@
     }
     let i = седмици.length - 1;
     const стая = el('div', 'bs-stage');
-    const cap = el('p', 'bs-cap', '');
+    const cap = el('p', 'bs-cap', ''); cap.setAttribute('aria-live', 'polite');
     const рисувай = () => {
       const w = седмици[i];
       стая.innerHTML = `<img src="${photos[w]}" alt="коремче на ${w} седмица">`;
@@ -143,6 +143,10 @@
     const ред = el('div', 'bs-ctrl');
     const назад = el('button', 'bs-b', '‹'); назад.type = 'button';
     const напред = el('button', 'bs-b', '›'); напред.type = 'button';
+    // ♿ 11.08 (клавиатура-четец): двете стрелки бяха само знак; коя седмица се
+    //    гледа, стои в отделен надпис до тях.
+    назад.setAttribute('aria-label', 'Предишната седмица');
+    напред.setAttribute('aria-label', 'Следващата седмица');
     const игра = el('button', 'jr-chip', '▶ Пусни лентата'); игра.type = 'button';
     назад.addEventListener('click', () => { i = (i - 1 + седмици.length) % седмици.length; рисувай(); });
     напред.addEventListener('click', () => { i = (i + 1) % седмици.length; рисувай(); });

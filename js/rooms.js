@@ -161,8 +161,12 @@
     const range = el('input', 'jr-range');
     range.type = 'range'; range.min = 0; range.max = 100;
     range.value = checkins[t] ? checkins[t].e : 50;
+    // ♿ 11.08 (клавиатура-четец): плъзгачът се четеше като голо число от 0 до 100
+    //    — надписът „🔋 Енергия" стои до него, но не сочи към него.
+    range.setAttribute('aria-label', 'Енергия днес, в проценти');
+    range.setAttribute('aria-valuetext', range.value + '%');
     const eVal = el('span', 'jr-eval', range.value + '%');
-    range.addEventListener('input', () => { eVal.textContent = range.value + '%'; });
+    range.addEventListener('input', () => { eVal.textContent = range.value + '%'; range.setAttribute('aria-valuetext', range.value + '%'); });
     enRow.appendChild(range); enRow.appendChild(eVal);
     c1.appendChild(enRow);
 
@@ -233,7 +237,12 @@
         const rec = checkins[key];
         const cell = el('button', 'jr-day' + (key === t ? ' today' : '') + (rec ? ' ck-d' + rec.m : ''), rec ? MOODS[rec.m] : '·');
         cell.type = 'button';
-        cell.title = key;
+        // ♿ 11.08 (клавиатура-четец): подсказката беше суровата дата „2026-08-11",
+        //    а навсякъде другаде в стаята датите са по нашенски. Седемте кутийки
+        //    се четяха като „точка, точка, точка".
+        const пони = key.slice(8, 10) + '.' + key.slice(5, 7);
+        cell.title = пони;
+        cell.setAttribute('aria-label', пони + (rec ? ' — има записано' : ''));
         cell.addEventListener('click', () => {
           if (rec) {
             // w е текст на мама → само textContent, никога innerHTML

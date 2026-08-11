@@ -156,12 +156,12 @@
     const R = collect();
     const baby = getBaby();
     let html = `<div class="rv-panel"><div class="rv-head"><h3>🌊 Историята ни</h3>
-      <span class="rv-count">${R.length} мига</span><button class="rv-close" type="button">✕</button></div>
+      <span class="rv-count">${R.length} мига</span><button class="rv-close" type="button" aria-label="Затвори реката">✕</button></div>
       <div class="rv-add">
         <div class="rv-addrow">
-          <div class="rv-emo" id="rvEmo">${['💜','🌟','😂','🥹','🎉','📸'].map((e, i) => `<button type="button" class="rv-emob${i === 0 ? ' on' : ''}" data-e="${e}">${e}</button>`).join('')}</div>
+          <div class="rv-emo" id="rvEmo">${[['💜','обич'],['🌟','гордост'],['😂','смях'],['🥹','разчувствах се'],['🎉','празник'],['📸','снимка']].map(([e, име], i) => `<button type="button" class="rv-emob${i === 0 ? ' on' : ''}" data-e="${e}" aria-label="${име}" aria-pressed="${i === 0 ? 'true' : 'false'}">${e}</button>`).join('')}</div>
           <input class="rv-addinp" id="rvAddInp" type="text" maxlength="90" placeholder="Добави миг ръчно… (напр. „първи път каза дядо“)">
-          <button class="rv-addbtn" id="rvAddBtn" type="button">+</button>
+          <button class="rv-addbtn" id="rvAddBtn" type="button" aria-label="Добави мига в реката">+</button>
         </div>
       </div>`;
     // 12.9.1 + 12.9.2: търсене и рафтове — реката при 200+ мига иначе е
@@ -219,8 +219,8 @@
     const емоРед = ov.querySelector('#rvEmo');
     емоРед.querySelectorAll('.rv-emob').forEach(b => b.addEventListener('click', () => {
       избранЕмо = b.dataset.e;
-      емоРед.querySelectorAll('.rv-emob').forEach(x => x.classList.remove('on'));
-      b.classList.add('on');
+      емоРед.querySelectorAll('.rv-emob').forEach(x => { x.classList.remove('on'); x.setAttribute('aria-pressed', 'false'); });
+      b.classList.add('on'); b.setAttribute('aria-pressed', 'true');
     }));
     const инп = ov.querySelector('#rvAddInp');
     const добави = () => {

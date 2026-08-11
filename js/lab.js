@@ -469,6 +469,9 @@
     const row = el('div', 'jr-addrow');
     const inp = el('input', 'jr-word'); inp.placeholder = 'или напиши свой въпрос…'; inp.maxLength = 80;
     const add = el('button', 'jr-chip', '🔬'); add.type = 'button';
+    // ♿ 11.08 (клавиатура-четец): микроскопчето беше само картинка — четецът не
+    //    казваше, че то пуска опита.
+    add.setAttribute('aria-label', 'Започни своя опит');
     const warn = el('p', 'lb-warn'); warn.hidden = true;
     inp.addEventListener('keydown', e => { if (e.key === 'Enter') { e.preventDefault(); add.click(); } });  // 3.4.9: Enter = бутона (със същите проверки)
     add.addEventListener('click', () => {
@@ -589,6 +592,7 @@
       const дт = typeof d.d === 'string' && d.d.length === 10 ? d.d.slice(8, 10) + '.' + d.d.slice(5, 7) + '.' + d.d.slice(0, 4) : String(d.d || '');
       row.innerHTML = '<span>' + (d.e || '🔬') + '</span><div><strong>' + esc(d.t) + '</strong><small>' + esc(d.q) + ' · ' + esc(дт) + '</small></div>';
       const del = el('button', 'jr-x', '✕'); del.type = 'button';
+      del.setAttribute('aria-label', 'Махни опита „' + d.t + '“ от списъка');
       del.addEventListener('click', () => { done.splice(i, 1); save(K, st); rerender(); });
       row.appendChild(del); list.appendChild(row);
     });

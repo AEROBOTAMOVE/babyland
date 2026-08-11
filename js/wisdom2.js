@@ -189,7 +189,7 @@
           ${x.о ? `<p class="bm-my">💭 ${esc(x.о)}</p>` : ''}
           <div class="jr-quick">
             <button class="jr-chip bm-add" data-i="${i}" type="button">${x.о ? '✏️ Промени' : '💭 Какво откри?'}</button>
-            <button class="jr-chip bm-del" data-i="${i}" type="button">🗑️</button>
+            <button class="jr-chip bm-del" data-i="${i}" type="button" aria-label="Махни „${esc(x.т)}“ от запазените">🗑️</button>
           </div>
         </div>`).join('');
       списък.querySelectorAll('.bm-add').forEach(b => b.addEventListener('click', () => {

@@ -396,6 +396,9 @@
     const row = el('div', 'jr-addrow');
     const nm = el('input', 'jr-word'); nm.placeholder = 'Името ти'; nm.value = me.name || ''; nm.maxLength = 24;
     const dt = el('input', 'jr-word'); dt.type = 'date'; dt.value = me.birth || ''; dt.max = today();
+    // ♿ 11.08 (клавиатура-четец): при type=date подсказка не се показва — полето
+    //    стоеше без име до „Името ти".
+    dt.setAttribute('aria-label', 'Рождената ти дата');
     row.appendChild(nm); row.appendChild(dt);
     const out = el('p', 'wm-me', '');
     function draw() {
@@ -540,6 +543,9 @@
       const row = el('div', 'jr-addrow');
       const i = el('input', 'jr-word'); i.placeholder = 'Пожелай си нещо…'; i.maxLength = 90;
       const b = el('button', 'jr-chip', '✨'); b.type = 'button';
+      // ♿ 11.08 (клавиатура-четец): звездичката беше само картинка — четецът
+      //    казваше „бутон" и мама нямаше как да разбере, че тя записва желанието.
+      b.setAttribute('aria-label', 'Запази желанието');
       b.addEventListener('click', () => {
         if (!i.value.trim()) return;
         w.push({ t: i.value.trim(), d: today() }); save('bl_moonwish', w); i.value = '';

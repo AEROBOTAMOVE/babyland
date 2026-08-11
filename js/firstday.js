@@ -184,8 +184,8 @@
     const к = el('div', 'fd-q30');
     к.innerHTML = `<span class="fd-qn">🌱 ${ден}/30</span>
       <p class="fd-qt">${esc(ВЪПРОСИ[(ден - 1) % ВЪПРОСИ.length])}</p>
-      <div class="fd-qrow"><input class="fd-qi" type="text" maxlength="140" placeholder="Едно изречение стига…">
-      <button class="fd-qb" type="button">✔</button></div>`;
+      <div class="fd-qrow"><input class="fd-qi" type="text" maxlength="140" placeholder="Едно изречение стига…" aria-label="Отговорът ти за днес">
+      <button class="fd-qb" type="button" aria-label="Запиши отговора">✔</button></div>`;
     const вход = к.querySelector('.fd-qi');
     к.querySelector('.fd-qb').addEventListener('click', () => {
       const т = вход.value.trim();

@@ -253,10 +253,10 @@
       let i = 0;
       const рисувай = () => {
         ов.innerHTML = `<svg viewBox="0 0 100 100" class="bg-svg">${чбКартинка(i)}</svg>
-          <div class="bg-bar"><button class="jr-chip" data-a="p" type="button">‹</button>
-          <span>${ЧБ[i][1]} · ${i + 1}/${ЧБ.length}</span>
-          <button class="jr-chip" data-a="n" type="button">›</button>
-          <button class="jr-chip" data-a="x" type="button">✕</button></div>`;
+          <div class="bg-bar"><button class="jr-chip" data-a="p" type="button" aria-label="Предишната картинка">‹</button>
+          <span aria-live="polite">${ЧБ[i][1]} · ${i + 1}/${ЧБ.length}</span>
+          <button class="jr-chip" data-a="n" type="button" aria-label="Следващата картинка">›</button>
+          <button class="jr-chip" data-a="x" type="button" aria-label="Затвори картинките">✕</button></div>`;
         ов.querySelectorAll('[data-a]').forEach(b => b.addEventListener('click', () => {
           const a = b.dataset.a;
           if (a === 'x') { ов.remove(); return; }
@@ -272,9 +272,9 @@
       const З = [['🐄', 'Мууу'], ['🐕', 'Бау-бау'], ['🐈', 'Мяу'], ['🐓', 'Кукуригу'],
                  ['🐑', 'Бее'], ['🐸', 'Ква-ква'], ['🚗', 'Бррр'], ['🔔', 'Дзън']];
       ов.innerHTML = `<div class="bg-sgrid">${З.map(([e, з]) =>
-        `<button class="bg-sbtn" type="button" data-z="${esc(з)}"><span>${e}</span></button>`).join('')}</div>
-        <div class="bg-bar"><span id="bgSay">Пипни животинка</span>
-        <button class="jr-chip" id="bgX" type="button">✕</button></div>`;
+        `<button class="bg-sbtn" type="button" data-z="${esc(з)}" aria-label="${esc(з)}"><span>${e}</span></button>`).join('')}</div>
+        <div class="bg-bar"><span id="bgSay" aria-live="polite">Пипни животинка</span>
+        <button class="jr-chip" id="bgX" type="button" aria-label="Затвори звуците">✕</button></div>`;
       ов.querySelectorAll('.bg-sbtn').forEach(b => b.addEventListener('click', () => {
         const з = b.dataset.z;
         ов.querySelector('#bgSay').textContent = з + '!';
@@ -302,6 +302,9 @@
       ов.appendChild(в);
       const бар = el('div', 'bg-bar', '<span>Бебето се вижда 👋</span>');
       const x = el('button', 'jr-chip', '✕'); x.type = 'button';
+      // ♿ 11.08 (клавиатура-четец): това е ЕДИНСТВЕНИЯТ изход от огледалото и
+      //    той се казваше само „✕" — камерата остава да свети, ако не се намери.
+      x.setAttribute('aria-label', 'Затвори огледалото и спри камерата');
       x.addEventListener('click', () => { поток.getTracks().forEach(t => t.stop()); ов.remove(); });
       бар.appendChild(x); ов.appendChild(бар);
       // 🚨 камерата ТРЯБВА да спре и ако мама просто затвори стаята

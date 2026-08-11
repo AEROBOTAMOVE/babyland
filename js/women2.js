@@ -62,6 +62,10 @@
     const row = el('div', 'jr-addrow');
     const inp = el('input', 'jr-word'); inp.placeholder = placeholder; inp.maxLength = 70;
     const add = el('button', 'jr-chip', '+'); add.type = 'button';
+    // ♿ 11.08 (клавиатура-четец): този списък-градител се ползва в няколко карти —
+    //    еднакви бутона „плюс", без да личи в КОЙ списък добавят. Името взима
+    //    подканата на самото поле, която вече казва кое е.
+    add.setAttribute('aria-label', 'Добави — ' + placeholder);
     const put = () => { const v = inp.value.trim(); if (!v) return; items.push({ t: v }); save(key, items); inp.value = ''; draw(); };
     add.addEventListener('click', put);
     inp.addEventListener('keydown', e => { if (e.key === 'Enter') { e.preventDefault(); put(); } });
@@ -98,6 +102,9 @@
     [['👕', 'горе'], ['👖', 'долу'], ['👠', 'обувки'], ['💍', 'пръстен'], ['🩱', 'сутиен']].forEach(([e, k]) => {
       const b = el('label', 'wm-size');
       const i = el('input', 'jr-word'); i.value = w.sizes[k] || ''; i.maxLength = 8; i.placeholder = '—';
+      // ♿ 11.08 (клавиатура-четец): подсказката беше тире, а етикетът се пише в
+      //    innerHTML на <label> СЛЕД това — четецът чуваше пет пъти „тире".
+      i.setAttribute('aria-label', 'Размер ' + k);
       i.addEventListener('change', () => { w.sizes[k] = i.value.trim(); save('bl_wm_wardrobe', w); });
       b.innerHTML = '<span>' + e + '</span><small>' + k + '</small>';
       b.appendChild(i); grid.appendChild(b);
@@ -230,6 +237,9 @@
         const row = el('div', 'jr-winrow');
         const b = el('button', 'jr-win', '<span class="jr-check">✨</span> ' + esc(it)); b.type = 'button';
         const del = el('button', 'jr-x', '✕'); del.type = 'button';
+        // ♿ 11.08 (клавиатура-четец): цял списък от еднакви „✕" — четецът не
+        //    казваше кое ще махне, а тапът е необратим.
+        del.setAttribute('aria-label', 'Махни „' + it + '“ от списъка');
         del.addEventListener('click', () => { items.splice(i, 1); save('bl_wm_wish', items); draw(); });
         row.appendChild(b); row.appendChild(del); list.appendChild(row);
       });
@@ -237,6 +247,7 @@
     const row = el('div', 'jr-addrow');
     const inp = el('input', 'jr-word'); inp.placeholder = 'нещо, което искам…'; inp.maxLength = 70;
     const add = el('button', 'jr-chip', '+'); add.type = 'button';
+    add.setAttribute('aria-label', 'Добави го в списъка с желания');
     const put = () => { const v = inp.value.trim(); if (!v) return; items.push(v); save('bl_wm_wish', items); inp.value = ''; draw(); };
     add.addEventListener('click', put);
     inp.addEventListener('keydown', e => { if (e.key === 'Enter') { e.preventDefault(); put(); } });
@@ -359,6 +370,7 @@
         const row = el('div', 'wm-secret');
         row.innerHTML = '<p>' + esc(it.t) + '</p><small>' + it.d + '</small>';
         const del = el('button', 'jr-x', '✕'); del.type = 'button';
+        del.setAttribute('aria-label', 'Махни записа от ' + it.d);
         del.addEventListener('click', () => { items.splice(i, 1); save(key, items); draw(); });
         row.appendChild(del); list.appendChild(row);
       });
@@ -401,6 +413,7 @@
           : '<span>📖</span><div><strong>Отвори се!</strong><p>' + esc(x.t) + '</p><small>писано на ' + x.d + '</small></div>';
         if (left <= 0) {
           const del = el('button', 'jr-x', '✕'); del.type = 'button';
+          del.setAttribute('aria-label', 'Изтрий писмото, писано на ' + x.d);
           // проход 4: писмо, чакано 365 дни, не бива да изчезне от един уморен тап в 3ч.
           del.addEventListener('click', () => {
             (window.BL_UI ? BL_UI.confirm('Да изтрия ли това писмо до себе си? Не се връща.', { emoji: '💌', okText: 'Изтрий', cancelText: 'Остави', danger: true })
