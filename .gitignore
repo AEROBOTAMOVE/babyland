@@ -13,3 +13,4 @@ Thumbs.db
 # работни копия на index.html, докато чакат проверка
 index.html.*
 dev/__*
+dev/_*
