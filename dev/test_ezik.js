@@ -708,12 +708,13 @@
 
   function libФайлове() {
     var имена = {};
-    return fetch('sw.js').then(function (r) { return r.ok ? r.text() : ''; })
+    return вземи('sw.js').catch(function () { return ''; })
       .catch(function () { return ''; })
       .then(function (t) {
         var р = /['"](lib\/[A-Za-z0-9._-]+\.json)['"]/g, m;
         while ((m = р.exec(t)) !== null) имена[m[1]] = true;
-        return fetch('lib/index.json').then(function (r) { return r.ok ? r.json() : null; })
+        return вземи('lib/index.json').then(function (t) { return JSON.parse(t); })
+                 .catch(function () { return null; })
           .catch(function () { return null; });
       })
       .then(function (idx) {
@@ -727,8 +728,19 @@
       });
   }
 
+  // 🪤 12.08 — ТЕСТЪТ МЕРЕШЕ КЕША, НЕ ФАЙЛОВЕТЕ.
+  // Тук стоеше голо `fetch(път)`. Приложението има service worker, който
+  // прихваща заявките и връща СВОЕТО копие. Освен това дев-сървърът праща
+  // last-modified без cache-control, тоест и HTTP кешът държи старо.
+  // Резултат: поправяш 903 кавички, пускаш теста и той пак казва 903.
+  // Или, по-коварното — казва 389: смес от пресни и застояли файлове,
+  // число, което не отговаря на НИКОЕ състояние на проекта.
+  // `cache:'reload'` НЕ помага: service worker-ът прихваща преди кеша.
+  // Единственото, което минава, е уникален адрес за всяко пускане.
+  var КЛЮЧ = String(Date.now()) + '-' + Math.floor(Math.random() * 1e6);
   function вземи(път) {
-    return fetch(път).then(function (r) {
+    var раздел = път.indexOf('?') < 0 ? '?' : '&';
+    return fetch(път + раздел + 'sv=' + КЛЮЧ, { cache: 'no-store' }).then(function (r) {
       if (!r.ok) throw new Error('HTTP ' + r.status);
       return r.text();
     });
