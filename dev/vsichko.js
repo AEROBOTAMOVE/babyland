@@ -25,9 +25,14 @@
     { име: 'флагове',    файл: 'dev/test_flagove.js',    глоб: ['BL_ФЛАГОВЕ', 'BL_FLAGS'] },
     { име: 'отговори',   файл: 'dev/test_otgovori.js',   глоб: ['BL_ОТГОВОРИ', 'BL_ANSWERS'] },
     { име: 'библиотека', файл: 'dev/test_biblioteka.js', глоб: ['BL_БИБЛИОТЕКА', 'BL_LIBTEST'] },
-    { име: 'памет',      файл: 'dev/test_pamet.js',      глоб: ['BL_ПАМЕТ', 'BL_MEMTEST'] },
+    // 🪤 Тези две имена ги бях написал по памет и бяха ГРЕШНИ:
+    // паметта се казва BL_MEMORY (не BL_MEMTEST), езикът BL_EZIK (не BL_LANG).
+    // Сгрешено име тук не гърми — тестът просто „не се експортира“ и
+    // тихо не се пуска. Сверени с реалните редове в самите файлове.
+    { име: 'памет',      файл: 'dev/test_pamet.js',      глоб: ['BL_ПАМЕТ', 'BL_MEMORY'] },
     { име: 'телефон',    файл: 'dev/test_telefon.js',    глоб: ['BL_ТЕЛЕФОН', 'BL_PHONE'] },
-    { име: 'език',       файл: 'dev/test_ezik.js',       глоб: ['BL_ЕЗИК', 'BL_LANG'] }
+    { име: 'език',       файл: 'dev/test_ezik.js',       глоб: ['BL_ЕЗИК', 'BL_EZIK'] },
+    { име: 'заглавия',   файл: 'dev/zaglavia.js',        глоб: ['BL_ЗАГЛАВИЯ', 'BL_TITLES'] }
   ];
 
   function изчакай(ms) { return new Promise(function (r) { setTimeout(r, ms); }); }
@@ -37,14 +42,18 @@
     return null;
   }
 
+  // 🪤 Зареждаше се със <script src>. На жив сървър това 404-ваше мълчаливо
+  // (относителният път се решаваше спрямо адреса на СТРАНИЦАТА, не спрямо
+  // корена), а onload все пак се брои за успех — тестът „се зареждаше“ и
+  // после го нямаше. fetch дава HTTP кода и грешката се вижда.
   function зареди(файл) {
-    return new Promise(function (готово) {
-      var s = document.createElement('script');
-      s.src = файл + '?k=' + Date.now();
-      s.onload = function () { готово(true); };
-      s.onerror = function () { готово(false); };
-      document.body.appendChild(s);
-    });
+    return fetch(файл + '?k=' + Date.now())
+      .then(function (r) {
+        if (!r.ok) throw new Error('HTTP ' + r.status);
+        return r.text();
+      })
+      .then(function (код) { (0, eval)(код); return true; })
+      .catch(function (e) { console.warn('🔴 ' + файл + ' — ' + e.message); return false; });
   }
 
   // Шестте API-та се казват различно. Опитваме познатите имена по ред.
