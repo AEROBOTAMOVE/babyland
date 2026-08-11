@@ -875,7 +875,8 @@
 
 /* ─── ns2 ─── */
 /* ns2 — Моето бебе: премиум растеж-морф по дъга */
-.ns2 .gchip-t { font-size: 11px; font-weight: 700; fill: #b06a86; letter-spacing: .2px; }
+/* fill беше #b06a86 = 3.77:1 върху бялото чипче (под 4.5:1); същото розово, но по-дълбоко */
+.ns2 .gchip-t { font-size: 11px; font-weight: 700; fill: #a04f70; letter-spacing: .2px; }
 .ns2 .n2-sh { fill: #5a3c50; opacity: 0.13; }
 
 /* статично състояние (без .play / reduced-motion): чист единичен герой */
@@ -904,7 +905,12 @@
 .play .ns2 .n2-sprout { animation: n2sway 5s ease-in-out infinite; }
 .play .ns2 .n2-hills  { animation: n2drift 17s ease-in-out infinite; }
 .play .ns2 .n2-spark  { animation: n2tw 3.2s ease-in-out infinite; }
-.play .ns2 .gc1       { animation: n2float 6s ease-in-out infinite; }
+/* ПОПРАВКА: .gchip стои на opacity:0 и се показва само от chipIn (style.css).
+   Тук n2float заместваше целия shorthand и чипчето „Расте пред очите ти"
+   никога не се появяваше. Пускаме и двете — chipIn вдига видимостта,
+   n2float поема носенето след 1.8s. */
+.play .ns2 .gc1       { animation: chipIn 0.7s cubic-bezier(0.34, 1.56, 0.64, 1) 1.1s forwards,
+                                   n2float 6s ease-in-out 1.8s infinite; }
 
 @keyframes n2pose {
   0%   { opacity: 0; transform: scale(.8) translateY(4px); }
@@ -1475,7 +1481,8 @@
    пружина на рафта — всяка блясва. „Всичко ти е подръка."
    ─────────────────────────────────────────────────────────────── */
 .ns7 .n7-em { font-size: 19px; }
-.ns7 .n7-tt { font-size: 11px; font-weight: 800; fill: #4f8a76; letter-spacing: .2px; }
+/* fill беше #4f8a76 = 3.70:1 върху чипчето (под 4.5:1); същото зелено като в ns4 */
+.ns7 .n7-tt { font-size: 11px; font-weight: 800; fill: #37665a; letter-spacing: .2px; }
 .ns7 .n7-item { opacity: 0; }
 .ns7 .n7-spk  { opacity: 0; }
 .ns7 .n7-lid  { transform-origin: left bottom; }
@@ -1572,6 +1579,13 @@
 
 /* ─── ns8 ─── */
 /* ns8 — ЖЕНАТА В МЕН (премиум: изправяне + разцъфване + зодиак) */
+
+/* ПОПРАВКА: „Ти си повече от мама 💃" при 12px мери 146.5 единици, а бялото
+   чипче свършва на x=142 (текстът тръгва от x=22). Последните 26.5 единици
+   висяха върху тъмнолилавото небе — контраст 1.30:1, тоест невидими.
+   10px + 6 единици наляво: широчина 122, от 16 до 138 — вътре в чипчето. */
+.ns8 .gchip-t { font-size: 10px; transform: translateX(-6px); }
+
 .ns8 .n8-body  { transform-box: view-box; transform-origin: 150px 108px; }
 .ns8 .n8-armL  { transform-box: view-box; transform-origin: 145px 66px; }
 .ns8 .n8-armR  { transform-box: view-box; transform-origin: 155px 66px; }
@@ -1638,7 +1652,9 @@
 
 /* ─── ns9 ─── */
 /* ns9 — Лабораторията (премиум) */
-.ns9 .gchip-t { font-size: 8.5px; font-weight: 800; fill: #2f6a5b; }
+/* беше 8.5px → 9.5 екранни пиксела на телефон, най-дребният надпис от деветте.
+   10px пак се събира в чипчето (14…164): 123.5 широчина, край на 149.5. */
+.ns9 .gchip-t { font-size: 10px; font-weight: 800; fill: #2f6a5b; }
 
 /* base (static / reduced-motion composed frame) */
 .ns9 .n9-drop   { opacity: 0; }

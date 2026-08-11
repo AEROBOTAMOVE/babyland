@@ -100,7 +100,14 @@
         const dd = Math.round((x.d - new Date().setHours(0, 0, 0, 0)) / 86400000);
         const дата = x.реална || x.d;
         const when = x.минала ? 'по календара' : dd === 0 ? 'ДНЕС' : dd === 1 ? 'утре' : 'след ' + dd + ' дни';
-        const row = el('div', 'ev-row' + (dd <= 3 ? ' soon' : ''));
+        // 🟠 11.08 (ЖЕСТОКОТО): думите на минал ред казват „отбелязана ли е?“,
+        //    а класът казваше друго. Миналите редове носят d:now САМО за да
+        //    се подредят най-отгоре — оттам dd===0 и всичките получаваха
+        //    „soon“ (оранжев фон + контур = тревога). При бебе на 8 месеца,
+        //    чиято майка не е пипала календара, това са ПЕТ тревожни реда за
+        //    неща, които тя най-вероятно е направила, и НУЛА за истински
+        //    предстоящото под тях. Цветът обвиняваше там, където текстът пита.
+        const row = el('div', 'ev-row' + (!x.минала && dd <= 3 ? ' soon' : ''));
         row.innerHTML = `<span class="ev-e">${x.e}</span><span class="ev-t">${esc(x.t)}<small>${дата.toLocaleDateString('bg-BG')} · ${when}</small></span>` +
           (x.own ? '<button class="nt-del" type="button" aria-label="Изтрий">🗑</button>' : '');
         if (x.own) row.querySelector('.nt-del').addEventListener('click', () => {

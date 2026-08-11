@@ -32,7 +32,11 @@
     const nav = el('div', 'cs-nav');
     const prev = el('button', 'jr-chip', '←'); prev.type = 'button';
     const next = el('button', 'jr-chip', '→'); next.type = 'button';
-    const lbl = el('span', 'cs-lbl', '');
+    // ♿ 11.08 (клавиатура-четец): двете стрелки бяха само знак — четецът казваше
+    //    „бутон“ и толкова, а месецът стои в отделен <span> до тях.
+    prev.setAttribute('aria-label', 'Предишният месец');
+    next.setAttribute('aria-label', 'Следващият месец');
+    const lbl = el('span', 'cs-lbl', ''); lbl.setAttribute('aria-live', 'polite');
     nav.appendChild(prev); nav.appendChild(lbl); nav.appendChild(next);
     const box = el('div', 'cs-box');
     c.appendChild(nav); c.appendChild(box);
@@ -357,6 +361,8 @@
     const addRow = el('div', 'jr-addrow');
     const inp = el('input', 'jr-word'); inp.placeholder = 'своя точка…'; inp.maxLength = 60;
     const add = el('button', 'jr-chip', '+'); add.type = 'button';
+    // ♿ 11.08 (клавиатура-четец): голият „+" не казваше в кой списък добавя.
+    add.setAttribute('aria-label', 'Добави своята точка в плана за раждане');
     add.addEventListener('click', () => {
       const v = inp.value.trim(); if (!v) return;
       const cus = load('bl_birthplan_custom', []); cus.push(v); save('bl_birthplan_custom', cus);
@@ -473,6 +479,7 @@
     const addRow = el('div', 'jr-addrow');
     const inp = el('input', 'jr-word'); inp.placeholder = 'песен / изпълнител…'; inp.maxLength = 60;
     const add = el('button', 'jr-chip', '+'); add.type = 'button';
+    add.setAttribute('aria-label', 'Добави песента в списъка');
     addRow.appendChild(inp); addRow.appendChild(add);
     const list = el('div', 'nt-list');
     add.addEventListener('click', () => {

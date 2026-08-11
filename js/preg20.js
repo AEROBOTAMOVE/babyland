@@ -108,7 +108,7 @@
       hsub.textContent = гв === w ? (три + ' триместър · седмица по седмица с теб') : `гледаш ${гв}-та (ти си в ${w}-та)`;
       backWrap.hidden = (гв === w);
       swap.innerHTML = `
-        <p class="pg20-week">${пв}-та седмица</p>
+        <p class="pg20-week">${window.BL_REDNA ? BL_REDNA(пв) : пв + '-та'} седмица</p>
         <p class="pg20-size">колкото <strong>${esc(плод[0])}</strong>${рз ? ` · ~${рз[0] >= 1000 ? (рз[0] / 1000).toFixed(1) + ' кг' : рз[0] + ' г'} · ~${рз[1]} см <small>(${мяркаЗа(пв)})</small>` : ''}</p>
         <div class="pg20-note">
           ${бел.baby ? `<p>👶 ${esc(бел.baby)}</p>` : ''}
@@ -228,7 +228,7 @@
     ];
     const набор = НАБОРИ.find(([от, до]) => w >= от && w <= до) || НАБОРИ[2];
     if (w > 0) {
-      c.appendChild(el('p', 'jr-privacy', 'За твоята ' + w + '-та седмица — отметни зададените:'));
+      c.appendChild(el('p', 'jr-privacy', 'За твоята ' + (window.BL_REDNA ? BL_REDNA(w) : w + '-та') + ' седмица — отметни зададените:'));
       const мои = load('bl_qdoc', {});
       набор[2].forEach((q, i) => {
         const ключ = w + '|' + i;
@@ -260,7 +260,7 @@
       печат.addEventListener('click', () => {
         if (!window.BL_EXPR) return;
         const мои = load('bl_qdoc', {});
-        const html = `<p class="pr-lead">Въпроси за прегледа · ${w}-та седмица</p>
+        const html = `<p class="pr-lead">Въпроси за прегледа · ${window.BL_REDNA ? BL_REDNA(w) : w + '-та'} седмица</p>
           <ul class="pr-list">${набор[2].map((q, i) => `<li>${мои[w + '|' + i] ? '☑' : '☐'} ${esc(q)}</li>`).join('')}</ul>
           ${(load('bl_qdoc_my', '') || '').trim() ? `<p class="pr-lead">Моите въпроси:</p><p>${esc(load('bl_qdoc_my', ''))}</p>` : ''}`;
         BL_EXPR.printOverlay('Прегледът', html, {});
@@ -312,7 +312,7 @@
         <li>🤕 Силно главоболие + отоци + „звездички“ пред очите</li>
         <li>🤫 Бебето утихна — движенията рязко намаляха (след 28-та)</li>
         <li>🌡️ Температура над 38° / втрисане</li>
-        <li>⏱️ Редовни контракции преди 37-та седмица</li>
+        <li>⏱️ Редовни контракции преди 37-ма седмица</li>
       </ul>
       <p class="jr-privacy">По-добре едно излишно обаждане, отколкото един пропуснат сигнал. Лекарите ПРЕДПОЧИТАТ да им звъннеш.</p>
       <a class="ro-sos" href="tel:112">📞 112 — ако не можеш да се свържеш с никого</a>`;
@@ -433,7 +433,7 @@
         g.addEventListener('click', () => {
           const [, е, име] = МИЛЕСТОУНИ.find(([m]) => m === мс);
           легенда.hidden = false;
-          легенда.innerHTML = `${е} <strong>${мс}-та седмица:</strong> ${esc(име)}${w >= мс ? ' · мина ✔' : ' · предстои'}`;
+          легенда.innerHTML = `${е} <strong>${window.BL_REDNA ? BL_REDNA(мс) : мс + '-та'} седмица:</strong> ${esc(име)}${w >= мс ? ' · мина ✔' : ' · предстои'}`;
         });
       });
       const мама = svg.querySelector('.pg20-mama');
