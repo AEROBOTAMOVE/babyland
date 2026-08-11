@@ -178,7 +178,10 @@
     const снимки = R.filter(x => x.img);
     if (снимки.length > 2) {
       html += `<div class="rv-strip" id="rvStrip">${снимки.slice(0, 30).map(x =>
-        `<img src="${x.img}" alt="" loading="lazy" data-ts="${x.ts}">`).join('')}</div>`;
+        // 🟡 12.08: съседният ред (rv-img, по-долу) минава през esc() и пуска
+        //    само data:/blob: — тук същата снимка влизаше сурова в атрибута.
+        //    Едно правило за един и същи адрес.
+        `<img src="${esc(x.img)}" alt="" loading="lazy" data-ts="${esc(String(x.ts))}">`).join('')}</div>`;
     }
     html += `<div class="rv-scroll">`;
     if (!R.length) {
@@ -212,6 +215,38 @@
     const close = () => { ov.hidden = true; document.body.style.overflow = ''; };
     ov.querySelector('.rv-close').onclick = close;
     ov.onclick = e => { if (e.target === ov) close(); };
+
+    // 👆 12.08 (обиколка на телефона, ИЗМЕРЕНО с getBoundingClientRect):
+    //    реката живее в СВОЙ оверлей на <body>, затова глобалният пас на
+    //    touch.css не я е стигнал целия. Измерено преди тази поправка:
+    //      ✨ „разкажи месеца“ 17×16 · „+“ 33×33 · ✕ 38×38 · емоджи 29×42 ·
+    //      полето за нов миг 124×37 · търсачката 325×39.
+    //    17×16 е нокът, не пръст — а ✨ е единственият вход към разказа на
+    //    месеца. Стилът е инлайн, защото CSS файловете не са мои.
+    //    Редовете се ПРЕНАСЯТ, за да не изтласкат нищо извън панела (проверено:
+    //    панелът остава 367 px без хоризонтален скрол).
+    //    ПЪТ НАЗАД: махни целия блок „пипаемост“ — видът се връща както беше.
+    (function пипаемост() {
+      const мин = (сел, w, h) => ov.querySelectorAll(сел).forEach(e => {
+        if (w) { e.style.minWidth = w + 'px'; }
+        if (h) { e.style.minHeight = h + 'px'; }
+        e.style.boxSizing = 'border-box';
+        if (e.tagName === 'BUTTON') { e.style.display = 'inline-flex'; e.style.alignItems = 'center'; e.style.justifyContent = 'center'; }
+      });
+      мин('.rv-close', 44, 44);
+      мин('.rv-emob', 44, 44);
+      мин('.rv-addbtn', 44, 44);
+      мин('.rv-addinp', 0, 44);
+      мин('.rv-search', 0, 44);
+      мин('.rv-f', 0, 44);
+      мин('.rv-story-b', 44, 44);
+      мин('.rv-share', 44, 44);
+      const wrap = сел => ov.querySelectorAll(сел).forEach(e => { e.style.flexWrap = 'wrap'; });
+      wrap('#rvEmo'); wrap('.rv-addrow'); wrap('.rv-filters');
+      ov.querySelectorAll('.rv-addinp').forEach(e => { e.style.flex = '1 1 140px'; e.style.minWidth = '0'; });
+      // ✨ е вътре в реда на месеца — вертикално подравнено, за да не „плува“
+      ov.querySelectorAll('.rv-story-b').forEach(e => { e.style.verticalAlign = 'middle'; });
+    })();
 
     // 12.9.7: ръчното добавяне — просто, без дата-избор (винаги днес; за
     // минало си има дневника). Презарежда цялата река, за да си застане на място.
@@ -249,6 +284,28 @@
       ov.querySelectorAll('.rv-month').forEach(m => {
         m.style.display = видимиПоМесец[m.dataset.mk] ? '' : 'none';
       });
+      // 🔴 12.08 (обиколка на телефона, ИЗМЕРЕНО): натиснах „📸 Снимки“ при 15
+      //    мига без нито една снимка — 0 видими реда, 0 видими месеца и НИЩО
+      //    написано. Мама вижда бяло поле и не знае дали филтърът работи, или
+      //    реката ѝ се е изтрила. Същото и при търсене без съвпадение.
+      //    Празно ≠ няма: казваме кое сме търсили и как се връща обратно.
+      //    ПЪТ НАЗАД: махни блока `празно` и реда, който го вика.
+      const колко = [...редове].filter(r => r.style.display !== 'none').length;
+      let празно = ov.querySelector('.rv-nores');
+      if (!колко && редове.length) {
+        if (!празно) {
+          празно = el('p', 'rv-empty rv-nores');
+          празно.setAttribute('role', 'status');
+          const скрол = ov.querySelector('.rv-scroll');
+          if (скрол) скрол.insertBefore(празно, скрол.firstChild);
+        }
+        празно.textContent = дума
+          ? '🔍 Нищо не намерих за „' + дума + '“' + (филтър !== 'all' ? ' в този рафт' : '') + '. Реката я има — просто тази дума я няма в нея. Изтрий търсенето, за да се върне всичко.'
+          : (филтър === 'img'
+            ? '📸 В реката още няма мигове със снимка. Щом добавиш снимка на деня или фото-лентата, те ще се появят тук. Натисни „Всички“, за да видиш останалото.'
+            : '🌟 Още няма „големи“ мигове. Първите пъти, зъбките и месечнините влизат тук сами. Натисни „Всички“, за да видиш останалото.');
+        празно.hidden = false;
+      } else if (празно) празно.hidden = true;
     }
     const търси = ov.querySelector('#rvSearch');
     if (търси) търси.addEventListener('input', () => { дума = търси.value.trim().toLowerCase(); приложи(); });
@@ -350,7 +407,7 @@
     const when = days >= 350 ? 'преди година' : days >= 80 ? 'преди 3 месеца' : days >= 25 ? 'преди месец' : 'преди седмица';
     const w = el('button', 'tm-card'); w.type = 'button';
     w.innerHTML = `<span class="tm-tag">🔮 Днес ${when}</span>
-      ${mem.img ? `<img class="tm-img" src="${mem.img}" alt="">` : `<span class="tm-e">${mem.e}</span>`}
+      ${mem.img && /^(data:image\/|blob:)/.test(mem.img) ? `<img class="tm-img" src="${esc(mem.img)}" alt="">` : `<span class="tm-e">${esc(mem.e)}</span>`}
       <span class="tm-txt">${esc(trim(mem.txt, 70))}</span>`;
     w.addEventListener('click', openRiver);
     inner.appendChild(w);

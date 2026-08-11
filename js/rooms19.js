@@ -82,7 +82,11 @@
         // 🟡 и преливането: ИЗМЕРЕНО .sd-row scrollWidth 630 при clientWidth 287 —
         //    дълга дума без интервал излиза от реда и се отрязва мълчаливо.
         //    .sd-t е flex-дете без min-width:0; поправено инлайн (CSS е чужд).
-        r.innerHTML = `<span class="sd-e">${esc(x.e)}</span>
+        // мястото на емоджито е за ЕДНО емоджи (.sd-e е flex-shrink:0) — дълъг
+        // низ оттам изкарваше целия ред от картата: ИЗМЕРЕНО 353 при 287.
+        // Array.from, за да не срежем емоджи по средата на сурогатната двойка.
+        const емо = Array.from(String(x.e == null ? '💜' : x.e)).slice(0, 2).join('');
+        r.innerHTML = `<span class="sd-e">${esc(емо)}</span>
           ${x.img ? `<img class="sd-img" src="${esc(x.img)}" alt="" loading="lazy">` : ''}
           <span class="sd-t" style="min-width:0;overflow-wrap:anywhere">${esc(x.txt)}</span>`;
         бл.appendChild(r);
@@ -272,9 +276,19 @@
     c.appendChild(el('p', 'jr-privacy',
       'Най-важното в един квадрат. Баба го снима с камерата си и то ѝ излиза на екрана — без приложение, без интернет, без сметки. Разпечатай го и го залепи на хладилника.'));
 
-    const baby = load('bl_baby', {});
-    const sos = load('bl_sos', {});
-    const реакции = Object.keys(load('bl_tried', {})).filter(k => (load('bl_tried', {})[k] || '').includes('⚠️'));
+    // 🔴 11.08 (обиколка №2, ИЗМЕРЕНО): всичко отдолу се четеше ВЕДНЪЖ, при
+    //    рисуването на картата. Мама натиска „🆘 Отвори SOS-центъра“ ОТ ТАЗИ
+    //    КАРТА, записва си номера, затваря оверлея — и квадратът под него още
+    //    показва „Съдържа: Ния · Спешно: 112“ и още я хока „Още нямаш записани
+    //    номера“. Тя лепва на хладилника квадрат без своя телефон. (Стаята се
+    //    пре-строява само при ново отваряне, а оверлеят не я пипа.)
+    //    Сега всичко живее в сглоби() — чете се ПРЯСНО и се пречертава.
+    let baby = {}, sos = {}, alrg = [], редове = [], текст = '';
+    const сглоби = () => {
+      baby = load('bl_baby', {});
+      sos = load('bl_sos', {});
+      const опитани = load('bl_tried', {});
+      const реакции = Object.keys(опитани).filter(k => (опитани[k] || '').includes('⚠️'));
     // 🔴 05.08 (СКЕПТИКЪТ към №156/№241): срязването падна, но ДРУГИЯТ източник
     //    липсваше изцяло. „Алергия-паспорт“ (rooms3.js:823) печата `авто()
     //    .concat(manual)` — тоест и ръчно написаните алергени (bl_allergy_manual).
@@ -282,11 +296,11 @@
     //    го на разпечатката и мисли, че баба е предупредена — а QR-ът за същия
     //    хладилник мълчи за тях. Оплакването на самата находка беше „два
     //    документа за едно дете казват различни неща“; оставаше в сила.
-    const alrg = реакции.concat(load('bl_allergy_manual', []).filter(x => x && !реакции.includes(x)));
+      alrg = реакции.concat(load('bl_allergy_manual', []).filter(x => x && !реакции.includes(x)));
 
     // кратко — QR-ът е малък. Само животоспасяващото.
-    const редове = [];
-    if (baby.name) редове.push(baby.name);
+      редове = [];
+      if (baby.name) редове.push(baby.name);
     // 🔴 05.08 (одит г04, №156+№241): тук стоеше `alrg.slice(0, 2)` — третата и
     //    следващите реакции падаха МЪЛЧАЛИВО, при това ПРЕДИ сглобяването на
     //    текста, така че проверката за препълване (по-долу) не можеше да ги
@@ -305,12 +319,14 @@
     //    препълването вече си има честно съобщение. Типичен квадрат „Ния /
     //    ядки,яйце / телефон / 112“: 79 → 84 байта от 105.
     //    ПЪТ НАЗАД: върни низа на 'АЛЕРГИЯ: '.
-    if (alrg.length) редове.push('ВНИМАВАЙ С: ' + alrg.join(','));
-    if (sos.fastPhone) редове.push('Мама: ' + sos.fastPhone);
-    else if (sos.closePhone) редове.push('Близък: ' + sos.closePhone);
-    if (sos.pedPhone) редове.push('Педиатър: ' + sos.pedPhone);
-    редове.push('Спешно: 112');
-    let текст = редове.join('\n');
+      if (alrg.length) редове.push('ВНИМАВАЙ С: ' + alrg.join(','));
+      if (sos.fastPhone) редове.push('Мама: ' + sos.fastPhone);
+      else if (sos.closePhone) редове.push('Близък: ' + sos.closePhone);
+      if (sos.pedPhone) редове.push('Педиатър: ' + sos.pedPhone);
+      редове.push('Спешно: 112');
+      текст = редове.join('\n');
+    };
+    сглоби();
 
     const кутия = el('div', 'qr-box');
     const изход = el('p', 'qr-out', '');
@@ -327,31 +343,57 @@
       кутия.innerHTML = s;
       изход.innerHTML = 'Съдържа: <em>' + esc(текст.replace(/\n/g, ' · ')) + '</em>';
     };
-    рисувай();
     c.appendChild(кутия); c.appendChild(изход);
 
-    if (!sos.fastPhone && !sos.closePhone && !sos.pedPhone) {
-      // 05.08 (одит г04, №135): текстът пращаше към „бутонът долу“, а долу
-      //   имаше само принтиране. Сега бутонът съществува наистина.
-      c.appendChild(el('p', 'sp-warn',
-        '⚠️ Още нямаш записани номера. Сложи поне един — иначе QR-ът носи само 112.'));
-      const къмSOS = el('button', 'jr-chip', '🆘 Отвори SOS-центъра'); къмSOS.type = 'button';
-      къмSOS.addEventListener('click', () => {
-        if (window.BL_SOS_CENTER) BL_SOS_CENTER.open();
-        else if (window.MamaHelper && MamaHelper.open) MamaHelper.open('Здраве и SOS');
-      });
-      c.appendChild(къмSOS);
-    }
+    // 05.08 (одит г04, №135): текстът пращаше към „бутонът долу“, а долу
+    //   имаше само принтиране. Сега бутонът съществува наистина.
+    const няма = el('p', 'sp-warn',
+      '⚠️ Още нямаш записани номера. Сложи поне един — иначе QR-ът носи само 112.');
+    const къмSOS = el('button', 'jr-chip', '🆘 Отвори SOS-центъра'); къмSOS.type = 'button';
+    къмSOS.style.minHeight = '44px';
+    const празноSOS = () => !sos.fastPhone && !sos.closePhone && !sos.pedPhone;
+    const опресни = () => { сглоби(); рисувай(); няма.hidden = !празноSOS(); къмSOS.hidden = !празноSOS(); };
+    къмSOS.addEventListener('click', () => {
+      if (window.BL_SOS_CENTER) BL_SOS_CENTER.open();
+      else if (window.MamaHelper && MamaHelper.open) { MamaHelper.open('Здраве и SOS'); return; }
+      // изчакваме оверлея да се затвори и се пречертаваме с ПРЕСНИТЕ номера
+      let видян = false, тик = 0;
+      const пази = setInterval(() => {
+        const ов = document.getElementById('sosOverlay');
+        const отворен = !!ов && !ов.hidden;
+        if (отворен) видян = true;
+        тик++;
+        // чакаме да се отвори (най-много 4 сек), после да се затвори (най-много 10 мин)
+        if ((отворен || !видян) && тик < 1500) return;
+        clearInterval(пази);
+        if (document.body.contains(кутия)) опресни();
+      }, 400);
+    });
+    c.appendChild(няма); c.appendChild(къмSOS);
+    опресни();
 
     const пр = el('button', 'jr-chip', '🖨️ Отпечатай за хладилника'); пр.type = 'button';
+    пр.style.minHeight = '44px';
     пр.addEventListener('click', () => {
-      if (!window.BL_EXPR || !BL_EXPR.printOverlay) return;
+      сглоби();                                                  // пресни данни и за листа
       const s = QR.svg(текст, 260);
+      if (!window.BL_EXPR || !BL_EXPR.printOverlay) {
+        // 🔴 11.08: без печатницата бутонът беше НЯМ
+        изход.innerHTML = '⚠️ Печатницата не се зареди. Затвори и отвори стаята — квадратът и списъкът те чакат.';
+        return;
+      }
+      // 🔴🔴 11.08 (обиколка №2, ИЗМЕРЕНО): при препълване `s` е null и листът
+      //    излизаше с ПРАЗНО каре, но под него пишеше „Снима се с камерата на
+      //    телефона. Работи и без интернет — текстът е в самия квадрат.“ Мама
+      //    лепва това на хладилника, баба насочва камерата към нищо. Няма
+      //    квадрат — няма и изречение за квадрат.
       BL_EXPR.printOverlay('За хладилника',
-        `<div class="pr-qr">${s || ''}</div>
-         <p class="pr-big">${esc(baby.name || 'Нашето бебе')}</p>
-         <ul class="pr-list">${редове.map(r => `<li>${esc(r)}</li>`).join('')}</ul>
-         <p class="pr-note">Снима се с камерата на телефона. Работи и без интернет — текстът е в самия квадрат.</p>`);
+        (s ? `<div class="pr-qr">${s}</div>` : '') +
+        `<p class="pr-big">${esc(baby.name || 'Нашето бебе')}</p>
+         <ul class="pr-list">${редове.map(r => `<li>${esc(r)}</li>`).join('')}</ul>` +
+        (s
+          ? `<p class="pr-note">Снима се с камерата на телефона. Работи и без интернет — текстът е в самия квадрат.</p>`
+          : `<p class="pr-note">Този лист е за четене с очи — написаното е твърде дълго за един квадрат, затова тук няма код за снимане. Нищо не е изпуснато: всичко важно е в списъка отгоре.</p>`));
     });
     c.appendChild(пр);
     c.appendChild(el('p', 'jr-privacy',

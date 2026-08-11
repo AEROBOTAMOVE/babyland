@@ -75,7 +75,21 @@
     const out = el('div', 'bd-out');
     b.addEventListener('click', () => {
       const редове = t.value.split('\n').map(x => x.trim()).filter(Boolean);
-      if (!редове.length) return;
+      // 🔴 12.08 (обиколка на телефона, ИЗМЕРЕНО): натиснах „📥 Подреди“ с празно
+      //    поле — не стана НИЩО. Нито съобщение, нито курсор в полето, нито дори
+      //    вибрация. Пазачът в polish.js (тихият отказ) не хваща този бутон: той
+      //    не стои в .jr-addrow, а надписът „Подреди“ не е в списъка му с думи.
+      //    А това е картата за момента, в който всичко е много — точно тогава
+      //    мълчаливият бутон се чете като „и приложението ме отряза“.
+      //    ПЪТ НАЗАД: върни голото `if (!редове.length) return;`.
+      if (!редове.length) {
+        out.innerHTML = '';
+        out.appendChild(el('p', 'jr-privacy', 'Полето е празно — напиши ги едно под друго, по едно на ред. Дори две неща стигат. 🤍'));
+        out.firstChild.setAttribute('role', 'status');
+        try { t.focus({ preventScroll: true }); } catch (e) { try { t.focus(); } catch (e2) {} }
+        if (window.BL_FX) BL_FX.buzz(6);
+        return;
+      }
       out.innerHTML = '';
       const кофи = { сега: [], после: [], пусни: [] };
       const rerender = () => {

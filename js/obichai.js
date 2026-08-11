@@ -116,11 +116,26 @@
       }
       данни.forEach((x, i) => {
         const ред = el('div', 'ob-myrow');
-        ред.appendChild(el('span', 'ob-mytxt', esc(x)));
+        const текст = el('span', 'ob-mytxt', esc(x));
+        // 👆/🔴 12.08 (ИЗМЕРЕНО): полето приема 160 знака, а мама може да напише
+        //    слято — тогава редът разпъваше картата настрани и ✕ отиваше извън
+        //    телефона. И самият ✕ мереше 39 px ширина (.jr-chip дава височина,
+        //    не ширина). ПЪТ НАЗАД: махни четирите реда `style`.
+        текст.style.minWidth = '0'; текст.style.overflowWrap = 'anywhere'; текст.style.wordBreak = 'break-word';
+        ред.appendChild(текст);
         const del = el('button', 'jr-chip ob-del', '✕'); del.type = 'button';
+        del.style.minWidth = '44px'; del.style.minHeight = '44px'; del.style.flexShrink = '0'; del.style.boxSizing = 'border-box';
         del.setAttribute('aria-label', 'Изтрий този обичай');
         del.addEventListener('click', () => {
-          const f = () => { const д = load('bl_obichai_moi', []); д.splice(i, 1); save('bl_obichai_moi', д); рисувай(); };
+          // прясно четене + търсене по СЪДЪРЖАНИЕ: `i` е индексът отпреди
+          // рисуването; ако списъкът се е разместил, голото splice(i) щеше да
+          // изтрие чужд спомен. Индексът остава само като резерва.
+          const f = () => {
+            const д = load('bl_obichai_moi', []);
+            const k = д.indexOf(x);
+            д.splice(k > -1 ? k : i, 1);
+            save('bl_obichai_moi', д); рисувай();
+          };
           if (window.BL_UI && BL_UI.confirm) BL_UI.confirm('Да изтрия ли този спомен?', { okText: 'Изтрий', danger: true }).then(да => { if (да) f(); });
           else f();
         });

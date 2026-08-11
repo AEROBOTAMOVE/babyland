@@ -99,7 +99,10 @@
   function renderJournal(root) {
 
     /* ── 1. Днешният чекин ── */
-    const checkins = load('bl_checkins', {});
+    // 🔴 11.08 капанът на снимката: прочетено при РИСУВАНЕ, записвано при клик.
+    //    Ако стаята е нарисувана два пъти, втората карта записва старата си
+    //    снимка отгоре. Затова се чете ПРЯСНО точно преди записа.
+    let checkins = load('bl_checkins', {});
     const t = today();
     const c1 = el('section', 'jr-card ck-card');
     c1.appendChild(el('h4', 'jr-title', 'Как си днес? 💜 <span class="jr-sub">30 секунди, само за теб</span>'));
@@ -181,6 +184,7 @@
     saveBtn.addEventListener('click', () => {
       const m = c1._mood !== undefined ? c1._mood : (checkins[t] ? checkins[t].m : undefined);
       if (m === undefined) { reply.textContent = 'Първо си избери личице 😊'; return; }
+      checkins = load('bl_checkins', {});   // пресен прочит ПРЕДИ записа
       checkins[t] = { m, e: +range.value, w: word.value.trim() };
       save('bl_checkins', checkins);
       // П5 CK4: празнуваме слънцето, ПРЕГРЪЩАМЕ тъгата (без конфети върху тежък ден)
@@ -359,9 +363,11 @@
       '☕ Изпих си кафето топло', '🚿 Взех си душ на спокойствие', '🌳 Излязох навън',
       '🙋‍♀️ Поисках помощ', '🙅‍♀️ Казах „не“ без вина', '😂 Посмях се истински'
     ];
-    const winsByDay = load('bl_wins', {});
+    // 🔴 11.08 капанът на снимката (виж чекина горе) — и двата ключа се четат
+    //    ПРЯСНО преди записа, за да не се трие чужд запис от същия ден.
+    let winsByDay = load('bl_wins', {});
     const doneToday = new Set(winsByDay[t] || []);
-    const customWins = load('bl_wins_custom', []);
+    let customWins = load('bl_wins_custom', []);
     const list = el('div', 'jr-wins');
 
     // г12 №353: своята победа мама можеше само да ДОБАВИ — печатната грешка
@@ -375,9 +381,10 @@
       row.addEventListener('click', e => {
         if (custom && e.target && e.target.classList.contains('nt-del')) {
           const махни = () => {
+            customWins = load('bl_wins_custom', []);   // пресен прочит ПРЕДИ записа
             const i = customWins.indexOf(label);
             if (i > -1) { customWins.splice(i, 1); save('bl_wins_custom', customWins); }
-            if (doneToday.delete(label)) { winsByDay[t] = [...doneToday]; save('bl_wins', winsByDay); }
+            if (doneToday.delete(label)) { winsByDay = load('bl_wins', {}); winsByDay[t] = [...doneToday]; save('bl_wins', winsByDay); }
             row.remove();
           };
           if (window.BL_UI) {
@@ -387,6 +394,7 @@
           return;
         }
         if (doneToday.has(label)) doneToday.delete(label); else doneToday.add(label);
+        winsByDay = load('bl_wins', {});   // пресен прочит ПРЕДИ записа
         winsByDay[t] = [...doneToday];
         save('bl_wins', winsByDay);
         row.classList.toggle('done');
@@ -407,6 +415,7 @@
     addBtn.addEventListener('click', () => {
       const v = addInp.value.trim();
       if (!v) return;
+      customWins = load('bl_wins_custom', []);   // пресен прочит ПРЕДИ записа
       customWins.push(v);
       save('bl_wins_custom', customWins);
       list.appendChild(winRow(v, true));
@@ -465,7 +474,8 @@
     /* ── 5. Три хубави неща (благодарствен дневник) ── */
     const c5 = el('section', 'jr-card');
     c5.appendChild(el('h4', 'jr-title', 'Три хубави неща 🙏 <span class="jr-sub">най-простата практика срещу сивите дни</span>'));
-    const grat = load('bl_gratitude', {});
+    // 🔴 11.08 капанът на снимката (виж чекина горе)
+    let grat = load('bl_gratitude', {});
     const gToday = grat[t] || ['', '', ''];
     const gInputs = [];
     for (let i = 0; i < 3; i++) {
@@ -473,6 +483,7 @@
       gi.type = 'text'; gi.maxLength = 80; gi.placeholder = ['1. Днес се зарадвах на…', '2. Благодарна съм за…', '3. Малка хубост беше…'][i];
       gi.value = gToday[i] || '';
       gi.addEventListener('input', () => {
+        grat = load('bl_gratitude', {});   // пресен прочит ПРЕДИ записа
         grat[t] = gInputs.map(x => x.value.trim());
         const пълни = grat[t].every(v => v);
         if (grat[t].every(v => !v)) delete grat[t];
@@ -516,7 +527,8 @@
     /* ── 7. Капсули на времето ── */
     const c7 = el('section', 'jr-card');
     c7.appendChild(el('h4', 'jr-title', 'Капсули на времето 💌 <span class="jr-sub">писма, запечатани с днешната дата</span>'));
-    const capsules = load('bl_capsules', []);
+    // 🔴 11.08 капанът на снимката (виж чекина горе)
+    let capsules = load('bl_capsules', []);
     const capType = el('div', 'jr-quick');
     let toWhom = 'baby';
     [['baby', '👶 До бебето'], ['self', '💜 До себе си след 1 г.']].forEach(([v, lbl]) => {
@@ -533,6 +545,7 @@
       const txt = capText.value.trim();
       if (!txt) return;
       const unlock = toWhom === 'self' ? localDate(new Date(Date.now() + 365 * 86400000)) : t;
+      capsules = load('bl_capsules', []);   // пресен прочит ПРЕДИ записа
       capsules.push({ to: toWhom, text: txt, sealed: t, unlock });
       save('bl_capsules', capsules);
       capText.value = '';
@@ -541,6 +554,7 @@
     });
     c7.appendChild(sealBtn); c7.appendChild(capList);
     function drawCaps() {
+      capsules = load('bl_capsules', []);   // пресен прочит при всяко рисуване
       if (!capsules.length) { capList.innerHTML = '<p class="jr-privacy">Още няма капсули. Напиши първата — сълзи гарантирани след време. 🥹</p>'; return; }
       capList.innerHTML = capsules.slice().reverse().map((c, ri) => {
         const idx = capsules.length - 1 - ri;

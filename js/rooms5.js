@@ -87,12 +87,45 @@
     const add = el('button', 'jr-chip', '+'); add.type = 'button';
     add.setAttribute('aria-label', 'Добави събитието');
     addRow.appendChild(inp); addRow.appendChild(dt); addRow.appendChild(add);
-    add.addEventListener('click', () => {
-      const v = inp.value.trim(); if (!v || !dt.value) return;
+    // 🔴🔴 11.08 (ИЗМЕРЕНО наживо, три отделни дефекта под един бутон „+“):
+    //    1) празно поле → `return` без нито един пиксел промяна. Мълчалив бутон.
+    //    2) дата СЛЕД 30 дни („кръщене на 15 октомври“) се ЗАПИСВАШЕ, полетата
+    //       се изчистваха и редът НЕ се появяваше никъде — списъкът гледа само
+    //       30 дни напред. Мама вижда празно и решава, че не се е записало.
+    //    3) минала дата (сбъркана година) също се записваше НЕВИДИМО — оставаше
+    //       завинаги в bl_events (оттам я чете и чатът в helper.js), без начин
+    //       да бъде изтрита от екрана, защото никога не се рисува.
+    //    ЛЕК: всяко натискане казва какво стана; минала дата не се приема;
+    //    далечната се приема, но честно се обявява кога ще се покаже.
+    //    ПЪТ НАЗАД: върни горните 2 реда (`if (!v || !dt.value) return;`).
+    const хинт = el('p', 'jr-privacy', '');
+    const кажи = (текст, поле) => {
+      хинт.textContent = текст;
+      if (поле) { try { поле.focus({ preventScroll: false }); } catch (e) { try { поле.focus(); } catch (e2) {} } }
+      fx().buzz(6);
+    };
+    const добави = () => {
+      const v = inp.value.trim();
+      if (!v) { кажи(dt.value ? 'Само датата не стига — напиши и какво предстои. 📌' : 'Какво предстои? Напр. „Преглед при педиатъра“.', inp); return; }
+      if (!dt.value) { кажи('Избери и дата — иначе няма кога да ти го напомня. 📅', dt); return; }
+      const д = new Date(dt.value + 'T12:00:00');
+      if (isNaN(д.getTime())) { кажи('Тази дата не я разчитам — избери я от календарчето. 📅', dt); return; }
+      const днес0 = new Date(); днес0.setHours(0, 0, 0, 0);
+      const дни = Math.round((new Date(dt.value + 'T00:00:00').getTime() - днес0.getTime()) / 86400000);
+      if (дни < 0) { кажи('Тази дата вече е минала, а тук е за предстоящото. Провери годината. 📅', dt); return; }
       const ev = load('bl_events', []);
       ev.push({ id: 'e' + Date.now(), t: v, d: dt.value, e: /преглед|лекар|педиат/i.test(v) ? '🩺' : '📌' });
-      save('bl_events', ev); inp.value = ''; dt.value = ''; fx().buzz(10); draw();
-    });
+      save('bl_events', ev);
+      const кога = д.toLocaleDateString('bg-BG');
+      // датата на bg-BG вече свършва с „г.“ — втора точка след нея е „г..“
+      хинт.textContent = дни > 30
+        ? '✔ Записах: „' + v + '“ · ' + кога + ' — списъкът показва 30 дни напред, ще се появи, щом наближи.'
+        : '✔ Записах: „' + v + '“ · ' + кога;
+      inp.value = ''; dt.value = ''; fx().buzz(10); draw();
+    };
+    add.addEventListener('click', добави);
+    // на телефон „Enter“ на клавиатурата е най-краткият път — не го хаби
+    inp.addEventListener('keydown', e => { if (e.key === 'Enter') { e.preventDefault(); добави(); } });
     function draw() {
       const items = collectDates(30);
       list.innerHTML = items.length ? '' : '<p class="jr-privacy">Следващите 30 дни са чисти. Добави преглед или събитие отдолу. 📅</p>';
@@ -110,8 +143,26 @@
         const row = el('div', 'ev-row' + (!x.минала && dd <= 3 ? ' soon' : ''));
         row.innerHTML = `<span class="ev-e">${x.e}</span><span class="ev-t">${esc(x.t)}<small>${дата.toLocaleDateString('bg-BG')} · ${when}</small></span>` +
           (x.own ? '<button class="nt-del" type="button" aria-label="Изтрий">🗑</button>' : '');
+        // 🔁 11.08 (правило 3 — пътят назад ПРЕДИ действието): 🗑 триеше
+        //    събитието на едно докосване, без питане и без връщане. Мама с бебе
+        //    на ръка бута съседния ред и прегледът изчезва. Не питаме (питането
+        //    на всяко триене уморява) — даваме връщане.
         if (x.own) row.querySelector('.nt-del').addEventListener('click', () => {
-          save('bl_events', load('bl_events', []).filter(e2 => e2.id !== x.id)); draw();
+          const текущи = load('bl_events', []);
+          const махнато = текущи.filter(e2 => e2.id === x.id)[0];
+          save('bl_events', текущи.filter(e2 => e2.id !== x.id)); draw(); fx().buzz(8);
+          хинт.textContent = '';
+          if (!махнато) { хинт.textContent = 'Махнах реда.'; return; }
+          хинт.textContent = 'Махнах „' + (махнато.t || 'събитието') + '“. ';
+          const върни = el('button', 'jr-chip', '↩️ Върни го'); върни.type = 'button';
+          върни.style.minHeight = '44px';
+          върни.addEventListener('click', () => {
+            const сега = load('bl_events', []);
+            if (!сега.some(e2 => e2.id === махнато.id)) сега.push(махнато);
+            save('bl_events', сега); draw(); fx().buzz(8);
+            хинт.textContent = 'Върнах го. 💜';
+          });
+          хинт.appendChild(върни);
         });
         list.appendChild(row);
       });
@@ -123,7 +174,7 @@
         `<ul class="pr-list">${items.map(x => `<li>${x.e} <strong>${(x.реална || x.d).toLocaleDateString('bg-BG')}</strong> — ${esc(x.t)}</li>`).join('') || '<li>Няма отбелязани събития.</li>'}</ul>
          <p class="pr-note">Ваксините са по официалния календар — потвърди датите с личния лекар.</p>`);
     });
-    c.appendChild(list); c.appendChild(addRow); c.appendChild(pr);
+    c.appendChild(list); c.appendChild(addRow); c.appendChild(хинт); c.appendChild(pr);
     draw();
     return c;
   }
@@ -144,7 +195,7 @@
 
   // ═══════════ 🤒 Д3: БОЛНИЧНИЯТ ЕПИЗОД — всичко за болестта в една линия ═══════════
 
-  function episodeCard() {
+  function episodeCard(root) {
     const c = card('Болничният епизод 🤒 <span class="jr-sub">температури + лекарства + бележки — една времева линия</span>');
     const box = el('div', 'ep-box');
     function draw() {
@@ -159,6 +210,17 @@
         `<div class="ep-row${x.hot ? ' hot' : ''}"><span class="ep-e">${x.e}</span><span class="ep-t">${esc(x.t)}</span><span class="ep-d">${new Date(x.ts).toLocaleString('bg-BG', { day: 'numeric', month: 'numeric', hour: '2-digit', minute: '2-digit' })}</span></div>`).join('');
     }
     draw();
+    // 🔴🔴 11.08 (известният клас 8, ИЗМЕРЕНО наживо): записах 38.4° в
+    //    „Температурен дневник“ — ДВЕ КАРТИ ПО-ГОРЕ в същата стая — а тази
+    //    продължи да пише „Дано остане празно!“. Тоест картата, чиято ЕДИНСТВЕНА
+    //    работа е да събере линията за лекаря, твърдеше, че няма нищо, точно
+    //    когато има. Оправяше се чак след презареждане на приложението.
+    //    ЛЕК: след всяко докосване в стаята линията се чете НАНОВО от паметта.
+    //    ПЪТ НАЗАД: махни слушателя и BL_EPISODE_REDRAW — картата пак ще застива.
+    window.BL_EPISODE_REDRAW = draw;
+    if (root && root.addEventListener) {
+      root.addEventListener('click', () => setTimeout(draw, 80));
+    }
     c.appendChild(box);
     // секционирането пренарежда картите → „Бележка за прегледа" вече е ПОД тази
     // (в „🩺 За лекаря"), не над нея (одит-флот П23, проход 2 №18)
@@ -213,7 +275,13 @@
     if (letters[key]) {
       c.appendChild(el('div', 'lb-open', `<p class="lb-txt">${esc(letters[key].t)}</p><p class="lb-d">— писмото за ${now.toLocaleDateString('bg-BG', { month: 'long' })}, запечатано 💜</p>`));
       const re = el('button', 'jr-chip', '✍️ Пренапиши'); re.type = 'button';
-      re.addEventListener('click', () => { delete letters[key]; save('bl_month_letters', letters); c.replaceWith(monthLetterCard()); });
+      // 🔴 11.08 (известният клас 6): `letters` беше прочетено при РИСУВАНЕТО и
+      //    се записваше отгоре при натискането — всяко писмо, запечатано
+      //    междувременно другаде, се губеше тихо. Четем прясно ВЪТРЕ.
+      re.addEventListener('click', () => {
+        const прясно = load('bl_month_letters', {});
+        delete прясно[key]; save('bl_month_letters', прясно); c.replaceWith(monthLetterCard());
+      });
       c.appendChild(re);
       return c;
     }
@@ -223,16 +291,27 @@
     ta.value = seed ? seed + 'Мило мое, ' : '';
     ta.placeholder = 'Мило мое… (какво искаш да помниш от този месец?)';
     const btn = el('button', 'jr-btn', 'Запечатай писмото 💌'); btn.type = 'button';
+    const хинт = el('p', 'jr-privacy', '');
     btn.addEventListener('click', () => {
-      const v = ta.value.trim(); if (!v) return;
-      letters[key] = { t: v, ts: Date.now() };
-      save('bl_month_letters', letters);
+      const v = ta.value.trim();
+      // 🔇 11.08 (ИЗМЕРЕНО): празно поле → бутонът мълчеше напълно. Мама
+      //    натиска, нищо не става, тя не знае дали е записано или е счупено.
+      if (!v) {
+        хинт.textContent = 'Полето е празно — напиши поне един ред и тогава го запечатваме. 💌';
+        try { ta.focus(); } catch (e) {}
+        fx().buzz(6);
+        return;
+      }
+      // известният клас 6: прясно от паметта ВЪТРЕ в слушателя, не копие отпреди
+      const letters2 = load('bl_month_letters', {});
+      letters2[key] = { t: v, ts: Date.now() };
+      save('bl_month_letters', letters2);
       // 🔴 г09/283: пишеше „в съкровищницата“, а правилата на journal.js пращат
       //    „писмо за месеца“ в „✍️ Пиши и помни“. Не наричаме секция, в която го няма.
       fx().confetti(btn); fx().cheer('Писмото за месеца е запечатано 💌');
       c.replaceWith(monthLetterCard());
     });
-    c.appendChild(ta); c.appendChild(btn);
+    c.appendChild(ta); c.appendChild(btn); c.appendChild(хинт);
     return c;
   }
 
@@ -252,6 +331,16 @@
     const inner = container.querySelector('.td-inner');
     if (!inner || inner.classList.contains('td-welcome')) return;
     // ⚠️ пелена-пазачът: следобед без нито една мокра пелена = мек аларм
+    // 🔴 11.08 (ИЗМЕРЕНО 1 → 3): BL_TODAY_BIND минава ВТОРИ и ТРЕТИ път върху
+    //    същия контейнер (веригата prevBind се вика от десетина модула — daily.js
+    //    вече е поправен по същия начин на ред 351). Съседите тук се пазят
+    //    (`!inner.querySelector('.td-game')`), пазачът — не: и мама виждаше ТРИ
+    //    еднакви червени предупреждения за суха пелена. Три пъти един и същ
+    //    страх на един екран. Махаме стария, преди да сложим новия — така
+    //    редът и ИЗЧЕЗВА, щом тя отметне мокра пелена.
+    //    ПЪТ НАЗАД: изтрий реда със `.td-guard` remove.
+    const старПазач = inner.querySelector('.td-guard');
+    if (старПазач) старПазач.remove();
     const dip = load('bl_diapers', {})[today()];
     if (dip && new Date().getHours() >= 14 && (dip.wet || 0) === 0 && (dip.dirty || 0) > 0) {
       inner.appendChild(el('div', 'td-guard', '⚠️ Днес още няма отбелязана МОКРА пелена. Ако наистина е така — предлагай течности и при съмнение звънни на лекаря (сухите пелени са важен сигнал).'));
@@ -289,7 +378,13 @@
         const _д = next.реална || next.d;
         const _т = next.минала ? String(next.t).split(' (по календара')[0] : String(next.t).slice(0, 34);
         const b = el('button', 'td-chip td-accent td-ev', `${next.e} ${_т} · ${_д.toLocaleDateString('bg-BG')}`);
-        b.addEventListener('click', () => { if (window.MamaHelper) MamaHelper.open('Инструменти'); });
+        b.type = 'button';
+        // 🟠 11.08 (правило 16 — обещаната функция трябва да се СТИГА): текстът на
+        //    чипа за ваксина завършва с „докосни я в имунизационния календар“, а
+        //    докосването отваряше „Инструменти“. Имунизационният календар живее в
+        //    „Здраве и SOS“. Мама стига в грешната стая и търси.
+        const стая = next.e === '💉' ? 'Здраве и SOS' : 'Инструменти';
+        b.addEventListener('click', () => { if (window.MamaHelper) MamaHelper.open(стая); });
         chips.appendChild(b);
       }
     }
@@ -334,7 +429,7 @@
   const PACKS5 = {
     'Инструменти': r => сложи(r, calendarCard()),
     // 'Бременност' няма ред: единствената ѝ карта тук беше мъртва (виж 🪦 горе).
-    'Здраве и SOS': r => сложи(r, episodeCard()),
+    'Здраве и SOS': r => сложи(r, episodeCard(r)),
     'Захранване': r => сложи(r, shopListCard()),
     'Дневник на мама': r => сложи(r, monthLetterCard()),
     'Моето бебе': r => nightNursing(r),

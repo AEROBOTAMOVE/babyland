@@ -186,10 +186,13 @@
     const c = card('Не-списъкът 🚫 ' + sub('какво НЯМА да правя — и това е решение'));
     c.appendChild(el('p', 'jr-privacy',
       'Всички списъци искат да добавиш. Този иска да махнеш. Всяко „няма да“ е време, което се връща при теб.'));
-    const st = load('bl_wm_notlist', []);
+    // 🔴 11.08 капанът на снимката: снимка при рисуване, запис при клик. Пресен
+    //    прочит при рисуване и преди запис; редът се намира по ТЕКСТ, не по номер.
+    let st = load('bl_wm_notlist', []);
     const list = el('div', 'jr-wins');
     let махнато = null;
     const рисувай = () => {
+      st = load('bl_wm_notlist', []);   // пресен прочит при всяко рисуване
       list.innerHTML = '';
       // 22.07 (армия): готовите идеи се рисуваха САМО при празен списък —
       //   първото докосване ги караше да изчезнат и другите три ставаха
@@ -204,7 +207,11 @@
         реже(row.querySelector('.nl-t'));      // 🔴 дългата дума изтичаше вън от картата
         const кофа = row.querySelector('.nt-del'); пръст(кофа);
         кофа.addEventListener('click', () => {
-          махнато = st[i]; st.splice(i, 1); save('bl_wm_notlist', st); рисувай();
+          махнато = st[i];
+          st = load('bl_wm_notlist', []);   // пресен прочит ПРЕДИ записа
+          const k = st.findIndex(y => y && y.t === x.t);   // по ТЕКСТ, не по номер
+          if (k > -1) st.splice(k, 1);
+          save('bl_wm_notlist', st); рисувай();
           fx().buzz(8);
           каз(add, 'Махнах „' + махнато.t + '“. Ако не си искала — върни го.');
         });
@@ -222,6 +229,7 @@
         оставащи.slice(0, 4).forEach(т => {
           const b = реже(el('button', 'nl-idea', esc(т))); b.type = 'button'; пръст(b);
           b.addEventListener('click', () => {
+            st = load('bl_wm_notlist', []);   // пресен прочит ПРЕДИ записа
             st.push({ t: т, d: today() }); save('bl_wm_notlist', st); рисувай(); fx().buzz(8);
             каз(add, 'Отказа се от това ✔ Времето му се връща при теб.');
           });
@@ -240,6 +248,7 @@
       const v = inp.value.trim();
       // 🔴 МЪЛЧАЛИВ БУТОН: празно поле → тапът не правеше нищо видимо
       if (!v) { каз(add, 'Полето е празно. Напиши от какво се отказваш и пак натисни.', inp); return; }
+      st = load('bl_wm_notlist', []);   // пресен прочит ПРЕДИ записа
       st.push({ t: v.slice(0, 90), d: today() }); save('bl_wm_notlist', st); inp.value = ''; рисувай(); fx().buzz(10);
       каз(add, 'Записах го ✔ Това вече не е твоя грижа.');
     };
@@ -252,6 +261,7 @@
     отмяна.type = 'button'; отмяна.hidden = true; пръст(отмяна);
     отмяна.addEventListener('click', () => {
       if (!махнато) { отмяна.hidden = true; return; }
+      st = load('bl_wm_notlist', []);   // пресен прочит ПРЕДИ записа
       st.push(махнато); save('bl_wm_notlist', st);
       каз(отмяна, 'Върнах „' + махнато.t + '“ ✔');
       махнато = null; рисувай(); fx().buzz(8);

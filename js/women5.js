@@ -43,7 +43,20 @@
     c.appendChild(el('p', 'jr-privacy',
       'Има неща, които седят в теб от месеци и не са казани на никого. Аз не знам какво са и няма да гадая — не ми е работата. Знам само едно: в кабинета има десет минути и главата се изпразва. Затова го напиши тук, на спокойствие, и го вземи със себе си.'));
     const st = load('bl_wm_visit', { ticked: [], own: [], when: '' });
-    const запази = () => save('bl_wm_visit', st);
+    // 🔴 11.08 КАПАНЪТ НА СНИМКАТА: `st` е прочетено при РИСУВАНЕ и се записваше
+    //    ЦЯЛО при всеки клик — ако картата живее и другаде (скрития панел), чуждо
+    //    поле изчезваше мълчаливо. Сега `запази(поле)` чете ПРЯСНО и пази СВОЕТО
+    //    поле, а другите две взема от склада. Обновяваме `st` НА МЯСТО, защото
+    //    `st.own` е раздаден на помощника „списък“ и идентичността му не бива да се сменя.
+    const запази = поле => {
+      const св = load('bl_wm_visit', { ticked: [], own: [], when: '' });
+      if (!Array.isArray(св.ticked)) св.ticked = [];
+      if (!Array.isArray(св.own)) св.own = [];
+      if (поле !== 'ticked') st.ticked = св.ticked;
+      if (поле !== 'when') st.when = св.when || '';
+      if (поле !== 'own') { st.own.length = 0; св.own.forEach(x => st.own.push(x)); }
+      save('bl_wm_visit', { ticked: st.ticked, own: st.own, when: st.when });
+    };
     const знПр = знак();
 
     const кутия = el('div', 'wm-sent');
@@ -54,7 +67,7 @@
       б.addEventListener('click', () => {
         const i = st.ticked.indexOf(т);
         if (i >= 0) st.ticked.splice(i, 1); else st.ticked.push(т);
-        запази(); б.classList.toggle('done');
+        запази('ticked'); б.classList.toggle('done');
         б.querySelector('.jr-check').textContent = st.ticked.indexOf(т) >= 0 ? '✔' : '';
         fx().buzz(8);
       });
@@ -63,14 +76,14 @@
     c.appendChild(кутия);
 
     c.appendChild(el('p', 'jr-privacy', '<strong>И още нещо, което искам да попитам:</strong>'));
-    const сп = списък({ данни: st.own, запази: запази, подкана: 'моят въпрос…', празно: '' });
+    const сп = списък({ данни: st.own, запази: () => запази('own'), подкана: 'моят въпрос…', празно: '' });
     c.appendChild(сп.ред); c.appendChild(сп.кутия);
 
     const редОт = el('div', 'jr-chips');
     ОТКОГА.forEach(о => {
       const б = el('button', 'jr-chip' + (st.when === о ? ' on' : ''), о); б.type = 'button'; пръст(б, 0, 44);
       б.addEventListener('click', () => {
-        st.when = st.when === о ? '' : о; запази();
+        st.when = st.when === о ? '' : о; запази('when');
         редОт.querySelectorAll('.jr-chip').forEach(x => x.classList.remove('on'));
         if (st.when) б.classList.add('on');
         // 🔇 при ВТОРИ тап чипът само угасваше — на екрана изглежда като „нищо“
@@ -228,7 +241,9 @@
     const c = card('Нощната смяна 🌙 ' + sub('тапни, когато станеш · това е всичко'));
     c.appendChild(el('p', 'jr-privacy',
       'Никой не брои колко пъти ставаш. Ти самата не броиш — сутрин помниш само, че е било тежко. Тапвай, когато станеш. Не за да се оплакваш: за да имаш какво да покажеш, когато някой каже „ама ти нали спиш през деня“.'));
-    const st = load('bl_wm_night', {});
+    // 🔴 11.08 капанът на снимката: прочетено при РИСУВАНЕ, записвано при тап.
+    //    Пресен прочит при рисуване и точно преди всеки запис.
+    let st = load('bl_wm_night', {});
     const д = today();
     const брой = el('p', 'wm-nightn', '');
     брой.setAttribute('aria-live', 'polite');
@@ -247,6 +262,7 @@
     //    нощ на мама нямаше никакъв сбор, колкото и да тапва. Сега се смята
     //    вътре в рисувай(), от прясна сметка, при всеки тап.
     const рисувай = () => {
+      st = load('bl_wm_night', {});   // пресен прочит при всяко рисуване
       const n = st[д] || 0;
       брой.innerHTML = n ? '<strong>' + n + '</strong> ' + (n === 1 ? 'ставане' : 'ставания') + ' тази нощ' : 'Още нищо тази нощ.';
       назад.hidden = !n;
@@ -263,9 +279,10 @@
       } else { седмица.innerHTML = ''; седмица.hidden = true; }
     };
     const тап = el('button', 'jr-btn', '🌙 Станах'); тап.type = 'button'; пръст(тап, 0, 44);
-    тап.addEventListener('click', () => { st[д] = (st[д] || 0) + 1; save('bl_wm_night', st); рисувай(); fx().buzz(10); });
+    тап.addEventListener('click', () => { st = load('bl_wm_night', {}); st[д] = (st[д] || 0) + 1; save('bl_wm_night', st); рисувай(); fx().buzz(10); });
     // ↩️ пътят назад: тапва се в тъмното с една ръка, сбърканият тап е неизбежен
     назад.addEventListener('click', () => {
+      st = load('bl_wm_night', {});   // пресен прочит ПРЕДИ записа
       if (!st[д]) return;
       st[д] -= 1; if (!st[д]) delete st[д];
       save('bl_wm_night', st); рисувай(); fx().buzz(8);
@@ -346,7 +363,8 @@
     const c = card('Колко искам от теб днес 🌙 ' + sub('ти избираш · не аз'));
     c.appendChild(el('p', 'jr-privacy',
       'Приложенията решават вместо теб колко бодро да ти говорят. Това тук ще го решиш ти. Може и да не отговаряш — тогава карам както обикновено.'));
-    const st = load('bl_wm_dnes', {});
+    // 🔴 11.08 капанът на снимката: прочетено при РИСУВАНЕ, записвано при тап.
+    let st = load('bl_wm_dnes', {});
     const тон = load('bl_day_tone', {});
     // старите копия пазят 'ръб'; да не изгуби отметката си от вчерашната версия
     const текущ = тон.v === 'ръб' ? РЪБ : тон.v;
@@ -390,6 +408,7 @@
       б.type = 'button'; пръст(б, 0, 44);
       б.addEventListener('click', () => {
         save('bl_day_tone', { d: today(), v: т.v });
+        st = load('bl_wm_dnes', {});   // пресен прочит ПРЕДИ записа
         st[today()] = т.v; save('bl_wm_dnes', st);
         ред.querySelectorAll('.jr-chip').forEach(x => x.classList.remove('on'));
         б.classList.add('on');

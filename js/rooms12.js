@@ -56,7 +56,9 @@
 
   function ritualCard() {
     const c = card('Ритуалът на деня 🕯️ ' + sub('едно нещо · малко · за теб'));
-    const st = load('bl_wm_ritual', { d: '', done: false, skip: false, idx: -1 });
+    // 🔴 11.08 капанът на снимката: прочетено при РИСУВАНЕ, записвано при клик.
+    //    Пресен прочит точно преди всеки запис.
+    let st = load('bl_wm_ritual', { d: '', done: false, skip: false, idx: -1 });
     // 🌙 29.07: картата „Колко искам от теб днес“ (women5.js) пише bl_day_tone,
     //    а дотук НИКОЙ не го четеше — тоест тя щеше да е бутон без последствие.
     //    Сега ритуалът се съобразява: на ръба не иска нищо, на „тихо“ дава само
@@ -122,11 +124,13 @@
       const вчера = localDate(new Date(Date.now() - 86400000));
       // ⚠️ пази от двойно броене: ако днес вече е броено, не пипаме числото
       if (s.last !== today()) { s.n = (s.last === вчера ? (typeof s.n === 'number' ? s.n : 0) + 1 : 1); s.last = today(); save('bl_wm_ritual_streak', s); }
+      st = load('bl_wm_ritual', st);   // пресен прочит ПРЕДИ записа
       st.done = true; save('bl_wm_ritual', st); рисувай(); fx().buzz(10);
       if ((s.n || 0) >= 3) fx().confetti();
     });
-    no.addEventListener('click', () => { st.skip = true; save('bl_wm_ritual', st); рисувай(); fx().buzz(6); });
+    no.addEventListener('click', () => { st = load('bl_wm_ritual', st); st.skip = true; save('bl_wm_ritual', st); рисувай(); fx().buzz(6); });
     назад.addEventListener('click', () => {
+      st = load('bl_wm_ritual', st);   // пресен прочит ПРЕДИ записа
       const бешеDone = st.done;
       st.done = false; st.skip = false; save('bl_wm_ritual', st);
       // серията се връща само ако тъкмо ние сме я вдигнали днес
@@ -147,7 +151,9 @@
     const c = card('Картата на местата 🗺️ ' + sub('къде си била · къде искаш'));
     c.appendChild(el('p', 'jr-privacy',
       'Не е списък със задачи. Просто следа, че светът е по-голям от тази стая — и че ще го видиш пак.'));
-    const st = load('bl_wm_places', []);
+    // 🔴 11.08 капанът на снимката: снимка при рисуване, запис при клик. Пресен
+    //    прочит при рисуване и преди запис; редовете се намират по ТЕКСТ.
+    let st = load('bl_wm_places', []);
     const inp = el('input', 'jr-word'); inp.placeholder = 'напр. „Рим“, „морето с татко“, „Исландия“…'; inp.maxLength = 60;
     const wrap = el('div', 'jr-addrow');
     const бил = el('button', 'jr-chip', '📍 Била съм'); бил.type = 'button'; пръст(бил);
@@ -162,6 +168,7 @@
     const покажиОтмяна = д => { последно = д; отмени.hidden = !д; };
 
     const рисувай = () => {
+      st = load('bl_wm_places', []);   // пресен прочит при всяко рисуване
       list.innerHTML = '';
       const бх = st.filter(x => x.k === 'was'), их = st.filter(x => x.k === 'want');
       if (!st.length) { list.appendChild(el('p', 'jr-privacy', 'Още празна. Сложи първото — може да е и „Боровец, 2016“.')); return; }
@@ -180,14 +187,20 @@
           p.querySelector('.pl-x').addEventListener('click', ev => {
             ev.stopPropagation();
             const махнато = st[i];
-            st.splice(i, 1); save('bl_wm_places', st);
-            покажиОтмяна({ вид: 'триене', къде: i, какво: махнато });
+            st = load('bl_wm_places', []);   // пресен прочит ПРЕДИ записа
+            const k = st.findIndex(y => y && y.t === x.t && y.k === x.k);   // по ТЕКСТ, не по номер
+            if (k > -1) st.splice(k, 1);
+            save('bl_wm_places', st);
+            покажиОтмяна({ вид: 'триене', къде: k > -1 ? k : i, какво: махнато });
             рисувай();
           });
           if (x.k === 'want') p.addEventListener('click', ev => {
             if (ev.target.closest && ev.target.closest('.pl-x')) return;
-            x.k = 'was'; save('bl_wm_places', st);
-            покажиОтмяна({ вид: 'станало', обект: x });
+            x.k = 'was';
+            st = load('bl_wm_places', []);   // пресен прочит ПРЕДИ записа
+            const мой = st.find(y => y && y.t === x.t); if (мой) мой.k = 'was';
+            save('bl_wm_places', st);
+            покажиОтмяна({ вид: 'станало', обект: мой || x });
             рисувай(); fx().confetti(); fx().buzz(14);
           });
           g.appendChild(p);
@@ -198,11 +211,12 @@
     };
     отмени.addEventListener('click', () => {
       if (!последно) return;
+      st = load('bl_wm_places', []);   // пресен прочит ПРЕДИ записа
       if (последно.вид === 'триене') st.splice(Math.min(последно.къде, st.length), 0, последно.какво);
-      else if (последно.вид === 'станало') последно.обект.k = 'want';
+      else if (последно.вид === 'станало') { const м = st.find(y => y && y.t === последно.обект.t); if (м) м.k = 'want'; }
       save('bl_wm_places', st); покажиОтмяна(null); рисувай(); fx().buzz(6);
     });
-    const put = k => { const v = inp.value.trim(); if (!v) return; st.push({ t: v.slice(0, 60), k, d: today() }); save('bl_wm_places', st); inp.value = ''; покажиОтмяна(null); рисувай(); fx().buzz(8); };
+    const put = k => { const v = inp.value.trim(); if (!v) return; st = load('bl_wm_places', []); st.push({ t: v.slice(0, 60), k, d: today() }); save('bl_wm_places', st); inp.value = ''; покажиОтмяна(null); рисувай(); fx().buzz(8); };
     бил.addEventListener('click', () => put('was'));
     искам.addEventListener('click', () => put('want'));
     inp.addEventListener('keydown', e => { if (e.key === 'Enter') { e.preventDefault(); put('want'); } });
@@ -256,7 +270,8 @@
     const c = card('Работеше… и спря 🔄 ' + sub('не си сгрешила · детето се е сменило'));
     c.appendChild(el('p', 'jr-privacy',
       'Тук пиши нещата, които <strong>са работили и после спряха</strong>. Не за да се ядосваш — за да видиш, че се повтаря на вълни. И че някои се връщат.'));
-    const st = load('bl_lab_flipped', []);
+    // 🔴 11.08 капанът на снимката (виж картата с местата горе)
+    let st = load('bl_lab_flipped', []);
     const inp = el('input', 'jr-word'); inp.placeholder = 'напр. „повиването“, „люлеенето“, „биберонът“…'; inp.maxLength = 70;
     const add = el('button', 'jr-chip', '+ Добави'); add.type = 'button'; пръст(add);
     const list = el('div', 'jr-wins');
@@ -267,6 +282,7 @@
     отмени.hidden = true; пръст(отмени);
     let махнато = null;
     const рисувай = () => {
+      st = load('bl_lab_flipped', []);   // пресен прочит при всяко рисуване
       list.innerHTML = '';
       if (!st.length) { list.appendChild(el('p', 'jr-privacy', 'Още нищо. Като нещо спре да работи — сложи го тук.')); return; }
       st.slice().reverse().forEach((x, ri) => {
@@ -278,6 +294,8 @@
           <button class="nt-del" type="button" aria-label="Махни „${esc(x.t)}“ от списъка">🗑</button>`;
         row.querySelector('.fl-b').addEventListener('click', () => {
           x.back = x.back ? '' : today();
+          st = load('bl_lab_flipped', []);   // пресен прочит ПРЕДИ записа
+          const мой = st.find(y => y && y.t === x.t && y.d === x.d); if (мой) мой.back = x.back;
           if (x.back) { fx().confetti(); fx().buzz(12); }
           save('bl_lab_flipped', st); рисувай();
         });
@@ -287,7 +305,10 @@
         пръст(row.querySelector('.nt-del'), 44);
         row.querySelector('.nt-del').addEventListener('click', () => {
           махнато = { къде: i, какво: st[i] }; отмени.hidden = false;
-          st.splice(i, 1); save('bl_lab_flipped', st); рисувай();
+          st = load('bl_lab_flipped', []);   // пресен прочит ПРЕДИ записа
+          const k = st.findIndex(y => y && y.t === x.t && y.d === x.d);   // по ТЕКСТ, не по номер
+          if (k > -1) { махнато.къде = k; st.splice(k, 1); }
+          save('bl_lab_flipped', st); рисувай();
         });
         list.appendChild(row);
       });
@@ -296,10 +317,11 @@
     };
     отмени.addEventListener('click', () => {
       if (!махнато) return;
+      st = load('bl_lab_flipped', []);   // пресен прочит ПРЕДИ записа
       st.splice(Math.min(махнато.къде, st.length), 0, махнато.какво);
       save('bl_lab_flipped', st); махнато = null; отмени.hidden = true; рисувай(); fx().buzz(6);
     });
-    const put = () => { const v = inp.value.trim(); if (!v) return; st.push({ t: v.slice(0, 70), d: today(), back: '' }); save('bl_lab_flipped', st); inp.value = ''; махнато = null; отмени.hidden = true; рисувай(); fx().buzz(8); };
+    const put = () => { const v = inp.value.trim(); if (!v) return; st = load('bl_lab_flipped', []); st.push({ t: v.slice(0, 70), d: today(), back: '' }); save('bl_lab_flipped', st); inp.value = ''; махнато = null; отмени.hidden = true; рисувай(); fx().buzz(8); };
     add.addEventListener('click', put);
     inp.addEventListener('keydown', e => { if (e.key === 'Enter') { e.preventDefault(); put(); } });
     const row = el('div', 'jr-addrow'); row.appendChild(inp); row.appendChild(add); целРед(row, inp);

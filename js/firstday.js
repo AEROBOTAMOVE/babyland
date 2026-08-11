@@ -55,8 +55,17 @@
     if (тонДнес() || load('bl_tone_off', false)) return;
     const ред = el('div', 'fd-tone');
     ред.innerHTML = `<span class="fd-tq">Как да говорим днес?</span>`;
+    // 🔴 12.08 (обиколка на телефона, ИЗМЕРЕНО): трите отговора бяха 76×31,
+    //    90×31 и 86×31 — а „✕ не питай повече“ до тях е 44×44. Тоест най-лесно
+    //    се уцелваше бутонът, който ЗАТВАРЯ въпроса завинаги, а най-трудно —
+    //    „🫂 на ръба“, точно отговорът на жената, чиито ръце треперят.
+    //    Стилът е инлайн, защото CSS файловете не са мои.
+    //    ПЪТ НАЗАД: махни трите реда `b.style…`.
+    ред.style.flexWrap = 'wrap';
     [['🌤️', 'добре'], ['😮‍💨', 'уморена'], ['🫂', 'на ръба']].forEach(([e, v]) => {
       const b = el('button', 'fd-tb', e + ' ' + v); b.type = 'button';
+      b.style.minHeight = '44px'; b.style.boxSizing = 'border-box';
+      b.style.display = 'inline-flex'; b.style.alignItems = 'center'; b.style.justifyContent = 'center';
       b.addEventListener('click', () => {
         save(ТОН, { d: днес(), v });
         ред.innerHTML = v === 'на ръба'
@@ -187,10 +196,24 @@
       <div class="fd-qrow"><input class="fd-qi" type="text" maxlength="140" placeholder="Едно изречение стига…" aria-label="Отговорът ти за днес">
       <button class="fd-qb" type="button" aria-label="Запиши отговора">✔</button></div>`;
     const вход = к.querySelector('.fd-qi');
-    к.querySelector('.fd-qb').addEventListener('click', () => {
+    // 🔴 12.08 (обиколка на телефона, ИЗМЕРЕНО): полето беше 218×38, а ✔ — 38×38.
+    //    Това е ЕДИНСТВЕНИЯТ бутон на въпроса за деня и стои на екрана „Днес“,
+    //    който мама отваря с една ръка. 38 е под прага за пръст.
+    //    ПЪТ НАЗАД: махни двата реда `style` долу.
+    вход.style.minHeight = '44px'; вход.style.boxSizing = 'border-box';
+    const бут = к.querySelector('.fd-qb');
+    бут.style.minWidth = '44px'; бут.style.minHeight = '44px'; бут.style.boxSizing = 'border-box';
+    бут.style.display = 'inline-flex'; бут.style.alignItems = 'center'; бут.style.justifyContent = 'center';
+    бут.addEventListener('click', () => {
       const т = вход.value.trim();
       if (!т) { вход.focus(); return; }
-      с.a[ден] = т; save('bl_q30', с);
+      // 🔴 известният клас: `с` е прочетено при РИСУВАНЕТО, а се записва при
+      //    натискането — между двете „Днес“ може да се е пре-рисувал и да е
+      //    записал отговор от друг ден. Четем прясно точно преди записа.
+      const с2 = load('bl_q30', { start: с.start, a: {} });
+      if (!с2.start) с2.start = с.start || днес();
+      с2.a = с2.a || {};
+      с2.a[ден] = т; save('bl_q30', с2); с.a = с2.a;
       // влива се в дневника → Реката я вижда, съзвездието я брои
       const дневник = load('bl_prompt_log', []);
       дневник.push({ d: Date.now(), q: ВЪПРОСИ[(ден - 1) % ВЪПРОСИ.length], t: т });
@@ -267,6 +290,12 @@
     дни.forEach(n => {
       const row = el('div', 'q30-row');
       row.innerHTML = `<div class="q30-day">Ден ${n}${датаЗа(n) ? ' · ' + датаЗа(n) : ''}</div><div class="q30-q">${esc(въпросЗа(n))}</div><div class="q30-a">„${esc(с.a[n])}"</div>`;
+      // 🔴 12.08 (обиколка на телефона, ИЗМЕРЕНО): въпросът приема 140 знака и
+      //    мама може да напише дълга дума без интервали (или да лепне адрес).
+      //    Свитъкът ставаше 1280 px широк при 347 px екран — редът се влачеше
+      //    настрани и отговорът ѝ оставаше извън телефона.
+      //    ПЪТ НАЗАД: махни реда `row.querySelectorAll…`.
+      row.querySelectorAll('.q30-a, .q30-q').forEach(e => { e.style.overflowWrap = 'anywhere'; e.style.wordBreak = 'break-word'; e.style.minWidth = '0'; });
       list.appendChild(row);
     });
     c.appendChild(list);

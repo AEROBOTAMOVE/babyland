@@ -33,7 +33,9 @@
     //   стоят и картата се връща при „Пусни отново“ от настройките.
     if (window.BL_EXPECT && BL_EXPECT.paused && BL_EXPECT.paused()) return null;
     const c = card('Ехо-албумът 🩻 ' + sub('първите му снимки — с думите на лекаря'));
-    const st = load('bl_echo', []);
+    // 🔴 11.08 капанът на снимката: прочетено при РИСУВАНЕ, записвано при клик.
+    //    Пресен прочит при рисуване и преди запис; редът се търси по седмица+час.
+    let st = load('bl_echo', []);
     const седмица = (() => {
       const lmp = window.BL_EXPECT ? BL_EXPECT.lmp() : load('bl_lmp', '');
       if (!lmp) return 20;
@@ -52,6 +54,7 @@
 
     const grid = el('div', 'ec-grid');
     const рисувай = () => {
+      st = load('bl_echo', []);   // пресен прочит при всяко рисуване
       grid.innerHTML = '';
       if (!st.length) {
         grid.appendChild(el('p', 'jr-privacy',
@@ -61,11 +64,15 @@
       st.slice().sort((a, b) => (a.w || 0) - (b.w || 0)).forEach(x => {
         const i = st.indexOf(x);
         const f = el('figure', 'ec-item');
-        f.innerHTML = `<img src="${x.img}" alt="ехо на ${x.w} седмица" loading="lazy">
-          <figcaption><strong>${x.w} с.</strong>${x.t ? '<span>' + esc(x.t) + '</span>' : ''}</figcaption>
+        // 🟡 12.08: бележката на мама минава през esc(), а адресът на снимката
+        //    и седмицата влизаха сурови в атрибути. Едно правило за целия ред.
+        f.innerHTML = `<img src="${esc(x.img)}" alt="ехо на ${esc(String(x.w))} седмица" loading="lazy">
+          <figcaption><strong>${esc(String(x.w))} с.</strong>${x.t ? '<span>' + esc(x.t) + '</span>' : ''}</figcaption>
           <button class="ec-del" type="button" aria-label="изтрий">✕</button>`;
         f.querySelector('.ec-del').addEventListener('click', () => {
-          st.splice(i, 1); save('bl_echo', st); рисувай();
+          st = load('bl_echo', []);   // пресен прочит ПРЕДИ записа
+          const k = st.findIndex(y => y && y.w === x.w && y.d === x.d && y.t === x.t);
+          st.splice(k > -1 ? k : i, 1); save('bl_echo', st); рисувай();
         });
         grid.appendChild(f);
       });
@@ -73,6 +80,7 @@
     file.addEventListener('change', () => {
       const f = file.files[0]; if (!f || !window.BL_EXPR) return;
       BL_EXPR.shrinkImage(f, 420, url => {
+        st = load('bl_echo', []);   // пресен прочит ПРЕДИ записа
         st.push({ img: url, w: parseInt(wInp.value) || седмица, t: note.value.trim().slice(0, 90), d: today() });
         if (!save('bl_echo', st)) { st.pop(); fx().cheer('Паметта се напълни. 😕'); return; }
         note.value = ''; fx().buzz(12); fx().confetti(); рисувай();
@@ -116,7 +124,9 @@
     const baby = load('bl_baby', {});
     const a = baby.birth && window.BL_AGE ? BL_AGE(baby.birth) : null;
     const мес = a ? (a.devMonths != null ? a.devMonths : a.months) : null;
-    const мои = load('bl_ranges', {});
+    // 🔴 11.08 капанът на снимката: прочетено при РИСУВАНЕ, записвано при клик.
+    //    Пресен прочит при рисуване и точно преди всеки запис.
+    let мои = load('bl_ranges', {});
 
     c.appendChild(el('p', 'jr-privacy',
       'Всяка лента показва <strong>между кога и кога</strong> обикновено идва умението. Не „кога трябва“. Погледни колко е широка — това е свободата на детето ти.'));
@@ -134,6 +144,7 @@
     //    decorate() от polish.js минава само веднъж, при отваряне на стаята.
     //    Сега пререждаме само списъка, легендата и реда с равносметката.
     function рисувай() {
+      мои = load('bl_ranges', {});   // пресен прочит при всяко рисуване
       box.innerHTML = '';
       let имаСега = false;
       ДИАПАЗОНИ.forEach(д => {
@@ -155,6 +166,7 @@
         <div class="rg-bar"><span class="rg-fill" style="left:${л}%;width:${ш}%"></span>${маркер}${сега}</div></div>
         <button class="rg-mark" type="button" title="отбележи кога стана" aria-label="${моя != null ? 'Махни отметката: ' : 'Отбележи кога стана: '}${esc(д.н)}" aria-pressed="${моя != null}">${моя != null ? '✔' : '+'}</button>`;
       r.querySelector('.rg-mark').addEventListener('click', () => {
+        мои = load('bl_ranges', {});   // пресен прочит ПРЕДИ записа
         if (мои[д.id] != null) {
           delete мои[д.id]; save('bl_ranges', мои);
           // 🔴 г07/59 (огледално на dev.js:209): отбелязването пали цветчето в
@@ -187,18 +199,34 @@
         const п = el('input', 'jr-word'); п.type = 'number'; п.min = 0; п.max = 48; п.step = 0.5; п.inputMode = 'decimal';
         п.style.maxWidth = '86px'; п.value = мес != null ? String(Math.round(мес)) : ''; п.setAttribute('aria-label', 'на колко месеца');
         const ок = el('button', 'jr-chip', '✔'); ок.type = 'button'; ок.setAttribute('aria-label', 'запази');
+        // 🔴 12.08 (обиколка на телефона, ИЗМЕРЕНО): написах „999“ и натиснах ✔.
+        //    bl_ranges остана празно, полето задържа 999, на екрана не се смени
+        //    НИЩО — единственият отговор беше вибрация, а тя е изключена на
+        //    много телефони и я няма на таблет. Мама натиска трети, четвърти път
+        //    и решава, че картата е счупена. Бутон без видим отговор няма.
+        //    ПЪТ НАЗАД: махни `грешка` и върни голото `fx().buzz(8); return;`.
+        const грешка = el('p', 'jr-privacy'); грешка.hidden = true;
+        грешка.setAttribute('role', 'status'); грешка.setAttribute('aria-live', 'polite');
+        грешка.style.margin = '4px 0 0';
+        const кажи = т => {
+          грешка.textContent = т; грешка.hidden = false;
+          грешка.style.color = 'var(--pink-deep, #e56ba4)';
+          clearTimeout(кажи._t); кажи._t = setTimeout(() => { грешка.hidden = true; }, 4500);
+        };
         const запиши = () => {
           const n = parseFloat(п.value);
-          if (isNaN(n) || n < 0 || n > 48) { fx().buzz(8); return; }
+          if (isNaN(n)) { кажи('Напиши на колко месеца стана — само число.'); fx().buzz(8); п.focus(); return; }
+          if (n < 0 || n > 48) { кажи('Числото е в месеци — между 0 и 48. „' + String(п.value).slice(0, 8) + '“ не мога да го сложа на лентата.'); fx().buzz(8); п.select(); п.focus(); return; }
           прибери(n);
         };
         ок.addEventListener('click', запиши);
         п.addEventListener('keydown', e => { if (e.key === 'Enter') { e.preventDefault(); запиши(); } else if (e.key === 'Escape') ред.remove(); });
         ред.appendChild(п); ред.appendChild(ок);
-        mid.appendChild(ред); п.focus(); п.select();
+        mid.appendChild(ред); mid.appendChild(грешка); п.focus(); п.select();
       });
       // прибирането (същата логика като преди — само входът е инлайн вече)
       function прибери(n) {
+        мои = load('bl_ranges', {});   // пресен прочит ПРЕДИ записа
         мои[д.id] = Math.round(n * 10) / 10; save('bl_ranges', мои);
         // 🌳 мостът към Дървото/Витрината (одит-флот П23, проход 2 №8):
         // bl_ranges беше изолирано — отбелязваш умение, а Дървото не цъфти.

@@ -53,7 +53,13 @@
   function photoListCard(title, key, opts) {
     opts = opts || {};
     const c = card(title);
-    const items = load(key, []);
+    // 🔴 11.08 КАПАНЪТ НА СНИМКАТА: това е ОБЩ строител — един и същи ключ може
+    //    да е на екрана два пъти (стаята, нарисувана и в скрития панел). Ако
+    //    масивът се снима веднъж при рисуване, втората карта записва старото си
+    //    копие отгоре и трие чуждото мълчаливо. Затова: пресен прочит при всяко
+    //    рисуване и точно преди всеки запис; триенето търси снимката по ЧАС (ts),
+    //    защото номерът в реда важи само за старата снимка.
+    let items = load(key, []);
     const file = el('input'); file.type = 'file'; file.accept = 'image/*'; file.style.display = 'none';
     const addB = el('button', 'jr-btn', '📸 Добави снимка'); addB.type = 'button';
     const grid = el('div', 'pho-grid');
@@ -73,6 +79,7 @@
     let върнато = null;
     отмяна.addEventListener('click', () => {
       if (!върнато) { отмяна.hidden = true; return; }
+      items = load(key, []);   // пресен прочит ПРЕДИ записа
       items.splice(Math.min(върнато.i, items.length), 0, върнато.it);
       if (!save(key, items)) { items.splice(Math.min(върнато.i, items.length - 1), 1); знак(бележка, '😕 Паметта е пълна — не мога да я върна.', 5000); return; }
       върнато = null; отмяна.hidden = true; clearTimeout(отмяна._t);
@@ -96,6 +103,7 @@
       const затвори = () => { нотаРед.style.display = 'none'; нотаРед.innerHTML = ''; въздух.style.height = '0px'; };
       const запиши = () => {
         const т = п.value.trim().slice(0, 60);
+        items = load(key, []);   // пресен прочит ПРЕДИ записа
         if (т && items.length) { items[items.length - 1].note = т; save(key, items); draw(); }
         затвори();
       };
@@ -127,6 +135,7 @@
       const f = file.files[0]; if (!f) return;
       знак(бележка, '📸 Приемам снимката…', 6000);
       shrinkImage(f, 360, url => {
+        items = load(key, []);   // пресен прочит ПРЕДИ записа
         items.push({ img: url, note: '', ts: Date.now() });
         if (opts.max) while (items.length > opts.max) items.shift();
         if (!save(key, items)) { items.pop(); знак(бележка, '😕 Паметта се напълни — изтрий нещо старо.', 5000); fx().cheer('Паметта се напълни — изтрий нещо старо. 😕'); draw(); return; }
@@ -138,6 +147,7 @@
       file.value = '';
     });
     function draw() {
+      items = load(key, []);   // пресен прочит при всяко рисуване
       grid.innerHTML = '';
       if (!items.length) {
         // 🟠 11.08: празният текст падаше В решетката от 4 колони и се смачкваше
@@ -176,7 +186,10 @@
           return;
         }
         върнато = { it: items[idx], i: idx };
-        items.splice(idx, 1); save(key, items); ov.hidden = true; draw();
+        items = load(key, []);   // пресен прочит ПРЕДИ записа
+        const k = items.findIndex(x => x && x.ts === it.ts);   // по ЧАС, не по номер
+        if (k > -1) { върнато.i = k; items.splice(k, 1); }
+        save(key, items); ov.hidden = true; draw();
         отмяна.hidden = false;
         clearTimeout(отмяна._t);
         отмяна._t = setTimeout(() => { отмяна.hidden = true; върнато = null; }, 10000);
@@ -245,7 +258,8 @@
     opts = opts || {};
     const MAXS = opts.maxSec || 20;
     const c = card(title);
-    const items = load(key, []);
+    // 🔴 11.08 капанът на снимката — същият като при photoListCard горе.
+    let items = load(key, []);
     let label = (opts.labels && opts.labels[0]) || '';
     if (opts.labels) {
       const row = el('div', 'jr-quick');
@@ -264,6 +278,7 @@
     let mr = null, chunks = [], timer = null, тик = null, зает = false, върнато = null;
     отмяна.addEventListener('click', () => {
       if (!върнато) { отмяна.hidden = true; return; }
+      items = load(key, []);   // пресен прочит ПРЕДИ записа
       items.splice(Math.min(върнато.i, items.length), 0, върнато.it);
       if (!save(key, items)) { items.splice(Math.min(върнато.i, items.length - 1), 1); знак(бележка, '😕 Паметта е пълна — не мога да го върна.', 5000); return; }
       върнато = null; отмяна.hidden = true; clearTimeout(отмяна._t);
@@ -308,6 +323,7 @@
           знак(бележка, '💜 Прибирам записа…', 6000);
           const rd = new FileReader();
           rd.onload = () => {
+            items = load(key, []);   // пресен прочит ПРЕДИ записа
             items.push({ a: rd.result, label, ts: Date.now() });
             if (!save(key, items)) { items.pop(); знак(бележка, '😕 Паметта се напълни — изтрий стар запис.', 5000); fx().cheer('Паметта се напълни — изтрий стар запис. 😕'); }
             else { fx().buzz(12); fx().confetti(recB, 12); знак(бележка, '✔ Записът е прибран'); }
@@ -335,6 +351,7 @@
       }
     });
     function draw() {
+      items = load(key, []);   // пресен прочит при всяко рисуване
       list.innerHTML = items.length ? '' : `<p class="jr-privacy">${opts.empty || 'Тук ще живеят малките звуци, които не искаш да забравиш. 🎙️'}</p>`;
       items.slice().reverse().forEach((it, ri) => {
         const idx = items.length - 1 - ri;
@@ -345,7 +362,10 @@
         //    триене на първата дума на детето. Явни 44 и десет секунди път назад.
         row.querySelector('.nt-del').addEventListener('click', () => {
           върнато = { it: items[idx], i: idx };
-          items.splice(idx, 1); save(key, items); draw();
+          items = load(key, []);   // пресен прочит ПРЕДИ записа
+          const k = items.findIndex(x => x && x.ts === it.ts);   // по ЧАС, не по номер
+          if (k > -1) { върнато.i = k; items.splice(k, 1); }
+          save(key, items); draw();
           отмяна.hidden = false;
           clearTimeout(отмяна._t);
           отмяна._t = setTimeout(() => { отмяна.hidden = true; върнато = null; }, 10000);

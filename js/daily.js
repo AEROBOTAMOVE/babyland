@@ -255,11 +255,33 @@
       const doneToday = load('bl_prompt_done', '') === today();
       if (doneToday) {
         doneBox.appendChild(el('p', 'pr-done', 'Отговорено за днес ✓ Утре — нов въпрос. 💜'));
+        // ✏️ 11.08 (обиколка №2): написаното се заключваше на мига. Дописване,
+        //    поправена дума, второ хрумване по-късно вечерта — нямаше как.
+        //    Отваряме пак СЪЩИЯ запис (не втори ред в дневника).
+        const поправи = el('button', 'jr-chip', '✏️ Допиши или поправи'); поправи.type = 'button';
+        поправи.style.minHeight = '44px';
+        поправи.addEventListener('click', () => {
+          const lg = load('bl_prompt_log', []);
+          const посл = lg[lg.length - 1];
+          save('bl_draft_prompt', (посл && посл.t) || '');
+          if (посл) save('bl_prompt_log', lg.slice(0, -1));
+          save('bl_prompt_done', '');
+          fx().buzz(8);
+          drawDone();
+          const поле = doneBox.querySelector('textarea');
+          if (поле) { try { поле.focus({ preventScroll: true }); поле.setSelectionRange(поле.value.length, поле.value.length); } catch (e) { } }
+          if (window.refreshToday) refreshToday();
+        });
+        doneBox.appendChild(поправи);
       } else {
         const ta = el('textarea', 'jr-paper pr-in');
         ta.rows = 2; ta.placeholder = 'Отговори тук…';
         ta.dataset.draft = 'bl_draft_prompt';
         ta.value = load('bl_draft_prompt', '');
+        // 📱 клавиатурата закрива полето, когато картата е ниско в стаята
+        ta.addEventListener('focus', () => {
+          setTimeout(() => { try { ta.scrollIntoView({ block: 'center', behavior: 'smooth' }); } catch (e) { } }, 250);
+        });
         const btn = el('button', 'jr-btn', 'Запиши в дневника ✍️'); btn.type = 'button';
         btn.addEventListener('click', () => {
           const v = ta.value.trim(); if (!v) return;
@@ -326,6 +348,12 @@
   function mountWalk(container) {
     const inner = container.querySelector('.td-inner');
     if (!inner || inner.classList.contains('td-welcome')) return;
+    // 🟡 11.08 (обиколка №2, ИЗМЕРЕНО 1 → 2): BL_TODAY_BIND може да мине втори
+    //    път върху същия контейнер (веригата prevBind се вика и от други
+    //    модули) — тогава разходката се залепваше ВТОРИ ПЪТ и мама виждаше
+    //    две еднакви карти с по три бутона. Един контейнер, една разходка.
+    const стара = inner.querySelector('.wk-card');
+    if (стара) стара.remove();
     const st = walkState();
     const days = markDay(st);
     const s = streak(days);

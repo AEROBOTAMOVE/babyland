@@ -69,9 +69,13 @@
     // снимки
     if (monthPhotos.length || dayPhotos.length || bump.length) {
       html += `<div class="yb-page"><h2>📸 Как порасна</h2><div class="yb-photogrid">`;
-      bump.forEach(([w, img]) => { html += `<figure><img src="${img}"><figcaption>коремчето, ${w} с.</figcaption></figure>`; });
-      monthPhotos.forEach(([m, img]) => { html += `<figure><img src="${img}"><figcaption>${m === '0' ? 'раждането 🐣' : m + ' мес.'}</figcaption></figure>`; });
-      dayPhotos.forEach(([d, img]) => { html += `<figure><img src="${img}"><figcaption>${d.slice(8)}.${d.slice(5, 7)}</figcaption></figure>`; });
+      // 🟡 12.08: корицата два реда по-горе минава през esc(), а тези три реда
+      //    лепяха адреса на снимката сурово в атрибута. Един и същ адрес, едно
+      //    и също правило — иначе утре някой ще смени източника на снимките и
+      //    ще намери дупката тъкмо тук, в книгата за печат.
+      bump.forEach(([w, img]) => { html += `<figure><img src="${esc(img)}"><figcaption>коремчето, ${esc(String(w))} с.</figcaption></figure>`; });
+      monthPhotos.forEach(([m, img]) => { html += `<figure><img src="${esc(img)}"><figcaption>${m === '0' ? 'раждането 🐣' : esc(String(m)) + ' мес.'}</figcaption></figure>`; });
+      dayPhotos.forEach(([d, img]) => { html += `<figure><img src="${esc(img)}"><figcaption>${esc(d.slice(8))}.${esc(d.slice(5, 7))}</figcaption></figure>`; });
       html += `</div></div>`;
     }
 

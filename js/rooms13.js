@@ -183,7 +183,9 @@
     const c = card('Защо се буди в 3? 🔍 ' + sub('дъската с уликите'));
     c.appendChild(el('p', 'jr-privacy',
       'Не е диагноза. Дванайсет въпроса, които и без това си задаваш в 3 сутринта — само подредени, за да видиш кой отговор стърчи.'));
-    const st = load('bl_lab_clues', {});
+    // 🔴 11.08 капанът на снимката: прочетено при РИСУВАНЕ, записвано при клик.
+    //    Пресен прочит точно преди всеки запис.
+    let st = load('bl_lab_clues', {});
     const out = el('div', 'cl-out');
     const box = el('div', 'cl-box');
 
@@ -232,8 +234,13 @@
       const g = el('div', 'cl-btns');
       [['да', 1], ['не', 0]].forEach(([име, v]) => {
         const b = el('button', 'cl-b' + (st[u.id] === v ? ' on' : ''), име); b.type = 'button';
+        // 📏 11.08 (измерено): „да“/„не“ са 40.25×44 — височината е добре,
+        //    ширината е под прага. В 3 сутринта, на тъмно, с една ръка.
+        b.style.minWidth = '44px';
         b.addEventListener('click', () => {
-          st[u.id] = st[u.id] === v ? undefined : v;
+          const беше = st[u.id];
+          st = load('bl_lab_clues', {});   // пресен прочит ПРЕДИ записа
+          st[u.id] = беше === v ? undefined : v;
           if (st[u.id] === undefined) delete st[u.id];
           save('bl_lab_clues', st);
           [...g.children].forEach(x => x.classList.remove('on'));
@@ -248,13 +255,37 @@
     c.appendChild(box); c.appendChild(out); реши();
 
     const нул = el('button', 'jr-chip', '↺ Изчисти'); нул.type = 'button';
+    const хинт = el('p', 'jr-privacy', '');
+    // 🔇 11.08 (ИЗМЕРЕНО): при вече празна дъска бутонът не променяше НИЩО —
+    //    същият текст преди и след натискане. Мълчалив бутон. И: изчистването
+    //    хвърляше дванайсет отговора без път назад.
     нул.addEventListener('click', () => {
+      st = load('bl_lab_clues', {});   // пресен прочит ПРЕДИ записа
+      const беше = Object.assign({}, st);
+      const брой = Object.keys(беше).length;
+      if (!брой) { хинт.innerHTML = 'Дъската вече е чиста — няма какво да изчистя. 🔍'; fx().buzz(4); return; }
       Object.keys(st).forEach(k => delete st[k]);
       save('bl_lab_clues', st);
       box.querySelectorAll('.cl-b').forEach(b => b.classList.remove('on'));
-      реши();
+      реши(); fx().buzz(6);
+      хинт.innerHTML = 'Изчистих ' + брой + ' ' + (брой === 1 ? 'отговор' : 'отговора') + '. ';
+      const върни = el('button', 'jr-chip', '↩️ Върни ги'); върни.type = 'button';
+      върни.style.minHeight = '44px';
+      върни.addEventListener('click', () => {
+        st = load('bl_lab_clues', {});   // пресен прочит ПРЕДИ записа
+        Object.keys(беше).forEach(k => { st[k] = беше[k]; });
+        save('bl_lab_clues', st);
+        box.querySelectorAll('.cl-row').forEach(() => {});
+        УЛИКИ.forEach((u, i) => {
+          const редБутони = box.children[i] ? box.children[i].querySelectorAll('.cl-b') : [];
+          [...редБутони].forEach((b, j) => b.classList.toggle('on', st[u.id] === (j === 0 ? 1 : 0)));
+        });
+        реши(); fx().buzz(6);
+        хинт.innerHTML = 'Върнах ги. 🔍';
+      });
+      хинт.appendChild(върни);
     });
-    c.appendChild(нул);
+    c.appendChild(нул); c.appendChild(хинт);
     return c;
   }
 

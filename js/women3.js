@@ -158,11 +158,14 @@
     const възр = меБ && !isNaN(new Date(меБ)) ? Math.floor((Date.now() - new Date(меБ)) / 31557600000) : null;
     const кръгла = (възр != null && възр >= 10 && възр < 100) ? (Math.floor(възр / 10) + 1) * 10 : null;
     const c = card((кръгла ? 'Списъкът преди ' + кръгла + ' 🔥' : 'Списъкът, който още не съм направила 🔥') + sub('не е задача · покана е'));
-    const items = load('bl_wm_bucket', []);
+    // 🔴 11.08 капанът на снимката: снимка при рисуване, запис при клик. Пресен
+    //    прочит при рисуване и преди запис; редът се намира по ТЕКСТ, не по номер.
+    let items = load('bl_wm_bucket', []);
     const list = el('div', 'jr-wins');
     const cnt = el('p', 'wm-bcount', '');
     let махнато = null;                       // за отмяната на последното ✕
     function draw() {
+      items = load('bl_wm_bucket', []);   // пресен прочит при всяко рисуване
       list.innerHTML = '';
       const done = items.filter(x => x.done).length;
       // 🔴 04.08 (обиколка като Десислава): при празен списък пишеше
@@ -180,6 +183,9 @@
         b.type = 'button'; пръст(b);
         b.addEventListener('click', () => {
           it.done = !it.done; if (it.done) { it.d = today(); fx().confetti && fx().confetti(); } else delete it.d;
+          items = load('bl_wm_bucket', []);   // пресен прочит ПРЕДИ записа
+          const мой = items.find(y => y && y.t === it.t);
+          if (мой) { мой.done = it.done; if (it.done) мой.d = it.d; else delete мой.d; }
           save('bl_wm_bucket', items); draw();
           if (window.BL_FX && BL_FX.countUp) BL_FX.countUp(c);
           // 🔴 отмятането личеше само по едно ✔ 22px — казваме го и с думи
@@ -190,7 +196,11 @@
         //    казваше кое ще махне, а тапът е необратим.
         del.setAttribute('aria-label', 'Махни „' + it.t + '“ от списъка');
         del.addEventListener('click', () => {
-          махнато = items[i]; items.splice(i, 1); save('bl_wm_bucket', items); draw();
+          махнато = items[i];
+          items = load('bl_wm_bucket', []);   // пресен прочит ПРЕДИ записа
+          const k = items.findIndex(y => y && y.t === it.t);   // по ТЕКСТ, не по номер
+          if (k > -1) items.splice(k, 1);
+          save('bl_wm_bucket', items); draw();
           отмяна.hidden = false; fx().buzz(8);
           каз(cnt, 'Махнах „' + махнато.t + '“. Ако не си искала — върни го.');
         });
@@ -207,6 +217,7 @@
       const v = inp.value.trim();
       // 🔴 МЪЛЧАЛИВ БУТОН: тапът по „+“ с празно поле не правеше нищо видимо
       if (!v) { каз(add, 'Полето е празно. Напиши какво ти се иска и пак натисни +.', inp); return; }
+      items = load('bl_wm_bucket', []);   // пресен прочит ПРЕДИ записа
       items.push({ t: v.slice(0, 70) }); save('bl_wm_bucket', items); inp.value = ''; draw();
       fx().buzz(8); каз(add, 'Записах го ✔ Стои само на този телефон.');
     };
@@ -219,6 +230,7 @@
       // 🔴 МЪЛЧАЛИВ БУТОН: изчерпаните идеи връщаха мълчаливо
       if (!free.length) { каз(sug, 'Свършиха ми идеите — твоите вече са по-добри от моите. 💜'); return; }
       const нова = free[Math.floor(Math.random() * free.length)];
+      items = load('bl_wm_bucket', []);   // пресен прочит ПРЕДИ записа
       items.push({ t: нова });
       save('bl_wm_bucket', items); draw(); fx().buzz(8);
       каз(sug, 'Сложих ти: ' + нова);
@@ -227,6 +239,7 @@
     отмяна.type = 'button'; отмяна.hidden = true; пръст(отмяна);
     отмяна.addEventListener('click', () => {
       if (!махнато) { отмяна.hidden = true; return; }
+      items = load('bl_wm_bucket', []);   // пресен прочит ПРЕДИ записа
       items.push(махнато); save('bl_wm_bucket', items);
       каз(отмяна, 'Върнах „' + махнато.t + '“ ✔');
       махнато = null; draw(); fx().buzz(8);
@@ -280,9 +293,14 @@
     //    „Излез 15 минути сама“ седем дни подред. Обещанието падна, а изходът
     //    („Дай ми друга“) влезе — идеята вече е покана, не разписание.
     const c = card('Микро-приключение 🎈' + sub('15 минути само за теб · не става ли тази — вземи друга'));
-    const st = load('bl_wm_micro', {});
-    if (!Array.isArray(st.done)) st.done = [];   // внесено старо копие без поле
-    if (typeof st.week !== 'string') st.week = '';
+    // 🔴 11.08 капанът на снимката (виж списъка „искам да“ горе)
+    let st = load('bl_wm_micro', {});
+    const пресен = () => {
+      st = load('bl_wm_micro', {});
+      if (!Array.isArray(st.done)) st.done = [];   // внесено старо копие без поле
+      if (typeof st.week !== 'string') st.week = '';
+    };
+    пресен();
     const wk = Math.floor(dayIndex() / 7);
     let отм = 0;
     const ред = реже(el('p', 'wm-micro', ''));
@@ -304,6 +322,7 @@
     b.addEventListener('click', () => {
       // 🔴 МЪЛЧАЛИВ БУТОН: втори тап връщаше мълчаливо. Плюс: тя може да е
       //    направила ДВЕ неща от списъка тази седмица — не ѝ казвахме защо не се брои.
+      пресен();   // пресен прочит ПРЕДИ записа
       if (st.done.indexOf(wk) > -1) { каз(редБутони, 'Тази седмица вече е отметната ✔ Следващата пак ще те чакам тук. 💜'); return; }
       st.done.push(wk); save('bl_wm_micro', st); b.textContent = '✔ Направих го!';
       пишиБрой();
@@ -321,10 +340,12 @@
 
   function firstsCard() {
     const c = card('Първо за мен 🌟' + sub('първи път, откакто станах мама, направих…'));
-    const items = load('bl_wm_firsts', []);
+    // 🔴 11.08 капанът на снимката (виж списъка „искам да“ горе)
+    let items = load('bl_wm_firsts', []);
     const list = el('div', 'wm-secrets');
     let махнато = null;
     function draw() {
+      items = load('bl_wm_firsts', []);   // пресен прочит при всяко рисуване
       list.innerHTML = '';
       if (!items.length) list.appendChild(el('p', 'jr-privacy', 'Първата чаша кафе на спокойствие брои. 🌟'));
       items.slice().reverse().forEach((it, ri) => {
@@ -334,7 +355,11 @@
         const del = el('button', 'jr-x', '✕'); del.type = 'button'; пръст(del);
         del.setAttribute('aria-label', 'Махни „' + it.t + '“ от първите пъти');
         del.addEventListener('click', () => {
-          махнато = items[i]; items.splice(i, 1); save('bl_wm_firsts', items); draw();
+          махнато = items[i];
+          items = load('bl_wm_firsts', []);   // пресен прочит ПРЕДИ записа
+          const k = items.findIndex(y => y && y.t === it.t && y.d === it.d);   // по ТЕКСТ+ДАТА
+          if (k > -1) items.splice(k, 1);
+          save('bl_wm_firsts', items); draw();
           отмяна.hidden = false; fx().buzz(8);
           каз(add, 'Махнах „' + махнато.t + '“. Ако не си искала — върни го.');
         });
@@ -351,6 +376,7 @@
       const v = inp.value.trim();
       // 🔴 МЪЛЧАЛИВ БУТОН: празно поле → тапът не правеше нищо видимо
       if (!v) { каз(add, 'Полето е празно. Кое беше първото? Пиши го и пак натисни +.', inp); return; }
+      items = load('bl_wm_firsts', []);   // пресен прочит ПРЕДИ записа
       items.push({ t: v.slice(0, 70), d: today() }); save('bl_wm_firsts', items); inp.value = ''; draw();
       fx().confetti && fx().confetti();
       каз(add, 'Записах го ✔ ' + today() + ' — денят, в който пак беше ти.');
@@ -362,6 +388,7 @@
     отмяна.type = 'button'; отмяна.hidden = true; пръст(отмяна);
     отмяна.addEventListener('click', () => {
       if (!махнато) { отмяна.hidden = true; return; }
+      items = load('bl_wm_firsts', []);   // пресен прочит ПРЕДИ записа
       items.push(махнато); save('bl_wm_firsts', items);
       каз(отмяна, 'Върнах „' + махнато.t + '“ ✔');
       махнато = null; draw(); fx().buzz(8);
@@ -706,13 +733,19 @@
   function cvCard() {
     const c = card('CV на майката 📄' + sub('уменията, които никой не признава за умения'));
     const me = load('bl_me', {}), baby = load('bl_baby', {});
-    const st = load('bl_wm_cv', {});
-    if (!Array.isArray(st.on)) st.on = [0, 1, 2, 3];   // внесено старо копие без поле
-    if (!Array.isArray(st.extra)) st.extra = [];
-    if (st.tone !== 'fun') st.tone = 'serious';
+    // 🔴 11.08 капанът на снимката (виж списъка „искам да“ горе)
+    let st = load('bl_wm_cv', {});
+    const пресен = () => {
+      st = load('bl_wm_cv', {});
+      if (!Array.isArray(st.on)) st.on = [0, 1, 2, 3];   // внесено старо копие без поле
+      if (!Array.isArray(st.extra)) st.extra = [];
+      if (st.tone !== 'fun') st.tone = 'serious';
+    };
+    пресен();
     const текст = i => st.tone === 'fun' && CV_FUN[i] ? CV_FUN[i] : (CV_SKILLS[i] ? CV_SKILLS[i][1] : '');
     const box = el('div', 'wm-cv');
     function draw() {
+      пресен();   // пресен прочит при всяко рисуване
       box.innerHTML = '';
       CV_SKILLS.forEach(([t, дСериозно], i) => {
         const d = текст(i);
@@ -722,6 +755,7 @@
         row.setAttribute('aria-label', (вкл ? 'Махни от CV-то: ' : 'Сложи в CV-то: ') + t);
         row.innerHTML = '<span class="jr-check">' + (вкл ? '✔' : '') + '</span><div><strong>' + esc(t) + '</strong><small>' + esc(d) + '</small></div>';
         row.addEventListener('click', () => {
+          пресен();   // пресен прочит ПРЕДИ записа
           const k = st.on.indexOf(i);
           if (k > -1) st.on.splice(k, 1); else st.on.push(i);
           save('bl_wm_cv', st); draw(); fx().buzz(6);
@@ -741,6 +775,7 @@
       const b = el('button', 'jr-chip' + (st.tone === v ? ' wm-tone-on' : ''), т); b.type = 'button'; пръст(b);
       b.setAttribute('aria-pressed', st.tone === v ? 'true' : 'false');
       b.addEventListener('click', () => {
+        пресен();   // пресен прочит ПРЕДИ записа
         st.tone = v; save('bl_wm_cv', st);
         тонРед.querySelectorAll('.jr-chip').forEach(x => { x.classList.remove('wm-tone-on'); x.setAttribute('aria-pressed', 'false'); });
         b.classList.add('wm-tone-on'); b.setAttribute('aria-pressed', 'true'); draw(); fx().buzz(6);
@@ -809,10 +844,12 @@
 
   function complimentsCard() {
     const c = card('Комплиментите 💌' + sub('събирай ги · чети ги, когато си на дъното'));
-    const items = load('bl_wm_compl', []);
+    // 🔴 11.08 капанът на снимката (виж списъка „искам да“ горе)
+    let items = load('bl_wm_compl', []);
     const list = el('div', 'wm-compl');
     let махнато = null;
     function draw() {
+      items = load('bl_wm_compl', []);   // пресен прочит при всяко рисуване
       list.innerHTML = '';
       if (!items.length) list.appendChild(el('p', 'jr-privacy', 'Следващия път, като ти кажат нещо хубаво — запиши го тук. 💌'));
       items.slice().reverse().forEach((it, ri) => {
@@ -822,7 +859,11 @@
         const del = el('button', 'jr-x', '✕'); del.type = 'button'; пръст(del);
         del.setAttribute('aria-label', 'Махни комплимента от ' + (it.w || 'някой'));
         del.addEventListener('click', () => {
-          махнато = items[i]; items.splice(i, 1); save('bl_wm_compl', items); draw();
+          махнато = items[i];
+          items = load('bl_wm_compl', []);   // пресен прочит ПРЕДИ записа
+          const k = items.findIndex(y => y && y.t === it.t && y.d === it.d && y.w === it.w);
+          if (k > -1) items.splice(k, 1);
+          save('bl_wm_compl', items); draw();
           отмяна.hidden = false; fx().buzz(8);
           каз(add, 'Махнах го. Ако не си искала — върни го.');
         });
@@ -843,6 +884,7 @@
       // 🔴 МЪЛЧАЛИВ БУТОН: празно поле → тапът не правеше нищо видимо. И тук е
       //    най-объркващо, защото полетата са ДВЕ — мама пълнеше „кой“ и чакаше.
       if (!v) { каз(add, 'В първото поле напиши какво ти казаха. „Кой“ може и да остане празно.', t); return; }
+      items = load('bl_wm_compl', []);   // пресен прочит ПРЕДИ записа
       items.push({ t: v.slice(0, 90), w: w.value.trim().slice(0, 20), d: today() }); save('bl_wm_compl', items);
       t.value = ''; w.value = ''; draw(); fx().buzz(8);
       каз(add, 'Прибрано ✔ Ще те чака за деня, в който ти трябва.');
@@ -852,6 +894,7 @@
     отмяна.type = 'button'; отмяна.hidden = true; пръст(отмяна);
     отмяна.addEventListener('click', () => {
       if (!махнато) { отмяна.hidden = true; return; }
+      items = load('bl_wm_compl', []);   // пресен прочит ПРЕДИ записа
       items.push(махнато); save('bl_wm_compl', items);
       каз(отмяна, 'Върнах го ✔');
       махнато = null; draw(); fx().buzz(8);

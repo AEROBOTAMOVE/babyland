@@ -213,8 +213,10 @@
     const стена = el('div', 'wl-wall');
     мерки.forEach(x => {
       const r = el('div', 'wl-mark');
+      // правило 4: числото идва от поле, което мама пълни (extras.js) — минава
+      // през esc(), както датата до него. Днес е число, утре може да не е.
       r.innerHTML = `<span class="wl-line" style="width:${Math.round((x.v || 0) / макс * 100)}%"></span>
-        <span class="wl-txt">${x.v} см<small>${esc(x.d || '')}</small></span>`;
+        <span class="wl-txt">${esc(x.v)} см<small>${esc(x.d || '')}</small></span>`;
       стена.appendChild(r);
     });
     c.appendChild(стена);
@@ -223,13 +225,20 @@
       if (ръст > 0) c.appendChild(el('p', 'wl-verd', `Пораснал е с <strong>${Math.round(ръст * 10) / 10} см</strong>, откакто мериш. 🌱`));
     }
     const pr = el('button', 'jr-chip', '🖨️ За стената'); pr.type = 'button';
+    const хинт = el('p', 'jr-privacy', '');
     pr.addEventListener('click', () => {
-      if (!window.BL_EXPR || !BL_EXPR.printOverlay) return;
+      // 🔇 11.08: при липсващ печатен модул бутонът правеше `return` — нула
+      //    реакция. Мълчалив бутон, дори когато мълчанието има причина.
+      if (!window.BL_EXPR || !BL_EXPR.printOverlay) {
+        хинт.textContent = 'Печатният лист не се зареди този път. Числата са тук, горе — презареди приложението и опитай пак. 📏';
+        return;
+      }
+      хинт.textContent = '';
       BL_EXPR.printOverlay('Ръстът на ' + (esc(baby.name) || 'нашето бебе'),
-        `<ul class="pr-list">${мерки.map(x => `<li><strong>${x.v} см</strong> — ${esc(x.d || '')}</li>`).join('')}</ul>
+        `<ul class="pr-list">${мерки.map(x => `<li><strong>${esc(x.v)} см</strong> — ${esc(x.d || '')}</li>`).join('')}</ul>
          <p class="pr-note">Изрежи и залепи на рамката. След 20 години това ще е най-скъпият лист в къщата.</p>`);
     });
-    c.appendChild(pr);
+    c.appendChild(pr); c.appendChild(хинт);
     return c;
   }
 

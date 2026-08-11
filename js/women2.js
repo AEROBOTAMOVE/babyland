@@ -297,8 +297,11 @@
   ];
   function colorsCard() {
     const c = card('Цветовете ми 🎨' + sub('5 въпроса → палитрата, която те прави да светиш'));
-    const st = load('bl_wm_colors', { a: {}, type: '' });
-    if (!st.a || typeof st.a !== 'object') st.a = {};            // внесено/старо копие без полето
+    // 🔴 11.08 капанът на снимката: прочетено при РИСУВАНЕ, записвано при клик.
+    //    Същият лек като в „Гардеробът СЕГА“ по-горе — пресен прочит преди запис.
+    let st = load('bl_wm_colors', { a: {}, type: '' });
+    const пресен = () => { st = load('bl_wm_colors', { a: {}, type: '' }); if (!st.a || typeof st.a !== 'object') st.a = {}; };
+    пресен();            // внесено/старо копие без полето
     const box = el('div', 'wm-cq');
     function result() {
       const vals = Object.values(st.a);
@@ -309,6 +312,7 @@
       return bright ? 'зима' : 'лято';
     }
     function draw() {
+      пресен();   // пресен прочит при всяко рисуване
       box.innerHTML = '';
       CQ.forEach((q, qi) => {
         const w = el('div', 'wm-q');
@@ -323,6 +327,7 @@
             //   паметта. Мама тапва пак, защото не е сигурна, че се е записало.
             // (каз пише през textContent — тук esc() би показал &quot; на екрана)
             if (st.a[qi] === val) { каз(box, 'Това е отговорът ти ✔ ' + q[0]); fx().buzz(4); return; }
+            пресен();   // пресен прочит ПРЕДИ записа
             st.a[qi] = val; st.type = result(); save('bl_wm_colors', st); draw(); fx().buzz(6);
             // конфети САМО когато палитрата тъкмо се е получила или се е сменила —
             // досега гърмяха при всеки тап след петия отговор
@@ -562,7 +567,7 @@
     // 3.4.5: жива — днешното е ИЗБРАНО, не просто списък за четене
     const пик = new Date().getDate() % R.length;
     const [пикЕ, пикТ] = R[пик];
-    const st = load('bl_wm_5min', { d: '', done: false, counted: false });
+    let st = load('bl_wm_5min', { d: '', done: false, counted: false });
     // 🔴 г13/193: (1) редът „Откраднати минутки“ се рисуваше веднъж при строежа и
     //   никога не мърдаше след отмятане — изглеждаше, все едно не се е записало;
     //   (2) броячът се вдигаше при ВСЯКО включване, значи двойното тапване го
@@ -579,7 +584,12 @@
       брояч.innerHTML = 'Откраднати минутки досега: <strong>' + n + '</strong> 💋';
     };
     б.addEventListener('click', () => {
-      st.done = !st.done;
+      // 🔴 11.08 капанът на снимката: `st` беше прочетено при рисуване. Пресен
+      //    прочит преди записа + същото пренастройване за деня, както горе.
+      const беше = st.done;
+      st = load('bl_wm_5min', { d: '', done: false, counted: false });
+      if (st.d !== today()) { st.d = today(); st.done = false; st.counted = false; }
+      st.done = !беше;
       if (st.done && !st.counted) { st.counted = true; save('bl_wm_5min_total', load('bl_wm_5min_total', 0) + 1); }
       save('bl_wm_5min', st);
       б.textContent = st.done ? '✔ Направих го' : 'Направих го';

@@ -38,18 +38,23 @@
     const продукти = [...new Set(бъдещи.map(d => menu[d]).filter(Boolean))];
     if (!продукти.length) return;                       // празно меню → картата си остава както е
 
-    const взети = load('bl_shoplist_done', {});
+    // 🔴 11.08 капанът на снимката: прочетено при РИСУВАНЕ, записвано при клик.
+    //    Пресен прочит при рисуване и точно преди всеки запис.
+    let взети = load('bl_shoplist_done', {});
     // 22.07 (армия): отметките се пазеха по ИМЕ и никога не се чистеха —
     //   следващата седмица мама виждаше „✔ банан“ и подминаваше щанда.
     //   Същият шаблон като чантата за навън (rooms18): изричен бутон.
     const list = el('div', 'jr-wins');
     const рисувай = () => {
+      взети = load('bl_shoplist_done', {});   // пресен прочит при всяко рисуване
       list.innerHTML = '';
       продукти.forEach(п => {
         const row = el('button', 'sl-row' + (взети[п] ? ' done' : '')); row.type = 'button';
         row.innerHTML = `<span class="jr-check">${взети[п] ? '✔' : ''}</span><span class="sl-n">${esc(п)}</span>`;
         row.addEventListener('click', () => {
-          взети[п] = !взети[п]; save('bl_shoplist_done', взети); рисувай(); fx().buzz(6);
+          const беше = !!взети[п];
+          взети = load('bl_shoplist_done', {});   // пресен прочит ПРЕДИ записа
+          взети[п] = !беше; save('bl_shoplist_done', взети); рисувай(); fx().buzz(6);
           if (продукти.every(x => взети[x])) { fx().confetti(); fx().cheer('🛒 Всичко е в количката!'); }
         });
         list.appendChild(row);
@@ -72,6 +77,7 @@
     //   навън (rooms18) — изрично нулиране, нищо не се чисти само.
     const нула = el('button', 'jr-chip', '↺ Изчисти отметките'); нула.type = 'button';
     нула.addEventListener('click', () => {
+      взети = load('bl_shoplist_done', {});   // пресен прочит ПРЕДИ записа
       продукти.forEach(п => { delete взети[п]; });
       save('bl_shoplist_done', взети); рисувай(); fx().buzz(8);
     });
@@ -111,7 +117,15 @@
             ? `⚠️ Остават му <strong>${Math.round(остават * 10) / 10} см</strong> до размер ${следващ.eu}. Ако купуваш сега — вземи по-голямото.`
             : `Следващият размер (${следващ.eu}) идва след ~${Math.round(остават * 10) / 10} см.`));
       }
-      c.appendChild(el('p', 'jr-privacy', 'От последното ти мерене на ' + esc(посл.d || '') + '. Марките се различават — това е ориентир, не гаранция.'));
+      // 🟡 12.08 (обиколка на телефона): тук се показваше суровата дата от
+      //    записа — „От последното ти мерене на 2026-08-01“. Никъде другаде в
+      //    приложението мама не среща година-месец-ден; навсякъде е 1.08.2026 г.
+      //    ПЪТ НАЗАД: върни `esc(посл.d || '')`.
+      const кога = (() => {
+        const t = посл.d ? new Date(посл.d + 'T12:00') : null;
+        return t && !isNaN(t) ? t.toLocaleDateString('bg-BG') : esc(посл.d || '');
+      })();
+      c.appendChild(el('p', 'jr-privacy', 'От последното ти мерене на ' + esc(кога) + '. Марките се различават — това е ориентир, не гаранция.'));
     } else if (a) {
       // 🚨 22.07 (армия): последният ред от таблицата е „2-3 г.“ — числата се
       //   четяха като МЕСЕЦИ, така че дете над 24 месеца не намираше нищо и
@@ -170,8 +184,32 @@
     сума.setAttribute('aria-label', 'Колко лева');
     const доб = el('button', 'jr-chip', '+'); доб.type = 'button';
     доб.setAttribute('aria-label', 'Добави разхода');
+    // 👆 12.08 (ИЗМЕРЕНО): „+“ излизаше 36×42 — .jr-chip носи височина, но не и
+    //    ширина, а надписът е един знак. Единственият бутон за запис в картата.
+    доб.style.minWidth = '44px'; доб.style.minHeight = '44px'; доб.style.boxSizing = 'border-box';
+    ред.style.flexWrap = 'wrap';
     ред.appendChild(кг); ред.appendChild(сума); ред.appendChild(доб);
     c.appendChild(ред);
+    // 🔴 12.08 (обиколка на телефона, ИЗМЕРЕНО): въведох 99999999 в полето и
+    //    бутонът го прие мълчаливо. Стълбчето се сплеска, а редът отдолу вече
+    //    четеше „Средно: 50000069 лв/месец“ — завинаги, защото единственият
+    //    изход („↩ Махни последния“) иска потвърждение и мама не знае, че ѝ
+    //    трябва. Един сгрешен нул в 7 сутринта убива цялата ѝ история.
+    //    Тук живее и тихият знак, че записът е приет (досега само вибрация —
+    //    а тя е изключена на много телефони).
+    //    ПЪТ НАЗАД: махни `знак`, ТАВАН и трите реда в `пиши` — картата се
+    //    връща точно каквато беше.
+    const знак = el('p', 'jr-privacy sp-say'); знак.hidden = true;
+    знак.setAttribute('role', 'status'); знак.setAttribute('aria-live', 'polite');
+    c.appendChild(знак);
+    let кажиТаймер = null;
+    const кажи = (текст, лошо) => {
+      знак.textContent = текст; знак.hidden = false;
+      знак.style.color = лошо ? 'var(--pink-deep, #e56ba4)' : '';
+      clearTimeout(кажиТаймер);
+      кажиТаймер = setTimeout(() => { знак.hidden = true; }, 4000);
+    };
+    const ТАВАН = 100000;                       // сто хиляди лева за един запис
 
     const box = el('div');
     const рисувай = () => {
@@ -229,11 +267,15 @@
       box.appendChild(el('p', 'jr-privacy', 'Първите месеци са най-скъпи — количка, легло, столче. После пада. Това не е разхищение, а старт.'));
     };
     const пиши = () => {
-      const v = parseFloat(сума.value); if (isNaN(v) || v <= 0) { сума.focus(); return; }
+      const v = parseFloat(сума.value);
+      if (isNaN(v) || v <= 0) { кажи('Напиши колко лева — само число, по-голямо от нула.', true); сума.focus(); return; }
+      if (v > ТАВАН) { кажи('Толкова голямо число не мога да запиша — провери дали не е паднал един нул. (до ' + ТАВАН + ' лв на запис)', true); сума.select(); сума.focus(); return; }
       const данни = load('bl_spend', []);
+      const име = (КАТ.find(k => k.id === катИзбор) || {}).н || '';
       данни.push({ d: today(), k: катИзбор, v: Math.round(v * 100) / 100 });
       save('bl_spend', данни.slice(-400));
       сума.value = ''; рисувай(); fx().buzz(8);
+      кажи('✔ Записах ' + (Math.round(v * 100) / 100) + ' лв за „' + име + '“ днес.');
     };
     доб.addEventListener('click', пиши);
     сума.addEventListener('keydown', e => { if (e.key === 'Enter') { e.preventDefault(); пиши(); } });
@@ -282,9 +324,11 @@
   ];
   function utensilsCard() {
     const c = card('Първият път с прибор 🍽️ ' + sub('чашка · лъжица · вилица'));
-    const st = load('bl_utensils', {});
+    // 🔴 11.08 капанът на снимката (виж списъка за пазар горе)
+    let st = load('bl_utensils', {});
     const list = el('div', 'jr-wins');
     const рисувай = () => {
+      st = load('bl_utensils', {});   // пресен прочит при всяко рисуване
       list.innerHTML = '';
       ПРИБОРИ.forEach(п => {
         const d = st[п.id];
@@ -296,10 +340,11 @@
           if (st[п.id]) {
             (window.BL_UI ? BL_UI.confirm('Да махна ли „първи път“ за „' + п.н + '“? Датата ' + esc(d) + ' ще се загуби.', { emoji: п.e, okText: 'Махни', cancelText: 'Остави', danger: true })
               : Promise.resolve(confirm('Да махна ли отметката?'))).then(да => {
-              if (да) { delete st[п.id]; save('bl_utensils', st); рисувай(); fx().buzz(8); }
+              if (да) { st = load('bl_utensils', {}); delete st[п.id]; save('bl_utensils', st); рисувай(); fx().buzz(8); }
             });
             return;
           }
+          st = load('bl_utensils', {});   // пресен прочит ПРЕДИ записа
           st[п.id] = today(); fx().confetti(row); fx().cheer(п.e + ' ' + п.н + '!');
           save('bl_utensils', st); рисувай(); fx().buzz(8);
         });
@@ -316,24 +361,53 @@
     const c = card('Смехът на деня 😄 ' + sub('за да не остане само тежкото'));
     c.appendChild(el('p', 'jr-privacy',
       'Дневникът пази и тежкото — така трябва. Но ако не запишеш и смешното, след година ще помниш само умората. А е имало и смях.'));
-    const st = load('bl_laughs', []);
+    // 🔴 11.08 капанът на снимката (виж списъка за пазар горе)
+    let st = load('bl_laughs', []);
     const ред = el('div', 'jr-addrow');
     const inp = el('input', 'jr-word'); inp.placeholder = 'Какво те разсмя днес?'; inp.maxLength = 120;
     const add = el('button', 'jr-chip', '😄 Запиши'); add.type = 'button';
     const list = el('div', 'jr-wins');
     const рисувай = () => {
+      st = load('bl_laughs', []);   // пресен прочит при всяко рисуване
       list.innerHTML = '';
       if (!st.length) { list.appendChild(el('p', 'jr-privacy', 'Още нищо. Първото ще дойде — понякога смехът е техен, понякога е твой.')); return; }
       st.slice().reverse().slice(0, 12).forEach((x, ri) => {
         const i = st.length - 1 - ri;
         const row = el('div', 'lg-row');
         row.innerHTML = `<span class="lg-e">😄</span><span class="lg-t">${esc(x.t)}<small>${esc(x.d)}</small></span><button class="nt-del" type="button" aria-label="Махни „${esc(x.t)}“ от ${esc(x.d)}">🗑</button>`;
-        row.querySelector('.nt-del').addEventListener('click', () => { st.splice(i, 1); save('bl_laughs', st); рисувай(); });
+        // 🔴 12.08 (обиколка на телефона, ИЗМЕРЕНО в браузъра): едно изречение
+        //    без интервали (мама пише слято, или лепи адрес) разпъваше реда:
+        //    картата стана 1235 px широка при 347 px екран, а кошчето 🗑 отиде
+        //    на x=1249 — тоест ИЗВЪН телефона. Записът, който счупи вида, е
+        //    точно този, който мама вече не може да изтрие.
+        //    Стилът е инлайн, защото CSS файловете не са мои — но лечението е
+        //    същото: текстът се пренася където и да е, кошчето не се свива.
+        //    ПЪТ НАЗАД: махни трите реда стил долу.
+        const т = row.querySelector('.lg-t');
+        т.style.minWidth = '0'; т.style.overflowWrap = 'anywhere'; т.style.wordBreak = 'break-word';
+        const кошче = row.querySelector('.nt-del');
+        кошче.style.flexShrink = '0'; кошче.style.minWidth = '44px'; кошче.style.minHeight = '44px';
+        row.querySelector('.nt-del').addEventListener('click', () => {
+          st = load('bl_laughs', []);
+          const k = st.findIndex(y => y && y.t === x.t && y.d === x.d);
+          if (k > -1) st.splice(k, 1);
+          save('bl_laughs', st); рисувай();
+          // ↩ евтина отмяна: изтритото се връща, докато мама е още на картата
+          const назад = el('button', 'jr-chip lg-undo', '↩ Върни „' + esc(x.t.slice(0, 18)) + (x.t.length > 18 ? '…' : '') + '“');
+          назад.type = 'button';
+          назад.addEventListener('click', () => {
+            const д = load('bl_laughs', []);
+            if (!д.some(y => y && y.t === x.t && y.d === x.d)) { д.splice(Math.min(k, д.length), 0, x); save('bl_laughs', д); }
+            рисувай(); fx().buzz(6);
+          });
+          list.insertBefore(назад, list.firstChild);
+          setTimeout(() => назад.remove(), 8000);
+        });
         list.appendChild(row);
       });
       if (st.length > 12) list.appendChild(el('p', 'jr-privacy', 'Показвам последните 12 от общо ' + st.length + '. Всичките са в Реката.'));
     };
-    const пиши = () => { const v = inp.value.trim(); if (!v) return; st.push({ t: v.slice(0, 120), d: today() }); save('bl_laughs', st); inp.value = ''; рисувай(); fx().buzz(10); fx().confetti(); };
+    const пиши = () => { const v = inp.value.trim(); if (!v) return; st = load('bl_laughs', []); st.push({ t: v.slice(0, 120), d: today() }); save('bl_laughs', st); inp.value = ''; рисувай(); fx().buzz(10); fx().confetti(); };
     add.addEventListener('click', пиши);
     inp.addEventListener('keydown', e => { if (e.key === 'Enter') { e.preventDefault(); пиши(); } });
     ред.appendChild(inp); ред.appendChild(add);

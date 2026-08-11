@@ -104,6 +104,21 @@
         const списък = g.nextElementSibling;
         g.style.display = списък && [...списък.children].some(x => x.style.display !== 'none') ? '' : 'none';
       });
+      // 🔴 12.08 (обиколка на телефона, ИЗМЕРЕНО): написах дума, която я няма —
+      //    0 видими карти, 0 видими групи и НИТО ЕДНА дума на екрана. Панелът
+      //    се изпразваше до бяло. Мама не знае дали не е намерено, или картата
+      //    е счупена — а тя е дошла тук точно за да „не пропусне нищо“.
+      //    ПЪТ НАЗАД: махни блока `няма` и променливата `видими`.
+      const видими = [...слой.querySelectorAll('.rm-item')].filter(x => x.style.display !== 'none').length;
+      let няма = слой.querySelector('.rm-empty');
+      if (!няма) {
+        няма = el('p', 'rm-empty jr-privacy');
+        няма.setAttribute('role', 'status');
+        няма.style.padding = '14px 4px'; няма.style.textAlign = 'center';
+        слой.querySelector('.rm-scroll').appendChild(няма);
+      }
+      няма.hidden = !!видими || !q;
+      if (!видими && q) няма.textContent = '🔍 В тази стая няма нищо за „' + q + '“. Изтрий думата, за да се върне цялата карта — или потърси в друга стая.';
     });
     setTimeout(() => търси.focus({ preventScroll: true }), 260);
   }

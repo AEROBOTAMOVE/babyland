@@ -31,7 +31,12 @@
 
   function registryCard() {
     const c = card('Списък за подаръци 🎁 <span class="jr-sub">сподели го с баба, кака и кръстницата — да знаят какво да купят</span>');
-    const items = load('bl_registry', []);
+    // 🔴 11.08 КАПАНЪТ НА СНИМКАТА: прочетено при РИСУВАНЕ, записвано при клик.
+    //    Ако картата е на екрана два пъти (стаята и в скрития панел), втората
+    //    записва старото си копие отгоре и трие чуждото мълчаливо. Пресен
+    //    прочит при всяко рисуване и точно преди всеки запис; редовете се
+    //    намират по ТЕКСТ, защото номерът важи само за старата снимка.
+    let items = load('bl_registry', []);
     const inp = el('input', 'jr-word'); inp.maxLength = 60; inp.placeholder = 'Какво ви трябва… (напр. „Ританки р.62“)';
     const addB = el('button', 'jr-chip', '+ Добави'); addB.type = 'button';
     const row = el('div', 'jr-addrow'); row.appendChild(inp); row.appendChild(addB);
@@ -60,6 +65,7 @@
       const b = el('button', 'jr-chip', p); b.type = 'button';
       b.addEventListener('click', () => {
         if (items.some(i => i.t === p)) { fx().cheer('„' + p + '“ вече е в списъка ✔'); return; }
+        items = load('bl_registry', []);   // пресен прочит ПРЕДИ записа
         items.push({ t: p, done: false }); save('bl_registry', items); draw(); fx().buzz(8);
       });
       чипове.push({ б: b, име: p });
@@ -73,6 +79,7 @@
     let върнато = null;
     отмяна.addEventListener('click', () => {
       if (!върнато) { отмяна.hidden = true; return; }
+      items = load('bl_registry', []);   // пресен прочит ПРЕДИ записа
       items.splice(Math.min(върнато.i, items.length), 0, върнато.it);
       save('bl_registry', items);
       знак(бележка, '✔ Върнах „' + върнато.it.t + '“');
@@ -80,6 +87,7 @@
       draw(); fx().buzz(8);
     });
     function draw() {
+      items = load('bl_registry', []);   // пресен прочит при всяко рисуване
       освежиЧипове();
       list.innerHTML = '';
       if (!items.length) { list.appendChild(el('p', 'jr-privacy', 'Добави каквото ви е нужно — после „Сподели“ и подаръците спират да се повтарят. 😄')); return; }
@@ -92,14 +100,20 @@
         r.addEventListener('click', (e) => {
           if (e.target.classList.contains('nt-del')) {
             върнато = { it: items[i], i };
-            items.splice(i, 1); save('bl_registry', items); draw();
+            items = load('bl_registry', []);   // пресен прочит ПРЕДИ записа
+            const k = items.findIndex(x => x && x.t === it.t);   // по ТЕКСТ, не по номер
+            if (k > -1) { върнато.i = k; items.splice(k, 1); }
+            save('bl_registry', items); draw();
             знак(бележка, '🗑 Махнах „' + върнато.it.t + '“', 10000);
             отмяна.hidden = false;
             clearTimeout(отмяна._t);
             отмяна._t = setTimeout(() => { отмяна.hidden = true; върнато = null; }, 10000);
             return;
           }
-          it.done = !it.done; save('bl_registry', items);
+          it.done = !it.done;
+          items = load('bl_registry', []);   // пресен прочит ПРЕДИ записа
+          const мой = items.find(x => x && x.t === it.t); if (мой) мой.done = it.done;
+          save('bl_registry', items);
           r.classList.toggle('done'); r.querySelector('.jr-check').textContent = it.done ? '✔' : '';
           знак(бележка, it.done ? '✔ „' + it.t + '“ — купено' : '↩ „' + it.t + '“ пак чака', 2200);
         });
@@ -114,6 +128,7 @@
       if (!v) { знак(бележка, '✍️ Първо напиши какво ви трябва — после „+ Добави“.'); inp.focus(); return; }
       const има = items.find(i => String(i.t).toLowerCase() === v.toLowerCase());
       if (има) { знак(бележка, '„' + v + '“ вече е в списъка ✔'); inp.select(); return; }
+      items = load('bl_registry', []);   // пресен прочит ПРЕДИ записа
       items.push({ t: v, done: false }); save('bl_registry', items); inp.value = ''; draw();
       знак(бележка, '✔ Добавих „' + v + '“'); fx().buzz(8);
     });
@@ -194,7 +209,8 @@
     const baby = getBaby();
     const a = window.BL_AGE ? BL_AGE(baby.birth) : null;
     const maxM = a ? Math.min(24, Math.max(1, a.ym + 1)) : 12;
-    const photos = load('bl_photos', {});
+    // 🔴 11.08 капанът на снимката (виж registryCard горе)
+    let photos = load('bl_photos', {});
     const grid = el('div', 'pho-grid');
     const file = el('input'); file.type = 'file'; file.accept = 'image/*'; file.style.display = 'none';
     const бележка = el('p', 'jr-reply'); бележка.hidden = true;
@@ -216,6 +232,7 @@
         const k = Math.min(1, 360 / Math.max(img.width, img.height));
         cnv.width = Math.round(img.width * k); cnv.height = Math.round(img.height * k);
         cnv.getContext('2d').drawImage(img, 0, 0, cnv.width, cnv.height);
+        photos = load('bl_photos', {});   // пресен прочит ПРЕДИ записа
         photos[target] = cnv.toDataURL('image/jpeg', 0.78);
         if (!save('bl_photos', photos)) {
           fx().cheer('Паметта се напълни — изтрий стара снимка. 😕');
@@ -239,6 +256,7 @@
     });
     c.appendChild(file);
     function draw() {
+      photos = load('bl_photos', {});   // пресен прочит при всяко рисуване
       grid.innerHTML = '';
       for (let m = 0; m <= maxM; m++) {
         const cell = el('button', 'pho-cell'); cell.type = 'button';
@@ -274,6 +292,7 @@
           setTimeout(() => { if (сигурна) { сигурна = false; изтрий.textContent = '🗑 Изтрий'; } }, 4000);
           return;
         }
+        photos = load('bl_photos', {});   // пресен прочит ПРЕДИ записа
         delete photos[m]; save('bl_photos', photos); ov.hidden = true; draw();
         знак(бележка, '🗑 Махнах снимката от ' + (m === 0 ? 'раждането' : m + ' м.'), 4000);
       };
@@ -397,7 +416,8 @@
 
   function bodyCard() {
     const c = card('Как е тялото днес? 🌷 <span class="jr-sub">възстановяването е маратон — бъди мека към себе си</span>');
-    const data = load('bl_body', {});
+    // 🔴 11.08 капанът на снимката (виж registryCard горе)
+    let data = load('bl_body', {});
     const t = today();
     const row = el('div', 'jr-quick');
     const отговор = v => v === 'тежко' ? 'Чуто. Днес — минимум задачи, максимум милост. 🤗' : v === 'средно' ? 'Стъпка по стъпка. Тялото ти направи чудо. 🌱' : 'Прекрасно! Отбележи си какво помага. 🌸';
@@ -405,6 +425,7 @@
       const b = el('button', 'jr-chip' + ((data[t] && data[t].v === v) ? ' on' : ''), e + ' ' + v); b.type = 'button';
       b.addEventListener('click', () => {
         row.querySelectorAll('.jr-chip').forEach(x => x.classList.remove('on')); b.classList.add('on');
+        data = load('bl_body', {});   // пресен прочит ПРЕДИ записа
         data[t] = { v, n: (data[t] && data[t].n) || '' }; save('bl_body', data);
         msg.textContent = отговор(v);
         знак(записано, '✔ Запазено');
@@ -421,6 +442,7 @@
     // 11.08: бележката се пазеше НЕВИДИМО при всяка буква — нищо не казваше на
     // мама, че е прието. Тих знак, който не мига при всеки натиснат клавиш.
     note.addEventListener('input', () => {
+      data = load('bl_body', {});   // пресен прочит ПРЕДИ записа
       data[t] = data[t] || { v: '' }; data[t].n = note.value; save('bl_body', data);
       clearTimeout(note._z);
       note._z = setTimeout(() => знак(записано, '✔ Запазено', 2200), 500);

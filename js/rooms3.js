@@ -216,7 +216,10 @@
   // 📸 Снимка на деня — една, без филтри
   function dayPhotoCard() {
     const c = card('Снимка на деня 📸 <span class="jr-sub">една на ден — става лента на месеца</span>');
-    const photos = load('bl_dayphoto', {});
+    // 🔴 11.08 капанът на снимката: прочетено при РИСУВАНЕ, записвано при клик.
+    //    Ако стаята е нарисувана два пъти, втората карта записва старата си
+    //    снимка отгоре. Затова: пресен прочит при рисуване и преди всеки запис.
+    let photos = load('bl_dayphoto', {});
     const t = today();
     const file = el('input'); file.type = 'file'; file.accept = 'image/*'; file.style.display = 'none';
     const slot = el('button', 'dp-today'); slot.type = 'button';
@@ -224,6 +227,7 @@
     file.addEventListener('change', () => {
       const f = file.files[0]; if (!f) return;
       BL_EXPR.shrinkImage(f, 340, url => {
+        photos = load('bl_dayphoto', {});   // пресен прочит ПРЕДИ записа
         photos[t] = url;
         if (!save('bl_dayphoto', photos)) { delete photos[t]; fx().cheer('Паметта се напълни — изтрий стара снимка. 😕'); }
         else { save('bl_photo_day', t); fx().buzz(12); fx().confetti(slot, 14); if (window.refreshToday) refreshToday(); }
@@ -232,6 +236,7 @@
       file.value = '';
     });
     function draw() {
+      photos = load('bl_dayphoto', {});   // пресен прочит при всяко рисуване
       slot.innerHTML = photos[t]
         ? `<img src="${photos[t]}" alt="днес"><span>днес ✓ (смени?)</span>`
         : '<span class="dp-plus">+</span><span>снимката на днешния ден</span>';
@@ -241,7 +246,7 @@
         const b = el('button', 'dp-cell'); b.type = 'button';
         b.innerHTML = `<img src="${photos[k]}" alt=""><span>${k.slice(8)}.${k.slice(5, 7)}</span>`;
         b.addEventListener('click', () => {
-          (window.BL_UI ? BL_UI.confirm('Да изтрия ли снимката от ' + k + '?', { emoji: '📸', okText: 'Изтрий', cancelText: 'Остави', danger: true }) : Promise.resolve(confirm('Да изтрия ли снимката от ' + k + '?'))).then(да => { if (да) { delete photos[k]; save('bl_dayphoto', photos); draw(); } });
+          (window.BL_UI ? BL_UI.confirm('Да изтрия ли снимката от ' + k + '?', { emoji: '📸', okText: 'Изтрий', cancelText: 'Остави', danger: true }) : Promise.resolve(confirm('Да изтрия ли снимката от ' + k + '?'))).then(да => { if (да) { photos = load('bl_dayphoto', {}); delete photos[k]; save('bl_dayphoto', photos); draw(); } });
         });
         strip.appendChild(b);
       });
@@ -266,7 +271,8 @@
     //    когото го няма. Същият флаг, същото уважение.
     if (load('bl_partner', '') === 'не') return null;
     const c = card('Писма между нас 💌 <span class="jr-sub">тайното място на мама и тати</span>');
-    const items = load('bl_letters', []);
+    // 🔴 11.08 капанът на снимката (виж dayPhotoCard горе)
+    let items = load('bl_letters', []);
     let who = 'мама';
     const whoRow = el('div', 'jr-quick');
     [['мама', '🌸 мама'], ['тати', '🧢 тати']].forEach(([v, lb], i) => {
@@ -284,12 +290,15 @@
       // 🔇 12.08 (мерено): празно/само интервали → бутонът правеше нула промяна.
       if (!v) { nudge(send, 'Още е празно — напиши едно изречение и го оставям тук. 💌', ta); return; }
       clearHint(send);
+      items = load('bl_letters', []);   // пресен прочит ПРЕДИ записа
       items.push({ who, t: v, ts: Date.now() });
-      save('bl_letters', items.slice(-60)); save('bl_draft_letters', '');
+      items = items.slice(-60);
+      save('bl_letters', items); save('bl_draft_letters', '');
       ta.value = ''; fx().buzz(12); draw();
       tick(send, 'Оставено ✔');
     });
     function draw() {
+      items = load('bl_letters', []);   // пресен прочит при всяко рисуване
       thread.innerHTML = items.length ? '' : '<p class="jr-privacy">Първото писмо чака. Може да е само „обичам ни“. 💌</p>';
       items.slice(-12).forEach(m => {
         const row = el('div', 'lt-row ' + (m.who === 'мама' ? 'lt-mama' : 'lt-tati'));
@@ -319,7 +328,9 @@
     //    „Спри тихо броенето“, продължаваше да бъде посрещана с „чакаме него“.
     if (window.BL_EXPECT && BL_EXPECT.paused && BL_EXPECT.paused()) return null;
     const c = card('Дневник на наддаването 📈 <span class="jr-sub">меко, без терор от кантара</span>');
-    const items = load('bl_pregw', []);
+    // 🔴 11.08 капанът на снимката (виж dayPhotoCard горе). „↩ Върни последното“
+    //    отдолу вече четеше пресно; сега и „+ Запиши“ прави същото.
+    let items = load('bl_pregw', []);
     const row = el('div', 'jr-addrow');
     const inp = el('input', 'jr-word'); inp.type = 'number'; inp.step = '0.1'; inp.placeholder = 'кг днес…';
     const add = el('button', 'jr-chip', '+ Запиши'); add.type = 'button';
@@ -342,11 +353,14 @@
       const v = parseFloat(inp.value);
       if (isNaN(v) || v < 30 || v > 200) { nudge(row, inp.value.trim() ? 'Провери числото — това е в кг (напр. 68).' : 'Напиши колко показва кантарът в кг (напр. 68).', inp); return; }
       clearHint(row);
+      items = load('bl_pregw', []);   // пресен прочит ПРЕДИ записа
       items.push({ d: today(), kg: v, w: pregWeek() });
-      save('bl_pregw', items.slice(-60)); inp.value = ''; fx().buzz(10); draw();
+      items = items.slice(-60);
+      save('bl_pregw', items); inp.value = ''; fx().buzz(10); draw();
       tick(add, '✔ Записано');
     });
     function draw() {
+      items = load('bl_pregw', []);   // пресен прочит при всяко рисуване
       undo.hidden = !items.length;
       if (!items.length) { box.innerHTML = '<p class="jr-privacy">Записвай колкото често ИСКАШ — кривата е за теб, не ти за нея. 🤍</p>'; return; }
       const last = items.slice(-14);
@@ -397,7 +411,8 @@
       return c;
     }
     c.appendChild(el('p', 'cs-note', `Седмица <strong>${w}</strong>:`));
-    const data = load('bl_pregsym', {});
+    // 🔴 11.08 капанът на снимката (виж dayPhotoCard горе)
+    let data = load('bl_pregsym', {});
     const cur = new Set(data[w] || []);
     const grid = el('div', 'jr-quick sy-grid');
     SYMPTOMS.forEach(s => {
@@ -405,6 +420,7 @@
       b.addEventListener('click', () => {
         if (cur.has(s)) cur.delete(s); else { cur.add(s); fx().buzz(8); }
         b.classList.toggle('on');
+        data = load('bl_pregsym', {});   // пресен прочит ПРЕДИ записа
         data[w] = [...cur]; save('bl_pregsym', data);
       });
       grid.appendChild(b);
@@ -423,7 +439,8 @@
   function bumpCard() {
     if (window.BL_EXPECT && BL_EXPECT.paused && BL_EXPECT.paused()) return null;
     const c = card('Коремчето по седмици 🤰 <span class="jr-sub">лентата на чакането</span>');
-    const photos = load('bl_bump', {});
+    // 🔴 11.08 капанът на снимката (виж dayPhotoCard горе)
+    let photos = load('bl_bump', {});
     const w = pregWeek() || 20;
     const file = el('input'); file.type = 'file'; file.accept = 'image/*'; file.style.display = 'none';
     let target = w;
@@ -431,6 +448,7 @@
     file.addEventListener('change', () => {
       const f = file.files[0]; if (!f) return;
       BL_EXPR.shrinkImage(f, 340, url => {
+        photos = load('bl_bump', {});   // пресен прочит ПРЕДИ записа
         photos[target] = url;
         if (!save('bl_bump', photos)) { delete photos[target]; fx().cheer('Паметта се напълни. 😕'); }
         else fx().buzz(12);
@@ -439,12 +457,13 @@
       file.value = '';
     });
     function draw() {
+      photos = load('bl_bump', {});   // пресен прочит при всяко рисуване
       grid.innerHTML = '';
       for (let wk = 4; wk <= Math.min(42, w + 1); wk += 2) {
         const cell = el('button', 'pho-cell'); cell.type = 'button';
         if (photos[wk]) {
           cell.innerHTML = `<img src="${photos[wk]}" alt=""><span class="pho-m">${wk} с.</span>`;
-          cell.addEventListener('click', () => { (window.BL_UI ? BL_UI.confirm('Изтриване на седмица ' + wk + '?', { emoji: '🤰', okText: 'Изтрий', cancelText: 'Остави', danger: true }) : Promise.resolve(confirm('Изтриване на седмица ' + wk + '?'))).then(да => { if (да) { delete photos[wk]; save('bl_bump', photos); draw(); } }); });
+          cell.addEventListener('click', () => { (window.BL_UI ? BL_UI.confirm('Изтриване на седмица ' + wk + '?', { emoji: '🤰', okText: 'Изтрий', cancelText: 'Остави', danger: true }) : Promise.resolve(confirm('Изтриване на седмица ' + wk + '?'))).then(да => { if (да) { photos = load('bl_bump', {}); delete photos[wk]; save('bl_bump', photos); draw(); } }); });
         } else {
           cell.classList.add('empty');
           cell.innerHTML = `<span class="pho-plus">+</span><span class="pho-m">${wk} с.</span>`;
@@ -478,7 +497,8 @@
   function birthPlanCard() {
     if (window.BL_EXPECT && BL_EXPECT.paused && BL_EXPECT.paused()) return null;
     const c = card('План за раждане 📜 <span class="jr-sub">желанията ти — на лист за болницата</span>');
-    const state = load('bl_birthplan', {});
+    // 🔴 11.08 капанът на снимката (виж dayPhotoCard горе)
+    let state = load('bl_birthplan', {});
     const wrap = el('div', 'jr-wins');
     const свои = load('bl_birthplan_custom', []);
     const items = BIRTH_ITEMS.concat(свои);
@@ -490,7 +510,9 @@
       t.innerHTML = `<span class="jr-check">${state[it] ? '✔' : ''}</span> ${esc(етикет(it))}`;
       t.setAttribute('aria-pressed', state[it] ? 'true' : 'false');
       t.addEventListener('click', () => {
-        state[it] = !state[it]; save('bl_birthplan', state);
+        const беше = !!state[it];
+        state = load('bl_birthplan', {});   // пресен прочит ПРЕДИ записа
+        state[it] = !беше; save('bl_birthplan', state);
         r.classList.toggle('done'); t.querySelector('.jr-check').textContent = state[it] ? '✔' : '';
         t.setAttribute('aria-pressed', state[it] ? 'true' : 'false');
         fx().buzz(8);
@@ -511,6 +533,7 @@
             const cur = load('bl_birthplan_custom', []);
             const k = cur.indexOf(it); if (k > -1) cur.splice(k, 1);
             save('bl_birthplan_custom', cur);
+            state = load('bl_birthplan', {});   // пресен прочит ПРЕДИ записа
             delete state[it]; save('bl_birthplan', state);
             c.replaceWith(birthPlanCard());
           });
@@ -602,7 +625,9 @@
     //    карта, направена за двойка. Гласовете си остават два — просто вече не
     //    казваме КОЙ е вторият. Ключовете m/t не се пипат: записаното остава.
     const c = card('Изборът на име 🗳️ <span class="jr-sub">два гласа — твоят и на когото решиш</span>');
-    const items = load('bl_names_vote', []);
+    // 🔴 11.08 капанът на снимката (виж dayPhotoCard горе). Гласът и кошчето
+    //    намират името си по ИМЕ в пресния масив, не по номер в старата снимка.
+    let items = load('bl_names_vote', []);
     const addRow = el('div', 'jr-addrow');
     const inp = el('input', 'jr-word'); inp.placeholder = 'име-кандидат…'; inp.maxLength = 20;
     const add = el('button', 'jr-chip', '+ Добави'); add.type = 'button';
@@ -613,12 +638,14 @@
       if (!v) { nudge(addRow, 'Напиши име първо. 💜', inp); return; }
       if (items.some(x => x.n.toLowerCase() === v.toLowerCase())) { nudge(addRow, 'Това име вече е горе. 💜', inp); return; }
       clearHint(addRow);
+      items = load('bl_names_vote', []);   // пресен прочит ПРЕДИ записа
       items.push({ n: v, m: 0, t: 0 }); save('bl_names_vote', items); inp.value = ''; fx().buzz(8); draw();
     };
     add.addEventListener('click', добавиИме);
     // 12.08: на телефон клавиатурата дава „Готово/Enter“ — то не правеше нищо тук.
     inp.addEventListener('keydown', e => { if (e.key === 'Enter') { e.preventDefault(); добавиИме(); } });
     function draw() {
+      items = load('bl_names_vote', []);   // пресен прочит при всяко рисуване
       list.innerHTML = items.length ? '' : '<p class="jr-privacy">Добавете кандидатите — и нека сърцата решат. 💜</p>';
       const подредени = items.slice().sort((a, b) => (b.m + b.t) - (a.m + a.t));
       подредени.forEach((it, място) => {
@@ -634,12 +661,14 @@
         row.querySelectorAll('.nm-vote').forEach(b => b.addEventListener('click', () => {
           // броячът НЕ бива да зацикля на 6-то докосване (одит-флот П23, проход
           // 2 №16): 6-ти глас връщаше на 0 и короната скачаше тихо на друго име
-          it[b.dataset.w] = Math.min((+it[b.dataset.w] || 0) + 1, 99); save('bl_names_vote', items); fx().buzz(8);
+          items = load('bl_names_vote', []);   // пресен прочит ПРЕДИ записа
+          const мой = items.find(x => x && x.n === it.n) || it;
+          мой[b.dataset.w] = Math.min((+мой[b.dataset.w] || 0) + 1, 99); save('bl_names_vote', items); fx().buzz(8);
           // Б8.5: сърцето прескача един удар — после списъкът се преподрежда
           b.classList.add('nm-beat');
           setTimeout(() => draw(), 240);
         }));
-        row.querySelector('.nt-del').addEventListener('click', () => { items.splice(items.indexOf(it), 1); save('bl_names_vote', items); draw(); });
+        row.querySelector('.nt-del').addEventListener('click', () => { items = load('bl_names_vote', []); const k = items.findIndex(x => x && x.n === it.n); if (k > -1) items.splice(k, 1); save('bl_names_vote', items); draw(); });
         list.appendChild(цели(row));
       });
     }
@@ -651,7 +680,9 @@
   function playlistCard() {
     if (window.BL_EXPECT && BL_EXPECT.paused && BL_EXPECT.paused()) return null;
     const c = card('Музика за коремчето 🎶 <span class="jr-sub">песните, с които те чакахме</span>');
-    const items = load('bl_playlist', []);
+    // 🔴 11.08 капанът на снимката (виж dayPhotoCard горе). Кошчето търси
+    //    песента по текст+дата в пресния масив, не по номер в старата снимка.
+    let items = load('bl_playlist', []);
     const addRow = el('div', 'jr-addrow');
     const inp = el('input', 'jr-word'); inp.placeholder = 'песен / изпълнител…'; inp.maxLength = 60;
     const add = wide(el('button', 'jr-chip', '+')); add.type = 'button';
@@ -664,17 +695,18 @@
       const v = inp.value.trim();
       if (!v) { nudge(addRow, 'Коя песен? Стига и само „Ave Maria“. 🎵', inp); return; }
       clearHint(addRow);
+      items = load('bl_playlist', []);   // пресен прочит ПРЕДИ записа
       items.push({ t: v, d: Date.now() }); save('bl_playlist', items); inp.value = ''; fx().buzz(8); draw();
     };
     add.addEventListener('click', добави);
     inp.addEventListener('keydown', e => { if (e.key === 'Enter') { e.preventDefault(); добави(); } });
     function draw() {
+      items = load('bl_playlist', []);   // пресен прочит при всяко рисуване
       list.innerHTML = items.length ? '' : '<p class="jr-privacy">Първата песничка? Бебето слуша от ~16-та седмица. 🎵</p>';
       items.slice().reverse().forEach((it, ri) => {
-        const idx = items.length - 1 - ri;
         const row = el('div', 'nt-row');
         row.innerHTML = `<div class="nt-txt">🎵 ${esc(it.t)}</div><div class="nt-meta"><span>${dstr(it.d)}</span><button class="nt-del" type="button" aria-label="Махни „${esc(it.t)}“ от списъка">🗑</button></div>`;
-        row.querySelector('.nt-del').addEventListener('click', () => { items.splice(idx, 1); save('bl_playlist', items); draw(); });
+        row.querySelector('.nt-del').addEventListener('click', () => { items = load('bl_playlist', []); const k = items.findIndex(x => x && x.t === it.t && x.d === it.d); if (k > -1) items.splice(k, 1); save('bl_playlist', items); draw(); });
         list.appendChild(цели(row));
       });
     }
@@ -864,7 +896,8 @@
   // 📅 Меню-планер за седмицата
   function menuCard() {
     const c = card('Меню за седмицата 📅 <span class="jr-sub">докосни ден — избери от опитаното</span>');
-    const menu = load('bl_menu', {});
+    // 🔴 11.08 капанът на снимката (виж dayPhotoCard горе)
+    let menu = load('bl_menu', {});
     // 05.08 (одит г06, №173): изборът се смяташе ВЕДНЪЖ, при строежа на картата.
     // Календарът на храните е в СЪЩАТА стая — мама отбелязваше шест храни, връщаше
     // се и изборът пак беше празен. Сега се чете при всяко отваряне на деня.
@@ -931,11 +964,11 @@
       подсказка.hidden = options.length > 0;
       options.slice(0, 14).forEach(o => {
         const b = el('button', 'jr-chip', esc(o)); b.type = 'button';   // 14.3.11: име на храна = мамин текст
-        b.addEventListener('click', () => { menu[key] = o; save('bl_menu', menu); cell.querySelector('.mn-val').textContent = o; picker.hidden = true; fx().buzz(8); });
+        b.addEventListener('click', () => { menu = load('bl_menu', {}); menu[key] = o; save('bl_menu', menu); cell.querySelector('.mn-val').textContent = o; picker.hidden = true; fx().buzz(8); });
         wrapC.appendChild(b);
       });
       const clr = el('button', 'jr-chip', '✕ изчисти'); clr.type = 'button';
-      clr.addEventListener('click', () => { delete menu[key]; save('bl_menu', menu); cell.querySelector('.mn-val').textContent = '+'; picker.hidden = true; });
+      clr.addEventListener('click', () => { menu = load('bl_menu', {}); delete menu[key]; save('bl_menu', menu); cell.querySelector('.mn-val').textContent = '+'; picker.hidden = true; });
       wrapC.appendChild(clr);
       picker.appendChild(wrapC);
       const inpRow = el('div', 'jr-addrow');
@@ -946,6 +979,7 @@
       const запиши = тихо => {
         if (!inp.value.trim()) { if (тихо !== true) nudge(inpRow, 'Напиши какво планираш за този ден. 🥄', inp); return; }
         clearHint(inpRow);
+        menu = load('bl_menu', {});   // пресен прочит ПРЕДИ записа
         menu[key] = inp.value.trim(); save('bl_menu', menu);
         cell.querySelector('.mn-val').textContent = menu[key];
         picker.hidden = true; fx().buzz(8);
@@ -975,11 +1009,13 @@
   ];
   function recipesCard() {
     const c = card('Рецепти-карти 🃏 <span class="jr-sub">напиши какво имаш вкъщи — ще ти кажа какво става</span>');
-    const state = load('bl_recipes_state', {});
+    // 🔴 11.08 капанът на снимката (виж dayPhotoCard горе)
+    let state = load('bl_recipes_state', {});
     const inp = el('input', 'jr-word'); inp.placeholder = '🧺 имам: морков, ориз…';
     c.appendChild(inp);
     const list = el('div', 'rp-list');
     function draw() {
+      state = load('bl_recipes_state', {});   // пресен прочит при всяко рисуване
       const have = inp.value.toLowerCase().split(/[,\s]+/).filter(x => x.length > 2);
       list.innerHTML = '';
       let shown = RECIPES;
@@ -999,7 +1035,9 @@
           <div class="jr-quick"><button class="jr-chip ${st.done ? 'on' : ''}" data-a="done" type="button">Сготвих ✓</button>
           <button class="jr-chip ${st.fav ? 'on' : ''}" data-a="fav" type="button">Любимо 💜</button></div>`;
         row.querySelectorAll('[data-a]').forEach(b => b.addEventListener('click', () => {
-          st[b.dataset.a] = !st[b.dataset.a]; state[r.n] = st; save('bl_recipes_state', state);
+          st[b.dataset.a] = !st[b.dataset.a];
+          state = load('bl_recipes_state', {});   // пресен прочит ПРЕДИ записа
+          state[r.n] = st; save('bl_recipes_state', state);
           b.classList.toggle('on'); fx().buzz(8);
         }));
         list.appendChild(цели(row));
@@ -1017,7 +1055,7 @@
   const RAINBOW = [['red', '🍅', '#e8574f', 'червено'], ['orange', '🥕', '#f2913d', 'оранжево'], ['yellow', '🍌', '#f2c53d', 'жълто'], ['green', '🥦', '#5cab6d', 'зелено'], ['purple', '🫐', '#8a6fc9', 'лилаво'], ['white', '🥛', '#c9c3bd', 'бяло']];
   function rainbowCard() {
     const c = card('Дъгата на седмицата 🌈 <span class="jr-sub">яжте цветовете — дъгата се пълни</span>');
-    const data = load('bl_rainbow', {});
+    let data = load('bl_rainbow', {});
     const mon = (() => { const d = new Date(); const day = (d.getDay() + 6) % 7; d.setDate(d.getDate() - day); return localDate(d); })();
     // проход 3 T11: персистирай нулирането веднага (не само в паметта до тап),
     // за да не хвали чатът цветовете от миналата седмица в понеделник сутрин.
@@ -1041,6 +1079,10 @@
       b.setAttribute('aria-label', 'Ядохме ' + име);
       b.setAttribute('aria-pressed', data.cols.includes(k) ? 'true' : 'false');
       b.addEventListener('click', () => {
+        // 🔴 11.08 капанът на снимката: `data` беше прочетено при РИСУВАНЕ.
+        //    Превключваме върху ПРЕСНИЯ склад — иначе чужд запис изчезва.
+        data = load('bl_rainbow', { week: mon, cols: [] });
+        if (!Array.isArray(data.cols)) data.cols = [];
         const path = box.querySelector(`path[data-k="${k}"]`);
         if (data.cols.includes(k)) {
           data.cols = data.cols.filter(x => x !== k);
@@ -1052,7 +1094,7 @@
         }
         save('bl_rainbow', data);
         const n = box.querySelector('.rb-count'); if (n) n.textContent = `${data.cols.length} / ${RAINBOW.length} цвята тази седмица`;
-        b.classList.toggle('on');
+        b.classList.toggle('on', data.cols.includes(k));   // по ИСТИНАТА, не сляпо
         b.setAttribute('aria-pressed', data.cols.includes(k) ? 'true' : 'false');
       });
       row.appendChild(b);
@@ -1064,12 +1106,14 @@
   // 🛡️ Алергия-паспорт (печатаем)
   function allergyPassCard() {
     const c = card('Алергия-паспорт 🛡️ <span class="jr-sub">картичка за баба и детегледачката</span>');
-    const manual = load('bl_allergy_manual', []);
+    // 🔴 11.08 капанът на снимката (виж dayPhotoCard горе)
+    let manual = load('bl_allergy_manual', []);
     // 05.08 (одит г06, №211): `auto` се четеше ВЕДНЪЖ, извън draw() — реакция,
     // отбелязана в календара, не влизаше в паспорта до повторно влизане в стаята.
     const авто = () => { const tried = load('bl_tried', {}); return Object.keys(tried).filter(k => (tried[k] || '').includes('⚠️')); };
     const list = el('div', 'jr-quick');
     function draw() {
+      manual = load('bl_allergy_manual', []);   // пресен прочит при всяко рисуване
       const auto = авто();
       list.innerHTML = '';
       auto.forEach(a => list.appendChild(el('span', 'fd-pill ap-pill', '⚠️ ' + esc(a))));
@@ -1081,7 +1125,7 @@
         const x = wide(el('button', 'jr-x', '✕')); x.type = 'button';
         x.style.minHeight = '44px';
         x.setAttribute('aria-label', 'Махни „' + a + '“ от паспорта');
-        x.addEventListener('click', () => { manual.splice(i, 1); save('bl_allergy_manual', manual); draw(); });
+        x.addEventListener('click', () => { manual = load('bl_allergy_manual', []); const k = manual.indexOf(a); if (k > -1) manual.splice(k, 1); save('bl_allergy_manual', manual); draw(); });
         pill.appendChild(x);
         list.appendChild(pill);
       });
@@ -1102,6 +1146,7 @@
       if (!v) { nudge(addRow, 'Кой алерген? Напиши го както го знаеш ти. 🛡️', inp); return; }
       if (manual.some(x => String(x).toLowerCase() === v.toLowerCase())) { nudge(addRow, 'Този вече е в паспорта. 💜', inp); return; }
       clearHint(addRow);
+      manual = load('bl_allergy_manual', []);   // пресен прочит ПРЕДИ записа
       manual.push(v); save('bl_allergy_manual', manual); inp.value = ''; fx().buzz(8); draw();
     };
     add.addEventListener('click', добавиАл);
@@ -1183,7 +1228,8 @@
   // 💊 Дневник на даденото
   function medsCard() {
     const c = card('Дневник на даденото 💊 <span class="jr-sub">какво и кога — по лекарско предписание</span>');
-    const items = load('bl_meds', []);
+    // 🔴 11.08 капанът на снимката (виж dayPhotoCard горе)
+    let items = load('bl_meds', []);
     const addRow = el('div', 'jr-addrow');
     const inp = el('input', 'jr-word'); inp.placeholder = 'напр. „Нурофен по лекаря“…'; inp.maxLength = 50;
     const add = el('button', 'jr-chip', '+ Сега'); add.type = 'button';
@@ -1195,16 +1241,19 @@
       const v = inp.value.trim();
       if (!v) { nudge(addRow, 'Напиши какво е дадено (както го е казал лекарят). 💚', inp); return; }
       clearHint(addRow);
-      items.push({ n: v, ts: Date.now() }); save('bl_meds', items.slice(-60)); inp.value = ''; draw(); fx().buzz(10);
+      items = load('bl_meds', []);   // пресен прочит ПРЕДИ записа
+      items.push({ n: v, ts: Date.now() }); items = items.slice(-60);
+      save('bl_meds', items); inp.value = ''; draw(); fx().buzz(10);
       tick(add, '✔ Записано');
     };
     add.addEventListener('click', добавиЛек);
     inp.addEventListener('keydown', e => { if (e.key === 'Enter') { e.preventDefault(); добавиЛек(); } });
     function draw() {
+      items = load('bl_meds', []);   // пресен прочит при всяко рисуване
       quick.innerHTML = '';
       [...new Set(items.slice(-10).map(x => x.n))].slice(0, 3).forEach(n => {
         const b = el('button', 'jr-chip', '↻ ' + esc(n)); b.type = 'button';
-        b.addEventListener('click', () => { items.push({ n, ts: Date.now() }); save('bl_meds', items.slice(-60)); draw(); fx().buzz(10); });
+        b.addEventListener('click', () => { items = load('bl_meds', []); items.push({ n, ts: Date.now() }); items = items.slice(-60); save('bl_meds', items); draw(); fx().buzz(10); });
         quick.appendChild(b);
       });
       list.innerHTML = items.length ? '' : '<p class="jr-privacy">Тук НЕ даваме дози — записваме какво е дадено по лекарско, за да не се обърка при уморена глава. 💚</p>';
@@ -1212,7 +1261,7 @@
         const idx = items.length - 1 - items.slice(-8).reverse().indexOf(it) - 0; // stable enough for delete-by-object
         const row = el('div', 'nt-row');
         row.innerHTML = `<div class="nt-txt">💊 ${esc(it.n)}</div><div class="nt-meta"><span>${new Date(it.ts).toLocaleString('bg-BG')}</span><button class="nt-del" type="button" aria-label="Махни записа „${esc(it.n)}“">🗑</button></div>`;
-        row.querySelector('.nt-del').addEventListener('click', () => { const i = items.indexOf(it); if (i > -1) items.splice(i, 1); save('bl_meds', items); draw(); });
+        row.querySelector('.nt-del').addEventListener('click', () => { items = load('bl_meds', []); const i = items.findIndex(x => x && x.ts === it.ts && x.n === it.n); if (i > -1) items.splice(i, 1); save('bl_meds', items); draw(); });
         list.appendChild(цели(row));
       });
     }
@@ -1295,6 +1344,7 @@
     add.addEventListener('click', добавиАпт);
     inp.addEventListener('keydown', e => { if (e.key === 'Enter') { e.preventDefault(); добавиАпт(); } });
     function draw() {
+      sync();   // 🔴 11.08: и рисуването тръгва от ПРЕСНИЯ склад, не от снимка
       list.innerHTML = items.length ? '' : '<p class="jr-privacy">Серум, термометър, аспиратор… запиши какво имате — и никога не гадаеш в полунощ.</p>';
       items.forEach((it, idx) => {
         let expCls = '', expTxt = '';
@@ -1306,7 +1356,9 @@
         }
         const row = el('div', 'nt-row' + expCls);
         row.innerHTML = `<div class="nt-txt">${esc(it.n)}</div><div class="nt-meta"><span>${expTxt}</span><button class="nt-del" type="button" aria-label="Махни „${esc(it.n)}“ от аптечката">🗑</button></div>`;
-        row.querySelector('.nt-del').addEventListener('click', () => { items.splice(idx, 1); save('bl_pharmacy', items); draw(); });
+        // 🔴 11.08: триенето също чете ПРЯСНО и търси реда по съдържание —
+        //    номерът „idx“ важи за старата снимка, а бързият старт може да е писал.
+        row.querySelector('.nt-del').addEventListener('click', () => { sync(); const k = items.findIndex(x => x && x.n === it.n && (x.exp || '') === (it.exp || '')); if (k > -1) items.splice(k, 1); save('bl_pharmacy', items); draw(); });
         list.appendChild(цели(row));
       });
     }
@@ -1367,7 +1419,8 @@
   // 📚 Лог на книжките
   function booksCard() {
     const c = card('Книжките ни 📚 <span class="jr-sub">кои четете — и коя е ЛЮБИМАТА</span>');
-    const items = load('bl_books', []);
+    // 🔴 11.08 капанът на снимката (виж dayPhotoCard горе)
+    let items = load('bl_books', []);
     const addRow = el('div', 'jr-addrow');
     const inp = el('input', 'jr-word'); inp.placeholder = 'заглавие…'; inp.maxLength = 60;
     const add = wide(el('button', 'jr-chip', '+')); add.type = 'button';
@@ -1379,18 +1432,21 @@
       const v = inp.value.trim();
       if (!v) { nudge(addRow, 'Как се казва книжката? 📖', inp); return; }
       clearHint(addRow);
+      items = load('bl_books', []);   // пресен прочит ПРЕДИ записа
       items.push({ t: v, fav: false, ts: Date.now() }); save('bl_books', items); inp.value = ''; fx().buzz(8); draw();
     };
     add.addEventListener('click', добавиКн);
     inp.addEventListener('keydown', e => { if (e.key === 'Enter') { e.preventDefault(); добавиКн(); } });
     function draw() {
+      items = load('bl_books', []);   // пресен прочит при всяко рисуване
       list.innerHTML = items.length ? '' : '<p class="jr-privacy">Първата книжка се помни цял живот. Коя е вашата? 📖</p>';
       items.slice().sort((a, b) => b.fav - a.fav).forEach(it => {
         const row = el('div', 'nt-row');
         row.innerHTML = `<div class="nt-txt">📖 ${esc(it.t)} ${it.fav ? '💜' : ''}</div>
           <div class="nt-meta"><button class="jr-chip bk-fav" type="button" aria-label="${it.fav ? 'Махни „' + esc(it.t) + '“ от любимите' : 'Направи „' + esc(it.t) + '“ любима'}">${it.fav ? 'Любима 💜' : 'направи любима'}</button><button class="nt-del" type="button" aria-label="Махни „${esc(it.t)}“ от книжките">🗑</button></div>`;
-        row.querySelector('.bk-fav').addEventListener('click', () => { it.fav = !it.fav; save('bl_books', items); draw(); });
-        row.querySelector('.nt-del').addEventListener('click', () => { items.splice(items.indexOf(it), 1); save('bl_books', items); draw(); });
+        // 🔴 11.08: и двете четат ПРЯСНО и намират книжката по заглавие+час
+        row.querySelector('.bk-fav').addEventListener('click', () => { const нов = !it.fav; items = load('bl_books', []); const м = items.find(x => x && x.t === it.t && x.ts === it.ts); if (м) м.fav = нов; save('bl_books', items); draw(); });
+        row.querySelector('.nt-del').addEventListener('click', () => { items = load('bl_books', []); const k = items.findIndex(x => x && x.t === it.t && x.ts === it.ts); if (k > -1) items.splice(k, 1); save('bl_books', items); draw(); });
         list.appendChild(цели(row));
       });
     }
@@ -1474,6 +1530,10 @@
     [5, 10, 20, 50].forEach(v => {
       const b = el('button', 'jr-chip', '+' + v + ' лв'); b.type = 'button';
       b.addEventListener('click', () => {
+        // 🔴 11.08 капанът на снимката: `g` е прочетено при рисуване. Пресен
+        //    прочит преди записа — иначе втора отворена касичка връща стар сбор.
+        const свеж = load('bl_goal', null);
+        if (свеж && свеж.n === g.n && свеж.target === g.target) g.saved = свеж.saved;
         const преди = g.saved;
         g.saved = +(g.saved + v).toFixed(2); save('bl_goal', g);
         назад.hidden = false; назад.__преди = преди;
@@ -1486,6 +1546,8 @@
     });
     назад.addEventListener('click', () => {
       if (назад.__преди === undefined) return;
+      const свеж2 = load('bl_goal', null);   // пресен прочит ПРЕДИ записа
+      if (свеж2 && свеж2.n === g.n && свеж2.target === g.target) { g.saved = свеж2.saved; }
       g.saved = назад.__преди; save('bl_goal', g);
       назад.hidden = true; назад.__преди = undefined;
       обнови(); fx().buzz(8);
@@ -1503,7 +1565,8 @@
   // 👕 Гардероб-инвентар
   function wardrobeCard() {
     const c = card('Гардеробчето 👕 <span class="jr-sub">какво имате по размери — да не купиш пак 62!</span>');
-    const w = load('bl_wardrobe', {});
+    // 🔴 11.08 капанът на снимката (виж dayPhotoCard горе)
+    let w = load('bl_wardrobe', {});
     const grid = el('div', 'wd-grid');
     // 👆 12.08 (мерено): mega.css дава на ± твърди 24×24, touch.css ги вдига до
     //    40 — но в четириколонния грид клетката е 73 px, а съдържанието ѝ иска
@@ -1544,10 +1607,11 @@
       minus.addEventListener('click', () => {
         // 🔇 12.08 (мерено): „−“ на нула не правеше НИЩО — нито числото, нито
         //    редът отдолу, нито паметта. Мама натиска пак и пак. Сега казваме.
+        w = load('bl_wardrobe', {});   // пресен прочит ПРЕДИ записа
         if (!(w[sz] || 0)) { num.textContent = '0'; обобщение.textContent = 'Размер ' + sz + ' е вече на нула — по-надолу няма. 💜'; fx().buzz(5); setTimeout(освежи, 1600); return; }
         w[sz] = w[sz] - 1; save('bl_wardrobe', w); num.textContent = w[sz]; fx().buzz(5); освежи();
       });
-      plus.addEventListener('click', () => { w[sz] = (w[sz] || 0) + 1; save('bl_wardrobe', w); num.textContent = w[sz]; fx().buzz(6); освежи(); });
+      plus.addEventListener('click', () => { w = load('bl_wardrobe', {}); w[sz] = (w[sz] || 0) + 1; save('bl_wardrobe', w); num.textContent = w[sz]; fx().buzz(6); освежи(); });
       grid.appendChild(cell);
     });
     c.appendChild(grid);

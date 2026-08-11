@@ -365,8 +365,20 @@
     const feedRow = el('div', 'jr-quick');
     // проход 3 T10: грешен тап в 3ч заместваше безвъзвратно реалното „преди 2ч, лявата".
     const sideWord = s => s === 'left' ? 'лявата гърда' : s === 'right' ? 'дясната гърда' : 'шише';
-    let undoPrev = null, undoTimer = null;
+    let undoPrev = null, undoTimer = null, undoБеляг = null;
+    // 🔴 12.08 (тест за паметта, ред Д4 — ЖИВ дефект, губеше запис на майката):
+    //    ↺ пазеше САМО стойността отпреди натискането и я връщаше СЛЯПО до 10
+    //    секунди по-късно. Но ключът bl_feed се пише от ДВЕ карти в тази стая:
+    //    оттук и от кърмене-таймера (js/rooms3.js, stop() → save('bl_feed', …)).
+    //    Мама бутва „Ляво“ тук, после спира истинското кърмене в съседната
+    //    карта, после бутва ↺ (чипът още стои) — и ↺ връщаше СТАРОТО отгоре,
+    //    тоест триеше кърменето, което току-що е записала.
+    //    Лекът: помним и СУРОВИЯ отпечатък на склада в мига на снимката. При
+    //    натискане сравняваме: различава ли се, значи е писала друга карта →
+    //    НЕ пипаме нищо и ѝ казваме защо.
+    const суровоLS = k => { try { return localStorage.getItem(k); } catch (e) { return null; } };
     const undoChip = el('button', 'jr-chip', ''); undoChip.type = 'button'; undoChip.hidden = true;
+    const feedКаз = el('p', 'jr-hint'); feedКаз.hidden = true;   // тихият ред „какво стана“ под ↺
     [['left', '🤱 Ляво'], ['right', '🤱 Дясно'], ['bottle', '🍼 Шише']].forEach(([v, lbl]) => {
       const b = el('button', 'jr-chip', lbl); b.type = 'button';
       b.addEventListener('click', () => {
@@ -374,8 +386,11 @@
         save('bl_feed', { t: Date.now(), s: v });
         const fl = load('bl_feedlog', []); fl.push(Date.now()); save('bl_feedlog', fl.slice(-16));  // ротиращ лог само с времена — за прогнозата
         refreshFeed(); тикЧасовник();
+        feedКаз.hidden = true;
         if (prev) {
           undoPrev = prev;
+          // отпечатъкът се взема СЛЕД записа — това е складът, какъвто ↺ го оставя
+          undoБеляг = { feed: суровоLS('bl_feed'), log: суровоLS('bl_feedlog') };
           const mm = Math.floor((Date.now() - prev.t) / 60000);
           undoChip.textContent = `↺ Върни предишното (${sideWord(prev.s)}, преди ${Math.floor(mm / 60) ? Math.floor(mm / 60) + ' ч ' : ''}${mm % 60} мин)`;
           undoChip.hidden = false;
@@ -386,15 +401,30 @@
     });
     undoChip.addEventListener('click', () => {
       if (undoPrev) {
+        if (undoБеляг && суровоLS('bl_feed') !== undoБеляг.feed) {
+          // междувременно е писала друга карта (най-често кърмене-таймерът).
+          // По-скъпо е да изтрием нейния запис, отколкото да не върнем нашия.
+          refreshFeed(); тикЧасовник();
+          feedКаз.textContent = 'Междувременно се записа друго хранене — не го пипам. 💜';
+          feedКаз.hidden = false;
+          undoPrev = null; undoБеляг = null;
+          undoChip.hidden = true; clearTimeout(undoTimer);
+          return;
+        }
         save('bl_feed', undoPrev);
         // ↺ отмяната връщаше bl_feed, но времето оставаше в bl_feedlog завинаги —
         //    и после се броеше в прогнозата и на 24-часовия кръг. Махаме и следата.
-        const fl = load('bl_feedlog', []); fl.pop(); save('bl_feedlog', fl);
+        //    Но само ако логът е СЪЩИЯТ: махне ли се чуждо време, прогнозата ѝ
+        //    почва да лъже с хранене, което го е имало.
+        if (!undoБеляг || суровоLS('bl_feedlog') === undoБеляг.log) {
+          const fl = load('bl_feedlog', []); fl.pop(); save('bl_feedlog', fl);
+        }
+        undoPrev = null; undoБеляг = null;
         refreshFeed(); тикЧасовник();
       }
       undoChip.hidden = true; clearTimeout(undoTimer);
     });
-    c3.appendChild(feedRow); c3.appendChild(undoChip);
+    c3.appendChild(feedRow); c3.appendChild(undoChip); c3.appendChild(feedКаз);
     function refreshFeed() {
       const f = load('bl_feed', null);
       if (!f) { feedOut.innerHTML = 'Още няма отбелязано хранене. Бутни отдолу при следващото. 👇'; predOut.innerHTML = ''; return; }
@@ -963,7 +993,9 @@
     const a = ageFromBirth(getBaby().birth);
     const filterRow = el('div', 'jr-quick fd-filter');
     const cats = ['Всички', 'Зеленчук', 'Плод', 'Белтъчини', 'Зърнени', 'Млечни', 'Алергени', 'Мои'];
-    const tried = load('bl_tried', {});
+    // 🔴 11.08 капанът на снимката (виж картата-бележник): това е СНИМКА при
+    //    рисуване. Опреснява се във всяко рисуване и се чете ПРЯСНО преди запис.
+    let tried = load('bl_tried', {});
     // 🟠 11.08 (обиколка „редки състояния“): Math.round важеше и за недоносено.
     //    При 2.63 коригирани месеца филтърът казваше „подходящи за 3 месеца
     //    (коригирани)“, докато картата в „Моето бебе“ на същия ден казва
@@ -983,6 +1015,7 @@
     const ageNote = el('p', 'fd-agenote', ''); c2.appendChild(ageNote);
     c2.appendChild(grid);
     function draw() {
+      tried = load('bl_tried', {});   // пресен прочит при всяко рисуване
       // ageCap е devMonths = КОРИГИРАНАТА възраст (недоносени). Беше сметната и
       // забравена, а филтърът ползваше календарната — точно за най-уплашената
       // група показваше храни твърде рано (одит-флот П23, проход 2 №5).
@@ -1027,6 +1060,7 @@
             del.addEventListener('click', () => {
               const махни = () => {
                 save('bl_custom_foods', load('bl_custom_foods', []).filter(x => !x || x.n !== f.n));
+                tried = load('bl_tried', {});   // пресен прочит ПРЕДИ записа
                 if (tried[f.n] != null) { delete tried[f.n]; save('bl_tried', tried); }
                 const td = load('bl_tried_d', {});
                 if (td[f.n] != null) { delete td[f.n]; save('bl_tried_d', td); }
@@ -1043,6 +1077,7 @@
     }
     const REACT = ['😋 хареса', '😐 неутрално', '🤢 отказа', '⚠️ реакция'];
     function cycleTried(name, cardE) {
+      tried = load('bl_tried', {});   // пресен прочит ПРЕДИ записа
       const cur = tried[name];
       // проход 4: първият вкус на нова храна е истински милестоун — празнува се като зъбче.
       if (!cur && window.BL_FX) { BL_FX.confetti(cardE, 16); BL_FX.buzz(14); }
@@ -1246,6 +1281,11 @@
 
     // 3. Първите пъти
     const firsts = ['😊 Първа усмивка', '🙃 Първо обръщане', '🦷 Първо зъбче', '🪑 Първо сядане', '🚼 Първо пълзене', '🗣️ Първа дума', '👣 Първа стъпка'];
+    // 🔴 11.08 СЪЩИЯТ КАПАН като при картата-бележник: това е СНИМКА на обекта
+    //    в мига на рисуване. Стаята може да е нарисувана два пъти (главен
+    //    изглед + скрит панел) — тогава втората карта записва своята стара
+    //    снимка отгоре и трие първото отбелязано „първо нещо". Долу, при
+    //    самия запис, четем ПРЯСНО и пипаме само своя ключ.
     const fdata = load('bl_firsts', {});
     const c3 = card('Първите пъти 🌟 <span class="jr-sub">злато за спомените</span>');
     const fBox = el('div', 'dv-firsts');
@@ -1268,7 +1308,7 @@
       //    към полето — четецът редеше седем пъти „поле за дата" едно след друго.
       di.setAttribute('aria-label', 'Дата: ' + f);
       di.addEventListener('change', () => {
-        if (!di.value) { delete fdata[f]; save('bl_firsts', fdata); бележкаД.hidden = true; return; }
+        if (!di.value) { const сега = load('bl_firsts', {}); delete сега[f]; save('bl_firsts', сега); delete fdata[f]; бележкаД.hidden = true; return; }
         const d = new Date(di.value);
         const днес0 = new Date(); днес0.setHours(23, 59, 59, 999);
         if (isNaN(d) || d > днес0) {
@@ -1280,7 +1320,8 @@
           бележкаД.hidden = false; di.value = fdata[f] || ''; return;
         }
         бележкаД.hidden = true;
-        fdata[f] = di.value; save('bl_firsts', fdata);
+        const сега = load('bl_firsts', {});   // пресен прочит ПРЕДИ записа
+        сега[f] = di.value; save('bl_firsts', сега); fdata[f] = di.value;
         row.classList.add('pp'); setTimeout(() => row.classList.remove('pp'), 400);
         if (window.BL_FX) { BL_FX.confetti(row); BL_FX.cheer(f.replace(/^\S+\s/, '') + '! 🎉'); }
       });
@@ -1322,7 +1363,9 @@
     //    „~1680 лв за първата година“ — сметка, изречена като нейна, от числа,
     //    които никой не я е питал. Полетата тръгват празни; сборът идва след
     //    първото ѝ число.
-    const b = load('bl_budget', {});
+    // 🔴 11.08 капанът на снимката: прочетено при рисуване, записвано при
+    //    писане в полето. Долу се чете ПРЯСНО преди всеки запис.
+    let b = load('bl_budget', {});
     const fields = [['pel', 'Пелени / месец', 'напр. 80'], ['milk', 'Адаптирано мляко / месец', 'при кърмене — 0'], ['other', 'Други (дрешки, хигиена…)', 'напр. 60']];
     fields.forEach(([k, lbl, ph]) => {
       // 💰 клас bg-row, не sos-row: mega.css:418 .sos-row е редът-контакт от
@@ -1335,7 +1378,7 @@
       i.value = (b[k] == null ? '' : b[k]); i.style.maxWidth = '90px';
       // 💰 11.08 (измерено): „-50“ даваше „~-600 лв за първата година“. Отрицателни
       //    пари няма; минусът е изпуснат пръст, не желание.
-      i.addEventListener('input', () => { if (i.value === '') delete b[k]; else b[k] = Math.max(0, parseInt(i.value) || 0); save('bl_budget', b); total(); });
+      i.addEventListener('input', () => { b = load('bl_budget', {}); if (i.value === '') delete b[k]; else b[k] = Math.max(0, parseInt(i.value) || 0); save('bl_budget', b); total(); });
       row.appendChild(i); row.appendChild(el('span', 'bg-lv', 'лв'));
       c2.appendChild(row);
     });
@@ -1553,13 +1596,41 @@
             }
           }
           const dd = parsed.data || parsed;
+          // ⛔ 12.08 (тест за паметта, ред „чужд файл: нищо не влиза в паметта“):
+          //    БЛИЗНАКЪТ на js/profile.js — същият внос, същата слепота. Записваше
+          //    ВСЕКИ ключ с префикс bl_ от файла, тоест от чуждия телефон идваше и
+          //    вътрешното състояние на екрана: кои карти са сгънати, кои стаи са
+          //    посетени, коя тема е избрана, кога ОНЗИ телефон си е правил копие.
+          //    Това не са записи на майката.
+          //
+          //    ВЛИЗА само нейното: бебето и профилът, сънят, храненията, пелените,
+          //    мерките, ваксините, чекировките, дневниците и писмата, списъците и
+          //    чеклистите (bl_chk_…), тайната стая (bl_wm_…), И медийните ключове
+          //    от js/store.js (bl_photos, bl_voice, bl_art…) — без тях албумът ѝ
+          //    не пристига на новия телефон.
+          //
+          //    Защо списък на ИЗКЛЮЧЕНИЯТА, а не изброяване на позволените: имена
+          //    на нейни ключове се съставят в движение (bl_chk_<име на списък>,
+          //    наставки _k и _idx), тоест позволен списък НЕ може да е пълен.
+          //    Забравен ред в позволените = мълчаливо липсващ дневник на новия
+          //    телефон. Забравен ред тук = една сгъната карта.
+          //
+          //    ⚠️ Схемните флагове (bl_vax_schema, bl_art_merged, bl_qped_merged)
+          //    нарочно ПЪТУВАТ — виж „мигрирайВаксини“ по-долу в този файл: тя НЕ е
+          //    безопасна за второ пускане и без флага би пренаредила вече
+          //    пренаредени отметки.
+          //    ⚠️ Списъкът НЕ е същият като ПРОПУСНИ отдолу: ПРОПУСНИ отговаря на
+          //    друг въпрос („има ли ТОЗИ телефон записи, за които да питаме“) и
+          //    нарочно съдържа схемни флагове, които тук ТРЯБВА да минат.
+          const НЕ_ВЛИЗА = /^(bl_folds|bl_folddefaults|bl_fskeep_fix|bl_seen_cards|bl_carduse|bl_pins|bl_lib_open|bl_lib_opens|bl_room_asked|bl_room_visited|bl_wm_visits|bl_theme|bl_sounds|bl_font|bl_tz|bl_pin|bl_pin_h|bl_pin_set|bl_backup_last|bl_backup_partial_last|bl_agent_miss|bl_heavy_day)$/;
+          const неин = k => k.indexOf('bl_') === 0 && !НЕ_ВЛИЗА.test(k);
           // 🟠 11.08 (обиколка „данните на майката“): чужд JSON (от друго
           //    приложение) минаваше НАПРАВО към червения диалог „Тук вече има
           //    записи… ще застане отгоре“ и чак ако мама натиснеше „Качи“, чуваше
           //    че файлът не носи данни от Бейби Ленд. Тоест плашехме я с
           //    презаписване заради файл, в който няма нито един неин ред.
           //    Първо гледаме има ли изобщо какво да влезе.
-          if (!Object.keys(dd).some(k => k.indexOf('bl_') === 0)) {
+          if (!Object.keys(dd).some(неин)) {
             impLbl.textContent = 'Файлът не носи данни от Бейби Ленд 😕';
             setTimeout(() => impLbl.textContent = '⬆️ Възстанови от файл', 3200); return;
           }
@@ -1602,7 +1673,7 @@
           //    телефон не са едно и също нещо.
           let бр = 0, недостиг = 0;
           Object.keys(dd).forEach(k => {
-            if (k.indexOf('bl_') !== 0) return;
+            if (!неин(k)) return;                     // чуждото състояние на екрана остава във файла
             try { localStorage.setItem(k, dd[k]); бр++; } catch (e) { недостиг++; }
           });
           if (недостиг) {
@@ -1862,7 +1933,10 @@
   // ── общ помощник: чеклист карта ──
   function checklistCard(title, key, items) {
     const c = card(title);
-    const state = load(key, {});
+    // 🔴 11.08 капанът на снимката: това е общ строител — един и същ ключ може
+    //    да е на екрана два пъти (стаята, нарисувана и в скрития панел). Всяка
+    //    отметка чете ПРЯСНО долу, за да не запише своята стара снимка отгоре.
+    let state = load(key, {});
     // 🔁 11.08: отметките в САМИЯ списък се пазеха по НОМЕР на реда (bl_ready =
     //    {"0":true,...}) — същият капан, който вече беше изкоренен при ваксините
     //    (миграцията по-долу в файла) и при ключовете на чеклистите (ред 1253).
@@ -1904,6 +1978,7 @@
       if (state[ключ]) doneN++;
       row.addEventListener('click', () => {
         const was = doneN;
+        state = load(key, {});          // пресен прочит ПРЕДИ записа
         state[ключ] = !state[ключ]; save(key, state);
         row.classList.toggle('done'); row.querySelector('.jr-check').textContent = state[ключ] ? '✔' : '';
         row.setAttribute('aria-pressed', state[ключ] ? 'true' : 'false');
@@ -2100,14 +2175,26 @@
       c.appendChild(mic);
     }
     const list = el('div', 'nt-list');
-    const notes = load(key, []);
+    // 🔴 11.08 КАПАНЪТ НА СНИМКАТА: `load(key)` тук снима масива в мига на
+    //    РИСУВАНЕ. Ако на екрана живеят две карти върху един и същ ключ (две
+    //    карти-бележник, или стаята нарисувана втори път в скрития панел),
+    //    всяка държи СВОЯТА стара снимка — и която запише втора, трие чуждото
+    //    мълчаливо. Затова: пресен прочит и при рисуване, и точно преди запис.
+    //    Триенето търси бележката по СЪДЪРЖАНИЕ, не по номер в реда — номерът
+    //    важи за старата снимка, а складът може да е мръднал оттогава.
+    let notes = load(key, []);
     function draw() {
+      notes = load(key, []);            // пресен прочит при всяко рисуване
       list.innerHTML = notes.length ? '' : '<p class="jr-privacy">Твоето бяло поле — пиши каквото искаш, колкото искаш. 🤍</p>';
       notes.slice().reverse().forEach((n, ri) => {
-        const idx = notes.length - 1 - ri;
         const row = el('div', 'nt-row');
         row.innerHTML = `<div class="nt-txt">${esc(n.t)}</div><div class="nt-meta"><span>${new Date(n.d).toLocaleDateString('bg-BG')}</span><button class="nt-del" type="button" aria-label="Изтрий">🗑</button></div>`;
-        row.querySelector('.nt-del').addEventListener('click', () => { notes.splice(idx, 1); save(key, notes); draw(); });
+        row.querySelector('.nt-del').addEventListener('click', () => {
+          const сега = load(key, []);   // пресен прочит ПРЕДИ записа
+          const i = сега.findIndex(x => x && x.d === n.d && x.t === n.t);
+          if (i > -1) сега.splice(i, 1);
+          save(key, сега); draw();
+        });
         list.appendChild(row);
       });
     }
@@ -2124,7 +2211,8 @@
         return;
       }
       шът.hidden = true;
-      notes.push({ t: v, d: Date.now() }); save(key, notes);
+      const сега = load(key, []);       // пресен прочит ПРЕДИ записа (виж капана горе)
+      сега.push({ t: v, d: Date.now() }); save(key, сега);
       ta.value = ''; save('bl_draft_' + key, '');
       draw();
       // тих знак, че е прието
@@ -2158,9 +2246,11 @@
   // ── Лексикон на бебето (за спомен) ──
   function babyLexCard() {
     const c = card('Лексиконът на бебето 🌟 <span class="jr-sub">попълни го — след години е съкровище</span>');
-    const lex = load('bl_baby_lexicon', {});
+    // 🔴 11.08 капанът на снимката: снимка при рисуване, запис при всяка буква.
+    //    Отдолу и двете се четат ПРЯСНО преди записа.
+    let lex = load('bl_baby_lexicon', {});
     // 12.13.8: и тати има глас — втора колона със свой отговор
-    const dad = load('bl_baby_lexicon_dad', {});
+    let dad = load('bl_baby_lexicon_dad', {});
     let двама = load('bl_lex_dad_on', false);
     // 🟠 11.08 (обиколка „редки състояния“): три от трийсетте въпроса питат за
     //    ТАТИ („На кого приличаш според тати“, „Любимата ти игра с тати“,
@@ -2187,6 +2277,7 @@
       const inp = el('textarea', 'jr-paper lx-inp'); inp.rows = 1; inp.placeholder = '🌸 мама…';
       inp.value = lex[q] || '';
       inp.addEventListener('input', () => {
+        lex = load('bl_baby_lexicon', {});   // пресен прочит ПРЕДИ записа
         if (inp.value.trim()) lex[q] = inp.value.trim(); else delete lex[q];
         save('bl_baby_lexicon', lex); upd();
         const ld = load('bl_lex_d', {});
@@ -2200,7 +2291,7 @@
       c.appendChild(inp);
       const inpD = el('textarea', 'jr-paper lx-inp lx-dad'); inpD.rows = 1; inpD.placeholder = '👨 тати…';
       inpD.value = dad[q] || ''; inpD.hidden = !двама;
-      inpD.addEventListener('input', () => { if (inpD.value.trim()) dad[q] = inpD.value.trim(); else delete dad[q]; save('bl_baby_lexicon_dad', dad); });
+      inpD.addEventListener('input', () => { dad = load('bl_baby_lexicon_dad', {}); if (inpD.value.trim()) dad[q] = inpD.value.trim(); else delete dad[q]; save('bl_baby_lexicon_dad', dad); });
       c.appendChild(inpD);
     });
     function upd() {
@@ -2251,8 +2342,12 @@
     c.appendChild(row);
     const holder = el('div', 'cl-holder');
     c.appendChild(holder);
-    const lists = load('bl_custom_lists', []);
+    // 🔴 11.08 капанът на снимката: снимка при рисуване, запис при клик. Тук
+    //    записите намират своя списък по ИМЕ в пресния масив, а не по номер —
+    //    номерът важи за старата снимка.
+    let lists = load('bl_custom_lists', []);
     function drawAll() {
+      lists = load('bl_custom_lists', []);   // пресен прочит при всяко рисуване
       holder.innerHTML = '';
       if (!lists.length) { holder.appendChild(el('p', 'jr-privacy', 'Списък за пътуване, за гости, за бабата… — твой избор, твои точки.')); return; }
       lists.forEach((L, li) => holder.appendChild(oneList(L, li)));
@@ -2265,7 +2360,7 @@
       // ♿ 11.08 (клавиатура-четец): кошчето беше само картинка — при няколко
       //    списъка четецът не казваше КОЙ ще изтрие.
       del.setAttribute('aria-label', 'Изтрий списъка „' + L.name + '“');
-      del.addEventListener('click', () => { (window.BL_UI ? BL_UI.confirm('Да изтрия ли списъка „' + L.name + '“?', { emoji: '🗑', okText: 'Изтрий', cancelText: 'Остави', danger: true }) : Promise.resolve(confirm('Да изтрия ли списъка „' + L.name + '“?'))).then(да => { if (да) { lists.splice(li, 1); save('bl_custom_lists', lists); drawAll(); } }); });
+      del.addEventListener('click', () => { (window.BL_UI ? BL_UI.confirm('Да изтрия ли списъка „' + L.name + '“?', { emoji: '🗑', okText: 'Изтрий', cancelText: 'Остави', danger: true }) : Promise.resolve(confirm('Да изтрия ли списъка „' + L.name + '“?'))).then(да => { if (да) { lists = load('bl_custom_lists', []); const i = lists.findIndex(x => x && x.name === L.name); if (i > -1) lists.splice(i, 1); save('bl_custom_lists', lists); drawAll(); } }); });
       head.appendChild(del);
       box.appendChild(head);
       const ul = el('div', 'jr-wins');
@@ -2273,7 +2368,12 @@
         const r = el('button', 'jr-win' + (it.done ? ' done' : '')); r.type = 'button';
         r.innerHTML = `<span class="jr-check">${it.done ? '✔' : ''}</span> ${esc(it.t)}`;
         r.addEventListener('click', () => {
-          it.done = !it.done; save('bl_custom_lists', lists);
+          it.done = !it.done;
+          lists = load('bl_custom_lists', []);   // пресен прочит ПРЕДИ записа
+          const L2 = lists.find(x => x && x.name === L.name);
+          const it2 = L2 && (L2.items || []).find(y => y && y.t === it.t);
+          if (it2) it2.done = it.done; else if (L2) L2.items = L.items;
+          save('bl_custom_lists', lists);
           r.classList.toggle('done'); r.querySelector('.jr-check').textContent = it.done ? '✔' : '';
           head.querySelector('span').textContent = L.items.filter(x => x.done).length + '/' + L.items.length;
           if (it.done && L.items.every(x => x.done) && window.BL_FX) { BL_FX.confetti(r); BL_FX.cheer('Списъкът е готов! 🎉'); }
@@ -2288,7 +2388,7 @@
       ab.setAttribute('aria-label', 'Добави точката в „' + L.name + '“');
       // 🔴 11.08: „+“ на празно поле мълчеше напълно. Сега курсорът се връща
       //    в полето — най-краткото „чакам да напишеш“, което екранът може да даде.
-      ab.addEventListener('click', () => { const v = ai.value.trim(); if (!v) { ai.focus(); ai.placeholder = 'Напиши точката тук…'; return; } L.items.push({ t: v, done: false }); save('bl_custom_lists', lists); drawAll(); });
+      ab.addEventListener('click', () => { const v = ai.value.trim(); if (!v) { ai.focus(); ai.placeholder = 'Напиши точката тук…'; return; } L.items.push({ t: v, done: false }); lists = load('bl_custom_lists', []); const L2 = lists.find(x => x && x.name === L.name); if (L2) L2.items = L.items; else lists.push(L); save('bl_custom_lists', lists); drawAll(); });
       ai.addEventListener('keydown', e => { if (e.key === 'Enter') { e.preventDefault(); ab.click(); } });
       ar.appendChild(ai); ar.appendChild(ab);
       box.appendChild(ar);
@@ -2301,6 +2401,7 @@
       const v = inp.value.trim();
       if (!v) { шъп.textContent = '✍️ Дай име на списъка — после ще му трупаме точките.'; шъп.hidden = false; inp.focus(); return; }
       шъп.hidden = true;
+      lists = load('bl_custom_lists', []);   // пресен прочит ПРЕДИ записа
       lists.push({ name: v, items: [] }); save('bl_custom_lists', lists);
       inp.value = ''; drawAll();
       if (window.BL_FX) BL_FX.buzz(10);

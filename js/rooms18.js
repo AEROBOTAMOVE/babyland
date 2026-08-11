@@ -335,16 +335,21 @@
   ];
   function outsideCard() {
     const c = card('Хранене навън 🎒 ' + sub('чантата, която спасява вечерта'));
-    const st = load('bl_outbag', {});
+    // 🔴 11.08 капанът на снимката: прочетено при РИСУВАНЕ, записвано при клик.
+    //    Пресен прочит при рисуване и точно преди всеки запис.
+    let st = load('bl_outbag', {});
     const list = el('div', 'jr-wins');
     const рисувай = () => {
+      st = load('bl_outbag', {});   // пресен прочит при всяко рисуване
       list.innerHTML = '';
       ЧАНТА.forEach(x => {
         const row = el('button', 'jr-win' + (st[x.id] ? ' done' : '')); row.type = 'button';
         row.innerHTML = `<span class="jr-check">${st[x.id] ? '✔' : ''}</span>
           <span class="ut-n">${x.e} ${esc(x.н)}<small>${esc(x.з)}</small></span>`;
         row.addEventListener('click', () => {
-          st[x.id] = !st[x.id]; save('bl_outbag', st); рисувай(); fx().buzz(6);
+          const беше = !!st[x.id];
+          st = load('bl_outbag', {});   // пресен прочит ПРЕДИ записа
+          st[x.id] = !беше; save('bl_outbag', st); рисувай(); fx().buzz(6);
           if (ЧАНТА.every(y => st[y.id])) { fx().confetti(); fx().cheer('🎒 Чантата е готова!'); }
         });
         list.appendChild(row);
@@ -372,11 +377,13 @@
     изчисти.addEventListener('click', () => {
       const имаше = ЧАНТА.filter(x => st[x.id]).map(x => x.id);
       if (!имаше.length) { знак(вест, '🎒 Няма какво да изчистя — всички редове са без отметка.'); върни.hidden = true; return; }
+      st = load('bl_outbag', {});   // пресен прочит ПРЕДИ записа
       Object.keys(st).forEach(k => delete st[k]);
       save('bl_outbag', st); рисувай(); fx().buzz(6);
       знак(вест, '↺ Махнах ' + имаше.length + (имаше.length === 1 ? ' отметка.' : ' отметки.'));
       върни.hidden = false;
       върни.onclick = () => {
+        st = load('bl_outbag', {});   // пресен прочит ПРЕДИ записа
         имаше.forEach(id => { st[id] = true; });
         save('bl_outbag', st); рисувай(); fx().buzz(6);
         знак(вест, '↩ Върнах ги както бяха.');
@@ -401,8 +408,10 @@
       'Не „вана за релакс“ от списание. Просто заключена врата и топла вода — най-достъпният лукс за жена с бебе.'));
 
     // таймерът
-    const st = load('bl_bath', { d: '', n: 0 });
+    // 🔴 11.08 капанът на снимката (виж чантата за навън горе)
+    let st = load('bl_bath', { d: '', n: 0 });
     if (st.d !== today()) { st.d = today(); st.n = 0; }
+    const пресен = () => { st = load('bl_bath', { d: '', n: 0 }); if (st.d !== today()) { st.d = today(); st.n = 0; } };
     const дисп = el('div', 'bt-clock', '00:00');
     дисп.setAttribute('aria-live', 'polite');
     const бележка = el('p', 'jr-privacy', ''); бележка.hidden = true;
@@ -417,6 +426,7 @@
         старт = null; дисп.textContent = '00:00'; дисп.classList.remove('run');
         бутон.textContent = '🛁 Започни';
         if (мин >= 1) {
+          пресен();   // пресен прочит ПРЕДИ записа
           st.n += мин; save('bl_bath', st);
           // 🔴 11.08: сборът се четеше в тази строфа през load() ВЪТРЕ — добре;
           //    но st е снимка отпреди. Чета прясно и за двете.
@@ -451,6 +461,7 @@
         const мин = Math.round((Date.now() - старт) / 60000);
         старт = null;
         if (мин >= 1) {
+          пресен();   // пресен прочит ПРЕДИ записа
           st.n += мин; save('bl_bath', st);
           save('bl_bath_total', load('bl_bath_total', 0) + мин);
         }

@@ -565,11 +565,17 @@
     // `load` дава подразбирането само ако ключът ЛИПСВА. Ако в паметта има
     // запис от стара версия (или от внесено копие) без поле `seen`, цялата
     // стая гърмеше при рисуването. Затова полетата се доизкусуряват тук.
-    const st = load('bl_cards', {});
-    if (!Array.isArray(st.seen)) st.seen = [];
-    if (typeof st.last !== 'string') st.last = '';
-    if (typeof st.idx !== 'number') st.idx = -1;
-    if (typeof st.кръг !== 'number') st.кръг = 1;   // г12 №194: кой път минава тестето
+    // 🔴 11.08 капанът на снимката: прочетено при РИСУВАНЕ, записвано при клик.
+    //    `пресен()` повтаря и доизкусуряването на полетата, за да не гърми стаята.
+    let st = load('bl_cards', {});
+    const пресен = () => {
+      st = load('bl_cards', {});
+      if (!Array.isArray(st.seen)) st.seen = [];
+      if (typeof st.last !== 'string') st.last = '';
+      if (typeof st.idx !== 'number') st.idx = -1;
+      if (typeof st.кръг !== 'number') st.кръг = 1;
+    };
+    пресен();   // г12 №194: кой път минава тестето
     const box = el('div', 'wm-card-box');
     const btn = el('button', 'jr-chip wm-draw', '🃏 Изтегли картата за днес'); btn.type = 'button'; пръст(btn);
     const seenP = el('p', 'wm-seen', '');
@@ -585,11 +591,13 @@
       box.innerHTML = '<div class="wm-tarot"><span class="wm-te">' + e + '</span><strong>' + esc(t) + '</strong><p>' + esc(txt) + '</p></div>';
     }
     function refresh() {
+      пресен();   // пресен прочит при всяко рисуване
       if (st.last === today() && st.idx > -1) { show(st.idx); btn.hidden = true; }
       else { btn.hidden = false; box.innerHTML = '<p class="jr-privacy">Днешната карта те чака. 🃏</p>'; }
       drawSeen();
     }
     btn.addEventListener('click', () => {
+      пресен();   // пресен прочит ПРЕДИ записа
       // Беше чист Math.random от тестето. По парадокса на рождените дни това
       // значи една и съща карта два пъти още в първата седмица — а мама си мисли,
       // че тегли. Сега теглим от НЕИЗТЕГЛЕНИТЕ: 60 дни подред без повторение,
@@ -711,8 +719,10 @@
   function angelCard() {
     const c = card('Ангелските числа 11:11' + sub('видиш ли повтарящи се цифри — натисни'));
     c.appendChild(el('div', 'wm-band', FUN));
-    const st = load('bl_angel', { n: 0, last: '' });
-    if (typeof st.n !== 'number' || st.n < 0) st.n = 0;          // старо/внесено копие
+    // 🔴 11.08 капанът на снимката (виж картата за деня горе)
+    let st = load('bl_angel', { n: 0, last: '' });
+    const пресенА = () => { st = load('bl_angel', { n: 0, last: '' }); if (typeof st.n !== 'number' || st.n < 0) st.n = 0; };
+    пресенА();          // старо/внесено копие
     const b = el('button', 'jr-chip wm-angel', '✨ Видях го!'); b.type = 'button'; пръст(b);
     const p = el('p', 'wm-angeln', '');
     // ↩️ Д17: броячът върви само нагоре и един случаен тап го надуваше завинаги.
@@ -720,12 +730,14 @@
     назад.hidden = true; пръст(назад);
     const draw = () => { p.innerHTML = 'Улови ги <strong data-cnt="' + st.n + '">' + st.n + '</strong> ' + (st.n === 1 ? 'път' : 'пъти') + (st.last ? ' · последно ' + esc(st.last) : ''); };
     b.addEventListener('click', () => {
+      пресенА();   // пресен прочит ПРЕДИ записа
       st.n++; st.last = today(); save('bl_angel', st); draw(); fx().buzz(8);
       назад.hidden = false;
       if (window.BL_FX && BL_FX.countUp) BL_FX.countUp(c);
       if (st.n % 11 === 0) fx().confetti && fx().confetti();
     });
     назад.addEventListener('click', () => {
+      пресенА();   // пресен прочит ПРЕДИ записа
       if (st.n > 0) st.n--;
       save('bl_angel', st); draw(); назад.hidden = true; fx().buzz(6);
       каз(назад, 'Върнах го. Броячът е ' + st.n + '.');

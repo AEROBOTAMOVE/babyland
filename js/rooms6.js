@@ -105,21 +105,84 @@
     return c;
   }
 
+  // 🔴🔴🔴 11.08 (ИЗМЕРЕНО, най-тежкото от целия проход): НОЩЕМ панелът с
+  //    първата помощ изобщо НЕ Е НА ЕКРАНА.
+  //    Механизмът: нощният режим слага `filter: sepia(...) brightness(...)`
+  //    върху <body>. По спецификация всеки филтър прави елемента съдържащ блок
+  //    за `position: fixed` потомците му. `.br-overlay` е `position:fixed;
+  //    inset:0` — и вместо екрана взима цялото ТЯЛО.
+  //    Измерено в 22:0x на 320×568: наслагването става 11557px високо (цялата
+  //    страница), а `align-items:center` центрира кутията в средата ѝ — тоест
+  //    на ~5507px ПОД видимото. Мама натиска „🫁 Задавяне“ и вижда само тъмно
+  //    петно: без стъпки, без бутон 112, без „Затвори“.
+  //    Проверка: body.style.filter='none' → височината мигом става 568.
+  //    ЛЕК (изцяло от моя файл): наслагването живее в <html>, не в <body> —
+  //    там филтър няма, значи екранът пак е екранът.
+  //    ⚠️ СЪЩИЯТ капан важи за ВСЯКО `position:fixed`, закачено на body в това
+  //    приложение (другите .br-overlay-и, pr-holder, md-veil, plus-wrap…).
+  //    Това е за главния — тук поправям само своите две.
   function отвори(p) {
     let ov = document.getElementById('faOverlay');
-    if (!ov) { ov = el('div', 'br-overlay'); ov.id = 'faOverlay'; document.body.appendChild(ov); }
+    if (!ov) { ov = el('div', 'br-overlay'); ov.id = 'faOverlay'; }
+    const дом = document.documentElement || document.body;
+    if (ov.parentNode !== дом) дом.appendChild(ov);
     ov.innerHTML =
       `<div class="br-box fa-box">
          <p class="fa-title">${p.e} ${esc(p.t)}</p>
          <p class="fa-when"><strong>Кога:</strong> ${esc(p.кога)}</p>
          <ol class="fa-steps">${p.стъпки.map(s => `<li>${esc(s)}</li>`).join('')}</ol>
          <p class="fa-never">⛔ ${esc(p.никога)}</p>
-         <a class="ro-sos fa-sos" href="tel:112">📞 112</a>
-         <button class="jr-chip" id="faClose" type="button">Затвори</button>
+         <div class="fa-foot">
+           <a class="ro-sos fa-sos" href="tel:112">📞 112</a>
+           <button class="jr-chip" id="faClose" type="button">Затвори</button>
+         </div>
        </div>`;
     ov.hidden = false;
-    ov.querySelector('#faClose').onclick = () => { ov.hidden = true; };
-    ov.onclick = e => { if (e.target === ov) ov.hidden = true; };
+    // 🔴🔴 11.08 (ИЗМЕРЕНО на 320×568 — най-разпространеният малък телефон):
+    //    „Задавяне“ е 768px висока кутия в 568px екран. `.br-overlay` е
+    //    `display:flex; align-items:center` БЕЗ скрол → кутията се центрира и
+    //    излиза И НАГОРЕ, И НАДОЛУ извън екрана. Измерено: top −100 (стъпка 1
+    //    „Викай 112“ е над ръба, невидима), бутонът 📞 112 свършва на 592px, а
+    //    „Затвори“ — на 644px, при екран 568. Тоест при истинско задавяне мама
+    //    не вижда първата стъпка, не може да набере 112 оттук и не може да
+    //    затвори панела. Нищо не скролва — overflow е `visible` и на двете.
+    //    ЛЕК (само от JS, CSS не е мой файл): кутията се ограничава до екрана и
+    //    скролва вътре в себе си. ПЪТ НАЗАД: изтрий блока със стиловете.
+    const кутия = ov.querySelector('.fa-box');
+    if (кутия) {
+      кутия.style.maxHeight = 'calc(100vh - 24px)';
+      кутия.style.overflowY = 'auto';
+      кутия.style.overscrollBehavior = 'contain';
+      кутия.style.webkitOverflowScrolling = 'touch';
+    }
+    // 📞 измерено 41px висок — под прага за пръст, а точно него се търси с
+    //    треперещи ръце. Расте целта, не буквите.
+    const сос = ov.querySelector('.fa-sos');
+    if (сос) { сос.style.minHeight = '48px'; сос.style.display = 'flex'; сос.style.alignItems = 'center'; сос.style.justifyContent = 'center'; сос.style.marginBottom = '8px'; }
+    // 📞 „Задавяне“ е шест стъпки — кутията пак не се побира и опашката ѝ
+    //    (112 и „Затвори“) остава под сгъвката. При задавяне никой не скролва.
+    //    Долният ред се залепва за дъното на кутията и е винаги под пръста.
+    const крак = ov.querySelector('.fa-foot');
+    if (крак) {
+      крак.style.position = 'sticky';
+      крак.style.bottom = '0';
+      крак.style.paddingTop = '8px';
+      крак.style.background = 'var(--card, #fff)';
+      крак.style.zIndex = '1';
+    }
+    const затвори = () => {
+      ov.hidden = true;
+      document.body.style.overflow = '';
+      document.removeEventListener('keydown', приКлавиш);
+    };
+    function приКлавиш(e) { if (e.key === 'Escape') затвори(); }
+    document.body.style.overflow = 'hidden';   // страницата отдолу да не бяга под пръста
+    document.addEventListener('keydown', приКлавиш);
+    ov.querySelector('#faClose').onclick = затвори;
+    ov.onclick = e => { if (e.target === ov) затвори(); };
+    // фокусът отива в НАЧАЛОТО на кутията (не на „Затвори“) — четецът чете
+    // заглавието и първата стъпка, а скролът остава горе.
+    if (кутия) { кутия.setAttribute('tabindex', '-1'); кутия.setAttribute('role', 'dialog'); кутия.setAttribute('aria-label', p.t); try { кутия.focus({ preventScroll: true }); } catch (e) {} }
     fx().buzz(10);
   }
 
@@ -163,20 +226,67 @@
     c.appendChild(el('p', 'jr-privacy',
       'Дали да се даде нещо за температурата и колко — това го казва педиатърът, не приложението.'));
     // отбелязване
-    const log = load('bl_vax_log', []);
     const b = el('button', 'jr-btn', '📌 Днес имахме ваксина');
     b.type = 'button';
-    const out = el('p', 'jr-privacy', log.length ? 'Последна отбелязана: ' + esc(log[log.length - 1]) : '');
+    // 🗓️ 11.08: датата се показваше СУРОВА („2026-08-11“) — единственото място
+    //    в приложението, което говори на мама с ISO. Навсякъде другаде е bg-BG.
+    const бг = д => { const x = new Date(д + 'T12:00:00'); return isNaN(x.getTime()) ? String(д) : x.toLocaleDateString('bg-BG'); };
+    const out = el('p', 'jr-privacy', '');
+    const действие = el('div', 'jr-quick');
+    // 🔴 11.08 (известният клас 6 + мълчалив бутон, ИЗМЕРЕНО):
+    //    `log` се четеше при РИСУВАНЕТО и се пишеше отгоре при натискането.
+    //    А второто натискане правеше `return` — НУЛА промяна на екрана. Мама
+    //    натиска, нищо не мърда, тя не знае дали е записано (беше) или нещо е
+    //    счупено. Сега: прясно четене вътре + отговор при всяко докосване +
+    //    път назад, ако е натиснала по погрешка (rooms3 и checkups четат този
+    //    ключ и смятат по него).
+    const рисувай = () => {
+      const log = load('bl_vax_log', []);
+      out.textContent = log.length ? 'Последна отбелязана: ' + бг(log[log.length - 1]) : '';
+      действие.innerHTML = '';
+      if (log[log.length - 1] === today()) {
+        const отмени = el('button', 'jr-chip', '↩️ Не беше днес'); отмени.type = 'button';
+        отмени.style.minHeight = '44px';
+        отмени.addEventListener('click', () => {
+          const сега = load('bl_vax_log', []);
+          if (сега[сега.length - 1] === today()) сега.pop();
+          save('bl_vax_log', сега); рисувай(); fx().buzz(6);
+          out.textContent = (сега.length ? 'Последна отбелязана: ' + бг(сега[сега.length - 1]) + '. ' : '') + 'Махнах днешната отметка.';
+        });
+        действие.appendChild(отмени);
+      }
+    };
     b.addEventListener('click', () => {
-      if (log[log.length - 1] === today()) return;
+      const log = load('bl_vax_log', []);
+      if (log[log.length - 1] === today()) {
+        // рисувай() ПРЕДИ съобщението — иначе то се презаписва от него
+        рисувай(); fx().buzz(6);
+        out.textContent = 'Днешният ден вече е отбелязан (' + бг(today()) + ') — не го записвам два пъти.';
+        return;
+      }
       log.push(today()); save('bl_vax_log', log);
-      out.textContent = 'Отбелязано: ' + today(); fx().buzz(8);
+      fx().buzz(8); рисувай();
+      out.textContent = 'Отбелязано: ' + бг(today());
     });
-    c.appendChild(b); c.appendChild(out);
+    рисувай();
+    c.appendChild(b); c.appendChild(out); c.appendChild(действие);
     return c;
   }
 
   // ═══════════ 🌙 4.1.3 БРОЕНЕ С ЧУВСТВО ═══════════
+  //
+  // 🪦🪦 11.08 (ИЗМЕРЕНО наживо, 5 състояния): тази карта е МЪРТВА — нито едно
+  //    от тях не я показва. preg20.js:746 и :754 правят `намери('Още колко')` и
+  //    `.remove()` безусловно, щом стаята има седмица (w > 0) ИЛИ датата е
+  //    дефектна. Проверено през ROOM_FEATURES['Бременност'] при LMP отпреди
+  //    0 / 3 / 10 / 100 / 285 дни — картата липсва в ДОМ-а и петте пъти.
+  //    Цената е точно същата като при 🪦 pregVisitCard в rooms5.js: поправката
+  //    от Б10.3 („Терминът мина. Това е нормално — само 1 на 20 бебета идва
+  //    точно на датата“) беше вложена ТУК и не е стигнала до нито един екран.
+  //    Живият ѝ близнак е „сърцето“ на preg20.js (сърцеКарта).
+  //    НЕ инвестирай текст тук, докато не махнеш сливането в preg20.js:746.
+  //    (Не я трия сама: preg20.js не е мой файл и махането ѝ трябва да стане
+  //    заедно с махането на remove()-а, иначе следващият пак ще я търси.)
 
   function sleepsCard() {
     const lmp = window.BL_EXPECT ? BL_EXPECT.lmp() : load('bl_lmp', '');
@@ -387,7 +497,16 @@
     b.type = 'button';
     const out = el('p', 'jr-privacy', '');
     b.addEventListener('click', () => {
-      if (!t.value.trim()) return;
+      // 🔇 11.08 (ИЗМЕРЕНО): празно поле → бутонът мълчеше. В стая, чието
+      //    обещание е „нищо не се записва“, мълчанието се чете като „счупено е,
+      //    може пък да записва“. Отговаряме и с празни ръце.
+      if (!t.value.trim()) {
+        out.textContent = 'Полето е празно — напиши каквото ти тежи и тогава ще го пусна. 🤍';
+        try { t.focus(); } catch (e) {}
+        fx().buzz(5);
+        setTimeout(() => { if (out.textContent.indexOf('Полето е празно') === 0) out.textContent = ''; }, 4000);
+        return;
+      }
       t.classList.add('cry-away');
       setTimeout(() => { t.value = ''; t.classList.remove('cry-away'); }, 700);
       out.textContent = 'Отиде си. 🤍 Никъде не е записано.';
@@ -414,7 +533,15 @@
       // Б9.1: никога „липсват ти N неща“ — броим СЪБРАНОТО, не дупките.
       // Б8.6: на 100% ципът се дърпа (CSS клас bg-zipped).
       карта.classList.toggle('bg-zipped', проц === 100);
-      p.innerHTML = `<div class="bg-track"><div class="bg-fill" style="width:${проц}%"></div></div>
+      // 🟡 11.08 (правило 12): лентата се движеше по `width` (css/mega.css:804
+      //    има `transition: width .5s`) — това е пребоядисване на всеки кадър и
+      //    точно то задавя скрола на слаб телефон. Същата лента, същият вид, но
+      //    по transform: пълна ширина + scaleX. Пазачът prefers-reduced-motion
+      //    гаси и самото плъзгане. ПЪТ НАЗАД: върни `style="width:${проц}%"`.
+      const тихо = (() => { try { return matchMedia('(prefers-reduced-motion: reduce)').matches; } catch (e) { return false; } })();
+      const стил = `width:100%;transform-origin:left center;transform:scaleX(${проц / 100});` +
+        (тихо ? 'transition:none;' : 'transition:transform .5s ease;');
+      p.innerHTML = `<div class="bg-track"><div class="bg-fill" style="${стил}"></div></div>
         <p class="bg-txt">${проц === 100 ? '🎉 Чантата е готова. Сега само чакаме него. 🤍' :
           готови === 0 ? `<strong>${редове.length}</strong> неща те чакат — почваме, когато кажеш. 🧳` :
           `Събрани <strong>${готови} от ${редове.length}</strong> — добра работа. 💜`}</p>`;
