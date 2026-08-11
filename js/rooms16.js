@@ -150,14 +150,26 @@
     const ред = el('div', 'sp-add');
     let катИзбор = 'pel';
     const кг = el('div', 'sp-cats');
+    // ♿ 11.08 (клавиатура-четец): категориите са голи емоджи. title= е само
+    //    подсказка с мишка — името на бутона е съдържанието му, тоест четецът
+    //    казваше „капка", „биберон", „лъжица". Кое е избраното също не личеше.
+    кг.setAttribute('role', 'group'); кг.setAttribute('aria-label', 'Категория на разхода');
     КАТ.forEach(k => {
       const b = el('button', 'sp-cat' + (k.id === катИзбор ? ' on' : ''), k.e); b.type = 'button';
       b.title = k.н;
-      b.addEventListener('click', () => { катИзбор = k.id; кг.querySelectorAll('.sp-cat').forEach(x => x.classList.remove('on')); b.classList.add('on'); });
+      b.setAttribute('aria-label', k.н);
+      b.setAttribute('aria-pressed', k.id === катИзбор ? 'true' : 'false');
+      b.addEventListener('click', () => {
+        катИзбор = k.id;
+        кг.querySelectorAll('.sp-cat').forEach(x => { x.classList.remove('on'); x.setAttribute('aria-pressed', 'false'); });
+        b.classList.add('on'); b.setAttribute('aria-pressed', 'true');
+      });
       кг.appendChild(b);
     });
     const сума = el('input', 'jr-word'); сума.type = 'number'; сума.min = 0; сума.placeholder = 'лв…'; сума.style.maxWidth = '90px';
+    сума.setAttribute('aria-label', 'Колко лева');
     const доб = el('button', 'jr-chip', '+'); доб.type = 'button';
+    доб.setAttribute('aria-label', 'Добави разхода');
     ред.appendChild(кг); ред.appendChild(сума); ред.appendChild(доб);
     c.appendChild(ред);
 
@@ -199,6 +211,21 @@
       const общо = месеци.reduce((s, k) => s + поМесец[k], 0);
       const ср = Math.round(общо / месеци.length);
       box.appendChild(el('p', 'sp-verd', `Средно: <strong>${ср} лв</strong>/месец. За ${месеци.length} ${месеци.length === 1 ? 'месец' : 'месеца'}: <strong>${Math.round(общо)} лв</strong>.`));
+      // 🟠 11.08 (обиколка „документи и пари“): картата приемаше пари и НЯМАШЕ
+      //    изход. Един сбъркан нул (420 вместо 42) кривеше и стълбчето, и
+      //    средното, завинаги — а сметките са точно мястото, където числото
+      //    трябва да може да се поправи. Махане на последния запис, с питане.
+      const посл = данни[данни.length - 1];
+      if (посл) {
+        const назад = el('button', 'jr-chip', '↩ Махни последния (' + посл.v + ' лв)'); назад.type = 'button';
+        назад.addEventListener('click', () => {
+          const питай = window.BL_UI && BL_UI.confirm
+            ? BL_UI.confirm('Да махна ли последния записан разход — ' + посл.v + ' лв?', { emoji: '📊', okText: 'Махни', cancelText: 'Остави', danger: true })
+            : Promise.resolve(confirm('Да махна ли последния записан разход — ' + посл.v + ' лв?'));
+          питай.then(да => { if (!да) return; const д2 = load('bl_spend', []); д2.pop(); save('bl_spend', д2); рисувай(); });
+        });
+        box.appendChild(назад);
+      }
       box.appendChild(el('p', 'jr-privacy', 'Първите месеци са най-скъпи — количка, легло, столче. После пада. Това не е разхищение, а старт.'));
     };
     const пиши = () => {
@@ -267,7 +294,7 @@
         row.addEventListener('click', () => {
           // проход 4: повторен тап по завършен „първи път" ТРИЕШЕ датата без питане.
           if (st[п.id]) {
-            (window.BL_UI ? BL_UI.confirm('Да махна ли „първи път" за „' + п.н + '“? Датата ' + esc(d) + ' ще се загуби.', { emoji: п.e, okText: 'Махни', cancelText: 'Остави', danger: true })
+            (window.BL_UI ? BL_UI.confirm('Да махна ли „първи път“ за „' + п.н + '“? Датата ' + esc(d) + ' ще се загуби.', { emoji: п.e, okText: 'Махни', cancelText: 'Остави', danger: true })
               : Promise.resolve(confirm('Да махна ли отметката?'))).then(да => {
               if (да) { delete st[п.id]; save('bl_utensils', st); рисувай(); fx().buzz(8); }
             });

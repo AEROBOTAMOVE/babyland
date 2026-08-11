@@ -31,20 +31,43 @@
     { e: '📓', label: 'Тетрадката', room: 'Лабораторията', match: /Тетрадката/ }
   ];
 
+  // 🔴 11.08 (обиколка „документи и пари“): картата обещава „те отвежда ПРАВО
+  //    при него“ — и не го правеше НИТО ВЕДНЪЖ, нито в чужда стая, нито в
+  //    своята. Причината: скролът тръгва 60 ms след отварянето, докато картите
+  //    още влизат на стъпала (.is-pending → .card-in) и височината на стаята
+  //    расте; плавният скрол се прекъсва от тази пренареждаща се страница.
+  //    Измерено наживо: „Картичка за бабата“ оставаше на 1990 px под сгъвката,
+  //    „CV на майката“ — на 3286 px, а подсветването (.pb-flash, 1.7 сек)
+  //    светваше някъде долу и загасваше, без мама изобщо да го види.
+  //    Лек: моментален скрол (не се прекъсва) + втори опит, след като
+  //    влизането е свършило. Проверено: 1990 px → 344 px, стабилно.
   function отидиИПечатай(п) {
     if (!window.MamaHelper) return;
     MamaHelper.open(п.room);
-    setTimeout(() => {
+    let намерена = null;
+    const скочи = () => {
       const cards = [...document.querySelectorAll('#roRoom .jr-card:not(.toc-card)')];
       const target = cards.find(c => { const t = c.querySelector('.jr-title'); return t && п.match.test(t.textContent); });
-      if (target) {
-        target.scrollIntoView({ behavior: 'smooth', block: 'start' });
-        target.classList.add('pb-flash');
-        setTimeout(() => target.classList.remove('pb-flash'), 1700);
-      } else if (window.BL_FX && BL_FX.cheer) {
+      if (!target) return false;
+      намерена = target;
+      target.scrollIntoView({ behavior: 'auto', block: 'start' });
+      return true;
+    };
+    setTimeout(() => {
+      if (!скочи()) {
         // №16: преименувана/скрита карта → не мълчим, а казваме къде е
-        BL_FX.cheer('Картата е в тази стая — превърти надолу 👇');
+        if (window.BL_FX && BL_FX.cheer) BL_FX.cheer('Картата е в тази стая — превърти надолу 👇');
+        return;
       }
+      // вторият опит хваща изместването от влизащите карти; подсветваме чак
+      // тогава, за да е под очите на мама, а не някъде извън екрана.
+      setTimeout(() => {
+        скочи();
+        if (намерена) {
+          намерена.classList.add('pb-flash');
+          setTimeout(() => намерена.classList.remove('pb-flash'), 1700);
+        }
+      }, 450);
     }, 60);
   }
 

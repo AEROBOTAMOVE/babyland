@@ -200,6 +200,9 @@
 .rt-d { margin: 0; font-size: 13.5px; color: #6b5560; line-height: 1.5; }
 .rt-out { margin: 8px 0 0; font-size: 14px; color: var(--wm-rose); font-weight: 600; }
 .rt-out:empty { display: none; }
+/* 11.08: резервният изход на „Сподели откритие“ — текстът, който мама трябва
+   да копира сама. Досега ѝ казвахме да го препише, без да ѝ го покажем. */
+.rt-text { display: block; width: 100%; margin-top: 6px; font-weight: 400; line-height: 1.45; resize: vertical; }
 
 .pl-h { margin: 10px 0 4px; font-weight: 700; color: var(--wm-plum); font-size: 14px; }
 .pl-n { opacity: .55; font-weight: 400; }

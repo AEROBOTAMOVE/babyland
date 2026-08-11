@@ -247,13 +247,56 @@ document.getElementById('year').textContent = new Date().getFullYear();
 // П5: авто-обновяване — щом нова версия поеме управлението, страницата се
 // презарежда ВЕДНЪЖ сама (край на „не виждам промените"). Не се презарежда
 // при първата инсталация (нямаше предишен контрольор — няма какво да обновяваме).
+// 🔴 11.08 (ОС „инсталация и офлайн", ИЗМЕРЕНО, не предположено): това
+//    презареждане беше СЛЯПО. Пуснат тест-деплой (смяна на CACHE в sw.js),
+//    докато в „Дневник на мама" стоеше започнат ред „Днес се чувствам...":
+//    след controllerchange полето беше ПРАЗНО, стаята — затворена, и на мама
+//    никой нищо не ѝ каза. Тоест обновяването изяждаше точно това, което тя
+//    пише, и то без дума. Сега: пише ли или чете — не я дърпаме изпод краката,
+//    а ѝ оставяме лентичка и ТЯ решава кога. Празен екран → както си беше.
 if ('serviceWorker' in navigator && location.protocol.startsWith('http')) {
   const имашеКонтрольор = !!navigator.serviceWorker.controller;
   let презаредено = false;
+
+  // започнала ли е нещо, което презареждането би изтрило
+  const мамаЕЗаета = () => {
+    const полета = document.querySelectorAll('input:not([type="hidden"]):not([type="checkbox"]):not([type="radio"]), textarea');
+    for (let i = 0; i < полета.length; i++) {
+      if (полета[i].value && полета[i].value.trim()) return true;   // пише
+    }
+    // отворена стая, статия, търсене, въведение или диалог — чете в момента
+    return !!document.querySelector('#roomOverlay:not([hidden]), #artOverlay:not([hidden]), #searchOverlay:not([hidden]), #onbOverlay:not([hidden]), .md-veil');
+  };
+
+  const лентаЗаНоваВерсия = () => {
+    if (document.getElementById('blNewVer')) return;    // казва се ВЕДНЪЖ, без опяване
+    const л = document.createElement('div');
+    л.id = 'blNewVer';
+    л.setAttribute('role', 'status');
+    л.style.cssText = 'position:fixed;left:12px;right:12px;bottom:calc(86px + env(safe-area-inset-bottom));z-index:9999;max-width:520px;margin:0 auto;display:flex;gap:10px;align-items:center;padding:12px 14px;border-radius:18px;background:var(--card,#fff);color:var(--ink,#5a5470);border:1px solid var(--line,#f0dbe8);box-shadow:0 12px 32px rgba(150,130,180,.3);line-height:1.35';
+    const т = document.createElement('span');
+    т.style.cssText = 'flex:1';
+    т.textContent = '💜 Има нова версия. Ще я пусна, щом ти си готова — не бързам.';
+    const бутон = document.createElement('button');
+    бутон.type = 'button';
+    бутон.textContent = 'Обнови';
+    бутон.style.cssText = 'flex:0 0 auto;border:0;border-radius:14px;padding:9px 16px;background:var(--pink-deep,#e56ba4);color:#fff;font:inherit;font-weight:700;cursor:pointer';
+    бутон.addEventListener('click', () => location.reload());
+    const скрий = document.createElement('button');
+    скрий.type = 'button';
+    скрий.setAttribute('aria-label', 'Скрий съобщението');
+    скрий.textContent = '✕';
+    скрий.style.cssText = 'flex:0 0 auto;border:0;background:transparent;color:var(--ink-soft,#6f6980);font:inherit;cursor:pointer;padding:6px';
+    скрий.addEventListener('click', () => л.remove());
+    л.appendChild(т); л.appendChild(бутон); л.appendChild(скрий);
+    document.body.appendChild(л);
+  };
+
   navigator.serviceWorker.addEventListener('controllerchange', () => {
     if (презаредено || !имашеКонтрольор) return;
     презаредено = true;
-    location.reload();
+    if (мамаЕЗаета()) лентаЗаНоваВерсия();
+    else location.reload();
   });
   navigator.serviceWorker.register('sw.js').then(reg => {
     if (reg.update) { try { reg.update(); } catch (e) {} }   // провери за нова версия още сега

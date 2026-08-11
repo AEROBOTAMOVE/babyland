@@ -63,11 +63,24 @@
       const log = load('bl_pump', []);
       if (!log.length) { out.innerHTML = 'Още няма отбелязано изцеждане. Бутни при следващото. 👇'; hist.innerHTML = ''; return; }
       const last = log[log.length - 1];
-      const mins = Math.floor((Date.now() - last.t) / 60000);
+      // 🔴 11.08 (обиколка във времето): при върнат назад часовник (края на
+      //    октомври) или сверен сбъркан телефон записът остава в бъдещето и
+      //    редът излизаше „преди -1 ч -12 мин“. Не показваме отрицателно време.
+      const изтекло = Date.now() - last.t;
+      const mins = Math.floor(Math.max(0, изтекло) / 60000);
       const h = Math.floor(mins / 60), m = mins % 60;
-      out.innerHTML = `Последно (${страна(last.s)}${last.ml ? ' · ' + last.ml + ' мл' : ''}) преди <strong>${h ? h + ' ч ' : ''}${m} мин</strong>.`;
+      out.innerHTML = изтекло < -60000
+        ? `Последното изцеждане е записано с час <strong>напред</strong> (${hhmm(last.t)}) — часовникът на телефона се е разминал. 💜`
+        : `Последно (${страна(last.s)}${last.ml ? ' · ' + last.ml + ' мл' : ''}) преди <strong>${h ? h + ' ч ' : ''}${m} мин</strong>.`;
+      // 🟠 11.08: прегледът показваше само час — три записа от три различни дни
+      //    изглеждаха като „Ляво · 10:00 · Ляво · 10:00 · Ляво · 10:00“. Датата
+      //    идва, щом записът не е от днес.
+      const днес0 = (() => { const d = new Date(); d.setHours(0, 0, 0, 0); return d.getTime(); })();
+      const кога = ts => ts >= днес0 ? hhmm(ts)
+        : ts >= днес0 - 86400000 ? 'вчера ' + hhmm(ts)
+        : new Date(ts).toLocaleDateString('bg-BG', { day: 'numeric', month: 'numeric' }) + ' ' + hhmm(ts);
       const прегл = log.slice(-3).reverse()
-        .map(x => `${страна(x.s)} · ${hhmm(x.t)}${x.ml ? ' · ' + x.ml + ' мл' : ''}`).join(' · ');
+        .map(x => `${страна(x.s)} · ${кога(x.t)}${x.ml ? ' · ' + x.ml + ' мл' : ''}`).join(' · ');
       hist.innerHTML = 'Последни: ' + прегл;
     }
     refresh();

@@ -79,7 +79,11 @@
       });
       row.appendChild(b);
     });
-    const undo = el('button', 'jr-chip', '↺'); undo.type = 'button'; undo.title = 'нулирай днес';
+    // 🟡 11.08 (обиколка като майка): голото „↺“ значеше НУЛИРАЙ ЦЕЛИЯ ДЕН, а
+    //    две карти по-горе същият знак („↺ Върни последното“, помпенето) значи
+    //    „махни последното“. Разликата живееше само в title — а на телефон
+    //    title не се вижда. Изписваме я.
+    const undo = el('button', 'jr-chip', '↺ Нулирай'); undo.type = 'button'; undo.title = 'нулирай днешните милилитри';
     undo.addEventListener('click', () => { (window.BL_UI ? BL_UI.confirm('Нулиране на днешните милилитри?', { emoji: '💧', okText: 'Нулирай', cancelText: 'Отказ' }) : Promise.resolve(confirm('Нулиране на днешните милилитри?'))).then(да => { if (да) { data.n = 0; save('bl_ml', data); draw(); } }); });
     row.appendChild(undo);
     function draw() { big.innerHTML = `<strong>${data.n}</strong> мл днес`; }
@@ -145,8 +149,10 @@
         const непознати = cmb.filter(х => !дневник[х]);
         if (непознати.length) {
           idea += '<br><span class="lc-sub">💛 ' + непознати.map(esc).join(' и ') +
-            (непознати.length === 1 ? ' е нова за вас' : ' са нови за вас') +
-            ' — дай я сама 2-3 дни, преди да я смесваш. Така ще знаеш от какво е, ако има реакция.</span>';
+            (непознати.length === 1
+              ? ' е нова за вас — дай я сама 2-3 дни, преди да я смесваш.'
+              : ' са нови за вас — дай ги поотделно, по 2-3 дни всяка, преди да ги смесваш.') +
+            ' Така ще знаеш от какво е, ако има реакция.</span>';
         }
       }
       out.innerHTML = `<div class="lc-idea pop">${idea}<br><span class="lc-sub">Рецептите-карти по-долу знаят как. 👩‍🍳</span></div>`;
@@ -171,6 +177,8 @@
         if (cur.some(x => x.n === n)) { fx().cheer('„' + n + '“ вече е в аптечката ✔'); return; }
         cur.push({ n, exp: '' }); save('bl_pharmacy', cur);
         b.textContent = '✓ ' + n; b.classList.add('on'); fx().buzz(8);
+        // …и наистина да се ПОЯВИ горе, както пише отдолу
+        if (typeof window.BL_PHARMACY_REDRAW === 'function') { try { window.BL_PHARMACY_REDRAW(); } catch (e) { } }
       });
       row.appendChild(b);
     });

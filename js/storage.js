@@ -17,8 +17,15 @@
 
   // какво пазим — човешки имена за ключовете
   const КАТЕГОРИИ = [
-    { име: '📖 Дневник и записки', e: '📖', keys: ['bl_journal', 'bl_notes_tools', 'bl_notes_dev', 'bl_draft_'] },
-    { име: '📸 Снимки и рисунки', e: '📸', keys: ['bl_photos', 'bl_dayphoto', 'bl_bump', 'bl_art', 'bl_art_months', 'bl_food_faces'] },
+    // 🔴 11.08 (обиколка „документи и пари“): изброени бяха само ДВА от шестте
+    //    бележника (rooms2.js: bl_notes_baby / _food / _health / _dev / _preg /
+    //    _tools). Мама с пълни здравни и хранителни бележки виждаше „Дневник и
+    //    записки — 4 B“, а самите ѝ записки бяха в кофата „Друго“. 'bl_notes_'
+    //    е ПРЕФИКС (виж функцията „префикс“ по-долу) — хваща всичките шест.
+    { име: '📖 Дневник и записки', e: '📖', keys: ['bl_journal', 'bl_notes_', 'bl_draft_'] },
+    // 🔴 11.08 (обиколка „данните на майката“, ИЗМЕРЕНО): bl_rash (снимките на
+    //    обрива, за лекаря) липсваше от всички категории. Виж и „Друго“ по-долу.
+    { име: '📸 Снимки и рисунки', e: '📸', keys: ['bl_photos', 'bl_dayphoto', 'bl_bump', 'bl_art', 'bl_art_months', 'bl_food_faces', 'bl_rash'] },
     { име: '🎙️ Гласови и звукови', e: '🎙️', keys: ['bl_voice', 'bl_voice_diary', 'bl_voice_womb', 'bl_voice_songs', 'bl_lull_rec', 'bl_baby_sounds'] },
     { име: '💌 Писма и капсули', e: '💌', keys: ['bl_capsules', 'bl_letters', 'bl_wm_letters', 'bl_moonwish'] },
     // 🔴 г13/16: bl_pump (помпенето) и bl_feedlog (храненията) не бяха в НИТО ЕДНА
@@ -27,7 +34,9 @@
     // 🔴 05.08 (скептик 14): 'bl_growth_head' (обиколката на главата) липсваше и
     //   падаше в кофата „Друго“ — мама не можеше да види, че се пази.
     { име: '📊 Записи за бебето (тегло, сън, пелени, хранене)', e: '📊', keys: ['bl_growth', 'bl_growth_len', 'bl_growth_head', 'bl_sleep', 'bl_diapers', 'bl_nursing', 'bl_feedlog', 'bl_pump'] },
-    { име: '💃 Стаята за теб (тайни, ритуали, места)', e: '💃', keys: ['bl_wm_secret', 'bl_wm_micro', 'bl_wm_bucket', 'bl_wm_compl', 'bl_wm_mirror', 'bl_wm_ritual', 'bl_wm_places', 'bl_cards', 'bl_wm_cv'] },
+    // 🔴 11.08: bl_wm_inframe (ти в кадър — снимките на самата майка) също не
+    //    беше в нито една категория; 20 KB нейни снимки просто ги нямаше тук.
+    { име: '💃 Стаята за теб (тайни, ритуали, места)', e: '💃', keys: ['bl_wm_secret', 'bl_wm_micro', 'bl_wm_bucket', 'bl_wm_compl', 'bl_wm_mirror', 'bl_wm_ritual', 'bl_wm_places', 'bl_cards', 'bl_wm_cv', 'bl_wm_inframe'] },
     { име: '🔬 Опитите и следите', e: '🔬', keys: ['bl_lab', 'bl_lab_timeline', 'bl_lab_flipped', 'bl_lab_clues', 'bl_sleep_hist'] },
     { име: '🇧🇬 Обичаите на рода', e: '🇧🇬', keys: ['bl_obichai_moi'] },
     { име: '⚙️ Настройки и профил', e: '⚙️', keys: ['bl_baby', 'bl_theme', 'bl_sounds', 'bl_lmp', 'bl_preterm'] }
@@ -81,6 +90,21 @@
         текстБайтове += дълж;
         if (!покрит(kk, изброени)) друго += дълж;
       }
+    } catch (e) {}
+    // 🔴 11.08 (обиколка „данните на майката“): горният цикъл върви по
+    //    localStorage, а снимките и звуците живеят в IndexedDB — там
+    //    localStorage.key() не стига. Значи медиен ключ, който не е в
+    //    КАТЕГОРИИ, не падаше и в „Друго“: изчезваше от екрана НАПЪЛНО.
+    //    Измерено: 40 KB нейни снимки (обривът + „ти в кадър“) не се
+    //    показваха никъде, под заглавие „честно — всичко е тук“. Ключовете
+    //    вече са в категориите си, но мрежата остава — за да не може утре
+    //    нов медиен ключ пак да изчезне мълчаливо.
+    try {
+      const мед = (window.BL_STORE && BL_STORE.mediaDump) ? BL_STORE.mediaDump() : {};
+      Object.keys(мед).forEach(kk => {
+        if (kk.indexOf('bl_') !== 0 || покрит(kk, изброени)) return;
+        друго += String(мед[kk] || '').length;
+      });
     } catch (e) {}
     return { cat, общо, текстБайтове, друго };
   }

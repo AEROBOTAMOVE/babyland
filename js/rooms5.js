@@ -43,7 +43,12 @@
         //    ваксина. Затова питаме, вместо да обвиняваме.
         else if (d < now) {
           const изминали = Math.round((now - d) / 86400000);
-          if (изминали <= 400) out.push({ d: now, e: '💉', t: v.n + ' — отбелязана ли е? (по календара беше преди ' + изминали + (изминали === 1 ? ' ден' : ' дни') + '. Ако е сложена, докосни я в имунизационния календар.)' });
+          // 🔴 11.08 (обиколка „документи и пари“): реда го подреждаме най-отгоре
+          //    с d:now, НО показвахме и ДАТАТА d:now — тоест „11.08.2026 · ДНЕС“
+          //    върху ред, който в същото изречение казва „беше преди 212 дни“.
+          //    Същият грешен ден отиваше и на „Листа за хладилника“, който мама
+          //    носи при педиатъра. Датата за показване е истинската (реална).
+          if (изминали <= 400) out.push({ d: now, реална: d, минала: true, e: '💉', t: v.n + ' — отбелязана ли е? (по календара беше преди ' + изминали + (изминали === 1 ? ' ден' : ' дни') + '. Ако е сложена, докосни я в имунизационния календар.)' });
         }
       });
     }
@@ -76,7 +81,11 @@
     const addRow = el('div', 'jr-addrow');
     const inp = el('input', 'jr-word'); inp.placeholder = 'напр. „Преглед при педиатъра“'; inp.maxLength = 50;
     const dt = el('input', 'jr-word ph-date'); dt.type = 'date'; dt.min = today();
+    // ♿ 11.08 (клавиатура-четец): при type=date подсказка не се показва — полето
+    //    стоеше без име, а „+" не казваше какво добавя.
+    dt.setAttribute('aria-label', 'Дата на събитието');
     const add = el('button', 'jr-chip', '+'); add.type = 'button';
+    add.setAttribute('aria-label', 'Добави събитието');
     addRow.appendChild(inp); addRow.appendChild(dt); addRow.appendChild(add);
     add.addEventListener('click', () => {
       const v = inp.value.trim(); if (!v || !dt.value) return;
@@ -89,9 +98,10 @@
       list.innerHTML = items.length ? '' : '<p class="jr-privacy">Следващите 30 дни са чисти. Добави преглед или събитие отдолу. 📅</p>';
       items.forEach(x => {
         const dd = Math.round((x.d - new Date().setHours(0, 0, 0, 0)) / 86400000);
-        const when = dd === 0 ? 'ДНЕС' : dd === 1 ? 'утре' : 'след ' + dd + ' дни';
+        const дата = x.реална || x.d;
+        const when = x.минала ? 'по календара' : dd === 0 ? 'ДНЕС' : dd === 1 ? 'утре' : 'след ' + dd + ' дни';
         const row = el('div', 'ev-row' + (dd <= 3 ? ' soon' : ''));
-        row.innerHTML = `<span class="ev-e">${x.e}</span><span class="ev-t">${esc(x.t)}<small>${x.d.toLocaleDateString('bg-BG')} · ${when}</small></span>` +
+        row.innerHTML = `<span class="ev-e">${x.e}</span><span class="ev-t">${esc(x.t)}<small>${дата.toLocaleDateString('bg-BG')} · ${when}</small></span>` +
           (x.own ? '<button class="nt-del" type="button" aria-label="Изтрий">🗑</button>' : '');
         if (x.own) row.querySelector('.nt-del').addEventListener('click', () => {
           save('bl_events', load('bl_events', []).filter(e2 => e2.id !== x.id)); draw();
@@ -103,7 +113,7 @@
     pr.addEventListener('click', () => {
       const items = collectDates(30);
       if (window.BL_EXPR) BL_EXPR.printOverlay('Какво предстои — следващите 30 дни',
-        `<ul class="pr-list">${items.map(x => `<li>${x.e} <strong>${x.d.toLocaleDateString('bg-BG')}</strong> — ${esc(x.t)}</li>`).join('') || '<li>Няма отбелязани събития.</li>'}</ul>
+        `<ul class="pr-list">${items.map(x => `<li>${x.e} <strong>${(x.реална || x.d).toLocaleDateString('bg-BG')}</strong> — ${esc(x.t)}</li>`).join('') || '<li>Няма отбелязани събития.</li>'}</ul>
          <p class="pr-note">Ваксините са по официалния календар — потвърди датите с личния лекар.</p>`);
     });
     c.appendChild(list); c.appendChild(addRow); c.appendChild(pr);
@@ -174,8 +184,23 @@
   // ═══════════ 💌 Д3: МЕСЕЧНОТО ПИСМО — предпопълнено от миговете ═══════════
 
   function monthLetterCard() {
-    const c = card('Писмо за месеца 💌 <span class="jr-sub">миговете са събрани — добави само думите си</span>');
     const now = new Date();
+    // 🟠 11.08 (обиколка като майка, Дневник): подзаглавието твърдеше
+    //    „миговете са събрани — добави само думите си“ ВИНАГИ. При празен
+    //    месец полето беше голо и обещанието — невярно. Празно не значи
+    //    „няма“, значи „още нямам записано“ — и така го казваме.
+    let мигове = [];
+    if (window.BL_RIVER) {
+      try {
+        мигове = BL_RIVER.collect().filter(x => {
+          const d = new Date(x.ts);
+          return d.getFullYear() === now.getFullYear() && d.getMonth() === now.getMonth() && x.e !== '💜';
+        }).slice(0, 5);
+      } catch (e) { мигове = []; }
+    }
+    const c = card('Писмо за месеца 💌 <span class="jr-sub">' +
+      (мигове.length ? 'миговете са събрани — добави само думите си'
+                     : 'още нямам записани мигове от този месец — думите ти стигат') + '</span>');
     const key = now.getFullYear() + '-' + String(now.getMonth() + 1).padStart(2, '0');
     const letters = load('bl_month_letters', {});
     if (letters[key]) {
@@ -185,15 +210,8 @@
       c.appendChild(re);
       return c;
     }
-    // предпопълване от Реката: миговете на този месец
-    let seed = '';
-    if (window.BL_RIVER) {
-      const moments = BL_RIVER.collect().filter(x => {
-        const d = new Date(x.ts);
-        return d.getFullYear() === now.getFullYear() && d.getMonth() === now.getMonth() && x.e !== '💜';
-      }).slice(0, 5);
-      if (moments.length) seed = 'Този месец: ' + moments.map(m => m.txt).join(' · ') + '.\n\n';
-    }
+    // предпопълване от Реката: миговете на този месец (събрани по-горе)
+    const seed = мигове.length ? 'Този месец: ' + мигове.map(m => m.txt).join(' · ') + '.\n\n' : '';
     const ta = el('textarea', 'jr-paper'); ta.rows = 5;
     ta.value = seed ? seed + 'Мило мое, ' : '';
     ta.placeholder = 'Мило мое… (какво искаш да помниш от този месец?)';
@@ -252,7 +270,18 @@
     if (next) {
       const chips = inner.querySelector('.td-chips');
       if (chips && !chips.querySelector('.td-ev')) {
-        const b = el('button', 'td-chip td-accent td-ev', `${next.e} ${next.t.slice(0, 34)} · ${next.d.toLocaleDateString('bg-BG')}`);
+        // 🔴 11.08 (обиколка „начален екран и чат“): БЛИЗНАКЪТ на поправката от
+        //    collectDates. Там просроченото се подрежда с d:now, а истинската
+        //    дата се пази в `реална` — списъкът и листът за хладилника вече я
+        //    показват. ТУК не: чипът вземаше next.d и рязаше текста на 34 знака.
+        //    Измерено наживо при бебе, родено 02.04.2026: „💉 Хепатит Б (1-ви
+        //    прием) + БЦЖ — отб · 11.08.2026 г.“ — тоест въпросът „отбелязана ли
+        //    е?“ е отрязан до „отб“, а датата на чипа казва ДНЕС за ваксина от
+        //    родилното. Мама чете: „днес ѝ е Хепатит Б“. Показваме истинската
+        //    дата и питаме цялото изречение, без опашката в скобите.
+        const _д = next.реална || next.d;
+        const _т = next.минала ? String(next.t).split(' (по календара')[0] : String(next.t).slice(0, 34);
+        const b = el('button', 'td-chip td-accent td-ev', `${next.e} ${_т} · ${_д.toLocaleDateString('bg-BG')}`);
         b.addEventListener('click', () => { if (window.MamaHelper) MamaHelper.open('Инструменти'); });
         chips.appendChild(b);
       }
@@ -284,6 +313,9 @@
     const t = cardEl && cardEl.querySelector('.jr-title');
     if (!t || t.querySelector('.nr-night')) return;
     const b = el('button', 'nr-night', '🌙'); b.type = 'button'; b.title = 'Нощен режим — тъмно и едро';
+    // ♿ 11.08: title е само подсказка с мишка. Името на бутона е съдържанието
+    //    му („🌙") — четецът казваше „полумесец, бутон".
+    b.setAttribute('aria-label', 'Нощен режим — тъмно и едро');
     b.addEventListener('click', (e) => { e.stopPropagation(); cardEl.classList.toggle('nr-dark'); });
     t.appendChild(b);
   }

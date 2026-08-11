@@ -113,9 +113,9 @@ window.BL_ARTICLES_DATA = [
 Каши (овес, ориз), после белтъчини — добре сварено пиле, леща. Гъстотата се увеличава.
 
 ## Златни правила
-- Едно ново нещо, после наблюдаваш 3 дни
+- Едно ново нещо, после наблюдаваш 2-3 дни
 - Никога насила — намръщената муцунка е реакция на новото, не отказ
-- Понякога трябват 8–10 срещи с храна, преди да я приеме
+- Понякога трябват много срещи с храна, понякога над десет, преди да я приеме
 - Сядайте заедно на масата — бебето учи като ви гледа
 
 🚨 При обрив, подуване или повръщане след храна — спри я и питай педиатъра. При затруднено дишане — 112.`,
@@ -355,6 +355,13 @@ window.BL_ARTICLES_DATA = [
     $('artBody').querySelectorAll('[data-rel]').forEach(b => b.addEventListener('click', () => openArticle(b.dataset.rel)));
     $('artDisc').textContent = 'ℹ️ ' + (a.source || 'Образователна информация — не замества лекар.');
     const ov = $('artOverlay');
+    // ♿ 11.08 (клавиатура-четец): четецът се отваряше НАД стаята, но фокусът
+    //    оставаше в стаята отзад — а капанът на стаята (helper.js roTrap) въртеше
+    //    Tab само в нейния панел. Резултат: ✕, ⭐ и 🔊 на статията бяха
+    //    НЕДОСТИЖИМИ с клавиатура. Помним откъде дойде мама и влизаме в статията.
+    //    (само при ПЪРВО отваряне — „Виж също“ пренавигира и не бива да губим
+    //     картата, от която мама е тръгнала)
+    if (ov.hidden) артФокусПреди = document.activeElement;
     ov.hidden = false;
     $('artBody').scrollTop = 0;
     ov.querySelector('.art-panel').style.animation = 'none';
@@ -363,8 +370,37 @@ window.BL_ARTICLES_DATA = [
     const askBtn = $('artBody').querySelector('.art-ask');
     if (askBtn) askBtn.addEventListener('click', () => {
       ov.hidden = true;
+      артФокусПреди = null;   // мама отива в чата — не я връщаме назад
       if (window.MamaHelper) { MamaHelper.showTab('chat'); MamaHelper.ask('Разкажи ми повече за „' + a.title + '“'); }
     });
+    setTimeout(() => { try { $('artClose').focus({ preventScroll: true }); } catch (e) {} }, 50);
+  }
+
+  // ♿ фокус-капан + връщане на фокуса за четеца на статии
+  let артФокусПреди = null;
+  function затвориСтатия() {
+    const ov = $('artOverlay');
+    if (!ov || ov.hidden) return;
+    ov.hidden = true;
+    try { speechSynthesis.cancel(); } catch (e) {}
+    try { if (артФокусПреди && артФокусПреди.focus) артФокусПреди.focus({ preventScroll: true }); } catch (e) {}
+    артФокусПреди = null;
+  }
+  function artTrap(e) {
+    if (e.key !== 'Tab') return;
+    const ov = $('artOverlay');
+    if (!ov || ov.hidden) return;
+    const panel = ov.querySelector('.art-panel');
+    if (!panel) return;
+    const видими = [].filter.call(
+      panel.querySelectorAll('button, input, select, textarea, a[href], [tabindex]:not([tabindex="-1"])'),
+      x => x.offsetParent !== null && !x.disabled);
+    if (!видими.length) return;
+    const първи = видими[0], последен = видими[видими.length - 1];
+    // статията е НАД стаята → тя води Tab, а капанът на стаята се дърпа настрани
+    if (!panel.contains(document.activeElement)) { e.preventDefault(); първи.focus(); return; }
+    if (e.shiftKey && document.activeElement === първи) { e.preventDefault(); последен.focus(); }
+    else if (!e.shiftKey && document.activeElement === последен) { e.preventDefault(); първи.focus(); }
   }
 
   const favs = () => { try { return JSON.parse(localStorage.getItem('bl_art_favs')) || {}; } catch (e) { return {}; } };
@@ -379,7 +415,15 @@ window.BL_ARTICLES_DATA = [
 
     // 🗂️ рафтовете: чипове-филтри, когато статиите са много
     let curCat = '';
-    const cats = [...new Set(arts.map(a => a.cat).filter(Boolean))];
+    // 🔴 11.08 (обиколка на библиотеката): рафтът на „Захранване“ показваше осем
+    //    чипа един под друг — „🥄 Захранване“, „🙅 Захранване“, „🍬 Захранване“,
+    //    „📱 Захранване“… — неразличими копчета в стаята, която вече се казва
+    //    Захранване, всяко с по ЕДНА статия, докато 45 статии нямаха чип изобщо.
+    //    Същото в Бременност, Дневник на мама и Здраве и SOS. Чип, чието име е
+    //    името на стаята, не казва нищо — статиите му се четат от „Всички“,
+    //    както другите без категория. ПЪТ НАЗАД: махни `.filter(c => ...)`.
+    const cats = [...new Set(arts.map(a => a.cat).filter(Boolean))]
+      .filter(c => c.replace(/^[^\p{L}]+/u, '').trim() !== room);
     let catRow = null;
     if (arts.length > 25 && cats.length > 1) {
       catRow = mk('div', 'art-cats');
@@ -485,10 +529,18 @@ window.BL_ARTICLES_DATA = [
       }, { passive: true });
     }
     const c = $('artClose');
-    if (c) c.addEventListener('click', () => { $('artOverlay').hidden = true; try { speechSynthesis.cancel(); } catch (e) {} });
+    if (c) c.addEventListener('click', затвориСтатия);
     const ov = $('artOverlay');
-    if (ov) ov.addEventListener('click', e => { if (e.target === ov) ov.hidden = true; });
-    document.addEventListener('keydown', e => { if (e.key === 'Escape' && ov && !ov.hidden) ov.hidden = true; });
+    if (ov) ov.addEventListener('click', e => { if (e.target === ov) затвориСтатия(); });
+    document.addEventListener('keydown', e => {
+      if (e.key !== 'Escape' || !ov || ov.hidden) return;
+      // маркер за долния слой (стаята): този Esc е ИЗЯДЕН тук. Само да скрием
+      // статията не стига — стаята гледа „скрита ли е статията", а дотогава тя
+      // вече е скрита и стаята се затваряше заедно с нея.
+      e.__blСлойПоет = true;
+      затвориСтатия();
+    });
+    document.addEventListener('keydown', artTrap);
   });
 
   window.BL_ARTICLES = { forRoom, renderList, open: openArticle };

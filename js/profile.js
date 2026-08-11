@@ -371,6 +371,12 @@
             catch (e) { лейбъл.textContent = 'Грешна парола 🔐'; setTimeout(() => лейбъл.textContent = '⬆️ Качи файла-копие', 2600); return; }
           }
           const dd = p.data || p;
+          // 🟠 11.08: чужд JSON минаваше право към червения диалог за
+          //    презаписване. Първо — има ли изобщо какво да влезе.
+          if (!Object.keys(dd).some(k => k.indexOf('bl_') === 0)) {
+            лейбъл.textContent = 'Файлът не носи данни от Бейби Ленд 😕';
+            setTimeout(() => лейбъл.textContent = '⬆️ Качи файла-копие', 3200); return;
+          }
           // проход 3 S5: ако устройството ВЕЧЕ има записи — питай, преди сляпо да
           // ги заменим. Иначе месеци дневник от ТОЗИ телефон изчезват безвъзвратно
           // при качване на старо копие. Пропускаме козметично-системните ключове.
@@ -378,7 +384,11 @@
           //    зареждане на стаята, а bl_tz — от dates2.js при всяко пускане.
           //    На съвсем празен телефон `същ` беше вече 2 и червеният диалог
           //    изскачаше винаги — в първите пет минути на новия телефон.
-          const ПРОПУСНИ = /^(bl_theme|bl_sounds|bl_onboard|bl_onboarded|bl_font|bl_pin|bl_pin_set|bl_seen_cards|bl_carduse|bl_folds|bl_folddefaults|bl_pins|bl_agent_miss|bl_lib_open|bl_tz|bl_vax_schema|bl_backup_last|bl_backup_partial_last|bl_tour_done)$/;
+          // 🟠 11.08 (обиколка „данните на майката“, ИЗМЕРЕНО на изтрит телефон):
+          //    оставаха 12 ключа чисто вътрешно счетоводство (сгънати карти,
+          //    посетени стаи, ден 1, дъга, тежък ден…) и червеният диалог пак
+          //    казваше „вече има записи (12 неща)“ на съвсем празно устройство.
+          const ПРОПУСНИ = /^(bl_theme|bl_sounds|bl_onboard|bl_onboarded|bl_font|bl_pin|bl_pin_h|bl_pin_set|bl_seen_cards|bl_carduse|bl_folds|bl_folddefaults|bl_pins|bl_agent_miss|bl_lib_open|bl_lib_opens|bl_tz|bl_vax_schema|bl_backup_last|bl_backup_partial_last|bl_tour_done|bl_room_asked|bl_room_visited|bl_day1|bl_hero_toured|bl_art_merged|bl_heavy_day|bl_fskeep_fix|bl_rainbow|bl_wm_visits|bl_wm_ritual)$/;
           let същ = 0;
           for (let i = 0; i < localStorage.length; i++) {
             const k = localStorage.key(i);
@@ -402,8 +412,29 @@
             });
             if (!ок) { лейбъл.textContent = '⬆️ Качи файла-копие'; return; }
           }
-          let бр = 0;
-          Object.keys(dd).forEach(k => { if (k.startsWith('bl_')) { localStorage.setItem(k, dd[k]); бр++; } });
+          // 🔴🔴 11.08 (ИЗМЕРЕНО): при пълна памет setItem гърми по средата —
+          //    половината копие е влязло, а мама четеше „Файлът не е разпознат“
+          //    за напълно изправно копие. И то тук, на новия телефон, където
+          //    това е единственият ѝ екземпляр. Двете причини се разделят.
+          let бр = 0, недостиг = 0;
+          Object.keys(dd).forEach(k => {
+            if (k.indexOf('bl_') !== 0) return;
+            try { localStorage.setItem(k, dd[k]); бр++; } catch (e) { недостиг++; }
+          });
+          if (недостиг) {
+            лейбъл.textContent = 'Няма място на телефона 😕';
+            const бел = el('p', 'prof-warn', '<strong>Копието ти е наред — телефонът няма място.</strong> Влязоха ' + бр +
+              (бр === 1 ? ' нещо, ' : ' неща, ') + недостиг + (недостиг === 1 ? ' не се побра' : ' не се побраха') +
+              '. Освободи място и качи <em>същия</em> файл пак — второто качване не поврежда нищо.');
+            вход.appendChild(бел);
+            const прод = el('button', 'prof-cta prof-cta2', 'Разбрах — презареди'); прод.type = 'button';
+            прод.addEventListener('click', () => {
+              const ч = (window.BL_STORE && BL_STORE.flush) ? BL_STORE.flush() : Promise.resolve();
+              ч.then(() => location.reload());
+            });
+            вход.appendChild(прод);
+            return;
+          }
           if (!бр) throw new Error('празно');
           лейбъл.textContent = '✔ Влезе! Зареждам всичко…';
           fx().confetti();
@@ -434,7 +465,10 @@
     const hero = el('div', 'prof-hero');
     const дни = бебе.birth ? Math.max(0, Math.floor((new Date() - new Date(бебе.birth)) / 86400000)) : null;
     const б2 = (window.BL_BABY2 && BL_BABY2.has()) ? BL_BABY2.get() : null;
-    const децата = бебе.name ? esc(бебе.name) + (б2 ? ' и ' + esc(б2.name) : '') : (б2 ? esc(б2.name) : '');
+    // 🍼 11.08: второто бебе може да е още без име (некръстено или го чакате) —
+    //    „мама на Мария и “ с увиснало „и“ беше видимо. Празното име получава дума.
+    const име2 = б2 ? (esc((б2.name || '').trim()) || 'второто съкровище') : '';
+    const децата = бебе.name ? esc(бебе.name) + (б2 ? ' и ' + име2 : '') : (б2 ? име2 : '');
     hero.innerHTML =
       '<button class="prof-avbtn" type="button" title="смени лицето">' + аватарКод(мама, 'prof-big') + '</button>' +
       `<h3 class="prof-name">${esc(мама.name || 'Мама')} <button class="prof-edit" type="button" title="смени името">✏️</button></h3>` +

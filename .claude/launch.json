@@ -1,0 +1,11 @@
+{
+  "version": "0.0.1",
+  "configurations": [
+    {
+      "name": "babyland-static",
+      "runtimeExecutable": "C:\\Users\\User\\.cache\\codex-runtimes\\codex-primary-runtime\\dependencies\\python\\python.exe",
+      "runtimeArgs": ["-m", "http.server", "8791"],
+      "port": 8791
+    }
+  ]
+}

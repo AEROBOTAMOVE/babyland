@@ -99,9 +99,15 @@
       b.addEventListener('click', () => { sexRow.querySelectorAll('.bb-sexbtn').forEach(x => x.classList.remove('on')); b.classList.add('on'); baby.sex = v; persist(); });
       sexRow.appendChild(b);
     });
+    // ♿ 11.08 (клавиатура-четец): трите <label> тук не сочат към нищо — нямат
+    //    for=, нито обгръщат полето. Мама, която обхожда полетата с четеца (а не
+    //    чете подред), чуваше „поле за дата" без име, а двете редици бутони бяха
+    //    просто разсипани бутони. Имената се лепят право върху тях.
+    sexRow.setAttribute('role', 'group'); sexRow.setAttribute('aria-label', 'Пол на бебето');
     c1.appendChild(el('label', 'bb-lbl', 'Пол:')); c1.appendChild(sexRow);
     c1.appendChild(el('label', 'bb-lbl', 'Рождена дата:'));
     const dateI = el('input', 'jr-word'); dateI.type = 'date'; dateI.max = today(); dateI.value = baby.birth;
+    dateI.setAttribute('aria-label', 'Рождена дата');
     c1.appendChild(dateI);
     const ageOut = el('p', 'bb-age', '');
     c1.appendChild(ageOut);
@@ -111,6 +117,7 @@
     // Но ако бебето е дошло по-рано, всичко за развитието се мери оттук.
     c1.appendChild(el('label', 'bb-lbl', 'Роди ли се преди термина? <span class="jr-sub">по избор — за да не го мерим с чужд аршин</span>'));
     const pwRow = el('div', 'bb-sex');
+    pwRow.setAttribute('role', 'group'); pwRow.setAttribute('aria-label', 'Роди ли се преди термина');
     const PW = [[0, 'На термин'], [36, '36 с.'], [34, '34 с.'], [32, '32 с.'], [30, '30 с.'], [28, '28 с. или по-рано']];
     PW.forEach(([v, lbl]) => {
       const b = el('button', 'bb-sexbtn' + (+load('bl_preterm', 0) === v ? ' on' : ''), lbl);
@@ -284,8 +291,8 @@
       const row = hist[i]; if (!row) return;
       const дел = () => { hist.splice(i, 1); save('bl_growth', hist); drawHist(); if (window.BL_FX) BL_FX.buzz(8); };
       const питай = (window.BL_UI && BL_UI.confirm)
-        ? BL_UI.confirm(`Да махна ли „${row.m} мес · ${row.w} кг"?`, { okText: 'Махни', danger: true })
-        : Promise.resolve(confirm(`Да махна ли „${row.m} мес · ${row.w} кг"?`));
+        ? BL_UI.confirm(`Да махна ли „${row.m} мес · ${row.w} кг“?`, { okText: 'Махни', danger: true })
+        : Promise.resolve(confirm(`Да махна ли „${row.m} мес · ${row.w} кг“?`));
       питай.then(да => { if (да) дел(); });
     });
     drawHist();
@@ -332,9 +339,17 @@
     function refreshFeed() {
       const f = load('bl_feed', null);
       if (!f) { feedOut.innerHTML = 'Още няма отбелязано хранене. Бутни отдолу при следващото. 👇'; predOut.innerHTML = ''; return; }
-      const mins = Math.floor((Date.now() - f.t) / 60000);
+      // 🔴 11.08 (обиколка във времето): записът може да е в БЪДЕЩЕТО — в
+      //    последната неделя на октомври часовникът се връща от 04:00 на 03:00
+      //    и храненето в 3:30 остава с час напред; същото при сверяване на
+      //    сбъркан телефонен часовник. Тогава излизаше „преди -2 ч -27 мин“ —
+      //    нечетимо число, което мама не може да провери срещу нищо.
+      const изтекло = Date.now() - f.t;
+      const mins = Math.floor(Math.max(0, изтекло) / 60000);
       const h = Math.floor(mins / 60), m = mins % 60;
-      feedOut.innerHTML = `Последно (${sideWord(f.s)}) преди <strong>${h ? h + ' ч ' : ''}${m} мин</strong>.`;
+      feedOut.innerHTML = изтекло < -60000
+        ? `Последното хранене е записано с час <strong>напред</strong> (${new Date(f.t).toLocaleTimeString('bg-BG', { hour: '2-digit', minute: '2-digit' })}) — часовникът на телефона се е разминал. Отбележи наново при следващото. 💜`
+        : `Последно (${sideWord(f.s)}) преди <strong>${h ? h + ' ч ' : ''}${m} мин</strong>.`;
       // проход 4: прогноза напред от медианния интервал (три извора, дедуп на близнаци <60с)
       const ts = [...load('bl_nursing', []).map(x => x.ts), ...load('bl_feedlog', []), f.t].filter(Boolean).sort((a, b) => a - b);
       const uniq = ts.filter((x, i) => i === 0 || x - ts[i - 1] > 60000);
@@ -374,13 +389,26 @@
       const minus = el('button', 'bb-dipbtn', '−'); minus.type = 'button';
       const num = el('span', 'bb-dipnum', dip[t][k]);
       const plus = el('button', 'bb-dipbtn', '+'); plus.type = 'button';
+      // ♿ 11.08 (клавиатура-четец): двете кутийки („Мокри" и „Каки") дават
+      //    четири еднакви бутона „минус"/„плюс" — четецът не казваше на КОЯ.
+      //    Броячът е <span> и промяната му мълчеше; сега е live-област.
+      const чисто = lbl.replace(/[^А-Яа-я ]/g, '').trim().toLowerCase();
+      minus.setAttribute('aria-label', 'Едно по-малко: ' + чисто);
+      plus.setAttribute('aria-label', 'Едно повече: ' + чисто);
+      num.setAttribute('aria-live', 'polite');
+      num.setAttribute('aria-label', чисто + ' днес');
       minus.addEventListener('click', () => { const { д, o } = дневник(); o[д][k] = Math.max(0, (o[д][k] || 0) - 1); num.textContent = o[д][k]; save('bl_diapers', o); });
       plus.addEventListener('click', () => { const { д, o } = дневник(); o[д][k] = (o[д][k] || 0) + 1; num.textContent = o[д][k]; save('bl_diapers', o); box.classList.add('pp'); setTimeout(() => box.classList.remove('pp'), 300); });
       box.appendChild(minus); box.appendChild(num); box.appendChild(plus);
       grid.appendChild(box);
     });
     c4.appendChild(grid);
-    c4.appendChild(el('p', 'jr-privacy', '6+ мокри пелени на ден = млякото стига. 💪'));
+    // 🟠 11.08 (обиколка като майка): до брояча стоеше гола присъда „6+ = млякото
+    //    стига“. В 22 ч. с 4 отбелязани пелени тя се чете като „млякото не стига“
+    //    — а числото е само това, което мама е успяла да ЦЪКНЕ. Картата за съня
+    //    в същата стая си го признава („броя само това, което си отбелязала“);
+    //    тази — не. Празно поле не е доказателство.
+    c4.appendChild(el('p', 'jr-privacy', '6+ мокри пелени на ден = млякото стига. 💪 Броя само отбелязаните — пропуснато цъкане не е пропусната пелена.'));
     root.appendChild(c4);
 
     // 5. Сън днес
@@ -483,7 +511,7 @@
     // 5б. проход 4 [36]: 24-часовият кръг — висцералният пулс на ЕДИН ден.
     // Точки = хранения, дъги = сън, стрелка = сега. С един поглед в 3 сутринта:
     // кога беше последното хранене, колко дълга беше дрямката, къде сме сега.
-    const cClock = card('Денят на един кръг 🕛 <span class="jr-sub">хранения, сън и „сега" за днес</span>');
+    const cClock = card('Денят на един кръг 🕛 <span class="jr-sub">хранения, сън и „сега“ за днес</span>');
     const clockBox = el('div', 'bb-clockbox');
     cClock.appendChild(clockBox);
     const clockLeg = el('p', 'bb-clocklegend', '🍼 хранене · 🌙 сън · 📍 сега');
@@ -534,6 +562,13 @@
       for (let i = 0; i < 10; i++) {
         const idx = off + i;
         const tth = el('button', 'th-tooth' + (teethSet.has(idx) ? ' in' : ''), '🦷'); tth.type = 'button';
+        // ♿ 11.08 (клавиатура-четец): 20 еднакви „🦷" — четецът казваше двайсет
+        //    пъти „зъб, бутон" и мама нямаше как да разбере кое кое е, нито кои
+        //    вече е отметнала. Името казва редицата и мястото, aria-pressed —
+        //    състоянието.
+        const имеЗъб = lbl.toLowerCase() + ' зъб № ' + (i + 1);
+        tth.setAttribute('aria-label', имеЗъб);
+        tth.setAttribute('aria-pressed', teethSet.has(idx) ? 'true' : 'false');
         tth.addEventListener('click', () => {
           if (teethSet.has(idx)) {
             teethSet.delete(idx);
@@ -549,6 +584,7 @@
             if (window.BL_FX) { BL_FX.confetti(tth, 16); BL_FX.buzz(14); }
           }
           tth.classList.toggle('in');
+          tth.setAttribute('aria-pressed', teethSet.has(idx) ? 'true' : 'false');
           save('bl_teeth', [...teethSet]); thCount();
         });
         rowE.appendChild(tth);
@@ -578,6 +614,15 @@
       return Math.floor((Date.now() - d) / 604800000);
     };
     const наПауза = () => !!(window.BL_EXPECT && BL_EXPECT.paused());
+    // ✍️ редна форма: пише се последната буква (или последните две) от думата —
+    //    втора → 22-ра, седма → 27-ма, шеста → 26-та. Тук се лепеше '-та' на
+    //    сляпо и жената в 28-а седмица четеше „28-та“, а базата (kb.js) пише
+    //    „28-ма“ на 19 места — едно и също число, два правописа в едно приложение.
+    const редна = n => {
+      const е = n % 10, д = n % 100;
+      if (д >= 11 && д <= 19) return n + '-та';
+      return n + (е === 1 ? '-ва' : е === 2 ? '-ра' : (е === 7 || е === 8) ? '-ма' : '-та');
+    };
 
     // 1. Калкулатор на термина + седмица
     // 🔴 04.08 (одит г01): онбордингът пита само за ОЧАКВАНАТА ДАТА и записва
@@ -674,7 +719,7 @@
         const река = load('bl_river_manual', []);
         const днес = new Date().toISOString().slice(0, 10);
         if (!река.some(x => x && x.пърхане === днес)) {
-          река.push({ ts: Date.now(), e: '🫧', t: 'Първите пърхания — ' + с2сед + '-та седмица', пърхане: днес });
+          река.push({ ts: Date.now(), e: '🫧', t: 'Първите пърхания — ' + редна(с2сед) + ' седмица', пърхане: днес });
           save('bl_river_manual', река);
           fx().confetti(kickOut);
         }
@@ -709,7 +754,7 @@
       kickBig.classList.add('pp'); setTimeout(() => kickBig.classList.remove('pp'), 200);
     });
     if (с2сед > 0 && с2сед < 26) {
-      kickOut.innerHTML = 'Броенето е за след <strong>~26-та седмица</strong> (ти си в ' + с2сед + '-та). Но усетиш ли пърхане — цъкни, ще го запомним като спомен. 🤍';
+      kickOut.innerHTML = 'Броенето е за след <strong>~26-та седмица</strong> (ти си в ' + редна(с2сед) + '). Но усетиш ли пърхане — цъкни, ще го запомним като спомен. 🤍';
     }
     c2.appendChild(kickBig);
     if (с2сед === 0 || с2сед >= 26) c2.appendChild(kickRing);   // пръстенът само в режим на броене
@@ -786,7 +831,7 @@
       // контракции са друга история — там не се чака 5-1-1, а се звъни.
       const сег = седмицаСега();
       if (сег > 0 && сег < 37 && log.length >= 3 && avgInt && avgInt <= 12) {
-        alert = '<p class="pg-alarm">🚨 Редовни контракции преди <strong>37-та седмица</strong> са повод да звъннеш на лекаря си <strong>СЕГА</strong> — не изчаквай 5-1-1.<br><a class="ro-sos" href="tel:112">📞 112 при силна болка/кървене</a></p>';
+        alert = '<p class="pg-alarm">🚨 Редовни контракции преди <strong>37-ма седмица</strong> са повод да звъннеш на лекаря си <strong>СЕГА</strong> — не изчаквай 5-1-1.<br><a class="ro-sos" href="tel:112">📞 112 при силна болка/кървене</a></p>';
       } else if (avgInt && avgInt <= 5 && avgDur >= 45) {
         // ⏱️ това се палеше след ТРИ засечени вълни — тоест около 10-15 минути
         //    наблюдение — а текстът твърдеше „по ~1 мин, от известно време",
@@ -804,7 +849,7 @@
     const сегК = седмицаСега();
     if (сегК > 0 && сегК < 37) {
       c3.appendChild(el('p', 'jr-privacy pg-preterm',
-        '⚠️ Ти си в ' + сегК + '-та седмица. Редовни контракции <strong>преди 37-та</strong> не се броят по 5-1-1 — звънни на лекаря си веднага.'));
+        '⚠️ Ти си в ' + редна(сегК) + ' седмица. Редовни контракции <strong>преди 37-ма</strong> не се броят по 5-1-1 — звънни на лекаря си веднага.'));
     }
     c3.appendChild(conBtn); c3.appendChild(дъх); c3.appendChild(conOut); drawCon();
     if (!наПауза() && датата20()) root.appendChild(c3);   // Б10.1 + жива дата
@@ -840,7 +885,15 @@
     const filterRow = el('div', 'jr-quick fd-filter');
     const cats = ['Всички', 'Зеленчук', 'Плод', 'Белтъчини', 'Зърнени', 'Млечни', 'Алергени', 'Мои'];
     const tried = load('bl_tried', {});
-    let curCat = 'Всички', ageCap = a ? Math.round(a.devMonths) : 12;
+    // 🟠 11.08 (обиколка „редки състояния“): Math.round важеше и за недоносено.
+    //    При 2.63 коригирани месеца филтърът казваше „подходящи за 3 месеца
+    //    (коригирани)“, докато картата в „Моето бебе“ на същия ден казва
+    //    „Коригирана възраст: 2 месеца“ (там е floor). Едно и също дете, две
+    //    числа, две стаи. За недоносено броим НАВЪРШЕНИ (floor) — така съвпада
+    //    с другата карта и никога не бута храна по-рано. За доносено остава
+    //    Math.round: floor го сваляше на 5 при 5.95 и „време за първи вкусове“
+    //    закъсняваше с дни (виж същата бележка в roomhero.js).
+    let curCat = 'Всички', ageCap = a ? (a.corr ? Math.floor(a.devMonths) : Math.round(a.devMonths)) : 12;
     const grid = el('div', 'fd-grid');
     cats.forEach(cat => {
       const b = el('button', 'jr-chip' + (cat === 'Всички' ? ' on' : ''), cat); b.type = 'button';
@@ -920,6 +973,10 @@
       //    датата оставаше и в Реката завинаги стоеше „🥄 Опитахме Ягода" с
       //    празно място отзад — спомен за нещо, което не се е случило.
       else if (td[name]) { delete td[name]; save('bl_tried_d', td); }
+      // 🛡️ 11.08: „Алергия-паспорт“ (rooms3.js) чете bl_tried и е в СЪЩАТА стая.
+      //    Без известие тя маркираше „⚠️ реакция“ горе, а паспортът долу още
+      //    твърдеше „нищо записано“ до следващото влизане в стаята.
+      try { document.dispatchEvent(new CustomEvent('bl:tried-changed')); } catch (e) {}
       // (тук стоеше cardE.classList.add('pp') — мъртъв код: draw() по-горе вече
       //  е пресъздал всички картички и cardE е откачен от документа.)
     }
@@ -1193,7 +1250,29 @@
     //    преместен чеклист в data.js разместваше чужди отметки между списъци —
     //    същият капан, който вече ухапа ваксините (миграцията е по-долу в файла).
     //    Ключът вече идва от името; старият индекс се пренася веднъж.
-    Object.keys(D.checklists).forEach((name, i) => {
+    // 🟡 11.08 (обиколка като майка): кътчето „✅ Чеклисти“ ВИНАГИ започваше с
+    //    „Първи месец вкъщи“ — под героя, който обещава „каквото ти трябва СЕГА“.
+    //    На седем месеца първото нещо беше „Пелени за новородено“ и „бодита 56/62“,
+    //    минати преди половин година. Нищо не се крие (второ дете, чужд списък,
+    //    просто любопитство — и трите остават на екрана): подрежда се само редът,
+    //    по прозореца на всеки списък. Без рождена дата редът е старият — празно
+    //    поле не е доказателство. Ключовете са по ИМЕ, затова размяната не мести
+    //    нито една отметка.
+    const мес = (function () { const в = ageFromBirth(getBaby().birth); return в ? в.months : null; })();
+    const ПРОЗОРЕЦ = {
+      'Първи месец вкъщи': [0, 2],
+      'Чанта за разходка': [0, 36],
+      'Обезопасяване (пълзене+)': [5, 36]
+    };
+    const далеч = име => {
+      const п = ПРОЗОРЕЦ[име];
+      if (!п || мес == null) return 0;
+      return мес < п[0] ? п[0] - мес : (мес > п[1] ? мес - п[1] : 0);
+    };
+    Object.keys(D.checklists)
+      .map((name, i) => ({ name, i }))
+      .sort((x, y) => далеч(x.name) - далеч(y.name) || x.i - y.i)
+      .forEach(({ name, i }) => {
       const ключ = 'bl_chk_' + name.replace(/\s+/g, '_');
       try {
         if (localStorage.getItem(ключ) === null && localStorage.getItem('bl_chk_' + i) !== null) {
@@ -1310,10 +1389,28 @@
             }
           }
           const dd = parsed.data || parsed;
+          // 🟠 11.08 (обиколка „данните на майката“): чужд JSON (от друго
+          //    приложение) минаваше НАПРАВО към червения диалог „Тук вече има
+          //    записи… ще застане отгоре“ и чак ако мама натиснеше „Качи“, чуваше
+          //    че файлът не носи данни от Бейби Ленд. Тоест плашехме я с
+          //    презаписване заради файл, в който няма нито един неин ред.
+          //    Първо гледаме има ли изобщо какво да влезе.
+          if (!Object.keys(dd).some(k => k.indexOf('bl_') === 0)) {
+            impLbl.textContent = 'Файлът не носи данни от Бейби Ленд 😕';
+            setTimeout(() => impLbl.textContent = '⬆️ Възстанови от файл', 3200); return;
+          }
           // 🔴 05.08 (одит г14, №133): bl_vax_schema се записва при самото
           //    зареждане на тази стая, bl_tz — при всяко пускане. На чисто нов
           //    телефон „същ“ беше вече 2 и червеното изскачаше винаги.
-          const ПРОПУСНИ = /^(bl_theme|bl_sounds|bl_onboard|bl_onboarded|bl_font|bl_pin|bl_pin_set|bl_seen_cards|bl_carduse|bl_tz|bl_vax_schema|bl_backup_last|bl_backup_partial_last|bl_tour_done)/;
+          // 🟠 11.08 (измерено): след собственото „Изтрий всичко“ телефонът е
+          //    ЧИСТ, а диалогът пак крещеше „вече има записи (12 неща)“ — и
+          //    дванайсетте бяха вътрешно счетоводство от самото отваряне
+          //    (сгънати карти, посетени стаи, ден 1, дъга…), нито едно неин
+          //    запис. Мама, която току-що е сменила телефон, вижда червено
+          //    предупреждение точно когато е най-уплашена — и част от майките
+          //    натискат „Откажи“ и остават без данните си. Списъкът е измерен
+          //    на живо на изтрит телефон, не предположен.
+          const ПРОПУСНИ = /^(bl_theme|bl_sounds|bl_onboard|bl_onboarded|bl_font|bl_pin|bl_pin_h|bl_pin_set|bl_pins|bl_seen_cards|bl_carduse|bl_lib_opens|bl_tz|bl_vax_schema|bl_backup_last|bl_backup_partial_last|bl_tour_done|bl_folds|bl_folddefaults|bl_room_asked|bl_room_visited|bl_day1|bl_hero_toured|bl_art_merged|bl_heavy_day|bl_fskeep_fix|bl_rainbow|bl_wm_visits|bl_wm_ritual)$/;
           let същ = 0;
           for (let i = 0; i < localStorage.length; i++) {
             const k = localStorage.key(i);
@@ -1331,8 +1428,37 @@
             });
             if (!ок) { impLbl.textContent = '⬆️ Възстанови от файл'; return; }
           }
-          let бр = 0;
-          Object.keys(dd).forEach(k => { if (k.startsWith('bl_')) { localStorage.setItem(k, dd[k]); бр++; } });
+          // 🔴🔴 11.08 (обиколка „данните на майката“, ИЗМЕРЕНО): при пълна памет
+          //    localStorage.setItem гърми по средата на този цикъл. Дотогава
+          //    половината копие ВЕЧЕ е влязло, а изключението падаше в общия
+          //    catch отдолу и мама четеше „Файлът не е разпознат 😕“ — за
+          //    напълно изправен файл. Това е най-страшната лъжа в цялата
+          //    система: казваме ѝ, че резервното ѝ копие е счупено. Тя може да
+          //    го изтрие. Сега разделяме двете причини — счупен файл и пълен
+          //    телефон не са едно и също нещо.
+          let бр = 0, недостиг = 0;
+          Object.keys(dd).forEach(k => {
+            if (k.indexOf('bl_') !== 0) return;
+            try { localStorage.setItem(k, dd[k]); бр++; } catch (e) { недостиг++; }
+          });
+          if (недостиг) {
+            impLbl.textContent = 'Няма място на телефона 😕';
+            const бел = cb.querySelector('.tl-impwarn') || el('p', 'jr-privacy tl-impwarn', '');
+            бел.innerHTML = '<strong>Копието ти е наред — телефонът няма място.</strong> Влязоха ' + бр +
+              (бр === 1 ? ' нещо, ' : ' неща, ') + недостиг + (недостиг === 1 ? ' не се побра' : ' не се побраха') +
+              '. Освободи място (видеа, снимки, други приложения) и качи <em>същия</em> файл пак — второто качване не поврежда нищо, само дописва каквото липсва.';
+            if (!бел.isConnected) cb.appendChild(бел);
+            // презареждаме чак когато мама е прочела — иначе отворените карти
+            // пишат старите си обекти върху това, което току-що влезе
+            const прод = cb.querySelector('.tl-impgo') || el('button', 'jr-btn tl-impgo', 'Разбрах — презареди');
+            прод.type = 'button';
+            прод.onclick = () => {
+              const ч = (window.BL_STORE && BL_STORE.flush) ? BL_STORE.flush() : Promise.resolve();
+              ч.then(() => location.reload());
+            };
+            if (!прод.isConnected) cb.appendChild(прод);
+            return;
+          }
           if (!бр) {                                   // нищо не влезе — НЕ лъжем
             impLbl.textContent = 'Файлът не носи данни от Бейби Ленд 😕';
             setTimeout(() => impLbl.textContent = '⬆️ Възстанови от файл', 2600); return;
@@ -1348,7 +1474,12 @@
     });
     impLbl.appendChild(impInp);
     cb.appendChild(impLbl);
-    cb.appendChild(el('p', 'jr-privacy', '🔒 Копието е обикновен файл на твоя телефон. Пази го, ако сменяш устройство.'));
+    // 🟡 11.08: тази карта е тази, към която сочат ВСИЧКИ пътища в
+    //    приложението („Инструменти → Резервно копие“ — home2, search, polish,
+    //    профилът). А предупреждението, че файлът е ЧЕТИМ, стоеше само в
+    //    профила. Мама, тръгнала по указателя на самото приложение, сваляше
+    //    файл с имена, снимки и дневник и виждаше катинарче до него.
+    cb.appendChild(el('p', 'jr-privacy', '⚠️ Файлът е <strong>обикновен, четим</strong> — държи имена, снимки и бележки. Пази го като албум: не го качвай в чат или облак, който не е твой. Ако трябва да пътува — в „Профил“ има <strong>копие с парола</strong>, което е истински заключено.'));
     root.appendChild(cb);
 
     // 5. Майчинство (BG)
@@ -1357,8 +1488,17 @@
       '<li><strong>45 дни</strong> преди термина започва отпускът по бременност и раждане.</li>' +
       '<li><strong>410 дни</strong> общо обезщетение за бременност, раждане и отглеждане (при осигуряване).</li>' +
       '<li>След 410-те дни — обезщетение за отглеждане до 2-годишна възраст.</li>' +
-      '<li>Бащата има право на отпуск при раждане — питай работодателя за сроковете.</li>'));
-    c5.appendChild(el('p', 'jr-privacy', 'Сроковете и сумите се менят — с библиотеката идва актуален помощник със стъпките и документите.'));
+      // 🟠 11.08 (обиколка „документи и пари“): редът беше „Бащата има право…“ —
+      //    изречен като даденост на жена, която може да няма баща в картината.
+      //    Правото си остава право; само не се приема за дадено, че той е тук.
+      '<li>Ако има втори родител — и той има право на отпуск при раждане; сроковете се питат при неговия работодател.</li>'));
+    // 🔴 11.08 (обиколка „документи и пари“): тук пишеше „с библиотеката ИДВА
+    //    актуален помощник със стъпките и документите“ — обещание за функция,
+    //    която я няма и не се строи. Статията обаче СЪЩЕСТВУВА и е в тази стая.
+    //    (Първата поправка сочеше статия по заглавие от базата на Дара — а в
+    //    таб „Статии“ такова заглавие НЯМА. Сочим кътчето, което го има
+    //    наистина: филтърът „💰 Помощи и НОИ“, проверен на екрана.)
+    c5.appendChild(el('p', 'jr-privacy', 'Сроковете и сумите се менят — сверявай в НОИ или със счетоводството си. В таб „Статии“ има кътче <strong>💰 Помощи и НОИ</strong>, а Дара отговаря, ако я питаш „НОИ“ или „410 дни“.'));
     root.appendChild(c5);
   }
 
@@ -1463,6 +1603,8 @@
       if (isNaN(t) || t < 34 || t > 43) return;
       const arr = load('bl_temps', []); arr.push({ v: t, ts: Date.now() }); save('bl_temps', arr.slice(-80));  // същия shape/cap като rooms3 tempCard
       tSave.dataset.saved = String(t); tSave.disabled = true; tSave.textContent = '✔ Записано — посоката е в дневника 🌡️';
+      // …и дневникът наистина да го покаже СЕГА, а не чак след презареждане
+      if (typeof window.BL_TEMPS_REDRAW === 'function') { try { window.BL_TEMPS_REDRAW(); } catch (e) { } }
       if (window.BL_FX) BL_FX.buzz(10);
     });
     let prevTmp = '';
@@ -1529,20 +1671,52 @@
   function checklistCard(title, key, items) {
     const c = card(title);
     const state = load(key, {});
+    // 🔁 11.08: отметките в САМИЯ списък се пазеха по НОМЕР на реда (bl_ready =
+    //    {"0":true,...}) — същият капан, който вече беше изкоренен при ваксините
+    //    (миграцията по-долу в файла) и при ключовете на чеклистите (ред 1253).
+    //    Докато редовете не мърдат, вреда няма — затова и data.js:320 казва
+    //    „добавени В КРАЯ, за да не мръднат индексите“. Първото вмъкване по
+    //    средата обаче мести отметката ѝ върху чуждо твърдение. Ключът вече идва
+    //    от ТЕКСТА на реда; преносът върви ВЕДНЪЖ, сега, докато редът още е
+    //    същият, по който е отмятала.
+    //    Път назад: старият запис се пази непокътнат в „<ключ>_idx“ (както
+    //    bl_vax_old при ваксините), а „<ключ>_k“ казва, че преносът е минал.
+    const виждани = {};
+    const ключове = items.map((it, i) => {
+      let к = String(it).replace(/<[^>]*>/g, '').trim().slice(0, 60) || ('ред-' + i);
+      if (виждани[к]) к += '#' + i;
+      виждани[к] = 1;
+      return к;
+    });
+    try {
+      if (localStorage.getItem(key + '_k') === null) {
+        let имаше = false;
+        const ново = {};
+        ключове.forEach((к, i) => { if (state[i]) { ново[к] = true; имаше = true; } });
+        if (имаше) localStorage.setItem(key + '_idx', JSON.stringify(state));
+        Object.keys(state).forEach(k2 => { if (/^\d+$/.test(k2)) delete state[k2]; });
+        Object.assign(state, ново);
+        save(key, state);
+        localStorage.setItem(key + '_k', '1');
+      }
+    } catch (e) {}
     const list = el('div', 'jr-wins');
     let doneN = 0;
     const capt = el('p', 'chk-count', '');
     items.forEach((it, i) => {
-      const row = el('button', 'jr-win' + (state[i] ? ' done' : ''));
+      const ключ = ключове[i];
+      const row = el('button', 'jr-win' + (state[ключ] ? ' done' : ''));
       row.type = 'button';
-      row.innerHTML = `<span class="jr-check">${state[i] ? '✔' : ''}</span> ${it}`;
-      if (state[i]) doneN++;
+      row.setAttribute('aria-pressed', state[ключ] ? 'true' : 'false');
+      row.innerHTML = `<span class="jr-check">${state[ключ] ? '✔' : ''}</span> ${it}`;
+      if (state[ключ]) doneN++;
       row.addEventListener('click', () => {
         const was = doneN;
-        state[i] = !state[i]; save(key, state);
-        row.classList.toggle('done'); row.querySelector('.jr-check').textContent = state[i] ? '✔' : '';
-        if (state[i]) { row.classList.add('pop'); setTimeout(() => row.classList.remove('pop'), 400); }
-        doneN += state[i] ? 1 : -1; updateCap();
+        state[ключ] = !state[ключ]; save(key, state);
+        row.classList.toggle('done'); row.querySelector('.jr-check').textContent = state[ключ] ? '✔' : '';
+        row.setAttribute('aria-pressed', state[ключ] ? 'true' : 'false');
+        if (state[ключ]) { row.classList.add('pop'); setTimeout(() => row.classList.remove('pop'), 400); }
+        doneN += state[ключ] ? 1 : -1; updateCap();
         if (window.BL_FX) { BL_FX.buzz(10); if (was < items.length && doneN === items.length) { BL_FX.confetti(row); BL_FX.cheer('Готово! 🎉'); } }
       });
       list.appendChild(row);
@@ -1782,14 +1956,27 @@
     // 12.13.8: и тати има глас — втора колона със свой отговор
     const dad = load('bl_baby_lexicon_dad', {});
     let двама = load('bl_lex_dad_on', false);
+    // 🟠 11.08 (обиколка „редки състояния“): три от трийсетте въпроса питат за
+    //    ТАТИ („На кого приличаш според тати“, „Любимата ти игра с тати“,
+    //    „Първата ти дума за нас — мама и тати“). Приложението вече ПИТА веднъж
+    //    има ли кой да помага (rooms9.js) и уважава отговора в Бременност и в
+    //    Дневника (rooms3.js:162) — само тук не го четеше. Жената, натиснала
+    //    „🤍 Сама съм“, отваряше книгата-спомен на детето си и намираше три
+    //    празни реда, които никога няма да се напълнят — а пръстенът броеше
+    //    /30 и „Лексиконът е пълен! 🌟“ ставаше недостижим. Обещание, което
+    //    приложението само си е счупило. Същият флаг, същото уважение.
+    const сама = load('bl_partner', '') === 'не';
+    const ВЪПРОСИ = сама ? D.babyLex.filter(q => !/тати/i.test(q)) : D.babyLex;
     const prog = el('p', 'chk-count chk-ringrow', '');
     c.appendChild(prog);
     // превключвател: показвай ли колоната на тати
-    const тог = el('button', 'jr-chip lx-dadtog', двама ? '👨 Тати пише — скрий' : '👨 Нека и тати попълни');
-    тог.type = 'button';
-    тог.addEventListener('click', () => { двама = !двама; save('bl_lex_dad_on', двама); тог.textContent = двама ? '👨 Тати пише — скрий' : '👨 Нека и тати попълни'; c.querySelectorAll('.lx-dad').forEach(x => x.hidden = !двама); });
-    c.appendChild(тог);
-    D.babyLex.forEach(q => {
+    if (!сама) {
+      const тог = el('button', 'jr-chip lx-dadtog', двама ? '👨 Тати пише — скрий' : '👨 Нека и тати попълни');
+      тог.type = 'button';
+      тог.addEventListener('click', () => { двама = !двама; save('bl_lex_dad_on', двама); тог.textContent = двама ? '👨 Тати пише — скрий' : '👨 Нека и тати попълни'; c.querySelectorAll('.lx-dad').forEach(x => x.hidden = !двама); });
+      c.appendChild(тог);
+    } else { двама = false; }
+    ВЪПРОСИ.forEach(q => {
       c.appendChild(el('label', 'onb-lbl', q));
       const inp = el('textarea', 'jr-paper lx-inp'); inp.rows = 1; inp.placeholder = '🌸 мама…';
       inp.value = lex[q] || '';
@@ -1800,7 +1987,7 @@
         if (lex[q] && !ld[q]) { ld[q] = Date.now(); save('bl_lex_d', ld); } // отговорът в Реката
       });
       inp.addEventListener('change', () => {
-        if (Object.keys(lex).length === D.babyLex.length && window.BL_FX && !load('bl_lex_done', false)) {
+        if (ВЪПРОСИ.every(x => lex[x]) && window.BL_FX && !load('bl_lex_done', false)) {
           save('bl_lex_done', true); BL_FX.confetti(c); BL_FX.cheer('Лексиконът е пълен! 🌟');
         }
       });
@@ -1811,8 +1998,9 @@
       c.appendChild(inpD);
     });
     function upd() {
-      const n = Object.keys(lex).length;
-      prog.innerHTML = ringSvg(n, D.babyLex.length) + `<span>${n} / ${D.babyLex.length} попълнени</span>`;
+      // броим само показаните въпроси — иначе при „сама съм“ таванът остава 30
+      const n = ВЪПРОСИ.filter(x => lex[x]).length;
+      prog.innerHTML = ringSvg(n, ВЪПРОСИ.length) + `<span>${n} / ${ВЪПРОСИ.length} попълнени</span>`;
     }
     upd();
     return c;

@@ -305,7 +305,10 @@
 /* ═══════════ 🚨 СОС-БУТОНЪТ В ГЕРОЯ НА ЗДРАВЕ (проход 1 · #41) ═══════════
    Беше плосък текст „номерата са по-долу"; сега е истински бутон — отваря
    центъра със СОС номерата. Топло-спешен, ясно натискаем, пълна ширина. */
-.rh-sos-jump {
+/* 11.08: същият бутон и в Лабораторията — „как се прави честен опит“ беше
+   само текст, без нищо за натискане. */
+.rh-sos-jump,
+.rh-lab-honest {
   display: block;
   width: 100%;
   margin-top: 8px;
@@ -320,12 +323,16 @@
   cursor: pointer;
   transition: transform var(--bl-t-press) var(--bl-ease-spring), background var(--bl-t-soft) ease;
 }
-.rh-sos-jump:active { transform: scale(.97); }
+.rh-sos-jump:active,
+.rh-lab-honest:active { transform: scale(.97); }
 @media (hover: hover) and (pointer: fine) {
-  .rh-sos-jump:hover { background: rgba(255, 224, 236, 1); }
+  .rh-sos-jump:hover,
+  .rh-lab-honest:hover { background: rgba(255, 224, 236, 1); }
 }
 :root[data-theme="dark"] .rh-sos-jump,
-[data-theme="dark"] .rh-sos-jump {
+[data-theme="dark"] .rh-sos-jump,
+:root[data-theme="dark"] .rh-lab-honest,
+[data-theme="dark"] .rh-lab-honest {
   background: rgba(74, 40, 55, .6);
   color: #ffc4dd;
   border-color: rgba(229, 107, 164, .55);
@@ -653,4 +660,37 @@
   /* П5-Д: сваляме дълбочинния композитен слой при reduce (картата сяда на идентитет) */
   #roRoom > .jr-card { will-change: auto !important; --rmx-tz-base: 0px !important; }
   .rmx-aurora { display: none !important; }
+}
+
+/* ═══════════ 🔴 ГЕРОЯТ НЕ ЧАКА 954 KB JavaScript ═══════════
+   ОС „инсталация и офлайн“, 11.08 — ИЗМЕРЕНО, не предположено.
+
+   .reveal е opacity:0 (style.css:324). Единственият, който му слага .shown,
+   е IntersectionObserver-ът в js/app.js. А js/app.js е СКРИПТ #91 от 93 —
+   и деветдесет и трите са блокиращи, без defer, и се изпълняват ПО РЕД.
+   Тоест .hero-inner (първото нещо над сгъвката: логото, „Всичко за
+   бременността — в джоба ти“) чака да се изтеглят и изпълнят ~954 KB gzip
+   JavaScript, преди изобщо да се появи.
+
+   Измерено на localhost, БЕЗ никаква мрежова забава, студено зареждане:
+     css/style.css готов на  343 ms  → от тук нататък героят е opacity:0
+     js/app.js    готов на 3166 ms  → чак тук получава .shown
+   → 2.8 секунди ПРАЗЕН екран на локален сървър. На 3G (~50 KB/s) същите
+   954 KB са ~20 секунди, в които мама гледа само фон и не знае живо ли е.
+
+   Героят е НАД сгъвката — той няма какво да чака и няма какво да „разкрива
+   при скрол“. Затова влиза сам, с чист CSS. Анимациите бият нормалните
+   декларации в каскадата, така че това надделява над .reveal{opacity:0}
+   без !important и без да пипаме реда на скриптовете.
+   Скрол-разкриването на ВСИЧКО останало остава непокътнато.
+
+   Истинският лек е на главния (index.html е заключен за мен): defer на
+   скриптовете или js/app.js да не е #91.
+   ПЪТ НАЗАД: изтрий този блок — нищо друго не зависи от него. */
+.hero-inner.reveal {
+  animation: героятВлиза 0.7s cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+@keyframes героятВлиза {
+  from { opacity: 0; transform: translateY(36px) rotate(-1.2deg); }
+  to   { opacity: 1; transform: none; }
 }

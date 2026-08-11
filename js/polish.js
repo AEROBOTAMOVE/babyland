@@ -464,7 +464,24 @@
   window.BL_TODAY_EXTRAS = function (baby, a) {
     let html = prevExtras ? prevExtras(baby, a) : '';
     const last = load('bl_backup_last', '');
-    const hasData = Object.keys(localStorage).filter(k => k.startsWith('bl_')).length > 6;
+    // 🟠 11.08 (обиколка като майка, ИЗМЕРЕНО на празен профил): условието беше
+    //    „повече от 6 ключа с префикс bl_“, а приложението САМО си пише
+    //    счетоводство още при първото отваряне — измерени пет преди мама да е
+    //    пипнала каквото и да е (bl_tz, bl_day1, bl_hero_toured, bl_vax_schema,
+    //    bl_art_merged), а онбордингът добавя още. Минута след като е въвела
+    //    името на бебето чипът вече ѝ казваше „💾 Резервно копие — време е“ —
+    //    на екран, който обещава „Днес нищо не искаме от теб“. Броим НЕЙНИТЕ
+    //    записи, и то непразните. Списъкът на служебните не е измислен тук: той
+    //    е същият, измерен на изтрит телефон, който пази и качването на копие
+    //    (profile.js:391, rooms2.js:1391) + bl_baby_stage (стъпалото на
+    //    аватара, което се пише само от rooms2.js:1719).
+    const СЛУЖЕБНИ = /^(bl_theme|bl_sounds|bl_onboard|bl_onboarded|bl_font|bl_pin|bl_pin_h|bl_pin_set|bl_pins|bl_seen_cards|bl_carduse|bl_folds|bl_folddefaults|bl_agent_miss|bl_lib_open|bl_lib_opens|bl_tz|bl_vax_schema|bl_baby_stage|bl_backup_last|bl_backup_partial_last|bl_tour_done|bl_room_asked|bl_room_visited|bl_day1|bl_hero_toured|bl_art_merged|bl_heavy_day|bl_fskeep_fix|bl_rainbow|bl_wm_visits|bl_wm_ritual)$/;
+    const мои = Object.keys(localStorage).filter(k => {
+      if (k.indexOf('bl_') !== 0 || СЛУЖЕБНИ.test(k)) return false;
+      const v = localStorage.getItem(k);
+      return !!v && v !== '{}' && v !== '[]' && v !== '""' && v !== 'null' && v !== 'false';
+    }).length;
+    const hasData = мои > 6;
     if (hasData && (!last || (Date.now() - new Date(last)) > 30 * 86400000)) {
       // 🔴 05.08 (одит г14, №304): чипът пращаше към карта „Архив на спомените“,
       //    каквато няма. Истинската се казва „Резервно копие 💾“.
@@ -553,6 +570,26 @@
       c.appendChild(w);
     }
 
+    // 🤍 11.08 (обиколка като майка): картата „За партньора“ в Бременност се
+    //    скриваше с едно докосване („🤍 Сама съм“) и текстът обещаваше връщане
+    //    „в чата“ — а такова нещо нямаше никъде. Вратата беше еднопосочна.
+    //    Тук е обратният път, до паузата на очакването, по същия тих начин:
+    //    показва се САМО на жената, която веднъж е казала „сама съм“.
+    try {
+      if (JSON.parse(localStorage.getItem('bl_partner') || '""') === 'не') {
+        const п = el('div', 'set-quiet');
+        const бут = el('button', 'set-quiet-btn', '💜 Върни картата „За партньора“');
+        бут.type = 'button';
+        бут.addEventListener('click', () => {
+          try { localStorage.removeItem('bl_partner'); } catch (e) {}
+          c.replaceWith(settingsCard());
+        });
+        п.appendChild(бут);
+        п.appendChild(el('p', 'jr-privacy', 'В Бременност пак ще те питам веднъж има ли кой да ти помага — и ще уважа отговора ти.'));
+        c.appendChild(п);
+      }
+    } catch (e) {}
+
     // 6.5.2 + 6.5.3: „какво не намерих“ — ненамерените въпроси се събират
     // локално (bl_agent_miss). Мама сама решава да ги види/сподели — така
     // собственикът научава какво пита България и какво да добави в базата.
@@ -589,7 +626,7 @@
     // 🧱 памет-мениджърът: текстовете (localStorage) + медията (IndexedDB, стотици MB)
     const u = window.BL_STORE ? BL_STORE.usage() : { textsKB: 0, mediaKB: 0 };
     c.appendChild(el('p', 'jr-privacy',
-      `Памет: записки ~${u.textsKB} KB (таван ~5000) · снимки и звуци ~${u.mediaKB > 1024 ? (u.mediaKB / 1024).toFixed(1) + ' MB' : u.mediaKB + ' KB'} (в големия склад — стотици MB място). Изтриване: от самите галерии. Ключалката 🔒 е в Дневника, архивът 💾 — по-горе в това кътче.`));
+      `Памет: записки ~${u.textsKB} KB (таван ~5000 KB) · снимки и звуци ~${u.mediaKB > 1024 ? (u.mediaKB / 1024).toFixed(1) + ' MB' : u.mediaKB + ' KB'} (в големия склад — стотици MB място). Изтриване: от самите галерии. Ключалката 🔒 е в Дневника, архивът 💾 — по-горе в това кътче.`));
     return c;
   }
 

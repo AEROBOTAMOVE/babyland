@@ -183,7 +183,13 @@
       try {
         const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
         chunks = [];
-        mr = new MediaRecorder(stream);
+        // 🔴 11.08 (обиколка „Развитие и игри“): бутонът обещаваше „до 120 сек“,
+        //   а таванът долу е 900 KB. Измерено в браузъра: Chrome записва opus на
+        //   ~136 kbps по подразбиране → 120 сек ≈ 2000 KB. Тоест всяка песничка
+        //   над ~53 секунди се записваше докрай и после се ИЗХВЪРЛЯШЕ. Казваме
+        //   на записа колко да тежи: 32 kbps × 120 сек ≈ 480 KB — под тавана.
+        try { mr = new MediaRecorder(stream, { audioBitsPerSecond: 32000 }); }
+        catch (e) { mr = new MediaRecorder(stream); }
         mr.ondataavailable = e => chunks.push(e.data);
         mr.onstop = () => {
           clearTimeout(timer);
