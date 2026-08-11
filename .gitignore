@@ -9,3 +9,6 @@ dev/nahodki/
 *.pyc
 Thumbs.db
 .DS_Store
+
+# работни копия на index.html, докато чакат проверка
+index.html.*
