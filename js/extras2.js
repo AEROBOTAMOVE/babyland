@@ -500,8 +500,13 @@
   function safeUrl(raw) {
     const s = String(raw || '').trim();
     if (!s) return '';
+    // 🔴 11.08 (намерено при пробата на собствената ми поправка): вторият
+    //    довод на `new URL` е ОСНОВАТА — тоест „не-е-адрес“ се превръщаше в
+    //    http://…/не-е-адрес, протоколът излизаше http: и проверката казваше
+    //    „добре“. Адрес на магазин винаги е ПЪЛЕН; искаме го явно.
+    if (!/^https?:\/\//i.test(s)) return '';
     try {
-      const u = new URL(s, location.href);
+      const u = new URL(s);
       return (u.protocol === 'http:' || u.protocol === 'https:') ? u.href : '';
     } catch (e) { return ''; }
   }

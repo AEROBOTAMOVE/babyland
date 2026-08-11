@@ -32,19 +32,33 @@
     const дм = (днес.getMonth() + 1) + '-' + днес.getDate();   // месец-ден, без година
 
     // групирай по година — само същия календарен ден (±1 ден за милост)
+    // 🟡 11.08 (обиколка №2): „±1 ден за милост“ се смяташе като
+    //    |разлика в месеците|·31 + |разлика в дните|. На 1 март запис от
+    //    28 февруари дава 1·31 + 27 = 58 и изпада — при положение че е точно
+    //    един ден по-рано. Тоест на всяко първо и последно число от месеца
+    //    милостта не работеше. Мерим по календар: същия ден от същата година
+    //    ±1 ден, без аритметика върху номера на месеца.
     const поГодина = {};
     всички.forEach(x => {
       if (!x.ts) return;
       const d = new Date(x.ts);
-      if (d.getFullYear() === днес.getFullYear()) return;      // тази година не е „назад“
-      const разлика = Math.abs((d.getMonth() + 1) - (днес.getMonth() + 1)) * 31 + Math.abs(d.getDate() - днес.getDate());
-      if (разлика > 1) return;
-      (поГодина[d.getFullYear()] = поГодина[d.getFullYear()] || []).push(x);
+      if (isNaN(d.getTime())) return;                          // счупена дата от внесено копие
+      const г = d.getFullYear();
+      if (г === днес.getFullYear()) return;                    // тази година не е „назад“
+      const котва = new Date(г, днес.getMonth(), днес.getDate(), 12, 0, 0);
+      const тази = new Date(г, d.getMonth(), d.getDate(), 12, 0, 0);
+      const δ = Math.abs(тази - котва);
+      // δ близо до цяла година = 31 декември срещу 1 януари — пак е „вчера“
+      if (δ > 1.5 * 86400000 && δ < 363 * 86400000) return;
+      (поГодина[г] = поГодина[г] || []).push(x);
     });
     const години = Object.keys(поГодина).map(Number).sort((a, b) => b - a);
 
     if (!години.length) {
-      const най = всички.length ? Math.min(...всички.map(x => new Date(x.ts).getFullYear())) : днес.getFullYear();
+      // само валидни дати — иначе една счупена дата от внесено копие правеше
+      // Math.min да върне NaN и картата казваше „Историята ви започва от NaN“
+      const валидни = всички.map(x => new Date(x.ts).getFullYear()).filter(г => !isNaN(г));
+      const най = валидни.length ? Math.min.apply(null, валидни) : днес.getFullYear();
       c.appendChild(el('p', 'jr-privacy',
         всички.length
           ? `На тази дата в минали години още няма записано. Историята ви започва от ${най} — върни се на тази дата догодина и тук ще има какво да четеш. 💜`
@@ -58,9 +72,19 @@
       бл.innerHTML = `<p class="sd-head">🕰️ <strong>Преди ${назад} ${назад === 1 ? 'година' : 'години'}</strong> · ${г}</p>`;
       поГодина[г].slice(0, 4).forEach(x => {
         const r = el('div', 'sd-row');
-        r.innerHTML = `<span class="sd-e">${x.e}</span>
-          ${x.img ? `<img class="sd-img" src="${x.img}" alt="" loading="lazy">` : ''}
-          <span class="sd-t">${esc(x.txt)}</span>`;
+        // 🔴🔴 11.08 (обиколка №2, ДОКАЗАНО в браузъра): `x.e` и `x.img` влизаха
+        //    СУРОВИ в innerHTML. Сложих в bl_river_manual запис с
+        //    e: '<img src=x onerror="document.title=…">' и заглавието на
+        //    страницата се смени — тоест чужд HTML се изпълни. Самата река
+        //    (river.js) прави esc(x.e); тук беше пропуснато. Реката се пълни и
+        //    от ВНЕСЕНО резервно копие, значи източникът не е наш. Правило 4
+        //    не прави изключение за емоджи.
+        // 🟡 и преливането: ИЗМЕРЕНО .sd-row scrollWidth 630 при clientWidth 287 —
+        //    дълга дума без интервал излиза от реда и се отрязва мълчаливо.
+        //    .sd-t е flex-дете без min-width:0; поправено инлайн (CSS е чужд).
+        r.innerHTML = `<span class="sd-e">${esc(x.e)}</span>
+          ${x.img ? `<img class="sd-img" src="${esc(x.img)}" alt="" loading="lazy">` : ''}
+          <span class="sd-t" style="min-width:0;overflow-wrap:anywhere">${esc(x.txt)}</span>`;
         бл.appendChild(r);
       });
       if (поГодина[г].length > 4) бл.appendChild(el('p', 'jr-privacy', '…и още ' + (поГодина[г].length - 4)));
@@ -109,15 +133,25 @@
       return res;
     }
 
-    // версия 5-L: 37×37, 108 данни байта, 26 EC байта, ЕДИН блок
-    // (v5-L е последната версия с единичен блок — затова е избрана: без
-    // блоково преплитане кодът остава четим и къс.)
-    const SIZE = 37, DATA_BYTES = 108, EC_BYTES = 26;
-    const ALIGN = [6, 30];                                     // v5 alignment центрове
+    // 🟠 11.08 (обиколка №2, ИЗМЕРЕНО): само v5-L беше малко. Обикновен попълнен
+    //    профил — „Ния / ВНИМАВАЙ С: ядки,яйце / Мама: 0888… / Педиатър: 0899… /
+    //    Спешно: 112“ — е 113 байта при таван 105. Тоест майката, която е
+    //    свършила всичко, каквото приложението ѝ иска, оставаше БЕЗ квадрат.
+    //    Добавена е v6-L (41×41, 136 байта): два блока, затова се появи и
+    //    преплитането. Избираме НАЙ-МАЛКАТА версия, която побира текста —
+    //    по-малкият квадрат се снима по-лесно.
+    //    ПЪТ НАЗАД: махни втория ред от ВЕРСИИ и всичко се връща на v5.
+    const ВЕРСИИ = [
+      { ver: 5, SIZE: 37, ALIGN: [6, 30], DATA: 108, EC: 26, BLOCKS: 1 },
+      { ver: 6, SIZE: 41, ALIGN: [6, 34], DATA: 136, EC: 18, BLOCKS: 2 }
+    ];
+    const MAXBYTES = ВЕРСИИ[ВЕРСИИ.length - 1].DATA - 3;
 
     function encode(text) {
       const bytes = Array.from(new TextEncoder().encode(text));
-      if (bytes.length > DATA_BYTES - 3) return null;          // не се побира
+      const V = ВЕРСИИ.find(v => bytes.length <= v.DATA - 3);
+      if (!V) return null;                                     // не се побира
+      const SIZE = V.SIZE, DATA_BYTES = V.DATA, ALIGN = V.ALIGN;
 
       // битов поток: режим 0100 + дължина (8 бита за v1-9) + данни
       const bits = [];
@@ -131,8 +165,19 @@
       const PAD = [0xEC, 0x11];
       let pi = 0;
       while (data.length < DATA_BYTES) data.push(PAD[pi++ % 2]);
-      const ec = rsEncode(data, EC_BYTES);
-      const all = data.concat(ec);
+
+      // блокове + преплитане. При един блок това е точно старото поведение;
+      // при два (v6-L: 2×68 данни + 2×18 EC) байтовете се редуват по спецификация.
+      const дълж = DATA_BYTES / V.BLOCKS;
+      const блокове = [], ecБлокове = [];
+      for (let b = 0; b < V.BLOCKS; b++) {
+        const част = data.slice(b * дълж, (b + 1) * дълж);
+        блокове.push(част);
+        ecБлокове.push(rsEncode(част, V.EC));
+      }
+      const all = [];
+      for (let i = 0; i < дълж; i++) блокове.forEach(бл => all.push(бл[i]));
+      for (let i = 0; i < V.EC; i++) ecБлокове.forEach(бл => all.push(бл[i]));
 
       // матрица
       const m = Array.from({ length: SIZE }, () => new Array(SIZE).fill(null));
@@ -219,7 +264,7 @@
       }
       return out + '</svg>';
     }
-    return { svg, MAX: DATA_BYTES - 3 };
+    return { svg, encode, MAX: MAXBYTES };
   })();
 
   function qrCard() {
