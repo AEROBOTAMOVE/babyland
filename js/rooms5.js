@@ -86,6 +86,8 @@
     dt.setAttribute('aria-label', 'Дата на събитието');
     const add = el('button', 'jr-chip', '+'); add.type = 'button';
     add.setAttribute('aria-label', 'Добави събитието');
+    // 📏 11.08 (измерено): „+“ е 38×44 — под прага по ширина. Расте целта.
+    add.style.minWidth = '44px'; add.style.flexShrink = '0';
     addRow.appendChild(inp); addRow.appendChild(dt); addRow.appendChild(add);
     // 🔴🔴 11.08 (ИЗМЕРЕНО наживо, три отделни дефекта под един бутон „+“):
     //    1) празно поле → `return` без нито един пиксел промяна. Мълчалив бутон.
@@ -147,6 +149,9 @@
         //    събитието на едно докосване, без питане и без връщане. Мама с бебе
         //    на ръка бута съседния ред и прегледът изчезва. Не питаме (питането
         //    на всяко триене уморява) — даваме връщане.
+        // 📏 11.08 (измерено): 🗑 е 40×44 — touch.css нарочно го прави 40, но
+        //    при бебе на ръка съседът му е ЦЕЛИЯТ ред на събитието.
+        if (x.own) row.querySelector('.nt-del').style.minWidth = '44px';
         if (x.own) row.querySelector('.nt-del').addEventListener('click', () => {
           const текущи = load('bl_events', []);
           const махнато = текущи.filter(e2 => e2.id === x.id)[0];

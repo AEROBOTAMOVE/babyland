@@ -86,7 +86,7 @@
     const row = el('div', 'jr-quick');
     // 🔁 11.08 (правило 3 — изход ПРЕДИ действието): „↺ Нулирай“ триеше целия
     //    ден без път назад. Тук живее и обратната връзка, и връщането.
-    const бележка = el('p', 'jr-privacy', '');
+    const бележка = el('p', 'jr-privacy ml-note', '');
     [30, 60, 90, 120].forEach(v => {
       const b = el('button', 'jr-chip', '+' + v + ' мл'); b.type = 'button';
       b.addEventListener('click', () => {
