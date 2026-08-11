@@ -743,7 +743,22 @@
       if (б && б.birth && window.BL_AGE) {
         const в = BL_AGE(б.birth);
         // при недоносено се брои коригираната възраст — тя е по-малката
-        const мес = в && (в.corr != null ? Math.min(в.months, в.corr) : в.months);
+        // 🔴🔴 12.08 (ревизия след 14-те агента, ИЗМЕРЕНО в браузъра, НЕ е от тази
+        //    вълна — дефектът е стар): `в.corr` НЕ е число. rooms2.js:74 го прави
+        //    ОБЕКТ {totalDays, months, ym, text} (или null, ако бебето е доносено).
+        //    Значи `Math.min(0.95, {…})` = NaN, `typeof NaN === 'number'` минава,
+        //    а `NaN < 3` е false → връща се false. Тоест: майка на НЕДОНОСЕНО
+        //    бебе пише „има 38.5“ и приложението МЪЛЧИ, докато при доносено бебе
+        //    на същия ден вдига 112. Точно най-крехката група остава без картата.
+        //    Проверено наживо (рожден ден преди 30 дни, температура 38.5):
+        //      без bl_preterm → corr:null, флагът ГЪРМИ ✔
+        //      с bl_preterm   → corr:{months:0}, флагът МЪЛЧЕШЕ ✘ → сега гърми ✔
+        //    Целият останал код чете `devMonths` — единственото място, което
+        //    третираше `corr` като число, беше този ред.
+        //    ПЪТ НАЗАД: върни реда на `в.corr != null ? Math.min(в.months, в.corr) : в.months`.
+        const кор = в && в.corr && typeof в.corr.months === 'number' ? в.corr.months : null;
+        const мес = в && (кор != null ? Math.min(в.months, кор)
+                        : (typeof в.devMonths === 'number' ? в.devMonths : в.months));
         if (typeof мес === 'number' && мес < 3) return true;
       }
     } catch (e) {}
