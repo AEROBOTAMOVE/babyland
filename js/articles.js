@@ -408,7 +408,12 @@ window.BL_ARTICLES_DATA = [
   function renderList(room, container) {
     const arts = forRoom(room);
     container.innerHTML = '';
-    if (!arts.length) { container.appendChild(mk('p', 'jr-privacy', 'Скоро тук ще има статии от библиотеката. 📚')); return; }
+    // 🟠 11.08 (счупени обещания): пишеше „Скоро тук ще има статии“. Приложението
+    //    е офлайн и нищо не „идва“ — статиите или са в lib/ (748 във всичките
+    //    девет стаи, index.json), или четенето им не е успяло. Обещание за
+    //    бъдеща доставка, което никой няма да изпълни, се сменя с истината и с
+    //    единственото, което наистина помага: презареждане.
+    if (!arts.length) { container.appendChild(mk('p', 'jr-privacy', 'Рафтът още не се е отворил. Затвори стаята и я отвори пак — статиите се четат при първото пускане. 📚')); return; }
     const search = mk('input', 'art-search');
     search.type = 'text'; search.placeholder = '🔍 Търси в статиите…';
     container.appendChild(search);

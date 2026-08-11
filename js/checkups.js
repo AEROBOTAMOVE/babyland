@@ -73,6 +73,9 @@
       const сега = i === индексСега;
       const r = el('button', 'pg20-calrow' + (бях[i] ? ' done' : '') + (сега ? ' now' : '') + (мина && !бях[i] ? ' past' : ''));
       r.type = 'button';
+      // ♿ 11.08: редовете са отметки, но четецът ги четеше като обикновени
+      //    бутони — без да казва кои вече са отметнати.
+      r.setAttribute('aria-pressed', бях[i] ? 'true' : 'false');
       r.innerHTML = '<span class="pg20-calw">' + (от === до ? от + ' м.' : от + '–' + до + ' м.') + '</span>' +
         '<span class="pg20-cale">' + е + '</span>' +
         '<span class="pg20-calt"><strong>' + esc(име) + '</strong><small>' + esc(какво) + '</small></span>' +
@@ -80,7 +83,11 @@
       r.addEventListener('click', () => {
         const б = load('bl_baby_checkups', {});
         б[i] = !б[i]; save('bl_baby_checkups', б);
-        r.classList.toggle('done');
+        // класът се вдига по СТОЙНОСТТА в склада, не сляпо — иначе една
+        // размината рисунка обръща отметката наопаки завинаги.
+        r.classList.toggle('done', !!б[i]);
+        r.classList.toggle('past', !!(мина && !б[i]));
+        r.setAttribute('aria-pressed', б[i] ? 'true' : 'false');
         r.querySelector('.jr-check').textContent = б[i] ? '✔' : '';
         fx().buzz(6);
       });
@@ -129,15 +136,30 @@
     inp.placeholder = o.пример || 'напр. „Защо се буди в 4 всяка нощ?“';
     inp.setAttribute('aria-label', 'Запиши въпрос към лекаря');
     const add = el('button', 'jr-chip', '+ Добави'); add.type = 'button';
+    // 🔴 11.08 (обиколка по картите): „+ Добави“ на празно поле не правеше
+    //    НИЩО — нито дума, нито мигване. Мама натиска, натиска, после решава,
+    //    че картата е счупена. Сега курсорът отива в полето и то си казва защо.
+    const шушу = el('p', 'jr-hint', ''); шушу.hidden = true;
+    шушу.setAttribute('aria-live', 'polite');
     function запиши() {
-      const v = inp.value.trim(); if (!v) return;
+      const v = inp.value.trim();
+      if (!v) {
+        шушу.textContent = '💭 Напиши въпроса тук — и после бутни „+ Добави“.';
+        шушу.hidden = false; inp.focus();
+        return;
+      }
       const q = load('bl_doc_questions', []); q.push(v); save('bl_doc_questions', q.slice(-30));
-      inp.value = ''; рисувайВъпроси(); fx().buzz(8);
+      inp.value = ''; шушу.hidden = true; рисувайВъпроси(); fx().buzz(8);
+      // тих знак, че е прието — без нов екран, без нищо за затваряне
+      add.textContent = '✔ Записах го'; add.classList.add('on');
+      clearTimeout(запиши._t);
+      запиши._t = setTimeout(() => { if (add.isConnected) { add.textContent = '+ Добави'; add.classList.remove('on'); } }, 1800);
     }
     add.addEventListener('click', запиши);
     inp.addEventListener('keydown', e => { if (e.key === 'Enter') { e.preventDefault(); запиши(); } });
     addRow.appendChild(inp); addRow.appendChild(add);
     вбокс.appendChild(addRow);
+    вбокс.appendChild(шушу);
     рисувайВъпроси();
     вбокс._пречертай = рисувайВъпроси;   // за да може стаята да я освежи отвън
     return вбокс;
@@ -156,11 +178,20 @@
     //    мама отмяташе въпроса една карта по-горе и тук не се появяваше нищо до
     //    следващото отваряне, тоест „един и същ списък“ изглеждаше като лъжа.
     //    Същият лек като в снапшота по-долу: пречертаваме след докосване в стаята.
+    //    🔴 11.08 (обиколка по картите, ИЗМЕРЕНО В БРАУЗЪРА): бележката отдолу
+    //    („слушателят си отива с root“) беше ПРЕДПОЛОЖЕНИЕ и то грешно. Стаята
+    //    се пресъздава в ЕДИН И СЪЩ #roRoom — измерено: 5 отваряния = 5 живи
+    //    клик-слушателя, 10 = 10, без таван. Всеки държи в шепата си цялото
+    //    старо DOM-дърво на стаята, значи телефонът на мама трупа памет цял ден.
+    //    Лекът е слушателят сам да си тръгне, щом картата му вече не е на екрана.
+    //    Път назад: махаш реда с removeEventListener — връща се старото държане.
     let пречертай = null;
-    root.addEventListener('click', () => {
+    const приДокосване = () => {
+      if (!бокс.isConnected) { root.removeEventListener('click', приДокосване, true); clearTimeout(пречертай); return; }
       clearTimeout(пречертай);
       пречертай = setTimeout(() => { if (бокс.isConnected && бокс._пречертай) бокс._пречертай(); }, 350);
-    }, true);
+    };
+    root.addEventListener('click', приДокосване, true);
     root.appendChild(c);
   }
 
@@ -251,12 +282,18 @@
     //    приложението. „Празно“ казваше „няма“, а имаше.
     //    Всички тези числа се пишат с ДОКОСВАНЕ в същата стая — затова
     //    пречертаваме след докосване тук, както „Кога яде за последно“ се
-    //    размразява сама. Слушателят си отива с root при затваряне на стаята.
+    //    размразява сама.
+    //    🔴 11.08 (ИЗМЕРЕНО): тук пишеше „слушателят си отива с root при
+    //    затваряне на стаята“ — не си отива. #roRoom е един и същ елемент при
+    //    всяко отваряне (измерено: 5 отваряния = 5 живи слушателя). Сега сам
+    //    се отвързва, щом кутията му е откачена.
     let превчертай = null;
-    root.addEventListener('click', () => {
+    const приДокосванеС = () => {
+      if (!кутия.isConnected) { root.removeEventListener('click', приДокосванеС, true); clearTimeout(превчертай); return; }
       clearTimeout(превчертай);
       превчертай = setTimeout(() => { if (кутия.isConnected) рисувай(); }, 350);
-    }, true);
+    };
+    root.addEventListener('click', приДокосванеС, true);
 
     // въпросите към лекаря — свои, запазват се (същата кутия, която стои и
     // самостоятелно в „Здраве и SOS“ и „Захранване“ — списъкът е един)
@@ -303,21 +340,36 @@
 
     c.appendChild(out); c.appendChild(списък);
     const row = el('div', 'jr-quick');
+    // 🔴 11.08 (обиколка по картите): и двата бутона умееха да МЪЛЧАТ. „Върна се
+    //    днес“ в рамките на 3 дни от предишното отбелязване не правеше нищо и не
+    //    казваше нищо — мама натиска пак и пак, мислейки, че не е уцелила. „Върни
+    //    последното“ на празен списък — също. Пазачът срещу дублите остава; само
+    //    вече си отваря устата.
+    const думичка = el('p', 'jr-hint', ''); думичка.hidden = true;
+    думичка.setAttribute('aria-live', 'polite');
+    const кажи = т => { думичка.textContent = т; думичка.hidden = false; };
     const b = el('button', 'jr-chip', '🌙 Върна се днес'); b.type = 'button';
     b.addEventListener('click', () => {
       const log = load('bl_period', []);
       const днес = Date.now();
-      if (log.length && (днес - log[log.length - 1]) < 86400000 * 3) return;  // без дубли в 3 дни
+      if (log.length && (днес - log[log.length - 1]) < 86400000 * 3) {   // без дубли в 3 дни
+        кажи('Вече го отбелязах на ' + дата(log[log.length - 1]) + ' — държа само първия ден, за да не се раздвои ритъмът ти. Ако е било грешка, „↺ Върни последното“ го маха. 💜');
+        fx().buzz(6);
+        return;
+      }
+      думичка.hidden = true;
       log.push(днес); save('bl_period', log.slice(-24));
       рисувай(); fx().buzz(8);
     });
     const undo = el('button', 'jr-chip', '↺ Върни последното'); undo.type = 'button';
     undo.addEventListener('click', () => {
       const log = load('bl_period', []);
-      if (log.length) { log.pop(); save('bl_period', log); рисувай(); }
+      if (!log.length) { кажи('Още няма какво да върна — списъкът е празен.'); return; }
+      думичка.hidden = true;
+      log.pop(); save('bl_period', log); рисувай(); fx().buzz(6);
     });
     row.appendChild(b); row.appendChild(undo);
-    c.appendChild(row);
+    c.appendChild(row); c.appendChild(думичка);
     рисувай();
     c.appendChild(el('p', 'jr-privacy', 'При кърмене цикълът може да се върне след месеци — или да подрани. И двете са нормални. Помни: може да забременееш и ПРЕДИ първия цикъл. 💜'));
     root.appendChild(c);

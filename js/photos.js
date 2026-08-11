@@ -76,7 +76,7 @@
     const размер = kb > 1024 ? (kb / 1024).toFixed(1) + ' MB' : kb + ' KB';
     c.appendChild(el('p', 'jr-privacy',
       снимки.length
-        ? `<strong>${снимки.length}</strong> снимки · заемат <strong>${размер}</strong> от паметта на телефона.`
+        ? `<strong>${снимки.length}</strong> ${window.BL_BROI ? BL_BROI.дума(снимки.length, 'снимка', 'снимки') : (снимки.length === 1 ? 'снимка' : 'снимки')} · ${снимки.length === 1 ? 'заема' : 'заемат'} <strong>${размер}</strong> от паметта на телефона.`
         : 'Още няма снимки. Като добавиш от галериите в стаите, ще се събират тук.'));
 
     // 12.12.5: ЖЕЛЯЗНОТО правило — честно, отгоре
@@ -90,19 +90,39 @@
     const филтър = el('div', 'jr-quick');
     let активен = 'всички';
     const grid = el('div', 'ph-grid');
+    const ПОКАЗВАМ = 60;
+    const бележка = el('p', 'jr-privacy', '');
+    let свали = null;                         // ражда се по-долу; надписът му се води по филтъра
+    const избрани = () => снимки.filter(x => активен === 'всички' || x.вид === активен);
     const рисувай = () => {
       grid.innerHTML = '';
-      снимки.filter(x => активен === 'всички' || x.вид === активен)
-        .slice(-60)
-        .forEach(x => {
-          const cell = el('div', 'ph-cell');
-          cell.innerHTML = `<img src="${esc(x.img)}" alt=""><span class="ph-tag">${x.e}</span>`;
-          grid.appendChild(cell);
-        });
+      const дай = избрани();
+      дай.slice(-ПОКАЗВАМ).forEach(x => {
+        const cell = el('div', 'ph-cell');
+        cell.innerHTML = `<img src="${esc(x.img)}" alt="${esc(x.вид)}" loading="lazy" decoding="async" width="120" height="120"><span class="ph-tag">${x.e}</span>`;
+        grid.appendChild(cell);
+      });
+      // 🟡 11.08 (обиколка, ИЗМЕРЕНО: 90 снимки → 60 клетки): картата обявяваше
+      //    „90 снимки", а лентата показваше последните 60 и мълчеше за
+      //    останалите 30. Мама брои и решава, че е загубила снимки.
+      бележка.textContent = дай.length > ПОКАЗВАМ
+        ? 'Показвам последните ' + ПОКАЗВАМ + ' от ' + дай.length + '. Останалите са си на място — свалянето отдолу ги взима всичките.'
+        : '';
+      бележка.hidden = дай.length <= ПОКАЗВАМ;
+      // 🟠 11.08 (обиколка, ИЗМЕРЕНО): бутонът пишеше „Свали ВСИЧКИТЕ снимки
+      //    (16)", а със сложен филтър сваляше само 2. Мама натиска „всичките",
+      //    получава две и мисли, че другите ги няма. Надписът да казва истината.
+      if (свали) свали.textContent = активен === 'всички'
+        ? '⬇️ Свали всичките снимки (' + дай.length + ')'
+        : '⬇️ Свали „' + активен + '“ (' + дай.length + ')';
     };
     видове.forEach(в => {
-      const b = el('button', 'jr-chip' + (в === 'всички' ? ' on' : ''), в);
+      // броим какво ИМА, не какво липсва — по-къс път до търсената лента
+      const колко = в === 'всички' ? снимки.length : снимки.filter(x => x.вид === в).length;
+      const b = el('button', 'jr-chip' + (в === 'всички' ? ' on' : ''), в + ' · ' + колко);
       b.type = 'button';
+      b.style.minHeight = '44px';
+      b.setAttribute('aria-label', в + ', ' + колко + ' снимки');
       b.addEventListener('click', () => {
         активен = в;
         филтър.querySelectorAll('.jr-chip').forEach(x => x.classList.remove('on'));
@@ -110,15 +130,18 @@
       });
       филтър.appendChild(b);
     });
-    c.appendChild(филтър); c.appendChild(grid); рисувай();
+    c.appendChild(филтър); c.appendChild(grid); c.appendChild(бележка);
 
     // 12.12.3: свали всичките наведнъж — не за архив (той е в копието),
     // а за да ги пренесеш в галерията на телефона.
-    const свали = el('button', 'jr-btn ph-export', '⬇️ Свали всичките снимки (' + снимки.length + ')');
+    свали = el('button', 'jr-btn ph-export', '⬇️ Свали всичките снимки (' + снимки.length + ')');
     свали.type = 'button';
+    свали.style.minHeight = '44px';
     свали.addEventListener('click', async () => {
+      if (свали.disabled) return;
       свали.disabled = true;
-      const дай = снимки.filter(x => активен === 'всички' || x.вид === активен);
+      const дай = избрани();
+      let свалени = 0;
       for (let i = 0; i < дай.length; i++) {
         свали.textContent = 'Свалям… ' + (i + 1) + '/' + дай.length;
         try {
@@ -126,13 +149,20 @@
           a.href = дай[i].img;
           a.download = 'baby-land-' + (дай[i].вид || 'снимка') + '-' + (i + 1) + '.jpg';
           a.click();
+          свалени++;
           await new Promise(r => setTimeout(r, 350));       // браузърът не обича залп
         } catch (e) {}
       }
-      свали.textContent = 'Готово! 💜'; свали.disabled = false;
-      setTimeout(() => свали.textContent = '⬇️ Свали всичките снимки (' + снимки.length + ')', 2000);
+      свали.disabled = false;
+      свали.textContent = 'Готово — ' + свалени + ' 💜';
+      бележка.hidden = false;
+      бележка.textContent = свалени
+        ? 'Изпратени са ' + свалени + ' към телефона. Ако той е попитал „да свалиш ли няколко файла" — трябва да си му отговорила „да", иначе спира след първата.'
+        : 'Нищо не тръгна — този браузър спира свалянето. Снимките си остават тук, при теб.';
+      setTimeout(рисувай, 2600);                            // надписът се връща според филтъра
     });
     c.appendChild(свали);
+    рисувай();                                              // чак сега — надписът на бутона зависи от филтъра
     c.appendChild(el('p', 'jr-privacy',
       'Изтриване на конкретна снимка става от самата галерия, откъдето си я сложила. Тук ги гледаш всичките заедно.'));
     return c;

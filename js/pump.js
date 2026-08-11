@@ -23,11 +23,27 @@
 
     // по желание: колко мл (НЕЙНО число — не предписваме нищо)
     const amtRow = el('div', 'jr-quick');
-    const amt = el('input'); amt.type = 'number'; amt.min = '0'; amt.max = '400'; amt.placeholder = 'мл (по желание)';
+    const amt = el('input'); amt.type = 'number'; amt.min = '0'; amt.max = '1500'; amt.placeholder = 'мл (по желание)';
     amt.setAttribute('aria-label', 'Колко мл изцеди — по желание');
     amt.className = 'jr-word'; amt.style.maxWidth = '150px'; amt.inputMode = 'numeric';
     amtRow.appendChild(amt);
     c.appendChild(amtRow);
+    // 🔴 11.08 (обиколка по картите): числото извън обхвата падаше МЪЛЧЕШКОМ.
+    //    Мама пише „9999“ (изпуснат пръст), натиска „Ляво“ — полето се изчиства,
+    //    записът влиза БЕЗ количество и никъде не пише защо. Тя мисли, че мл-та
+    //    са вътре. Сега грешното число не се записва, не се трие от полето и си
+    //    има думи. Празно поле си остава напълно нормално — мл-та са по желание.
+    const бел = el('p', 'jr-hint', ''); бел.hidden = true;
+    бел.setAttribute('aria-live', 'polite');
+    c.appendChild(бел);
+    function прочетиМл() {
+      const сурово = String(amt.value == null ? '' : amt.value).trim().replace(',', '.');
+      if (!сурово) return { ok: true, ml: null };
+      const n = parseFloat(сурово);
+      if (isNaN(n) || n < 0) return { ok: false, т: 'Това не ми прилича на количество в мл. Остави полето празно, ако не мериш — записът пак се пази. 💜' };
+      if (n > 1500) return { ok: false, т: 'Толкова мл в едно изцеждане няма как да са — провери числото. Мога и без него: изтрий го и пак бутни. 💜' };
+      return { ok: true, ml: n > 0 ? Math.round(n) : null };
+    }
 
     const row = el('div', 'jr-quick');
     let undoTimer = null;
@@ -35,9 +51,12 @@
     [['left', '🤱 Ляво'], ['right', '🤱 Дясно'], ['both', '🤲 Двете']].forEach(([v, lbl]) => {
       const b = el('button', 'jr-chip', lbl); b.type = 'button';
       b.addEventListener('click', () => {
+        const ч = прочетиМл();
+        if (!ч.ok) { бел.textContent = '💛 ' + ч.т; бел.hidden = false; amt.focus(); amt.select && amt.select(); return; }
+        бел.hidden = true;
         const log = load('bl_pump', []);
-        const ml = parseInt(amt.value, 10);
-        log.push({ t: Date.now(), s: v, ml: (ml > 0 && ml < 2000) ? ml : null });
+        const ml = ч.ml;
+        log.push({ t: Date.now(), s: v, ml: ml });
         // 🔴 г13/16: пръстенът беше 24 записа — при по три помпения на ден първите
         //   падаха мълчаливо още на четвъртия ден. 200 стигат за месеци напред.
         save('bl_pump', log.slice(-200));

@@ -39,6 +39,25 @@
     const l = lmp(); if (!l) return null;
     return Math.ceil((new Date(l).getTime() + 280 * 86400000 - Date.now()) / 86400000);
   }
+  // ── помощници, добавени 11.08 (обиколка по картите) ──
+  const редна = n => (window.BL_REDNA ? BL_REDNA(n) : n + '-та');
+  const пръст = (e, ш) => { e.style.minHeight = '44px'; if (ш) e.style.minWidth = '44px'; return e; };
+  // тих знак „прието“ — без нов екран
+  function знак(el, текст) {
+    if (!el) return;
+    el.textContent = текст; el.hidden = false;
+  }
+  // 🔴🔴 11.08 (ИЗМЕРЕНО, най-голямата находка в този файл): при сгрешена
+  //    година в датата (2015 вместо 2025) стаята обявяваше с пълна увереност
+  //    „Тази седмица 🌅 584-та — след термина · Бебето идва всеки момент“ и
+  //    „Пътеката: ти си на 584-та“, докато „Позата за сън“ в СЪЩАТА стая
+  //    честно казваше „Записаната дата не се връзва“. Едно момиче, два гласа
+  //    на един екран — и по-силният лъжеше за раждане.
+  //    rooms18.js вече е минала през това (нейният коментар г13/230); тук
+  //    сметката нямаше горна граница. МАКС = 45: 40 седмици термин + 5
+  //    седмици след него е всичко, което медицината брои.
+  const МАКС_С = 45;
+  const извънОбхват = () => { const l = lmp(); if (!l) return false; const w = седмица(); return !(w >= 1 && w <= МАКС_С); };
 
   // ── Б6.4: приблизителни грамове и сантиметри по седмици ──
   // Ориентири са, не диагноза — затова „~“. От 12-та, преди това е мъничко.
@@ -77,7 +96,7 @@
     if (!w || наПауза()) return null;
     const c = el('section', 'jr-card pg20-hero');
     if (w > 42) {                                     // отвъд данните — честно
-      c.innerHTML = `<h4 class="jr-title">Тази седмица 🌅 <span class="jr-sub">${w}-та — след термина</span></h4>
+      c.innerHTML = `<h4 class="jr-title">Тази седмица 🌅 <span class="jr-sub">${редна(w)} — след термина</span></h4>
         <p class="pg20-big">Бебето идва всеки момент. Лекарят ти следи отблизо — това е неговата седмица, не на календара. 💜</p>`;
       return c;
     }
@@ -105,7 +124,10 @@
       const рз = размерЗа(пв);
       const три = пв <= 13 ? 'първи' : пв <= 27 ? 'втори' : 'трети';
       fruit.textContent = плод[1];
-      hsub.textContent = гв === w ? (три + ' триместър · седмица по седмица с теб') : `гледаш ${гв}-та (ти си в ${w}-та)`;
+      // 🟠 11.08 (ИЗМЕРЕНО): прелистих до 31-та и подзаглавието каза „гледаш
+      //    31-та“, докато редът отдолу пишеше „31-ва седмица“ — две наставки
+      //    за едно число на един ред разстояние. BL_REDNA знае правилото.
+      hsub.textContent = гв === w ? (три + ' триместър · седмица по седмица с теб') : `гледаш ${редна(гв)} (ти си в ${редна(w)})`;
       backWrap.hidden = (гв === w);
       swap.innerHTML = `
         <p class="pg20-week">${window.BL_REDNA ? BL_REDNA(пв) : пв + '-та'} седмица</p>
@@ -120,6 +142,7 @@
         requestAnimationFrame(() => { swap.style.opacity = ''; swap.style.transform = ''; });
       }
     }
+    c.querySelectorAll('.pg20-peek').forEach(b => пръст(b, true));   // измерени 36×36
     function дисейбъл() { c.querySelectorAll('.pg20-peek').forEach(b => { b.disabled = (b.dataset.d === '-1' && гв <= 4) || (b.dataset.d === '1' && гв >= 42); }); }
     function move(d) { гв = Math.max(4, Math.min(42, гв + d)); дисейбъл(); рисувайSwap(true); fx().buzz(6); }
     рисувайSwap(false); дисейбъл();
@@ -143,23 +166,65 @@
       <p class="cs-note">Без бързане — когато пристигне, кажи ми деня и целият свят тук се обръща за него. 💜</p>`;
     const nameI = el('input', 'jr-word'); nameI.type = 'text'; nameI.maxLength = 24;
     nameI.placeholder = 'Име (по желание)…'; nameI.value = baby.name || '';
+    nameI.setAttribute('aria-label', 'Име на бебето (по желание)');
     const п = el('input', 'jr-word'); п.type = 'date';
     // 22.07 (армия): toISOString е UTC → нощем max ставаше ВЧЕРА и точно
     //   родила майка не можеше да въведе днешния ден (без нито дума защо).
     п.max = мсДата(new Date());
-    const днлмп = new Date(lmp()); if (!isNaN(днлмп)) п.min = днлмп.toISOString().slice(0, 10);
-    const б = el('button', 'jr-btn', '🌸 Роди се! Отвори бебешкия свят'); б.type = 'button';
+    // ♿ 11.08 (ИЗМЕРЕНО): етикетът „Рожден ден:“ нямаше `for` и не обгръщаше
+    //    полето — четецът четеше само „избор на дата“.
+    п.setAttribute('aria-label', 'Рожденият ден на бебето');
+    const днлмп = new Date(lmp());
+    // мсДата, не toISOString: часовата разлика местеше долната граница с ден
+    if (!isNaN(днлмп)) п.min = мсДата(днлмп);
+    пръст(п); пръст(nameI);
+    const вест = el('p', 'jr-privacy', ''); вест.hidden = true;
+    const НАДПИС = '🌸 Роди се! Отвори бебешкия свят';
+    const б = el('button', 'jr-btn', НАДПИС); б.type = 'button'; пръст(б);
+    let питано = 0;
+    const отмени = () => { питано = 0; б.textContent = НАДПИС; };
+    // 🔴🔴 11.08 (ИЗМЕРЕНО, най-опасният бутон в двата файла):
+    //  1) `min` върху <input type=date> ограничава само календарчето — писана
+    //     на ръка дата минава. Въведох 2020-01-01 при термин през 2026-та:
+    //     записа се bl_baby.birth = 2020 И ИЗТРИ bl_lmp. Цялата бременност
+    //     изчезна, приложението реши, че детето е на 6 години, а картата,
+    //     през която стана, вече я няма на екрана — няма път назад.
+    //  2) Празна и бъдеща дата: бутонът мълчеше (само focus, без дума).
+    //  Сега: границите се проверяват В КОДА, казва се какво не е наред, а
+    //  необратимата стъпка иска второ докосване (пътят назад е „не пипай пак“).
     б.addEventListener('click', () => {
       const d = п.value;
-      if (!d || isNaN(new Date(d)) || d > мсДата(new Date())) { п.focus(); return; }
-      save('bl_baby', { name: (nameI.value.trim() || baby.name || '').slice(0, 24), sex: baby.sex || '', birth: d });
+      const днес = мсДата(new Date());
+      if (!d || isNaN(new Date(d))) { знак(вест, '🤍 Кажи ми деня, в който се роди — без него не мога да обърна стаята.'); отмени(); п.focus(); return; }
+      if (d > днес) { знак(вест, '🤍 Тази дата още не е дошла. Щом пристигне — ще те чакам тук.'); отмени(); п.focus(); return; }
+      if (п.min && d < п.min) {
+        знак(вест, 'Тази дата е преди началото, по което броим (' + new Date(п.min).toLocaleDateString('bg-BG') + '). Провери годината — или поправи датата в „Кога е терминът? 🗓️“.');
+        отмени(); п.focus(); return;
+      }
+      if (!питано) {
+        питано = Date.now();
+        б.textContent = '💜 Сигурна ли си? Натисни пак';
+        знак(вест, 'Стаята става бебешка: броенето на седмици спира и на негово място идват дните на бебето. Ако си натиснала без да искаш — просто не пипай пак.');
+        clearTimeout(б._t); б._t = setTimeout(() => { отмени(); знак(вест, 'Нищо не съм пипала. 🤍'); }, 9000);
+        return;
+      }
+      clearTimeout(б._t);
+      // 🔴 близнакът на rooms2.js:178 — обектът се четеше при СТРОЕЖА на
+      //    картата и се записваше цял отгоре. Чета прясно и пипам своите полета.
+      const текущо = load('bl_baby', {}) || {};
+      текущо.name = (nameI.value.trim() || текущо.name || '').slice(0, 24);
+      текущо.sex = текущо.sex || '';
+      текущо.birth = d;
+      save('bl_baby', текущо);
       localStorage.removeItem('bl_lmp');                    // бременността приключи (както onboard.js)
       fx().confetti(c); fx().buzz(12); fx().cheer('Добре дошъл на света! 💜');
       if (window.refreshToday) window.refreshToday();
       if (window.MamaHelper) { MamaHelper.close(); setTimeout(() => MamaHelper.open('Моето бебе'), 400); }
     });
-    c.appendChild(el('label', 'jr-privacy', 'Рожден ден:'));
-    c.appendChild(п); c.appendChild(nameI); c.appendChild(б);
+    const лейбъл = el('label', 'jr-privacy', 'Рожден ден:');
+    лейбъл.htmlFor = п.id = 'pg20BirthDate';
+    c.appendChild(лейбъл);
+    c.appendChild(п); c.appendChild(nameI); c.appendChild(б); c.appendChild(вест);
     return c;
   }
 
@@ -178,15 +243,29 @@
     c.innerHTML = `<h4 class="jr-title">Добре дошла 🤍 <span class="jr-sub">стаята се събужда с една дата</span></h4>
       <p class="cs-note">Кажи ми <strong>първия ден на последния ти цикъл</strong> — това е датата, по която броим тук. От нея оживява ТВОЯТА седмица: колко е голямо бебето, какво предстои, кога какво се прави.</p>`;
     const п = el('input', 'jr-word'); п.type = 'date'; п.max = мсДата(new Date());
+    // 🔴 11.08: долна граница нямаше. Сгрешена година (2015) се приемаше
+    //    мълчаливо и стаята после обявяваше „584-та седмица · бебето идва
+    //    всеки момент“. МАКС_С седмици назад е всичко, което има смисъл.
+    п.min = мсДата(new Date(Date.now() - МАКС_С * 7 * 86400000));
     п.setAttribute('aria-label', 'Дата, по която броим (първи ден на цикъла)');
-    const б = el('button', 'jr-btn', '🌸 Събуди стаята'); б.type = 'button';
+    пръст(п);
+    const вест = el('p', 'jr-privacy', ''); вест.hidden = true;
+    const б = el('button', 'jr-btn', '🌸 Събуди стаята'); б.type = 'button'; пръст(б);
     б.addEventListener('click', () => {
-      if (!п.value) { п.focus(); return; }
+      // 🔴 11.08 (ИЗМЕРЕНО): празно поле → бутонът мълчеше (нищо в картата не
+      //    се променяше). Мълчалив бутон няма.
+      if (!п.value) { знак(вест, '🤍 Избери ден от календарчето — от него оживява всичко тук.'); п.focus(); return; }
+      if (п.value > п.max) { знак(вест, '🤍 Този ден още не е дошъл. Трябва ми ден, който вече е минал.'); п.focus(); return; }
+      if (п.value < п.min) {
+        знак(вест, 'Тази дата е отпреди повече от ' + МАКС_С + ' седмици — по нея не мога да смятам бременност. Провери годината.');
+        п.focus(); return;
+      }
       save('bl_lmp', п.value);
+      знак(вест, '✔ Записах. Отварям стаята ти…');
       fx().confetti(c); fx().buzz(12);
       if (window.MamaHelper) { MamaHelper.close(); setTimeout(() => MamaHelper.open('Бременност'), 350); }
     });
-    c.appendChild(п); c.appendChild(б);
+    c.appendChild(п); c.appendChild(б); c.appendChild(вест);
     c.appendChild(el('p', 'jr-privacy', 'Ако не помниш точния ден — приблизително стига. Лекарят после ще уточни по ехографията.'));
     return c;
   }
@@ -198,15 +277,21 @@
 
     // 1) датата (от „Следващият преглед“, същият ключ bl_events)
     const ред = el('div', 'jr-addrow');
-    const dt = el('input', 'jr-word'); dt.type = 'date'; dt.min = new Date().toISOString().slice(0, 10);
+    const dt = el('input', 'jr-word'); dt.type = 'date';
+    // 🔴 11.08: toISOString е UTC — нощем (Sofia +3) долната граница ставаше
+    //    ВЧЕРА. Същият капан, който раждаКарта вече е минала на 22.07.
+    dt.min = мсДата(new Date());
     // ♿ 11.08 (клавиатура-четец): при type=date подсказка не се показва — полето
     //    стоеше без име.
     dt.setAttribute('aria-label', 'Дата на следващия преглед');
-    const зап = el('button', 'jr-chip', 'Запази датата'); зап.type = 'button';
+    пръст(dt);
+    const зап = el('button', 'jr-chip', 'Запази датата'); зап.type = 'button'; пръст(зап);
     ред.appendChild(dt); ред.appendChild(зап);
     const инфо = el('p', 'cs-note', '');
+    const махни = el('button', 'jr-chip', '↩ Махни датата'); махни.type = 'button'; пръст(махни); махни.hidden = true;
     const рисувайДата = () => {
       const ev = load('bl_events', []).filter(x => x.preg && new Date(x.d) >= new Date().setHours(0, 0, 0, 0));
+      махни.hidden = !ev.length;
       // 🔴 г09/198 (БЛИЗНАКЪТ на rooms5.js:131): тук пишеше „ще ти напомня на «Днес»“
       //    и „напомнянето идва само̀“ — а екранът „Днес“ не чете bl_events и
       //    приложението не праща известия. Обещание, което го няма в кода.
@@ -215,13 +300,26 @@
         ? `Следващ преглед: <strong>${new Date(ev[0].d).toLocaleDateString('bg-BG')}</strong> — стои в „Какво предстои 📅“ в Инструменти. Въпросите за кабинета са тук отдолу. 📝`
         : 'Запиши датата — ще я пазя в „Какво предстои 📅“ в Инструменти.';
     };
+    // 🔴 11.08 (ИЗМЕРЕНО, две находки в един бутон):
+    //  1) Празно поле → `return` без нито дума и без фокус. Мълчалив бутон.
+    //  2) Написах на ръка 1990-05-05 (под `min`, което пази само календарчето):
+    //     записа се в bl_events, ИЗТРИ предишния преглед, а надписът отдолу
+    //     продължи да казва „Запиши датата“ — тоест мама вижда „не е записано“,
+    //     а старата ѝ дата вече я няма. Минала дата вече не се приема.
     зап.addEventListener('click', () => {
-      if (!dt.value) return;
+      const днес = мсДата(new Date());
+      if (!dt.value) { знак(инфо, '🩺 Избери деня на прегледа от календарчето — и го оставям да те чака.'); dt.focus(); return; }
+      if (dt.value < днес) { знак(инфо, 'Този ден вече е минал. Тук пазя СЛЕДВАЩИЯ преглед — избери ден отсега нататък.'); dt.focus(); return; }
       const ev = load('bl_events', []).filter(x => !x.preg);
       ev.push({ id: 'preg' + Date.now(), t: 'Преглед (бременност)', d: dt.value, e: '🩺', preg: true });
       save('bl_events', ev); fx().buzz(10); рисувайДата();
     });
-    c.appendChild(ред); c.appendChild(инфо); рисувайДата();
+    махни.addEventListener('click', () => {
+      save('bl_events', load('bl_events', []).filter(x => !x.preg));
+      fx().buzz(6); рисувайДата();
+      знак(инфо, '↩ Махнах датата. Запиши нова, когато я знаеш.');
+    });
+    c.appendChild(ред); c.appendChild(инфо); c.appendChild(махни); рисувайДата();
 
     // 2) чеклистът за СЕДМИЦАТА (същият ключ bl_qdoc — старата карта го пише)
     const НАБОРИ = [
@@ -231,15 +329,21 @@
     ];
     const набор = НАБОРИ.find(([от, до]) => w >= от && w <= до) || НАБОРИ[2];
     if (w > 0) {
-      c.appendChild(el('p', 'jr-privacy', 'За твоята ' + (window.BL_REDNA ? BL_REDNA(w) : w + '-та') + ' седмица — отметни зададените:'));
-      const мои = load('bl_qdoc', {});
+      c.appendChild(el('p', 'jr-privacy', 'За твоята ' + редна(w) + ' седмица — отметни зададените:'));
       набор[2].forEach((q, i) => {
         const ключ = w + '|' + i;
-        const r = el('button', 'qd-row' + (мои[ключ] ? ' done' : '')); r.type = 'button';
-        r.innerHTML = `<span class="jr-check">${мои[ключ] ? '✔' : ''}</span><span>${esc(q)}</span>`;
+        const r = el('button', 'qd-row' + (load('bl_qdoc', {})[ключ] ? ' done' : '')); r.type = 'button';
+        r.innerHTML = `<span class="jr-check">${load('bl_qdoc', {})[ключ] ? '✔' : ''}</span><span>${esc(q)}</span>`;
+        пръст(r);   // измерени 43px — един пиксел под пръста
+        // 🟡 11.08: `мои` се четеше ВЕДНЪЖ при рисуването и се записваше цяло
+        //    отгоре. Същият ключ пише и rooms8.js:125 — щом двете карти се
+        //    срещнат на един екран, по-късната връща старото копие. Чета прясно
+        //    вътре в самия слушател (известният клас дефекти, точка Б6).
         r.addEventListener('click', () => {
+          const мои = load('bl_qdoc', {});
           мои[ключ] = !мои[ключ]; save('bl_qdoc', мои);
-          r.classList.toggle('done'); r.querySelector('.jr-check').textContent = мои[ключ] ? '✔' : '';
+          r.classList.toggle('done', !!мои[ключ]);
+          r.querySelector('.jr-check').textContent = мои[ключ] ? '✔' : '';
           fx().buzz(6);
         });
         c.appendChild(r);
@@ -249,9 +353,17 @@
     // 3) твоите въпроси (същият ключ bl_qdoc_my)
     const своя = el('textarea', 'jr-paper'); своя.rows = 2;
     своя.placeholder = 'Твой въпрос… (тук, за да не излети от главата в кабинета)';
+    своя.setAttribute('aria-label', 'Твоите въпроси за прегледа');
     своя.value = load('bl_qdoc_my', '');
-    своя.addEventListener('input', () => save('bl_qdoc_my', своя.value));
-    c.appendChild(своя);
+    // ✨ 11.08 (ъпгрейд): записваше се тихо при всяка буква — нищо на екрана не
+    //    казваше „прието“, а мама е написала най-важното си изречение.
+    const записано = el('p', 'jr-privacy', ''); записано.hidden = true;
+    своя.addEventListener('input', () => {
+      save('bl_qdoc_my', своя.value);
+      clearTimeout(своя._t);
+      своя._t = setTimeout(() => знак(записано, своя.value.trim() ? '✔ Записано — ще те чака тук.' : ''), 500);
+    });
+    c.appendChild(своя); c.appendChild(записано);
 
     // 4) печат — листът за кабинета
     // 🔴 05.08 (одит г11, №231): без дата w = 0, резервата по-горе е последният
@@ -259,11 +371,12 @@
     //    които никога не са били на екрана — отметките ги пази `if (w > 0)`,
     //    печатът не. Листът тръгва само когато има седмица.
     if (w > 0) {
-      const печат = el('button', 'jr-chip', '🖨️ Листът за кабинета'); печат.type = 'button';
+      const печат = el('button', 'jr-chip', '🖨️ Листът за кабинета'); печат.type = 'button'; пръст(печат);
       печат.addEventListener('click', () => {
-        if (!window.BL_EXPR) return;
+        // 🔴 11.08: без BL_EXPR бутонът мълчеше напълно.
+        if (!window.BL_EXPR || !BL_EXPR.printOverlay) { знак(инфо, '🤍 Листът не се отвори — пробвай пак след малко.'); return; }
         const мои = load('bl_qdoc', {});
-        const html = `<p class="pr-lead">Въпроси за прегледа · ${window.BL_REDNA ? BL_REDNA(w) : w + '-та'} седмица</p>
+        const html = `<p class="pr-lead">Въпроси за прегледа · ${редна(w)} седмица</p>
           <ul class="pr-list">${набор[2].map((q, i) => `<li>${мои[w + '|' + i] ? '☑' : '☐'} ${esc(q)}</li>`).join('')}</ul>
           ${(load('bl_qdoc_my', '') || '').trim() ? `<p class="pr-lead">Моите въпроси:</p><p>${esc(load('bl_qdoc_my', ''))}</p>` : ''}`;
         BL_EXPR.printOverlay('Прегледът', html, {});
@@ -286,17 +399,19 @@
   function календарчеКарта(w) {
     const c = el('section', 'jr-card pg20-cal');
     c.innerHTML = `<h4 class="jr-title">Календарчето на прегледите 📅 <span class="jr-sub">кое кога — ориентири, лекарят ти води</span></h4>`;
-    const бях = load('bl_checkups', {});
     ПРЕГЛЕДИ.forEach(([от, до, е, име, какво], i) => {
       const мина = w > до, сега = w >= от && w <= до;
-      const r = el('button', 'pg20-calrow' + (бях[i] ? ' done' : '') + (сега ? ' now' : '') + (мина && !бях[i] ? ' past' : ''));
-      r.type = 'button';
+      const бях0 = load('bl_checkups', {});
+      const r = el('button', 'pg20-calrow' + (бях0[i] ? ' done' : '') + (сега ? ' now' : '') + (мина && !бях0[i] ? ' past' : ''));
+      r.type = 'button'; пръст(r);
       r.innerHTML = `<span class="pg20-calw">${от}–${до} с.</span><span class="pg20-cale">${е}</span>
         <span class="pg20-calt"><strong>${esc(име)}</strong><small>${esc(какво)}</small></span>
-        <span class="jr-check">${бях[i] ? '✔' : ''}</span>`;
-      r.addEventListener('click', () => {
+        <span class="jr-check">${бях0[i] ? '✔' : ''}</span>`;
+      r.addEventListener('click', () => {          // прясно четене (клас Б6)
+        const бях = load('bl_checkups', {});
         бях[i] = !бях[i]; save('bl_checkups', бях);
-        r.classList.toggle('done'); r.querySelector('.jr-check').textContent = бях[i] ? '✔' : '';
+        r.classList.toggle('done', !!бях[i]);
+        r.querySelector('.jr-check').textContent = бях[i] ? '✔' : '';
         fx().buzz(6);
       });
       c.appendChild(r);
@@ -338,7 +453,6 @@
     const с = СПОМЕНИ.find(([от, до]) => w >= от && w <= до);
     if (!с) return null;
     const ключ = 'w' + с[0];
-    const запазени = load('bl_preg_memories', {});
     const c = el('section', 'jr-card pg20-mem');
     c.innerHTML = `<h4 class="jr-title">Спомен на седмицата 🫧 <span class="jr-sub">едно изречение — после струва злато</span></h4>
       <p class="cs-note">${esc(с[2])}</p>`;
@@ -346,21 +460,38 @@
     // ♿ 11.08 (клавиатура-четец): полето стоеше под заглавие, което не сочи към
     //    него — четецът казваше само „поле за текст".
     п.setAttribute('aria-label', 'Споменът от тази седмица');
-    п.value = запазени[ключ] || '';
-    const б = el('button', 'jr-chip', запазени[ключ] ? '✔ Записано — промени' : '💜 Запиши го'); б.type = 'button';
+    п.value = load('bl_preg_memories', {})[ключ] || '';
+    const НАД = '💜 Запиши го', НАД2 = '✔ Записано — промени';
+    const б = el('button', 'jr-chip', п.value ? НАД2 : НАД); б.type = 'button'; пръст(б);
+    const вест = el('p', 'jr-privacy', ''); вест.hidden = true;
     б.addEventListener('click', () => {
-      const т = п.value.trim(); if (!т) { п.focus(); return; }
-      const нов = !запазени[ключ];
+      const т = п.value.trim();
+      // 🔴 11.08 (ИЗМЕРЕНО): само интервали → бутонът мълчеше (само focus).
+      if (!т) { знак(вест, '🫧 Едно изречение стига — дори три думи.'); п.focus(); return; }
+      // 🟡 известният клас Б6: `запазени` се четеше при рисуването и се
+      //    записваше цяло отгоре. Чета прясно вътре в слушателя.
+      const запазени = load('bl_preg_memories', {});
+      const старо = запазени[ключ] || '';
+      if (старо === т) { знак(вест, '✔ Същото си е — стои записано.'); fx().buzz(6); return; }
       запазени[ключ] = т; save('bl_preg_memories', запазени);
       // Б10.4: спомените се вливат в Реката
-      if (нов) {
-        const река = load('bl_river_manual', []);
-        река.push({ ts: Date.now(), e: '🤰', t: т.slice(0, 90) });
-        save('bl_river_manual', река);
-      }
-      б.textContent = '✔ Записано — промени'; fx().buzz(10);
+      // 🔴 11.08 (ИЗМЕРЕНО): при поправка Реката пазеше ПЪРВИЯ текст завинаги —
+      //    мама оправя правописа тук, а там си стои старият, без начин да се
+      //    пипне. Сега редът в Реката се обновява заедно със спомена.
+      const река = load('bl_river_manual', []);
+      const кратко = т.slice(0, 90);
+      const стар = старо ? река.findIndex(x => x && x.e === '🤰' && x.t === старо.slice(0, 90)) : -1;
+      if (стар > -1) река[стар].t = кратко;
+      else река.push({ ts: Date.now(), e: '🤰', t: кратко });
+      save('bl_river_manual', река);
+      // 🔴 11.08 (ИЗМЕРЕНО): при ВТОРИ запис надписът вече беше „✔ Записано —
+      //    промени“ и не се променяше — мама поправя спомена, натиска и не
+      //    получава нищо. Затова знакът е отделен и говори всеки път.
+      б.textContent = НАД2;
+      знак(вест, старо ? '✔ Промених го.' : '💜 Прибрах го. После ще ти го върна.');
+      fx().buzz(10);
     });
-    c.appendChild(п); c.appendChild(б);
+    c.appendChild(п); c.appendChild(б); c.appendChild(вест);
     return c;
   }
 
@@ -375,15 +506,17 @@
     // 🟠 Същият ред: „записани ли СМЕ“ и „кой КАРА“ приемаха за дадени партньор
     //    и кола. Жена, която чака сама и ще вика такси, чете чужд списък.
     c.innerHTML = `<h4 class="jr-title">Третият триместър 📋 <span class="jr-sub">пет неща, които се мислят отсега</span></h4>`;
-    const т = load('bl_tri3', {});
     ['Курс за раждане / дишане — записа ли се?', 'Столчето за колата — избрано/монтирано?',
      'Ако има кой да чака вкъщи (дете, куче) — с кого остава в деня Х?', 'Пътят до болницата — с какво тръгваш и колко време е?',
      'Документите за болницата — в чантата ли са?'].forEach((з, i) => {
-      const r = el('button', 'qd-row' + (т[i] ? ' done' : '')); r.type = 'button';
-      r.innerHTML = `<span class="jr-check">${т[i] ? '✔' : ''}</span><span>${esc(з)}</span>`;
-      r.addEventListener('click', () => {
+      const т0 = load('bl_tri3', {});
+      const r = el('button', 'qd-row' + (т0[i] ? ' done' : '')); r.type = 'button'; пръст(r);
+      r.innerHTML = `<span class="jr-check">${т0[i] ? '✔' : ''}</span><span>${esc(з)}</span>`;
+      r.addEventListener('click', () => {          // прясно четене (клас Б6)
+        const т = load('bl_tri3', {});
         т[i] = !т[i]; save('bl_tri3', т);
-        r.classList.toggle('done'); r.querySelector('.jr-check').textContent = т[i] ? '✔' : '';
+        r.classList.toggle('done', !!т[i]);
+        r.querySelector('.jr-check').textContent = т[i] ? '✔' : '';
         fx().buzz(6);
       });
       c.appendChild(r);
@@ -397,12 +530,17 @@
     [24, '👂', 'чува те'], [28, '👣', 'ританията'], [32, '📏', 'растежът'],
     [36, '🧳', 'чантата'], [40, '💜', 'срещата']
   ];
-  function пътекаКарта(root, w) {
+  function пътекаКарта(root, w, дефектна) {
     const c = el('section', 'jr-card pg20-path');
+    if (дефектна) {
+      c.innerHTML = `<h4 class="jr-title">Пътеката на чакането 🎡 <span class="jr-sub">40 седмици — датата ти не се връзва</span></h4>
+        <p class="cs-note">По записаната дата излизаш извън първите ${МАКС_С} седмици, затова не рисувам къде си — по-добре нищо, отколкото измислено число. Поправи я в „Кога е терминът? 🗓️“ и пътеката тръгва.</p>`;
+      return c;
+    }
     // 🟠 11.08 (обиколка „редки състояния“): без дата подзаглавието твърдеше
     //    „ти си на старта“ — а жената може да е в 30-та седмица и просто да не
     //    е въвела нищо. Празно поле не е доказателство: казваме че НЕ ЗНАЕМ.
-    c.innerHTML = `<h4 class="jr-title">Пътеката на чакането 🎡 <span class="jr-sub">${w > 0 ? '40 седмици — ти си на ' + w + '-та' : '40 седмици — чака датата ти, за да знам къде си'}</span></h4>`;
+    c.innerHTML = `<h4 class="jr-title">Пътеката на чакането 🎡 <span class="jr-sub">${w > 0 ? '40 седмици — ти си на ' + редна(w) : '40 седмици — чака датата ти, за да знам къде си'}</span></h4>`;
 
     // лъкатушещата пътека: 300×150, 3 завоя; седмица → точка по кривата
     const path = 'M 15 125 C 70 95, 60 40, 130 45 C 200 50, 180 115, 245 110 C 280 107, 285 75, 285 60';
@@ -423,29 +561,73 @@
     </svg>`;
     c.appendChild(svg);
     c.appendChild(el('p', 'jr-privacy pg20-pathcap',
-      w > 0 ? `Милите спирки: цъфналите са минали, пъпките предстоят. Докосни цветче, за да видиш какво е.` : 'Пътеката тръгва с датата ти.'));
+      w > 0 ? `Милите спирки: цъфналите са минали, пъпките предстоят. Докосни спирка, за да видиш какво е.` : 'Пътеката тръгва с датата ти.'));
+
+    // 🔴🔴 11.08 (ИЗМЕРЕНО в жива стая): „Докосни цветче“ беше обещание без
+    //    покритие по ДВЕ причини наведнъж.
+    //  1) Целият блок — и позиционирането, и слушателите — висеше на един
+    //     requestAnimationFrame. rAF не се пуска, докато табът/панелът е скрит
+    //     или приспан. Мерено: и осемте <g> имаха transform === null и всичките
+    //     стояха един върху друг на 32,1278 — купчина емоджи в ъгъла, а 🎈 на
+    //     мама извън пътя. Клик по спирка не правеше нищо (легендата остана
+    //     hidden). Веднъж счупено, оставаше счупено до ново отваряне на стаята.
+    //     Проверено: getTotalLength/getPointAtLength работят и на ОТКАЧЕН <path>
+    //     (L=357.6) — значи рАФ изобщо не е бил нужен. Смятаме веднага, а рАФ и
+    //     един timeout остават само като резерва.
+    //  2) Дори когато се нареждаха, целта беше 15×25 px (измерено) — четири
+    //     пъти по-малка от пръст. Затова спирките получиха и истински ред от
+    //     бутони под пътеката: ≥44×44, четат се и с клавиатура.
     const легенда = el('p', 'cs-note pg20-mslbl'); легенда.hidden = true;
+
+    function покажи(мс) {
+      const н = МИЛЕСТОУНИ.find(([m]) => m === мс);
+      if (!н) return;
+      легенда.hidden = false;
+      легенда.innerHTML = `${н[1]} <strong>${редна(мс)} седмица:</strong> ${esc(н[2])}${w > 0 ? (w >= мс ? ' · мина ✔' : ' · предстои') : ''}`;
+      чипове.forEach(б => б.setAttribute('aria-pressed', String(+б.dataset.ms === мс)));
+    }
+
+    const редЧипове = el('div', 'pg20-mschips');
+    редЧипове.style.cssText = 'display:flex;flex-wrap:wrap;gap:6px;margin:6px 0 2px';
+    const чипове = МИЛЕСТОУНИ.map(([мс, е, име]) => {
+      const б = el('button', 'jr-chip', `${w >= мс && w > 0 ? е : '🌱'} ${мс}с`);
+      б.type = 'button'; б.dataset.ms = мс;
+      б.setAttribute('aria-label', `${редна(мс)} седмица — ${име}`);
+      б.setAttribute('aria-pressed', 'false');
+      пръст(б, true);
+      б.addEventListener('click', () => { покажи(мс); fx().buzz(6); });
+      редЧипове.appendChild(б);
+      return б;
+    });
+    c.appendChild(редЧипове);
     c.appendChild(легенда);
 
-    // позициониране на елементите ПО кривата — след като SVG е в DOM
-    requestAnimationFrame(() => {
+    // слушателите по SVG-спирките — БЕЗ да чакат разположение
+    svg.querySelectorAll('.pg20-ms').forEach(g => {
+      g.addEventListener('click', () => { покажи(+g.dataset.ms); fx().buzz(6); });
+    });
+
+    // позициониране по кривата — веднага, с резерви ако нещо не е готово
+    function разположи() {
       const пътят = svg.querySelector('.pg20-road');
-      if (!пътят || !пътят.getTotalLength) return;
-      const L = пътят.getTotalLength();
+      if (!пътят || !пътят.getTotalLength) return false;
+      let L;
+      try { L = пътят.getTotalLength(); } catch (e) { return false; }
+      if (!L) return false;
       const наСедмица = с => пътят.getPointAtLength(L * Math.max(0, Math.min(1, с / 40)));
       svg.querySelectorAll('.pg20-ms').forEach(g => {
-        const мс = +g.dataset.ms, т = наСедмица(мс);
+        const т = наСедмица(+g.dataset.ms);
         g.setAttribute('transform', `translate(${т.x} ${т.y})`);
-        g.addEventListener('click', () => {
-          const [, е, име] = МИЛЕСТОУНИ.find(([m]) => m === мс);
-          легенда.hidden = false;
-          легенда.innerHTML = `${е} <strong>${window.BL_REDNA ? BL_REDNA(мс) : мс + '-та'} седмица:</strong> ${esc(име)}${w >= мс ? ' · мина ✔' : ' · предстои'}`;
-        });
       });
       const мама = svg.querySelector('.pg20-mama');
-      const тм = наСедмица(w || 0.5);
-      мама.setAttribute('transform', `translate(${тм.x} ${тм.y})`);
-    });
+      if (мама) { const тм = наСедмица(w > 0 ? w : 0.5); мама.setAttribute('transform', `translate(${тм.x} ${тм.y})`); }
+      return true;
+    }
+    if (!разположи()) {
+      requestAnimationFrame(() => { разположи(); });
+      setTimeout(разположи, 80);
+      setTimeout(разположи, 600);
+    }
 
     // Б4.2: скокът до кътчетата ВЕЧЕ го има — лентата с чипове на стаята
     // (polish) виси точно над пътеката. Втори ред чипове тук беше дублаж —
@@ -495,8 +677,25 @@
   }
 
   // ═══════════ сглобяването ═══════════
+  // 🔴 11.08: честната карта, когато датата не се връзва. Не гадаем седмица и
+  //    не обявяваме раждане — казваме какво не знаем и къде се поправя.
+  function дефектнаДатаКарта() {
+    const c = el('section', 'jr-card pg20-hero');
+    const l = lmp();
+    c.innerHTML = `<h4 class="jr-title">Тази седмица 🌅 <span class="jr-sub">не мога да я сметна</span></h4>
+      <p class="pg20-big">По датата, която пазя (<strong>${esc(l)}</strong>), излизаш извън първите ${МАКС_С} седмици. Най-често е сбъркана година при въвеждането.</p>
+      <p class="cs-note">Поправи я в „Кога е терминът? 🗓️“ по-долу и стаята се събужда цялата — седмицата, размерът, пътеката. Дотогава не ти показвам число, което не е вярно. 💜</p>`;
+    return c;
+  }
+
   function надгради(root) {
-    const w = седмица();
+    const wСурово = седмица();
+    // 🔴🔴 11.08 (ИЗМЕРЕНО): при lmp = 2015-06-01 стаята обявяваше „584-та
+    //    седмица — след термина · Бебето идва всеки момент“, а „Позата за сън“
+    //    на същия екран честно казваше, че датата не се връзва. Извън обхвата
+    //    работим като w = 0 и слагаме една честна карта отгоре.
+    const дефектна = !наПауза() && извънОбхват();
+    const w = дефектна ? 0 : wСурово;
 
     // Б10.5: без дата и без пауза → поканата е ПЪРВА, всичко друго под нея
     if (!lmp() && !наПауза() && !роди()) {
@@ -548,10 +747,18 @@
       if (сънища) сънища.remove();
     }
 
+    // дефектна дата → една честна карта на мястото на „Тази седмица“
+    if (дефектна) {
+      const чат = root.querySelector('.ask-card');
+      root.insertBefore(дефектнаДатаКарта(), чат ? чат.nextSibling : root.firstChild);
+      const сънища = намери('Още колко');
+      if (сънища) сънища.remove();
+    }
+
     // Б4: пътеката заменя сухия списък
     const toc = root.querySelector('.toc-card');
     if (toc && w >= 0 && !наПауза()) {
-      const пътека = пътекаКарта(root, w);
+      const пътека = пътекаКарта(root, w, дефектна);
       toc.parentNode.insertBefore(пътека, toc);
       // Б4.4, поправено (одит-флот П23, проход 2 №7): .toc-prog се строеше от
       // iface чак на +750ms — тук (синхронно) винаги беше null и лентата умираше

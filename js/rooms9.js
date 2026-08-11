@@ -28,17 +28,39 @@
     const w = Math.floor((Date.now() - new Date(lmp)) / 604800000);
     return (w >= 1 && w <= 45) ? w : null;
   };
+  // 🟡 11.08 (обиколка по стаи, rooms9): тихата микро-обратна връзка. САМО
+  //    opacity и transform (правило 12) и само ако мама не е поискала покой.
+  const покой = () => { try { return matchMedia('(prefers-reduced-motion: reduce)').matches; } catch (e) { return false; } };
+  const пулс = n => {
+    if (!n || покой()) return;
+    n.style.transition = 'none'; n.style.opacity = '0'; n.style.transform = 'translateY(4px)';
+    requestAnimationFrame(() => {
+      n.style.transition = 'opacity .18s ease, transform .18s ease';
+      n.style.opacity = ''; n.style.transform = '';
+    });
+  };
+  // 👆 11.08: мишена за пръст ≥44px там, където общият css не стига
+  //    (details>summary и .ct-b/.nl-idea, мерени в браузъра: 21-43px).
+  const пипаемо = (n, пад) => { if (!n) return; n.style.boxSizing = 'border-box'; n.style.minHeight = '44px'; if (пад) n.style.padding = пад; };
+
   const чеклист = (c, ключ, групи) => {
-    const мои = load(ключ, {});
     групи.forEach(([загл, неща]) => {
       if (загл) c.appendChild(el('p', 'mk-h', загл));
       неща.forEach((н, i) => {
         const к = (загл || '') + '|' + i;
-        const r = el('button', 'qd-row' + (мои[к] ? ' done' : '')); r.type = 'button';
-        r.innerHTML = `<span class="jr-check">${мои[к] ? '✔' : ''}</span><span>${esc(н)}</span>`;
+        const начални = load(ключ, {});
+        const r = el('button', 'qd-row' + (начални[к] ? ' done' : '')); r.type = 'button';
+        r.setAttribute('aria-pressed', начални[к] ? 'true' : 'false');
+        r.innerHTML = `<span class="jr-check">${начални[к] ? '✔' : ''}</span><span>${esc(н)}</span>`;
         r.addEventListener('click', () => {
-          мои[к] = !мои[к]; save(ключ, мои);
-          r.classList.toggle('done'); r.querySelector('.jr-check').textContent = мои[к] ? '✔' : '';
+          // 🔴 известният клас: четем ПРЯСНО вътре в слушателя. Иначе картата
+          //    държи копие отпреди и го пише отгоре на всичко, записано после.
+          const мои = load(ключ, {});
+          const вкл = !мои[к];
+          мои[к] = вкл; save(ключ, мои);
+          r.classList.toggle('done', вкл);
+          r.setAttribute('aria-pressed', вкл ? 'true' : 'false');
+          r.querySelector('.jr-check').textContent = вкл ? '✔' : '';
           fx().buzz(5);
         });
         c.appendChild(r);
@@ -136,9 +158,14 @@
         //    бутона, които четецът обявява само като „палец нагоре". Кой трик се
         //    оценява личеше единствено по картинката. Трикът влиза в името.
         b.setAttribute('aria-label', (v === 1 ? 'Работи при нас: ' : 'Не работи при нас: ') + т);
+        b.setAttribute('aria-pressed', мои[i] === v ? 'true' : 'false');
         b.addEventListener('click', () => {
-          мои[i] = мои[i] === v ? 0 : v; save('bl_tricks_food', мои);
-          r.className = 'tk-row' + (мои[i] === 1 ? ' tk-yes' : мои[i] === -1 ? ' tk-no' : '');
+          // 🔴 известният клас: пряснo от паметта, не от копието при рисуване
+          const свежи = load('bl_tricks_food', {});
+          свежи[i] = свежи[i] === v ? 0 : v; save('bl_tricks_food', свежи);
+          мои[i] = свежи[i];
+          r.className = 'tk-row' + (свежи[i] === 1 ? ' tk-yes' : свежи[i] === -1 ? ' tk-no' : '');
+          g.querySelectorAll('.tk-b').forEach((x, j) => x.setAttribute('aria-pressed', свежи[i] === (j === 0 ? 1 : -1) ? 'true' : 'false'));
           fx().buzz(6);
         });
         g.appendChild(b);
@@ -167,6 +194,9 @@
     ФРИЗЕР.forEach(([к, срок, бел]) => {
       const d = el('details', 'fz-row');
       d.innerHTML = `<summary>${к} <span class="fz-s">${esc(срок)}</span></summary><p class="fz-b">${esc(бел)}</p>`;
+      // 👆 11.08 (мерено в браузъра, 375px): тези summary-та излизаха 21px високи —
+      //    под половин мишена за пръст. touch.css не ги покрива, а css не е мой файл.
+      пипаемо(d.querySelector('summary'), '11px 0');
       c.appendChild(d);
     });
     c.appendChild(el('p', 'jr-privacy',
@@ -199,6 +229,15 @@
         return `<div class="sz-row${сега ? ' sz-now' : ''}"><span>${в}</span><span>${eu}</span><span>${uk}</span><span>${us}</span><span>${кг}</span></div>`;
       }).join('');
     c.appendChild(t);
+    // 📱 11.08 (мерено на 375px екран): таблицата е 354px съдържание в 311px
+    //    кутия — колоната с теглото остава извън погледа. Родителят реже, както
+    //    трябва (css има overflow-x: auto) и прозорецът НЕ се плъзга — правило
+    //    10 е спазено. Пробвах да покажа намек само когато наистина прелива
+    //    (ResizeObserver + мерене след кадър); в браузъра НЕ проработи и не
+    //    разбрах защо, затова не го оставям — по-добре без намек, отколкото с
+    //    код, за който твърдя, че работи, без да съм го видял.
+    c.appendChild(el('p', 'jr-privacy',
+      'Таблицата се плъзга встрани с пръст, ако не се побира на екрана.'));
     c.appendChild(el('p', 'jr-privacy',
       'EU размерът е <strong>ръстът в сантиметри</strong>, не възрастта — затова е най-честният. Купувай по ръст, не по числото на етикета: марките се различават силно.'));
     return c;
@@ -236,12 +275,21 @@
         'Люлеенето приспива. Това е добрата новина.'
       ]
     };
+    // 🟠 11.08 (обиколка, натиснат бутон): натискането на ВЕЧЕ избрания таб не
+    //    правеше нищо видимо — а точно „🚗 Кола“ е избран по подразбиране, тоест
+    //    първото докосване на мама беше мълчаливо. Мълчалив бутон няма: всяко
+    //    натискане пуска тих пулс по списъка (само opacity/transform) и вибрира.
+    const покажи = к => {
+      out.innerHTML = '<ul>' + Т[к].map(x => `<li>${esc(x)}</li>`).join('') + '</ul>';
+      пулс(out); fx().buzz(5);
+    };
     Object.keys(Т).forEach((к, i) => {
       const b = el('button', 'jr-chip' + (i === 0 ? ' on' : ''), к); b.type = 'button';
+      b.setAttribute('aria-pressed', i === 0 ? 'true' : 'false');
       b.addEventListener('click', () => {
-        табове.querySelectorAll('.jr-chip').forEach(x => x.classList.remove('on'));
-        b.classList.add('on');
-        out.innerHTML = '<ul>' + Т[к].map(x => `<li>${esc(x)}</li>`).join('') + '</ul>';
+        табове.querySelectorAll('.jr-chip').forEach(x => { x.classList.remove('on'); x.setAttribute('aria-pressed', 'false'); });
+        b.classList.add('on'); b.setAttribute('aria-pressed', 'true');
+        покажи(к);
       });
       табове.appendChild(b);
     });
@@ -256,23 +304,53 @@
     const c = card('Ротация на играчките 🧸 ' + sub('по-малко играчки = повече игра'));
     c.appendChild(el('p', 'jr-privacy',
       'Звучи обратно, но е така: при много играчки наведнъж детето не се задълбочава в нито една. Раздели ги на 3 кутии и сменяй по една на седмица. След 3 седмици старата играчка е като нова.'));
-    const st = load('bl_rotate', { кутия: 1, смяна: '' });
     const out = el('p', 'rt-now', '');
+    // 🔴 известният клас: четем ПРЯСНО от паметта при всяко рисуване и при
+    //    всяко натискане — а не веднъж, при раждането на картата.
+    // ако паметта е повредена (ръчно пипана, стар формат), кутията пак е число
+    const четиСъст = () => {
+      const st = load('bl_rotate', { кутия: 1, смяна: '' });
+      const n = Math.round(Number(st.кутия));
+      // датата минава през шаблон — иначе повредена памет дава „от 9294 дни“
+      // (мерено: Chrome разчита парче от произволен низ като валидна дата)
+      const д = typeof st.смяна === 'string' && /^\d{4}-\d{2}-\d{2}$/.test(st.смяна) ? st.смяна : '';
+      return { кутия: (n >= 1 && n <= 3) ? n : 1, смяна: д };
+    };
     const покажи = () => {
+      const st = четиСъст();
       // виж бележката за UTC в women2.js — тук същият капан даваше „от -1 дни“
       const дни = st.смяна ? Math.max(0, Math.round((new Date(today()) - new Date(st.смяна)) / 86400000)) : null;
       out.innerHTML = `Сега е <strong>кутия ${st.кутия}</strong>` +
         (дни === null ? '. Отбележи, когато я сложиш.'
          : дни >= 7 ? ` — от <strong>${дни} дни</strong>. Време е за смяна. 🔄`
-         : ` — от ${дни} ${дни === 1 ? 'ден' : 'дни'}. Остават ${7 - дни}.`);
+         // 🟡 11.08: в деня на смяната пишеше „от 0 дни“ — число вместо дума.
+         : дни === 0 ? ' — сложена днес. Следващата смяна е след 7 дни.'
+         // 🟡 11.08: „Остават 1.“ — числото и думата до него не бива да си
+         //    противоречат (същото правило като в Green Room).
+         : ` — от ${дни} ${дни === 1 ? 'ден' : 'дни'}. ${7 - дни === 1 ? 'Остава 1 ден' : 'Остават ' + (7 - дни) + ' дни'}.`);
     };
     const b = el('button', 'jr-btn', '🔄 Смених кутията'); b.type = 'button';
+    // ↩︎ 11.08: едно погрешно докосване въртеше кутията и триеше датата без
+    //    никакъв път назад. Отмяната е евтина — стои 15 секунди и си отива.
+    const назад = el('button', 'jr-chip jr-chip-soft', '↩︎ Не, натиснах без да искам'); назад.type = 'button';
+    назад.hidden = true;
+    let преди = null, часовник = null;
     b.addEventListener('click', () => {
-      st.кутия = st.кутия % 3 + 1; st.смяна = today();
-      save('bl_rotate', st); покажи(); fx().buzz(8);
+      преди = четиСъст();
+      save('bl_rotate', { кутия: преди.кутия % 3 + 1, смяна: today() });
+      покажи(); пулс(out); fx().buzz(8);
+      назад.hidden = false;
+      clearTimeout(часовник);
+      часовник = setTimeout(() => { назад.hidden = true; преди = null; }, 15000);
+    });
+    назад.addEventListener('click', () => {
+      if (!преди) return;
+      save('bl_rotate', преди); преди = null;
+      clearTimeout(часовник); назад.hidden = true;
+      покажи(); пулс(out); fx().buzz(5);
     });
     покажи();
-    c.appendChild(out); c.appendChild(b);
+    c.appendChild(out); c.appendChild(b); c.appendChild(назад);
     return c;
   }
 
@@ -285,7 +363,10 @@
     'Помня датите на ваксините',
     'Следя кога е ял и колко',
     'Знам коя играчка къде е',
-    'Помня рождените дни в двете семейства',
+    // 🟠 11.08: „в ДВЕТЕ семейства“ подразбираше второ семейство — единственият
+    //    ред тук, който приемаше двойка за дадена. Отметките се пазят по НОМЕР
+    //    на реда (`мои[i]`), не по текст → преписването не мърда нищо чуждо.
+    'Помня рождените дни на роднините',
     'Мисля какво ще се яде утре',
     'Забелязвам кога панталонките му са малки',
     'Знам кога е записан на преглед',
@@ -316,10 +397,17 @@
       //    по-долу вече казват „другият“ — само бутонът беше останал „той“.
       [['аз', 'me'], ['и двамата', 'both'], ['другият', 'other']].forEach(([л, v]) => {
         const b = el('button', 'ct-b' + (мои[i] === v ? ' on' : ''), л); b.type = 'button';
+        b.setAttribute('aria-label', л + ': ' + т);
+        b.setAttribute('aria-pressed', мои[i] === v ? 'true' : 'false');
+        // 👆 11.08 (мерено: 52×40px): `#roRoom .ct-b` дава 40px и бие touch.css.
+        пипаемо(b);
         b.addEventListener('click', () => {
-          мои[i] = v; save('bl_load', мои);
-          g.querySelectorAll('.ct-b').forEach(x => x.classList.remove('on'));
-          b.classList.add('on'); брой();
+          // 🔴 известният клас: пряснo от паметта, не от копието при рисуване
+          const свежи = load('bl_load', {});
+          свежи[i] = v; save('bl_load', свежи);
+          мои[i] = v;
+          g.querySelectorAll('.ct-b').forEach(x => { x.classList.remove('on'); x.setAttribute('aria-pressed', 'false'); });
+          b.classList.add('on'); b.setAttribute('aria-pressed', 'true'); брой();
         });
         g.appendChild(b);
       });
@@ -328,11 +416,20 @@
     });
     const out = el('p', 'ld-out', '');
     c.appendChild(out);
+    // 🔴 11.08 (обиколка, проверено в браузъра): дялът се смяташе на едно място
+    //    и се ПОДАВАШЕ на бутона „📌 Запиши днешното число“ — а бутонът се
+    //    строеше веднъж и запомняше числото от онзи миг. Мерено: екранът пише
+    //    17%, бутонът записва 100. Оттук нататък процентът се смята ПРЯСНО,
+    //    в момента на натискане, от едно-единствено място.
+    const процент = () => {
+      const дадени = Object.values(мои).filter(Boolean);
+      if (дадени.length < 5) return null;
+      return Math.round(дадени.filter(x => x === 'me').length / дадени.length * 100);
+    };
     function брой() {
       const дадени = Object.values(мои).filter(Boolean);
-      if (дадени.length < 5) { out.innerHTML = `<span class="jr-privacy">Отбелязани: ${дадени.length} от 12.</span>`; return; }
-      const аз = дадени.filter(x => x === 'me').length;
-      const дял = Math.round(аз / дадени.length * 100);
+      if (дадени.length < 5) { out.innerHTML = `<span class="jr-privacy">Отбелязани: ${дадени.length} от 12.</span>`; действия(null, дадени.length); return; }
+      const дял = процент();
       out.innerHTML = `<strong>${дял}%</strong> от невидимото носиш ти.` +
         (дял >= 75 && сама ? '<br><span class="jr-privacy">Това не е оплакване — това е число. И то не иска да го показваш никому: то е тук, за да се види от теб. Всичко това го помниш, планираш и забелязваш ти — и въпреки това го носиш. 🤍</span>'
          : дял >= 75 ? '<br><span class="jr-privacy">Това не е оплакване — това е число. Ако решиш да го покажеш на някого, вече не е „усещане“, а данни. Понякога това е разликата.</span>'
@@ -351,31 +448,48 @@
     //    свекърва или сестра. Говорим за „другия“.
     const действ = el('div', 'ld-act');
     c.appendChild(действ);
-    let рисувани = false;
+    // 🔴 11.08 (проверено в браузъра): пазачът беше „веднъж и никога повече“ —
+    //    и чиповете „кое едно да мине у другия“ оставаха от ПЪРВОТО рисуване.
+    //    Мерено: мама прехвърля 5 реда на „и двамата“, а чиповете още ѝ ги
+    //    предлагат като нейни. Сега пазачът е ПОДПИС: пребоядисваме само когато
+    //    се смени кои редове са НЕЙНИ — не при всяко цъкане, но и не никога.
+    let подпис = null;
     function действия(дял, брой_отметки) {
-      if (брой_отметки < 5) { действ.innerHTML = ''; рисувани = false; return; }
-      if (рисувани) return;                 // не пребоядисваме при всяко цъкане
-      рисувани = true;
+      if (брой_отметки < 5) { действ.innerHTML = ''; подпис = null; return; }
+      const нов = ТОВАР.map((т, i) => (мои[i] === 'me' ? '1' : '0')).join('');
+      if (подпис === нов) return;
+      подпис = нов;
       действ.innerHTML = '';
 
       // 1) 📌 запиши днешното число — за да се види дали изобщо мърда
       const ист = load('bl_wm_load_hist', []);
       const зап = el('button', 'jr-chip', '📌 Запиши днешното число'); зап.type = 'button';
       const редИст = el('p', 'jr-privacy', '');
+      // 🔴 11.08 (ДОКАЗАНО в браузъра): датата и числото влизаха в innerHTML
+      //    СУРОВИ. Подправен запис в `bl_wm_load_hist` (повредена памет или
+      //    внесено чуждо резервно копие) изпълни `window.__XSS = 4` в стаята.
+      //    Правило 4: всичко през esc(), числата през Number.
       const рисувайИст = () => {
         if (!ист.length) { редИст.innerHTML = ''; return; }
-        const п = ист.slice(-4).map(x => x.d.slice(5) + ' · <strong>' + x.v + '%</strong>').join(' → ');
-        редИст.innerHTML = п + (ист.length > 1 && ист[ист.length - 1].v < ист[0].v
+        const чист = ист.filter(x => x && typeof x.d === 'string' && /^\d{4}-\d{2}-\d{2}$/.test(x.d) && isFinite(Number(x.v)));
+        if (!чист.length) { редИст.innerHTML = ''; return; }
+        const п = чист.slice(-4).map(x => esc(x.d.slice(5)) + ' · <strong>' + Math.round(Number(x.v)) + '%</strong>').join(' → ');
+        редИст.innerHTML = п + (чист.length > 1 && Number(чист[чист.length - 1].v) < Number(чист[0].v)
           ? '<br>Мръднало е надолу. Това не се случва само.' : '');
       };
       зап.addEventListener('click', () => {
+        // 🔴 числото се смята СЕГА, не при рисуването на бутона (виж горе).
+        const сегашен = процент();
+        if (сегашен == null) return;
         const д = today();
-        if (ист.length && ист[ист.length - 1].d === д) ист[ист.length - 1].v = дял;
-        else ист.push({ d: д, v: дял });
-        save('bl_wm_load_hist', ист.slice(-12)); рисувайИст();
-        зап.textContent = '✔ Записано'; fx().buzz(10);
-        setTimeout(() => { зап.textContent = '📌 Запиши днешното число'; }, 1600);
+        if (ист.length && ист[ист.length - 1].d === д) ист[ист.length - 1].v = сегашен;
+        else ист.push({ d: д, v: сегашен });
+        save('bl_wm_load_hist', ист.slice(-12)); рисувайИст(); пулс(редИст);
+        зап.textContent = '✔ Записано: ' + сегашен + '%'; fx().buzz(10);
+        clearTimeout(зап._ч);
+        зап._ч = setTimeout(() => { зап.textContent = '📌 Запиши днешното число'; }, 2200);
       });
+      пипаемо(зап);
 
       // 2) 🎯 кое ЕДНО да мине у другия — едно, не списък
       const мои_редове = ТОВАР.filter((т, i) => мои[i] === 'me');
@@ -385,7 +499,14 @@
         const чипове = el('div', 'nl-ideas');
         мои_редове.slice(0, 6).forEach(т => {
           const b = el('button', 'nl-idea', esc(т)); b.type = 'button';
+          // 👆 11.08 (мерено: 311×39px) + личи кой е избран, не само в текста долу
+          пипаемо(b); b.setAttribute('aria-pressed', 'false');
           b.addEventListener('click', () => {
+            чипове.querySelectorAll('.nl-idea').forEach(x => {
+              x.setAttribute('aria-pressed', 'false'); x.style.outline = ''; x.style.outlineOffset = '';
+            });
+            b.setAttribute('aria-pressed', 'true');
+            b.style.outline = '2px solid currentColor'; b.style.outlineOffset = '1px';
             изречение.hidden = false;
             // редовете са изречения в ПЪРВО ЛИЦЕ („Помня кога…“), не съществителни —
             // затова не ги вкарваме в „искам X да е твоя работа“ (излиза сакато).
@@ -393,6 +514,7 @@
             изречение.innerHTML = '<strong>„' + esc(т) + '.“</strong><br>' +
               'Искам това да е твое. Не да ми помагаш с него — да е твое, да го помниш ти.' +
               '<small>Едно изречение. Казано веднъж, спокойно. Ако не мине от първия път — пак, със същите думи.</small>';
+            пулс(изречение);
             fx().buzz(8);
           });
           чипове.appendChild(b);
@@ -403,15 +525,24 @@
 
       // 3) 🖨️ листът — само таблицата, без нито един коментар от приложението
       const принт = el('button', 'jr-chip jr-chip-soft', '🖨️ Направи лист'); принт.type = 'button';
+      пипаемо(принт);
       принт.addEventListener('click', () => {
+        // 🔴 11.08: тук нямаше НИЩО, ако листът не се отвори — бутон, който
+        //    мълчи. Сега или се отваря, или се казва защо не.
+        const свежи = load('bl_load', {});
         const редове = ТОВАР.map((т, i) => {
-          const v = мои[i];
+          const v = свежи[i];
           const кой = v === 'me' ? 'аз' : v === 'both' ? 'и двамата' : v === 'other' ? 'другият' : '—';
           return '<tr><td>' + esc(т) + '</td><td>' + кой + '</td></tr>';
         }).join('');
         if (window.BL_EXPR && BL_EXPR.printOverlay) {
           BL_EXPR.printOverlay('Невидимото — кой го носи',
             '<table class="pr-t"><tbody>' + редове + '</tbody></table>');
+          fx().buzz(8);
+        } else {
+          принт.textContent = 'Листът не се отвори — пробвай пак след малко';
+          clearTimeout(принт._ч);
+          принт._ч = setTimeout(() => { принт.textContent = '🖨️ Направи лист'; }, 2600);
         }
       });
 
@@ -461,7 +592,12 @@
       const ред2 = el('div', 'jr-quick');
       const да = el('button', 'jr-chip', '💑 Има — покажи ми ги'); да.type = 'button';
       const не = el('button', 'jr-chip', '🤍 Сама съм — скрий картата'); не.type = 'button';
-      да.addEventListener('click', () => { save('bl_partner', 'да'); п.replaceWith(partnerCard()); });
+      да.addEventListener('click', () => {
+        save('bl_partner', 'да');
+        const нова = partnerCard();
+        // 🟡 11.08: replaceWith(null) слага текста „null“ на екрана. Не и днес.
+        if (нова) { п.replaceWith(нова); пулс(нова); } else { п.appendChild(el('p', 'pn-txt', 'Готово — картата ще е тук от следващата седмица. 💜')); }
+      });
       не.addEventListener('click', () => {
         save('bl_partner', 'не');
         п.textContent = '';
@@ -480,16 +616,39 @@
     const c = card('За партньора 💑 ' + sub('едно конкретно нещо тази седмица'));
     c.appendChild(el('p', 'pn-txt', esc(ред[2])));
     const b = el('button', 'jr-btn', '📤 Прати му го'); b.type = 'button';
-    b.addEventListener('click', () => {
+    // 🔴 11.08 (уловено в конзолата на живо): `navigator.clipboard.writeText`
+    //    се ОТКАЗА с NotAllowedError, а бутонът вече беше написал „Копирано!“ —
+    //    обещанието се даваше преди отговора. Мама поднася в чата и няма нищо.
+    //    И втори капан: без share и без clipboard бутонът не правеше НИЩО.
+    //    Сега: чакаме отговора, и ако не стане — показваме текста да се маркира.
+    const резерв = el('p', 'pn-txt', ''); резерв.hidden = true;
+    const каж = (s, ms) => {
+      b.textContent = s; clearTimeout(b._ч);
+      b._ч = setTimeout(() => { b.textContent = '📤 Прати му го'; }, ms || 2600);
+    };
+    b.addEventListener('click', async () => {
       const текст = ред[2] + '\n\n(от Бейби Ленд — ' + w + '-та седмица)';
-      if (navigator.share) navigator.share({ text: текст }).catch(() => {});
-      else if (navigator.clipboard) {
-        navigator.clipboard.writeText(текст);
-        b.textContent = 'Копирано! Прати му го 💜';
-        setTimeout(() => b.textContent = '📤 Прати му го', 2200);
+      fx().buzz(8);
+      if (navigator.share) {
+        try { await navigator.share({ text: текст }); каж('Изпратено 💜'); }
+        catch (e) { каж(e && e.name === 'AbortError' ? 'Добре — тук е, когато решиш' : 'Не се изпрати — ето го текста'); if (!e || e.name !== 'AbortError') покажиРезерв(текст); }
+        return;
       }
+      if (navigator.clipboard && navigator.clipboard.writeText) {
+        try { await navigator.clipboard.writeText(текст); каж('Копирано! Поднеси го в чата 💜'); резерв.hidden = true; return; }
+        catch (e) { /* пада надолу */ }
+      }
+      каж('Ето го текста — маркирай и копирай', 4000);
+      покажиРезерв(текст);
     });
-    c.appendChild(b);
+    function покажиРезерв(текст) {
+      резерв.textContent = текст;
+      резерв.style.whiteSpace = 'pre-wrap';
+      резерв.style.userSelect = 'text';
+      резерв.hidden = false;
+      пулс(резерв);
+    }
+    c.appendChild(b); c.appendChild(резерв);
     c.appendChild(el('p', 'jr-privacy',
       'Той не го усеща като теб — не защото не му пука, а защото не е в неговото тяло. Конкретното се чува по-добре от упрека.'));
     return c;

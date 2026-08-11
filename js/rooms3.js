@@ -18,6 +18,52 @@
   // майка мисли, че приложението е счупено. Топла едноредова причина + buzz.
   function hint(anchor, msg) { let h = anchor.__h; if (!h) { h = el('p', 'jr-hint'); anchor.after(h); anchor.__h = h; } h.textContent = msg; fx().buzz(6); }
   function clearHint(a) { if (a.__h) a.__h.textContent = ''; }
+  // 🔇 12.08 (обиколка с телефон, мерено с натискане): ЕДИНАДЕСЕТ бутона в този
+  //    файл правеха точно НИЩО при празно поле — `if (!v) return;`. Измерено:
+  //    „Остави писмото 💌“, „Запечатай писмото 💌“, „+“ в плейлиста, плана за
+  //    раждане, паспорта, аптечката, книжките, „+ Сега“ в лекарствата, „✔“ в
+  //    менюто, „Започни касичката 🐷“ и „→“ в съзвездието — нула промяна в DOM,
+  //    нула в паметта. Мама натиска втори и трети път и мисли, че е счупено.
+  //    nudge = причина с думи + курсор в полето (клавиатурата се вдига = видимо).
+  function nudge(anchor, msg, field) {
+    hint(anchor, msg);
+    if (field) { try { field.focus({ preventScroll: true }); } catch (e) { try { field.focus(); } catch (e2) {} } }
+  }
+  // тихият знак „прието“ — надписът на бутона за миг казва какво стана и се връща
+  function tick(btn, msg, ms) {
+    if (btn.__tk) { clearTimeout(btn.__tk); } else { btn.__orig = btn.innerHTML; }
+    btn.innerHTML = msg;
+    btn.__tk = setTimeout(() => { if (btn.isConnected) btn.innerHTML = btn.__orig; btn.__tk = null; }, ms || 1400);
+  }
+  // 🔄 12.08 (известният клас, находка 8): карта, чиито данни ги пише ДРУГА карта
+  //    на същия екран, остава стара до излизане от стаята. Тук няма събитие, на
+  //    което да се закачим (rooms.js не праща нищо при чекин), затова гледаме
+  //    самия ключ: след всяко докосване някъде в приложението сравняваме подписа
+  //    на паметта и пречертаваме САМО ако наистина се е сменил. Един getItem и
+  //    едно сравнение на низ — по-евтино от прекрасния IntersectionObserver и,
+  //    за разлика от него, се проверява с натискане.
+  //    Слушателят се маха сам, щом картата вече не е в документа.
+  function свежо(c, ключ, рисувай) {
+    let подпис = localStorage.getItem(ключ) || '';
+    let чака = false;
+    const провери = () => {
+      if (!c.isConnected) { document.removeEventListener('click', провери); document.removeEventListener('scroll', отложено, true); return; }
+      const нов = localStorage.getItem(ключ) || '';
+      if (нов === подпис) return;
+      подпис = нов; рисувай();
+    };
+    // скролът идва на порой — гледаме най-много веднъж на 300 мс
+    const отложено = () => { if (чака) return; чака = true; setTimeout(() => { чака = false; провери(); }, 300); };
+    document.addEventListener('click', провери);            // след чуждия слушател
+    document.addEventListener('scroll', отложено, true);    // стаята скролира вътре в себе си
+    return провери;
+  }
+  // 👆 12.08: голият едно-знаков чип („+“, „✔“, „←“, „→“) мери 37.5×44 —
+  //    touch.css дава min-height, но min-width НЯМА (същото е признато за .jr-x
+  //    и в lab.css:189). Мерено с getBoundingClientRect в 375px телефон.
+  const wide = b => { b.style.minWidth = '44px'; return b; };
+  // 🗑/✕ вътре в ред, писан с innerHTML — touch.css им дава 40, но брифът иска 44
+  const цели = root => { root.querySelectorAll('.nt-del, .jr-x').forEach(b => { b.style.minWidth = '44px'; b.style.minHeight = '44px'; }); return root; };
   const getBaby = () => load('bl_baby', { name: '', sex: '', birth: '' });
   const dstr = ts => new Date(ts).toLocaleDateString('bg-BG');
   const MOODS = ['😩', '😔', '😐', '🙂', '🥰'];
@@ -30,8 +76,8 @@
     const c = card('Съзвездието ти 🌌 <span class="jr-sub">всяка минутка за теб е звезда — месецът става небе</span>');
     let off = 0; // месеци назад
     const nav = el('div', 'cs-nav');
-    const prev = el('button', 'jr-chip', '←'); prev.type = 'button';
-    const next = el('button', 'jr-chip', '→'); next.type = 'button';
+    const prev = wide(el('button', 'jr-chip', '←')); prev.type = 'button';
+    const next = wide(el('button', 'jr-chip', '→')); next.type = 'button';
     // ♿ 11.08 (клавиатура-четец): двете стрелки бяха само знак — четецът казваше
     //    „бутон“ и толкова, а месецът стои в отделен <span> до тях.
     prev.setAttribute('aria-label', 'Предишният месец');
@@ -60,7 +106,7 @@
       for (let i = 1; i < P.length; i++) svg += `<line x1="${P[i - 1].x}" y1="${P[i - 1].y}" x2="${P[i].x}" y2="${P[i].y}" class="cs-line"/>`;
       P.forEach((p, i) => {
         const r = 2.2 + p.e / 100 * 2.6;
-        svg += `<circle cx="${p.x}" cy="${p.y}" r="${r + 6}" fill="transparent" class="cs-hit" data-star="${i}"/><circle cx="${p.x}" cy="${p.y}" r="${r}" fill="${MOODCOL[p.m]}" class="cs-star" style="animation-delay:${(i % 7) * 0.4}s"><title>${p.d}: ${MOODS[p.m]}</title></circle>`;
+        svg += `<circle cx="${p.x}" cy="${p.y}" r="${r}" fill="${MOODCOL[p.m]}" class="cs-star" style="animation-delay:${(i % 7) * 0.4}s"><title>${p.d}: ${MOODS[p.m]}</title></circle>`;
       });
       svg += `</svg>`;
       box.innerHTML = svg +
@@ -72,27 +118,76 @@
           : '<p class="jr-privacy">Тук ще растат звездите ти. Първата е на една минутка разстояние. ✨</p>');
       // проход 4: звездите тап-достъпни на телефон (title е само desktop hover) —
       // тап отваря малко балонче с деня, личицето и думата, която е записала.
+      // 👆 12.08 (мерено): прозрачните кръгчета .cs-hit излизаха 15.2×15.4 px.
+      //    Петнайсет пиксела. Точно картата, чийто коментар обещава „тап-достъпни
+      //    на телефон“, имаше най-малката цел в целия файл. И не се лекува с
+      //    по-голям радиус: 31 дни на 292 единици = ~9.7 единици между звездите,
+      //    тоест 44px кръгове биха се изяли един друг. Затова целта е ЦЯЛОТО небе
+      //    (298×158 px) и се пали НАЙ-БЛИЗКАТА звезда — няма мъртва зона и
+      //    неточният пръст хваща съседката, вместо нищо.
       const bubble = el('p', 'cs-bubble'); bubble.hidden = true; box.appendChild(bubble);
-      box.querySelectorAll('.cs-hit').forEach(hit => hit.addEventListener('click', () => {
-        const p = P[+hit.dataset.star]; if (!p) return;
-        bubble.innerHTML = `<strong>${p.d}-и</strong> ${MOODS[p.m]}${p.w ? ' · „' + esc(p.w) + '“' : ''}`;
+      const sky = box.querySelector('.cs-svg');
+      if (sky) sky.addEventListener('click', ev => {
+        const r = sky.getBoundingClientRect();
+        if (!r.width || !r.height) return;
+        const vx = (ev.clientX - r.left) / r.width * 320, vy = (ev.clientY - r.top) / r.height * 170;
+        if (!P.length) { bubble.textContent = 'Небето още е празно — първата звезда се пали в „Как си днес“. ✨'; bubble.hidden = false; return; }
+        let best = P[0], bd = Infinity;
+        P.forEach(p => { const d = (p.x - vx) * (p.x - vx) + (p.y - vy) * (p.y - vy); if (d < bd) { bd = d; best = p; } });
+        bubble.innerHTML = `<strong>${best.d}-и</strong> ${MOODS[best.m]}${best.w ? ' · „' + esc(best.w) + '“' : ''}`;
         bubble.hidden = false; if (window.BL_FX) BL_FX.buzz(5);
-      }));
+      });
     }
-    prev.addEventListener('click', () => { off++; draw(); });
-    next.addEventListener('click', () => { if (off > 0) off--; draw(); });
+    // 🔇 12.08 (мерено с натискане): „→“ на текущия месец не правеше НИЩО —
+    //    нито надписът, нито небето се сменяха. А „←“ вървеше назад безкрайно:
+    //    стигнах до юли 2025 г. — месеци отпреди приложението, отпреди бебето.
+    //    Назад има дъно (първата ѝ записана звезда), напред има таван (днес).
+    prev.addEventListener('click', () => {
+      const cks = load('bl_checkins', {});
+      const пръв = Object.keys(cks).sort()[0];
+      let таван = 24;
+      if (пръв) {
+        const d = new Date(пръв + 'T12:00'), сега = new Date();
+        таван = (сега.getFullYear() - d.getFullYear()) * 12 + (сега.getMonth() - d.getMonth());
+      }
+      if (off >= Math.max(1, таван)) { hint(nav, пръв ? 'Дотук стигат звездите ти — по-назад още не си писала. 💜' : 'Още няма записани месеци назад. Първата звезда е на една минутка. ✨'); return; }
+      clearHint(nav); off++; draw();
+    });
+    next.addEventListener('click', () => {
+      if (off === 0) { hint(nav, 'Това е този месец — напред са дните, които тепърва идват. 💜'); return; }
+      clearHint(nav); off--; draw();
+    });
     draw();
+    // 🔴 12.08 (известният клас, находка 6): картата чете bl_checkins ВЕДНЪЖ, при
+    //    рисуване — а „💜 Как си днес?“ е ВТОРАТА карта в СЪЩАТА стая, двайсет и
+    //    две карти по-горе. Мерено наживо: записах настроение и дума през
+    //    истинската карта, после погледнах тук — „11 звезди“ (без новата) и
+    //    облакът без новата дума. Мама записва горе, слиза долу и вижда, че я
+    //    няма. Няма събитие bl:checkin (rooms.js не го праща), затова се
+    //    пречертава, щом bl_checkins се смени (виж свежо() горе).
+    свежо(c, 'bl_checkins', draw);
     return c;
   }
 
   // ☁️ Облакът от думи — думите на деня порастват
   function wordCloudCard() {
     const c = card('Годината ти в думи ☁️ <span class="jr-sub">думите от минутките ти растат тук</span>');
+    const хол = el('div', 'wc-hold');
+    c.appendChild(хол);
+    // 🔴 12.08 (същият клас като съзвездието, мерено наживо): написах „най-новата
+    //    дума“ в „Как си днес“ — картата е в СЪЩАТА стая — и облакът тук си
+    //    остана със старите пет думи. Пречертава се, щом bl_checkins се смени.
+    рисувай();
+    свежо(c, 'bl_checkins', рисувай);
+    return c;
+
+    function рисувай() {
+    хол.innerHTML = '';
     const cks = load('bl_checkins', {});
     const freq = {};
-    Object.values(cks).forEach(r => { const w = (r.w || '').trim().toLowerCase(); if (w) freq[w] = (freq[w] || 0) + 1; });
+    Object.values(cks).forEach(r => { const w = ((r && r.w) || '').trim().toLowerCase(); if (w) freq[w] = (freq[w] || 0) + 1; });
     const words = Object.entries(freq).sort((a, b) => b[1] - a[1]).slice(0, 40);
-    if (!words.length) { c.appendChild(el('p', 'jr-privacy', 'Пиши по една дума на ден в „Как си днес“ — тук ще порасне облакът на годината ти. ☁️')); return c; }
+    if (!words.length) { хол.appendChild(el('p', 'jr-privacy', 'Пиши по една дума на ден в „Как си днес“ — тук ще порасне облакът на годината ти. ☁️')); return; }
     const cloud = el('div', 'wc-cloud');
     const max = words[0][1];
     words.forEach(([w, n], i) => {
@@ -105,11 +200,17 @@
       // (сметката е взаимно изключваща се), затова ползваме темовите променливи —
       // те се сменят с режима. Честотата и без това се чете от font-size горе.
       s.style.color = (i % 2) ? 'var(--ink-soft)' : 'var(--ink)';
-      s.title = n + ' пъти';
+      // 📱 12.08: `title` е подсказка при посочване с мишка — на телефон НЕ се
+      //    показва никога. Броят живееше само за настолен потребител. Голямата
+      //    буква вече го казва на око; за четеца и за яснота го казваме и с думи.
+      s.title = window.BL_BROI ? BL_BROI(n, 'път', 'пъти') : n + ' ' + (n === 1 ? 'път' : 'пъти');
+      s.setAttribute('aria-label', esc(w) + ' — ' + n + (n === 1 ? ' път' : ' пъти'));
       cloud.appendChild(s);
     });
-    c.appendChild(cloud);
-    return c;
+    хол.appendChild(cloud);
+    // тихото обобщение вместо няма-къде-да-се-докосне: най-честата дума с число
+    if (max > 1) хол.appendChild(el('p', 'cs-note', `Най-често: <strong>${esc(words[0][0])}</strong> — ${max} пъти. 💜`));
+    }
   }
 
   // 📸 Снимка на деня — една, без филтри
@@ -179,10 +280,14 @@
     const send = el('button', 'jr-btn', 'Остави писмото 💌'); send.type = 'button';
     const thread = el('div', 'lt-thread');
     send.addEventListener('click', () => {
-      const v = ta.value.trim(); if (!v) return;
+      const v = ta.value.trim();
+      // 🔇 12.08 (мерено): празно/само интервали → бутонът правеше нула промяна.
+      if (!v) { nudge(send, 'Още е празно — напиши едно изречение и го оставям тук. 💌', ta); return; }
+      clearHint(send);
       items.push({ who, t: v, ts: Date.now() });
       save('bl_letters', items.slice(-60)); save('bl_draft_letters', '');
       ta.value = ''; fx().buzz(12); draw();
+      tick(send, 'Оставено ✔');
     });
     function draw() {
       thread.innerHTML = items.length ? '' : '<p class="jr-privacy">Първото писмо чака. Може да е само „обичам ни“. 💌</p>';
@@ -220,14 +325,29 @@
     const add = el('button', 'jr-chip', '+ Запиши'); add.type = 'button';
     row.appendChild(inp); row.appendChild(add);
     const box = el('div', 'pw-box');
+    // ↩ 12.08: грешна цифра (86 вместо 68) нямаше как да се махне — никъде в
+    //    картата нямаше изтриване. Кривата оставаше изкривена завинаги, а точно
+    //    тази карта обещава „меко, без терор от кантара“. Връщането е евтино:
+    //    последният запис, докато е още последният.
+    const undo = el('button', 'jr-chip', '↩ Върни последното'); undo.type = 'button'; undo.hidden = true;
+    undo.addEventListener('click', () => {
+      const cur = load('bl_pregw', []);
+      if (!cur.length) { hint(row, 'Няма какво да върна — списъкът е празен. 💜'); return; }
+      const махнат = cur.pop(); save('bl_pregw', cur);
+      items.length = 0; cur.forEach(x => items.push(x));
+      clearHint(row); fx().buzz(8); draw();
+      hint(row, 'Върнах записа ' + махнат.kg + ' кг. 💜');
+    });
     add.addEventListener('click', () => {
       const v = parseFloat(inp.value);
-      if (isNaN(v) || v < 30 || v > 200) { hint(row, 'Провери числото — това е в кг (напр. 68).'); return; }
+      if (isNaN(v) || v < 30 || v > 200) { nudge(row, inp.value.trim() ? 'Провери числото — това е в кг (напр. 68).' : 'Напиши колко показва кантарът в кг (напр. 68).', inp); return; }
       clearHint(row);
       items.push({ d: today(), kg: v, w: pregWeek() });
       save('bl_pregw', items.slice(-60)); inp.value = ''; fx().buzz(10); draw();
+      tick(add, '✔ Записано');
     });
     function draw() {
+      undo.hidden = !items.length;
       if (!items.length) { box.innerHTML = '<p class="jr-privacy">Записвай колкото често ИСКАШ — кривата е за теб, не ти за нея. 🤍</p>'; return; }
       const last = items.slice(-14);
       const min = Math.min(...last.map(x => x.kg)) - 1, max = Math.max(...last.map(x => x.kg)) + 1;
@@ -239,7 +359,7 @@
       const d = items.length > 1 ? (items[items.length - 1].kg - items[0].kg).toFixed(1) : null;
       box.innerHTML = svg + `<p class="cs-note">Последно: <strong>${items[items.length - 1].kg} кг</strong>${d !== null ? ' · общо ' + (d > 0 ? '+' : '') + d + ' кг' : ''}. Тялото ти строи човек — има право на килограми. 💜</p>`;
     }
-    c.appendChild(row); c.appendChild(box); draw();
+    c.appendChild(row); c.appendChild(box); c.appendChild(undo); draw();
     return c;
   }
 
@@ -341,33 +461,81 @@
 
   // 📜 План за раждане — чеклист + печат
   const BIRTH_ITEMS = ['Партньорът да е с мен в залата', 'Кожа до кожа веднага след раждането', 'Тати да пререже пъпната връв', 'Без снимки от персонала', 'Кърмене в първия час', 'Тиха музика / собствен плейлист', 'Минимум шум и светлина', 'Обяснявайте ми какво правите'];
+  // 🟠 11.08 (обиколка „приемането за дадено“): два от осемте реда назоваваха
+  //    човек, когото може да го няма — „Партньорът“ и „Тати“. Жена, натиснала
+  //    „🤍 Сама съм“ (или такава, чийто човек е партньорка, майка, сестра),
+  //    намираше на ЛИСТА ЗА БОЛНИЦАТА две желания, адресирани до някой друг.
+  //    Самото желание е нейно и остава — сменя се само на кого сочи.
+  //    ⚠️ Текстът на реда е КЛЮЧ в `bl_birthplan` (`state[it]`), затова ключовете
+  //    НЕ се пипат: сменя се единствено това, което мама чете и печата. Така
+  //    вече отметнатите редове си остават отметнати.
+  //    ПЪТ НАЗАД: махаш `ЕТИКЕТИ` и `етикет()` — редовете пак изписват старото.
+  const ЕТИКЕТИ = {
+    'Партньорът да е с мен в залата': 'Човекът, когото избера, да е с мен в залата',
+    'Тати да пререже пъпната връв': 'Пъпната връв да пререже човекът, който е с мен'
+  };
+  const етикет = it => ЕТИКЕТИ[it] || it;
   function birthPlanCard() {
     if (window.BL_EXPECT && BL_EXPECT.paused && BL_EXPECT.paused()) return null;
     const c = card('План за раждане 📜 <span class="jr-sub">желанията ти — на лист за болницата</span>');
     const state = load('bl_birthplan', {});
     const wrap = el('div', 'jr-wins');
-    const items = BIRTH_ITEMS.concat(load('bl_birthplan_custom', []));
+    const свои = load('bl_birthplan_custom', []);
+    const items = BIRTH_ITEMS.concat(свои);
     items.forEach((it, i) => {
-      const r = el('button', 'jr-win' + (state[it] ? ' done' : '')); r.type = 'button';
-      r.innerHTML = `<span class="jr-check">${state[it] ? '✔' : ''}</span> ${esc(it)}`;
-      r.addEventListener('click', () => {
+      const мое = i >= BIRTH_ITEMS.length;
+      const r = el('div', 'jr-win' + (state[it] ? ' done' : ''));
+      const t = el('button', 'jr-winbtn'); t.type = 'button';
+      t.style.cssText = 'flex:1;min-width:0;display:flex;align-items:center;gap:10px;text-align:left;background:none;border:0;font:inherit;color:inherit;padding:0;min-height:44px;cursor:pointer;';
+      t.innerHTML = `<span class="jr-check">${state[it] ? '✔' : ''}</span> ${esc(етикет(it))}`;
+      t.setAttribute('aria-pressed', state[it] ? 'true' : 'false');
+      t.addEventListener('click', () => {
         state[it] = !state[it]; save('bl_birthplan', state);
-        r.classList.toggle('done'); r.querySelector('.jr-check').textContent = state[it] ? '✔' : '';
+        r.classList.toggle('done'); t.querySelector('.jr-check').textContent = state[it] ? '✔' : '';
+        t.setAttribute('aria-pressed', state[it] ? 'true' : 'false');
         fx().buzz(8);
       });
+      r.appendChild(t);
+      // 🔴 12.08 (мерено: 0 бутона за изтриване): своята точка се пишеше веднъж и
+      //    оставаше ЗАВИНАГИ — и на листа за болницата. Печатна грешка в „Искам
+      //    да ходя докато мога“ нямаше как да се поправи. Същият дефект вече беше
+      //    намерен и оправен в „Алергия-паспорт“ (одит г06, №211); тук беше
+      //    останал. ПЪТ НАЗАД: махаш този блок — точките пак стават вечни.
+      if (мое) {
+        const x = wide(el('button', 'jr-x', '✕')); x.type = 'button';
+        x.style.minHeight = '44px';
+        x.setAttribute('aria-label', 'Махни моята точка „' + it + '“ от плана');
+        x.addEventListener('click', () => {
+          (window.BL_UI ? BL_UI.confirm('Да махна ли „' + it + '“ от плана?', { emoji: '📜', okText: 'Махни', cancelText: 'Остави', danger: true }) : Promise.resolve(confirm('Да махна ли „' + it + '“?'))).then(да => {
+            if (!да) return;
+            const cur = load('bl_birthplan_custom', []);
+            const k = cur.indexOf(it); if (k > -1) cur.splice(k, 1);
+            save('bl_birthplan_custom', cur);
+            delete state[it]; save('bl_birthplan', state);
+            c.replaceWith(birthPlanCard());
+          });
+        });
+        r.appendChild(x);
+      }
       wrap.appendChild(r);
     });
     c.appendChild(wrap);
     const addRow = el('div', 'jr-addrow');
     const inp = el('input', 'jr-word'); inp.placeholder = 'своя точка…'; inp.maxLength = 60;
-    const add = el('button', 'jr-chip', '+'); add.type = 'button';
+    const add = wide(el('button', 'jr-chip', '+')); add.type = 'button';
     // ♿ 11.08 (клавиатура-четец): голият „+" не казваше в кой списък добавя.
     add.setAttribute('aria-label', 'Добави своята точка в плана за раждане');
-    add.addEventListener('click', () => {
-      const v = inp.value.trim(); if (!v) return;
-      const cus = load('bl_birthplan_custom', []); cus.push(v); save('bl_birthplan_custom', cus);
-      inp.value = ''; c.replaceWith(birthPlanCard());
-    });
+    const добави = () => {
+      const v = inp.value.trim();
+      if (!v) { nudge(addRow, 'Напиши какво искаш ти — то влиза на листа за болницата. 📜', inp); return; }
+      const cus = load('bl_birthplan_custom', []);
+      // и по видимия етикет — иначе мама преписва реда, който ЧЕТЕ, и той влиза втори път
+      if (items.some(x => x.toLowerCase() === v.toLowerCase() || етикет(x).toLowerCase() === v.toLowerCase())) { nudge(addRow, 'Тази точка вече е в списъка. 💜', inp); return; }
+      cus.push(v); save('bl_birthplan_custom', cus);
+      inp.value = ''; fx().buzz(8); c.replaceWith(birthPlanCard());
+    };
+    add.addEventListener('click', добави);
+    inp.addEventListener('keydown', e => { if (e.key === 'Enter') { e.preventDefault(); добави(); } });
     addRow.appendChild(inp); addRow.appendChild(add); c.appendChild(addRow);
     const pr = el('button', 'jr-btn', '🖨️ Лист за болницата'); pr.type = 'button';
     pr.addEventListener('click', () => {
@@ -375,7 +543,7 @@
       const mother = getBaby();
       BL_EXPR.printOverlay('План за раждане',
         `<p class="pr-big">Моите желания за раждането:</p>
-         <ul class="pr-list">${(chosen.length ? chosen : items).map(x => `<li>${esc(x)}</li>`).join('')}</ul>
+         <ul class="pr-list">${(chosen.length ? chosen : items).map(x => `<li>${esc(етикет(x))}</li>`).join('')}</ul>
          <p class="pr-note">Благодаря ви, че се съобразявате, когато е възможно. 💜</p>`);
     });
     c.appendChild(pr);
@@ -414,7 +582,10 @@
     ta.dataset.draft = 'bl_draft_letterbaby'; ta.value = load('bl_draft_letterbaby', '');
     const btn = el('button', 'jr-btn', 'Запечатай писмото 💌'); btn.type = 'button';
     btn.addEventListener('click', () => {
-      const v = ta.value.trim(); if (!v) return;
+      const v = ta.value.trim();
+      // 🔇 12.08 (мерено): празно поле → бутонът не правеше нищо и не казваше нищо.
+      if (!v) { nudge(btn, 'Още е празно. Може да е само едно изречение — то ще му стигне. 💌', ta); return; }
+      clearHint(btn);
       save('bl_letter_baby', { t: v, ts: Date.now() }); save('bl_draft_letterbaby', '');
       fx().confetti(btn); fx().cheer('Запечатано с обич 💌');
       c.replaceWith(letterToBabyCard());
@@ -437,13 +608,16 @@
     const add = el('button', 'jr-chip', '+ Добави'); add.type = 'button';
     addRow.appendChild(inp); addRow.appendChild(add);
     const list = el('div', 'nm-list');
-    add.addEventListener('click', () => {
+    const добавиИме = () => {
       const v = inp.value.trim();
-      if (!v) { hint(addRow, 'Напиши име първо. 💜'); return; }
-      if (items.some(x => x.n.toLowerCase() === v.toLowerCase())) { hint(addRow, 'Това име вече е горе. 💜'); return; }
+      if (!v) { nudge(addRow, 'Напиши име първо. 💜', inp); return; }
+      if (items.some(x => x.n.toLowerCase() === v.toLowerCase())) { nudge(addRow, 'Това име вече е горе. 💜', inp); return; }
       clearHint(addRow);
-      items.push({ n: v, m: 0, t: 0 }); save('bl_names_vote', items); inp.value = ''; draw();
-    });
+      items.push({ n: v, m: 0, t: 0 }); save('bl_names_vote', items); inp.value = ''; fx().buzz(8); draw();
+    };
+    add.addEventListener('click', добавиИме);
+    // 12.08: на телефон клавиатурата дава „Готово/Enter“ — то не правеше нищо тук.
+    inp.addEventListener('keydown', e => { if (e.key === 'Enter') { e.preventDefault(); добавиИме(); } });
     function draw() {
       list.innerHTML = items.length ? '' : '<p class="jr-privacy">Добавете кандидатите — и нека сърцата решат. 💜</p>';
       const подредени = items.slice().sort((a, b) => (b.m + b.t) - (a.m + a.t));
@@ -455,6 +629,8 @@
           <button class="nm-vote" data-w="m" type="button" aria-label="Първи глас за „${esc(it.n)}“">🌸 ${+it.m || 0}</button>
           <button class="nm-vote" data-w="t" type="button" aria-label="Втори глас за „${esc(it.n)}“">💙 ${+it.t || 0}</button>
           <button class="nt-del" type="button" aria-label="Махни името „${esc(it.n)}“">🗑</button>`;
+        // 👆 12.08 (мерено 44.6×40.4): touch.css вдига .nm-vote само до 40.
+        row.querySelectorAll('.nm-vote').forEach(b => { b.style.minHeight = '44px'; b.style.minWidth = '44px'; });
         row.querySelectorAll('.nm-vote').forEach(b => b.addEventListener('click', () => {
           // броячът НЕ бива да зацикля на 6-то докосване (одит-флот П23, проход
           // 2 №16): 6-ти глас връщаше на 0 и короната скачаше тихо на друго име
@@ -464,7 +640,7 @@
           setTimeout(() => draw(), 240);
         }));
         row.querySelector('.nt-del').addEventListener('click', () => { items.splice(items.indexOf(it), 1); save('bl_names_vote', items); draw(); });
-        list.appendChild(row);
+        list.appendChild(цели(row));
       });
     }
     c.appendChild(addRow); c.appendChild(list); draw();
@@ -478,14 +654,20 @@
     const items = load('bl_playlist', []);
     const addRow = el('div', 'jr-addrow');
     const inp = el('input', 'jr-word'); inp.placeholder = 'песен / изпълнител…'; inp.maxLength = 60;
-    const add = el('button', 'jr-chip', '+'); add.type = 'button';
+    const add = wide(el('button', 'jr-chip', '+')); add.type = 'button';
     add.setAttribute('aria-label', 'Добави песента в списъка');
     addRow.appendChild(inp); addRow.appendChild(add);
     const list = el('div', 'nt-list');
-    add.addEventListener('click', () => {
-      const v = inp.value.trim(); if (!v) return;
-      items.push({ t: v, d: Date.now() }); save('bl_playlist', items); inp.value = ''; draw();
-    });
+    // 🔇 12.08 (мерено): празно поле → нула промяна в списъка, нула в паметта.
+    //    И Enter не работеше — само тапът по „+“.
+    const добави = () => {
+      const v = inp.value.trim();
+      if (!v) { nudge(addRow, 'Коя песен? Стига и само „Ave Maria“. 🎵', inp); return; }
+      clearHint(addRow);
+      items.push({ t: v, d: Date.now() }); save('bl_playlist', items); inp.value = ''; fx().buzz(8); draw();
+    };
+    add.addEventListener('click', добави);
+    inp.addEventListener('keydown', e => { if (e.key === 'Enter') { e.preventDefault(); добави(); } });
     function draw() {
       list.innerHTML = items.length ? '' : '<p class="jr-privacy">Първата песничка? Бебето слуша от ~16-та седмица. 🎵</p>';
       items.slice().reverse().forEach((it, ri) => {
@@ -493,7 +675,7 @@
         const row = el('div', 'nt-row');
         row.innerHTML = `<div class="nt-txt">🎵 ${esc(it.t)}</div><div class="nt-meta"><span>${dstr(it.d)}</span><button class="nt-del" type="button" aria-label="Махни „${esc(it.t)}“ от списъка">🗑</button></div>`;
         row.querySelector('.nt-del').addEventListener('click', () => { items.splice(idx, 1); save('bl_playlist', items); draw(); });
-        list.appendChild(row);
+        list.appendChild(цели(row));
       });
     }
     c.appendChild(addRow); c.appendChild(list); draw();
@@ -519,11 +701,13 @@
         if (openS) stop();
         openS = { side: v, t0: Date.now() };
         save('bl_nursing_open', openS);
+        каз.textContent = 'Тръгна ' + lb.replace(/^\S+\s/, '') + ' — докосни пак за стоп.';
         update();
       });
       row.appendChild(b);
     });
     const hist = el('div', 'nr-hist');
+    const каз = el('p', 'jr-hint'); // тихият ред „какво стана“ под таймера
     function stop() {
       const dur = Math.round((Date.now() - openS.t0) / 1000);
       const items = load('bl_nursing', []);
@@ -532,6 +716,13 @@
         save('bl_nursing', items.slice(-60));
         save('bl_feed', { t: openS.t0, s: openS.side === 'Л' ? 'left' : openS.side === 'Д' ? 'right' : 'bottle' });
         fx().buzz(12);
+        каз.textContent = '✔ Записах ' + fmt(dur) + '.';
+      } else {
+        // 🔇 12.08 (мерено): стоп под 20 сек връщаше таймера на 00:00 и МЪЛЧЕШЕ.
+        //    Правилото си стои (случайно докосване), но мама заслужава да ѝ се
+        //    каже защо записът го няма — иначе решава, че таймерът е счупен.
+        каз.textContent = 'Само ' + dur + ' сек — не го записах (пазя те от случайно докосване).';
+        fx().buzz(6);
       }
       openS = null; save('bl_nursing_open', null);
       update(); drawHist();
@@ -595,7 +786,7 @@
       items.forEach(it => hist.appendChild(el('p', 'nr-hrow',
         `${it.s === 'Л' ? '🤱 ляво' : it.s === 'Д' ? '🤱 дясно' : '🍼 шише'} · <strong>${fmt(it.dur)}</strong> · ${new Date(it.ts).toLocaleTimeString('bg-BG', { hour: '2-digit', minute: '2-digit' })} ${dstr(it.ts)}`)));
     }
-    c.appendChild(disp); c.appendChild(row); c.appendChild(hist);
+    c.appendChild(disp); c.appendChild(row); c.appendChild(каз); c.appendChild(hist);
     c.appendChild(el('p', 'jr-privacy', 'Докосни същия бутон за стоп. Под 20 сек не записваме (случайно докосване).'));
     update(); drawHist();
     return c;
@@ -701,12 +892,23 @@
     const days = ['пон', 'вт', 'ср', 'четв', 'пет', 'съб', 'нед'];
     const mon = (() => { const d = new Date(); const day = (d.getDay() + 6) % 7; d.setDate(d.getDate() - day); return d; })();
     const grid = el('div', 'mn-grid');
+    // 👆 12.08 (мерено в 375px телефон): mega.css дава `repeat(auto-fit,
+    //    minmax(44px,1fr))` — в 311px кутия това прави 6 колони за 7 дни, тоест
+    //    неделя пада сама на втори ред. По-лошото: клетките НЕ се разтягат до
+    //    траковете си (бутон в грид не се stretch-ва) и се мерят по текста —
+    //    „вт“ излезе 16.8 px ШИРОКА, до съседи от 47.7. Седемнайсет пиксела за
+    //    пръст. Мерено с getBoundingClientRect, x=100 в трак 84.7–132.4.
+    //    Четири колони × 74 px: всеки ден е еднакъв, уцелваем и има място за
+    //    името на храната. ПЪТ НАЗАД: махаш двата реда стил по-долу.
+    grid.style.gridTemplateColumns = 'repeat(4, minmax(0, 1fr))';
     for (let i = 0; i < 7; i++) {
       const d = new Date(mon); d.setDate(d.getDate() + i);
       const key = localDate(d);
       const cell = el('button', 'mn-cell' + (key === today() ? ' today' : '')); cell.type = 'button';
+      cell.style.width = '100%';
       const val = menu[key];
       cell.innerHTML = `<span class="mn-day">${days[i]}</span><span class="mn-val">${val ? esc(val) : '+'}</span>`;
+      cell.setAttribute('aria-label', days[i] + ', ' + key.slice(8) + '.' + key.slice(5, 7) + (val ? ': ' + val : ' — още нищо'));
       cell.addEventListener('click', () => pick(key, cell));
       grid.appendChild(cell);
     }
@@ -739,11 +941,19 @@
       const inpRow = el('div', 'jr-addrow');
       const inp = el('input', 'jr-word'); inp.placeholder = 'или напиши свое…'; inp.maxLength = 30;
       // проход 4: поле с бутон + Enter (беше единственото, което пише само при blur).
-      const запиши = () => { if (inp.value.trim()) { menu[key] = inp.value.trim(); save('bl_menu', menu); cell.querySelector('.mn-val').textContent = menu[key]; picker.hidden = true; fx().buzz(8); } };
-      const ок = el('button', 'jr-chip', '✔'); ок.type = 'button'; ок.setAttribute('aria-label', 'запази');
-      ок.addEventListener('click', запиши);
-      inp.addEventListener('keydown', e => { if (e.key === 'Enter') { e.preventDefault(); запиши(); } });
-      inp.addEventListener('change', запиши);
+      // 🔇 12.08 (мерено): при празно поле „✔“ не правеше нищо и не казваше нищо —
+      //    прозорчето стоеше отворено и мама не знаеше дали е записано.
+      const запиши = тихо => {
+        if (!inp.value.trim()) { if (тихо !== true) nudge(inpRow, 'Напиши какво планираш за този ден. 🥄', inp); return; }
+        clearHint(inpRow);
+        menu[key] = inp.value.trim(); save('bl_menu', menu);
+        cell.querySelector('.mn-val').textContent = menu[key];
+        picker.hidden = true; fx().buzz(8);
+      };
+      const ок = wide(el('button', 'jr-chip', '✔')); ок.type = 'button'; ок.setAttribute('aria-label', 'запази');
+      ок.addEventListener('click', () => запиши(false));
+      inp.addEventListener('keydown', e => { if (e.key === 'Enter') { e.preventDefault(); запиши(false); } });
+      inp.addEventListener('change', () => запиши(true));
       inpRow.appendChild(inp); inpRow.appendChild(ок);
       picker.appendChild(inpRow);
     }
@@ -775,7 +985,11 @@
       let shown = RECIPES;
       if (have.length) {
         shown = RECIPES.filter(r => have.some(h => r.ing.some(g => g.startsWith(h.slice(0, 4)))));
-        if (!shown.length) { list.appendChild(el('p', 'jr-privacy', 'С това още нямам рецепта — но библиотеката иде! 📚')); return; }
+        // 📚 12.08 (правило „обещава ли текстът функция“): тук пишеше „но
+        //    библиотеката иде!“ — обещание за нещо, което ОТДАВНА го има
+        //    (js/lib.js, търсачката ѝ е в приложението). Мама чака доставка,
+        //    която вече е пристигнала. Казваме къде да гледа сега.
+        if (!shown.length) { list.appendChild(el('p', 'jr-privacy', 'С това още нямам рецепта тук. Питай на началния екран, в реда „💬 Кажи ми какво търсиш“ — там търся из цялата библиотека.')); return; }
       }
       shown.forEach(r => {
         const st = state[r.n] || {};
@@ -788,7 +1002,7 @@
           st[b.dataset.a] = !st[b.dataset.a]; state[r.n] = st; save('bl_recipes_state', state);
           b.classList.toggle('on'); fx().buzz(8);
         }));
-        list.appendChild(row);
+        list.appendChild(цели(row));
       });
     }
     inp.addEventListener('input', draw);
@@ -864,7 +1078,8 @@
       // и на картичката за баба и детегледачката. Всяко ръчно хапче вече има ✕.
       manual.forEach((a, i) => {
         const pill = el('span', 'fd-pill ap-pill', '⚠️ ' + esc(a) + ' ');
-        const x = el('button', 'jr-x', '✕'); x.type = 'button';
+        const x = wide(el('button', 'jr-x', '✕')); x.type = 'button';
+        x.style.minHeight = '44px';
         x.setAttribute('aria-label', 'Махни „' + a + '“ от паспорта');
         x.addEventListener('click', () => { manual.splice(i, 1); save('bl_allergy_manual', manual); draw(); });
         pill.appendChild(x);
@@ -878,9 +1093,19 @@
     }
     const addRow = el('div', 'jr-addrow');
     const inp = el('input', 'jr-word'); inp.placeholder = 'добави алерген ръчно…'; inp.maxLength = 30;
-    const add = el('button', 'jr-chip', '+'); add.type = 'button';
+    const add = wide(el('button', 'jr-chip', '+')); add.type = 'button';
     add.setAttribute('aria-label', 'Добави алергена в паспорта');
-    add.addEventListener('click', () => { const v = inp.value.trim(); if (!v) return; manual.push(v); save('bl_allergy_manual', manual); inp.value = ''; draw(); });
+    // 🔇 12.08 (мерено): празно поле → нищо. И втори път същият алерген влизаше
+    //    ПАК — на картичката за баба излизаше „⚠️ ядки · ⚠️ ядки“.
+    const добавиАл = () => {
+      const v = inp.value.trim();
+      if (!v) { nudge(addRow, 'Кой алерген? Напиши го както го знаеш ти. 🛡️', inp); return; }
+      if (manual.some(x => String(x).toLowerCase() === v.toLowerCase())) { nudge(addRow, 'Този вече е в паспорта. 💜', inp); return; }
+      clearHint(addRow);
+      manual.push(v); save('bl_allergy_manual', manual); inp.value = ''; fx().buzz(8); draw();
+    };
+    add.addEventListener('click', добавиАл);
+    inp.addEventListener('keydown', e => { if (e.key === 'Enter') { e.preventDefault(); добавиАл(); } });
     addRow.appendChild(inp); addRow.appendChild(add);
     const pr = el('button', 'jr-btn', '🖨️ Направи картичката'); pr.type = 'button';
     pr.addEventListener('click', () => {
@@ -965,10 +1190,16 @@
     addRow.appendChild(inp); addRow.appendChild(add);
     const quick = el('div', 'jr-quick');
     const list = el('div', 'nt-list');
-    add.addEventListener('click', () => {
-      const v = inp.value.trim(); if (!v) return;
+    // 🔇 12.08 (мерено): празно поле → нула ред в списъка, нула в паметта.
+    const добавиЛек = () => {
+      const v = inp.value.trim();
+      if (!v) { nudge(addRow, 'Напиши какво е дадено (както го е казал лекарят). 💚', inp); return; }
+      clearHint(addRow);
       items.push({ n: v, ts: Date.now() }); save('bl_meds', items.slice(-60)); inp.value = ''; draw(); fx().buzz(10);
-    });
+      tick(add, '✔ Записано');
+    };
+    add.addEventListener('click', добавиЛек);
+    inp.addEventListener('keydown', e => { if (e.key === 'Enter') { e.preventDefault(); добавиЛек(); } });
     function draw() {
       quick.innerHTML = '';
       [...new Set(items.slice(-10).map(x => x.n))].slice(0, 3).forEach(n => {
@@ -982,7 +1213,7 @@
         const row = el('div', 'nt-row');
         row.innerHTML = `<div class="nt-txt">💊 ${esc(it.n)}</div><div class="nt-meta"><span>${new Date(it.ts).toLocaleString('bg-BG')}</span><button class="nt-del" type="button" aria-label="Махни записа „${esc(it.n)}“">🗑</button></div>`;
         row.querySelector('.nt-del').addEventListener('click', () => { const i = items.indexOf(it); if (i > -1) items.splice(i, 1); save('bl_meds', items); draw(); });
-        list.appendChild(row);
+        list.appendChild(цели(row));
       });
     }
     c.appendChild(addRow); c.appendChild(quick); c.appendChild(list); draw();
@@ -1042,7 +1273,7 @@
     // ♿ 11.08 (клавиатура-четец): при type=date подсказката не се показва — полето
     //    стоеше без име, а „+" не казваше какво добавя.
     dt.setAttribute('aria-label', 'Дата на изтичане');
-    const add = el('button', 'jr-chip', '+'); add.type = 'button';
+    const add = wide(el('button', 'jr-chip', '+')); add.type = 'button';
     add.setAttribute('aria-label', 'Добави го в аптечката');
     addRow.appendChild(inp); addRow.appendChild(dt); addRow.appendChild(add);
     const list = el('div', 'nt-list');
@@ -1051,11 +1282,18 @@
     // „+“ го записваше отгоре — добавеното с бърз старт ИЗЧЕЗВАШЕ безшумно.
     // Същият капан беше оправен по-горе в tempCard; тук беше останал.
     const sync = () => { const cur = load('bl_pharmacy', []); items.length = 0; cur.forEach(x => items.push(x)); };
-    add.addEventListener('click', () => {
-      const v = inp.value.trim(); if (!v) return;
+    // 🔇 12.08 (мерено): празно поле → нищо. Мама попълваше САМО датата (полето
+    //    е до него) и натискаше „+“ — нула реакция, нула обяснение защо.
+    const добавиАпт = () => {
+      const v = inp.value.trim();
+      if (!v) { nudge(addRow, dt.value ? 'Само датата не стига — напиши и какво е това. 🧸' : 'Какво имате? Напр. „физиологичен серум“.', inp); return; }
+      clearHint(addRow);
       sync();
-      items.push({ n: v, exp: dt.value || '' }); save('bl_pharmacy', items); inp.value = ''; dt.value = ''; draw();
-    });
+      items.push({ n: v, exp: dt.value || '' }); save('bl_pharmacy', items); inp.value = ''; dt.value = ''; fx().buzz(8); draw();
+      tick(add, '✔');
+    };
+    add.addEventListener('click', добавиАпт);
+    inp.addEventListener('keydown', e => { if (e.key === 'Enter') { e.preventDefault(); добавиАпт(); } });
     function draw() {
       list.innerHTML = items.length ? '' : '<p class="jr-privacy">Серум, термометър, аспиратор… запиши какво имате — и никога не гадаеш в полунощ.</p>';
       items.forEach((it, idx) => {
@@ -1069,7 +1307,7 @@
         const row = el('div', 'nt-row' + expCls);
         row.innerHTML = `<div class="nt-txt">${esc(it.n)}</div><div class="nt-meta"><span>${expTxt}</span><button class="nt-del" type="button" aria-label="Махни „${esc(it.n)}“ от аптечката">🗑</button></div>`;
         row.querySelector('.nt-del').addEventListener('click', () => { items.splice(idx, 1); save('bl_pharmacy', items); draw(); });
-        list.appendChild(row);
+        list.appendChild(цели(row));
       });
     }
     c.appendChild(addRow); c.appendChild(list); draw();
@@ -1085,6 +1323,23 @@
   // 🌳 Дървото на уменията — разцъфва
   function skillTreeCard() {
     const c = card('Дървото на уменията 🌳 <span class="jr-sub">всяко умение е цвят — гледай как цъфти</span>');
+    const box = el('div', 'st-box');
+    c.appendChild(box);
+    // 🔴 12.08 (известният клас, мерено наживо): „📈 Какво умее сега?“ стои
+    //    ТОЧНО НАД тази карта в същата стая. Отбелязах пет умения — дървото
+    //    продължи да пише „Дървото чака първия цвят“. Цветовете се появиха чак
+    //    при повторно влизане в стаята. rooms17.js вече праща `bl:ms-changed`
+    //    (ред 175 и 224) — никой не го слушаше тук. Слушателят се маха сам,
+    //    щом картата излезе от документа.
+    рисувайДърво();
+    const прерисувай = () => {
+      if (!c.isConnected) { document.removeEventListener('bl:ms-changed', прерисувай); return; }
+      рисувайДърво();
+    };
+    document.addEventListener('bl:ms-changed', прерисувай);
+    return c;
+
+    function рисувайДърво() {
     const done = load('bl_ms_done', {});
     const ids = Object.keys(done).filter(k => done[k]);
     const branches = { motor: { ang: -58, col: '#f291bd' }, fine: { ang: -20, col: '#f2c53d' }, speech: { ang: 20, col: '#8fc0e8' }, social: { ang: 58, col: '#9fd8c6' } };
@@ -1103,12 +1358,10 @@
       });
     });
     svg += `<ellipse cx="160" cy="206" rx="55" ry="6" class="st-ground"/></svg>`;
-    const box = el('div', 'st-box');
     box.innerHTML = svg +
       `<p class="cs-note">${ids.length ? `<strong>${ids.length}</strong> ${ids.length === 1 ? 'цвят е разцъфнал' : 'цвята са разцъфнали'} 🌸 — отбелязвай уменията в „Какво умее сега?“` : 'Дървото чака първия цвят — отбележи умение в „Какво умее сега?“ 🌱'}</p>` +
       `<p class="st-legend">${Object.entries({ motor: '🤸', fine: '✋', speech: '🗣️', social: '💛' }).map(([k, e]) => `<span style="color:${branches[k].col}">●</span> ${e}`).join('  ')}</p>`;
-    c.appendChild(box);
-    return c;
+    }
   }
 
   // 📚 Лог на книжките
@@ -1117,14 +1370,19 @@
     const items = load('bl_books', []);
     const addRow = el('div', 'jr-addrow');
     const inp = el('input', 'jr-word'); inp.placeholder = 'заглавие…'; inp.maxLength = 60;
-    const add = el('button', 'jr-chip', '+'); add.type = 'button';
+    const add = wide(el('button', 'jr-chip', '+')); add.type = 'button';
     add.setAttribute('aria-label', 'Добави книжката в списъка');
     addRow.appendChild(inp); addRow.appendChild(add);
     const list = el('div', 'nt-list');
-    add.addEventListener('click', () => {
-      const v = inp.value.trim(); if (!v) return;
-      items.push({ t: v, fav: false, ts: Date.now() }); save('bl_books', items); inp.value = ''; draw();
-    });
+    // 🔇 12.08 (мерено): празно поле → нула. И Enter не работеше.
+    const добавиКн = () => {
+      const v = inp.value.trim();
+      if (!v) { nudge(addRow, 'Как се казва книжката? 📖', inp); return; }
+      clearHint(addRow);
+      items.push({ t: v, fav: false, ts: Date.now() }); save('bl_books', items); inp.value = ''; fx().buzz(8); draw();
+    };
+    add.addEventListener('click', добавиКн);
+    inp.addEventListener('keydown', e => { if (e.key === 'Enter') { e.preventDefault(); добавиКн(); } });
     function draw() {
       list.innerHTML = items.length ? '' : '<p class="jr-privacy">Първата книжка се помни цял живот. Коя е вашата? 📖</p>';
       items.slice().sort((a, b) => b.fav - a.fav).forEach(it => {
@@ -1133,7 +1391,7 @@
           <div class="nt-meta"><button class="jr-chip bk-fav" type="button" aria-label="${it.fav ? 'Махни „' + esc(it.t) + '“ от любимите' : 'Направи „' + esc(it.t) + '“ любима'}">${it.fav ? 'Любима 💜' : 'направи любима'}</button><button class="nt-del" type="button" aria-label="Махни „${esc(it.t)}“ от книжките">🗑</button></div>`;
         row.querySelector('.bk-fav').addEventListener('click', () => { it.fav = !it.fav; save('bl_books', items); draw(); });
         row.querySelector('.nt-del').addEventListener('click', () => { items.splice(items.indexOf(it), 1); save('bl_books', items); draw(); });
-        list.appendChild(row);
+        list.appendChild(цели(row));
       });
     }
     c.appendChild(addRow); c.appendChild(list); draw();
@@ -1177,34 +1435,68 @@
       const inp = el('input', 'jr-word'); inp.placeholder = 'за какво събираме? (напр. столче за кола)'; inp.maxLength = 40;
       const amt = el('input', 'jr-word'); amt.type = 'number'; amt.placeholder = 'колко лв са нужни?';
       const btn = el('button', 'jr-btn', 'Започни касичката 🐷'); btn.type = 'button';
+      // 🔇 12.08 (мерено с натискане): празно → нула промяна в DOM и в паметта.
+      //    Същото при „-50“. Два безмълвни отказа в един бутон.
       btn.addEventListener('click', () => {
         const n = inp.value.trim(), t = parseFloat(amt.value);
-        if (!n || isNaN(t) || t <= 0) return;
+        if (!n) { nudge(btn, 'За какво събирате? Напиши го с твои думи. 🐷', inp); return; }
+        if (isNaN(t)) { nudge(btn, 'Напиши и колко лева са нужни (само число). 🐷', amt); return; }
+        if (t <= 0) { nudge(btn, 'Сумата трябва да е над нула. 🐷', amt); return; }
+        clearHint(btn);
         save('bl_goal', { n, target: t, saved: 0 });
         c.replaceWith(goalCard());
       });
       c.appendChild(inp); c.appendChild(amt); c.appendChild(btn);
       return c;
     }
+    // 🎞️ 12.08 (правило „анимация само по transform/opacity“): лентата се
+    //    пълнеше с `width:%`, а mega.css:183 ѝ дава `transition: width .6s` —
+    //    прерисуване на всеки кадър. Ширината става 100% веднъж, а движението
+    //    е по scaleX. ПЪТ НАЗАД: `style="width:${pct}%"` както преди.
     const pct = Math.min(100, Math.round(g.saved / g.target * 100));
-    const bar = el('div', 'gl-bar', `<div class="gl-fill" style="width:${pct}%"></div><span class="gl-txt">${g.saved} / ${g.target} лв · ${pct}%</span>`);
+    const тихо = (() => { try { return matchMedia('(prefers-reduced-motion: reduce)').matches; } catch (e) { return false; } })();
+    const bar = el('div', 'gl-bar', `<div class="gl-fill" style="width:100%;transform-origin:left center;transform:scaleX(${pct / 100});transition:${тихо ? 'none' : 'transform .5s cubic-bezier(.22,1,.36,1)'}"></div><span class="gl-txt">${g.saved} / ${g.target} лв · ${pct}%</span>`);
     c.appendChild(el('p', 'cs-note', `Събираме за: <strong>${esc(g.n)}</strong> 🐷`));
     c.appendChild(bar);
+    const мал = el('p', 'jr-hint');
+    // ↩ 12.08: „+50 лв“ вместо „+5 лв“ беше необратимо — сумата не се маха
+    //    отникъде, освен като нулираш цялата касичка. Връщаме последното.
+    const назад = el('button', 'jr-chip', '↩ Върни последното'); назад.type = 'button'; назад.hidden = true;
+    const обнови = () => {
+      const p = Math.min(100, Math.round(g.saved / g.target * 100));
+      const f = bar.querySelector('.gl-fill'); if (f) f.style.transform = 'scaleX(' + (p / 100) + ')';
+      const t = bar.querySelector('.gl-txt'); if (t) t.textContent = `${g.saved} / ${g.target} лв · ${p}%`;
+      мал.textContent = g.saved >= g.target
+        ? (g.saved > g.target ? 'Събрахте ги — и още ' + (+(g.saved - g.target).toFixed(2)) + ' лв отгоре. 🎉' : 'Събрахте ги! 🎉')
+        : 'Остават ' + (+(g.target - g.saved).toFixed(2)) + ' лв.';
+    };
     const quick = el('div', 'jr-quick');
     [5, 10, 20, 50].forEach(v => {
       const b = el('button', 'jr-chip', '+' + v + ' лв'); b.type = 'button';
       b.addEventListener('click', () => {
-        g.saved += v; save('bl_goal', g);
-        if (g.saved >= g.target) { fx().confetti(bar); fx().cheer('СЪБРАХТЕ ГИ! 🎉 ' + g.n + ' идва!'); }
+        const преди = g.saved;
+        g.saved = +(g.saved + v).toFixed(2); save('bl_goal', g);
+        назад.hidden = false; назад.__преди = преди;
+        // картата вече не се пресъздава при всяко докосване — лентата се движи
+        обнови();
+        if (преди < g.target && g.saved >= g.target) { fx().confetti(bar); fx().cheer('СЪБРАХТЕ ГИ! 🎉 ' + g.n + ' идва!'); }
         else fx().buzz(10);
-        c.replaceWith(goalCard());
       });
       quick.appendChild(b);
     });
+    назад.addEventListener('click', () => {
+      if (назад.__преди === undefined) return;
+      g.saved = назад.__преди; save('bl_goal', g);
+      назад.hidden = true; назад.__преди = undefined;
+      обнови(); fx().buzz(8);
+    });
     const reset = el('button', 'jr-chip', '↺ нова цел'); reset.type = 'button';
     reset.addEventListener('click', () => { (window.BL_UI ? BL_UI.confirm('Нова касичка? Старата се нулира.', { emoji: '🐷', okText: 'Нова', cancelText: 'Отказ' }) : Promise.resolve(confirm('Нова касичка? Старата се нулира.'))).then(да => { if (да) { save('bl_goal', null); c.replaceWith(goalCard()); } }); });
+    quick.appendChild(назад);
     quick.appendChild(reset);
     c.appendChild(quick);
+    c.appendChild(мал);
+    обнови();
     return c;
   }
 
@@ -1213,6 +1505,14 @@
     const c = card('Гардеробчето 👕 <span class="jr-sub">какво имате по размери — да не купиш пак 62!</span>');
     const w = load('bl_wardrobe', {});
     const grid = el('div', 'wd-grid');
+    // 👆 12.08 (мерено): mega.css дава на ± твърди 24×24, touch.css ги вдига до
+    //    40 — но в четириколонния грид клетката е 73 px, а съдържанието ѝ иска
+    //    91: гридът тръгваше на хоризонтален скрол (scrollWidth 330 > 311) и
+    //    последната колонка се криеше. Мерено с две колони и цели 44×44:
+    //    клетка 152 px, scrollWidth 311 = clientWidth 311 — нула скрол, нула
+    //    смачкване. На по-широк екран auto-fit сам връща три и четири колони.
+    //    ПЪТ НАЗАД: махаш този ред и трите style реда при бутоните по-долу.
+    grid.style.gridTemplateColumns = 'repeat(auto-fit, minmax(140px, 1fr))';
     // 🔴 11.08 (обиколка „документи и пари“): долният ред се пишеше ВЕДНЪЖ, при
     //    строежа. Мама брои дрешките в магазина, натиска „+“ до 74 три пъти —
     //    квадратчето показва 3, а редът отдолу продължава да казва „имате 0 бр.“
@@ -1237,14 +1537,23 @@
       //    как да разбере на кой размер стои. Размерът влиза в името.
       minus.setAttribute('aria-label', 'Едно по-малко от размер ' + sz);
       plus.setAttribute('aria-label', 'Едно повече от размер ' + sz);
+      minus.style.cssText += ';min-width:44px;min-height:44px;width:44px;height:44px;';
+      plus.style.cssText += ';min-width:44px;min-height:44px;width:44px;height:44px;';
       num.setAttribute('aria-live', 'polite');
       num.setAttribute('aria-label', 'бройки от размер ' + sz);
-      minus.addEventListener('click', () => { w[sz] = Math.max(0, (w[sz] || 0) - 1); save('bl_wardrobe', w); num.textContent = w[sz]; освежи(); });
+      minus.addEventListener('click', () => {
+        // 🔇 12.08 (мерено): „−“ на нула не правеше НИЩО — нито числото, нито
+        //    редът отдолу, нито паметта. Мама натиска пак и пак. Сега казваме.
+        if (!(w[sz] || 0)) { num.textContent = '0'; обобщение.textContent = 'Размер ' + sz + ' е вече на нула — по-надолу няма. 💜'; fx().buzz(5); setTimeout(освежи, 1600); return; }
+        w[sz] = w[sz] - 1; save('bl_wardrobe', w); num.textContent = w[sz]; fx().buzz(5); освежи();
+      });
       plus.addEventListener('click', () => { w[sz] = (w[sz] || 0) + 1; save('bl_wardrobe', w); num.textContent = w[sz]; fx().buzz(6); освежи(); });
       grid.appendChild(cell);
     });
     c.appendChild(grid);
-    if (сегашен) { освежи(); c.appendChild(обобщение); }
+    // 12.08: редът се закачаше САМО когато има рождена дата — а сега през него
+    //    говори и „−“ на нула. Стои винаги; при непопълнена дата е просто празен.
+    освежи(); c.appendChild(обобщение);
     return c;
   }
 
@@ -1261,6 +1570,10 @@
       const feed = load('bl_feed', null);
       const tried = load('bl_tried', {});
       const alrg = Object.keys(tried).filter(k => (tried[k] || '').includes('⚠️')).concat(load('bl_allergy_manual', []));
+      // 🟡 12.08: тук се вземаше ПЪРВАТА добавена песен и на листа за бабата
+      //    излизаше „🎵 Любимата песничка: …“. Плейлистът няма „любима“ — това
+      //    е просто най-старият запис. Приложението твърдеше нещо, което не
+      //    знае, и бабата го чете като факт. Казваме какво наистина имаме.
       const song = (load('bl_playlist', [])[0] || {}).t;
       BL_EXPR.printOverlay('Нашето бебе — наръчник за близките',
         `<p class="pr-big">${esc(baby.name) || 'Бебето'}${a ? ' · ' + a.text : ''}</p>
@@ -1273,7 +1586,7 @@
                  Бабата чете зелената отметка като проверен факт и черпи. Празно
                  значи „нямам записано“, не „няма“. */''}
            ${alrg.length ? `<li>⚠️ ВНИМАВАЙ С: <strong>${alrg.map(esc).join(', ')}</strong></li>` : '<li>❔ За алергии <strong>питай мама</strong> — в приложението няма записани.</li>'}
-           ${song ? `<li>🎵 Любимата песничка: ${esc(song)}</li>` : ''}
+           ${song ? `<li>🎵 Песничка от нашия списък: ${esc(song)}</li>` : ''}
            ${ta.value.trim() ? `<li>📝 ${esc(ta.value)}</li>` : ''}
            ${/* 🔴 05.08 (одит г06, №118): редът четеше `sos.doc` — ключ, който
                  никой не записва. Мама беше попълнила педиатъра в СОС-центъра,

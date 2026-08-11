@@ -24,6 +24,20 @@
   const getBaby = () => load('bl_baby', { name: '', sex: '', birth: '' });
   const age = () => { const b = getBaby(); return b.birth && window.BL_AGE ? BL_AGE(b.birth) : null; };
   const dayIndex = () => { const n = new Date(); return Math.floor((n - new Date(n.getFullYear(), 0, 0)) / 86400000) + n.getFullYear(); };
+  // 🟡 11.08 (обиколка по стаи, rooms7): тиха обратна връзка. САМО opacity и
+  //    transform (правило 12), и мълчи, ако мама е поискала покой.
+  const покой = () => { try { return matchMedia('(prefers-reduced-motion: reduce)').matches; } catch (e) { return false; } };
+  const пулс = n => {
+    if (!n || покой()) return;
+    n.style.transition = 'none'; n.style.opacity = '0'; n.style.transform = 'translateY(4px)';
+    requestAnimationFrame(() => {
+      n.style.transition = 'opacity .18s ease, transform .18s ease';
+      n.style.opacity = ''; n.style.transform = '';
+    });
+  };
+  // 👆 11.08: мишена за пръст ≥44px там, където общият css не стига
+  //    (details>summary — мерено 22px в браузъра на 375px екран).
+  const пипаемо = (n, пад) => { if (!n) return; n.style.boxSizing = 'border-box'; n.style.minHeight = '44px'; if (пад) n.style.padding = пад; };
 
   // ═══════════ ⏱️ 4.6.1 ИГРАТА ЗА 5 МИНУТИ ═══════════
   // Мама има пет минути, не тридесет. И не иска да избира — иска да ѝ кажат.
@@ -64,7 +78,15 @@
     // проход 4: коректността идва от АБСОЛЮТНО време (фиксиран край), не от сек--.
     // Иначе при заключен екран броенето замръзва и не свършва навреме.
     let t = null, край = 0;
-    const спри = () => { if (t) { clearInterval(t); t = null; } };
+    // 🔴 11.08 (мерено в браузъра): `document.addEventListener('visibilitychange')`
+    //    стоеше НАВЪН и не се махаше никога. Две отваряния на стаята = 2 добавени,
+    //    0 махнати — и всяко следващо отваряне трупа още едно. Сега слушателят
+    //    живее точно колкото таймера и си отива заедно с него.
+    const наВидимост = () => { if (t && !document.hidden) тик(); };
+    const спри = () => {
+      if (t) { clearInterval(t); t = null; }
+      document.removeEventListener('visibilitychange', наВидимост);
+    };
     const тик = () => {
       const ov = document.getElementById('roomOverlay');
       if (ov && ov.hidden) { спри(); return; }                 // напусната стая → чисти интервала
@@ -77,18 +99,29 @@
       }
     };
     b.addEventListener('click', () => {
-      if (t) { спри(); b.textContent = '▶️ Пусни 5 минути'; часовник.textContent = ''; return; }
+      if (t) { спри(); b.textContent = '▶️ Пусни 5 минути'; часовник.textContent = 'Спрях. Когато си готова — пак. 💜'; return; }
       край = Date.now() + 300000;                               // 5 мин напред, фиксиран край
       b.textContent = '⏹️ Спри';
+      // при връщане от заключен екран/друго приложение — пресметни веднага
+      document.addEventListener('visibilitychange', наВидимост);
       тик(); t = setInterval(тик, 1000);
     });
-    // при връщане от заключен екран/друго приложение — пресметни веднага
-    document.addEventListener('visibilitychange', () => { if (t && !document.hidden) тик(); });
+    // 🟠 11.08 (мерено: 3 мълчаливи от 15 натискания): жребият можеше да
+    //    изтегли ТОЧНО същата игра — бутон, при който нищо не се променя.
+    //    Сега тегли измежду ОСТАНАЛИТЕ; а когато играта е една, го казва.
+    let текуща = g;
     из.addEventListener('click', () => {
       const п = пул.length ? пул : ИГРИ5;
-      const н = п[Math.floor(Math.random() * п.length)];
+      const други = п.filter(x => x !== текуща);
+      if (!други.length) {
+        из.textContent = 'Тази е единствената за възрастта му';
+        clearTimeout(из._ч); из._ч = setTimeout(() => { из.textContent = '🎲 Друга игра'; }, 2600);
+        fx().buzz(5); return;
+      }
+      const н = други[Math.floor(Math.random() * други.length)];
+      текуща = н;
       box.innerHTML = `<p class="g5-t">${н.e} ${esc(н.t)}</p><p class="g5-d">${esc(н.d)}</p>`;
-      fx().buzz(8);
+      пулс(box); fx().buzz(8);
     });
     row.appendChild(b); row.appendChild(из);
     c.appendChild(row); c.appendChild(часовник);
@@ -116,13 +149,23 @@
     //    надзор, размер или капачка, която се развива.
     c.appendChild(el('p', 'lb-warn2',
       '⚠️ Всичко тук е за будно дете под твой поглед — не за само в креватчето и не за сън. Под 3 години нищо, което минава през ролка от тоалетна хартия, не остава само в ръчичките. Капачките се затварят докрай, а тънките найлони и фолиото стоят в твоите ръце.'));
+    // 🟠 11.08 (обиколка): нищо не показваше КОЕ е избрано — а повторното
+    //    натискане на същото нещо беше напълно мълчаливо. Сега избраното личи
+    //    (контур в цвета на текста — работи и в тъмна тема) и всяко натискане
+    //    дава видим отговор.
     const grid = el('div', 'hs-grid');
     Object.keys(ВКЪЩИ).forEach(к => {
       const b = el('button', 'hs-chip', к); b.type = 'button';
+      b.setAttribute('aria-pressed', 'false');
       b.addEventListener('click', () => {
+        grid.querySelectorAll('.hs-chip').forEach(x => {
+          x.setAttribute('aria-pressed', 'false'); x.style.outline = ''; x.style.outlineOffset = '';
+        });
+        b.setAttribute('aria-pressed', 'true');
+        b.style.outline = '2px solid currentColor'; b.style.outlineOffset = '1px';
         out.innerHTML = `<p class="hs-h">${esc(к)}</p><ul>` +
           ВКЪЩИ[к].map(x => `<li>${esc(x)}</li>`).join('') + '</ul>';
-        fx().buzz(6);
+        пулс(out); fx().buzz(6);
       });
       grid.appendChild(b);
     });
@@ -147,6 +190,9 @@
     БАБИНИ.forEach(([e, име, как, защо]) => {
       const d = el('details', 'bg-game');
       d.innerHTML = `<summary>${e} ${esc(име)}</summary><p class="bg-how">${esc(как)}</p><p class="bg-why">💡 ${esc(защо)}</p>`;
+      // 👆 11.08 (мерено на 375px екран): всичките шест summary-та бяха 22px
+      //    високи — половин мишена за пръст. touch.css не ги покрива.
+      пипаемо(d.querySelector('summary'), '11px 0');
       c.appendChild(d);
     });
     c.appendChild(el('p', 'jr-privacy', 'Тези игри са на стотици години и още работят. Не защото са магия — а защото са лице, глас, докосване и изненада. Точно това, което малкият мозък обича.'));
@@ -224,28 +270,53 @@
     const b = el('button', 'jr-btn wipe-btn', '🗑️ Изтрий всичко от този телефон');
     b.type = 'button';
     const st = el('p', 'jr-privacy', '');
-    let стъпка = 0;
+    // ↩︎ 11.08: изход по всяко време — досега единственият начин да се откажеш
+    //    беше да чакаш 8-10 секунди с „🔴 Последно“ на екрана.
+    const откажи = el('button', 'jr-chip jr-chip-soft', '↩︎ Не, размислих'); откажи.type = 'button';
+    откажи.hidden = true;
+    let стъпка = 0, последно = 0, будилник = null;
+    const назад = () => {
+      стъпка = 0; clearTimeout(будилник); откажи.hidden = true;
+      b.textContent = '🗑️ Изтрий всичко от този телефон'; st.textContent = '';
+    };
+    откажи.addEventListener('click', () => { назад(); st.textContent = 'Добре. Нищо не е пипнато. 💜'; fx().buzz(5); });
     b.addEventListener('click', () => {
+      const сега = Date.now();
+      // 🔴 11.08 (ДОКАЗАНО в браузъра): три натискания за под 5 милисекунди
+      //    изтриха всичките 32 записа. Никаква пауза, никакво четене — само три
+      //    бързи докосвания с палец и цялото ѝ приложение го няма, без връщане.
+      //    Стъпките имат смисъл само ако има време да се ПРОЧЕТАТ.
+      if (стъпка > 0 && сега - последно < 900) {
+        st.innerHTML = '⏳ Спокойно — прочети реда отгоре и натисни пак. Това не бива да става с три бързи докосвания.';
+        // и при ВТОРО такова бързо докосване редът трябва да мигне — иначе
+        // второто натискане е мълчаливо (същият текст върху същото място)
+        пулс(st); fx().buzz(5);
+        return;
+      }
+      последно = сега;
       if (стъпка === 0) {
-        стъпка = 1;
+        стъпка = 1; откажи.hidden = false;
         b.textContent = '⚠️ Сигурна ли си? Натисни пак';
         st.innerHTML = 'Ще изчезнат: дневникът, снимките, гласовите бележки, писмата, всички отметки. <strong>Завинаги.</strong>';
-        setTimeout(() => { if (стъпка === 1) { стъпка = 0; b.textContent = '🗑️ Изтрий всичко от този телефон'; st.textContent = ''; } }, 8000);
+        clearTimeout(будилник);
+        будилник = setTimeout(() => { if (стъпка === 1) назад(); }, 8000);
         return;
       }
       if (стъпка === 1) {
         стъпка = 2;
         b.textContent = '🔴 Последно: натисни, за да изтриеш';
         st.innerHTML = 'Ако не си свалила резервно копие — направи го СЕГА. Копчето е по-горе. <br>Това е последната ти спирка.';
-        setTimeout(() => { if (стъпка === 2) { стъпка = 0; b.textContent = '🗑️ Изтрий всичко от този телефон'; st.textContent = ''; } }, 10000);
+        clearTimeout(будилник);
+        будилник = setTimeout(() => { if (стъпка === 2) назад(); }, 10000);
         return;
       }
+      clearTimeout(будилник); откажи.hidden = true;
       Object.keys(localStorage).filter(k => k.startsWith('bl_')).forEach(k => localStorage.removeItem(k));
       if (window.BL_STORE && BL_STORE.wipe) { try { BL_STORE.wipe(); } catch (e) {} }
       st.textContent = 'Изтрито. Приложението се презарежда празно…';
       setTimeout(() => location.reload(), 1200);
     });
-    c.appendChild(b); c.appendChild(st);
+    c.appendChild(b); c.appendChild(st); c.appendChild(откажи);
     return c;
   }
 
@@ -319,7 +390,14 @@
     бут.addEventListener('click', () => {
       const нов = (window.BL_LAB && BL_LAB.startExp) ? BL_LAB.startExp(шбл) : null;
       fx().buzz(10);
-      if (!нов) { бут.textContent = 'Вече ти текат два опита — довърши единия и се върни'; return; }
+      if (!нов) {
+        // 🟡 11.08: съобщението оставаше върху бутона завинаги — и след като
+        //    мама затвори един опит, копчето още ѝ казваше, че не може.
+        бут.textContent = 'Вече ти текат два опита — довърши единия и се върни';
+        clearTimeout(бут._ч);
+        бут._ч = setTimeout(() => { бут.textContent = '🔬 Тръгни на този опит'; }, 3600);
+        return;
+      }
       бут.disabled = true; бут.textContent = '✔ Тръгна — вече е горе в стаята';
       // пре-строяваме САМО тялото на стаята (както прави и Лабораторията),
       // за да се появи веднага при останалите опити; чатът не се пипа

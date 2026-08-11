@@ -386,6 +386,70 @@
   //                    К А Р Т И Т Е
   // ═══════════════════════════════════════════════════
 
+  // 🔴 11.08 (обиколка по телефон): смяната на рождената дата горе викаше
+  //   render(), а render() ТРИЕ цялата стая (измерени 60 карти) и я строи
+  //   наново. Измерено на живо: недописаният текст в „Заключеното дневниче“ и
+  //   в „Мечтите ми“ изчезваше в мига, в който мама попълни датата си горе.
+  //   Сега всяка зависима карта се пречертава ОТВЪТРЕ — възелът остава, значи
+  //   📌, сгъването и aria-етикетът, които polish.js слага отвън, оцеляват.
+  function зависима(c, тяло) {
+    c.setAttribute('data-wm-dep', '1');
+    c._wmRefresh = () => {
+      const t = c.querySelector('.jr-title');
+      while (c.lastChild && c.lastChild !== t) c.removeChild(c.lastChild);
+      try { тяло(c); } catch (e) {}
+    };
+    c._wmRefresh();
+    return c;
+  }
+  // заглавието се сменя, но 📌 на polish.js виси В НЕГО — прибираме го обратно
+  const заглавие = (c, html) => {
+    const t = c.querySelector('.jr-title'); if (!t) return;
+    const пин = t.querySelector('.pin-btn');
+    t.innerHTML = html;
+    if (пин) t.appendChild(пин);
+  };
+  function освежиЗависимите() {
+    const root = document.getElementById('roRoom'); if (!root) return;
+    root.querySelectorAll('[data-wm-dep]').forEach(x => { try { if (x._wmRefresh) x._wmRefresh(); } catch (e) {} });
+  }
+
+  // 🔴 11.08: МЪЛЧАЛИВ БУТОН. Тап по „✨“ с празно поле не правеше нищо видимо —
+  //   мама не разбира дали е счупено, или е тя. Всеки такъв изход вече казва
+  //   защо и слага курсора там, където трябва да пише.
+  const каз = (котва, txt, поле) => {
+    if (!котва || !котва.parentNode) return;
+    let p = котва.nextElementSibling;
+    if (!p || !p.classList || !p.classList.contains('wm-say')) {
+      p = el('p', 'jr-privacy wm-say', '');
+      p.style.whiteSpace = 'pre-wrap';
+      p.style.overflowWrap = 'anywhere'; p.style.wordBreak = 'break-word'; p.style.minWidth = '0';
+      котва.parentNode.insertBefore(p, котва.nextSibling);
+    }
+    p.textContent = txt; p.hidden = false;
+    clearTimeout(p._t); p._t = setTimeout(() => { p.hidden = true; }, 3200);
+    if (поле) фокус(поле);
+  };
+  // 📱 В11: клавиатурата изяжда долната половина от екрана. Полето, в което
+  //   пращаме мама да пише, трябва да е ВИДИМО след като тя изскочи. Мерим с
+  //   visualViewport (истинската височина СЛЕД клавиатурата), не с innerHeight.
+  function фокус(t) {
+    try { t.focus(); } catch (e) { return; }
+    const виж = () => {
+      const vv = window.visualViewport;
+      const дъно = vv ? vv.height : window.innerHeight;
+      const r = t.getBoundingClientRect();
+      if (r.top < 8 || r.bottom > дъно - 8) {
+        try { t.scrollIntoView({ block: 'center', behavior: 'smooth' }); } catch (e) { t.scrollIntoView(); }
+      }
+    };
+    виж();
+    setTimeout(виж, 320);
+  }
+  // 👆 11.08: измерено с getBoundingClientRect — „✨“ беше 42×40, „+“ 36×42.
+  //   Прагът за пръст на майка, която държи бебе с другата ръка, е 44×44.
+  const пръст = b => { b.style.minWidth = '44px'; b.style.minHeight = '44px'; return b; };
+
   // ── профилът на жената: рождената ѝ дата (бебето си има своя) ──
   function meCard() {
     // 11.08: „и луната“ беше празно обещание — лунната карта смята фазата за днес
@@ -409,7 +473,30 @@
       out.innerHTML = '<strong>' + z.emoji + ' ' + z.name + '</strong> · стихия ' + ELEM[z.elem][0] + ' ' + z.elem +
                       (lp ? ' · число на пътя <strong>' + lp + '</strong>' : '');
     }
-    const sync = () => { save('bl_me', { name: nm.value.trim(), birth: dt.value }); draw(); render(); имеРед(); };
+    // 🔴 11.08 (обиколка по телефон): дата в БЪДЕЩЕТО минаваше. Измерено на
+    //   живо: 2030-01-01 → „♑ Козирог · число на пътя 7“ и лична година.
+    //   `max` е само подсказка — колелцето за годината на Android я прескача.
+    //   Тук датата се проверява наистина, а мама научава ЗАЩО не се е приела.
+    const валидна = b => {
+      if (!b) return true;
+      const d = new Date(b);
+      return !isNaN(d) && d <= new Date() && d.getFullYear() >= 1920;
+    };
+    const sync = () => {
+      if (!валидна(dt.value)) {
+        каз(out, 'Тази дата не се връзва — рождената ти дата е в миналото. Провери годината. 💜', dt);
+        dt.value = load('bl_me', {}).birth || '';
+        return;
+      }
+      save('bl_me', { name: nm.value.trim(), birth: dt.value });
+      draw();
+      // НЕ render() — виж бележката при `зависима`. Пречертават се само трите
+      // карти, които наистина четат bl_me; останалите 57 (и недописаният в тях
+      // текст на мама) не се пипат.
+      освежиЗависимите();
+      имеРед();
+      каз(out, dt.value || nm.value.trim() ? 'Записано ✔ — стои само на този телефон.' : 'Полетата са празни. Нищо не е записано.');
+    };
     nm.addEventListener('change', sync); dt.addEventListener('change', sync);
     c.appendChild(row); c.appendChild(out); draw();
 
@@ -433,9 +520,13 @@
     const гал = el('input', 'jr-word');
     гал.placeholder = 'Как те викаха, когато беше само ти…'; гал.maxLength = 24;
     гал.value = load(ГАЛЕНО, { n: '' }).n || '';
-    гал.addEventListener('change', () => { save(ГАЛЕНО, { n: гал.value.trim().slice(0, 24) }); имеРед(); });
+    гал.addEventListener('change', () => {
+      save(ГАЛЕНО, { n: гал.value.trim().slice(0, 24) });
+      имеРед();
+      каз(редГал, гал.value.trim() ? 'Записано ✔ Оттук нататък така ще ти казвам.' : 'Изчистено. Ще ползвам името ти, ако си го дала.');
+    });
     редГал.appendChild(гал);
-    const пак = el('button', 'jr-chip jr-chip-soft', '↻ Още веднъж'); пак.type = 'button';
+    const пак = el('button', 'jr-chip jr-chip-soft', '↻ Още веднъж'); пак.type = 'button'; пръст(пак);
     let бр = 0;
     function имеРед() {
       const име = (load(ГАЛЕНО, {}).n || load('bl_me', {}).name || '').trim();
@@ -454,15 +545,18 @@
   }
 
   function horoCard() {
-    const me = load('bl_me', {});
-    const z = zodiacOf(me.birth);
-    const c = card('Хороскопът ти днес ' + (z ? z.emoji : '🔮') + sub(z ? z.name + ' · ' + new Date().toLocaleDateString('bg-BG') : 'сложи рождената си дата горе'));
-    c.appendChild(el('div', 'wm-band', FUN));
-    if (!z) { c.appendChild(el('p', 'jr-privacy', 'Щом ми кажеш кога си родена, всяка сутрин ще те чака по един ред. 💃')); return c; }
-    c.appendChild(el('p', 'wm-horo', esc(pick(HORO[z.name] || ['Днес е твой ден.'], 0))));
-    const e = ELEM[z.elem];
-    c.appendChild(el('p', 'wm-elem', e[0] + ' <strong>Стихия ' + z.elem + '</strong><br>⚡ ' + e[1] + '<br>🪫 ' + e[2]));
-    return c;
+    // тялото се чете ПРЯСНО при всяко пречертаване (виж `зависима`) — иначе
+    // картата помни зодията отпреди мама да си каже датата.
+    return зависима(card('Хороскопът ти днес 🔮'), c => {
+      const me = load('bl_me', {});
+      const z = zodiacOf(me.birth);
+      заглавие(c, 'Хороскопът ти днес ' + (z ? z.emoji : '🔮') + sub(z ? z.name + ' · ' + new Date().toLocaleDateString('bg-BG') : 'сложи рождената си дата горе'));
+      c.appendChild(el('div', 'wm-band', FUN));
+      if (!z) { c.appendChild(el('p', 'jr-privacy', 'Щом ми кажеш кога си родена, всяка сутрин ще те чака по един ред. 💃')); return; }
+      c.appendChild(el('p', 'wm-horo', esc(pick(HORO[z.name] || ['Днес е твой ден.'], 0))));
+      const e = ELEM[z.elem];
+      c.appendChild(el('p', 'wm-elem', e[0] + ' <strong>Стихия ' + z.elem + '</strong><br>⚡ ' + e[1] + '<br>🪫 ' + e[2]));
+    });
   }
 
   function tarotCard() {
@@ -477,7 +571,7 @@
     if (typeof st.idx !== 'number') st.idx = -1;
     if (typeof st.кръг !== 'number') st.кръг = 1;   // г12 №194: кой път минава тестето
     const box = el('div', 'wm-card-box');
-    const btn = el('button', 'jr-chip wm-draw', '🃏 Изтегли картата за днес'); btn.type = 'button';
+    const btn = el('button', 'jr-chip wm-draw', '🃏 Изтегли картата за днес'); btn.type = 'button'; пръст(btn);
     const seenP = el('p', 'wm-seen', '');
     function drawSeen() {
       // г12 №194: на 61-вия ден колекцията се нулираше МЪЛЧАЛИВО — „60 от 60“
@@ -516,15 +610,15 @@
   }
 
   function numeroCard() {
-    const me = load('bl_me', {});
-    const lp = lifePath(me.birth), py = personalYear(me.birth);
-    const c = card('Твоето число 🔢' + sub('смята се от рождената ти дата — затова е точно като аритметика'));
-    c.appendChild(el('div', 'wm-band', FUN));
-    if (!lp) { c.appendChild(el('p', 'jr-privacy', 'Сложи рождената си дата горе и ще ти го сметна. 🔢')); return c; }
-    const n = NUM[lp] || ['Твоето число', ''];
-    c.appendChild(el('div', 'wm-num', '<span class="wm-nbig" data-cnt="' + lp + '">' + lp + '</span><div><strong>' + n[0] + '</strong><p>' + n[1] + '</p></div>'));
-    if (py) c.appendChild(el('p', 'wm-py', '📅 <strong>Твоята ' + new Date().getFullYear() + '-та е година ' + py + '</strong><br>' + (PY[py] || '')));
-    return c;
+    return зависима(card('Твоето число 🔢' + sub('смята се от рождената ти дата — затова е точно като аритметика')), c => {
+      const me = load('bl_me', {});
+      const lp = lifePath(me.birth), py = personalYear(me.birth);
+      c.appendChild(el('div', 'wm-band', FUN));
+      if (!lp) { c.appendChild(el('p', 'jr-privacy', 'Сложи рождената си дата горе и ще ти го сметна. 🔢')); return; }
+      const n = NUM[lp] || ['Твоето число', ''];
+      c.appendChild(el('div', 'wm-num', '<span class="wm-nbig" data-cnt="' + lp + '">' + lp + '</span><div><strong>' + n[0] + '</strong><p>' + n[1] + '</p></div>'));
+      if (py) c.appendChild(el('p', 'wm-py', '📅 <strong>Твоята ' + new Date().getFullYear() + '-та е година ' + py + '</strong><br>' + (PY[py] || '')));
+    });
   }
 
   function moonCard() {
@@ -538,32 +632,59 @@
       доНов <= 0 ? 'Новолунието е днес 🌑' :
       'Следващото новолуние: <strong>още ' + доНов + (доНов === 1 ? ' ден' : ' дни') + '</strong>';
     c.appendChild(el('div', 'wm-moon', '<span class="wm-mbig">' + e + '</span><div><strong>' + t + '</strong><p>' + txt + '</p><p class="wm-moon-next">🌙 ' + редНов + '</p></div>'));
+    // 🔁 11.08: списъкът с желания се пречертава САМ. Досега бутонът викаше
+    //   render() — цялата стая се строеше наново заради три реда текст, а
+    //   недописаното на мама другаде отиваше на боклука (измерено на живо).
+    const списък = el('div', 'wm-wishes');
+    // В10: дълга дума без интервал разпъваше картата настрани (измерено в
+    // списъците: scrollWidth 726 при clientWidth 347). Родителят реже.
+    списък.style.overflowWrap = 'anywhere'; списък.style.wordBreak = 'break-word'; списък.style.minWidth = '0';
+    function желания() {
+      const w = load('bl_moonwish', []);                    // ПРЯСНО, не копие отпреди
+      списък.innerHTML = w.slice(-3).map(x => '<p>🌑 ' + esc(x.t) + ' <small>' + esc(x.d || '') + '</small></p>').join('');
+      списък.hidden = !w.length;
+    }
     if (p.idx === 0) {
-      const w = load('bl_moonwish', []);
       const row = el('div', 'jr-addrow');
       const i = el('input', 'jr-word'); i.placeholder = 'Пожелай си нещо…'; i.maxLength = 90;
-      const b = el('button', 'jr-chip', '✨'); b.type = 'button';
+      const b = el('button', 'jr-chip', '✨'); b.type = 'button'; пръст(b);
       // ♿ 11.08 (клавиатура-четец): звездичката беше само картинка — четецът
       //    казваше „бутон" и мама нямаше как да разбере, че тя записва желанието.
       b.setAttribute('aria-label', 'Запази желанието');
+      // ↩️ Д17: отмяна на последното — евтина е и желанието се пише с една ръка,
+      //    в тъмното, докато другата държи бебе.
+      const назад = el('button', 'jr-chip jr-chip-soft', '↩ Върни последното');
+      назад.type = 'button'; назад.hidden = true; пръст(назад);
       b.addEventListener('click', () => {
-        if (!i.value.trim()) return;
-        w.push({ t: i.value.trim(), d: today() }); save('bl_moonwish', w); i.value = '';
-        fx().confetti && fx().confetti(); render();
+        const v = i.value.trim();
+        // 🔴 МЪЛЧАЛИВ БУТОН: празно поле → тапът не правеше нищо видимо.
+        if (!v) { каз(row, 'Напиши си желанието и пак натисни ✨ — новолунието е точно за това.', i); return; }
+        const w = load('bl_moonwish', []);
+        w.push({ t: v, d: today() }); save('bl_moonwish', w);
+        i.value = ''; желания(); назад.hidden = false;
+        fx().confetti && fx().confetti();
+        каз(row, 'Записано ✨ Само тук, само за теб.');
       });
-      row.appendChild(i); row.appendChild(b); c.appendChild(row);
+      назад.addEventListener('click', () => {
+        const w = load('bl_moonwish', []);
+        if (!w.length) { каз(row, 'Няма какво да върна — списъкът е празен.'); назад.hidden = true; return; }
+        const махнато = w.pop(); save('bl_moonwish', w); желания(); назад.hidden = true;
+        fx().buzz(8);
+        каз(row, 'Върнах „' + махнато.t + '“. Няма го вече.');
+      });
+      row.appendChild(i); row.appendChild(b); c.appendChild(row); c.appendChild(назад);
     }
-    const w = load('bl_moonwish', []);
-    if (w.length) c.appendChild(el('div', 'wm-wishes', w.slice(-3).map(x => '<p>🌑 ' + esc(x.t) + ' <small>' + x.d + '</small></p>').join('')));
+    c.appendChild(списък); желания();
     return c;
   }
 
   function matchCard() {
+    return зависима(card('Вие двете 💞' + sub('твоята зодия и тази на бебето')), c => {
     const me = load('bl_me', {}), baby = load('bl_baby', {});
     const zm = zodiacOf(me.birth), zb = zodiacOf(baby.birth);
-    const c = card('Вие двете ' + (zm && zb ? zm.emoji + zb.emoji : '💞') + sub('твоята зодия и тази на бебето'));
+    заглавие(c, 'Вие двете ' + (zm && zb ? zm.emoji + zb.emoji : '💞') + sub('твоята зодия и тази на бебето'));
     c.appendChild(el('div', 'wm-band', FUN));
-    if (!zm || !zb) { c.appendChild(el('p', 'jr-privacy', 'Трябват ми и двете рождени дати — твоята горе, на бебето в „Моето бебе“. 💞')); return c; }
+    if (!zm || !zb) { c.appendChild(el('p', 'jr-privacy', 'Трябват ми и двете рождени дати — твоята горе, на бебето в „Моето бебе“. 💞')); return; }
     const same = zm.elem === zb.elem;
     const pairs = {
       'огън-вода': 'Ти пламваш, то се разлива. Караници няма — има съскане. И пара. И после смях.',
@@ -584,22 +705,32 @@
     if (ch) {
       c.appendChild(el('p', 'wm-chin', '🏮 По китайския календар ' + esc(baby.name || 'бебето') + ' е <strong>' + ch[0] + ' ' + ch[1] + '</strong> — ' + ch[2] + '.'));
     }
-    return c;
+    });
   }
 
   function angelCard() {
     const c = card('Ангелските числа 11:11' + sub('видиш ли повтарящи се цифри — натисни'));
     c.appendChild(el('div', 'wm-band', FUN));
     const st = load('bl_angel', { n: 0, last: '' });
-    const b = el('button', 'jr-chip wm-angel', '✨ Видях го!'); b.type = 'button';
+    if (typeof st.n !== 'number' || st.n < 0) st.n = 0;          // старо/внесено копие
+    const b = el('button', 'jr-chip wm-angel', '✨ Видях го!'); b.type = 'button'; пръст(b);
     const p = el('p', 'wm-angeln', '');
-    const draw = () => { p.innerHTML = 'Улови ги <strong data-cnt="' + st.n + '">' + st.n + '</strong> ' + (st.n === 1 ? 'път' : 'пъти') + (st.last ? ' · последно ' + st.last : ''); };
+    // ↩️ Д17: броячът върви само нагоре и един случаен тап го надуваше завинаги.
+    const назад = el('button', 'jr-chip jr-chip-soft', '↩ Не беше'); назад.type = 'button';
+    назад.hidden = true; пръст(назад);
+    const draw = () => { p.innerHTML = 'Улови ги <strong data-cnt="' + st.n + '">' + st.n + '</strong> ' + (st.n === 1 ? 'път' : 'пъти') + (st.last ? ' · последно ' + esc(st.last) : ''); };
     b.addEventListener('click', () => {
       st.n++; st.last = today(); save('bl_angel', st); draw(); fx().buzz(8);
+      назад.hidden = false;
       if (window.BL_FX && BL_FX.countUp) BL_FX.countUp(c);
       if (st.n % 11 === 0) fx().confetti && fx().confetti();
     });
-    c.appendChild(b); c.appendChild(p); draw();
+    назад.addEventListener('click', () => {
+      if (st.n > 0) st.n--;
+      save('bl_angel', st); draw(); назад.hidden = true; fx().buzz(6);
+      каз(назад, 'Върнах го. Броячът е ' + st.n + '.');
+    });
+    c.appendChild(b); c.appendChild(p); c.appendChild(назад); draw();
     return c;
   }
 

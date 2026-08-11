@@ -34,53 +34,199 @@
     return isNaN(b) ? NaN : Math.max(0, Math.round((a - b) / 86400000));
   };
 
+  // 🔴 11.08 (обиколка по телефон): МЪЛЧАЛИВ БУТОН на седем места. Тап по „+“
+  //   с празно поле, тап по вече добавен чип, тап по „📤“ с празен списък —
+  //   нищо не мърдаше. Мама не разбира дали е счупено, или е тя. Всеки такъв
+  //   изход вече казва защо и слага курсора в полето, което чака.
+  const каз = (котва, txt, поле) => {
+    if (!котва || !котва.parentNode) return;
+    let p = котва.nextElementSibling;
+    if (!p || !p.classList || !p.classList.contains('wm-say')) {
+      p = el('p', 'jr-privacy wm-say', '');
+      p.style.whiteSpace = 'pre-wrap';
+      p.style.overflowWrap = 'anywhere'; p.style.wordBreak = 'break-word'; p.style.minWidth = '0';
+      котва.parentNode.insertBefore(p, котва.nextSibling);
+    }
+    p.textContent = txt; p.hidden = false;
+    clearTimeout(p._t); p._t = setTimeout(() => { p.hidden = true; }, 3200);
+    if (поле) фокус(поле);
+  };
+  // 📱 В11: клавиатурата изяжда долната половина от екрана. Полето, в което
+  //   пращаме мама да пише, трябва да е ВИДИМО след като тя изскочи — иначе
+  //   тя пише на сляпо. Ползваме visualViewport (истинската височина СЛЕД
+  //   клавиатурата), а не innerHeight, който на Android не се смалява.
+  function фокус(t) {
+    try { t.focus(); } catch (e) { return; }
+    const виж = () => {
+      const vv = window.visualViewport;
+      const дъно = vv ? vv.height : window.innerHeight;
+      const r = t.getBoundingClientRect();
+      if (r.top < 8 || r.bottom > дъно - 8) {
+        try { t.scrollIntoView({ block: 'center', behavior: 'smooth' }); } catch (e) { t.scrollIntoView(); }
+      }
+    };
+    виж();
+    setTimeout(виж, 320);   // втори път — след като клавиатурата вече е излязла
+  }
+
+  // 📱 11.08: `.jr-note` НЯМА нито едно правило в целия css/. Textarea пада на
+  //   браузърното cols=20 и се мери 159×45 px в карта, широка 333 (измерено с
+  //   getBoundingClientRect на 375px екран). Дневничето, писмото, мечтите и
+  //   свободният ден — всичко, което мама пише с думи — се пишеше в кутийка,
+  //   по-тясна от половин екран. Ширината се дава ТУК, защото css/ не е мой файл.
+  //   ⚠️ вика се СЛЕД като е зададено `rows` — иначе чете подразбирането 2
+  //   и високото поле остава ниско (хванато при мерене: 311×68 вместо ×96).
+  const поле = t => {
+    t.style.width = '100%'; t.style.boxSizing = 'border-box';
+    t.style.minHeight = (t.rows > 3 ? 118 : t.rows > 2 ? 96 : 68) + 'px';
+    t.style.resize = 'vertical';
+    return t;
+  };
+  // 👆 11.08: измерено — „+“ беше 36×42. Прагът за пръст е 44×44.
+  const пръст = b => { b.style.minWidth = '44px'; b.style.minHeight = '44px'; return b; };
+
+  // 🔴 11.08 (обиколка по телефон, В10): една дълга дума без интервал —
+  //   поставен линк, име на парфюм, каквото и да е — разпъваше картата.
+  //   ИЗМЕРЕНО: карта scrollWidth 726 при clientWidth 347, тоест мама трябва
+  //   да влачи стаята настрани. Родителят реже, не прозорецът.
+  const реже = n => {
+    n.style.overflowWrap = 'anywhere';
+    n.style.wordBreak = 'break-word';
+    n.style.minWidth = '0';
+    return n;
+  };
+
+  // 🔴 11.08: „✔ Копирано“ се изписваше ВЕДНАГА — преди clipboard да е отговорил.
+  //   Откаже ли (без разрешение, извън фокус), мама чете „копирано“, лепва в
+  //   чата и там няма нищо. А браузър без share И без clipboard не правеше
+  //   абсолютно нищо. Сега надписът чака отговора, а последният изход показва
+  //   самия текст, за да има ОТКЪДЕ да го копира на ръка.
+  function сподели(btn, txt, изходен) {
+    const назад = () => { btn.textContent = изходен; };
+    if (navigator.share) {
+      navigator.share({ text: txt })
+        .then(() => { btn.textContent = '✔ Изпратено'; setTimeout(назад, 1800); })
+        .catch(() => каз(btn, 'Нищо не е изпратено — всичко си стои тук. 💜'));
+      return;
+    }
+    if (navigator.clipboard && navigator.clipboard.writeText) {
+      navigator.clipboard.writeText(txt)
+        .then(() => { btn.textContent = '✔ Копирано'; setTimeout(назад, 1800); каз(btn, 'Копирано ✔ Лепни го, където искаш.'); })
+        .catch(() => каз(btn, 'Не успях да го копирам. Ето го — задръж пръст върху текста:\n\n' + txt));
+      return;
+    }
+    каз(btn, 'Този телефон не ми дава да копирам. Ето го текста — задръж пръст върху него:\n\n' + txt);
+  }
+
   // ── общ списък с отмятане: за чантата, обувките, приключенията ──
   function listCard(title, key, presets, placeholder, opts) {
     opts = opts || {};
     const c = card(title);
-    const items = load(key, []);
     const list = el('div', 'jr-wins');
+    let чипове = null;                       // лентата с готовите предложения
+    // 🔴 11.08 (известният клас дефекти, №6): масивът се четеше ВЕДНЪЖ при
+    //   строежа и всеки следващ запис лепеше СТАРОТО копие отгоре. Тук се чете
+    //   прясно при всяко рисуване, а самите слушатели пипат прясно заредения
+    //   масив и намират реда по СЪДЪРЖАНИЕ, не по номер — номерът се разминава,
+    //   ако междувременно е добавен ред другаде.
+    const чети = () => load(key, []).filter(x => x && typeof x.t === 'string');
+    let последно = '';
     function draw() {
+      const items = чети();
+      последно = JSON.stringify(items);
       list.innerHTML = '';
       if (!items.length) list.appendChild(el('p', 'jr-privacy', opts.empty || 'Още е празно. Добави първото. ✨'));
-      items.forEach((it, i) => {
-        const row = el('button', 'jr-win' + (it.done ? ' done' : ''));
+      items.forEach(it => {
+        const row = реже(el('button', 'jr-win' + (it.done ? ' done' : '')));
         row.type = 'button';
         row.innerHTML = '<span class="jr-check">' + (it.done ? '✔' : '') + '</span> ' + esc(it.t) +
-          (it.d ? '<small class="wm-when"> · ' + it.d + '</small>' : '');
+          (it.d ? '<small class="wm-when"> · ' + esc(it.d) + '</small>' : '');
         row.addEventListener('click', () => {
-          it.done = !it.done; if (it.done) it.d = today(); else delete it.d;
-          save(key, items); draw(); fx().buzz(8);
-          if (it.done && items.every(x => x.done)) fx().confetti && fx().confetti();
+          const cur = чети();                                   // ПРЯСНО
+          const x = cur.find(y => y.t === it.t);
+          if (!x) { draw(); return; }
+          x.done = !x.done; if (x.done) x.d = today(); else delete x.d;
+          save(key, cur); draw(); fx().buzz(8);
+          if (x.done && cur.length && cur.every(y => y.done)) fx().confetti && fx().confetti();
         });
-        const del = el('button', 'jr-x', '✕'); del.type = 'button'; del.title = 'махни';
-        del.addEventListener('click', e => { e.stopPropagation(); items.splice(i, 1); save(key, items); draw(); });
-        const wrap = el('div', 'jr-winrow'); wrap.appendChild(row); wrap.appendChild(del);
+        const del = el('button', 'jr-x', '✕'); del.type = 'button'; del.title = 'махни'; пръст(del);
+        // ♿ еднакви „✕“ в цял списък — четецът не казваше КОЕ ще махне
+        del.setAttribute('aria-label', 'Махни „' + it.t + '“');
+        del.addEventListener('click', e => {
+          e.stopPropagation();
+          const cur = чети(); const i = cur.findIndex(y => y.t === it.t);
+          if (i > -1) cur.splice(i, 1);
+          save(key, cur); draw(); fx().buzz(6);
+          // ↩️ Д17: махнатото се връща с един тап — тапът по ✕ е необратим и лесен
+          каз(row2, 'Махнах „' + it.t + '“.', null);
+          връщане(it);
+        });
+        const wrap = реже(el('div', 'jr-winrow')); wrap.appendChild(row); wrap.appendChild(del);
         list.appendChild(wrap);
       });
+      if (чипове) чипове.querySelectorAll('.jr-chip').forEach(b => {
+        // предложение, което вече е в списъка, се вижда като добавено —
+        // иначе мама го тапва пак и се чуди защо нищо не става
+        const има = items.some(x => x.t === b.dataset.p);
+        b.classList.toggle('on', има);
+      });
     }
-    const row = el('div', 'jr-addrow');
+    const row2 = el('div', 'jr-addrow');
     const inp = el('input', 'jr-word'); inp.placeholder = placeholder; inp.maxLength = 70;
-    const add = el('button', 'jr-chip', '+'); add.type = 'button';
+    const add = el('button', 'jr-chip', '+'); add.type = 'button'; пръст(add);
     // ♿ 11.08 (клавиатура-четец): този списък-градител се ползва в няколко карти —
     //    еднакви бутона „плюс", без да личи в КОЙ списък добавят. Името взима
     //    подканата на самото поле, която вече казва кое е.
     add.setAttribute('aria-label', 'Добави — ' + placeholder);
-    const put = () => { const v = inp.value.trim(); if (!v) return; items.push({ t: v }); save(key, items); inp.value = ''; draw(); };
+    const отмяна = el('button', 'jr-chip jr-chip-soft', '↩ Върни махнатото');
+    отмяна.type = 'button'; отмяна.hidden = true; пръст(отмяна);
+    let махнато = null;
+    const връщане = it => { махнато = it; отмяна.hidden = false; };
+    отмяна.addEventListener('click', () => {
+      if (!махнато) { отмяна.hidden = true; return; }
+      const cur = чети();
+      if (!cur.some(x => x.t === махнато.t)) cur.push(махнато);
+      save(key, cur); махнато = null; отмяна.hidden = true; draw(); fx().buzz(8);
+      каз(row2, 'Върнато ✔');
+    });
+    const put = () => {
+      const v = inp.value.trim();
+      // 🔴 МЪЛЧАЛИВ БУТОН: празно поле и поле само с интервали не правеха НИЩО
+      if (!v) { каз(row2, 'Полето е празно. Напиши нещо и пак натисни ➕.', inp); return; }
+      const cur = чети();
+      if (cur.some(x => x.t === v)) { каз(row2, '„' + v + '“ вече е в списъка ✔', inp); inp.select(); return; }
+      cur.push({ t: v }); save(key, cur); inp.value = ''; draw();
+      fx().buzz(6); каз(row2, 'Добавено ✔');
+    };
     add.addEventListener('click', put);
     inp.addEventListener('keydown', e => { if (e.key === 'Enter') { e.preventDefault(); put(); } });
-    row.appendChild(inp); row.appendChild(add);
-    c.appendChild(list); c.appendChild(row);
+    row2.appendChild(inp); row2.appendChild(add);
+    c.appendChild(list); c.appendChild(row2); c.appendChild(отмяна);
     if (presets && presets.length) {
-      const ch = el('div', 'jr-chips');
+      чипове = el('div', 'jr-chips');
       presets.forEach(p => {
-        const b = el('button', 'jr-chip jr-chip-soft', p); b.type = 'button';
-        b.addEventListener('click', () => { if (items.some(x => x.t === p)) return; items.push({ t: p }); save(key, items); draw(); fx().buzz(6); });
-        ch.appendChild(b);
+        const b = el('button', 'jr-chip jr-chip-soft', p); b.type = 'button'; b.dataset.p = p;
+        b.addEventListener('click', () => {
+          const cur = чети();
+          // 🔴 МЪЛЧАЛИВ БУТОН: дубликат → тапът не правеше нищо видимо
+          if (cur.some(x => x.t === p)) { каз(чипове, '„' + p + '“ вече е в списъка ✔'); return; }
+          cur.push({ t: p }); save(key, cur); draw(); fx().buzz(6);
+          каз(чипове, 'Добавих „' + p + '“ ✔');
+        });
+        чипове.appendChild(b);
       });
-      c.appendChild(ch);
+      c.appendChild(чипове);
     }
     draw();
+    // 🔁 дефект №8: списъкът не научаваше, ако същият ключ се напълни другаде.
+    //   Щом картата се върне в кадър, се сверява с паметта. Без нова зависимост.
+    if (window.IntersectionObserver) {
+      const io = new IntersectionObserver(es => {
+        if (!es.some(e => e.isIntersecting)) return;
+        if (JSON.stringify(чети()) !== последно) draw();
+      });
+      try { io.observe(list); } catch (e) {}
+    }
     return c;
   }
 
@@ -105,13 +251,27 @@
       // ♿ 11.08 (клавиатура-четец): подсказката беше тире, а етикетът се пише в
       //    innerHTML на <label> СЛЕД това — четецът чуваше пет пъти „тире".
       i.setAttribute('aria-label', 'Размер ' + k);
-      i.addEventListener('change', () => { w.sizes[k] = i.value.trim(); save('bl_wm_wardrobe', w); });
+      // 🔴 11.08: записваше се тихо — картата не мърдаше с нито един пиксел и
+      //   мама нямаше как да разбере, че размерът е приет (измерено: innerHTML
+      //   не се променя). Тих знак, който сам си отива.
+      i.addEventListener('change', () => {
+        const cur = load('bl_wm_wardrobe', { sizes: {}, note: '' });   // ПРЯСНО
+        if (!cur.sizes || typeof cur.sizes !== 'object') cur.sizes = {};
+        cur.sizes[k] = i.value.trim(); save('bl_wm_wardrobe', cur);
+        w.sizes = cur.sizes;
+        каз(grid, (i.value.trim() ? 'Записах „' + k + '“ ✔' : 'Изчистих „' + k + '“.'));
+      });
       b.innerHTML = '<span>' + e + '</span><small>' + k + '</small>';
       b.appendChild(i); grid.appendChild(b);
     });
     c.appendChild(grid);
-    const n = el('textarea', 'jr-note'); n.placeholder = 'Какво ми стои добре точно сега…'; n.value = w.note || ''; n.rows = 2;
-    n.addEventListener('change', () => { w.note = n.value; save('bl_wm_wardrobe', w); });
+    const n = поле(el('textarea', 'jr-note')); n.placeholder = 'Какво ми стои добре точно сега…'; n.value = w.note || ''; n.rows = 2;
+    n.addEventListener('change', () => {
+      const cur = load('bl_wm_wardrobe', { sizes: {}, note: '' });
+      if (!cur.sizes || typeof cur.sizes !== 'object') cur.sizes = {};
+      cur.note = n.value; save('bl_wm_wardrobe', cur); w.note = n.value;
+      каз(n, n.value.trim() ? 'Записано ✔' : 'Празно е — нищо не пазя.');
+    });
     c.appendChild(n);
     c.appendChild(el('p', 'wm-kind', '💜 Размерът е число на етикета, не оценка за теб.'));
     return c;
@@ -155,8 +315,19 @@
         w.appendChild(el('p', 'wm-qt', esc(q[0])));
         const ch = el('div', 'jr-chips');
         q[1].forEach(([label, val]) => {
-          const b = el('button', 'jr-chip' + (st.a[qi] === val ? ' on' : ''), label); b.type = 'button';
-          b.addEventListener('click', () => { st.a[qi] = val; st.type = result(); save('bl_wm_colors', st); draw(); fx().buzz(6); if (st.type) fx().confetti && fx().confetti(); });
+          const b = el('button', 'jr-chip' + (st.a[qi] === val ? ' on' : ''), label); b.type = 'button'; пръст(b);
+          b.addEventListener('click', () => {
+            const беше = st.type;
+            // 🔴 МЪЛЧАЛИВ БУТОН (хванат при последната обиколка): тап по вече
+            //   избрания отговор не сменяше нищо — нито пиксел, нито буква в
+            //   паметта. Мама тапва пак, защото не е сигурна, че се е записало.
+            // (каз пише през textContent — тук esc() би показал &quot; на екрана)
+            if (st.a[qi] === val) { каз(box, 'Това е отговорът ти ✔ ' + q[0]); fx().buzz(4); return; }
+            st.a[qi] = val; st.type = result(); save('bl_wm_colors', st); draw(); fx().buzz(6);
+            // конфети САМО когато палитрата тъкмо се е получила или се е сменила —
+            // досега гърмяха при всеки тап след петия отговор
+            if (st.type && st.type !== беше) fx().confetti && fx().confetti();
+          });
           ch.appendChild(b);
         });
         w.appendChild(ch); box.appendChild(w);
@@ -203,63 +374,107 @@
   };
   function whatToWearCard() {
     const c = card('Какво да облека 🪄' + sub('повод + настроение → идея'));
-    const st = { occ: OCC[0], mood: MOOD[0] };
+    // 🟡 11.08 (обиколка по телефон): изборът не се пазеше НИКЪДЕ. Измерено:
+    //   след презареждане „на работа“ се връщаше на „на кафе“ и мама почваше
+    //   отначало всеки път. Пазим само двата ѝ избора — нищо повече.
+    const пам = load('bl_wm_wear', {});
+    const st = {
+      occ: OCC.indexOf(пам.occ) > -1 ? пам.occ : OCC[0],
+      mood: MOOD.indexOf(пам.mood) > -1 ? пам.mood : MOOD[0]
+    };
     const out = el('p', 'wm-look', '');
     const mk = (arr, key) => {
       const ch = el('div', 'jr-chips');
       arr.forEach(x => {
         const b = el('button', 'jr-chip' + (st[key] === x ? ' on' : ''), x); b.type = 'button';
-        b.addEventListener('click', () => { st[key] = x; [...ch.children].forEach(y => y.classList.toggle('on', y.textContent === x)); go(); });
+        b.addEventListener('click', () => {
+          st[key] = x; save('bl_wm_wear', { occ: st.occ, mood: st.mood });
+          [...ch.children].forEach(y => y.classList.toggle('on', y.textContent === x));
+          go(); fx().buzz(6);
+        });
         ch.appendChild(b);
       });
       return ch;
     };
+    let пред = '';
     function go() {
       const arr = LOOK[st.mood] || [];
-      out.innerHTML = '<strong>' + esc(st.occ) + '</strong><br>' +
-        esc(arr[Math.floor(Math.random() * arr.length)] || '') +
+      // ↻ идеята се сменяше на случаен принцип и понякога излизаше СЪЩАТА —
+      //   тапът изглеждаше като мълчалив. Избираме различна от последната.
+      let идея = arr[Math.floor(Math.random() * arr.length)] || '';
+      if (arr.length > 1 && идея === пред) идея = arr[(arr.indexOf(идея) + 1) % arr.length];
+      пред = идея;
+      out.innerHTML = '<strong>' + esc(st.occ) + '</strong><br>' + esc(идея) +
         (OCC_TIP[st.occ] ? '<br><small>' + esc(OCC_TIP[st.occ]) + '</small>' : '');
     }
     c.appendChild(el('p', 'wm-qt', 'Къде отиваш?')); c.appendChild(mk(OCC, 'occ'));
     c.appendChild(el('p', 'wm-qt', 'Как се чувстваш?')); c.appendChild(mk(MOOD, 'mood'));
-    c.appendChild(out); go();
+    c.appendChild(out);
+    // по-кратък път до най-честото действие: още една идея, без да пипаш чипове
+    const още = el('button', 'jr-chip jr-chip-soft', '↻ Дай друга идея'); още.type = 'button'; пръст(още);
+    още.addEventListener('click', () => { go(); fx().buzz(6); });
+    c.appendChild(още); go();
     return c;
   }
 
   function wishCard() {
-    const c = card('Списъкът с желания ✨' + sub('какво искаш ТИ · за рожден ден, 8-ми март и „не знам какво да ти взема“'));
-    const items = load('bl_wm_wish', []);
+    const c = card('Списъкът с желания ✨' + sub('какво искаш ТИ · когато някой те попита „какво да ти взема“'));
     const list = el('div', 'jr-wins');
+    // ПРЯСНО при всяко рисуване — не копие отпреди (известният клас дефекти, №6)
+    const чети = () => load('bl_wm_wish', []).filter(x => typeof x === 'string');
+    let махнато = null;
     function draw() {
+      const items = чети();
       list.innerHTML = '';
       if (!items.length) list.appendChild(el('p', 'jr-privacy', 'Никой не може да отгатне. Затова се пише. ✨'));
-      items.forEach((it, i) => {
-        const row = el('div', 'jr-winrow');
-        const b = el('button', 'jr-win', '<span class="jr-check">✨</span> ' + esc(it)); b.type = 'button';
-        const del = el('button', 'jr-x', '✕'); del.type = 'button';
+      items.forEach(it => {
+        const row = реже(el('div', 'jr-winrow'));
+        const b = реже(el('button', 'jr-win', '<span class="jr-check">✨</span> ' + esc(it))); b.type = 'button';
+        const del = el('button', 'jr-x', '✕'); del.type = 'button'; пръст(del);
         // ♿ 11.08 (клавиатура-четец): цял списък от еднакви „✕" — четецът не
         //    казваше кое ще махне, а тапът е необратим.
         del.setAttribute('aria-label', 'Махни „' + it + '“ от списъка');
-        del.addEventListener('click', () => { items.splice(i, 1); save('bl_wm_wish', items); draw(); });
+        del.addEventListener('click', () => {
+          const cur = чети(); const i = cur.indexOf(it);
+          if (i > -1) cur.splice(i, 1);
+          save('bl_wm_wish', cur); махнато = it; отмяна.hidden = false; draw(); fx().buzz(6);
+          каз(row2, 'Махнах „' + it + '“.');
+        });
         row.appendChild(b); row.appendChild(del); list.appendChild(row);
       });
     }
-    const row = el('div', 'jr-addrow');
+    const row2 = el('div', 'jr-addrow');
     const inp = el('input', 'jr-word'); inp.placeholder = 'нещо, което искам…'; inp.maxLength = 70;
-    const add = el('button', 'jr-chip', '+'); add.type = 'button';
+    const add = el('button', 'jr-chip', '+'); add.type = 'button'; пръст(add);
     add.setAttribute('aria-label', 'Добави го в списъка с желания');
-    const put = () => { const v = inp.value.trim(); if (!v) return; items.push(v); save('bl_wm_wish', items); inp.value = ''; draw(); };
+    const отмяна = el('button', 'jr-chip jr-chip-soft', '↩ Върни махнатото');
+    отмяна.type = 'button'; отмяна.hidden = true; пръст(отмяна);
+    отмяна.addEventListener('click', () => {
+      if (!махнато) { отмяна.hidden = true; return; }
+      const cur = чети(); if (cur.indexOf(махнато) < 0) cur.push(махнато);
+      save('bl_wm_wish', cur); махнато = null; отмяна.hidden = true; draw(); fx().buzz(8);
+      каз(row2, 'Върнато ✔');
+    });
+    const put = () => {
+      const v = inp.value.trim();
+      // 🔴 МЪЛЧАЛИВ БУТОН: празно / само интервали → нищо видимо
+      if (!v) { каз(row2, 'Празно е. Напиши какво искаш и пак натисни ➕.', inp); return; }
+      const cur = чети();
+      if (cur.indexOf(v) > -1) { каз(row2, '„' + v + '“ вече е в списъка ✔', inp); inp.select(); return; }
+      cur.push(v); save('bl_wm_wish', cur); inp.value = ''; draw(); fx().buzz(6);
+      каз(row2, 'Добавено ✔');
+    };
     add.addEventListener('click', put);
     inp.addEventListener('keydown', e => { if (e.key === 'Enter') { e.preventDefault(); put(); } });
-    row.appendChild(inp); row.appendChild(add);
-    const share = el('button', 'jr-chip wm-share', '📤 Изпрати списъка'); share.type = 'button';
+    row2.appendChild(inp); row2.appendChild(add);
+    const share = el('button', 'jr-chip wm-share', '📤 Изпрати списъка'); share.type = 'button'; пръст(share);
     share.addEventListener('click', () => {
-      if (!items.length) return;
-      const txt = 'Ето какво бих се зарадвала да получа 💜\n\n' + items.map(x => '· ' + x).join('\n');
-      if (navigator.share) navigator.share({ text: txt }).catch(() => {});
-      else if (navigator.clipboard) { navigator.clipboard.writeText(txt).catch(() => {}); share.textContent = '✔ Копирано'; setTimeout(() => share.textContent = '📤 Изпрати списъка', 1600); }
+      const items = чети();
+      // 🔴 МЪЛЧАЛИВ БУТОН: празен списък → тапът не правеше нищо
+      if (!items.length) { каз(share, 'Списъкът е празен — първо напиши какво искаш ТИ.', inp); return; }
+      сподели(share, 'Ето какво бих се зарадвала да получа 💜\n\n' + items.map(x => '· ' + x).join('\n'), '📤 Изпрати списъка');
     });
-    c.appendChild(list); c.appendChild(row); c.appendChild(share); draw();
+    c.appendChild(list); c.appendChild(row2); c.appendChild(отмяна); c.appendChild(share); draw();
     return c;
   }
 
@@ -275,9 +490,16 @@
   ];
   function lastTimeCard() {
     const c = card('Кога последно… ⏳' + sub('без вина. Просто за да го видиш черно на бяло.'));
-    const st = load('bl_wm_last', {});
     const box = el('div', 'wm-last');
+    // 🔴 11.08 (известният клас дефекти, №6): `st` се четеше ВЕДНЪЖ при строежа
+    //   и всеки тап лепеше СТАРОТО копие отгоре. Измерено на живо: с два записа
+    //   в паметта, тап по трети ред остави в паметта САМО него — другите два
+    //   изчезнаха. Чете се прясно и при рисуване, и вътре в слушателя.
+    const чети = () => { const o = load('bl_wm_last', {}); return (o && typeof o === 'object') ? o : {}; };
+    let последно = '', върни = null;
     function draw() {
+      const st = чети();
+      последно = JSON.stringify(st);
       box.innerHTML = '';
       LAST.forEach(([k, e]) => {
         const d = st[k] ? days(st[k]) : null;
@@ -290,12 +512,38 @@
         const when = d === null ? 'още не сме говорили за това' : d === 0 ? 'ДНЕС 🎉' : d === 1 ? 'вчера' : 'преди ' + d + ' дни';
         row.innerHTML = '<span class="wm-le">' + e + '</span><span class="wm-lt">' + k + '<small>' + when + '</small></span><span class="wm-lb">днес ✔</span>';
         if (d !== null && d > 30) row.classList.add('far');
-        row.addEventListener('click', () => { st[k] = today(); save('bl_wm_last', st); draw(); fx().buzz(10); fx().confetti && fx().confetti(); });
+        row.addEventListener('click', () => {
+          const cur = чети();                                   // ПРЯСНО
+          върни = { k: k, беше: cur[k] === undefined ? null : cur[k] };
+          cur[k] = today(); save('bl_wm_last', cur); draw();
+          отмяна.hidden = false;
+          fx().buzz(10); fx().confetti && fx().confetti();
+          каз(box, 'Записах „' + k + '“ за днес ✔');
+        });
         box.appendChild(row);
       });
     }
-    c.appendChild(box); draw();
+    // ↩️ Д17: дванайсет реда един под друг, а тапът заковаваше „ДНЕС 🎉“ върху
+    //   истинска дата БЕЗВЪЗВРАТНО. Един уморен пръст не бива да струва толкова.
+    const отмяна = el('button', 'jr-chip jr-chip-soft', '↩ Не беше днес');
+    отмяна.type = 'button'; отмяна.hidden = true; пръст(отмяна);
+    отмяна.addEventListener('click', () => {
+      if (!върни) { отмяна.hidden = true; return; }
+      const cur = чети();
+      if (върни.беше === null) delete cur[върни.k]; else cur[върни.k] = върни.беше;
+      save('bl_wm_last', cur); const k = върни.k; върни = null; отмяна.hidden = true;
+      draw(); fx().buzz(6);
+      каз(box, 'Върнах „' + k + '“ както си беше.');
+    });
+    c.appendChild(box); draw(); c.appendChild(отмяна);
     c.appendChild(el('p', 'wm-kind', '💜 Това не е укор и не е списък. Ако нещо от горните ти липсва, започни с онова, което иска най-малко време.'));
+    // 🔁 дефект №8: сверява се с паметта, щом картата се върне в кадър
+    if (window.IntersectionObserver) {
+      const io = new IntersectionObserver(es => {
+        if (es.some(e => e.isIntersecting) && JSON.stringify(чети()) !== последно) draw();
+      });
+      try { io.observe(box); } catch (e) {}
+    }
     return c;
   }
 
@@ -323,7 +571,7 @@
     else if (st.done && typeof st.counted !== 'boolean') st.counted = true;   // старо копие без полето
     const днес = el('div', 'wm-ritrow wm-rittoday');
     днес.innerHTML = '<span>' + пикЕ + '</span><p>' + esc(пикТ) + '</p>';
-    const б = el('button', 'jr-chip' + (st.done ? ' wm-tone-on' : ''), st.done ? '✔ Направих го' : 'Направих го'); б.type = 'button';
+    const б = el('button', 'jr-chip' + (st.done ? ' wm-tone-on' : ''), st.done ? '✔ Направих го' : 'Направих го'); б.type = 'button'; пръст(б);
     const брояч = el('p', 'jr-privacy', '');
     const покажиБрояч = () => {
       const n = load('bl_wm_5min_total', 0);
@@ -360,28 +608,67 @@
 
   function lockedNote(title, key, ph, hint) {
     const c = card(title);
-    const items = load(key, []);
     const list = el('div', 'wm-secrets');
+    // 🔴 11.08 (обиколка по телефон · известният клас дефекти №6+№7+№8):
+    //   масивът се четеше ВЕДНЪЖ при строежа. А в СЪЩИЯ ключ bl_wm_diary пише
+    //   и друга карта в тази стая — „✍️ 3 минути свободно писане“ (women3.js).
+    //   ИЗМЕРЕНО НА ЖИВО: мама записва ред през дневничето, после ред през
+    //   3-те минути (паметта има 2 реда), после тапва ✕ на единствения ред,
+    //   който вижда тук — и в паметта остава [] . Редът от 3-те минути беше
+    //   ИЗТРИТ, без никой да я пита. Затова: чете се прясно и при рисуване, и
+    //   вътре в самия слушател, а изтриването намира записа по СЪДЪРЖАНИЕ, не
+    //   по номер — номерът се разминава при всеки чужд запис.
+    const чети = () => load(key, []).filter(x => x && typeof x.t === 'string');
+    let последно = '', махнато = null;
     function draw() {
+      const items = чети();
+      последно = JSON.stringify(items);
       list.innerHTML = '';
       if (!items.length) list.appendChild(el('p', 'jr-privacy', hint));
-      items.slice().reverse().forEach((it, ri) => {
-        const i = items.length - 1 - ri;
-        const row = el('div', 'wm-secret');
-        row.innerHTML = '<p>' + esc(it.t) + '</p><small>' + it.d + '</small>';
-        const del = el('button', 'jr-x', '✕'); del.type = 'button';
-        del.setAttribute('aria-label', 'Махни записа от ' + it.d);
-        del.addEventListener('click', () => { items.splice(i, 1); save(key, items); draw(); });
+      items.slice().reverse().forEach(it => {
+        const row = реже(el('div', 'wm-secret'));
+        row.innerHTML = '<p>' + esc(it.t) + '</p><small>' + esc(it.d || '') + '</small>';
+        const del = el('button', 'jr-x', '✕'); del.type = 'button'; пръст(del);
+        del.setAttribute('aria-label', 'Махни записа от ' + (it.d || ''));
+        del.addEventListener('click', () => {
+          const cur = чети();                                            // ПРЯСНО
+          const i = cur.findIndex(x => x.t === it.t && x.d === it.d);
+          if (i > -1) cur.splice(i, 1);
+          save(key, cur); махнато = it; отмяна.hidden = false; draw(); fx().buzz(8);
+          каз(b, 'Махнах записа. Ако не си искала — върни го.');
+        });
         row.appendChild(del); list.appendChild(row);
       });
     }
-    const ta = el('textarea', 'jr-note'); ta.placeholder = ph; ta.rows = 3;
-    const b = el('button', 'jr-chip', '🔒 Заключи го тук'); b.type = 'button';
-    b.addEventListener('click', () => {
-      const v = ta.value.trim(); if (!v) return;
-      items.push({ t: v, d: today() }); save(key, items); ta.value = ''; draw(); fx().buzz(10);
+    const ta = el('textarea', 'jr-note'); ta.placeholder = ph; ta.rows = 3; поле(ta);
+    const b = el('button', 'jr-chip', '🔒 Заключи го тук'); b.type = 'button'; пръст(b);
+    const отмяна = el('button', 'jr-chip jr-chip-soft', '↩ Върни последното махнато');
+    отмяна.type = 'button'; отмяна.hidden = true; пръст(отмяна);
+    отмяна.addEventListener('click', () => {
+      if (!махнато) { отмяна.hidden = true; return; }
+      const cur = чети();
+      if (!cur.some(x => x.t === махнато.t && x.d === махнато.d)) cur.push(махнато);
+      save(key, cur); махнато = null; отмяна.hidden = true; draw(); fx().buzz(8);
+      каз(b, 'Върнато ✔ Тук си е.');
     });
-    c.appendChild(list); c.appendChild(ta); c.appendChild(b); draw();
+    b.addEventListener('click', () => {
+      const v = ta.value.trim();
+      // 🔴 МЪЛЧАЛИВ БУТОН: празно поле → тапът не правеше НИЩО видимо
+      if (!v) { каз(b, 'Полето е празно. Напиши каквото ти тежи и пак натисни 🔒.', ta); return; }
+      const cur = чети();                                                // ПРЯСНО
+      cur.push({ t: v, d: today() }); save(key, cur);
+      ta.value = ''; draw(); fx().buzz(10);
+      каз(b, '🔒 Заключено. Стои само на този телефон.');
+    });
+    c.appendChild(list); c.appendChild(ta); c.appendChild(b); c.appendChild(отмяна); draw();
+    // 🔁 дефект №8: картата не научаваше, че „3 минути свободно писане“ е
+    //   писала в същия ключ. Върне ли се в кадър, се сверява с паметта.
+    if (window.IntersectionObserver) {
+      const io = new IntersectionObserver(es => {
+        if (es.some(e => e.isIntersecting) && JSON.stringify(чети()) !== последно) draw();
+      });
+      try { io.observe(list); } catch (e) {}
+    }
     return c;
   }
 
@@ -401,24 +688,35 @@
   }
   function letterCard() {
     const c = card('Писмо до мен след година 💌' + sub('пише се днес · отваря се след 365 дни'));
-    const L = load('bl_wm_letters', []);
     const box = el('div', 'wm-letters');
+    // ПРЯСНО при всяко рисуване (известният клас дефекти, №6)
+    const чети = () => load('bl_wm_letters', []).filter(x => x && typeof x.t === 'string');
     function draw() {
+      const L = чети();
       box.innerHTML = '';
-      L.forEach((x, i) => {
+      L.forEach(x => {
         const left = 365 - days(x.d);
-        const row = el('div', 'wm-letter' + (left <= 0 ? ' open' : ''));
+        const row = реже(el('div', 'wm-letter' + (left <= 0 ? ' open' : '')));
         row.innerHTML = left > 0
-          ? '<span>💌</span><div><strong>Запечатано</strong><small>отваря се след ' + left + ' дни · писано на ' + x.d + '</small></div>'
-          : '<span>📖</span><div><strong>Отвори се!</strong><p>' + esc(x.t) + '</p><small>писано на ' + x.d + '</small></div>';
+          // 🟡 12.08 (единиците): в навечерието на годината писмото казваше
+          //    „отваря се след 1 дни“ — точно денят, в който мама го чака.
+          ? '<span>💌</span><div><strong>Запечатано</strong><small>отваря се след ' + (window.BL_BROI ? BL_BROI(left, 'ден', 'дни') : left + ' ' + (left === 1 ? 'ден' : 'дни')) + ' · писано на ' + esc(x.d) + '</small></div>'
+          : '<span>📖</span><div><strong>Отвори се!</strong><p>' + esc(x.t) + '</p><small>писано на ' + esc(x.d) + '</small></div>';
         if (left <= 0) {
-          const del = el('button', 'jr-x', '✕'); del.type = 'button';
+          const del = el('button', 'jr-x', '✕'); del.type = 'button'; пръст(del);
           del.setAttribute('aria-label', 'Изтрий писмото, писано на ' + x.d);
           // проход 4: писмо, чакано 365 дни, не бива да изчезне от един уморен тап в 3ч.
           del.addEventListener('click', () => {
             (window.BL_UI ? BL_UI.confirm('Да изтрия ли това писмо до себе си? Не се връща.', { emoji: '💌', okText: 'Изтрий', cancelText: 'Остави', danger: true })
               : Promise.resolve(confirm('Да изтрия ли писмото?'))).then(да => {
-              if (да) { L.splice(i, 1); save('bl_wm_letters', L); draw(); if (window.BL_FX) BL_FX.buzz(10); }
+              if (!да) { каз(b, 'Остана си при теб. 💌'); return; }
+              // ПРЯСНО + търсене по съдържание: индексът от рисуването се
+              // разминава, ако междувременно е запечатано ново писмо
+              const cur = чети();
+              const i = cur.findIndex(y => y.t === x.t && y.d === x.d);
+              if (i > -1) cur.splice(i, 1);
+              save('bl_wm_letters', cur); draw(); if (window.BL_FX) BL_FX.buzz(10);
+              каз(b, 'Изтрито.');
             });
           });
           row.appendChild(del);
@@ -427,11 +725,16 @@
       });
       if (!L.length) box.appendChild(el('p', 'jr-privacy', 'Какво искаш да си кажеш след година? 💌'));
     }
-    const ta = el('textarea', 'jr-note'); ta.placeholder = 'Скъпа аз след година…'; ta.rows = 3;
-    const b = el('button', 'jr-chip', '💌 Запечатай'); b.type = 'button';
+    const ta = el('textarea', 'jr-note'); ta.placeholder = 'Скъпа аз след година…'; ta.rows = 3; поле(ta);
+    const b = el('button', 'jr-chip', '💌 Запечатай'); b.type = 'button'; пръст(b);
     b.addEventListener('click', () => {
-      const v = ta.value.trim(); if (!v) return;
-      L.push({ t: v, d: today() }); save('bl_wm_letters', L); ta.value = ''; draw(); fx().confetti && fx().confetti();
+      const v = ta.value.trim();
+      // 🔴 МЪЛЧАЛИВ БУТОН: празно поле → тапът не правеше нищо видимо
+      if (!v) { каз(b, 'Още не си написала нищо. Кажи си нещо и пак натисни 💌.', ta); return; }
+      const cur = чети();                                       // ПРЯСНО
+      cur.push({ t: v, d: today() }); save('bl_wm_letters', cur);
+      ta.value = ''; draw(); fx().confetti && fx().confetti();
+      каз(b, '💌 Запечатано. Ще те чака точно година.');
     });
     c.appendChild(box); c.appendChild(ta); c.appendChild(b); draw();
     return c;
@@ -444,8 +747,13 @@
     [['then', 'Преди да стана мама', '🌸'], ['now', 'Сега', '💜']].forEach(([k, t, e]) => {
       const w = el('div', 'wm-dream');
       w.appendChild(el('p', 'wm-qt', e + ' ' + t));
-      const ta = el('textarea', 'jr-note'); ta.rows = 3; ta.value = d[k] || ''; ta.placeholder = 'Мечтаех…';
-      ta.addEventListener('change', () => { d[k] = ta.value; save('bl_wm_dreams', d); });
+      const ta = el('textarea', 'jr-note'); ta.rows = 3; поле(ta); ta.value = d[k] || ''; ta.placeholder = 'Мечтаех…';
+      // 🔴 11.08: записваше се тихо — нищо в картата не мърдаше (измерено).
+      ta.addEventListener('change', () => {
+        const cur = load('bl_wm_dreams', { then: '', now: '' });   // ПРЯСНО
+        cur[k] = ta.value; save('bl_wm_dreams', cur); d[k] = ta.value;
+        каз(ta, ta.value.trim() ? 'Записано ✔' : 'Празно е — нищо не пазя.');
+      });
       w.appendChild(ta); grid.appendChild(w);
     });
     c.appendChild(grid);
@@ -455,15 +763,18 @@
   function freeDayCard() {
     const c = card('Ако имах един свободен ден ☀️' + sub('попълни го · после го покажи на когото искаш'));
     const v = load('bl_wm_freeday', '');
-    const ta = el('textarea', 'jr-note'); ta.rows = 4; ta.value = v; ta.placeholder = 'Ставам в… после…';
-    ta.addEventListener('change', () => save('bl_wm_freeday', ta.value));
+    const ta = el('textarea', 'jr-note'); ta.rows = 4; поле(ta); ta.value = typeof v === 'string' ? v : ''; ta.placeholder = 'Ставам в… после…';
+    ta.addEventListener('change', () => {
+      save('bl_wm_freeday', ta.value);
+      каз(ta, ta.value.trim() ? 'Записано ✔ Стои си тук.' : 'Празно е — нищо не пазя.');
+    });
     c.appendChild(ta);
-    const share = el('button', 'jr-chip wm-share', '📤 Изпрати го'); share.type = 'button';
+    const share = el('button', 'jr-chip wm-share', '📤 Изпрати го'); share.type = 'button'; пръст(share);
     share.addEventListener('click', () => {
-      const t = ta.value.trim(); if (!t) return;
-      const msg = 'Ето как изглежда един свободен ден за мен 💜\n\n' + t;
-      if (navigator.share) navigator.share({ text: msg }).catch(() => {});
-      else if (navigator.clipboard) { navigator.clipboard.writeText(msg).catch(() => {}); share.textContent = '✔ Копирано'; setTimeout(() => share.textContent = '📤 Изпрати го', 1600); }
+      const t = ta.value.trim();
+      // 🔴 МЪЛЧАЛИВ БУТОН: празно поле → тапът не правеше нищо
+      if (!t) { каз(share, 'Първо го напиши — после ще има какво да покажеш.', ta); return; }
+      сподели(share, 'Ето как изглежда един свободен ден за мен 💜\n\n' + t, '📤 Изпрати го');
     });
     c.appendChild(share);
     return c;

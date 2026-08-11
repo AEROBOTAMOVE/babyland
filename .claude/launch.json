@@ -6,6 +6,12 @@
       "runtimeExecutable": "perl",
       "runtimeArgs": ["dev/statichttp.pl", "8794"],
       "port": 8794
+    },
+    {
+      "name": "babyland-r79",
+      "runtimeExecutable": "perl",
+      "runtimeArgs": ["dev/statichttp.pl", "8873"],
+      "port": 8873
     }
   ]
 }

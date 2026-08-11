@@ -26,6 +26,25 @@
   const card = t => { const c = el('section', 'jr-card'); c.appendChild(el('h4', 'jr-title', t)); return c; };
   const sub = s => '<span class="jr-sub">' + s + '</span>';
   const fx = () => window.BL_FX || { confetti() {}, cheer() {}, buzz() {} };
+  // 📱 11.08 (обиколка по картите, ИЗМЕРЕНО): .jr-chip и .bs-b излизаха
+  //    37–43px високи под пръст — под 44-те, които майка с бебе на ръка може
+  //    да улучи. CSS файловете не са мои; слагам мярката върху СВОИТЕ елементи.
+  const пръст = (e, ш) => { e.style.minHeight = '44px'; if (ш) e.style.minWidth = '44px'; return e; };
+  // 🔴 11.08: „2-ви триместър“ и „3-ви триместър“ — наставката се лепеше на
+  //    сляпо. Числителните до три ги изписвам с дума, за да няма правопис.
+  const ТРИДУМА = ['', 'първи', 'втори', 'трети'];
+  // тих знак „прието“ — без нов екран, без нова зависимост
+  function знак(el, текст) {
+    if (!el) return;
+    el.textContent = текст;
+    el.hidden = false;
+    clearTimeout(el._t);
+    if (!matchMedia('(prefers-reduced-motion: reduce)').matches) {
+      el.style.transition = 'none'; el.style.opacity = '0';
+      requestAnimationFrame(() => { el.style.transition = 'opacity .25s ease'; el.style.opacity = ''; });
+      setTimeout(() => { el.style.opacity = ''; }, 40);   // и ако rAF не се пусне (скрит таб)
+    }
+  }
   const седмица = () => {
     const lmp = window.BL_EXPECT ? BL_EXPECT.lmp() : load('bl_lmp', '');
     if (!lmp) return null;
@@ -65,13 +84,20 @@
     const c = card('Позата за сън 🛌 ' + sub('за ТЕБ · не за бебето след раждането'));
     // 🚨 границата: това е за мама. Позата на БЕБЕТО е друга тема и е категорична.
     c.appendChild(el('p', 'sp-warn',
-      '⚠️ Това е за <strong>твоя</strong> сън, докато си бременна. Бебето след раждането спи <strong>ВИНАГИ по гръб</strong> — това е различна тема и там няма варианти. (виж „Безопасен сън“ в Здраве и SOS)'));
+      // 🟠 11.08 (счупени обещания): пращаше към карта „Безопасен сън“ в „Здраве
+      //    и SOS“ — такава карта НЯМА (проверени всички заглавия с „сън“). Темата
+      //    съществува, но в ЧАТА: запис zd-bezopasen-son, „Безопасният сън —
+      //    скучните правила, които пазят“. Даваме ѝ пътя, който наистина води.
+      '⚠️ Това е за <strong>твоя</strong> сън, докато си бременна. Бебето след раждането спи <strong>ВИНАГИ по гръб</strong>, на твърд равен матрак и в празно легло — това е различна тема и там няма варианти. (в „Здраве и SOS“ → таб „Попитай“ напиши „безопасен сън“)'));
 
     const тек = w ? (ПОЗИ.find(p => w <= p.докъде) || ПОЗИ[2]) : null;
     if (тек) {
       const box = el('div', 'sp-now');
+      // 🔴 11.08 (обиколка по картите, ИЗМЕРЕНО в 30-та с.): пишеше „3-ви
+      //    триместър“ — наставката беше закована на „-ви“ и вярна само за
+      //    първия. Думата няма правопис за бъркане.
       box.innerHTML = `<span class="sp-e">${тек.е}</span>
-        <div><p class="sp-t">${esc(тек.т)}</p><p class="sp-w">седмица ${w} · ${тек.три}-ви триместър</p></div>`;
+        <div><p class="sp-t">${esc(тек.т)}</p><p class="sp-w">${window.BL_REDNA ? BL_REDNA(w) : w + '-та'} седмица · ${ТРИДУМА[тек.три] || тек.три} триместър</p></div>`;
       c.appendChild(box);
       c.appendChild(el('p', 'sp-o', esc(тек.о)));
     } else {
@@ -135,10 +161,18 @@
     let i = седмици.length - 1;
     const стая = el('div', 'bs-stage');
     const cap = el('p', 'bs-cap', ''); cap.setAttribute('aria-live', 'polite');
+    // 🔴 11.08 (ДОКАЗАНО наживо): стойността от bl_bump влизаше СУРОВА в
+    //    src="…" през innerHTML. Сложих в ключа `x" onerror="…` и кодът се
+    //    изпълни (window.__ХАКНАТО стана 1). Желязно правило 4. Тук не
+    //    escape-вам низа, а изобщо не пускам HTML парсер: атрибутът се
+    //    присвоява на елемент, направен с createElement.
+    const кадър = document.createElement('img');
     const рисувай = () => {
       const w = седмици[i];
-      стая.innerHTML = `<img src="${photos[w]}" alt="коремче на ${w} седмица">`;
-      cap.innerHTML = `<strong>${w}</strong> седмица · ${i + 1} от ${седмици.length}`;
+      кадър.src = photos[w];
+      кадър.alt = 'коремче на ' + w + ' седмица';
+      if (кадър.parentNode !== стая) { стая.innerHTML = ''; стая.appendChild(кадър); }
+      cap.innerHTML = `<strong>${window.BL_REDNA ? BL_REDNA(w) : w + '-та'}</strong> седмица · ${i + 1} от ${седмици.length}`;
     };
     const ред = el('div', 'bs-ctrl');
     const назад = el('button', 'bs-b', '‹'); назад.type = 'button';
@@ -150,20 +184,29 @@
     const игра = el('button', 'jr-chip', '▶ Пусни лентата'); игра.type = 'button';
     назад.addEventListener('click', () => { i = (i - 1 + седмици.length) % седмици.length; рисувай(); });
     напред.addEventListener('click', () => { i = (i + 1) % седмици.length; рисувай(); });
+    пръст(назад, true); пръст(напред, true); пръст(игра);
     let таймер = null;
+    const спри = () => { if (таймер) clearInterval(таймер); таймер = null; игра.textContent = '▶ Пусни лентата'; };
+    // 🔴 11.08 (ИЗМЕРЕНО): лентата продължаваше да се върти, след като мама е
+    //    затворила стаята — пуснах я, натиснах „затвори“ и надписът беше
+    //    стигнал „9 от 14“ с прибран овърлей. Всеки кадър декодира нова снимка
+    //    в карта, която никой не гледа — батерия и задавен скрол на телефон.
+    //    Банята в СЪЩИЯ файл вече го пази така; лентата беше пропусната.
     игра.addEventListener('click', () => {
-      if (таймер) { clearInterval(таймер); таймер = null; игра.textContent = '▶ Пусни лентата'; return; }
+      if (таймер) { спри(); return; }
       i = 0; рисувай(); игра.textContent = '⏸ Спри';
       таймер = setInterval(() => {
+        const ов = document.getElementById('roomOverlay');
+        if (!стая.isConnected || (ов && ов.hidden)) { спри(); return; }
         i++;
-        if (i >= седмици.length) { clearInterval(таймер); таймер = null; игра.textContent = '▶ Пусни лентата'; i = седмици.length - 1; }
+        if (i >= седмици.length) { спри(); i = седмици.length - 1; }
         рисувай();
       }, 700);
     });
     ред.appendChild(назад); ред.appendChild(игра); ред.appendChild(напред);
     c.appendChild(стая); c.appendChild(cap); c.appendChild(ред); рисувай();
     c.appendChild(el('p', 'jr-privacy',
-      `${седмици.length} снимки, от ${седмици[0]}-та до ${седмици[седмици.length - 1]}-та седмица. Тялото ти свърши това за ${седмици[седмици.length - 1] - седмици[0]} седмици.`));
+      `${седмици.length} снимки, от ${window.BL_REDNA ? BL_REDNA(седмици[0]) : седмици[0] + '-та'} до ${window.BL_REDNA ? BL_REDNA(седмици[седмици.length - 1]) : седмици[седмици.length - 1] + '-та'} седмица. Тялото ти свърши това за ${window.BL_BROI ? BL_BROI(седмици[седмици.length - 1] - седмици[0], 'седмица', 'седмици') : (седмици[седмици.length - 1] - седмици[0]) + ' седмици'}.`));
     return c;
   }
 
@@ -177,11 +220,27 @@
     const inp = el('input', 'jr-word'); inp.placeholder = 'Коя играчка избра? (напр. „кафявото мече“)'; inp.maxLength = 50; inp.value = st;
     const b = el('button', 'jr-chip', '🧸 Това е'); b.type = 'button';
     const out = el('p', 'sc-out', st ? '✔ Еталонът ви е: <strong>' + esc(st) + '</strong>' : '');
+    inp.setAttribute('aria-label', 'Коя играчка избра за еталон');
+    пръст(inp); пръст(b);
+    // 🔴 11.08 (ИЗМЕРЕНО): празно поле → бутонът мълчеше напълно (out.innerHTML
+    //    непроменен, нищо в паметта). Мълчалив бутон няма.
+    // 🔴 Второ (ИЗМЕРЕНО): записваше се `v.slice(0,50)`, а на екрана се
+    //    изписваше ЦЕЛИЯТ v — показаното не беше записаното, до презареждане.
     b.addEventListener('click', () => {
-      const v = inp.value.trim(); if (!v) return;
-      save('bl_scale_toy', v.slice(0, 50));
+      const v = inp.value.trim().slice(0, 50);
+      if (!v) {
+        out.innerHTML = '🧸 Напиши коя играчка избра — само името ѝ стига.';
+        inp.focus();
+        return;
+      }
+      const старо = load('bl_scale_toy', '');
+      if (!save('bl_scale_toy', v)) { out.innerHTML = '🤍 Паметта на телефона е пълна — не можах да го запазя.'; return; }
+      inp.value = v;
       out.innerHTML = '✔ Еталонът ви е: <strong>' + esc(v) + '</strong>';
-      fx().buzz(8); fx().cheer('🧸 Слагай я на всяка месечна снимка!');
+      fx().buzz(8);
+      if (старо && старо !== v) fx().cheer('🧸 Смених го на „' + v + '“.');
+      else if (!старо) fx().cheer('🧸 Слагай я на всяка месечна снимка!');
+      else fx().cheer('🧸 Записано.');
     });
     ред.appendChild(inp); ред.appendChild(b);
     c.appendChild(ред); c.appendChild(out);
@@ -300,9 +359,31 @@
       <p><strong>На гости:</strong> занеси нещо познато „в запас“ и кажи на глас „той още не яде подправено“. Спестява неудобство на всички.</p>
       <p><strong>Честно:</strong> едно по-разхлабено хранене навън не съсипва нищо. Целта е детето да свиква с маса, шум и хора — не всяка хапка да е образцова.</p>`;
     c.appendChild(съв);
+    // 🔴 11.08 (ИЗМЕРЕНО): при празен списък „↺ Изчисти отметките“ не правеше
+    //    НИЩО видимо (innerHTML на картата непроменен преди/след). А при пълен
+    //    списък изтриваше седем отметки БЕЗ път назад — едно докосване по
+    //    погрешка и чантата се събира отначало. Сега казва какво стана и
+    //    връща последното изтриване.
     const изчисти = el('button', 'jr-chip', '↺ Изчисти отметките'); изчисти.type = 'button';
-    изчисти.addEventListener('click', () => { Object.keys(st).forEach(k => delete st[k]); save('bl_outbag', st); рисувай(); });
-    c.appendChild(изчисти);
+    пръст(изчисти);
+    const вест = el('p', 'jr-privacy', ''); вест.hidden = true;
+    const върни = el('button', 'jr-chip', '↩ Върни ги'); върни.type = 'button'; върни.hidden = true;
+    пръст(върни);
+    изчисти.addEventListener('click', () => {
+      const имаше = ЧАНТА.filter(x => st[x.id]).map(x => x.id);
+      if (!имаше.length) { знак(вест, '🎒 Няма какво да изчистя — всички редове са без отметка.'); върни.hidden = true; return; }
+      Object.keys(st).forEach(k => delete st[k]);
+      save('bl_outbag', st); рисувай(); fx().buzz(6);
+      знак(вест, '↺ Махнах ' + имаше.length + (имаше.length === 1 ? ' отметка.' : ' отметки.'));
+      върни.hidden = false;
+      върни.onclick = () => {
+        имаше.forEach(id => { st[id] = true; });
+        save('bl_outbag', st); рисувай(); fx().buzz(6);
+        знак(вест, '↩ Върнах ги както бяха.');
+        върни.hidden = true;
+      };
+    });
+    c.appendChild(изчисти); c.appendChild(върни); c.appendChild(вест);
     return c;
   }
 
@@ -323,8 +404,11 @@
     const st = load('bl_bath', { d: '', n: 0 });
     if (st.d !== today()) { st.d = today(); st.n = 0; }
     const дисп = el('div', 'bt-clock', '00:00');
+    дисп.setAttribute('aria-live', 'polite');
+    const бележка = el('p', 'jr-privacy', ''); бележка.hidden = true;
     let старт = null, тик = null;
     const бутон = el('button', 'jr-btn', '🛁 Започни'); бутон.type = 'button';
+    пръст(бутон);
     const фмт = s => String(Math.floor(s / 60)).padStart(2, '0') + ':' + String(s % 60).padStart(2, '0');
     бутон.addEventListener('click', () => {
       if (тик) {
@@ -334,13 +418,23 @@
         бутон.textContent = '🛁 Започни';
         if (мин >= 1) {
           st.n += мин; save('bl_bath', st);
+          // 🔴 11.08: сборът се четеше в тази строфа през load() ВЪТРЕ — добре;
+          //    но st е снимка отпреди. Чета прясно и за двете.
           const общо = load('bl_bath_total', 0) + мин; save('bl_bath_total', общо);
-          fx().confetti(); fx().cheer('🛁 ' + мин + ' минути само твои.');
+          fx().confetti(); fx().cheer('🛁 ' + мин + ' ' + (мин === 1 ? 'минута само твоя' : 'минути само твои') + '.');
           рисувайСбор();
+        } else {
+          // 🔴 11.08 (ИЗМЕРЕНО): натиснах „Започни“ и веднага „Излизам“ —
+          //    часовникът се нулира и НИЩО не се казва. Мама, която е излязла
+          //    след половин минута, не разбира дали е броено, или е счупено.
+          знак(бележка, '🤍 По-малко от минута — не го броя. Но си влязла, това е.');
         }
         return;
       }
       старт = Date.now(); дисп.classList.add('run'); бутон.textContent = '⏹ Излизам';
+      бележка.hidden = true;
+      // веднага видим знак, че часовникът тръгна — 1 сек по-късно е дълго
+      дисп.textContent = '00:00';
       // 🧹 29.07: без пазач броенето продължаваше в откачен елемент, след като
       //    мама излезе от стаята — а тя влиза в банята ТОЧНО за да остави
       //    телефона. Щом дисплеят вече не е на екрана, спираме брояча — но
@@ -365,7 +459,7 @@
         try { рисувайСбор(); } catch (e) {}
       }, 1000);
     });
-    c.appendChild(дисп); c.appendChild(бутон);
+    c.appendChild(дисп); c.appendChild(бутон); c.appendChild(бележка);
     const сбор = el('p', 'bt-sum', '');
     const рисувайСбор = () => {
       const общо = load('bl_bath_total', 0);
@@ -397,8 +491,10 @@
     const done = (load('bl_lab', { done: [] }).done) || [];
     if (!done.length) return;                     // празна тетрадка → няма какво да се печата
     const b = el('button', 'jr-chip nb-print', '🖨️ Отпечатай тетрадката'); b.type = 'button';
+    пръст(b);
+    // 🔴 11.08: без BL_EXPR бутонът мълчеше. Рядко, но мълчалив бутон няма.
     b.addEventListener('click', () => {
-      if (!window.BL_EXPR || !BL_EXPR.printOverlay) return;
+      if (!window.BL_EXPR || !BL_EXPR.printOverlay) { b.textContent = '🤍 Печатът не се отвори — пробвай пак след малко'; setTimeout(() => { b.textContent = '🖨️ Отпечатай тетрадката'; }, 2600); return; }
       const baby = load('bl_baby', {});
       BL_EXPR.printOverlay('Какво знам за ' + (esc(baby.name) || 'моето бебе'),
         `<p class="pr-big">Не от книга. От ${done.length} ${done.length === 1 ? 'опит' : 'опита'}, направени вкъщи.</p>

@@ -24,6 +24,60 @@
   const sub = s => '<span class="jr-sub">' + s + '</span>';
   const fx = () => window.BL_FX || { confetti() {}, cheer() {}, buzz() {} };
 
+  // 📱 11.08 (обиколка по телефон) — същите помощници като в women2/women3.js.
+  function фокус(t) {
+    try { t.focus(); } catch (e) { return; }
+    const извън = () => {
+      const vv = window.visualViewport;
+      const дъно = vv ? vv.height : window.innerHeight;
+      const r = t.getBoundingClientRect();
+      return r.top < 8 || r.bottom > дъно - 8;
+    };
+    const виж = плавно => {
+      if (!извън()) return;
+      try { t.scrollIntoView(плавно ? { block: 'center', behavior: 'smooth' } : { block: 'center' }); }
+      catch (e) { try { t.scrollIntoView(); } catch (e2) {} }
+    };
+    виж(true);
+    // ⚠️ вторият опит е РЯЗЪК нарочно — плавното превъртане иска кадри и при
+    //    задавен скрол не стига доникъде (измерено в women3.js).
+    setTimeout(() => виж(false), 320);
+  }
+  // 🔴 МЪЛЧАЛИВ БУТОН: „+ Отказвам се“ с празно поле не правеше нищо видимо.
+  //    ⚠️ „+ Отказвам се“ живее в `.jr-addrow`, която е FLEX. Обяснение,
+  //    пъхнато веднага след бутона, става трети flex-брат и смачква полето
+  //    (измерено в съседния файл: 259.6 → 32.6 px). Качваме се над flex-родителя.
+  const каз = (котва, txt, полеЗаФокус) => {
+    if (!котва || !котва.parentNode) return;
+    let гнездо = котва;
+    for (let i = 0; i < 3 && гнездо.parentNode; i++) {
+      const d = getComputedStyle(гнездо.parentNode).display;
+      if (d === 'flex' || d === 'inline-flex' || d === 'grid' || d === 'inline-grid') гнездо = гнездо.parentNode;
+      else break;
+    }
+    if (!гнездо.parentNode) return;
+    let p = гнездо.nextElementSibling;
+    if (!p || !p.classList || !p.classList.contains('wm-say')) {
+      p = el('p', 'jr-privacy wm-say', '');
+      p.style.whiteSpace = 'pre-wrap';
+      p.style.overflowWrap = 'anywhere'; p.style.wordBreak = 'break-word'; p.style.minWidth = '0';
+      гнездо.parentNode.insertBefore(p, гнездо.nextSibling);
+    }
+    p.textContent = txt; p.hidden = false;
+    clearTimeout(p._t); p._t = setTimeout(() => { p.hidden = true; }, 3200);
+    if (полеЗаФокус) фокус(полеЗаФокус);
+  };
+  // 👆 ИЗМЕРЕНО: „🗑“ = 40×44, готовите идеи = 311×43. Прагът за пръст е 44×44.
+  const пръст = b => { b.style.minWidth = '44px'; b.style.minHeight = '44px'; return b; };
+  // 🔴 ИЗМЕРЕНО: ред от не-списъка с една дълга дума → scrollWidth 635 при
+  //    clientWidth 311. Текстът просто изтичаше извън картата и не се четеше.
+  const реже = n => {
+    n.style.overflowWrap = 'anywhere'; n.style.wordBreak = 'break-word'; n.style.minWidth = '0';
+    return n;
+  };
+  // ⚠️ `реже` НЕ бива да пипа <input> — виж бележката в women3.js.
+  const редполе = i => { i.style.minHeight = '44px'; return i; };
+
   // ═══════════ 📅 4.5.1 ГОДИНАТА В ЕДИН ЕКРАН ═══════════
   function yearGridCard() {
     const c = card('Годината ти в един екран 📅 ' + sub('всеки ден е квадратче · всяко настроение е цвят'));
@@ -49,9 +103,49 @@
         попълнени++; сума += r.m;                    // №85: и сборът е от СЪЩИЯ прозорец
         кв.title = ключ + ' · ' + ЛИЦА[r.m] + (r.w ? ' · „' + r.w + '“' : '');
       } else кв.title = ключ;
+      // 📱 11.08: `title` е НАСТОЛНО нещо — на телефон няма курсор, който да
+      //    задържиш. Тоест подзаглавието обещаваше „всеки ден е квадратче“, а
+      //    на телефона квадратчето не казваше НИЩО. Датата ѝ трябва на пръст.
+      кв.dataset.d = ключ;
+      if (r && typeof r.m === 'number') { кв.dataset.m = r.m; if (r.w) кв.dataset.w = r.w; }
       мрежа.appendChild(кв);
     }
     c.appendChild(мрежа);
+    // 📱 мрежата се превърта ВЪТРЕ в себе си (css: overflow-x:auto). ИЗМЕРЕНО:
+    //    scrollWidth 581 при clientWidth 311 — а тя се отваряше най-вляво,
+    //    тоест мама виждаше отпреди година, а ДНЕС беше извън екрана вдясно.
+    //    ⚠️ ИЗМЕРЕНО, че само requestAnimationFrame НЕ СТИГА: картата се ражда
+    //    СГЪНАТА (`.jr-card.folded`), тоест display:none — в този миг
+    //    clientWidth е 0 и превъртането се губи. Мама разгъва картата по-късно
+    //    и пак гледа миналия август.
+    //    ⚠️⚠️ И ВТОРИ ПЪТ: първо сложих IntersectionObserver, но той не се
+    //    доказва — в моя браузър НИТО IntersectionObserver, НИТО ResizeObserver
+    //    се обади (проверено с два отделни теста: нула повиквания при преход
+    //    y=2046 → y=453 и при разгъване от 0 на 311 px). Не качвам механизъм,
+    //    който не мога да видя как работи. Разгъването е ТАП, а тапът се хваща
+    //    сигурно: слушаме самата карта. Веднъж — после мрежата е нейна.
+    let наместено = false;
+    const доДнес = () => {
+      if (наместено) return true;
+      try { if (мрежа.clientWidth > 0 && мрежа.scrollWidth > мрежа.clientWidth) { мрежа.scrollLeft = мрежа.scrollWidth; наместено = true; return true; } } catch (e) {}
+      return false;
+    };
+    requestAnimationFrame(доДнес);
+    c.addEventListener('click', () => { if (!наместено) setTimeout(доДнес, 0); }, true);
+    const четец = el('p', 'jr-privacy');
+    четец.textContent = 'Докосни квадратче, за да видиш кой ден е.';
+    мрежа.setAttribute('role', 'group');
+    мрежа.setAttribute('aria-label', 'Последната ти година, ден по ден');
+    мрежа.addEventListener('click', e => {
+      const кв = e.target.closest ? e.target.closest('.yg-cell') : null;
+      if (!кв || !кв.dataset.d) return;
+      const m = кв.dataset.m;
+      четец.textContent = m === undefined
+        ? кв.dataset.d + ' · нямаш записано за този ден — това не значи, че не се е случило нищо'
+        : кв.dataset.d + ' · ' + ЛИЦА[m] + (кв.dataset.w ? ' · „' + кв.dataset.w + '“' : '');
+      fx().buzz(6);
+    });
+    c.appendChild(четец);
     // легенда
     const лег = el('p', 'yg-leg');
     лег.innerHTML = ЛИЦА.map((e, i) => `<span class="yg-cell ${ЦВЕТ[i]}"></span>${e}`).join(' ') +
@@ -94,6 +188,7 @@
       'Всички списъци искат да добавиш. Този иска да махнеш. Всяко „няма да“ е време, което се връща при теб.'));
     const st = load('bl_wm_notlist', []);
     const list = el('div', 'jr-wins');
+    let махнато = null;
     const рисувай = () => {
       list.innerHTML = '';
       // 22.07 (армия): готовите идеи се рисуваха САМО при празен списък —
@@ -104,9 +199,15 @@
       }
       st.slice().reverse().forEach((x, ri) => {
         const i = st.length - 1 - ri;
-        const row = el('div', 'nl-row');
+        const row = реже(el('div', 'nl-row'));
         row.innerHTML = `<span class="nl-x">🚫</span><span class="nl-t">${esc(x.t)}</span><button class="nt-del" type="button" aria-label="Махни „${esc(x.t)}“ от списъка">🗑</button>`;
-        row.querySelector('.nt-del').addEventListener('click', () => { st.splice(i, 1); save('bl_wm_notlist', st); рисувай(); });
+        реже(row.querySelector('.nl-t'));      // 🔴 дългата дума изтичаше вън от картата
+        const кофа = row.querySelector('.nt-del'); пръст(кофа);
+        кофа.addEventListener('click', () => {
+          махнато = st[i]; st.splice(i, 1); save('bl_wm_notlist', st); рисувай();
+          fx().buzz(8);
+          каз(add, 'Махнах „' + махнато.t + '“. Ако не си искала — върни го.');
+        });
         list.appendChild(row);
       });
       if (st.length) {
@@ -119,21 +220,43 @@
         if (st.length) list.appendChild(el('p', 'jr-privacy', 'Още идеи, ако ти паснат:'));
         const пр = el('div', 'nl-ideas');
         оставащи.slice(0, 4).forEach(т => {
-          const b = el('button', 'nl-idea', esc(т)); b.type = 'button';
-          b.addEventListener('click', () => { st.push({ t: т, d: today() }); save('bl_wm_notlist', st); рисувай(); fx().buzz(8); });
+          const b = реже(el('button', 'nl-idea', esc(т))); b.type = 'button'; пръст(b);
+          b.addEventListener('click', () => {
+            st.push({ t: т, d: today() }); save('bl_wm_notlist', st); рисувай(); fx().buzz(8);
+            каз(add, 'Отказа се от това ✔ Времето му се връща при теб.');
+          });
           пр.appendChild(b);
         });
         list.appendChild(пр);
       }
+      отмяна.hidden = !махнато;
     };
     const ред = el('div', 'jr-addrow');
-    const inp = el('input', 'jr-word'); inp.placeholder = 'Няма да…'; inp.maxLength = 90;
-    const add = el('button', 'jr-chip', '+ Отказвам се'); add.type = 'button';
-    const пиши = () => { const v = inp.value.trim(); if (!v) return; st.push({ t: v.slice(0, 90), d: today() }); save('bl_wm_notlist', st); inp.value = ''; рисувай(); fx().buzz(10); };
+    // ⚠️ НЕ `реже` върху <input>: min-width:0 маха min-width:auto на flex-детето
+    //    и полето се свива до две букви (измерено 226 → 32.6 px в съседния файл).
+    const inp = редполе(el('input', 'jr-word')); inp.placeholder = 'Няма да…'; inp.maxLength = 90;
+    const add = el('button', 'jr-chip', '+ Отказвам се'); add.type = 'button'; пръст(add);
+    const пиши = () => {
+      const v = inp.value.trim();
+      // 🔴 МЪЛЧАЛИВ БУТОН: празно поле → тапът не правеше нищо видимо
+      if (!v) { каз(add, 'Полето е празно. Напиши от какво се отказваш и пак натисни.', inp); return; }
+      st.push({ t: v.slice(0, 90), d: today() }); save('bl_wm_notlist', st); inp.value = ''; рисувай(); fx().buzz(10);
+      каз(add, 'Записах го ✔ Това вече не е твоя грижа.');
+    };
     add.addEventListener('click', пиши);
     inp.addEventListener('keydown', e => { if (e.key === 'Enter') { e.preventDefault(); пиши(); } });
     ред.appendChild(inp); ред.appendChild(add);
-    c.appendChild(ред); c.appendChild(list); рисувай();
+    // ↩ 11.08: 🗑 триеше на секундата и без път назад. Един тап по грешен ред
+    //    и решението ѝ изчезва — а точно тук всеки ред е било решение.
+    const отмяна = el('button', 'jr-chip jr-chip-soft', '↩ Върни последното махнато');
+    отмяна.type = 'button'; отмяна.hidden = true; пръст(отмяна);
+    отмяна.addEventListener('click', () => {
+      if (!махнато) { отмяна.hidden = true; return; }
+      st.push(махнато); save('bl_wm_notlist', st);
+      каз(отмяна, 'Върнах „' + махнато.t + '“ ✔');
+      махнато = null; рисувай(); fx().buzz(8);
+    });
+    c.appendChild(ред); c.appendChild(list); c.appendChild(отмяна); рисувай();
     return c;
   }
 
@@ -161,13 +284,21 @@
       // 4.1.7: гласово писмо в корема — от 24-та седмица бебето чува.
       // Б1.3: подзаглавието знае СЕДМИЦАТА — „ВЕЧЕ те чува“ след 24-та
       // топли много повече от вечното „от ~24-та“.
-      let подзаглавие = 'от ~24-та седмица той чува гласа ти';
+      // 🔴 11.08 (правило В3, топъл майчин глас): подзаглавието казваше „ТОЙ
+      //    вече те чува“ на всяка жена. Полът в bl_baby е 'boy' | 'girl' | ''
+      //    (проверено в rooms2.js:1354) и в бременността най-често е ''.
+      //    Жена, която чака момиче — или още не знае — четеше чужд род на
+      //    единственото място, където ѝ говорим за нейното бебе.
+      const пол = (load('bl_baby', {}) || {}).sex;
+      const той = пол === 'boy' ? 'той' : пол === 'girl' ? 'тя' : 'бебето';
+      const му = пол === 'girl' ? 'ѝ' : 'му';
+      let подзаглавие = 'от ~24-та седмица ' + той + ' чува гласа ти';
       try {
         const lmp = window.BL_EXPECT ? BL_EXPECT.lmp() : load('bl_lmp', '');
         if (lmp) {
           const сед = Math.floor((Date.now() - new Date(lmp)) / 604800000);
-          if (сед >= 24 && сед <= 42) подзаглавие = 'той ВЕЧЕ те чува — говори му 💜';
-          else if (сед > 0 && сед < 24) подзаглавие = 'запиши го — той ще го чуе съвсем скоро (от ~24-та)';
+          if (сед >= 24 && сед <= 42) подзаглавие = той + ' ВЕЧЕ те чува — говори ' + му + ' 💜';
+          else if (сед > 0 && сед < 24) подзаглавие = 'запиши го — ' + той + ' ще го чуе съвсем скоро (от ~24-та)';
         }
       } catch (e) {}
       if (E()) root.appendChild(E().voiceCard(
@@ -182,10 +313,15 @@
         'bl_voice_songs',
         { maxSec: 120, labels: ['приспивна', 'весела', 'наша'] }));
       // 4.6.6: рисунките по месеци
+      // 🔴 11.08: „галерията на малкия творец“ + „първият МУ подпис“ — мъжки
+      //    род пред майка на момиче. Полът стои в bl_baby.sex ('boy'|'girl'|'').
+      const пол = (load('bl_baby', {}) || {}).sex;
+      const творец = пол === 'girl' ? 'малката художничка' : пол === 'boy' ? 'малкия художник' : 'малкия творец';
+      const негов = пол === 'girl' ? 'нейният' : пол === 'boy' ? 'неговият' : 'първият';
       if (E()) root.appendChild(E().photoListCard(
-        'Рисунките по месеци 🎨 ' + sub('галерията на малкия творец'),
+        'Рисунките по месеци 🎨 ' + sub('галерията на ' + творец),
         'bl_art_months',
-        { notePrompt: 'На колко месеца я нарисува?', empty: 'Първата драскулка идва по-скоро, отколкото мислиш. Тя е първият му подпис. 🖍️' }));
+        { notePrompt: 'На колко месеца я нарисува?', empty: 'Първата драскулка идва по-скоро, отколкото мислиш. Тя е ' + (негов === 'първият' ? 'първият подпис на детето ти' : негов + ' първи подпис') + '. 🖍️' }));
     }
   };
   Object.keys(ПАКЕТИ).forEach(стая => {

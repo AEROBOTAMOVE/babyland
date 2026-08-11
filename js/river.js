@@ -101,7 +101,7 @@
     const lmp = window.BL_EXPECT ? BL_EXPECT.lmp() : load('bl_lmp', '');
     if (lmp) Object.entries(load('bl_bump', {})).forEach(([w, img]) => {
       const dd = new Date(lmp); dd.setDate(dd.getDate() + w * 7);
-      R.push({ ts: dd.getTime(), e: '🤰', txt: 'Коремчето на ' + w + ' седмици', img });
+      R.push({ ts: dd.getTime(), e: '🤰', txt: 'Коремчето на ' + (window.BL_BROI ? BL_BROI(w, 'седмица', 'седмици') : w + ' ' + (w === 1 ? 'седмица' : 'седмици')), img });
     });
     // Б10.4 (план 20): ехо-снимките и наддаването също са част от Историята
     load('bl_echo', []).forEach(x => {
@@ -156,7 +156,7 @@
     const R = collect();
     const baby = getBaby();
     let html = `<div class="rv-panel"><div class="rv-head"><h3>🌊 Историята ни</h3>
-      <span class="rv-count">${R.length} мига</span><button class="rv-close" type="button" aria-label="Затвори реката">✕</button></div>
+      <span class="rv-count">${window.BL_BROI ? BL_BROI(R.length, 'миг', 'мига') : R.length + ' ' + (R.length === 1 ? 'миг' : 'мига')}</span><button class="rv-close" type="button" aria-label="Затвори реката">✕</button></div>
       <div class="rv-add">
         <div class="rv-addrow">
           <div class="rv-emo" id="rvEmo">${[['💜','обич'],['🌟','гордост'],['😂','смях'],['🥹','разчувствах се'],['🎉','празник'],['📸','снимка']].map(([e, име], i) => `<button type="button" class="rv-emob${i === 0 ? ' on' : ''}" data-e="${e}" aria-label="${име}" aria-pressed="${i === 0 ? 'true' : 'false'}">${e}</button>`).join('')}</div>
@@ -327,7 +327,7 @@
     const n = collect().length;
     c.innerHTML = `<h4 class="jr-title">Историята ни 🌊 <span class="jr-sub">реката на всичките ви мигове</span></h4>
       <div class="rv-teaser"><span class="rv-wave">〰️〰️〰️</span>
-      <p class="cs-note">${n ? `<strong>${n} мига</strong> вече текат в реката ви.` : 'Реката чака първите мигове — те идват отвсякъде, сами.'}</p></div>`;
+      <p class="cs-note">${n ? `<strong>${window.BL_BROI ? BL_BROI(n, 'миг', 'мига') : n + ' ' + (n === 1 ? 'миг' : 'мига')}</strong> ${n === 1 ? 'вече тече' : 'вече текат'} в реката ви.` : 'Реката чака първите мигове — те идват отвсякъде, сами.'}</p></div>`;
     const btn = el('button', 'jr-btn', '🌊 Отвори Историята ни'); btn.type = 'button';
     btn.addEventListener('click', openRiver);
     c.appendChild(btn);

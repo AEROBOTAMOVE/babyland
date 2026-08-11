@@ -386,12 +386,15 @@
       const край = new Date(); край.setDate(1); край.setHours(0, 0, 0, 0);
       const мигове = BL_RIVER.collect().filter(x => x.ts >= мин.getTime() && x.ts < край.getTime());
       const големи = мигове.filter(x => x.big).length;
-      if (мигове.length) bits.push('месецът ви: ' + мигове.length + ' мига' + (големи ? ', от тях ' + големи + ' големи' : '') + ' — реката ги пази 🌊');
+      // 🟡 12.08 (единиците): при един-единствен запечатан миг за месеца редът
+      //    излизаше „месецът ви: 1 мига, от тях 1 големи“.
+      const бр = (n, ед, мн) => window.BL_BROI ? BL_BROI(n, ед, мн) : n + ' ' + (n === 1 ? ед : мн);
+      if (мигове.length) bits.push('месецът ви: ' + бр(мигове.length, 'миг', 'мига') + (големи ? ', от тях ' + бр(големи, 'голям', 'големи') : '') + ' — реката ги пази 🌊');
     } else if (new Date().getDay() === 0) {
       const dip = load('bl_diapers', {});
       let wk = 0;
       for (let i = 0; i < 7; i++) { const d = new Date(); d.setDate(d.getDate() - i); const r = dip[localDate(d)]; if (r) wk += (r.wet || 0) + (r.dirty || 0); }
-      if (wk) bits.push(`неделен поглед: ${wk} пелени тази седмица — герои сте`);
+      if (wk) bits.push(`неделен поглед: ${window.BL_BROI ? BL_BROI(wk, 'пелена', 'пелени') : wk + ' ' + (wk === 1 ? 'пелена' : 'пелени')} тази седмица — герои сте`);
     }
 
     // 12.14.3: тонът върви с часа — сутрин бодро, вечер тихо, нощем шепот

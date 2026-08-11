@@ -21,34 +21,104 @@
   const fx = () => window.BL_FX || { confetti() {}, cheer() {}, buzz() {} };
   const dayIndex = () => { const n = new Date(); return Math.floor((n - new Date(n.getFullYear(), 0, 0)) / 86400000) + n.getFullYear(); };
 
+  // ───────────────────────────────────────────────────────────
+  // 📱 11.08 (обиколка по телефон) — същите четири помощника като в women2/
+  //    women3/rooms10. Едно приложение, един начин.
+  // ───────────────────────────────────────────────────────────
+  function фокус(t) {
+    try { t.focus(); } catch (e) { return; }
+    const виж = () => {
+      const vv = window.visualViewport;
+      const дъно = vv ? vv.height : window.innerHeight;
+      const r = t.getBoundingClientRect();
+      if (r.top < 8 || r.bottom > дъно - 8) {
+        try { t.scrollIntoView({ block: 'center', behavior: 'smooth' }); } catch (e) { t.scrollIntoView(); }
+      }
+    };
+    виж(); setTimeout(виж, 320);
+  }
+  const каз = (котва, txt, полеЗаФокус) => {
+    if (!котва || !котва.parentNode) return;
+    let p = котва.nextElementSibling;
+    if (!p || !p.classList || !p.classList.contains('r11-say')) {
+      p = el('p', 'jr-privacy r11-say', '');
+      p.style.whiteSpace = 'pre-wrap';
+      p.style.overflowWrap = 'anywhere'; p.style.wordBreak = 'break-word'; p.style.minWidth = '0';
+      p.setAttribute('aria-live', 'polite');
+      котва.parentNode.insertBefore(p, котва.nextSibling);
+    }
+    p.textContent = txt; p.hidden = false;
+    clearTimeout(p._t); p._t = setTimeout(() => { p.hidden = true; }, 3600);
+    if (полеЗаФокус) фокус(полеЗаФокус);
+  };
+  // 👆 ИЗМЕРЕНО с getBoundingClientRect на 375px екран: „🗑“ = 40×44,
+  //    полето на хронологията = 141×43, „summary“ на картите = 303×41.
+  //    Прагът за пръст е 44×44.
+  const пръст = b => { b.style.minWidth = '44px'; b.style.minHeight = '44px'; return b; };
+  const реже = n => { n.style.overflowWrap = 'anywhere'; n.style.wordBreak = 'break-word'; n.style.minWidth = '0'; return n; };
+  const бгДата = s => { const d = new Date(String(s) + 'T12:00'); return isNaN(d) ? String(s) : d.toLocaleDateString('bg-BG', { day: 'numeric', month: 'short' }); };
+
   // ═══════════ 🪞 4.8.2 ОГЛЕДАЛОТО ═══════════
   function mirrorCard() {
     const c = card('Огледалото 🪞 ' + sub('дните, в които се хареса'));
     c.appendChild(el('p', 'jr-privacy',
       'Не за да броиш. За да имаш доказателство — че е имало такива дни, дори когато не се сещаш за тях.'));
-    const st = load('bl_wm_mirror', []);
-    const днес = st.some(x => x.d === today());
-    const b = el('button', 'jr-btn', днес ? '💛 Днес се хареса ✔' : '🪞 Днес се харесах');
-    b.type = 'button';
+    // 🔴 ИЗМЕРЕНО 11.08 (обиколка по картите) — ТРИ дефекта в един бутон:
+    //    1) при ПРАЗНА памет редът „Досега: N“ и решетката се закачаха само в
+    //       `if (st.length)` при рисуването. Първият тап на живота ѝ рисуваше в
+    //       решетка, която НЕ Е В ДОКУМЕНТА: измерено — gridInDOM=false след тапа,
+    //       true чак след повторно влизане. Тоест точно доказателството, за което
+    //       е картата, липсва на жената, която го вижда за пръв път.
+    //    2) вторият тап в същия ден беше `return` — нула на екрана. Мълчалив бутон.
+    //    3) броячът не мърдаше след тап (само решетката).
+    const b = el('button', 'jr-btn', ''); b.type = 'button';
+    const бр = el('p', 'jr-privacy', '');
     const grid = el('div', 'mr-grid');
+    const махни = пръст(el('button', 'jr-chip', '↩ не беше днес')); махни.type = 'button'; махни.hidden = true;
     const рисувай = () => {
+      const st = load('bl_wm_mirror', []).filter(x => x && x.d);
+      const днес = st.some(x => x.d === today());
+      b.textContent = днес ? '💛 Днес се хареса ✔' : '🪞 Днес се харесах';
+      b.setAttribute('aria-pressed', днес ? 'true' : 'false');
+      махни.hidden = !днес;
       grid.innerHTML = '';
       st.slice(-30).forEach(x => {
         const cell = el('span', 'mr-day', '💛');
-        cell.title = x.d;
+        cell.title = бгДата(x.d);
+        cell.setAttribute('role', 'img');
+        cell.setAttribute('aria-label', 'Хареса се на ' + бгДата(x.d));
         grid.appendChild(cell);
       });
+      // 🔤 „1 такива дни“ — числото и думата до него не бива да си противоречат
+      бр.innerHTML = st.length
+        ? (st.length === 1
+          ? 'Досега: <strong>1</strong> такъв ден. Ето го:'
+          : 'Досега: <strong>' + st.length + '</strong> такива дни. Ето ги:')
+        : 'Още няма отбелязан такъв ден. Това не значи, че не е имало — значи само, че не сме го записали.';
+      grid.hidden = !st.length;
     };
     b.addEventListener('click', () => {
-      if (st.some(x => x.d === today())) return;
+      // ПРЯСНО, и върху СУРОВИЯ списък — филтърът е само за показване. Иначе
+      // записът щеше тихо да изхвърли всеки стар/повреден ред, който минава
+      // оттук, а ние не трием нищо на мама.
+      const st = load('bl_wm_mirror', []);
+      if (st.some(x => x && x.d === today())) {
+        каз(b, 'Днешният ден вече е отбелязан 💛 Един път стига — не е състезание.');
+        return;
+      }
       st.push({ d: today() }); save('bl_wm_mirror', st);
-      b.textContent = '💛 Днес се хареса ✔'; рисувай(); fx().buzz(10);
+      рисувай(); fx().buzz(10);
+      каз(b, 'Записах днешния ден 💛');
     });
-    c.appendChild(b);
-    if (st.length) {
-      c.appendChild(el('p', 'jr-privacy', 'Досега: <strong>' + st.length + '</strong> такива дни. Ето ги:'));
-      c.appendChild(grid); рисувай();
-    }
+    махни.addEventListener('click', () => {
+      const st = load('bl_wm_mirror', []);
+      const j = st.findIndex(x => x && x.d === today());
+      if (j < 0) { рисувай(); каз(b, 'Днешният ден и без това не е отбелязан.'); return; }
+      st.splice(j, 1); save('bl_wm_mirror', st); рисувай();
+      каз(b, 'Махнах днешния ден. Стои си отворен, ако размислиш.');
+    });
+    c.appendChild(b); c.appendChild(махни); c.appendChild(бр); c.appendChild(grid);
+    рисувай();
     return c;
   }
 
@@ -73,41 +143,83 @@
   };
   function whoTodayCard() {
     const c = card('Коя си ти днес 🎭 ' + sub('три въпроса, едно огледало'));
-    const отг = {};
+    // 💭 ИЗМЕРЕНО 11.08: отговорите живееха само в паметта на екрана. Мама
+    //    отговаря на трите, вижда резултата, отваря друга карта — и при връщане
+    //    в стаята намира празен тест. Нищо не се пазеше. Сега днешните отговори
+    //    се помнят за ДНЕС (утре тестът е нов) и се връщат както са били.
+    //    ПЪТ НАЗАД: изтрий bl_wm_who — тестът пак става еднодневен и без памет.
+    const КЛЮЧ = 'bl_wm_who';
+    const пазено = load(КЛЮЧ, {});
+    const отг = (пазено && пазено.d === today() && пазено.a && typeof пазено.a === 'object') ? Object.assign({}, пазено.a) : {};
+    const бутони = [];
     ТЕСТ.forEach((в, i) => {
       const блок = el('div', 'wt-block');
       блок.innerHTML = '<p class="wt-q">' + esc(в.q) + '</p>';
       const g = el('div', 'wt-opts');
       в.a.forEach(([текст, тип, e]) => {
-        const b = el('button', 'wt-o', e + ' ' + текст); b.type = 'button';
+        const b = реже(el('button', 'wt-o', e + ' ' + текст)); b.type = 'button';
+        if (отг[i] === тип) b.classList.add('on');
+        b.setAttribute('aria-pressed', отг[i] === тип ? 'true' : 'false');
+        бутони.push(b);
         b.addEventListener('click', () => {
-          g.querySelectorAll('.wt-o').forEach(x => x.classList.remove('on'));
-          b.classList.add('on'); отг[i] = тип; преброй();
+          g.querySelectorAll('.wt-o').forEach(x => { x.classList.remove('on'); x.setAttribute('aria-pressed', 'false'); });
+          b.classList.add('on'); b.setAttribute('aria-pressed', 'true');
+          отг[i] = тип;
+          save(КЛЮЧ, { d: today(), a: отг });
+          преброй();
         });
         g.appendChild(b);
       });
       блок.appendChild(g); c.appendChild(блок);
     });
     const out = el('div', 'wt-out');
-    c.appendChild(out);
+    const хинт = el('p', 'jr-privacy', ''); хинт.setAttribute('aria-live', 'polite');
+    const пак = пръст(el('button', 'jr-chip', '↺ Отговори пак')); пак.type = 'button'; пак.hidden = true;
+    c.appendChild(out); c.appendChild(хинт); c.appendChild(пак);
+    пак.addEventListener('click', () => {
+      Object.keys(отг).forEach(k => delete отг[k]);
+      save(КЛЮЧ, { d: today(), a: {} });
+      бутони.forEach(b => { b.classList.remove('on'); b.setAttribute('aria-pressed', 'false'); });
+      out.innerHTML = ''; преброй();
+    });
     function преброй() {
-      if (Object.keys(отг).length < ТЕСТ.length) return;
+      const дадени = Object.keys(отг).length;
+      // 🔇 при 1 и 2 отговора картата мълчеше — сега казва колко остават,
+      //    за да се вижда, че нещо ще се случи.
+      if (дадени < ТЕСТ.length) {
+        const о = ТЕСТ.length - дадени;
+        хинт.textContent = дадени === 0 ? '' : (о === 1 ? 'Остава още един отговор.' : 'Остават още ' + о + ' отговора.');
+        пак.hidden = дадени === 0;
+        out.innerHTML = '';
+        return;
+      }
+      хинт.textContent = ''; пак.hidden = false;
       const броене = {};
       Object.values(отг).forEach(t => броене[t] = (броене[t] || 0) + 1);
       const победител = Object.keys(броене).sort((a, b) => броене[b] - броене[a])[0];
-      const [име, текст] = ТИПОВЕ[победител];
-      out.innerHTML = `<div class="wt-result"><p class="wt-name">${esc(име)}</p><p class="wt-desc">${esc(текст)}</p></div>`;
-      fx().buzz(10);
+      const тип = ТИПОВЕ[победител];
+      if (!тип) { out.innerHTML = ''; return; }
+      out.innerHTML = `<div class="wt-result"><p class="wt-name">${esc(тип[0])}</p><p class="wt-desc">${esc(тип[1])}</p></div>`;
+      if (жив) fx().buzz(10);        // само при неин тап, не при възстановяване
     }
+    let жив = false;
+    преброй();
+    жив = true;
     return c;
   }
 
   // ═══════════ 🃏 4.8.11 ЗНАЧЕНИЕТО НА КАРТИТЕ ═══════════
   function cardMeaningsCard() {
-    // взимаме картите от women.js, ако са изложени; иначе кратко обяснение
-    const c = card('Езикът на картите 🃏 ' + sub('какво „казва“ всяка'));
+    // 🟠 11.08 (обиколка): подзаглавието обещаваше „какво «казва» ВСЯКА“ карта, а
+    //    отдолу стоят осем общи мотива. Тестето в „Картата на деня 🃏“ (women.js)
+    //    е от 60 карти с други имена — 🕯️ Свещта, 🧵 Конецът, 👑 Короната… Мама
+    //    тегли „Свещта“, идва тук за значението и не го намира. Коментарът горе
+    //    („взимаме картите от women.js, ако са изложени“) описваше код, който го
+    //    няма — women.js не изнася тестето никъде. Обещанието се свива до това,
+    //    което картата наистина дава: мотивите, не всяка карта поотделно.
+    const c = card('Езикът на картите 🃏 ' + sub('мотивите, които се повтарят'));
     c.appendChild(el('p', 'jr-privacy',
-      'Картите не предсказват нищо — те са огледало. Всяка е повод да спреш и да се запиташ нещо. Ето как да ги четеш:'));
+      'Картите не предсказват нищо — те са огледало. Тестето е голямо, но зад него стоят няколко повтарящи се мотива. Хванеш ли мотива, четеш и карта, която виждаш за пръв път:'));
     const ОБЩО = [
       ['🌅 Начало / изгрев', 'Нещо ново чука на вратата. Не бързай да го отваряш — но и не се прави, че го няма.'],
       ['🌊 Вълна / вода', 'Чувство те залива. Няма да те удави — вълните минават. Издишай.'],
@@ -121,6 +233,13 @@
     ОБЩО.forEach(([т, о]) => {
       const d = el('details', 'cm-row');
       d.innerHTML = `<summary>${esc(т)}</summary><p>${esc(о)}</p>`;
+      // 👆 ИЗМЕРЕНО: summary = 303×41 на 375px екран. Прагът за пръст е 44.
+      //    Растем с padding, а НЕ с display:flex — flex изяжда триъгълничето
+      //    ▸, което е единственият знак, че редът се отваря.
+      const s = d.querySelector('summary');
+      s.style.minHeight = '44px';
+      s.style.paddingTop = '12px'; s.style.paddingBottom = '12px';
+      реже(s); реже(d.querySelector('p'));
       c.appendChild(d);
     });
     c.appendChild(el('p', 'wm-sign', 'Играем си. А понякога улучваме. — Ния 🃏'));
@@ -147,7 +266,11 @@
       'Тази седмица си по-силна, отколкото си мислиш. Ще го докажеш на себе си.'
     ];
     const седмица = Math.floor(dayIndex() / 7);
-    c.innerHTML += `<p class="wh-text">${esc(СЕДМИЧНИ[седмица % СЕДМИЧНИ.length])}</p>`;
+    // 🟡 тук стоеше `c.innerHTML += …` — това преправя ЦЯЛАТА карта от текст и
+    //    подменя вече създаденото заглавие с нов възел. Днес минава, защото
+    //    украсата (📍, сгъването) се закача по-късно; утре някой ще я закачи
+    //    по-рано и ще изчезне без следа. Добавяме възел, не пренаписваме.
+    c.appendChild(реже(el('p', 'wh-text', esc(СЕДМИЧНИ[седмица % СЕДМИЧНИ.length]))));
     c.appendChild(el('p', 'wm-sign', 'Играем си. А понякога улучваме. — Ния 🃏'));
     return c;
   }
@@ -158,26 +281,71 @@
     const c = card('Какво се смени 🔬 ' + sub('преди нещо да тръгне накриво'));
     c.appendChild(el('p', 'jr-privacy',
       'Когато бебето изведнъж спи зле, яде зле или е неспокойно — най-полезният въпрос е: <strong>какво се промени в последните дни?</strong> Отбележи, за да видиш връзка.'));
-    const st = load('bl_lab_timeline', []);
-    const inp = el('input', 'jr-word'); inp.placeholder = 'напр. „смених прахчето“, „поникна зъб“, „пътувахме“…'; inp.maxLength = 80;
-    const add = el('button', 'jr-chip', '+ Отбележи промяна'); add.type = 'button';
+    const inp = реже(el('input', 'jr-word'));
+    inp.placeholder = 'напр. „смених прахчето“, „поникна зъб“, „пътувахме“…';
+    inp.maxLength = 80;
+    inp.setAttribute('aria-label', 'Какво се смени');
+    // 👆 ИЗМЕРЕНО: полето беше 141×43 — под прага и тясно за палец
+    inp.style.minHeight = '44px'; inp.style.flex = '1 1 auto'; inp.style.minWidth = '0';
+    const add = пръст(el('button', 'jr-chip', '+ Отбележи промяна')); add.type = 'button';
     const list = el('div', 'jr-wins');
+    let последноМахнато = null;                 // ↩ пътят назад
+    const върни = пръст(el('button', 'jr-chip', '↩ Върни изтритото')); върни.type = 'button'; върни.hidden = true;
     const рисувай = () => {
+      // 🔴 известният клас: `st` се четеше при рисуването и после се записваше
+      //    отгоре. Списъкът се показва и в „Историята ви“ (river.js) и се брои в
+      //    профила — карта, стояла отворена от снощи, връщаше вчерашното копие.
+      const st = load('bl_lab_timeline', []).filter(x => x && x.t);
       list.innerHTML = '';
-      if (!st.length) { list.appendChild(el('p', 'jr-privacy', 'Още нищо. Като се случи нещо ново — запиши го тук с датата.')); return; }
-      st.slice().reverse().slice(0, 20).forEach((x, ri) => {
-        const i = st.length - 1 - ri;
+      if (!st.length) {
+        list.appendChild(el('p', 'jr-privacy', 'Още нищо записано. Това не значи, че нищо не се е сменило — значи само, че още не сме го отбелязали.'));
+        return;
+      }
+      st.slice().reverse().slice(0, 20).forEach(x => {
         const row = el('div', 'tl-row');
-        row.innerHTML = `<span class="tl-date">${x.d}</span><span class="tl-txt">${esc(x.t)}</span><button class="nt-del" type="button" data-i="${i}" aria-label="Махни „${esc(x.t)}“ от ${esc(x.d)}">🗑</button>`;
-        row.querySelector('.nt-del').addEventListener('click', () => { st.splice(i, 1); save('bl_lab_timeline', st); рисувай(); });
+        row.innerHTML = `<span class="tl-date">${esc(бгДата(x.d))}</span><span class="tl-txt">${esc(x.t)}</span><button class="nt-del" type="button" aria-label="Махни „${esc(x.t)}“ от ${esc(бгДата(x.d))}">🗑</button>`;
+        реже(row.querySelector('.tl-txt'));
+        const del = row.querySelector('.nt-del');
+        // 👆 ИЗМЕРЕНО: 40×44 — тесен, а стои ДО текста, който мама чете.
+        //    Един кос тап и записаното изчезва без път назад.
+        пръст(del); del.style.flex = '0 0 auto';
+        del.addEventListener('click', () => {
+          // върху СУРОВИЯ списък — филтърът горе е само за показване
+          const сега = load('bl_lab_timeline', []);
+          const j = сега.findIndex(y => y && y.t === x.t && y.d === x.d);
+          if (j < 0) { рисувай(); return; }
+          последноМахнато = { запис: сега[j], къде: j };
+          сега.splice(j, 1); save('bl_lab_timeline', сега);
+          рисувай(); върни.hidden = false;
+          каз(върни, 'Махнах „' + x.t + '“. Мога да го върна.');
+          fx().buzz(6);
+        });
         list.appendChild(row);
       });
+      if (st.length > 20) list.appendChild(el('p', 'jr-privacy', 'Показвам последните 20 от ' + st.length + '.'));
     };
-    const put = () => { const v = inp.value.trim(); if (!v) return; st.push({ d: today(), t: v.slice(0, 80) }); save('bl_lab_timeline', st); inp.value = ''; рисувай(); fx().buzz(8); };
+    върни.addEventListener('click', () => {
+      if (!последноМахнато) { каз(върни, 'Няма какво да върна.'); return; }
+      const st = load('bl_lab_timeline', []);
+      st.splice(Math.min(последноМахнато.къде, st.length), 0, последноМахнато.запис);
+      save('bl_lab_timeline', st);
+      последноМахнато = null; върни.hidden = true; рисувай();
+      fx().buzz(8);
+    });
+    const put = () => {
+      const v = inp.value.trim();
+      // празното поле мига и взима курсора (polish.js) — казваме и защо
+      if (!v) { каз(add, '🔬 Напиши какво се смени — дата слагам аз.', inp); return; }
+      const st = load('bl_lab_timeline', []);   // ПРЯСНО
+      st.push({ d: today(), t: v.slice(0, 80) });
+      save('bl_lab_timeline', st); inp.value = ''; рисувай(); fx().buzz(8);
+      каз(add, 'Отбелязах го за днес ✔');
+    };
     add.addEventListener('click', put);
     inp.addEventListener('keydown', e => { if (e.key === 'Enter') { e.preventDefault(); put(); } });
+    inp.addEventListener('focus', () => фокус(inp));   // 📱 клавиатурата да не го скрие
     const row = el('div', 'jr-addrow'); row.appendChild(inp); row.appendChild(add);
-    c.appendChild(row); c.appendChild(list); рисувай();
+    c.appendChild(row); c.appendChild(върни); c.appendChild(list); рисувай();
     c.appendChild(el('p', 'jr-privacy', 'Ако проблемът дойде 2-3 дни след промяна — ето ти заподозрян. Не доказателство, но добра следа.'));
     return c;
   }
