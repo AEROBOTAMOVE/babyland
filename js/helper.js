@@ -1878,11 +1878,23 @@
   }
 
   // ── Жив хедър: сцената на стаята живее умалена зад помощничката ──
+  // 🔋 12.08: класът `play` тук беше ЗАШИТ. Причина имаше — банерът се клонира
+  //   чак при отваряне на стаята, тоест след като диригентът (app.js sceneIO)
+  //   вече е обиколил `.room-card`-овете, и никой не го наблюдава. Лекът не е
+  //   да се махне класът (тогава банерът изобщо няма да тръгне), а банерът да
+  //   СЕ ЗАПИШЕ при диригента след раждането си. `play` остава при раждането,
+  //   за да няма нито един неанимиран кадър — наблюдателят се обажда чак на
+  //   следващия кадър. Гасенето важи само за извън екрана.
+  //   ПЪТ НАЗАД: върни `el('div', 'play ro-banner-in')` и махни двата реда с
+  //   BL_SCENES — поведението става точно старото.
+  let банерОбвивка = null;
   function mountBanner(room) {
     const head = document.querySelector('.ro-head');
     if (!head) return;
     let bn = $('roBanner');
     if (!bn) { bn = el('div', 'ro-banner'); bn.id = 'roBanner'; head.insertBefore(bn, head.firstChild); }
+    if (банерОбвивка && window.BL_SCENES) BL_SCENES.вземи(банерОбвивка);
+    банерОбвивка = null;
     bn.innerHTML = '';
     const src = document.querySelector(`.room-card[data-room="${room}"] svg.scene`);
     if (src) {
@@ -1913,6 +1925,8 @@
       }
       wrap.appendChild(копие);
       bn.appendChild(wrap);
+      банерОбвивка = wrap;
+      if (window.BL_SCENES) BL_SCENES.дай(wrap);
     }
     head.classList.remove('shrunk');
   }
@@ -2045,6 +2059,15 @@
 
     ov.hidden = false;
     document.body.style.overflow = 'hidden';
+    // 🔋 12.08 (ИЗМЕРЕНО): при отворена стая на телефон вървят 167 анимации,
+    //    а мама вижда 29 от тях. Останалите 138 се въртят ЗАД панела —
+    //    18 мигащи очички, хороскопски ореоли, облаци, подскачащи къщички,
+    //    71 от тях дори извън прозореца. Осем от десет анимации горят ток
+    //    за нищо.
+    //    Класът гаси задния двор. CSS-ът го прилага САМО под 600px, където
+    //    панелът покрива целия екран — на по-широк той е 88vh с размазан
+    //    фон и замразяването щеше да се ВИЖДА.
+    document.documentElement.classList.add('ro-otvorena');
     // ♿ фокус-капан: помни откъде дойде мама, вкарай фокуса в панела (✕ —
     // не полето, за да не изскача клавиатурата на телефона)
     roФокусПреди = document.activeElement;
@@ -2128,6 +2151,7 @@
   function close() {
     $('roomOverlay').hidden = true;
     document.body.style.overflow = '';
+    document.documentElement.classList.remove('ro-otvorena');   // 🔋 задният двор пак живва
     document.title = 'Baby Land — вълшебният помощник на мама';   // 12.10.5
     махниКапан();
     // 12.10.6: затворено с ✕ → нашето състояние си отива от историята,

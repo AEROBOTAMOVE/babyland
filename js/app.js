@@ -74,6 +74,15 @@ const sceneIO = new IntersectionObserver((entries) => {
 document.querySelectorAll('.room-card').forEach(c => sceneIO.observe(c));
 const phoneStage = document.getElementById('phoneStage');
 if (phoneStage) sceneIO.observe(phoneStage);
+// Диригентът е отворен и за сцени, РОДЕНИ ПО-КЪСНО (банерът в стаята се клонира
+// чак когато мама отвори стаята — по времето на този ред него още го няма).
+// Който се запише, играе само докато се вижда; който не се запише, играе вечно.
+// ПЪТ НАЗАД: махни тези три реда и повикванията на BL_SCENES в helper.js —
+// зашитият клас `play` в mountBanner върши същото, но без гасене.
+window.BL_SCENES = {
+  дай: (el) => { if (el) sceneIO.observe(el); },
+  вземи: (el) => { if (el) sceneIO.unobserve(el); }
+};
 if (reducedMotion) {
   document.querySelectorAll('svg').forEach(s => { try { s.pauseAnimations(); } catch (e) {} });
 }
