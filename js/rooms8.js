@@ -93,7 +93,7 @@
         //    беше този. Преди 37-та не се чака брояч — звъни се.
         out.innerHTML = седмица < 37
           ? `<p class="ct-real">Звучи като <strong>истински контракции</strong>.</p>
-          <p class="pg-alarm">🚨 Ти си в ${window.BL_REDNA ? BL_REDNA(седмица) : седмица + '-та'} седмица. Преди <strong>37-та</strong> правилото 5-1-1 НЕ важи — не чакай час, звънни на лекаря си или в родилното <strong>сега</strong>. При изтекли води, кървене или силна болка — тръгвай веднага.<br><a class="ro-sos" href="tel:112" style="min-height:44px;display:inline-flex;align-items:center;justify-content:center">📞 Обади се на 112</a></p>`
+          <p class="pg-alarm">🚨 Ти си в ${window.BL_REDNA ? BL_REDNA(седмица) : седмица + '-та'} седмица. Преди <strong>37-ма</strong> правилото 5-1-1 НЕ важи — не чакай час, звънни на лекаря си или в родилното <strong>сега</strong>. При изтекли води, кървене или силна болка — тръгвай веднага.<br><a class="ro-sos" href="tel:112" style="min-height:44px;display:inline-flex;align-items:center;justify-content:center">📞 Обади се на 112</a></p>`
           : `<p class="ct-real">Звучи като <strong>истински контракции</strong>.</p>
           <p class="jr-privacy">Правилото <strong>5-1-1</strong>: на всеки 5 минути, всяка по около минута, така цял час → време е да тръгваш. Ако водите изтекат или има кървене — тръгвай веднага, без да броиш.</p>`;
       } else if (дял <= 0.3) {
