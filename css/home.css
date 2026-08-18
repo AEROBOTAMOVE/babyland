@@ -255,14 +255,22 @@ header.hero.sky-night .hero-flip { color: #ece8f5; }
 
 /* ── 🎈 скрол-балончето ── */
 .scrollfly { position: fixed; top: 0; left: 0; right: 0; height: 0; z-index: 120; pointer-events: none; }
+/* 🔴 12.08: тези две правила пипаха ПОДРЕДБАТА на всеки кадър от скрола.
+   `width` и `left` са layout-свойства, а js/home.js ги пишеше кадър по кадър —
+   плюс преход от 0.15s, който се РЕСТАРТИРАШЕ на всеки кадър.
+   Това е нацепването, което собственикът вижда на роудмапа.
+   Сега: scaleX и translateX — само композиране, нула подредба.
+   ПЪТ НАЗАД: върни `width: 0` + `transition: width .15s linear` тук и
+   `left: -10px` + `transition: left .15s linear` долу, и двата реда в home.js. */
 .scrollfly-trail {
-  height: 3.5px; width: 0;
+  height: 3.5px; width: 100%;
+  transform: scaleX(0); transform-origin: 0 50%;
   background: linear-gradient(90deg, #f7a8cb, #b9a7e0);
   border-radius: 0 999px 999px 0;
   box-shadow: 0 1px 6px rgba(229, 107, 164, 0.4);
-  transition: width 0.15s linear;
+  will-change: transform;
 }
-.scrollfly-b { position: absolute; top: -4px; left: -10px; font-size: 17px; filter: drop-shadow(0 2px 4px rgba(90, 60, 120, 0.3)); transition: left 0.15s linear; }
+.scrollfly-b { position: absolute; top: -4px; left: 0; transform: translateX(-10px); font-size: 17px; filter: drop-shadow(0 2px 4px rgba(90, 60, 120, 0.3)); will-change: transform; }
 
 /* ── 🕸️ МРЕЖАТА: какво може Помощникът на мама ── */
 .netsec { max-width: 1060px; margin: 0 auto; padding: 46px 20px 10px; text-align: center; }

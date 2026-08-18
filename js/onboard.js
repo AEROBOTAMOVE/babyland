@@ -51,6 +51,12 @@
   }
   function close() {
     try { if (window.BL_GREET) BL_GREET(); } catch (e) {}   // поздравът става личен веднага
+    // 🔴 18.08 (жива обиколка на таба „Вход/Профил“): и „Готово“, и „По-късно“
+    //    записват bl_onboarded, а profile.js смята надписа на долния бутон
+    //    само веднъж — при зареждане. Резултат: бутонът пише „🔑 Вход“, а
+    //    отваря профила. Един ред тук държи надписа честен веднага.
+    //    ПЪТ НАЗАД: махни следващия ред.
+    try { if (window.BL_PROFILE && BL_PROFILE.refresh) BL_PROFILE.refresh(); } catch (e) {}
     $('onbOverlay').hidden = true;
     document.body.style.overflow = '';
   }

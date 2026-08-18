@@ -29,7 +29,13 @@
 .prof-avbtn:hover { transform: scale(1.12) rotate(-6deg); }
 .prof-hero h3, .prof-name { margin: 8px 0 2px; font-size: 22px; }
 .prof-sub { margin: 0; font-size: 13.5px; opacity: .7; }
-.prof-edit { border: 0; background: none; cursor: pointer; font-size: 14px; opacity: .5; }
+/* 🔴 18.08 (жива обиколка на таба „Вход/Профил“, ИЗМЕРЕНО в тъмна тема):
+   бутонът няма `color`, значи взема системното на <button> — ЧЕРНО. Върху
+   тъмния панел (rgb(36,29,56)) при opacity .5 това е контраст 1.31:1.
+   ✏️ оцелява само защото е цветно емоджи; близнакът му .prof-gx е обикновен
+   знак „×“ и там измерихме 1.18:1 — тоест невидим бутон.
+   ПЪТ НАЗАД: махни `color: inherit` от двата реда. */
+.prof-edit { border: 0; background: none; cursor: pointer; font-size: 14px; opacity: .6; color: inherit; }
 .prof-edit:hover { opacity: 1; }
 .prof-hero-guest p { max-width: 340px; margin: 6px auto 0; font-size: 14px; line-height: 1.55; }
 
@@ -93,7 +99,22 @@
 .prof-gmid { flex: 1; }
 .prof-gn { margin: 0 0 5px; font-size: 13.5px; font-weight: 600; }
 .prof-gp { font-size: 13px; font-weight: 800; min-width: 34px; text-align: center; }
-.prof-gx { border: 0; background: none; cursor: pointer; opacity: .35; font-size: 16px; }
+/* 🔴 18.08: същият дефект като .prof-edit, но тук боли истински — „×“ е
+   обикновен знак, не емоджи. Измерено в тъмна тема: черно (0,0,0) при
+   opacity .35 върху картата (43,35,68) → ефективен (28,23,44), контраст
+   1.18:1. Майката вижда цел, която не може да махне.
+   `color: inherit` сам НЕ стига: при opacity .35 светлото мастило върху
+   картата дава 2.82:1 — пак под прага. Затова и opacity .35 → .6 (стойност,
+   която екранът вече ползва за .prof-hsub и <small>).
+   ⚠️ ЧЕСТНО СЛЕД ПОПРАВКАТА, ИЗМЕРЕНО: тъмна тема 1.18 → НАД 4.5 ✅;
+   СВЕТЛА тема 2.43 → 2.80, тоест ВСЕ ОЩЕ под 4.5. Не е недовършена
+   поправка, а обща черта на екрана: в светла тема 115 от 203 текста са
+   под прага заради opacity .55–.72 на цялата второстепенна типография
+   (.prof-note, .prof-sub, .prof-mn, .prof-wlbl, .prof-legal…). Това е
+   въпрос за собственика, не за един бутон. Уникалното тук — черно върху
+   черно — е затворено.
+   ПЪТ НАЗАД: върни opacity на .35 (и .5 за .prof-edit) и махни color. */
+.prof-gx { border: 0; background: none; cursor: pointer; opacity: .6; font-size: 16px; color: inherit; }
 .prof-gx:hover { opacity: 1; color: #c0392b; }
 .prof-gmenu { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 10px; }
 .prof-gadd {

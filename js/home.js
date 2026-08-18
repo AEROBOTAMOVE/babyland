@@ -480,15 +480,28 @@
     document.body.appendChild(bar);
     const trail = bar.querySelector('.scrollfly-trail');
     const b = bar.querySelector('.scrollfly-b');
-    let ticking = false;
+    // 🔴 12.08 ИЗМЕРЕНО (собственикът: „началната зацепва, нацепва на места"):
+    // тук се пишеха width и left НА ВСЕКИ КАДЪР на скрола, а css/home.css отгоре
+    // държеше `transition: width .15s` и `transition: left .15s` върху същите
+    // две свойства. Тоест всеки кадър: нова подредба + рестартиран преход по
+    // свойство, което иска подредба. Точно докато мама скролва роудмапа.
+    // Сега е transform (scaleX + translateX) — върви на видеокартата, без да
+    // пипа подредбата. Преходите в CSS са махнати: rAF вече дава кадър по кадър,
+    // а 0.15s преход отгоре само добавяше изоставане.
+    // ПЪТ НАЗАД: върни двата реда на style.width/style.left и двата `transition`
+    // реда в css/home.css (.scrollfly-trail и .scrollfly-b).
+    let ticking = false, W = bar.clientWidth || innerWidth;
+    // широчината се чете при смяна на екрана, НЕ на всеки кадър — иначе
+    // самото четене принуждава подредба и печалбата се губи
+    addEventListener('resize', () => { W = bar.clientWidth || innerWidth; }, { passive: true });
     window.addEventListener('scroll', () => {
       if (ticking) return;
       ticking = true;
       requestAnimationFrame(() => {
         const max = document.documentElement.scrollHeight - innerHeight;
         const p = max > 0 ? Math.min(1, scrollY / max) : 0;
-        trail.style.width = (p * 100) + '%';
-        b.style.left = 'calc(' + (p * 100) + '% - 10px)';
+        trail.style.transform = 'scaleX(' + p + ')';
+        b.style.transform = 'translateX(' + (p * W - 10) + 'px)';
         ticking = false;
       });
     }, { passive: true });
