@@ -49,36 +49,57 @@
     return (Math.max(x, y) + 0.05) / (Math.min(x, y) + 0.05);
   }
 
+  // ⏱️ 18.08: първата версия викаше getComputedStyle за ВСЕКИ прародител на
+  // ВСЕКИ елемент — при стая с ~2000 възела това е десетки хиляди викания и
+  // мерачът просто забиваше (30 сек без отговор, три пъти подред).
+  // Тук всеки елемент се пита ВЕДНЪЖ, а веригите нагоре се помнят.
+  var кешСтил, кешНепроз, кешФон;
+  function стил(e) {
+    var v = кешСтил.get(e);
+    if (!v) { v = getComputedStyle(e); кешСтил.set(e, v); }
+    return v;
+  }
+
   // 🪤 3: opacity се натрупва по цялата верига нагоре
   function общаНепрозрачност(e) {
-    var о = 1, p = e;
-    while (p && p !== document.documentElement) {
-      var v = parseFloat(getComputedStyle(p).opacity);
-      if (!isNaN(v)) о *= v;
-      p = p.parentElement;
-    }
-    return о;
+    var в = кешНепроз.get(e);
+    if (в !== undefined) return в;
+    var своя = parseFloat(стил(e).opacity);
+    if (isNaN(своя)) своя = 1;
+    var р = (!e.parentElement || e === document.documentElement)
+      ? своя : своя * общаНепрозрачност(e.parentElement);
+    кешНепроз.set(e, р);
+    return р;
   }
 
   // 🪤 1: ако по пътя нагоре има картинка/градиент — НЕ съдим
   function фонПод(e) {
-    var p = e;
-    while (p) {
-      var cs = getComputedStyle(p);
-      if (cs.backgroundImage && cs.backgroundImage !== 'none') return { градиент: true };
+    var в = кешФон.get(e);
+    if (в !== undefined) return в;
+    var cs = стил(e), р;
+    if (cs.backgroundImage && cs.backgroundImage !== 'none') р = { градиент: true };
+    else {
       var b = разбор(cs.backgroundColor);
-      if (b && b.a > 0.99) return { цвят: b };
-      if (b && b.a > 0) return { полупрозрачен: true, цвят: b };
-      p = p.parentElement;
+      if (b && b.a > 0.99) р = { цвят: b };
+      else if (b && b.a > 0) р = { полупрозрачен: true, цвят: b };
+      else р = e.parentElement ? фонПод(e.parentElement) : { цвят: { r: 255, g: 255, b: 255, a: 1 } };
     }
-    return { цвят: { r: 255, g: 255, b: 255, a: 1 } };
+    кешФон.set(e, р);
+    return р;
   }
 
+  // ⏱️ 18.08, ВТОРАТА спирачка: тук стоеше getBoundingClientRect за ВСЕКИ
+  // елемент. Той принуждава браузъра да преизчисли подредбата — хиляда пъти
+  // подред, при това веднага след четене на стилове, тоест най-лошият възможен
+  // ред. В СКРИТ панел рендерерът е дроселиран и мерачът виси над 30 секунди
+  // (три пъти подред, докато не го проследих).
+  // checkVisibility() отговаря на същия въпрос БЕЗ да пипа подредбата.
+  // Резервният път ползва offsetParent — също без принудително преизчисляване.
   function видим(e) {
-    var cs = getComputedStyle(e);
+    var cs = стил(e);
     if (cs.display === 'none' || cs.visibility === 'hidden') return false;
-    var r = e.getBoundingClientRect();
-    return r.width > 1 && r.height > 1;
+    if (e.checkVisibility) return e.checkVisibility({ checkOpacity: false, checkVisibilityCSS: true });
+    return e.offsetParent !== null || cs.position === 'fixed';
   }
 
   function същинскиТекст(e) {
@@ -98,6 +119,8 @@
   function самоЗнаци(t) { return !БУКВА.test(t); }
 
   function мериЕкран(име) {
+    // кешовете са ЗА ЕДНО МЕРЕНЕ — иначе втората тема чете стойностите на първата
+    кешСтил = new WeakMap(); кешНепроз = new WeakMap(); кешФон = new WeakMap();
     var всички = document.querySelectorAll('body *');
     var прегледани = 0, съдени = 0, паднали = [], неотсъдени = 0;
     var скрити = 0, емоджита = 0, прозрачни = 0;
@@ -108,7 +131,7 @@
       if (самоЗнаци(текст)) { емоджита++; continue; }  // 🪤 5
       прегледани++;
       if (!видим(e)) { скрити++; continue; }
-      var cs = getComputedStyle(e);
+      var cs = стил(e);
       var цвят = разбор(cs.color);
       if (!цвят) continue;
       var неп = общаНепрозрачност(e);
