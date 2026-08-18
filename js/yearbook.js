@@ -20,7 +20,16 @@
     // снимки: фото-лентата + последните снимки на деня
     const monthPhotos = Object.entries(load('bl_photos', {})).sort((x, y) => +x[0] - +y[0]);
     const dayPhotos = Object.entries(load('bl_dayphoto', {})).sort().slice(-6);
-    const bump = Object.entries(load('bl_bump', {})).sort((x, y) => +x[0] - +y[0]).slice(-4);
+    // 🤍 18.08 (одит на логиката): снимките на коремчето влизаха в книгата
+    //   БЕЗУСЛОВНО — включително при включена „пауза на очакването" след
+    //   загуба. Жена, която е спряла всичко, за да не вижда бременността си,
+    //   отваря годишника и я намира там, подредена за печат.
+    //   Снимките НЕ СЕ ТРИЯТ — те са нейни и я чакат, ако някой ден вдигне
+    //   паузата. Просто не влизат в книгата, докато паузата е включена.
+    //   ПЪТ НАЗАД: махни `наПауза ? [] :` от следващия ред.
+    const наПауза = !!(window.BL_EXPECT && BL_EXPECT.paused && BL_EXPECT.paused());
+    const bump = наПауза ? [] :
+      Object.entries(load('bl_bump', {})).sort((x, y) => +x[0] - +y[0]).slice(-4);
 
     // лексиконът
     const lex = Object.entries(load('bl_baby_lexicon', {}));
