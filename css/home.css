@@ -527,7 +527,7 @@ header.hero.sky-night .hero-flip { color: #ece8f5; }
 .inst-h { margin: 0 0 10px; font-size: 1rem; }
 .inst-steps { margin: 0 0 10px; padding-left: 20px; }
 .inst-steps li { font-size: .87rem; line-height: 1.65; margin-bottom: 6px; }
-.inst-note { font-size: .78rem; opacity: .78; margin: 0 0 10px; line-height: 1.5; }
+.inst-note { font-size: .78rem; color: var(--ink-soft); margin: 0 0 10px; line-height: 1.5; }
 
 /* ── 🎡 хорото на помощничките (П5 H1) ── */
 .horo {
