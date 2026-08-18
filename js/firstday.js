@@ -289,7 +289,7 @@
     const list = el('div', 'q30-scroll bl-stagger');
     дни.forEach(n => {
       const row = el('div', 'q30-row');
-      row.innerHTML = `<div class="q30-day">Ден ${n}${датаЗа(n) ? ' · ' + датаЗа(n) : ''}</div><div class="q30-q">${esc(въпросЗа(n))}</div><div class="q30-a">„${esc(с.a[n])}"</div>`;
+      row.innerHTML = `<div class="q30-day">Ден ${n}${датаЗа(n) ? ' · ' + датаЗа(n) : ''}</div><div class="q30-q">${esc(въпросЗа(n))}</div><div class="q30-a">„${esc(с.a[n])}“</div>`;
       // 🔴 12.08 (обиколка на телефона, ИЗМЕРЕНО): въпросът приема 140 знака и
       //    мама може да напише дълга дума без интервали (или да лепне адрес).
       //    Свитъкът ставаше 1280 px широк при 347 px екран — редът се влачеше

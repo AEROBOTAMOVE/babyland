@@ -46,12 +46,25 @@ let h = fs.readFileSync('index.html', 'utf8');
 const старH = h;
 const редове = [];
 
+// 🔴 18.08 — ПАЗЯ ЛИ ЯВНО КОЙ Е ВДИГНАТ, вместо да гадая по текста на реда.
+// Старият код питаше `редове.some(r => r.indexOf('js/lib.js ') === 2)`.
+// Но редът за LV, който САМИЯТ ТОЙ добавя три реда по-горе, изглежда точно
+// така: „  js/lib.js LV           55 → 56". Тоест условието беше ВИНАГИ вярно
+// и ?v= на js/lib.js не се вдигаше НИКОГА.
+// Измерено по историята: съдържанието на js/lib.js се е сменило 5 пъти
+// (9d8cda0e → 2dfa4a1e → 7fc1a950 → e30a0967 → 05c1b815), а ?v= стоеше на 51
+// през цялото време. Тоест всяка майка с кеширан файл въртеше СТАРИЯ двигател
+// на библиотеката — и старото LV вътре в него.
+// Уредът, който съществува, за да предпазва точно от това, го причиняваше сам.
+const вдигнати = new Set();
+
 for (const f of [...променени].sort()) {
   if (f.startsWith('lib/')) continue;
   const m = h.match(new RegExp(ЕСК(f) + '\\?v=(\\d+)'));
   if (!m) { редове.push('  ⚠ ' + f + ' — няма ?v= в index.html'); continue; }
   const нов = +m[1] + 1;
   h = h.split(f + '?v=' + m[1]).join(f + '?v=' + нов);
+  вдигнати.add(f);
   редове.push('  ' + f.padEnd(22) + ' v' + m[1] + ' → v' + нов);
 }
 if (h !== старH) fs.writeFileSync('index.html', h, 'utf8');
@@ -77,7 +90,7 @@ if (пипнатаБиб.length) {
     //   иначе новото LV стои в стар файл, който браузърът не тегли отново.
     let h2 = fs.readFileSync('index.html', 'utf8');
     const m2 = h2.match(/js\/lib\.js\?v=(\d+)/);
-    if (m2 && !редове.some(r => r.indexOf('js/lib.js ') === 2)) {
+    if (m2 && !вдигнати.has('js/lib.js')) {
       const н2 = +m2[1] + 1;
       fs.writeFileSync('index.html', h2.split('js/lib.js?v=' + m2[1]).join('js/lib.js?v=' + н2), 'utf8');
       редове.push('  js/lib.js              v' + m2[1] + ' → v' + н2 + '   (заради самото LV)');
