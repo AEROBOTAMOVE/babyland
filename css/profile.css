@@ -229,3 +229,11 @@
 [data-theme="dark"] .prof-wdot { background: rgba(255,255,255,.1); }
 [data-theme="dark"] .prof-fam { border-bottom-color: rgba(255,255,255,.12); }
 [data-theme="dark"] .prof-stbox { background: rgba(255,150,80,.13); }
+
+/* 💾 качването на копие ВЪТРЕ в „Данните ти“ (18.08).
+   Секцията идва от същата функция като екрана за гост, но там е самостоятелна
+   карта. Тук е вложена в карта — затова ѝ се маха рамката, за да не изглежда
+   като карта в карта. ПЪТ НАЗАД: махни това правило и реда, който слага класа
+   в js/profile.js (кач.className = 'prof-inline'). */
+.prof-inline { display: block; margin: 8px 0 0; padding: 0; background: none; border: none; box-shadow: none; }
+.prof-inline .prof-cta { margin-top: 0; }
