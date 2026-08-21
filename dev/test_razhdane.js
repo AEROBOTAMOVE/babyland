@@ -1,0 +1,130 @@
+// ═══════════════════════════════════════════════════════════
+// 🍼 ГАСИ ЛИ РАЖДАНЕТО БРЕМЕННОСТТА — и не гаси ли ВТОРАТА
+//
+// Дефектът в списъка беше: „майка с еднодневно бебе вижда 30 бременностни
+// карти и 39-та седмица". Оказа се, че rooms2.js:66 вече го решава — с
+// правилната сметка (родено СЛЕД началото на това броене), с пазач срещу
+// дата в бъдещето и с път назад (bl_lmp_rodeno).
+//
+// 🪤 Затова този файл НЕ поправя нищо. Той пита дали лекът ДЕЙСТВА и — по-важно —
+// дали не е ПРЕКАЛИЛ: жена с двегодишно дете, която е бременна отново, НЕ бива
+// да загуби стаята си. Един лек, който гаси и втората бременност, е по-лош от
+// дефекта.
+//
+// Мери се СЪСТОЯНИЕТО НА ХРАНИЛИЩЕТО след като rooms2.js е минал, защото
+// оттам пият всичките дванайсет четци на bl_lmp.
+//
+// ПУСКАНЕ: node dev/test_razhdane.js
+// ПЪТ НАЗАД: файлът само ЧЕТЕ проекта.
+// ═══════════════════════════════════════════════════════════
+const fs = require('fs');
+const path = require('path');
+process.chdir(path.resolve(__dirname, '..'));
+
+const ИЗВОР = fs.readFileSync('js/rooms2.js', 'utf8');
+
+// ── изрязваме САМО двете функции + денНула, за да не вдигаме цялата стая
+// 🪤 ПЪРВИЯТ ОПИТ ВЗЕ САМО ЕДИН РЕД: `const денНула = [^\n]+` хвана
+//   „const денНула = v => {" и остави скобата отворена. Пясъчникът гърмеше с
+//   „Unexpected end of input", НИЩО не гаснеше, и петте случая „ОСТАВА"
+//   минаваха зелени — 5 от 8 при напълно мъртъв уред. денНула е многоредова:
+//   взима се от началото ѝ до реда `  };`.
+const _dн = ИЗВОР.indexOf('const денНула = ');
+const _dк = ИЗВОР.indexOf('\n  };', _dн);
+if (_dн < 0 || _dк < 0) { console.log('🔴 не намирам денНула — файлът е сменен'); process.exit(1); }
+const денНулаКод = ИЗВОР.slice(_dн, _dк + 5);
+if (!/return isNaN/.test(денНулаКод)) { console.log('🔴 денНула е изрязана наполовина'); process.exit(1); }
+const начало = ИЗВОР.indexOf('function бременносттаЕПриключена');
+const край = ИЗВОР.indexOf('гасиБременносттаПриРаждане();', начало);
+if (начало < 0 || край < 0) { console.log('🔴 не намирам сметката в rooms2.js'); process.exit(1); }
+const КОД = ИЗВОР.slice(начало, край);
+
+function пусни(хранилище) {
+  const LS = Object.assign({}, хранилище);
+  const сандък = {
+    localStorage: {
+      getItem: k => (k in LS ? LS[k] : null),
+      setItem: (k, v) => { LS[k] = String(v); },
+      removeItem: k => { delete LS[k]; }
+    },
+    document: { dispatchEvent() {} },
+    CustomEvent: function () {},
+    window: {},
+    load: (k, d) => { try { const v = JSON.parse(LS[k]); return v == null ? d : v; } catch (e) { return d; } },
+    Date, isNaN, JSON, String, Number, console
+  };
+  sandboxRun(сандък, денНулаКод + '\n' + КОД + '\nгасиБременносттаПриРаждане();');
+  // 🪤 БЕЗ ТОЗИ РЕД УРЕДЪТ ЛЪЖЕ. Ако изрязаният код гръмне, нищо не гасне и
+  //    всичките случаи „ОСТАВА" минават зелени по случайност — 5 от 8 зелени
+  //    при напълно неработещ пясъчник. Мярка, която не може да гръмне, не мери.
+  if (сандък.__ГРЕШКА__) { console.log('🔴 ПЯСЪЧНИКЪТ ГРЪМНА: ' + сандък.__ГРЕШКА__); process.exit(1); }
+  return LS;
+}
+
+const vm = require('vm');
+function sandboxRun(ctx, код) {
+  ctx.window = ctx; ctx.globalThis = ctx;
+  vm.createContext(ctx);
+  try { new vm.Script(код).runInContext(ctx); } catch (e) { ctx.__ГРЕШКА__ = e.message; }
+  return ctx;
+}
+
+const днес = new Date();
+const преди = д => new Date(днес.getTime() - д * 86400000).toISOString().slice(0, 10);
+const след = д => new Date(днес.getTime() + д * 86400000).toISOString().slice(0, 10);
+
+const СЛУЧАИ = [
+  // [име, хранилище, очаквано за bl_lmp след минаването]
+  ['родила вчера, броенето още върви',
+   { bl_lmp: JSON.stringify(preg(280)), bl_baby: JSON.stringify({ name: 'Мими', birth: преди(1) }) },
+   'ГАСНЕ'],
+
+  ['родила преди месец',
+   { bl_lmp: JSON.stringify(preg(310)), bl_baby: JSON.stringify({ name: 'Мими', birth: преди(30) }) },
+   'ГАСНЕ'],
+
+  ['бременна, няма родено дете',
+   { bl_lmp: JSON.stringify(preg(200)), bl_baby: JSON.stringify({ name: '', birth: '' }) },
+   'ОСТАВА'],
+
+  ['🤰 ВТОРА БРЕМЕННОСТ: дете на 2 г. + ново броене',
+   { bl_lmp: JSON.stringify(preg(120)), bl_baby: JSON.stringify({ name: 'Ани', birth: преди(730) }) },
+   'ОСТАВА'],
+
+  ['🤰 дете на 11 месеца + ново броене от 8 седмици',
+   { bl_lmp: JSON.stringify(preg(56)), bl_baby: JSON.stringify({ name: 'Ани', birth: преди(330) }) },
+   'ОСТАВА'],
+
+  ['дата на раждане в БЪДЕЩЕТО (сбъркала полето)',
+   { bl_lmp: JSON.stringify(preg(200)), bl_baby: JSON.stringify({ name: '', birth: след(40) }) },
+   'ОСТАВА'],
+
+  ['🤍 загубила бебето (пауза, няма рождена дата)',
+   { bl_lmp: JSON.stringify(preg(150)), bl_expect_paused: '1', bl_baby: JSON.stringify({ name: '', birth: '' }) },
+   'ОСТАВА'],
+
+  ['второто дете е записано в bl_baby2 (bl_baby е голямото)',
+   { bl_lmp: JSON.stringify(preg(285)),
+     bl_baby: JSON.stringify({ name: 'Ани', birth: преди(900) }),
+     bl_baby2: JSON.stringify({ name: 'Мими', birth: преди(3) }) },
+   'ГАСНЕ']
+];
+
+function preg(дни) { return преди(дни); }
+
+console.log('🍼 ГАСИ ЛИ РАЖДАНЕТО БРЕМЕННОСТТА\n');
+let ок = 0, зле = 0;
+const паднали = [];
+for (const [име, хран, очаквано] of СЛУЧАИ) {
+  const след_ = пусни(хран);
+  const имаLmp = !!(след_.bl_lmp && String(след_.bl_lmp).replace(/["']/g, '').trim());
+  const стана = имаLmp ? 'ОСТАВА' : 'ГАСНЕ';
+  const добре = стана === очаквано;
+  if (добре) ок++; else { зле++; паднали.push(име + '   очаквах ' + очаквано + ', стана ' + стана); }
+  console.log('  ' + (добре ? '✅' : '🔴') + ' ' + име);
+  console.log('       очаквано: ' + очаквано + '   ·   стана: ' + стана +
+              (след_.bl_lmp_rodeno ? '   (път назад: запазена)' : ''));
+}
+console.log('\n  ПРЕГЛЕДАНИ: ' + СЛУЧАИ.length + ' случая   ·   ✅ ' + ок + '   🔴 ' + зле);
+if (паднали.length) { console.log('\n  ── ПАДНАЛИ ──'); паднали.forEach(x => console.log('   🔴 ' + x)); }
+process.exitCode = зле ? 1 : 0;
