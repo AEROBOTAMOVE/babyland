@@ -1,0 +1,133 @@
+// ═══════════════════════════════════════════════════════════
+// 🔍 ТЪРСАЧКАТА НА БИБЛИОТЕКАТА — намира ли се това, което имаме
+//
+// 793 статии, 1897 KB. Ако майката не ги НАМИРА, все едно ги няма.
+// Досега това никога не е мерено — мерена е базата на помощничките
+// (dev/korpus350.js), но НЕ и търсачката на библиотеката.
+//
+// КАК: за всяка статия се съчинява въпросът, с който майка би я потърсила —
+// от заглавието, но БЕЗ да се преписва дословно (иначе тестът е нагласен):
+//   · махат се служебните думи и двоеточието
+//   · взимат се 2-3 смислови думи, разбъркани
+//   · пробва се и само ПЪРВАТА дума (както пише припряна майка)
+// После се пита: излиза ли статията в първите 1, 3 и 10 резултата.
+//
+// 🪤 ЗАЩО НЕ ПО ЦЯЛОТО ЗАГЛАВИЕ: „Пневмония 0-3: предупредителни признаци,
+// кашлица, температура и проследяване" — никоя майка не пише така. Тест с
+// цялото заглавие мери индекса, не търсачката, и винаги дава 100%.
+//
+// 🪤 И ВТОРО: 96 файла се зареждат в Node без window. Тук се ползва vm с
+// контекст, който Е сам себе си като window/globalThis — иначе js/lib.js
+// чете голо `index` и уредът лъже, че всичко е мъртво.
+//
+// ПУСКАНЕ: node dev/tarsachkata.js [--spisak]
+// ПЪТ НАЗАД: файлът само ЧЕТЕ.
+// ═══════════════════════════════════════════════════════════
+const fs = require('fs');
+const vm = require('vm');
+const path = require('path');
+process.chdir(path.resolve(__dirname, '..'));
+const СПИСЪК = process.argv.includes('--spisak');
+
+const idx = JSON.parse(fs.readFileSync('lib/index.json', 'utf8'));
+const items = idx.items || [];
+
+// ── пясъчник за js/lib.js
+const ctx = {
+  console, setTimeout, clearTimeout, JSON, Math, Date, RegExp, String, Number, Array, Object,
+  document: { addEventListener() {}, createElement: () => ({ style: {}, classList: { add() {}, remove() {} } }),
+              getElementById: () => null, querySelector: () => null, querySelectorAll: () => [] },
+  navigator: { onLine: true }, location: { href: '', search: '' },
+  localStorage: { getItem: () => null, setItem() {}, removeItem() {} },
+  fetch: () => Promise.reject(new Error('без мрежа')),
+  addEventListener() {}, removeEventListener() {}, dispatchEvent() { return true; },
+  requestAnimationFrame(f) { return 0; }, cancelAnimationFrame() {},
+  matchMedia: () => ({ matches: false, addEventListener() {}, addListener() {} }),
+  getComputedStyle: () => ({ getPropertyValue: () => '' }),
+  CustomEvent: function () {}, Event: function () {}
+};
+ctx.window = ctx; ctx.globalThis = ctx; ctx.self = ctx;
+vm.createContext(ctx);
+// 🪤 init() НЕ приема индекса — тя го тегли по мрежа, каквато в пясъчника няма.
+// Затова index оставаше null и search връщаше [] за ВСИЧКО: уредът показваше
+// 100% провал при напълно здрава търсачка. Подаваме индекса направо в кода.
+ctx.__INDEX__ = items;
+let ИЗВОР = fs.readFileSync('js/lib.js', 'utf8');
+if (ИЗВОР.indexOf('let index = null;') < 0) { console.log('🔴 не намерих реда с index'); process.exit(1); }
+ИЗВОР = ИЗВОР.replace('let index = null;', 'let index = globalThis.__INDEX__ || null;');
+try { new vm.Script(ИЗВОР, { filename: 'lib.js' }).runInContext(ctx); }
+catch (e) { console.log('🔴 js/lib.js не се зарежда: ' + e.message); process.exit(1); }
+
+const L = ctx.BL_LIB || ctx.window.BL_LIB;
+if (!L || !L.search) { console.log('🔴 няма BL_LIB.search'); process.exit(1); }
+// index е подаден при зареждането
+
+// ── съчиняване на майчиния въпрос от заглавието
+const СЛУЖЕБНИ = new Set(['при', 'след', 'преди', 'през', 'към', 'между', 'без', 'над', 'под',
+  'кога', 'какво', 'как', 'защо', 'кое', 'кои', 'кой', 'или', 'това', 'тези', 'която', 'които',
+  'срещу', 'според', 'дали', 'още', 'най', 'все', 'вече', 'само', 'също', 'едно', 'една']);
+const думи = t => String(t || '').toLowerCase()
+  .replace(/[0-9]+[-–][0-9]+/g, ' ').replace(/[^а-яa-z\s]/g, ' ')
+  .split(/\s+/).filter(w => w.length >= 4 && !СЛУЖЕБНИ.has(w));
+
+function намери(q, ид, room) {
+  let r;
+  try { r = L.search(q, room || '', 10) || []; } catch (e) { return -1; }
+  const списък = Array.isArray(r) ? r : (r.items || r.резултати || []);
+  for (let i = 0; i < списък.length; i++) {
+    const x = списък[i];
+    const id = x && (x.id || (x.it && x.it.id) || (x[1] && x[1].id));
+    if (id === ид) return i + 1;
+  }
+  return 0;
+}
+
+let n = 0;
+const общо = { първи: 0, тройка: 0, десетка: 0, нула: 0 };
+const еднаДума = { първи: 0, тройка: 0, десетка: 0, нула: 0 };
+const провалени = [];
+
+// ⏱️ пълният обход е 789 × 2 търсения × 793 записа — изтича. Взима се
+// РАВНОМЕРНА извадка през целия индекс (не първите N, за да не мери само
+// една стая). Стъпката е в изхода, за да се знае колко е гледано.
+const СТЪПКА = Math.max(1, Math.ceil(items.length / 160));
+for (let бр = 0; бр < items.length; бр += СТЪПКА) {
+  const it = items[бр];
+  const д = думи(it.t);
+  if (д.length < 2) continue;
+  n++;
+  // въпросът: две-три смислови думи, НЕ по реда на заглавието
+  const три = [д[д.length - 1], д[0], д[1]].filter(Boolean).slice(0, 3).join(' ');
+  const p = намери(три, it.id, it.r);
+  if (p === 1) общо.първи++;
+  if (p >= 1 && p <= 3) общо.тройка++;
+  if (p >= 1) общо.десетка++; else общо.нула++;
+  // и само първата дума
+  const p1 = намери(д[0], it.id, it.r);
+  if (p1 === 1) еднаДума.първи++;
+  if (p1 >= 1 && p1 <= 3) еднаДума.тройка++;
+  if (p1 >= 1) еднаДума.десетка++; else еднаДума.нула++;
+  if (p === 0) провалени.push({ ид: it.id, t: it.t, q: три, r: it.r });
+}
+
+const п = (x) => (100 * x / n).toFixed(0) + '%';
+console.log('🔍 ТЪРСАЧКАТА НА БИБЛИОТЕКАТА\n');
+console.log('  статии в индекса : ' + items.length);
+console.log('  ПРОВЕРЕНИ        : ' + n + '   (останалите имат под 2 смислови думи в заглавието)\n');
+console.log('  ── въпрос от 3 разбъркани смислови думи ──');
+console.log('     на 1-во място : ' + общо.първи + '  (' + п(общо.първи) + ')');
+console.log('     в първите 3   : ' + общо.тройка + '  (' + п(общо.тройка) + ')');
+console.log('     в първите 10  : ' + общо.десетка + '  (' + п(общо.десетка) + ')');
+console.log('     🔴 НЕ СЕ НАМИРА: ' + общо.нула + '  (' + п(общо.нула) + ')\n');
+console.log('  ── въпрос от ЕДНА дума (както пише припряна майка) ──');
+console.log('     на 1-во място : ' + еднаДума.първи + '  (' + п(еднаДума.първи) + ')');
+console.log('     в първите 3   : ' + еднаДума.тройка + '  (' + п(еднаДума.тройка) + ')');
+console.log('     в първите 10  : ' + еднаДума.десетка + '  (' + п(еднаДума.десетка) + ')');
+console.log('     🔴 НЕ СЕ НАМИРА: ' + еднаДума.нула + '  (' + п(еднаДума.нула) + ')');
+
+if (провалени.length) {
+  console.log('\n  🔴 СТАТИИ, КОИТО НЕ СЕ НАМИРАТ ПО СОБСТВЕНИТЕ СИ ДУМИ: ' + провалени.length);
+  провалени.slice(0, СПИСЪК ? 999 : 20).forEach(x =>
+    console.log('   „' + x.q + '"  →  не намира  ' + x.ид + '  („' + String(x.t).slice(0, 52) + '")'));
+  if (!СПИСЪК && провалени.length > 20) console.log('   … още ' + (провалени.length - 20) + ' — с --spisak');
+}
