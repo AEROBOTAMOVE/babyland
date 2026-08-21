@@ -44,11 +44,15 @@ if (!Array.isArray(корпус) || корпус.length < 100) {
 
 const W = zaredi(null);
 
-function флагове(т) {
+function флагове(т, стая) {
   const из = [];
   try { if (W.BL_REDFLAG(т)) из.push('ЧЕРВЕН'); } catch (e) {}
   try { const m = W.BL_MOTHERFLAG && W.BL_MOTHERFLAG(т); if (m) из.push('МАЙКА:' + m); } catch (e) {}
-  try { if (W.BL_PREGFLAG && W.BL_PREGFLAG(т)) из.push('БРЕМЕННОСТ'); } catch (e) {}
+  // 🪤 19.08: тук се викаше BL_PREGFLAG(т) БЕЗ стая. А pregLevel(text, room)
+  //   иска room === 'Бременност' ИЛИ записана дата на цикъл — иначе връща
+  //   false за ВСИЧКО. Тоест мярката НЕ ВИЖДАШЕ нито един бременностен флаг
+  //   и подценяваше. Стаята идва от самия корпус (полето r).
+  try { if (W.BL_PREGFLAG && W.BL_PREGFLAG(т, стая)) из.push('БРЕМЕННОСТ'); } catch (e) {}
   return из;
 }
 
@@ -60,7 +64,7 @@ for (const x of корпус) {
   const т = x.t, о = String(x.e || '').toUpperCase(), стая = x.r || 'Здраве и SOS';
   if (!т || !о) continue;
   n++;
-  const ф = флагове(т);
+  const ф = флагове(т, стая);
   const имаФлаг = ф.length > 0;
 
   if (о === 'SPESHNO') {
