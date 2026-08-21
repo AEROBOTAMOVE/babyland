@@ -39,7 +39,14 @@
     { име: '💃 Стаята за теб (тайни, ритуали, места)', e: '💃', keys: ['bl_wm_secret', 'bl_wm_micro', 'bl_wm_bucket', 'bl_wm_compl', 'bl_wm_mirror', 'bl_wm_ritual', 'bl_wm_places', 'bl_cards', 'bl_wm_cv', 'bl_wm_inframe'] },
     { име: '🔬 Опитите и следите', e: '🔬', keys: ['bl_lab', 'bl_lab_timeline', 'bl_lab_flipped', 'bl_lab_clues', 'bl_sleep_hist'] },
     { име: '🇧🇬 Обичаите на рода', e: '🇧🇬', keys: ['bl_obichai_moi'] },
-    { име: '⚙️ Настройки и профил', e: '⚙️', keys: ['bl_baby', 'bl_theme', 'bl_sounds', 'bl_lmp', 'bl_preterm'] }
+    // 🔴 19.08 (ИЗМЕРЕНО, пясъчник): 'bl_mama' липсваше от ВСИЧКИ категории —
+    //    а вътре е снимката на самата майка (js/profile.js:66 я прави с
+    //    toDataURL('image/jpeg', 0.82), тоест 100–300 KB base64) плюс името ѝ.
+    //    Мерено с типична снимка: 180 KB се показваха като „🗂️ Друго (списъци,
+    //    планове, бележки, чернови)“ — под заглавие „честно — всичко е тук“.
+    //    Това е ТРЕТИЯТ път със същия шаблон в този файл (bl_rash, bl_wm_inframe).
+    //    ПЪТ НАЗАД: махни 'bl_mama' от реда — нищо друго не зависи от него.
+    { име: '⚙️ Настройки и профил', e: '⚙️', keys: ['bl_mama', 'bl_baby', 'bl_theme', 'bl_sounds', 'bl_lmp', 'bl_preterm'] }
   ];
 
   // ключ, който завършва на '_', е ПРЕФИКС (bl_draft_ → bl_draft_1723…).

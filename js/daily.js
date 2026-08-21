@@ -322,6 +322,47 @@
     return { ck, ph, jr, n: (ck ? 1 : 0) + (ph ? 1 : 0) + (jr ? 1 : 0) };
   }
 
+  // ═══════════ 🔥 ЕДНА СЕРИЯ ЗА ЦЯЛОТО ПРИЛОЖЕНИЕ ═══════════
+  // [БЛОК-СЕРИЯ-НАЧАЛО] · 19.08 · ТОЗИ БЛОК Е ДУМА ПО ДУМА ЕДИН И СЪЩ
+  // в js/daily.js и js/profile.js. Който модул се зареди пръв, той дава
+  // числото; другият го чете. Пази ги еднакви: node dev/edna_seria.js
+  //
+  // ЗАЩО: „Днес“ броеше серия САМО по bl_walk_days, а bl_walk_days се пише
+  // единствено когато картата на разходката се е нарисувала. Профилът броеше
+  // по bl_walk_days ИЛИ bl_checkins. ИЗМЕРЕНО на 11 случая: 6 се разминаваха,
+  // най-лошият — „Днес=0“ срещу „Профил=30“ за една и съща майка.
+  // Обединението никога не маха ден, който единият е виждал: то е по-голямото
+  // от двете, значи нито един екран не отнема нищо на майката.
+  // ПЪТ НАЗАД: махни блока от двата файла и върни `streak()` в daily.js и
+  // `активенДен`/`серия()` в profile.js от копията PREDI_*.js.
+  window.BL_SERIA = window.BL_SERIA || (function () {
+    const чети = (k, d) => { try { const v = JSON.parse(localStorage.getItem(k)); return (v == null || typeof v !== 'object') ? d : v; } catch (e) { return d; } };
+    const дата = d => d.getFullYear() + '-' + String(d.getMonth() + 1).padStart(2, '0') + '-' + String(d.getDate()).padStart(2, '0');
+    const днес = () => дата(new Date());
+    // котва по обед: 24 часа назад от 12:00 винаги пада в предишния календарен
+    // ден, дори в нощта на смяна на часа (капан 7 — мярка по разлика, не по час)
+    const предишен = s => дата(new Date(new Date(s + 'T12:00:00').getTime() - 86400000));
+    const активен = d => {
+      const w = чети('bl_walk_days', {}), c = чети('bl_checkins', {});
+      return !!(w[d] || c[d]);
+    };
+    function дни() {
+      let n = 0, d = днес();
+      if (!активен(d)) d = предишен(d);        // днес още може да дойде — не наказваме
+      let i = 0;
+      while (активен(d) && i < 400) { n++; i++; d = предишен(d); }
+      return n;
+    }
+    function сметни() {
+      const n = дни();
+      const стар = (function () { try { const v = JSON.parse(localStorage.getItem('bl_streak_best')); return typeof v === 'number' ? v : 0; } catch (e) { return 0; } })();
+      const best = Math.max(стар, n);
+      if (best !== стар) { try { localStorage.setItem('bl_streak_best', JSON.stringify(best)); } catch (e) {} }
+      return { n, best };
+    }
+    return { дни, сметни, активен, предишен, днес };
+  })();
+  // [БЛОК-СЕРИЯ-КРАЙ]
   // серия без вина: броим дните с поне 1 от трите; пропуснат ден не смъмря никого
   function markDay(st) {
     const days = load('bl_walk_days', {});
@@ -331,13 +372,12 @@
     save('bl_walk_days', days);
     return days;
   }
-  function streak(days) {
-    let s = 0;
-    const d = new Date();
-    if (!days[localDate(d)]) d.setDate(d.getDate() - 1); // днес още не е минус
-    while (days[localDate(d)]) { s++; d.setDate(d.getDate() - 1); }
-    return s;
-  }
+  // 🔴 19.08 · СЕРИЯТА ВЕЧЕ НЕ СЕ СМЯТА ТУК. Този streak() броеше само по
+  //    `days` (= bl_walk_days), а профилът броеше по walk_days ИЛИ checkins.
+  //    ИЗМЕРЕНО: за една и съща майка „Днес“ казваше 0, а „Профил“ — 30.
+  //    Едно число, един източник: [БЛОК-СЕРИЯ] отгоре.
+  //    ПЪТ НАЗАД: върни тялото от scratchpad/PREDI_daily.js.
+  const streak = () => BL_SERIA.дни();
 
   const WALK_ITEMS = [
     ['ck', '💜', 'Минутка „как си“', 'Дневник на мама'],
@@ -355,8 +395,8 @@
     const стара = inner.querySelector('.wk-card');
     if (стара) стара.remove();
     const st = walkState();
-    const days = markDay(st);
-    const s = streak(days);
+    markDay(st);                 // първо записваме днешния ден, после броим
+    const s = streak();
 
     const wrap = el('div', 'wk-card');
     wrap.innerHTML =
@@ -372,12 +412,15 @@
     });
     wrap.appendChild(row);
 
-    const yd = new Date(); yd.setDate(yd.getDate() - 1);
+    // 19.08: „вчера“ се пита СЪЩИЯ източник като серията. Иначе редът отдолу
+    // казваше „Без бързане“ на майка, която вчера си е писала минутката —
+    // защото bl_walk_days не я е записал, а bl_checkins — да.
+    const вчера = BL_SERIA.предишен(BL_SERIA.днес());
     const foot = s >= 2
       ? `${s} дни поред ✨ — тихичко и постоянно.`
       : s === 1 && st.n > 0
         ? 'Първото камъче е сложено ✨ Утре — пак мъничко.'
-        : days[localDate(yd)]
+        : BL_SERIA.активен(вчера)
           ? 'Вчера беше тук. Днес пак — лекичко. 🌱'
           : 'Без бързане, без вина — три мънички неща. 🤍';
     wrap.appendChild(el('p', 'wk-foot', foot));
