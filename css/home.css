@@ -409,9 +409,31 @@ header.hero.sky-night .hero-flip { color: #ece8f5; }
 }
 .faq-arr { color: var(--lav); transition: transform 0.3s ease; }
 .faq-item.open .faq-arr { transform: rotate(180deg); }
-.faq-a { max-height: 0; overflow: hidden; transition: max-height 0.35s ease; }
-.faq-item.open .faq-a { max-height: 170px; }
-.faq-a p { padding: 0 17px 14px; font-size: 13px; font-weight: 600; color: var(--ink-soft); line-height: 1.6; }
+/* 🔴 25.08 (пробег „цената на анимациите"): `max-height: 170px` РЕЖЕШЕ два
+   от деветте отговора и НИЩО не си личеше — .faq-a е с overflow:hidden и
+   без скрол, тоест краят просто изчезва. Измерено на 320px телефон с
+   dev/mer_chzv.html, върху истинските текстове:
+     „Ако сменя телефона…"  нужни 203px → скрити 33px  (изчезваше целият
+        ред <small> за ключалката на дневника, която НЕ пътува с копието)
+     „Кой вижда какво пиша тук?" нужни 180px → скрити 10px
+   Числото 170 не е било грешно — просто текстовете пораснаха след него.
+   Затова тук се маха САМОТО ЧИСЛО, а не се увеличава: 0fr→1fr мери
+   истинската височина на съдържанието, каквото и да стане с текста утре.
+   Видът и времето не се пипат: същите 0.35s ease, същото сгъване.
+   ПЪТ НАЗАД — двата стари реда, дословно:
+     .faq-a { max-height: 0; overflow: hidden; transition: max-height 0.35s ease; }
+     .faq-item.open .faq-a { max-height: 170px; }
+   🪤 И ЕДИН КАПАН ПО ПЪТЯ, ЗАПИСАН, ЗА ДА НЕ СЕ ПЛАЩА ПАК: първо оставих
+   `padding: 0 17px 14px` върху <p>. Отрязването изчезна, но ВСИЧКИТЕ 9
+   затворени отговора взеха да надничат по 14px. Причината: `overflow:hidden`
+   зачерква само СЪДЪРЖАНИЕТО при смятането на реда — падингът на елемента
+   пак се брои, тоест редът не може да падне под 14px. Затова долният
+   отстъп е тук, на кутията, и се сгъва заедно с реда.                    */
+.faq-a { display: grid; grid-template-rows: 0fr; overflow: hidden;
+         transition: grid-template-rows 0.35s ease, padding-bottom 0.35s ease; }
+.faq-a > p { overflow: hidden; }   /* без това редът не се свива до 0 */
+.faq-item.open .faq-a { grid-template-rows: 1fr; padding-bottom: 14px; }
+.faq-a p { padding: 0 17px; font-size: 13px; font-weight: 600; color: var(--ink-soft); line-height: 1.6; }
 
 /* тъмна тема */
 [data-theme="dark"] .askme-box { background: linear-gradient(150deg, #2f2a48, #3a2b3a); border-color: rgba(195, 177, 234, 0.2); }

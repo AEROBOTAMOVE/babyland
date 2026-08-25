@@ -338,7 +338,7 @@
       try {
         const lmp = window.BL_EXPECT ? BL_EXPECT.lmp() : load('bl_lmp', '');
         if (lmp) {
-          const сед = Math.floor((Date.now() - new Date(lmp)) / 604800000);
+          const сед = (window.BL_PREG ? BL_PREG.седмица(new Date(lmp)) : Math.floor((Date.now() - new Date(lmp)) / 604800000));
           if (сед >= 24 && сед <= 42) подзаглавие = той + ' ВЕЧЕ те чува — говори ' + му + ' 💜';
           else if (сед > 0 && сед < 24) подзаглавие = 'запиши го — ' + той + ' ще го чуе съвсем скоро (от ~24-та)';
         }

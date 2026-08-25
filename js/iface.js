@@ -31,7 +31,7 @@
       if (window.BL_EXPECT && BL_EXPECT.paused()) return null;
       const л = window.BL_EXPECT ? BL_EXPECT.lmp() : '';
       if (!л) return null;
-      const w = Math.floor((Date.now() - new Date(л)) / 604800000);
+      const w = (window.BL_PREG ? BL_PREG.седмица(new Date(л)) : Math.floor((Date.now() - new Date(л)) / 604800000));
       if (w < 1 || w > 45) return null;
       const дни = Math.ceil((new Date(л).getTime() + 280 * 86400000 - Date.now()) / 86400000);
       return '🤰 ' + w + '-та седмица' + (дни > 0 ? ' · още ' + дни + ' съня' : ' · всеки момент 💜');

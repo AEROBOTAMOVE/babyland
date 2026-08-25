@@ -450,7 +450,7 @@
     'Бременност': () => {
       const lmp = window.BL_EXPECT ? BL_EXPECT.lmp() : load('bl_lmp', '');
       if (!lmp) return null;
-      const w = Math.floor((Date.now() - new Date(lmp)) / 604800000);
+      const w = (window.BL_PREG ? BL_PREG.седмица(new Date(lmp)) : Math.floor((Date.now() - new Date(lmp)) / 604800000));
       return (w >= 4 && w <= 42 && !load('bl_bump', {})[w] && !load('bl_bump', {})[w - 1]) ? 'Снимка на коремчето? 🤰' : null;
     }
   };

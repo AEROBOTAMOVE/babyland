@@ -116,7 +116,7 @@
   const одрВлмп = due => new Date(new Date(due).getTime() - 280 * 86400000).toISOString().slice(0, 10);
   function седмицаОт(due) {
     if (!due || isNaN(new Date(due))) return null;
-    return Math.floor((Date.now() - new Date(одрВлмп(due))) / 604800000);
+    return (window.BL_PREG ? BL_PREG.седмица(new Date(одрВлмп(due))) : Math.floor((Date.now() - new Date(одрВлмп(due))) / 604800000));
   }
 
   // ═══ 🎁 КАКВО ѝ ДАВА ТОВА ═══

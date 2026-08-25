@@ -24,7 +24,7 @@
   const pregWeek = () => {
     const lmp = window.BL_EXPECT ? BL_EXPECT.lmp() : load('bl_lmp', '');
     if (!lmp) return null;
-    const w = Math.floor((Date.now() - new Date(lmp)) / 604800000);
+    const w = (window.BL_PREG ? BL_PREG.седмица(new Date(lmp)) : Math.floor((Date.now() - new Date(lmp)) / 604800000));
     return (w >= 1 && w <= 45) ? w : null;
   };
 

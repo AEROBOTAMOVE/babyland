@@ -271,9 +271,15 @@
       b.type = 'button';
       b.style.flex = '1 1 28%'; b.style.minHeight = '44px';
       b.addEventListener('click', () => {
+        // 🔴 25.08 (ИЗМЕРЕНО при пълна памет, намерено от dev/lazhliv_uspeh.js):
+        //    бутонът светваше ПРЕДИ записа. Падне ли записът, на екрана свети
+        //    „34 седмици“, а `refreshAge()` чете bl_preterm от ПАМЕТТА и пише
+        //    старата коригирана възраст отдолу — две числа за едно и също нещо
+        //    в една карта. И не е дребно: по коригираната възраст се четат
+        //    кривите на СЗО и уменията. Светваме СЛЕД записа.
+        if (!save('bl_preterm', v === 28 ? 28 : v)) return;
         pwRow.querySelectorAll('.bb-sexbtn').forEach(x => { x.classList.remove('on'); x.setAttribute('aria-pressed', 'false'); });
         b.classList.add('on'); b.setAttribute('aria-pressed', 'true');
-        save('bl_preterm', v === 28 ? 28 : v);
         refreshAge();
         if (window.BL_FX) BL_FX.buzz(8);
       });
@@ -899,7 +905,7 @@
       if (!l) return 0;
       const d = new Date(l);
       if (isNaN(d)) return 0;
-      return Math.floor((Date.now() - d) / 604800000);
+      return (window.BL_PREG ? BL_PREG.седмица(d) : Math.floor((Date.now() - d) / 604800000));
     };
     const наПауза = () => !!(window.BL_EXPECT && BL_EXPECT.paused());
     // ✍️ редна форма: пише се последната буква (или последните две) от думата —
@@ -1469,10 +1475,14 @@
         // 🔴 25.08 (ИЗМЕРЕНО при пълна памет): отметката се рисуваше и без запис —
         //    Дървото, Реката и Витрината после не я знаеха, а екранът я показваше.
         if (!save('bl_ms_done', d)) return;
+        // 🔴 25.08: знакът на екрана принадлежи на ЗАПИСА ОТГОРЕ, който е
+        //    проверен — затова се рисува ВЕДНАГА след него. Датата долу е
+        //    добавка за Реката и Дървото; падне ли САМО тя, отметката пак е
+        //    вярна, а модалът от save() казва, че нещо не е влязло.
+        r.classList.toggle('done'); r.querySelector('.jr-check').textContent = d[id] ? '✔' : '';
         const md = load('bl_ms_d', {});
         if (d[id]) { if (!md[id]) md[id] = Date.now(); } else { delete md[id]; } // за Реката и Дървото
         save('bl_ms_d', md);
-        r.classList.toggle('done'); r.querySelector('.jr-check').textContent = d[id] ? '✔' : '';
       });
       msBox.appendChild(r);
     });
@@ -2353,7 +2363,7 @@
       //   датата е стара. И в двата случая мълчанието е по-честно от число.
       //   ПЪТ НАЗАД: махни `&& _w <= 45` от условието долу.
       const _w = (lmp && !isNaN(new Date(lmp)))
-        ? Math.max(1, Math.floor((Date.now() - new Date(lmp)) / 604800000)) : 0;
+        ? Math.max(1, (window.BL_PREG ? BL_PREG.седмица(new Date(lmp)) : Math.floor((Date.now() - new Date(lmp)) / 604800000))) : 0;
       if (lmp && !isNaN(new Date(lmp)) && _w <= 45) {
         const w = _w;
         const дни = Math.max(0, Math.ceil((new Date(lmp).getTime() + 280 * 86400000 - Date.now()) / 86400000));

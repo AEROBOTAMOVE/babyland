@@ -489,7 +489,7 @@
       if (room === 'Бременност') {
         const lmp = window.BL_EXPECT ? BL_EXPECT.lmp() : lsGet('bl_lmp', '');
         if (lmp) {
-          const w = Math.floor((Date.now() - new Date(lmp)) / 604800000);
+          const w = (window.BL_PREG ? BL_PREG.седмица(new Date(lmp)) : Math.floor((Date.now() - new Date(lmp)) / 604800000));
           if (w >= 1 && w <= 45) f.push(`Седмица <strong>${w}</strong> сте — помня и това. 🌸`);
         }
         // 🔗 инвентар: ритник-историята (bl_kicks беше сляпа за помощничката)
@@ -2563,14 +2563,53 @@
     head.classList.remove('shrunk');
   }
   // свиване на хедъра при скрол (collapse като в модерните апове)
+  //
+  // 🔴 25.08 — ИЗМЕРЕНО: докато главата се свива (82.6px → 51.8px за 350 мс),
+  //    бутоните в нея — 🆘 СОС, ✕ и ← — тръгват 16.0 ПИКСЕЛА НАГОРЕ. Кривата
+  //    минава 99.6% от пътя още на 300-ата мс, тоест цялото разстояние се
+  //    изминава точно докато пръстът пътува към бутона.
+  //    Тук стоеше гол праг: `toggle('shrunk', scrollTop > 46)`. Той има ДВА
+  //    отделни проблема, и вторият е по-лошият:
+  //      1) БЕЗ ХИСТЕРЕЗИС. Спре ли скролът около 46, всяко трепване на
+  //         пръста прехвърля прага насам-натам и главата подскача под ръката ѝ.
+  //      2) СВИВА СЕ, ДОКАТО ПРЪСТЪТ Е НА ЕКРАНА. Мама посяга към 🆘 и
+  //         бутонът се мести изпод пръста ѝ. На този бутон това не е
+  //         досадно — тя бърза точно когато бърза най-много.
+  //    ЛЕКЪТ, и двете части:
+  //      · свива се над 46, но се ВРЪЩА чак под 16 — между двете нищо не мърда
+  //      · докато пръстът докосва екрана, решението се ОТЛАГА; изпълнява се
+  //        щом тя вдигне ръка
+  //    Видът остава същият — сменя се само МОМЕНТЪТ.
+  //    ПЪТ НАЗАД: върни едноредовия toggle. Всичко тук е самостоятелно.
   function watchShrink() {
     const head = document.querySelector('.ro-head');
+    let пръстДолу = false, отложено = null;
+
+    if (!document.__blПръстСледен) {
+      document.__blПръстСледен = 1;
+      const долу = () => { пръстДолу = true; };
+      const горе = () => { пръстДолу = false; if (отложено) { const f = отложено; отложено = null; f(); } };
+      document.addEventListener('pointerdown', долу, true);
+      document.addEventListener('pointerup', горе, true);
+      document.addEventListener('pointercancel', горе, true);
+      document.addEventListener('touchend', горе, true);
+    }
+
     Object.values(CONTENT).forEach(id => {
       const box = $(id);
       if (!box || box._shrinkBound) return;
       box._shrinkBound = true;
       box.addEventListener('scroll', () => {
-        head.classList.toggle('shrunk', box.scrollTop > 46);
+        const свито = head.classList.contains('shrunk');
+        const т = box.scrollTop;
+        // хистерезис: два различни прага, за да няма подскачане около един
+        let трябва = свито;
+        if (!свито && т > 46) трябва = true;
+        else if (свито && т < 16) трябва = false;
+        if (трябва === свито) return;
+        const приложи = () => head.classList.toggle('shrunk', трябва);
+        if (пръстДолу) отложено = приложи;   // не мърдаме нищо изпод пръста
+        else приложи();
       }, { passive: true });
     });
   }

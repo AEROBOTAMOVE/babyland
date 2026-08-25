@@ -287,7 +287,23 @@
           const v = ta.value.trim(); if (!v) return;
           const lg = load('bl_prompt_log', []);
           lg.push({ q, t: v, d: Date.now() });
-          save('bl_prompt_log', lg.slice(-400));
+          // 🔴🔴 25.08 · НАМЕРЕНО С ЖИВО НАТИСКАНЕ (dev/pylna_pamet.js, пълна памет),
+          //    НЕ от статичния уред: той пропусна мястото, защото веднага след
+          //    записа има `drawDone()` и „прерисува" минава за самопоправяне.
+          //    Тук се вижда, че прерисуването е точно това, което трие текста ѝ:
+          //    полето се строи НАНОВО от `load('bl_draft_prompt', '')`, а нито
+          //    отговорът, нито черновата са влезли в паметта. Тоест написаното
+          //    от мама изчезваше от екрана, без да е записано никъде — и отгоре
+          //    падаха конфети.
+          //    ЖЕЛЯЗНО: нищо не се прерисува и нищо не се празнува, докато
+          //    отговорът ѝ не е вътре.
+          if (!save('bl_prompt_log', lg.slice(-400))) {
+            let вест = doneBox.querySelector('.pr-err');
+            if (!вест) { вест = el('p', 'jr-privacy pr-err', ''); doneBox.appendChild(вест); }
+            вест.textContent = 'Не се записа. Отговорът ти стои тук, в полето. 💛';
+            if (window.BL_ZAPIS_PADNA) BL_ZAPIS_PADNA();   // голямото обяснение — модал, вижда се винаги
+            return;
+          }
           save('bl_prompt_done', today());
           save('bl_draft_prompt', '');
           fx().buzz(12); fx().confetti(btn, 14);
