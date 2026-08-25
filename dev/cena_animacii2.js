@@ -744,7 +744,7 @@ function absolutniKlasove(t, набор) {
     if (!декл.some(d => d.свойство === 'position' && /^(absolute|fixed)/i.test(d.стойност))) return;
     for (const част of сел.split(',')) {
       const п = част.trim();
-      if (/^[.#][-\w-￿]+$/.test(п)) набор.add(п);
+      if (/^[.#][-\w\u0080-\uFFFF]+$/.test(п)) набор.add(п);
     }
   });
   return набор;
@@ -752,9 +752,15 @@ function absolutniKlasove(t, набор) {
 // Класове, срещнати ВЪТРЕ в <svg>…</svg> в разметката. Броячът казва и
 // колко svg блока изобщо са видени — иначе „0 намерени" не се различава
 // от „0 прегледани".
+const SVG_ТАГОВЕ = new Set([
+  'svg', 'g', 'path', 'circle', 'ellipse', 'rect', 'line', 'polyline', 'polygon',
+  'text', 'tspan', 'textpath', 'defs', 'use', 'symbol', 'marker', 'mask',
+  'clippath', 'lineargradient', 'radialgradient', 'stop', 'pattern',
+  'foreignobject', 'animate', 'animatemotion', 'animatetransform', 'image', 'filter'
+]);
 function svgKlasove(разметка) {
   const набор = new Set();
-  let блокове = 0;
+  let блокове = 0, поТаг = 0;
   for (const ф of разметка || []) {
     const t = ф.текст;
     const re = /<(\/?)([a-zA-Z][-\w]*)\b([^>]*?)(\/?)>/g;
@@ -766,15 +772,52 @@ function svgKlasove(разметка) {
         else { if (дълб === 0) блокове++; if (!сам) дълб++; }
         continue;
       }
-      if (!дълб || затв) continue;
+      if (затв) continue;
+      // 🨤 САМО ДЪЛБОЧИНАТА НА <svg> НЕ СТИГА — И ТОЧНО ТОВА БЕШЕ ОТВОРЕНИЯТ
+      // ВЪПРОС ОТ МИНАЛИЯ ПРОБЕГ. `.net-e` стои на `<text class="net-e">` в
+      // js/home.js:617, но `<svg class="net-svg">` се отваря на ред 567 и се
+      // ЗАТВАРЯ на 573. Парчето на 617 е ОТДЕЛЕН шаблонен низ, залепян после
+      // в рисунката с innerHTML — лексически то НЕ е между <svg> и </svg>,
+      // затова броенето на дълбочина го изпуска.
+      // Вторият, НЕЗАВИСИМ признак е самият ТАГ: <text>, <circle>, <path> ги
+      // няма в HTML. Тагът е ФАКТ, не предположение за влагане.
+      const вътре = дълб > 0, свойТаг = SVG_ТАГОВЕ.has(таг);
+      if (!вътре && !свойТаг) continue;
       const кл = (атр.match(/class\s*=\s*["']([^"']*)["']/) || [])[1] || '';
-      for (const к of кл.split(/[\s${}`+]+/)) if (к && /^[-\w-￿]+$/.test(к)) набор.add(к);
+      const парчета = кл.split(/[\s${}`+]+/).filter(к => к && /^[-\w\u0080-\uFFFF]+$/.test(к));
+      if (парчета.length && !вътре && свойТаг) поТаг++;
+      for (const к of парчета) набор.add(к);
     }
   }
-  return { набор, блокове };
+  return { набор, блокове, поТаг };
 }
 // Класове, ВЪТРЕ в които в разметката стои натискаемо нещо. За К7:
 // „кутията се свива" е безобидно, докато в кутията няма бутон.
+// Всички класове, изобщо срещани в разметката — за да може „елементът го
+// няма" да е ФАКТ, а не предположение. Броячът казва и колко е гледал.
+function klasoveVRazmetka(разметка) {
+  const набор = new Set();
+  let етикети = 0;
+  for (const ф of разметка || []) {
+    const t = ф.текст;
+    let m;
+    const re = /class(?:Name)?\s*=\s*["'`]([^"'`]*)["'`]/g;
+    while ((m = re.exec(t))) {
+      етикети++;
+      for (const к of m[1].split(/[\s${}`+]+/)) if (к && /^[-\w\u0080-\uFFFF]+$/.test(к)) набор.add(к);
+    }
+    // фабриката на проекта: el('div', 'ns2 n2-arc')
+    const re2 = /\bel\s*\(\s*["'][^"']*["']\s*,\s*["']([^"']+)["']/g;
+    while ((m = re2.exec(t))) {
+      етикети++;
+      for (const к of m[1].split(/\s+/)) if (к && /^[-\w\u0080-\uFFFF]+$/.test(к)) набор.add(к);
+    }
+    // classList.add('n2-arc') / toggle / remove
+    const re3 = /classList\.(?:add|toggle|remove)\s*\(\s*["']([^"']+)["']/g;
+    while ((m = re3.exec(t))) { етикети++; набор.add(m[1]); }
+  }
+  return { набор, етикети };
+}
 function klasoveSNatiskaemoVatre(разметка, tapКласове) {
   const набор = new Set();
   let прегледани = 0;
@@ -787,7 +830,7 @@ function klasoveSNatiskaemoVatre(разметка, tapКласове) {
       const празен = /^(br|hr|img|input|meta|link|source|path|circle|rect|line|use|stop|polygon|polyline|ellipse|area|col|embed|track|wbr)$/.test(таг);
       if (затв) { стек.pop(); continue; }
       const кл = (атр.match(/class\s*=\s*["']([^"']*)["']/) || [])[1] || '';
-      const класове = кл.split(/[\s${}`+]+/).filter(к => к && /^[-\w-￿]+$/.test(к));
+      const класове = кл.split(/[\s${}`+]+/).filter(к => к && /^[-\w\u0080-\uFFFF]+$/.test(к));
       const роля = ((атр.match(/role\s*=\s*["']([^"']+)["']/) || [])[1] || '').trim();
       const натиск = ТАГ_НАТИСКАЕМ.test(таг) ||
                      /^(button|link|tab|switch|menuitem|checkbox|option)$/i.test(роля) ||
@@ -802,7 +845,7 @@ function svitoLi(селектор, абсолютни, svgНабор) {
   const без = селектор.replace(/::?[-\w]+(\([^)]*\))?/g, '');
   const части = без.trim().split(/[\s>+~]+/).filter(Boolean);
   for (const ч of части) {
-    for (const к of (ч.match(/[.#][-\w-￿]+/g) || [])) {
+    for (const к of (ч.match(/[.#][-\w\u0080-\uFFFF]+/g) || [])) {
       if (абсолютни.has(к)) return 'ИЗВЪН ПОТОКА';
       if (к[0] === '.' && svgНабор.has(к.slice(1))) return 'В SVG';
     }
@@ -846,8 +889,8 @@ function razborKompaund(сел) {
   const без = посл.replace(/::?[-\w]+(\([^)]*\))?/g, '');
   return {
     псевдоЕл,
-    класове: new Set((без.match(/\.[-\w-￿]+/g) || []).map(x => x.slice(1))),
-    ид: (без.match(/#[-\w-￿]+/g) || []).map(x => x.slice(1)),
+    класове: new Set((без.match(/\.[-\w\u0080-\uFFFF]+/g) || []).map(x => x.slice(1))),
+    ид: (без.match(/#[-\w\u0080-\uFFFF]+/g) || []).map(x => x.slice(1)),
     таг: ((без.match(/^[a-zA-Z][-\w]*/) || [''])[0] || '').toLowerCase()
   };
 }
@@ -875,7 +918,7 @@ function nevidimiPoPodrazbirane(t, набор) {
     if (!крие) return;
     for (const част of сел.split(',')) {
       const п = част.trim();
-      if (/^[.#][-\w-￿]+$/.test(п)) набор.add(п.slice(1));
+      if (/^[.#][-\w\u0080-\uFFFF]+$/.test(п)) набор.add(п.slice(1));
     }
   });
   return набор;
@@ -901,14 +944,24 @@ function analiz(файлове /* [{име, текст}] */, разметка /*
   const { набор: svgНабор, блокове: svgБлокове } = svgKlasove(разметка);
   const { набор: съдържаНатискаемо, натискаеми: намеренНатискаеми } =
     klasoveSNatiskaemoVatre(разметка, tapКласове);
+  const { набор: класовеВРазметка, етикети: намерениЕтикети } = klasoveVRazmetka(разметка);
+  преглед.класове_в_разметка = класовеВРазметка.size;
+  преглед.етикети_в_разметка = намерениЕтикети;
   преглед.svg_блокове = svgБлокове;
   преглед.svg_класове = svgНабор.size;
   преглед.кутии_с_бутон = съдържаНатискаемо.size;
   преглед.натискаеми_в_разметка = намеренНатискаеми;
 
+  // ГЛОБАЛЕН НОМЕР НА РЕДА: файловете се четат в реда, в който се зареждат,
+  // а „кой печели" зависи точно от този ред. Само номерът на реда в
+  // отделния файл не може да отговори на въпроса „кое идва по-късно".
+  let файлИндекс = 0;
+  const глобален = (ред) => файлИндекс * 1000000 + ред;
+
   for (const ф of файлове) {
     const суров = ф.текст.replace(/\r\n/g, '\n').replace(/\r/g, '\n');
     преглед.файлове++;
+    файлИндекс++;
     преглед.байтове += Buffer.byteLength(суров, 'utf8');
     преглед.редове += суров.split('\n').length;
     // колко пъти „@keyframes" се среща В КОМЕНТАР — примамки
@@ -918,12 +971,12 @@ function analiz(файлове /* [{име, текст}] */, разметка /*
     const nach = redoveIndeks(t);
     const кф = namerKeyframes(t, ф.име);
     преглед.коментарни_примамки += сурови - (t.match(/@(?:-webkit-|-moz-|-o-|-ms-)?keyframes/g) || []).length;
-    for (const к of кф) { к.цена = cenaNaKeyframes(к); keyframes.push(к); }
+    for (const к of кф) { к.цена = cenaNaKeyframes(к); к.ред_глобален = глобален(к.ред); keyframes.push(к); }
     преглед.keyframes += кф.length;
 
     const без = maskirai(t, кф);
     const у = upotrebiVFayl(без, ф.име, nach);
-    for (const x of у) употреби.push(x);
+    for (const x of у) { x.ред_глобален = глобален(x.ред); употреби.push(x); }
     преглед.употреби += у.length;
 
     skritiPoPodrazbirane(без, скрити);
@@ -934,7 +987,7 @@ function analiz(файлове /* [{име, текст}] */, разметка /*
       преглед.правила++;
       const сел = стек[стек.length - 1] || '';
       const ред = redNa(nach, декл[0].индекс);
-      всичкиПравила.push({ файл: ф.име, ред, селектор: сел,
+      всичкиПравила.push({ файл: ф.име, ред, ред_глобален: глобален(ред), селектор: сел,
                            контекст: стек.slice(0, -1).join(' '), декл });
       for (const d of декл) {
         if (d.свойство !== 'transition' && d.свойство !== 'transition-property') continue;
@@ -1036,7 +1089,7 @@ function analiz(файлове /* [{име, текст}] */, разметка /*
       }
       // предшественик, невидим по подразбиране → пак влизане
       const предци = r.селектор.replace(/\([^)]*\)/g, '').trim().split(/[\s>+~]+/).slice(0, -1).join(' ');
-      if ((предци.match(/\.[-\w-￿]+/g) || []).some(x => невидими.has(x.slice(1)))) {
+      if ((предци.match(/\.[-\w\u0080-\uFFFF]+/g) || []).some(x => невидими.has(x.slice(1)))) {
         сито.скриващи++; continue;
       }
       let px;
@@ -1056,6 +1109,45 @@ function analiz(файлове /* [{име, текст}] */, разметка /*
     }
   }
   н.sito = сито;
+
+  // ── К8 · ДВЕ @keyframes С ЕДНО ИМЕ ───────────────────────────────
+  // @keyframes НЕ се сливат по каскада — по-късното ЗАМЕНЯ по-ранното
+  // ЦЯЛОТО, безшумно, за целия документ.
+  //
+  // 🪤 ПЪРВАТА МИ ВЕРСИЯ НА ТАЗИ ПРОВЕРКА ТВЪРДЕШЕ НЕЩО, КОЕТО НЕ МОЖЕ ДА
+  // СЕ ЗНАЕ. Тя решаваше кое определение правилото „е искало" по това кое
+  // стои най-близо НАД него в файла — и обяви 19 „живи подмени". Но в CSS
+  // мястото на правилото спрямо @keyframes НЕ ЗНАЧИ НИЩО: името се решава
+  // глобално, печели последното, където и да е написано. Тоест мярката
+  // отговаряше на въпрос за НАМЕРЕНИЕ, а намерението не се чете от файла.
+  // Сега се докладва само проверимото:
+  //   · кои имена имат по няколко определения и КОЕ печели;
+  //   · кои РАЗЛИЧНИ елемента делят това едно тяло;
+  //   · съществува ли всеки от тези елементи в разметката.
+  // 🔴 се дава само когато ДВА РАЗЛИЧНИ ЖИВИ елемента делят едно тяло —
+  // тогава поне единият със сигурност върви с чужда рисунка.
+  н.dvoyni = [];
+  for (const [име, сп] of поИме) {
+    if (сп.length < 2) continue;
+    const тела = new Set(сп.map(k => (k.тяло || '').replace(/\s+/g, ' ').trim()));
+    const победител = сп[сп.length - 1];
+    const цели = new Map();
+    for (const у of употреби) {
+      if (у.име !== име || у.изключена) continue;
+      const цк = razborKompaund(у.селектор);
+      const ключ = [...цк.класове].sort().join('.') || у.селектор;
+      if (!цели.has(ключ))
+        цели.set(ключ, { ключ, селектор: у.селектор, файл: у.файл, ред: у.ред,
+                         вРазметка: [...цк.класове].every(к => класовеВРазметка.has(к)) &&
+                                    цк.класове.size > 0 });
+    }
+    const живи = [...цели.values()].filter(x => x.вРазметка);
+    н.dvoyni.push({ име, брой: сп.length, различни: тела.size > 1,
+                    места: сп.map(k => k.файл + ':' + k.ред),
+                    печели: победител.файл + ':' + победител.ред,
+                    цели: [...цели.values()], живи: живи.length,
+                    сблъсък: тела.size > 1 && живи.length > 1 });
+  }
 
   for (const к of keyframes) {
     if (к.счупена) { н.schupeni.push(к); continue; }
@@ -1572,6 +1664,27 @@ function samoproverka() {
       'без разметка: ' + (без.находки.prehodi[0].свито || 'страница') +
       ' → с разметка: ' + с.находки.prehodi[0].свито);
   }
+  {
+    // 🪤 ТОЧНИЯТ СЛУЧАЙ НА `.net-e`: <svg> се отваря И ЗАТВАРЯ по-горе, а
+    // <text> идва в ОТДЕЛЕН шаблонен низ, залепен после с innerHTML.
+    // Броенето на дълбочина тук дава НУЛА — спасява само тагът.
+    const css = '.net-e { transition: font-size .3s ease }';
+    const js = 'const рамка = `<svg class="net-svg" viewBox="0 0 640 460"></svg>`;\n' +
+               'g.innerHTML = `<text x="${x}" y="${y}" class="net-e">${n.e}</text>`;';
+    const r = analiz([{ име: 'svg2.css', текст: css }], [{ име: 'home.js', текст: js }]);
+    T('<text> ИЗВЪН лексическия <svg> пак се познава по тага', 'ГРЪМВА',
+      r.находки.prehodi[0].свито === 'В SVG',
+      'присъда: ' + (r.находки.prehodi[0].свито || 'страница'));
+  }
+  {
+    // а <div> си остава HTML, колкото и svg да има наоколо
+    const css = '.ro-head { transition: padding .3s ease }';
+    const js = '`<svg class="s"></svg>`;\n`<div class="ro-head"></div>`;';
+    const r = analiz([{ име: 'нехml.css', текст: css }], [{ име: 'x.js', текст: js }]);
+    T('<div> не става SVG само защото наблизо има <svg>', 'МЪЛЧИ',
+      !r.находки.prehodi[0].свито,
+      'присъда: ' + (r.находки.prehodi[0].свито || 'страница'));
+  }
 
   // ── К7 ПРЕХОД, КОЙТО МЕСТИ НАТИСКАЕМО ────────────────────────────
   {
@@ -1669,6 +1782,79 @@ function samoproverka() {
     const r = analiz([{ име: 'крие.css', текст: css }]);
     T('правило с opacity:0 е скриване, не бягаща цел', 'МЪЛЧИ',
       r.находки.mesti_buton.length === 0, String(r.находки.mesti_buton.length));
+  }
+
+  // ── К8 ДВЕ ОПРЕДЕЛЕНИЯ С ЕДНО ИМЕ ────────────────────────────────
+  {
+    // СБЛЪСЪК: две РАЗЛИЧНИ живи фигури делят едно име с различни тела
+    const css = '@keyframes рисувай { from { stroke-dashoffset: 180 } to { stroke-dashoffset: 0 } }\n' +
+                '.стар { animation: рисувай 3s infinite }\n' +
+                '@keyframes рисувай { from { stroke-dashoffset: 100 } to { stroke-dashoffset: 0 } }\n' +
+                '.нов { animation: рисувай 3s infinite }';
+    const html = '<i class="стар"></i><i class="нов"></i>';
+    const r = analiz([{ име: 'двойно.css', текст: css }], [{ име: 'i.html', текст: html }]);
+    const x = r.находки.dvoyni[0];
+    T('два ЖИВИ различни елемента с едно име → сблъсък', 'ГРЪМВА',
+      r.находки.dvoyni.length === 1 && x.различни && x.сблъсък && x.живи === 2 &&
+      x.печели === 'двойно.css:3',
+      x ? 'живи ' + x.живи + ', печели ' + x.печели : 'НЕ ГО ВИДЯ');
+  }
+  {
+    // същото, но старият елемент вече НЕ СЪЩЕСТВУВА → мъртъв код, не сблъсък
+    const css = '@keyframes рис2 { from { stroke-dashoffset: 180 } to { stroke-dashoffset: 0 } }\n' +
+                '.махнат { animation: рис2 3s infinite }\n' +
+                '@keyframes рис2 { from { stroke-dashoffset: 100 } to { stroke-dashoffset: 0 } }\n' +
+                '.жив { animation: рис2 4s infinite }';
+    const html = '<i class="жив"></i>';
+    const r = analiz([{ име: 'мъртво.css', текст: css }], [{ име: 'i.html', текст: html }]);
+    const x = r.находки.dvoyni[0];
+    T('изчезнал от разметката елемент не прави сблъсък', 'МЪЛЧИ',
+      x && x.различни && !x.сблъсък && x.живи === 1,
+      x ? 'живи ' + x.живи + ' от ' + x.цели.length : 'изобщо не видя двойката');
+  }
+  {
+    // 🪤 ТУК МЕ ХВАНА СОБСТВЕНАТА МИ ПРОВЕРКА. Първата ми версия питаше
+    // „кое определение стои най-близо НАД правилото" и обявяваше 19 живи
+    // подмени в scenes.css. Но в CSS мястото на правилото спрямо
+    // @keyframes НЕ ЗНАЧИ НИЩО — печели последното определение, където и
+    // да е написано. Ето същия елемент, ползван от ЕДНО правило: каквото
+    // и да е разстоянието до двете определения, сблъсък НЯМА.
+    const css = '@keyframes ред1 { to { opacity: 1 } }\n' +
+                '.едничък { animation: ред1 3s infinite }\n' +
+                '@keyframes ред1 { to { opacity: .5 } }';
+    const html = '<i class="едничък"></i>';
+    const r = analiz([{ име: 'ред.css', текст: css }], [{ име: 'i.html', текст: html }]);
+    T('едно правило между двете определения не е сблъсък', 'МЪЛЧИ',
+      r.находки.dvoyni[0] && !r.находки.dvoyni[0].сблъсък,
+      'живи ' + r.находки.dvoyni[0].живи);
+  }
+  {
+    const css = '@keyframes същото { to { opacity: 1 } }\n@keyframes същото { to { opacity: 1 } }\n' +
+                '.a { animation: същото 1s }\n.b { animation: същото 1s }';
+    const html = '<i class="a"></i><i class="b"></i>';
+    const r = analiz([{ име: 'еднакви.css', текст: css }], [{ име: 'i.html', текст: html }]);
+    T('две ЕДНАКВИ тела не са сблъсък дори при два живи елемента', 'МЪЛЧИ',
+      r.находки.dvoyni.length === 1 && !r.находки.dvoyni[0].различни &&
+      !r.находки.dvoyni[0].сблъсък,
+      'различни=' + r.находки.dvoyni[0].различни + ', живи=' + r.находки.dvoyni[0].живи);
+  }
+  {
+    const css = '@keyframes едно { to { opacity: 1 } }\n.a { animation: едно 1s }';
+    const r = analiz([{ име: 'едно.css', текст: css }]);
+    T('едно определение не се обявява за двойно', 'МЪЛЧИ',
+      r.находки.dvoyni.length === 0, String(r.находки.dvoyni.length));
+  }
+  {
+    // през ДВА файла: вторият файл се чете по-късно и печели
+    const a = '@keyframes мост { from { opacity: 0 } to { opacity: 1 } }\n.x { animation: мост 1s }';
+    const b = '@keyframes мост { from { opacity: .5 } to { opacity: 1 } }\n.y { animation: мост 1s }';
+    const html = '<i class="x"></i><i class="y"></i>';
+    const r = analiz([{ име: 'a.css', текст: a }, { име: 'b.css', текст: b }],
+                     [{ име: 'i.html', текст: html }]);
+    const x = r.находки.dvoyni[0];
+    T('двойката се вижда и през два файла (глобален ред)', 'ГРЪМВА',
+      x && x.различни && x.сблъсък && x.печели === 'b.css:1',
+      x ? 'печели ' + x.печели + ', живи ' + x.живи : 'НЕ ГО ВИДЯ');
   }
 
   // ── БРОЯЧЪТ ──────────────────────────────────────────────────────
@@ -1986,6 +2172,36 @@ function glaven() {
                   pad(x.к.име, 20) + x.у.файл + ':' + x.у.ред + '  ' + x.у.селектор.slice(0, 34));
     if (ред.length > 20) console.log('   … и още ' + (ред.length - 20));
     console.log('');
+  }
+
+  console.log('К8 · ЕДНО ИМЕ, ДВЕ ОПРЕДЕЛЕНИЯ (по-късното изяжда по-ранното мълчаливо)');
+  const дв = н.dvoyni;
+  const дв_разл = дв.filter(x => x.различни);
+  const дв_сблъсък = дв.filter(x => x.сблъсък);
+  console.log('   имена с 2+ определения: ' + дв.length + ' от ' + п.keyframes +
+              ' прегледани · с РАЗЛИЧНО тяло: ' + дв_разл.length);
+  console.log('   разметката дава ' + п.класове_в_разметка + ' класа от ' +
+              п.етикети_в_разметка + ' етикета — оттам се знае кой елемент СЪЩЕСТВУВА');
+  if (!дв.length) console.log('   ✅ нула\n');
+  else {
+    for (const x of дв_разл.slice(0, 24))
+      console.log('   ' + (x.сблъсък ? '🔴' : '🟡') + ' ' + pad(x.име, 12) +
+                  pad(x.места.join(' + '), 42) + '→ печели ' + x.печели +
+                  '  · живи цели: ' + x.живи + ' от ' + x.цели.length);
+    if (дв_разл.length > 24) console.log('   … и още ' + (дв_разл.length - 24));
+    if (!дв_сблъсък.length)
+      console.log('   ✅ нула СБЛЪСЪКА: никъде два РАЗЛИЧНИ живи елемента не делят едно тяло.\n' +
+                  '      Тоест по-ранните определения са МЪРТЪВ КОД, не сгрешена рисунка.\n' +
+                  '      (Кое тяло е „искало" правилото, CSS не казва — това не се гадае тук.)\n');
+    else {
+      console.log('   🔴 СБЛЪСЪК — два различни ЖИВИ елемента делят едно тяло:');
+      for (const x of дв_сблъсък) {
+        console.log('      ' + x.име + ' → печели ' + x.печели);
+        for (const ц of x.цели.filter(c => c.вРазметка))
+          console.log('         ' + ц.файл + ':' + ц.ред + '  ' + ц.селектор);
+      }
+      console.log('');
+    }
   }
 
   console.log('ДОПЪЛНИТЕЛНО');

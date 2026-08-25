@@ -174,7 +174,11 @@
   function spendCard() {
     const c = card('Разходите по месеци 📊 ' + sub('истинските — не оценката'));
     const h = load('bl_spend', []);
-    const месец = today().slice(0, 7);
+    // 🕛 25.08: „този месец“ се снимаше при СТРОЕЖА на картата. Стая, отворена
+    //    на 31-ви в 23:50 и пипната на 1-ви в 00:10, показваше разбивката по
+    //    категории за СТАРИЯ месец, докато стълбчетата отдолу вече броят новия —
+    //    две числа за едно и също нещо на един екран. Пита се при всяко рисуване.
+    const текущМесец = () => today().slice(0, 7);
 
     // бърз запис
     const ред = el('div', 'sp-add');
@@ -268,7 +272,7 @@
       });
       box.appendChild(bars);
       // този месец, по категории
-      const тоз = данни.filter(x => x && String(x.d).slice(0, 7) === месец);
+      const тоз = данни.filter(x => x && String(x.d).slice(0, 7) === текущМесец());
       if (тоз.length) {
         const поКат = {};
         тоз.forEach(x => { поКат[x.k] = (поКат[x.k] || 0) + (+x.v || 0); });
@@ -405,6 +409,12 @@
     let st = load('bl_laughs', []);
     const ред = el('div', 'jr-addrow');
     const inp = el('input', 'jr-word'); inp.placeholder = 'Какво те разсмя днес?'; inp.maxLength = 120;
+    // 🟠 25.08: 120 знака се пишат бавно с бебе на ръка, а точно тази карта
+    //    съществува, „за да не остане само тежкото“. Затвореше ли стаята по
+    //    средата, смехът ѝ изчезваше. `data-draft` е конвенцията на проекта
+    //    (js/daily.js:524). ПЪТ НАЗАД: махни двата реда и изчистването долу.
+    inp.dataset.draft = 'bl_draft_laugh';
+    inp.value = load('bl_draft_laugh', '');
     const add = el('button', 'jr-chip', '😄 Запиши'); add.type = 'button';
     const list = el('div', 'jr-wins');
     const рисувай = () => {
@@ -449,7 +459,7 @@
     };
     // 🔴🔴 25.08 (ИЗМЕРЕНО при пълна памет): полето се чистеше и конфетите
     //    падаха дори когато записът е паднал — смехът ѝ изчезваше без дума.
-    const пиши = () => { const v = inp.value.trim(); if (!v) return; st = load('bl_laughs', []); st.push({ t: v.slice(0, 120), d: today() }); if (!save('bl_laughs', st)) { st.pop(); return; } inp.value = ''; рисувай(); fx().buzz(10); fx().confetti(); };
+    const пиши = () => { const v = inp.value.trim(); if (!v) return; st = load('bl_laughs', []); st.push({ t: v.slice(0, 120), d: today() }); if (!save('bl_laughs', st)) { st.pop(); return; } inp.value = ''; save('bl_draft_laugh', ''); рисувай(); fx().buzz(10); fx().confetti(); };
     add.addEventListener('click', пиши);
     inp.addEventListener('keydown', e => { if (e.key === 'Enter') { e.preventDefault(); пиши(); } });
     ред.appendChild(inp); ред.appendChild(add);

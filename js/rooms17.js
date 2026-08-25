@@ -59,6 +59,13 @@
     //    „поле за число" и не личеше, че се пита за седмицата.
     wInp.setAttribute('aria-label', 'Коя седмица е ехото');
     const note = el('input', 'jr-word'); note.placeholder = 'Какво видяхме? („маха с ръчичка“)'; note.maxLength = 90;
+    // 🟠 25.08: тук се пишат ДУМИТЕ НА ЛЕКАРЯ от прегледа — най-скъпият текст в
+    //    картата, защото се помни само първите минути. Полето живееше само
+    //    докато стаята е отворена, а изборът на снимка минава през системния
+    //    диалог (на телефон приложението може да бъде спряно междувременно).
+    //    ПЪТ НАЗАД: махни двата реда и `save('bl_draft_echo', '')` при записа.
+    note.dataset.draft = 'bl_draft_echo';
+    note.value = load('bl_draft_echo', '');
     const btn = el('label', 'jr-btn', '🩻 Добави ехо-снимка');
     btn.appendChild(file);
 
@@ -95,7 +102,8 @@
         st = load('bl_echo', []);   // пресен прочит ПРЕДИ записа
         st.push({ img: url, w: parseInt(wInp.value) || седмица, t: note.value.trim().slice(0, 90), d: today() });
         if (!save('bl_echo', st)) { st.pop(); fx().cheer('Паметта се напълни. 😕'); return; }
-        note.value = ''; fx().buzz(12); fx().confetti(); рисувай();
+        note.value = ''; save('bl_draft_echo', '');   // черновата си отива със записаната снимка
+        fx().buzz(12); fx().confetti(); рисувай();
       });
     });
     const ред = el('div', 'jr-addrow');

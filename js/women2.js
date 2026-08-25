@@ -650,8 +650,20 @@
       st = load('bl_wm_5min', { d: '', done: false, counted: false });
       if (st.d !== today()) { st.d = today(); st.done = false; st.counted = false; }
       st.done = !беше;
-      if (st.done && !st.counted) { st.counted = true; save('bl_wm_5min_total', load('bl_wm_5min_total', 0) + 1); }
-      save('bl_wm_5min', st);
+      const брои = st.done && !st.counted;
+      if (брои) st.counted = true;
+      // 🔴 25.08 (dev/lazhliv_uspeh.js): отговорът на записа се хвърляше. При
+      //    пълна памет бутонът ставаше „✔ Направих го", конфетите падаха — а в
+      //    телефона нищо не влизаше и на другия ден отметката я нямаше.
+      //    И РЕДЪТ е част от дефекта: броячът „Откраднати минутки" се вдигаше
+      //    ПРЕДИ главния запис, тоест при паднал запис той пораства сам.
+      //    Първо главното състояние; броячът — само след него.
+      if (!save('bl_wm_5min', st)) {
+        каз(б, 'Не можах да го запазя — паметта на телефона е пълна. Отметката НЕ е приета: освободи малко място (видеа, стари снимки) и я сложи пак.');
+        fx().buzz(6);
+        return;
+      }
+      if (брои) save('bl_wm_5min_total', load('bl_wm_5min_total', 0) + 1);
       б.textContent = st.done ? '✔ Направих го' : 'Направих го';
       б.classList.toggle('wm-tone-on', st.done);
       покажиБрояч();
