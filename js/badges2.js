@@ -111,18 +111,27 @@
     const оригКнига = BL_YEARBOOK.build;
     BL_YEARBOOK.build = function () {
       let html = оригКнига.apply(this, arguments);
+      // 🔴 19.08 (dev/broyachi.js): тук стоеше ВТОРО, собствено пресичане на
+      //    паметта с каталога. Същата сметка живее и в extras.js (рафтът), и в
+      //    profile.js („N от 40“) — три копия на едно число. Копие, което може
+      //    да се размине, се разминава: измерено 2 срещу 1 при ид от друга
+      //    версия. Питаме ЕДИНСТВЕНИЯ източник; резервата отдолу е дословно
+      //    старият ред, за да не остане книгата празна, ако BL_BADGES е стар.
+      //    ПЪТ НАЗАД: смени `BL_BADGES.мои ?` на `false ?` — остава дословно
+      //    старата сметка, без нищо друго да се пипа.
       const взети = load('bl_badges', {});
-      const каталог = BL_BADGES.list || [];
-      const мои = каталог.filter(b => взети[b.id]).sort((a, b) => взети[a.id] - взети[b.id]);
+      const мои = (BL_BADGES.мои ? BL_BADGES.мои()
+                                 : (BL_BADGES.list || []).filter(b => взети[b.id]).map(b => ({ b: b, кога: взети[b.id] })))
+                  .sort((x, y) => x.кога - y.кога);          // най-старото първо — книгата върви напред във времето
       if (!мои.length) return html;
       const дата = t => { try { return new Date(t).toLocaleDateString('bg-BG'); } catch (e) { return ''; } };
       const страница =
         `<div class="yb-page"><h2>🏅 Малките победи</h2>
            <p class="pr-note">${мои.length === 1 ? 'Едно медальонче' : мои.length + ' медальончета'} — всяко от тях е ден, в който си направила нещо за себе си или за него.</p>
-           <div class="yb-medals">${мои.map(b =>
+           <div class="yb-medals">${мои.map(({ b, кога }) =>
              `<div class="yb-medal"><span class="yb-mde">${b.e}</span>
                 <div><strong>${esc(b.n)}</strong><small>${esc(b.t)}</small>
-                <em>${дата(взети[b.id])}</em></div></div>`).join('')}</div>
+                <em>${дата(кога)}</em></div></div>`).join('')}</div>
          </div>`;
       // застава ПРЕДИ последната страница, не след „Направено с обич“
       const край = html.lastIndexOf('<div class="yb-page yb-end">');

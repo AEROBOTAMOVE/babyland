@@ -123,6 +123,8 @@
         const rq = indexedDB.open('babyland', 1);
         rq.onupgradeneeded = () => { rq.result.createObjectStore('media'); };
         rq.onsuccess = () => res(rq.result);
+        // ЧУТО: null → init пали `базаПропадна`, а първият idbSet след това вика
+        // медияВик('nema'). Проверено живо: dev/test_syhranenie.js, „база НЕДОСТЪПНА“.
         rq.onerror = () => res(null);
       } catch (e) { res(null); }
     });
@@ -159,6 +161,17 @@
     if (!db) { изтрити.add(k); return; }
     try { db.transaction('media', 'readwrite').objectStore('media').delete(k); } catch (e) { изтрити.add(k); }
   }
+  // 🔴 21.08 · ПРОВАЛЕНОТО ЧЕТЕНЕ ПРАВЕШЕ РЕЗЕРВНОТО КОПИЕ ЛЪЖЛИВО.
+  //    Курсорът минава през целия склад. Ако гръмне по средата (повредена база,
+  //    прекъснат достъп), `rq.onerror = () => res(out)` връщаше каквото е успял —
+  //    ТИХО, все едно това е всичко. А `mediaDump()` връща точно този кеш и
+  //    js/profile.js го записва в резервното копие с надпис „В този файл влязоха
+  //    и снимките, и гласовите“. Тоест мама сваля файл, в който липсват снимки,
+  //    и приложението ѝ казва, че са вътре. После сменя телефона.
+  //    Тук само ЗАПОМНЯМЕ, че четенето е било непълно; кой да го каже — решава
+  //    този, който обещава нещо на майката (виж BL_STORE.readOK).
+  //    ПЪТ НАЗАД: махни `четенеПадна`, двата реда, които го палят, и `readOK`.
+  let четенеПадна = false;
   function idbGetAll() {
     return new Promise((res) => {
       if (!db) return res({});
@@ -170,8 +183,10 @@
           const c = rq.result;
           if (c) { out[c.key] = c.value; c.continue(); } else res(out);
         };
-        rq.onerror = () => res(out);
-      } catch (e) { res({}); }
+        // ЧУТО: пали `четенеПадна`; BL_STORE.readOK() го носи до js/profile.js,
+        // където копието вече не се обявява за пълно (свали, „складътЧел“).
+        rq.onerror = () => { четенеПадна = true; res(out); };
+      } catch (e) { четенеПадна = true; res({}); }
     });
   }
 
@@ -300,6 +315,80 @@
     } catch (e) {}
   });
 
+  // ══════════════════════════════════════════════════════════════
+  // 🔴 21.08 · „ТУК ВЕЧЕ ИМА ЗАПИСИ (4 НЕЩА)“ НА ПРАЗЕН ТЕЛЕФОН
+  //
+  // Червеният диалог преди качване на копие брои какво има на телефона. На
+  // СЪВСЕМ нов телефон той казваше на майката, че вече има нейни записи — и
+  // я плашеше точно в мига, в който тя връща живота си от стария телефон.
+  // Част от майките натискат „Откажи“ и остават без данните си.
+  //
+  // ИЗМЕРЕНО (21.08, пясъчник с всичките 96 скрипта от index.html, 95 от тях
+  // се заредиха без грешка): празно пускане оставя ТРИ ключа — bl_vax_schema,
+  // bl_art_merged, bl_day1 — и трите вече бяха пропускани. Значи четвъртото
+  // идваше отнякъде другаде. Прочетено в кода, ключ по ключ:
+  //   bl_goals       ← js/profile.js:633 пише го при ВСЯКО рисуване на профила,
+  //                    дори със `chosen:[]` — тоест самият екран си създава
+  //                    „запис“ и после се плаши от него
+  //   bl_level_seen  ← js/profile.js:151, също при всяко рисуване
+  //   bl_qped_merged ← js/rooms10.js:481, схемен флаг при отваряне на стаята
+  //                    (двамата му близнаци bl_vax_schema и bl_art_merged вече
+  //                    се пропускаха — този беше забравен)
+  //   bl_streak_best ← js/profile.js:256 / js/daily.js:360, смята се сам
+  // Нито един от четирите не е нещо, което майката е написала.
+  //
+  // ⚠️ ГРЕШКАТА В ДРУГАТА ПОСОКА Е ПО-СТРАШНА: пропуснем ли ключ, който Е
+  // неин, диалогът МЪЛЧИ и копието застава върху дневника ѝ без питане.
+  // Затова списъкът е кратък и всеки ред в него е ПРОЧЕТЕН в кода, който го
+  // пише, а не предположен по името. Каквото не съм могъл да докажа, че е
+  // служебно — брои се като нейно.
+  //
+  // ЖИВАТА МЯРКА: node dev/skladat.js (7 случая, в двете посоки).
+  // ПЪТ НАЗАД: махни `СЛУЖЕБНИ`, `броиНейни` и реда в window.BL_STORE; върни
+  //   в js/profile.js локалния `ПРОПУСНИ` цикъл от git HEAD.
+  // ══════════════════════════════════════════════════════════════
+  const СЛУЖЕБНИ = /^(bl_theme|bl_sounds|bl_onboard|bl_onboarded|bl_font|bl_pin|bl_pin_h|bl_pin_set|bl_seen_cards|bl_carduse|bl_folds|bl_folddefaults|bl_pins|bl_agent_miss|bl_lib_open|bl_lib_opens|bl_tz|bl_vax_schema|bl_backup_last|bl_backup_partial_last|bl_tour_done|bl_room_asked|bl_room_visited|bl_day1|bl_hero_toured|bl_art_merged|bl_heavy_day|bl_fskeep_fix|bl_rainbow|bl_wm_visits|bl_wm_ritual|bl_qped_merged|bl_level_seen|bl_streak_best|bl_demo_keys)$/;
+  // празна черупка: ключът съществува, но вътре няма нищо нейно
+  function празно(v) {
+    if (v == null || v === '' || v === '{}' || v === '[]' || v === '""' || v === 'null' || v === 'false') return true;
+    try {
+      const o = JSON.parse(v);
+      if (o == null || o === '' || o === false) return true;
+      if (Array.isArray(o)) return o.length === 0;
+      if (typeof o === 'object') return Object.keys(o).length === 0;
+    } catch (e) {}
+    return false;
+  }
+  function броиНейни() {
+    let демо = [];
+    // „Покажи ми“ (js/firstday.js) налива примерни данни и помни кои ключове
+    // е пипнал. Те са наши, не нейни — и се трият с едно копче.
+    try { const d = JSON.parse(_get.call(localStorage, 'bl_demo_keys')); if (Array.isArray(d)) демо = d; } catch (e) {}
+    let n = 0;
+    try {
+      for (let i = 0; i < localStorage.length; i++) {
+        const k = localStorage.key(i);
+        if (!k || k.indexOf('bl_') !== 0 || СЛУЖЕБНИ.test(k)) continue;
+        if (демо.indexOf(k) >= 0) continue;
+        const v = _get.call(localStorage, k);        // _get: под прехващача, без изненади
+        if (празно(v)) continue;
+        // bl_goals се пише при всяко отваряне на профила със `chosen:[]` —
+        // брои се само ако мама наистина е избрала цел или е постигнала една
+        if (k === 'bl_goals') {
+          try {
+            const g = JSON.parse(v);
+            if (!g || (!(g.chosen && g.chosen.length) && !(g.done && Object.keys(g.done).length))) continue;
+          } catch (e) {}
+        }
+        n++;
+      }
+    } catch (e) {}
+    // снимките и гласовите живеят в IndexedDB — localStorage.key() не ги вижда,
+    // а те са най-нейното нещо. Ако ги има, диалогът ТРЯБВА да предупреди.
+    Object.keys(cache).forEach(k => { if (!празно(cache[k])) n++; });
+    return n;
+  }
+
   // ── за резервното копие и памет-мениджъра ──
   function mediaDump() { return Object.assign({}, cache); }
   function mediaRestore(dump) {
@@ -316,19 +405,29 @@
   // Текстовете си отиват с localStorage.clear(), но снимките и звуците живеят
   // в IndexedDB — тях localStorage не ги вижда. Без това „Изтрий всичко“ щеше
   // да остави най-личното (снимките) на телефона и да ѝ каже, че е изтрито.
+  // 🔴 21.08 · ОБРАТНАТА МЪЛЧАЛИВА ЛЪЖА: тук провалът не значи „загубено“, а
+  //    „ОСТАНАЛО“. И трите уловки бяха празни — тоест базата може да откаже да
+  //    се изтрие, а „Изтрий всичко“ пак съобщава, че телефонът е чист. Мама
+  //    подарява или продава телефона; снимките на бебето ѝ остават вътре.
+  //    Тук не показваме лента (изтриването е чужд поток, в js/rooms7.js) — но
+  //    ВРЪЩАМЕ честен отговор, за да може който обещава „готово“, да провери.
+  //    ⚠️ js/rooms7.js още не гледа върнатото — виж доклада.
+  //    ПЪТ НАЗАД: махни `останало`/`return` и върни трите празни уловки.
   function wipe() {
+    let останало = 0;
     Object.keys(cache).forEach(k => delete cache[k]);
-    MEDIA_KEYS.forEach(k => { try { idbDel(k); } catch (e) {} });
+    MEDIA_KEYS.forEach(k => { try { idbDel(k); } catch (e) { останало++; } });
     // 🔴 „Изтрий всичко“ в rooms7 мете САМО ключове с „bl_“. Бележката нарочно
     //    не е такава — ако остане, празното приложение би изкрещяло за загубени
     //    снимки при първото си пускане. Затова я махаме тук изрично.
-    try { _rem.call(localStorage, БЕЛЕЖКА); } catch (e) {}
-    провал = 0; медияКазана = false; изтрити.clear();
+    try { _rem.call(localStorage, БЕЛЕЖКА); } catch (e) { останало++; }
+    провал = 0; медияКазана = false; четенеПадна = false; изтрити.clear();
     // и самата база, за да не остане нищо по ръбовете
     try {
       if (db) { db.close(); db = null; }
       indexedDB.deleteDatabase('babyland');   // името е същото като при open()
-    } catch (e) {}
+    } catch (e) { останало++; }
+    return { чисто: останало === 0, останало };
   }
 
   // mediaOK() — за КОЙТО ПИШЕ „✔ Влезе!“ (js/profile.js, js/rooms2.js).
@@ -337,9 +436,13 @@
   // изчезват при презареждането, което самият надпис прави 400 ms по-късно.
   // Ползване: await BL_STORE.flush(); if (!BL_STORE.mediaOK()) …друг надпис…
   window.BL_STORE = {
-    init, mediaDump, mediaRestore, usage, wipe, MEDIA_KEYS,
+    init, mediaDump, mediaRestore, usage, wipe, MEDIA_KEYS, броиНейни,
     isReady: () => ready,
     mediaOK: () => провал === 0,
+    // readOK() — за КОЙТО ОБЕЩАВА „снимките са в копието“ (js/profile.js, свали).
+    // false значи: складът НЕ е прочетен докрай, тоест mediaDump() е непълен и
+    // копието не бива да се обявява за пълно.
+    readOK: () => !четенеПадна,
     flush: () => Promise.allSettled(pending.slice())
   };
 })();

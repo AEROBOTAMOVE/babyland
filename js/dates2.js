@@ -21,8 +21,14 @@
   // Родено на 29 февруари → веднъж, с обич: празнуваме на 28-и.
   function високосно(baby) {
     if (!baby || !baby.birth) return '';
-    const b = new Date(baby.birth);
-    if (b.getMonth() !== 1 || b.getDate() !== 29) return '';
+    // 🕛 19.08 (ИЗМЕРЕНО, dev/vremeto.js --zona=America/Los_Angeles): „2024-02-29“
+    //   се четеше като полунощ по ГРИНУИЧ — а това за майка западно от Гринуич
+    //   е 28 февруари. Тоест точно високосното бебе, заради което съществува
+    //   тази карта, НИКОГА не я виждаше. Датата се свежда до локална полунощ,
+    //   както прави денНула в rooms2.js. ПЪТ НАЗАД: `new Date(baby.birth)`.
+    const м = /^(\d{4})-(\d{2})-(\d{2})/.exec(String(baby.birth));
+    const b = м ? new Date(+м[1], +м[2] - 1, +м[3]) : new Date(baby.birth);
+    if (isNaN(b) || b.getMonth() !== 1 || b.getDate() !== 29) return '';
     if (load('bl_leap_seen', false)) return '';
     save('bl_leap_seen', true);
     return `<div class="td-leap">🐸 ${esc(baby.name || 'Бебето')} е родено на <strong>29 февруари</strong> —

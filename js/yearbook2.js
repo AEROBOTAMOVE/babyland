@@ -118,7 +118,12 @@
     // 12.8.6: специалният — щом бебето наближи/мине годинка
     const б = бебе();
     if (б.birth) {
-      const месеци = (Date.now() - new Date(б.birth)) / (30.4375 * 86400000);
+      // 19.08: месеците идват от ЕДИН източник (BL_AGE), както навсякъде другаде —
+      //   средният месец от 30.4375 дни отваряше бутона 5 дни по-рано от
+      //   календарните 11 месеца, които приложението показва на екрана.
+      //   ПЪТ НАЗАД: `(Date.now() - new Date(б.birth)) / (30.4375 * 86400000)`.
+      const в = window.BL_AGE ? BL_AGE(б.birth) : null;
+      const месеци = в ? в.ym : (Date.now() - new Date(б.birth)) / (30.4375 * 86400000);
       if (месеци >= 11) {
         const сп = el('button', 'jr-btn yb2-year1', '🎂 Годишникът на ПЪРВАТА година');
         сп.type = 'button';
@@ -151,11 +156,27 @@
   window.BL_TODAY_EXTRAS = function (baby, a) {
     let html = предиШни ? предиШни(baby, a) : '';
     if (baby && baby.birth) {
-      const сега = new Date();
+      // 🔴 19.08 (ИЗМЕРЕНО, dev/vremeto.js): и двете страни бяха МОМЕНТИ, не дни.
+      //   Рожденият ден идваше „в 02:00“ (низът „YYYY-MM-DD“ се чете като полунощ
+      //   по Гринуич), а „сега“ е когато мама е отворила приложението. В 01:00 на
+      //   САМИЯ рожден ден Math.ceil даваше 1 и този ред пишеше „След 1 ден е
+      //   големият ден“, докато на същия екран банерът вече празнуваше „1 годинка“
+      //   и балоните летяха. А в западна часова зона (--zona=America/New_York)
+      //   разликата е обратната: тук „Днес е големият ден“, горе — нищо.
+      //   Сега и двете са ЛОКАЛНА ПОЛУНОЩ и разликата е в ЦЕЛИ дни.
+      //   ПЪТ НАЗАД: `const сега = new Date()`, addMonths(baby.birth, …), Math.ceil.
+      const ден0 = v => {
+        const m = /^(\d{4})-(\d{2})-(\d{2})/.exec(String(v));
+        if (m) return new Date(+m[1], +m[2] - 1, +m[3]);
+        const x = new Date(v);
+        return isNaN(x) ? x : new Date(x.getFullYear(), x.getMonth(), x.getDate());
+      };
+      const рожд = ден0(baby.birth), сега = ден0(new Date());
+      if (isNaN(рожд)) return html;
       for (let г = 1; г <= 3; г++) {
-        const рд = window.BL_DATE ? BL_DATE.addMonths(baby.birth, г * 12) : null;
+        const рд = window.BL_DATE ? BL_DATE.addMonths(рожд, г * 12) : null;
         if (!рд) break;
-        const дни = Math.ceil((рд - сега) / 86400000);
+        const дни = Math.round((рд - сега) / 86400000);
         if (дни >= 0 && дни <= 7 && load('bl_yb_remind', '') !== String(г)) {
           save('bl_yb_remind', String(г));
           html += `<div class="td-yb">📔 ${дни === 0 ? 'Днес е големият ден' : 'След ' + дни + ' ' + (дни === 1 ? 'ден' : 'дни') + ' е големият ден'} — годишникът е готов и чака в Дневника. 🎂</div>`;

@@ -1,5 +1,5 @@
 // Baby Land — service worker: кешира приложението за офлайн работа
-const CACHE = 'babyland-v518';
+const CACHE = 'babyland-v520';
 const ASSETS = [
   '.',
   'index.html',
@@ -156,8 +156,58 @@ const ASSETS = [
   'icons/icon.svg'
 ];
 
+// ── ИНСТАЛАЦИЯ ────────────────────────────────────────────────────────────
+// 🔴 21.08 (офлайн одит, ИЗМЕРЕНО): дотук стоеше `c.addAll(ASSETS)`.
+//    addAll е ВСИЧКО-ИЛИ-НИЩО: един-единствен 404 от 151 адреса отхвърля
+//    ЦЕЛИЯ набор → кешът остава ПРАЗЕН → мама в 3 през нощта без мрежа вижда
+//    бял екран, и НИКОЙ не разбира, защото register().catch(() => {}) в
+//    js/app.js гълта и последната следа. Сега всеки адрес се кешира ПООТДЕЛНО.
+//
+// 🪤 Обратният капан (по-опасен от първия): „устойчиво" да стане „мълчаливо".
+//    Тихо преглътната грешка значи офлайн просто няма да работи и никой няма
+//    да разбере. Затова падналите се КАЗВАТ на три места, не на нула:
+//      1) console.error в SW конзолата
+//      2) postMessage до всички отворени страници ({тип:'офлайн-непълен'})
+//      3) запис в самия кеш под 'bl-oflayn-doklad' → чете се по всяко време с
+//         `caches.match('bl-oflayn-doklad').then(r => r.json())`, и от жив
+//         браузър, и от проверчик. Логът в конзолата изчезва; записът остава.
+const ДОКЛАД = 'bl-oflayn-doklad';
+
+async function кеширайПоединично(c, адреси) {
+  const паднали = [];
+  await Promise.all(адреси.map(a =>
+    c.add(a).catch(() => { паднали.push(a); })
+  ));
+  return паднали;
+}
+
 self.addEventListener('install', (e) => {
-  e.waitUntil(caches.open(CACHE).then(c => c.addAll(ASSETS)));
+  e.waitUntil((async () => {
+    const c = await caches.open(CACHE);
+    let паднали = await кеширайПоединично(c, ASSETS);
+    // един втори опит: мигаща мрежа на слаб Android рядко пада два пъти подред
+    if (паднали.length) паднали = await кеширайПоединично(c, паднали);
+
+    const доклад = {
+      кеш: CACHE,
+      общо: ASSETS.length,
+      кеширани: ASSETS.length - паднали.length,
+      паднали: паднали,
+      кога: new Date().toISOString()
+    };
+    await c.put(ДОКЛАД, new Response(JSON.stringify(доклад), {
+      headers: { 'Content-Type': 'application/json' }
+    }));
+
+    if (паднали.length) {
+      console.error('[Baby Land SW] ОФЛАЙН Е НЕПЪЛЕН: ' + паднали.length + ' от ' +
+        ASSETS.length + ' адреса не се кешираха →', паднали);
+      const страници = await self.clients.matchAll({ includeUncontrolled: true });
+      страници.forEach(с => с.postMessage({ тип: 'офлайн-непълен', доклад: доклад }));
+    } else {
+      console.log('[Baby Land SW] офлайн готов: ' + ASSETS.length + '/' + ASSETS.length + ' адреса в „' + CACHE + '"');
+    }
+  })());
   self.skipWaiting();
 });
 

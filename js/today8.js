@@ -53,8 +53,21 @@
   function празник() {
     const б = load('bl_baby', {});
     if (!б.birth) return false;
-    const р = new Date(б.birth), сега = new Date();
-    const месеци = (сега.getFullYear() - р.getFullYear()) * 12 + сега.getMonth() - р.getMonth();
+    // 🕛 19.08 (ИЗМЕРЕНО, dev/vremeto.js --zona=America/New_York): „2025-08-19“
+    //   се чете като полунощ по ГРИНУИЧ — за майка в западна часова зона това е
+    //   вчера. На първия рожден ден балоните мълчаха, а на същия екран
+    //   годишникът пишеше „Днес е големият ден“. Датата се свежда до ЛОКАЛНА
+    //   полунощ — точно както го прави денНула в rooms2.js.
+    //   И вторият брояч на месеци си отива: BL_AGE вече брои същото, с
+    //   клампването на късия месец. Два брояча = два отговора.
+    //   ПЪТ НАЗАД: `const р = new Date(б.birth)` и месеците от голите getMonth().
+    const мм = /^(\d{4})-(\d{2})-(\d{2})/.exec(String(б.birth));
+    const р = мм ? new Date(+мм[1], +мм[2] - 1, +мм[3]) : new Date(б.birth);
+    if (isNaN(р)) return false;
+    const сега = new Date();
+    const в = window.BL_AGE ? BL_AGE(б.birth) : null;
+    const месеци = в ? в.ym
+      : (сега.getFullYear() - р.getFullYear()) * 12 + сега.getMonth() - р.getMonth();
     if (месеци < 1) return false;
     // 🎈 22.07 (армия): сравняваха се голи числа за деня — бебе, родено на 31-во,
     //   няма 31-ви в април/юни/септември/ноември и балоните НИКОГА не излизаха,
@@ -63,7 +76,7 @@
     //   Същата проверка като в базата: и текущият, и следващият месец.
     if (window.BL_DATE) {
       const дн = д => д.getFullYear() + '-' + д.getMonth() + '-' + д.getDate();
-      return [месеци, месеци + 1].some(м => м >= 1 && дн(BL_DATE.addMonths(б.birth, м)) === дн(сега));
+      return [месеци, месеци + 1].some(м => м >= 1 && дн(BL_DATE.addMonths(р, м)) === дн(сега));
     }
     return р.getDate() === сега.getDate();
   }
