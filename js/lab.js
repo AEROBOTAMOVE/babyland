@@ -156,17 +156,46 @@
   // 4.9.6: до ДВА опита наведнъж — но само ако мерят различни неща
   function activeExps() { return getSt().list.filter(x => !x.closed); }
 
+  // 🔴🔴 26.08 (ИЗМЕРЕНО с пълна памет, dev/pylna_pamet.js — 14 бутона в тази
+  //    стая): тук стоеше голо `save(K, st); return e;`. Отговорът на записа се
+  //    хвърляше, а извикващият веднага чистеше полето. Тоест при пълна памет
+  //    мама написва СВОЙ опит („🌙 Ако лягаме 30 мин. по-късно…"), натиска,
+  //    текстът ѝ изчезва, опитът го няма, и никой не ѝ казва нищо.
+  //    И ВТОРИ дефект на същото място: функцията връща `null`, когато вече има
+  //    ДВА отворени опита — а нито един от петте извикващи не проверяваше.
+  //    Значи при два отворени опита полето пак се чистеше на празно.
+  //    Сега функцията казва КАКВО е станало, а извикващите я слушат.
+  //    ПЪТ НАЗАД: върни `return e` и голото save.
+  // 🪤 ДОГОВОРЪТ НАВЪН НЕ СЕ ПИПА. Първата ми поправка връщаше `{грешка:…}`
+  //    при неуспех — обект, тоест ИСТИНА. А js/rooms7.js:398 пита `if (!нов)`.
+  //    Тоест щях да го накарам да каже „✔ Тръгна — вече е горе в стаята" точно
+  //    когато НЕ е тръгнало: щях да поправя една лъжа, като създам друга в
+  //    чужд файл. Затова навън се връща `null`, както винаги, а причината се
+  //    оставя настрани — за тукашните извикващи, които могат да я кажат.
+  let последнаГрешка = null;
   function startExp(tpl, customQ) {
+    последнаГрешка = null;
     const st = getSt();
-    if (st.list.filter(x => !x.closed).length >= 2) return null;
+    if (st.list.filter(x => !x.closed).length >= 2) { последнаГрешка = 'два_опита'; return null; }
     const e = {
       id: tpl.id + '-' + Date.now(), e: tpl.e, q: customQ || tpl.q,
       a: tpl.a, b: tpl.b, d: tpl.d, warn: tpl.warn || '', log: {}, started: today(), closed: false
     };
     st.list.push(e);
     delete st.bin;                                   // ⏪ новият опит затваря чекмеджето
-    save(K, st);
+    if (!save(K, st)) { последнаГрешка = 'памет'; return null; }   // save() сам вика честния модал
     return e;
+  }
+  // помощник за четирите тукашни извикващи: не тръгне ли — казваме защо и
+  // НЕ чистим полето на мама
+  function тръгна(р, къдеДаКажа) {
+    if (р) return true;
+    const т = (последнаГрешка === 'два_опита')
+      ? '🔬 Първо довърши единия от двата отворени опита — тогава ще пробваме и този.'
+      : '😕 Не можах да запазя опита — виж съобщението горе. Написаното ти стои тук.';
+    if (къдеДаКажа) { къдеДаКажа.textContent = т; try { къдеДаКажа.hidden = false; } catch (e) {} }
+    else if (window.BL_UI && BL_UI.note) BL_UI.note(т, { emoji: '🔬' });
+    return false;
   }
 
   // ── ПРАВИЛО 2+3+4: присъдата ──
@@ -542,7 +571,7 @@
       const бан = el('div', 'lb-cross');
       бан.innerHTML = `<p class="lb-crosswhy">🔗 ${esc(предл.причина)}</p>
         <button class="lb-card lb-crossbtn" type="button"><span class="lb-e">${предлТипл.e}</span><div><strong>${esc(предлТипл.q)}</strong><small>${esc(предлТипл.why)}</small></div></button>`;
-      бан.querySelector('.lb-crossbtn').addEventListener('click', () => { startExp(предлТипл); fx().buzz(10); rerender(); });
+      бан.querySelector('.lb-crossbtn').addEventListener('click', () => { if (!тръгна(startExp(предлТипл))) return; fx().buzz(10); rerender(); });
       c.appendChild(бан);
     }
     // 05.08 (одит г04, №367): стаята предлагаше пак опити, които мама вече е
@@ -567,7 +596,7 @@
         ? '✔ проверено' + (дата ? ' на ' + esc(дата) : '') + ' → ' + (ИЗХОД[пр.tone] || 'закрит') + ' · пробвай пак'
         : esc(t.why);
       b.innerHTML = '<span class="lb-e">' + t.e + '</span><div><strong>' + esc(t.q) + '</strong><small>' + под + '</small></div>';
-      b.addEventListener('click', () => { startExp(t); fx().buzz(10); rerender(); });
+      b.addEventListener('click', () => { if (!тръгна(startExp(t))) return; fx().buzz(10); rerender(); });
       box.appendChild(b);
     });
     c.appendChild(box);
@@ -617,7 +646,8 @@
         return;
       }
       warn.hidden = true;
-      startExp(READY.find(x => x.id === 'own'), v);
+      // 🔴 полето се чисти САМО след потвърден запис — иначе текстът ѝ изчезва два пъти
+      if (!тръгна(startExp(READY.find(x => x.id === 'own'), v), warn)) return;
       inp.value = ''; fx().buzz(10); rerender();
     });
     row.appendChild(inp); row.appendChild(add);
@@ -704,7 +734,7 @@
     if (activeExps().length >= 2) { b.disabled = true; b.textContent = '🔬 Първо довърши единия опит'; }
     b.addEventListener('click', () => {
       if (activeExps().length >= 2) return;
-      startExp({ id: 'myth', e: '👵', a: 'както казва баба', b: 'по нашия начин', d: 7 }, m[0]);
+      if (!тръгна(startExp({ id: 'myth', e: '👵', a: 'както казва баба', b: 'по нашия начин', d: 7 }, m[0]))) return;
       fx().buzz(10); rerender();
     });
     c.appendChild(b);

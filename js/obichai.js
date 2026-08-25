@@ -154,7 +154,10 @@
       const v = вход.value.trim();
       if (!v) return;
       const д = load('bl_obichai_moi', []);
-      д.push(v); save('bl_obichai_moi', д.slice(-30));
+      // 🔴 26.08 (ИЗМЕРЕНО с пълна памет): полето се чистеше и при паднал
+      //    запис — написаният обичай изчезваше без дума. ПЪТ НАЗАД: голото save.
+      д.push(v);
+      if (!save('bl_obichai_moi', д.slice(-30))) return;   // save() сам казва истината
       вход.value = ''; рисувай();
       if (window.BL_FX) BL_FX.buzz(8);
     }

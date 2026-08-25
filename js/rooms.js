@@ -16,6 +16,30 @@
     .replace(/"/g, '&quot;').replace(/'/g, '&#39;');
 
   // ── съхранение ──
+  // 🪤 26.08 (ИЗМЕРЕНО, dev/kriv_zapis.js — 126 ключа × 17 форми отрова):
+  //    формата се проверяваше само ОТВЪН. ВЪТРЕ в масива можеше да седи
+  //    `null` (внесено копие от друг телефон, прекъснат запис, стара версия)
+  //    и първото `x.ts` събаряше картата. 59 карти умираха точно така —
+  //    същият дефект като истинския `bl_custom_lists = [null]`.
+  //    `безДупки` маха дупките ПРЕДИ някой да ги пипне.
+  //    ЗАЩО Е БЕЗОПАСНО: никъде в проекта `null` не се пази в масив като
+  //    „празно място" (проверено с grep за push(null) / fill(null) / [i]=null)
+  //    — списъците са ЗАПИСИ, не решетки, тоест изместен индекс не значи нищо.
+  //    ПЪТ НАЗАД: сменяш `безДупки(v)` обратно с `v` — един знак.
+  const безДупки = (v, дълб) => {
+    if (!v || typeof v !== 'object') return v;
+    const д = дълб || 0;
+    if (д > 6) return v;                       // вложен боклук: спираме, не обикаляме вечно
+    if (Array.isArray(v)) {
+      for (let i = v.length - 1; i >= 0; i--) {
+        if (v[i] === null || v[i] === undefined) v.splice(i, 1);
+        else безДупки(v[i], д + 1);
+      }
+      return v;
+    }
+    for (const кл in v) if (Object.prototype.hasOwnProperty.call(v, кл)) безДупки(v[кл], д + 1);
+    return v;
+  };
   const load = (k, d) => {
     try {
       const v = JSON.parse(localStorage.getItem(k));
@@ -25,7 +49,7 @@
       // после `.slice()` върху низ или `.forEach` върху обект събаря стаята.
       if (Array.isArray(d) !== Array.isArray(v)) return d;
       if (d && typeof d === 'object' && (!v || typeof v !== 'object')) return d;
-      return v;
+      return безДупки(v);
     }
     catch (e) { return d; }
   };
