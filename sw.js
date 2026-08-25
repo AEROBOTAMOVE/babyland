@@ -1,5 +1,5 @@
 // Baby Land — service worker: кешира приложението за офлайн работа
-const CACHE = 'babyland-v549';
+const CACHE = 'babyland-v550';
 const ASSETS = [
   '.',
   'index.html',
@@ -40,6 +40,13 @@ const ASSETS = [
   'js/app.js',
   'js/plavno.js',
   'js/izvan_ekrana.js',
+  // 25.08 — четирите нови от днешния ден. БЕЗ ТОЗИ РЕД приложението губи
+  // офлайн точно тях: пазача на картите, тайните, гласа и предупреждението
+  // за две отворени копия. Пазач срещу повторение: dev/sw_pulen.js
+  'js/pazach_karti.js',
+  'js/tayni.js',
+  'js/glas.js',
+  'js/dve_kopiya.js',
   'js/nav2.js',
   'js/store.js',
   'js/expect.js',
