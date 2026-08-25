@@ -23,6 +23,26 @@
   //    „празно място" (проверено с grep за push(null) / fill(null) / [i]=null)
   //    — списъците са ЗАПИСИ, не решетки, тоест изместен индекс не значи нищо.
   //    ПЪТ НАЗАД: сменяш `безДупки(v)` обратно с `v` — един знак.
+  // 🪤 26.08 (ИЗМЕРЕНО, dev/kriv_zapis.js): проверката за форма пазеше САМО
+  //    масив-срещу-обект. Ключ с ЧИСЛО по подразбиране (bl_metime_start = 0)
+  //    приемаше {} спокойно — после „сега минус {}" даваше NaN и на екрана
+  //    на мама светеше часовник „NaN:NaN". простФормат пази и трите прости
+  //    вида. Числов низ („15") се ПРЕВРЪЩА, не се хвърля — стари версии са
+  //    пазили числа като низове и изхвърлянето би загубило истински данни.
+  //    Връща undefined, когато няма мнение — не null, защото null е законна
+  //    стойност по подразбиране на много места тук.
+  //    ПЪТ НАЗАД: махаш от load реда, който вика простФормат.
+  const простФормат = (v, d) => {
+    const т = typeof d;
+    if (т === 'number') {
+      if (typeof v === 'number' && isFinite(v)) return v;
+      if (typeof v === 'string' && v.trim() !== '' && isFinite(Number(v))) return Number(v);
+      return d;
+    }
+    if (т === 'string') return typeof v === 'string' ? v : d;
+    if (т === 'boolean') return typeof v === 'boolean' ? v : d;
+    return undefined;
+  };
   const безДупки = (v, дълб) => {
     if (!v || typeof v !== 'object') return v;
     const д = дълб || 0;
@@ -37,11 +57,27 @@
     for (const кл in v) if (Object.prototype.hasOwnProperty.call(v, кл)) безДупки(v[кл], д + 1);
     return v;
   };
-  const load = (k, d) => { try { const v = JSON.parse(localStorage.getItem(k)); if (v == null) return d; if (Array.isArray(d) !== Array.isArray(v)) return d; if (d && typeof d === 'object' && (!v || typeof v !== 'object')) return d; return безДупки(v); } catch (e) { return d; } };
+  const load = (k, d) => { try { const v = JSON.parse(localStorage.getItem(k)); if (v == null) return d; const прим = простФормат(v, d); if (прим !== undefined) return прим; if (Array.isArray(d) !== Array.isArray(v)) return d; if (d && typeof d === 'object' && (!v || typeof v !== 'object')) return d; return безДупки(v); } catch (e) { return d; } };
   const el = (t, c, h) => { const n = document.createElement(t); if (c) n.className = c; if (h !== undefined) n.innerHTML = h; return n; };
   const esc = s => String(s == null ? '' : s).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;').replace(/'/g, '&#39;');
   const card = t => { const c = el('section', 'jr-card'); c.appendChild(el('h4', 'jr-title', t)); return c; };
   const sub = s => '<span class="jr-sub">' + s + '</span>';
+  // 🪤 26.08 (ИЗМЕРЕНО, dev/kriv_zapis.js): bl_sleep_hist е карта „дата → минути".
+  //    `load` вижда обект срещу обект и пуска ВСЯКО съдържание. Внесен запис
+  //    със стойности-текстове даваше „😴 спи NaN ч NaN мин средно на нощ, от 3
+  //    измерени" — карта, която се строи, но лъже с число, каквото няма.
+  //    Тук вземаме САМО двойките, които наистина са дата и брой минути; ако
+  //    останат под 5, картата сама казва честно „чакам още нощи".
+  //    ПЪТ НАЗАД: махаш сънЧисти() и връщаш голото load.
+  const сънЧисти = h => {
+    const вън = {};
+    if (!h || typeof h !== 'object' || Array.isArray(h)) return вън;
+    Object.keys(h).forEach(d => {
+      const м = h[d];
+      if (/^\d{4}-\d{2}-\d{2}$/.test(d) && typeof м === 'number' && isFinite(м) && м >= 0) вън[d] = м;
+    });
+    return вън;
+  };
   // „11 ч 11“ се чете като час:минути — минутите искат своята дума
   const час = m => { const h = Math.floor(m / 60), mm = m % 60; return h ? h + ' ч' + (mm ? ' ' + mm + ' мин' : '') : mm + ' мин'; };
   const МЕСЕЦИ = ['ян', 'фев', 'мар', 'апр', 'май', 'юни', 'юли', 'авг', 'сеп', 'окт', 'ное', 'дек'];
@@ -49,7 +85,7 @@
   // ═══════════ 📈 4.2.2 КРИВАТА НА СЪНЯ ПО МЕСЕЦИ ═══════════
   function sleepCurveCard() {
     const c = card('Сънят по месеци 📈 ' + sub('става по-добре — ето доказателството'));
-    const h = load('bl_sleep_hist', {});
+    const h = сънЧисти(load('bl_sleep_hist', {}));
     const дни = Object.keys(h).sort();
     if (дни.length < 5) {
       c.appendChild(el('p', 'jr-privacy',
@@ -100,7 +136,7 @@
     const c = card(заЖената
       ? 'Сънят му × настроението ти 💜 ' + sub('връзката, която всички усещат')
       : 'Неговият сън × твоят ден 💜 ' + sub('данните от двете стаи'));
-    const h = load('bl_sleep_hist', {});
+    const h = сънЧисти(load('bl_sleep_hist', {}));
     const ck = load('bl_checkins', {});
     // двойки: нощта СРЕЩУ чекина на СЛЕДВАЩИЯ ден (нощта оцветява утрото)
     const двойки = [];

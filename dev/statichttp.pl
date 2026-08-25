@@ -17,9 +17,21 @@ my %MIME = (
 my $srv = IO::Socket::INET->new(LocalAddr => '127.0.0.1', LocalPort => $port,
   Listen => 32, Reuse => 1) or die "не мога да отворя порт $port: $!";
 print "static: http://127.0.0.1:$port/ от $root\n";
+# 🔴 26.08 — СЪРВЪРЪТ ВИСЕШЕ ЗАВИНАГИ И УБИВАШЕ САМ СЕБЕ СИ.
+# Той е ЕДНОНИШКОВ: обслужва по една връзка. А `<$cl>` чака ред и БЛОКИРА,
+# докато не дойде. Отвори ли браузърът връзка предварително (preconnect,
+# keep-alive) и не прати нищо, сървърът застива на нея — и НИТО ЕДНА следваща
+# заявка не се обслужва. Отвън изглежда като „сървърът умря".
+# Днес ме спъна ДВА ПЪТИ: веднъж спря да отговаря насред работа, и веднъж
+# направи невъзможна проверката за офлайн — регистрацията на обслужващия
+# работник тегли sw.js по СВОЯ връзка и увисна.
+# ЛЕКЪТ: срок за четене. Не дойде ли заявката за 5 секунди, връзката се
+# затваря и сървърът продължава да живее.
+use IO::Select;
 while (my $cl = $srv->accept) {
-  my $req = <$cl>;
-  while (defined(my $h = <$cl>)) { last if $h =~ /^\r?\n$/; }
+  my $sel = IO::Select->new($cl);
+  my $req = $sel->can_read(5) ? <$cl> : undef;
+  while ($sel->can_read(5) and defined(my $h = <$cl>)) { last if $h =~ /^\r?\n$/; }
   unless (defined $req and $req =~ m{^GET\s+(\S+)}) { close $cl; next; }
   my $path = $1; $path =~ s/\?.*$//; $path =~ s/%([0-9A-Fa-f]{2})/chr(hex($1))/ge;
   $path = '/index.html' if $path eq '/';

@@ -16,6 +16,26 @@
   //    „празно място" (проверено с grep за push(null) / fill(null) / [i]=null)
   //    — списъците са ЗАПИСИ, не решетки, тоест изместен индекс не значи нищо.
   //    ПЪТ НАЗАД: сменяш `безДупки(v)` обратно с `v` — един знак.
+  // 🪤 26.08 (ИЗМЕРЕНО, dev/kriv_zapis.js): проверката за форма пазеше САМО
+  //    масив-срещу-обект. Ключ с ЧИСЛО по подразбиране (bl_metime_start = 0)
+  //    приемаше {} спокойно — после „сега минус {}" даваше NaN и на екрана
+  //    на мама светеше часовник „NaN:NaN". простФормат пази и трите прости
+  //    вида. Числов низ („15") се ПРЕВРЪЩА, не се хвърля — стари версии са
+  //    пазили числа като низове и изхвърлянето би загубило истински данни.
+  //    Връща undefined, когато няма мнение — не null, защото null е законна
+  //    стойност по подразбиране на много места тук.
+  //    ПЪТ НАЗАД: махаш от load реда, който вика простФормат.
+  const простФормат = (v, d) => {
+    const т = typeof d;
+    if (т === 'number') {
+      if (typeof v === 'number' && isFinite(v)) return v;
+      if (typeof v === 'string' && v.trim() !== '' && isFinite(Number(v))) return Number(v);
+      return d;
+    }
+    if (т === 'string') return typeof v === 'string' ? v : d;
+    if (т === 'boolean') return typeof v === 'boolean' ? v : d;
+    return undefined;
+  };
   const безДупки = (v, дълб) => {
     if (!v || typeof v !== 'object') return v;
     const д = дълб || 0;
@@ -30,7 +50,7 @@
     for (const кл in v) if (Object.prototype.hasOwnProperty.call(v, кл)) безДупки(v[кл], д + 1);
     return v;
   };
-  const load = (k, d) => { try { const v = JSON.parse(localStorage.getItem(k)); if (v == null) return d; if (Array.isArray(d) !== Array.isArray(v)) return d; if (d && typeof d === 'object' && (!v || typeof v !== 'object')) return d; return безДупки(v); } catch (e) { return d; } };
+  const load = (k, d) => { try { const v = JSON.parse(localStorage.getItem(k)); if (v == null) return d; const прим = простФормат(v, d); if (прим !== undefined) return прим; if (Array.isArray(d) !== Array.isArray(v)) return d; if (d && typeof d === 'object' && (!v || typeof v !== 'object')) return d; return безДупки(v); } catch (e) { return d; } };
   const save = (k, v) => { try { localStorage.setItem(k, JSON.stringify(v)); } catch (e) { if (window.BL_ZAPIS_PADNA) BL_ZAPIS_PADNA(); return false; } return true; };
   const el = (t, c, h) => { const n = document.createElement(t); if (c) n.className = c; if (h !== undefined) n.innerHTML = h; return n; };
   const esc = s => String(s || '').replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;').replace(/'/g, '&#39;');
@@ -48,7 +68,12 @@
 
     // дневникът
     load('bl_freepage', []).forEach(x => x && x.d && R.push({ ts: x.d, e: '✍️', txt: trim(x.t, 100) }));
-    load('bl_prompt_log', []).forEach(x => R.push({ ts: x.d, e: '💭', txt: '„' + trim(x.q, 46) + '“ — ' + trim(x.t, 70) }));
+    // 🪤 26.08 (ИЗМЕРЕНО, dev/kriv_zapis.js): единственият ред тук БЕЗ `x && x.d`.
+    //    При крив запис (напр. масив от числа, внесено копие) в Реката влизаше
+    //    лодка „„undefined“ undefined · Invalid Date" — карта, която се строи,
+    //    но показва глупост. Съседните редове вече се пазят точно така.
+    //    ПЪТ НАЗАД: махаш `x && x.d &&` от началото.
+    load('bl_prompt_log', []).forEach(x => x && x.d && R.push({ ts: x.d, e: '💭', txt: '„' + trim(x.q, 46) + '“ — ' + trim(x.t, 70) }));
     [['bl_notes_baby', '📝'], ['bl_notes_food', '🥄'], ['bl_notes_health', '🩺'], ['bl_notes_dev', '🧸'], ['bl_notes_preg', '🤰'], ['bl_notes_tools', '🛠️']]
       .forEach(([k, e]) => load(k, []).forEach(x => x && x.d && R.push({ ts: x.d, e, txt: trim(x.t, 90) })));
     // проход 4: смехът на деня влиза в Реката — „Всичките са в Реката" вече е истина

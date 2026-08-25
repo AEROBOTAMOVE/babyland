@@ -93,8 +93,18 @@ const МОИ = ['js/rooms.js', 'js/rooms3.js', 'js/rooms4.js', 'js/rooms5.js',
   'js/river.js', 'js/yearbook.js', 'js/yearbook2.js', 'js/photos.js',
   'js/store.js', 'js/storage.js'];
 
+// Ключове, които НЕ идват от моите файлове, но са ДОКУМЕНТИРАНИТЕ убийци от
+// одита на 25.08 — заради тях изобщо съществува js/pazach_karti.js. Влизат в
+// обхода нарочно: уред, който не проверява познатия виновник, е непълен.
+const ДОПЪЛНИТЕЛНИ = {
+  bl_custom_lists: 'одит 25.08: [null] → badgesCard() гърми → Дневникът губи ключалката',
+  bl_pin: 'ключалката на дневника',
+  bl_badges: 'медальоните до ключалката'
+};
+
 function ключовете() {
   const карта = new Map();          // ключ → Set(файлове)
+  for (const k of Object.keys(ДОПЪЛНИТЕЛНИ)) карта.set(k, new Set(['(външен: ' + ДОПЪЛНИТЕЛНИ[k] + ')']));
   for (const f of МОИ) {
     const s = fs.readFileSync(f, 'utf8');
     for (const m of s.matchAll(/'(bl_[a-z0-9_]+)'/g)) {
@@ -142,7 +152,22 @@ function допълни(W) {
   // 🪤 Пазачът пише всяка уловена грешка в конзолата — правилно за браузъра,
   //    но тук 2000 строежа заливат доклада и той става нечетим. Числата НЕ
   //    идват от конзолата, а от window.BL_КАРТИ_ГРЕШКИ, така че нищо не се губи.
-  W.console = { log() {}, warn() {}, error() {}, info() {}, debug() {}, trace() {}, table() {}, group() {}, groupEnd() {}, time() {}, timeEnd() {}, assert() {}, dir() {}, count() {} };
+  //    БОНУС: js/pazach_karti.js подава на console.warn САМИЯ обект-грешка.
+  //    Оттам взимаме СТЕКА → знаем КОЙ ФАЙЛ е гръмнал. Без това докладът
+  //    сочи ключа, но не адреса, а стаята се сглобява от 8-10 файла.
+  W.__последенСтек = null;
+  W.console = {
+    log() {}, error() {}, info() {}, debug() {}, trace() {}, table() {},
+    group() {}, groupEnd() {}, time() {}, timeEnd() {}, assert() {}, dir() {}, count() {},
+    warn() {
+      for (const а of arguments) {
+        if (а && а.stack) {
+          const м = String(а.stack).match(/js[\\/][A-Za-z0-9_.-]+\.js:\d+/);
+          if (м) { W.__последенСтек = м[0].replace(/\\/g, '/'); return; }
+        }
+      }
+    }
+  };
   W.Storage = function () {};
   W.Storage.prototype = Object.getPrototypeOf(W.localStorage) || {};
   W.Storage.prototype.setItem = W.localStorage.setItem;
@@ -263,17 +288,27 @@ function построй(W, стая, склад) {
   о.appendChild(з); о.appendChild(к); док.body.appendChild(о);
 
   const преди = (W.BL_КАРТИ_ГРЕШКИ || []).length;
-  let изхвърчала = null;
+  let изхвърчала = null, къде = null;
+  W.__последенСтек = null;
   try { W.ROOM_FEATURES[стая](к); }
-  catch (e) { изхвърчала = (e && e.message) || String(e); }
+  catch (e) { изхвърчала = (e && e.message) || String(e); къде = (String((e && e.stack) || '').match(/js[\\/][A-Za-z0-9_.-]+\.js:\d+/) || [])[0] || null; }
   const нови = (W.BL_КАРТИ_ГРЕШКИ || []).slice(преди);
+  if (!къде) къде = W.__последенСтек;
 
   const т = текстНа(к);
   return {
     карти: к.children.length,
     трупове: нови.map(g => g.грешка),
-    изхвърчала,
+    изхвърчала, къде,
     боклукТекст: БОКЛУК_ТЕКСТ.test(т) ? (т.match(БОКЛУК_ТЕКСТ) || [])[2] : null,
+    // 🪤 „има undefined някъде" не се поправя — трябва ИЗРЕЧЕНИЕТО, което мама
+    //    вижда. Затова се пази прозорче около намереното.
+    околоБоклука: (() => {
+      const м = т.match(БОКЛУК_ТЕКСТ);
+      if (!м) return null;
+      const i = т.indexOf(м[0]);
+      return т.slice(Math.max(0, i - 45), i + 45).replace(/\s+/g, ' ');
+    })(),
     текст: т
   };
 }
@@ -404,8 +439,10 @@ function главно() {
         if (трупове > 0 || празна || бокл || разпр) {
           находки.push({
             ключ: k, форма: име, стая: с, трупове: Math.max(0, трупове), празна, бокл, разпр,
+            около: r.околоБоклука,
             карти: r.карти, база: база[с].карти,
             грешка: (r.изхвърчала || r.трупове[r.трупове.length - 1] || '').slice(0, 90),
+            къде: r.къде || '?',
             файлове: [...(карта.get(k) || [])].join(', ')
           });
         }
@@ -446,10 +483,12 @@ function главно() {
     }
     const общо = [...групи.values()];
     (ПОДРОБНО ? общо : общо.slice(0, огр)).forEach(g => {
-      console.log('      ' + g.ключ.padEnd(20) + ' [' + g.стая + ']  ' + g.карти + '/' + g.база + ' карти');
+      console.log('      ' + g.ключ.padEnd(20) + ' [' + g.стая + ']  ' + g.карти + '/' + g.база + ' карти'
+        + (g.къде && g.къде !== '?' ? '   ⟵ ' + g.къде : ''));
       console.log('         форми: ' + g.форми.join(' · '));
       if (g.грешка) console.log('         ↯ ' + g.грешка);
-      if (g.файлове) console.log('         чете се в: ' + g.файлове);
+      if (g.около) console.log('         🟠 „…' + g.около + '…"');
+      if (g.файлове) console.log('         ключът се среща в: ' + g.файлове);
     });
     if (!ПОДРОБНО && общо.length > огр) console.log('      … още ' + (общо.length - огр) + ' — с --podrobno');
   };

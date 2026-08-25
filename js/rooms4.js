@@ -16,6 +16,26 @@
   //    „празно място" (проверено с grep за push(null) / fill(null) / [i]=null)
   //    — списъците са ЗАПИСИ, не решетки, тоест изместен индекс не значи нищо.
   //    ПЪТ НАЗАД: сменяш `безДупки(v)` обратно с `v` — един знак.
+  // 🪤 26.08 (ИЗМЕРЕНО, dev/kriv_zapis.js): проверката за форма пазеше САМО
+  //    масив-срещу-обект. Ключ с ЧИСЛО по подразбиране (bl_metime_start = 0)
+  //    приемаше {} спокойно — после „сега минус {}" даваше NaN и на екрана
+  //    на мама светеше часовник „NaN:NaN". простФормат пази и трите прости
+  //    вида. Числов низ („15") се ПРЕВРЪЩА, не се хвърля — стари версии са
+  //    пазили числа като низове и изхвърлянето би загубило истински данни.
+  //    Връща undefined, когато няма мнение — не null, защото null е законна
+  //    стойност по подразбиране на много места тук.
+  //    ПЪТ НАЗАД: махаш от load реда, който вика простФормат.
+  const простФормат = (v, d) => {
+    const т = typeof d;
+    if (т === 'number') {
+      if (typeof v === 'number' && isFinite(v)) return v;
+      if (typeof v === 'string' && v.trim() !== '' && isFinite(Number(v))) return Number(v);
+      return d;
+    }
+    if (т === 'string') return typeof v === 'string' ? v : d;
+    if (т === 'boolean') return typeof v === 'boolean' ? v : d;
+    return undefined;
+  };
   const безДупки = (v, дълб) => {
     if (!v || typeof v !== 'object') return v;
     const д = дълб || 0;
@@ -30,7 +50,7 @@
     for (const кл in v) if (Object.prototype.hasOwnProperty.call(v, кл)) безДупки(v[кл], д + 1);
     return v;
   };
-  const load = (k, d) => { try { const v = JSON.parse(localStorage.getItem(k)); if (v == null) return d; if (Array.isArray(d) !== Array.isArray(v)) return d; if (d && typeof d === 'object' && (!v || typeof v !== 'object')) return d; return безДупки(v); } catch (e) { return d; } };
+  const load = (k, d) => { try { const v = JSON.parse(localStorage.getItem(k)); if (v == null) return d; const прим = простФормат(v, d); if (прим !== undefined) return прим; if (Array.isArray(d) !== Array.isArray(v)) return d; if (d && typeof d === 'object' && (!v || typeof v !== 'object')) return d; return безДупки(v); } catch (e) { return d; } };
   // 🔴 25.08: виж бележката в rooms.js — записът падаше тихо, а чашката/милилитрите
   //   се рисуваха все едно е минал. ПЪТ НАЗАД: махаш извикването на BL_ZAPIS_PADNA.
   const save = (k, v) => { try { localStorage.setItem(k, JSON.stringify(v)); } catch (e) { if (window.BL_ZAPIS_PADNA) BL_ZAPIS_PADNA(); return false; } return true; };
@@ -212,7 +232,7 @@
         fx().buzz(8);
         return;
       }
-      const tried = Object.keys(дневник).filter(k => (дневник[k] || '').includes('😋') && !реакция(k));
+      const tried = Object.keys(дневник).filter(k => String(дневник[k] || '').includes('😋') && !реакция(k));
       let idea;
       if (tried.length >= 2 && Math.random() < 0.5) {
         const a = tried[Math.floor(Math.random() * tried.length)];
@@ -316,7 +336,7 @@
     //    на мястото на лицето. Броим само истинските лица.
     cks.forEach(([, r]) => {
       if (r && typeof r.m === 'number' && MOODS[r.m]) moodCnt[r.m] = (moodCnt[r.m] || 0) + 1;
-      const w = ((r && r.w) || '').trim().toLowerCase(); if (w) wordCnt[w] = (wordCnt[w] || 0) + 1;
+      const w = String((r && r.w) || '').trim().toLowerCase(); if (w) wordCnt[w] = (wordCnt[w] || 0) + 1;
     });
     const topMood = Object.entries(moodCnt).sort((a, b) => b[1] - a[1])[0];
     const topWord = Object.entries(wordCnt).sort((a, b) => b[1] - a[1])[0];

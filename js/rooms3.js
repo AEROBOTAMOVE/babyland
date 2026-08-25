@@ -16,6 +16,26 @@
   //    „празно място" (проверено с grep за push(null) / fill(null) / [i]=null)
   //    — списъците са ЗАПИСИ, не решетки, тоест изместен индекс не значи нищо.
   //    ПЪТ НАЗАД: сменяш `безДупки(v)` обратно с `v` — един знак.
+  // 🪤 26.08 (ИЗМЕРЕНО, dev/kriv_zapis.js): проверката за форма пазеше САМО
+  //    масив-срещу-обект. Ключ с ЧИСЛО по подразбиране (bl_metime_start = 0)
+  //    приемаше {} спокойно — после „сега минус {}" даваше NaN и на екрана
+  //    на мама светеше часовник „NaN:NaN". простФормат пази и трите прости
+  //    вида. Числов низ („15") се ПРЕВРЪЩА, не се хвърля — стари версии са
+  //    пазили числа като низове и изхвърлянето би загубило истински данни.
+  //    Връща undefined, когато няма мнение — не null, защото null е законна
+  //    стойност по подразбиране на много места тук.
+  //    ПЪТ НАЗАД: махаш от load реда, който вика простФормат.
+  const простФормат = (v, d) => {
+    const т = typeof d;
+    if (т === 'number') {
+      if (typeof v === 'number' && isFinite(v)) return v;
+      if (typeof v === 'string' && v.trim() !== '' && isFinite(Number(v))) return Number(v);
+      return d;
+    }
+    if (т === 'string') return typeof v === 'string' ? v : d;
+    if (т === 'boolean') return typeof v === 'boolean' ? v : d;
+    return undefined;
+  };
   const безДупки = (v, дълб) => {
     if (!v || typeof v !== 'object') return v;
     const д = дълб || 0;
@@ -30,7 +50,7 @@
     for (const кл in v) if (Object.prototype.hasOwnProperty.call(v, кл)) безДупки(v[кл], д + 1);
     return v;
   };
-  const load = (k, d) => { try { const v = JSON.parse(localStorage.getItem(k)); if (v == null) return d; if (Array.isArray(d) !== Array.isArray(v)) return d; if (d && typeof d === 'object' && (!v || typeof v !== 'object')) return d; return безДупки(v); } catch (e) { return d; } };
+  const load = (k, d) => { try { const v = JSON.parse(localStorage.getItem(k)); if (v == null) return d; const прим = простФормат(v, d); if (прим !== undefined) return прим; if (Array.isArray(d) !== Array.isArray(v)) return d; if (d && typeof d === 'object' && (!v || typeof v !== 'object')) return d; return безДупки(v); } catch (e) { return d; } };
   // 🔴🔴 25.08: `save` ВРЪЩАШЕ false при провал, но от 25 места го четяха ДВЕ
   //   (снимката на деня и коремчето). Останалите обявяваха успех и продължаваха.
   //   Известието живее в rooms.js (BL_ZAPIS_PADNA) — тук само се вика; ако
@@ -223,7 +243,7 @@
     хол.innerHTML = '';
     const cks = load('bl_checkins', {});
     const freq = {};
-    Object.values(cks).forEach(r => { const w = ((r && r.w) || '').trim().toLowerCase(); if (w) freq[w] = (freq[w] || 0) + 1; });
+    Object.values(cks).forEach(r => { const w = String((r && r.w) || '').trim().toLowerCase(); if (w) freq[w] = (freq[w] || 0) + 1; });
     const words = Object.entries(freq).sort((a, b) => b[1] - a[1]).slice(0, 40);
     if (!words.length) { хол.appendChild(el('p', 'jr-privacy', 'Пиши по една дума на ден в „Как си днес“ — тук ще порасне облакът на годината ти. ☁️')); return; }
     const cloud = el('div', 'wc-cloud');
@@ -794,8 +814,17 @@
     const c = card('Кърмене-таймер 🤱 <span class="jr-sub">ляво/дясно + колко време — помни вместо теб</span>');
     const disp = el('div', 'nr-disp', '00:00');
     const row = el('div', 'jr-quick');
+    // 🪤 26.08 (ИЗМЕРЕНО, dev/kriv_zapis.js — 10 форми на крив запис):
+    //    подразбиращото се е `null` → `load` няма форма за сравнение и пускаше
+    //    всичко. `bl_nursing_open = {}` даваше „NaN:NaN" на живия часовник на
+    //    кърменето, а „Спри" щеше да запише кърмене с продължителност NaN.
+    //    Тук е СПРАВОЧНИК ЗА ХРАНЕНЕ — по-добре таймерът да е спрян, отколкото
+    //    да брои несъществуващи минути. ПЪТ НАЗАД: `let openS = state;`.
     const state = load('bl_nursing_open', null); // {side, t0}
-    let openS = state;
+    const stateЦял = !!(state && typeof state === 'object' && !Array.isArray(state)
+      && typeof state.side === 'string' && state.side
+      && typeof state.t0 === 'number' && isFinite(state.t0) && state.t0 > 0);
+    let openS = stateЦял ? state : null;
     let tick = null;
     const btns = {};
     [['Л', '🤱 Ляво'], ['Д', '🤱 Дясно'], ['Ш', '🍼 Шише']].forEach(([v, lb]) => {
@@ -1196,7 +1225,7 @@
     let manual = load('bl_allergy_manual', []);
     // 05.08 (одит г06, №211): `auto` се четеше ВЕДНЪЖ, извън draw() — реакция,
     // отбелязана в календара, не влизаше в паспорта до повторно влизане в стаята.
-    const авто = () => { const tried = load('bl_tried', {}); return Object.keys(tried).filter(k => (tried[k] || '').includes('⚠️')); };
+    const авто = () => { const tried = load('bl_tried', {}); return Object.keys(tried).filter(k => String(tried[k] || '').includes('⚠️')); };
     const list = el('div', 'jr-quick');
     function draw() {
       manual = load('bl_allergy_manual', []);   // пресен прочит при всяко рисуване
@@ -1392,7 +1421,7 @@
         .filter(t => !isNaN(t) && Date.now() - t < 14 * 86400000)
         .sort((x, y) => y - x);
       const tried = load('bl_tried', {});
-      const alrg = Object.keys(tried).filter(k => (tried[k] || '').includes('⚠️'));
+      const alrg = Object.keys(tried).filter(k => String(tried[k] || '').includes('⚠️'));
       BL_EXPR.printOverlay('Бележка за прегледа',
         `<p class="pr-big">${esc(baby.name) || 'Бебето'}${a ? ' · ' + a.text : ''}${growth ? ' · ' + growth.w + ' кг (' + growth.d + ')' : ''}</p>
          ${temps.length ? `<h3>🌡️ Температури (72 ч)</h3><ul class="pr-list">${temps.map(t => `<li>${t.v}° — ${new Date(t.ts).toLocaleString('bg-BG')}</li>`).join('')}</ul>` : ''}
@@ -1586,7 +1615,20 @@
   // 🐷 Касичка-цел
   function goalCard() {
     const c = card('Касичка-цел 🐷 <span class="jr-sub">събираме за нещо голямо</span>');
-    const g = load('bl_goal', null);
+    // 🪤 26.08 (ИЗМЕРЕНО, dev/kriv_zapis.js — 9 форми на крив запис):
+    //    подразбиращото се тук е `null`, тоест `load` НЯМА форма, с която да
+    //    сравни, и пускаше всичко. Внесено копие с `bl_goal = {}` даваше
+    //    „🐷 undefined / undefined лв · NaN%" — карта, която се строи, но
+    //    показва глупост, и мама няма как да я нулира без бутона „нова касичка".
+    //    Празната касичка (входните полета) е ЧЕСТНИЯТ изход: тя вижда, че
+    //    няма цел, и си я слага пак. Собственият ѝ запис минава: {n,target,saved}.
+    //    ПЪТ НАЗАД: `const g = load('bl_goal', null);` както беше.
+    const gСуров = load('bl_goal', null);
+    const gЦял = !!(gСуров && typeof gСуров === 'object' && !Array.isArray(gСуров)
+      && typeof gСуров.n === 'string' && gСуров.n
+      && typeof gСуров.target === 'number' && isFinite(gСуров.target) && gСуров.target > 0);
+    const g = gЦял ? gСуров : null;
+    if (g && (typeof g.saved !== 'number' || !isFinite(g.saved))) g.saved = 0;
     if (!g) {
       const inp = el('input', 'jr-word'); inp.placeholder = 'за какво събираме? (напр. столче за кола)'; inp.maxLength = 40;
       const amt = el('input', 'jr-word'); amt.type = 'number'; amt.placeholder = 'колко лв са нужни?';
@@ -1748,7 +1790,7 @@
       const sos = load('bl_sos', {});
       const feed = load('bl_feed', null);
       const tried = load('bl_tried', {});
-      const alrg = Object.keys(tried).filter(k => (tried[k] || '').includes('⚠️')).concat(load('bl_allergy_manual', []));
+      const alrg = Object.keys(tried).filter(k => String(tried[k] || '').includes('⚠️')).concat(load('bl_allergy_manual', []));
       // 🟡 12.08: тук се вземаше ПЪРВАТА добавена песен и на листа за бабата
       //    излизаше „🎵 Любимата песничка: …“. Плейлистът няма „любима“ — това
       //    е просто най-старият запис. Приложението твърдеше нещо, което не

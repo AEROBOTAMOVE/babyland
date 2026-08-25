@@ -23,6 +23,26 @@
   //    „празно място" (проверено с grep за push(null) / fill(null) / [i]=null)
   //    — списъците са ЗАПИСИ, не решетки, тоест изместен индекс не значи нищо.
   //    ПЪТ НАЗАД: сменяш `безДупки(v)` обратно с `v` — един знак.
+  // 🪤 26.08 (ИЗМЕРЕНО, dev/kriv_zapis.js): проверката за форма пазеше САМО
+  //    масив-срещу-обект. Ключ с ЧИСЛО по подразбиране (bl_metime_start = 0)
+  //    приемаше {} спокойно — после „сега минус {}" даваше NaN и на екрана
+  //    на мама светеше часовник „NaN:NaN". простФормат пази и трите прости
+  //    вида. Числов низ („15") се ПРЕВРЪЩА, не се хвърля — стари версии са
+  //    пазили числа като низове и изхвърлянето би загубило истински данни.
+  //    Връща undefined, когато няма мнение — не null, защото null е законна
+  //    стойност по подразбиране на много места тук.
+  //    ПЪТ НАЗАД: махаш от load реда, който вика простФормат.
+  const простФормат = (v, d) => {
+    const т = typeof d;
+    if (т === 'number') {
+      if (typeof v === 'number' && isFinite(v)) return v;
+      if (typeof v === 'string' && v.trim() !== '' && isFinite(Number(v))) return Number(v);
+      return d;
+    }
+    if (т === 'string') return typeof v === 'string' ? v : d;
+    if (т === 'boolean') return typeof v === 'boolean' ? v : d;
+    return undefined;
+  };
   const безДупки = (v, дълб) => {
     if (!v || typeof v !== 'object') return v;
     const д = дълб || 0;
@@ -37,7 +57,7 @@
     for (const кл in v) if (Object.prototype.hasOwnProperty.call(v, кл)) безДупки(v[кл], д + 1);
     return v;
   };
-  const load = (k, d) => { try { const v = JSON.parse(localStorage.getItem(k)); if (v == null) return d; if (Array.isArray(d) !== Array.isArray(v)) return d; if (d && typeof d === 'object' && (!v || typeof v !== 'object')) return d; return безДупки(v); } catch (e) { return d; } };
+  const load = (k, d) => { try { const v = JSON.parse(localStorage.getItem(k)); if (v == null) return d; const прим = простФормат(v, d); if (прим !== undefined) return прим; if (Array.isArray(d) !== Array.isArray(v)) return d; if (d && typeof d === 'object' && (!v || typeof v !== 'object')) return d; return безДупки(v); } catch (e) { return d; } };
   const save = (k, v) => { try { localStorage.setItem(k, JSON.stringify(v)); } catch (e) { if (window.BL_ZAPIS_PADNA) BL_ZAPIS_PADNA(); return false; } return true; };
   const localDate = d => d.getFullYear() + '-' + String(d.getMonth() + 1).padStart(2, '0') + '-' + String(d.getDate()).padStart(2, '0');
   const today = () => localDate(new Date());

@@ -16,6 +16,26 @@
   //    „празно място" (проверено с grep за push(null) / fill(null) / [i]=null)
   //    — списъците са ЗАПИСИ, не решетки, тоест изместен индекс не значи нищо.
   //    ПЪТ НАЗАД: сменяш `безДупки(v)` обратно с `v` — един знак.
+  // 🪤 26.08 (ИЗМЕРЕНО, dev/kriv_zapis.js): проверката за форма пазеше САМО
+  //    масив-срещу-обект. Ключ с ЧИСЛО по подразбиране (bl_metime_start = 0)
+  //    приемаше {} спокойно — после „сега минус {}" даваше NaN и на екрана
+  //    на мама светеше часовник „NaN:NaN". простФормат пази и трите прости
+  //    вида. Числов низ („15") се ПРЕВРЪЩА, не се хвърля — стари версии са
+  //    пазили числа като низове и изхвърлянето би загубило истински данни.
+  //    Връща undefined, когато няма мнение — не null, защото null е законна
+  //    стойност по подразбиране на много места тук.
+  //    ПЪТ НАЗАД: махаш от load реда, който вика простФормат.
+  const простФормат = (v, d) => {
+    const т = typeof d;
+    if (т === 'number') {
+      if (typeof v === 'number' && isFinite(v)) return v;
+      if (typeof v === 'string' && v.trim() !== '' && isFinite(Number(v))) return Number(v);
+      return d;
+    }
+    if (т === 'string') return typeof v === 'string' ? v : d;
+    if (т === 'boolean') return typeof v === 'boolean' ? v : d;
+    return undefined;
+  };
   const безДупки = (v, дълб) => {
     if (!v || typeof v !== 'object') return v;
     const д = дълб || 0;
@@ -30,7 +50,7 @@
     for (const кл in v) if (Object.prototype.hasOwnProperty.call(v, кл)) безДупки(v[кл], д + 1);
     return v;
   };
-  const load = (k, d) => { try { const v = JSON.parse(localStorage.getItem(k)); if (v == null) return d; if (Array.isArray(d) !== Array.isArray(v)) return d; if (d && typeof d === 'object' && (!v || typeof v !== 'object')) return d; return безДупки(v); } catch (e) { return d; } };
+  const load = (k, d) => { try { const v = JSON.parse(localStorage.getItem(k)); if (v == null) return d; const прим = простФормат(v, d); if (прим !== undefined) return прим; if (Array.isArray(d) !== Array.isArray(v)) return d; if (d && typeof d === 'object' && (!v || typeof v !== 'object')) return d; return безДупки(v); } catch (e) { return d; } };
   const el = (t, c, h) => { const n = document.createElement(t); if (c) n.className = c; if (h !== undefined) n.innerHTML = h; return n; };
   const esc = s => String(s || '').replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;').replace(/'/g, '&#39;');
   const getBaby = () => load('bl_baby', { name: '', birth: '' });
@@ -86,7 +106,12 @@
       .sort((a, b) => (a[0] > b[0] ? 1 : -1)).slice(-6)
       .map(([m, x]) => ({ t: x && x.t, d: (x && x.ts) || (m + '-01') }))
       .filter(x => x.t);
-    const lines = load('bl_freepage', []).slice(-5).concat(load('bl_prompt_log', []).slice(-3).map(x => ({ t: '„' + x.q + '“ — ' + x.t, d: x.d }))).concat(писма);
+    // 🪤 26.08 (ИЗМЕРЕНО, dev/kriv_zapis.js): при крив bl_prompt_log (внесено
+    //    копие) в годишника влизаше ред „„undefined“ — undefined". Годишникът
+    //    се ПЕЧАТА — сгрешеният ред остава на хартия завинаги. Затова се взимат
+    //    само записите, които наистина имат въпрос и дата.
+    //    ПЪТ НАЗАД: махаш `.filter(x => x && x.d && x.q)`.
+    const lines = load('bl_freepage', []).slice(-5).concat(load('bl_prompt_log', []).filter(x => x && x.d && x.q).slice(-3).map(x => ({ t: '„' + x.q + '“ — ' + x.t, d: x.d }))).concat(писма);
 
     // растеж
     const growth = load('bl_growth', []);
@@ -152,7 +177,7 @@
     if (мечти) жСтат.push(['🔥', мечти, мечти === 1 ? 'отметната мечта' : 'отметнати мечти']);
     const ритуалСерия = (load('bl_wm_ritual_streak', { n: 0 }).n) || 0;
     if (ритуалСерия) жСтат.push(['🕯️', ритуалСерия, ритуалСерия === 1 ? 'ден ритуал' : 'дни ритуал подред']);
-    const тайни = !!(load('bl_wm_secret', '') || '').trim();
+    const тайни = !!String(load('bl_wm_secret', '') || '').trim();
     const жКомплимент = load('bl_wm_compl', []).slice(-1)[0];
     if (жСтат.length || тайни || жКомплимент) {
       html += `<div class="yb-page"><h2>🌸 Годината на ЖЕНАТА</h2>
