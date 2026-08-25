@@ -18,7 +18,17 @@
   'use strict';
 
   const load = (k, d) => { try { const v = JSON.parse(localStorage.getItem(k)); if (v == null) return d; if (Array.isArray(d) !== Array.isArray(v)) return d; if (d && typeof d === 'object' && (!v || typeof v !== 'object')) return d; return v; } catch (e) { return d; } };
-  const save = (k, v) => { try { localStorage.setItem(k, JSON.stringify(v)); return true; } catch (e) { return false; } };
+  // 🔴🔴 25.08 (ИЗМЕРЕНО, dev/interaktivno_stai2.js — 46 натискания при пълна памет):
+  //    `return false` беше НЯМ: почти никой не го четеше, а мама виждаше „✔ Записах“.
+  //    Сега падналият запис минава през ЧЕСТНИЯ канал на rooms.js (модал — вижда се
+  //    ВИНАГИ). Нарочно НЕ през BL_FX.cheer: fx.js:93 мълчи при тежък ден и при
+  //    намалено движение, тоест точно когато най-трябва.
+  //    ПЪТ НАЗАД: махаш `провалът();` от catch — връща се старото мълчание.
+  const провалът = () => {
+    try { if (window.BL_ZAPIS_PADNA) { window.BL_ZAPIS_PADNA(); return; } } catch (e) {}
+    try { alert('Паметта на телефона е пълна — това НЕ се записа. 😕 Написаното си остава в полето.'); } catch (e) {}
+  };
+  const save = (k, v) => { try { localStorage.setItem(k, JSON.stringify(v)); return true; } catch (e) { провалът(); return false; } };
   const el = (t, c, h) => { const n = document.createElement(t); if (c) n.className = c; if (h !== undefined) n.innerHTML = h; return n; };
   const esc = s => String(s == null ? '' : s).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;').replace(/'/g, '&#39;');
   const localDate = d => d.getFullYear() + '-' + String(d.getMonth() + 1).padStart(2, '0') + '-' + String(d.getDate()).padStart(2, '0');
@@ -349,7 +359,12 @@
         row.addEventListener('click', () => {
           const беше = !!st[x.id];
           st = load('bl_outbag', {});   // пресен прочит ПРЕДИ записа
-          st[x.id] = !беше; save('bl_outbag', st); рисувай(); fx().buzz(6);
+          st[x.id] = !беше;
+          // 🔴 25.08 (ИЗМЕРЕНО при пълна памет): „🎒 Чантата е готова!“ се
+          //    честваше по st в ПАМЕТТА, не по записаното. При паднал запис
+          //    празникът идваше, а на изхода отметките ги нямаше.
+          if (!save('bl_outbag', st)) return;
+          рисувай(); fx().buzz(6);
           if (ЧАНТА.every(y => st[y.id])) { fx().confetti(); fx().cheer('🎒 Чантата е готова!'); }
         });
         list.appendChild(row);
@@ -379,13 +394,17 @@
       if (!имаше.length) { знак(вест, '🎒 Няма какво да изчистя — всички редове са без отметка.'); върни.hidden = true; return; }
       st = load('bl_outbag', {});   // пресен прочит ПРЕДИ записа
       Object.keys(st).forEach(k => delete st[k]);
-      save('bl_outbag', st); рисувай(); fx().buzz(6);
+      // 🔴 25.08 (ИЗМЕРЕНО при пълна памет): казваше „↺ Махнах 5 отметки“ и
+      //    предлагаше „↩ Върни ги“ за нещо, което си стои в паметта непокътнато.
+      if (!save('bl_outbag', st)) { рисувай(); return; }
+      рисувай(); fx().buzz(6);
       знак(вест, '↺ Махнах ' + имаше.length + (имаше.length === 1 ? ' отметка.' : ' отметки.'));
       върни.hidden = false;
       върни.onclick = () => {
         st = load('bl_outbag', {});   // пресен прочит ПРЕДИ записа
         имаше.forEach(id => { st[id] = true; });
-        save('bl_outbag', st); рисувай(); fx().buzz(6);
+        if (!save('bl_outbag', st)) { рисувай(); return; }   // 🔴 25.08: „Върнах ги“ без запис
+        рисувай(); fx().buzz(6);
         знак(вест, '↩ Върнах ги както бяха.');
         върни.hidden = true;
       };
@@ -427,9 +446,13 @@
         бутон.textContent = '🛁 Започни';
         if (мин >= 1) {
           пресен();   // пресен прочит ПРЕДИ записа
-          st.n += мин; save('bl_bath', st);
+          st.n += мин;
           // 🔴 11.08: сборът се четеше в тази строфа през load() ВЪТРЕ — добре;
           //    но st е снимка отпреди. Чета прясно и за двете.
+          // 🔴 25.08 (ИЗМЕРЕНО при пълна памет): конфетите и „🛁 15 минути само
+          //    твои“ идваха, без минутите да са влезли в сбора. Тя ги вижда
+          //    отпразнувани и после ги няма в „Колко време си дала на себе си“.
+          if (!save('bl_bath', st)) { st.n -= мин; рисувайСбор(); return; }
           const общо = load('bl_bath_total', 0) + мин; save('bl_bath_total', общо);
           fx().confetti(); fx().cheer('🛁 ' + мин + ' ' + (мин === 1 ? 'минута само твоя' : 'минути само твои') + '.');
           рисувайСбор();

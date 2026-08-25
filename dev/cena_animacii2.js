@@ -613,6 +613,98 @@ function dvizhenie(цена, трайност) {
 }
 
 // ─────────────────────────────────────────────────────────────────────
+// ВРЕМЕ, ДОКАТО НЕЩОТО СТАНЕ ВИДИМО  (за К5б и К6)
+// ─────────────────────────────────────────────────────────────────────
+// 🪤 ПРЕДИШНАТА МИ МЯРКА БЕШЕ „ЦЯЛАТА ТРАЙНОСТ" И ЛЪЖЕШЕ НА ЖИВО.
+// Тя обяви `мурПоп 2.6s` за най-бавното влизане в проекта — ×8.1 над
+// стандарта. Но тялото ѝ е:
+//     0%      { opacity: 0 }
+//     10%,82% { opacity: 1 }     ← балончето Е ВИДИМО още на 260 мс
+//     100%    { opacity: 0 }     ← това е ИЗЛИЗАНЕТО, не влизането
+// Тоест 2.6 сек не са чакане — те са поява + СТОЕНЕ ЗА ЧЕТЕНЕ + гасене
+// в една @keyframes. Мама чака 260 мс, не 2.6 сек. Същото важи за всяка
+// „изскочи-постой-изчезни" анимация.
+// Затова тук се мери ПЪРВАТА спирка, на която прозрачността стига своя
+// максимум — това е мигът, в който нещото е налице.
+// Ако прозрачност изобщо не се анимира (напр. rmxHeroDepthIn мени само
+// собствени --променливи), НЕ СЕ ГАДАЕ: връща се цялата трайност и се
+// вдига флаг „неизмерено", за да се вижда, че числото е ГОРНА ГРАНИЦА.
+function vremeDoVidimo(стъпки) {
+  const т = [];
+  for (const с of стъпки) {
+    const o = с.декл.filter(d => d.свойство === 'opacity').pop();
+    if (!o) continue;
+    const n = parseFloat(o.стойност);
+    if (isNaN(n)) continue;
+    for (const п of с.спирки) т.push({ п, v: n });
+  }
+  if (!т.length) return { процент: 100, измерено: false };
+  т.sort((a, b) => a.п - b.п);
+  const макс = Math.max(...т.map(x => x.v));
+  const първа = т.find(x => x.v >= макс - 1e-9);
+  return { процент: първа.п, измерено: true };
+}
+
+// ─────────────────────────────────────────────────────────────────────
+// К1б — МИГАНЕ ПО ЦВЯТ, не само по прозрачност
+// ─────────────────────────────────────────────────────────────────────
+// 🪤 К1 гледаше САМО opacity/visibility. Анимация, която сменя фона от
+// бяло на червено и обратно, минаваше НЕВИДИМА през нея — а точно това
+// е класическото мигане. Мярка, която не може да гръмне за цвят, не мери
+// цвят. Тук се смята относителна яркост (WCAG) и се брои преминаване
+// през праг от 10 процентни пункта разлика в яркостта.
+const ЦВЕТНИ_СВОЙСТВА = new Set([
+  'background', 'background-color', 'background-image', 'color',
+  'border-color', 'box-shadow', 'text-shadow', 'outline-color', 'fill', 'stroke'
+]);
+const ИМЕНА_ЦВЕТОВЕ = { white: [255,255,255], black: [0,0,0], red: [255,0,0],
+  green: [0,128,0], blue: [0,0,255], yellow: [255,255,0], transparent: null,
+  orange: [255,165,0], pink: [255,192,203], gray: [128,128,128], grey: [128,128,128] };
+function parsniCvyat(s) {
+  if (!s) return null;
+  s = s.trim();
+  let m = s.match(/#([0-9a-f]{3,8})\b/i);
+  if (m) {
+    let h = m[1];
+    if (h.length === 3 || h.length === 4) h = h.split('').map(c => c + c).join('');
+    return [parseInt(h.slice(0,2),16), parseInt(h.slice(2,4),16), parseInt(h.slice(4,6),16)];
+  }
+  m = s.match(/rgba?\(\s*([\d.]+)[\s,]+([\d.]+)[\s,]+([\d.]+)/i);
+  if (m) return [+m[1], +m[2], +m[3]];
+  for (const [име, ц] of Object.entries(ИМЕНА_ЦВЕТОВЕ))
+    if (new RegExp('(^|[^-\\w])' + име + '([^-\\w]|$)', 'i').test(s)) return ц;
+  return null;
+}
+function yarkost(rgb) {  // WCAG relative luminance
+  if (!rgb) return null;
+  const f = v => { v /= 255; return v <= 0.03928 ? v / 12.92 : Math.pow((v + 0.055) / 1.055, 2.4); };
+  return 0.2126 * f(rgb[0]) + 0.7152 * f(rgb[1]) + 0.0722 * f(rgb[2]);
+}
+function svetkaviciPoCvyat(стъпки) {
+  const т = [];
+  for (const с of стъпки) {
+    let я = null;
+    for (const d of с.декл) {
+      if (!ЦВЕТНИ_СВОЙСТВА.has(d.свойство)) continue;
+      const ц = yarkost(parsniCvyat(d.стойност));
+      if (ц !== null) { я = ц; break; }
+    }
+    if (я === null) continue;
+    for (const п of с.спирки) т.push({ п, я });
+  }
+  if (т.length < 2) return { светкавици: 0, размах: 0 };
+  т.sort((a, b) => a.п - b.п);
+  const я = т.map(x => x.я);
+  const размах = Math.max(...я) - Math.min(...я);
+  if (размах < 0.10) return { светкавици: 0, размах };  // под прага на WCAG
+  const низ = (Math.max(...я) + Math.min(...я)) / 2;
+  let бр = 0;
+  for (let i = 1; i < т.length; i++) if (т[i-1].я < низ && т[i].я >= низ) бр++;
+  if (т[т.length-1].я < низ && т[0].я >= низ) бр++;
+  return { светкавици: бр, размах };
+}
+
+// ─────────────────────────────────────────────────────────────────────
 // СЕМЕЙСТВО НА ДЕЙСТВИЕТО (К5)
 // ─────────────────────────────────────────────────────────────────────
 const СЕМЕЙСТВА = [
@@ -632,6 +724,108 @@ function semeystvo(име) {
 }
 
 // ─────────────────────────────────────────────────────────────────────
+// К3 — КОЙ ПРЕХОД НАИСТИНА МЕСТИ СТРАНИЦАТА, И КОЙ Е ЗАТВОРЕН В КУТИЯ
+// ─────────────────────────────────────────────────────────────────────
+// „9 прехода по подредба" е брой, не присъда. Три от тях изобщо не могат
+// да мръднат страницата:
+//  · елемент с position:absolute/fixed е ИЗВЪН потока — колкото и да
+//    расте, нищо около него не се измества;
+//  · същото важи, ако някой РОДИТЕЛ в селектора е абсолютен: тогава
+//    цялото разместване е заключено в неговата кутия;
+//  · <text> вътре в <svg> има собствена координатна система — смяната на
+//    font-size пренарежда рисунката, не HTML страницата.
+// Затова тук се събират ДВА набора от фактите, не от предположение:
+// абсолютните класове (от самия css) и класовете, видени вътре в <svg>
+// (от разметката).
+function absolutniKlasove(t, набор) {
+  obhodPravila(t, (стек, декл) => {
+    const сел = стек[стек.length - 1] || '';
+    if (!сел || сел.startsWith('@')) return;
+    if (!декл.some(d => d.свойство === 'position' && /^(absolute|fixed)/i.test(d.стойност))) return;
+    for (const част of сел.split(',')) {
+      const п = част.trim();
+      if (/^[.#][-\w-￿]+$/.test(п)) набор.add(п);
+    }
+  });
+  return набор;
+}
+// Класове, срещнати ВЪТРЕ в <svg>…</svg> в разметката. Броячът казва и
+// колко svg блока изобщо са видени — иначе „0 намерени" не се различава
+// от „0 прегледани".
+function svgKlasove(разметка) {
+  const набор = new Set();
+  let блокове = 0;
+  for (const ф of разметка || []) {
+    const t = ф.текст;
+    const re = /<(\/?)([a-zA-Z][-\w]*)\b([^>]*?)(\/?)>/g;
+    let m, дълб = 0;
+    while ((m = re.exec(t))) {
+      const затв = m[1] === '/', таг = m[2].toLowerCase(), атр = m[3], сам = m[4] === '/';
+      if (таг === 'svg') {
+        if (затв) дълб = Math.max(0, дълб - 1);
+        else { if (дълб === 0) блокове++; if (!сам) дълб++; }
+        continue;
+      }
+      if (!дълб || затв) continue;
+      const кл = (атр.match(/class\s*=\s*["']([^"']*)["']/) || [])[1] || '';
+      for (const к of кл.split(/[\s${}`+]+/)) if (к && /^[-\w-￿]+$/.test(к)) набор.add(к);
+    }
+  }
+  return { набор, блокове };
+}
+// Класове, ВЪТРЕ в които в разметката стои натискаемо нещо. За К7:
+// „кутията се свива" е безобидно, докато в кутията няма бутон.
+function klasoveSNatiskaemoVatre(разметка, tapКласове) {
+  const набор = new Set();
+  let прегледани = 0;
+  for (const ф of разметка || []) {
+    const t = ф.текст;
+    const re = /<(\/?)([a-zA-Z][-\w]*)\b([^>]*?)(\/?)>/g;
+    let m; const стек = [];
+    while ((m = re.exec(t))) {
+      const затв = m[1] === '/', таг = m[2].toLowerCase(), атр = m[3], сам = m[4] === '/';
+      const празен = /^(br|hr|img|input|meta|link|source|path|circle|rect|line|use|stop|polygon|polyline|ellipse|area|col|embed|track|wbr)$/.test(таг);
+      if (затв) { стек.pop(); continue; }
+      const кл = (атр.match(/class\s*=\s*["']([^"']*)["']/) || [])[1] || '';
+      const класове = кл.split(/[\s${}`+]+/).filter(к => к && /^[-\w-￿]+$/.test(к));
+      const роля = ((атр.match(/role\s*=\s*["']([^"']+)["']/) || [])[1] || '').trim();
+      const натиск = ТАГ_НАТИСКАЕМ.test(таг) ||
+                     /^(button|link|tab|switch|menuitem|checkbox|option)$/i.test(роля) ||
+                     класове.some(к => tapКласове && tapКласове.has(к));
+      if (натиск) { прегледани++; for (const слой of стек) for (const к of слой) набор.add(к); }
+      if (!сам && !празен) стек.push(класове);
+    }
+  }
+  return { набор, натискаеми: прегледани };
+}
+function svitoLi(селектор, абсолютни, svgНабор) {
+  const без = селектор.replace(/::?[-\w]+(\([^)]*\))?/g, '');
+  const части = без.trim().split(/[\s>+~]+/).filter(Boolean);
+  for (const ч of части) {
+    for (const к of (ч.match(/[.#][-\w-￿]+/g) || [])) {
+      if (абсолютни.has(к)) return 'ИЗВЪН ПОТОКА';
+      if (к[0] === '.' && svgНабор.has(к.slice(1))) return 'В SVG';
+    }
+  }
+  return null;
+}
+// Колко px са две стойности на едно и също свойство (за К7)
+function pxRazlika(a, b) {
+  const ч = s => {
+    const q = String(s).trim().match(/(-?\d*\.?\d+)\s*(px|rem|em|%)?/);
+    if (!q) return null;
+    const v = parseFloat(q[1]);
+    if (!q[2] || q[2] === 'px') return v;
+    if (q[2] === 'rem' || q[2] === 'em') return v * 16;
+    return null;                     // % без контекст — не се гадае
+  };
+  const x = ч(a), y = ч(b);
+  if (x === null || y === null) return null;
+  return Math.abs(x - y);
+}
+const САМОНАТИСК = /:(hover|active|focus|focus-visible|focus-within)\b/i;
+
+// ─────────────────────────────────────────────────────────────────────
 // ГЛАВНИЯТ АНАЛИЗ — работи върху СПИСЪК ОТ ФАЙЛОВЕ В ПАМЕТТА,
 // затова самопроверката може да го нахрани с измислени файлове.
 // ─────────────────────────────────────────────────────────────────────
@@ -644,6 +838,15 @@ function analiz(файлове /* [{име, текст}] */, разметка /*
   const употреби = [];
   const скрити = new Set();
   const преходи = [];
+  const абсолютни = new Set();
+  const всичкиПравила = [];
+  const { набор: svgНабор, блокове: svgБлокове } = svgKlasove(разметка);
+  const { набор: съдържаНатискаемо, натискаеми: намеренНатискаеми } =
+    klasoveSNatiskaemoVatre(разметка, tapКласове);
+  преглед.svg_блокове = svgБлокове;
+  преглед.svg_класове = svgНабор.size;
+  преглед.кутии_с_бутон = съдържаНатискаемо.size;
+  преглед.натискаеми_в_разметка = намеренНатискаеми;
 
   for (const ф of файлове) {
     const суров = ф.текст.replace(/\r\n/g, '\n').replace(/\r/g, '\n');
@@ -666,10 +869,14 @@ function analiz(файлове /* [{име, текст}] */, разметка /*
     преглед.употреби += у.length;
 
     skritiPoPodrazbirane(без, скрити);
+    absolutniKlasove(без, абсолютни);
 
     obhodPravila(без, (стек, декл) => {
       преглед.правила++;
       const сел = стек[стек.length - 1] || '';
+      const ред = redNa(nach, декл[0].индекс);
+      всичкиПравила.push({ файл: ф.име, ред, селектор: сел,
+                           контекст: стек.slice(0, -1).join(' '), декл });
       for (const d of декл) {
         if (d.свойство !== 'transition' && d.свойство !== 'transition-property') continue;
         for (const парче of razdeliZapetai(d.стойност)) {
@@ -706,9 +913,55 @@ function analiz(файлове /* [{име, текст}] */, разметка /*
   }
 
   // ── находки ──────────────────────────────────────────────────────
-  const н = { podredba: [], boya: [], gpu: [], migane: [], premestva: [],
+  const н = { podredba: [], boya: [], gpu: [], migane: [], migane_cvyat: [], premestva: [],
               skrito: [], razlichna_skorost: [], bavni: [], nepolzvani: [],
-              lipsvashti: [], schupeni: [], prehodi: преходи, nepoznati: [] };
+              lipsvashti: [], schupeni: [], prehodi: преходи, nepoznati: [],
+              mesti_buton: [] };
+
+  // К3 — всеки преход по подредба получава ПРИСЪДА, не само ред в списък
+  for (const п of преходи) п.свито = svitoLi(п.селектор, абсолютни, svgНабор);
+
+  // ── К7 · ПРЕХОД, КОЙТО МЕСТИ НАТИСКАЕМО НЕЩО ─────────────────────
+  // К2 гледа само БЕЗКРАЙНИ @keyframes. Но нищо не мести бутон така
+  // сигурно, както преход по подредба върху кутията, в която бутонът
+  // седи. Тази дупка беше отворена: мярка, която не може да гръмне за
+  // преход, не мери преходи.
+  // 🟢 ако смяната идва от :hover/:active/:focus върху СЪЩИЯ елемент —
+  //    пръстът вече е там, целта не бяга.
+  // 🔴 ако идва отвън (клас от скрол, от таймер, от чуждо докосване) —
+  //    целта се мести, докато мама посяга.
+  for (const п of преходи) {
+    if (п.свито) continue;
+    const цел = posleden(п.селектор);
+    const класове = (цел.match(/\.[-\w-￿]+/g) || []).map(x => x.slice(1));
+    const самНатискаем = natiskaemo(п.селектор, null, tapКласове);
+    const съдържаБутон = класове.some(к => съдържаНатискаемо.has(к));
+    if (!самНатискаем && !съдържаБутон) continue;
+    // 🪤 БАЗОВАТА СТОЙНОСТ НЕ ЖИВЕЕ В СЪЩИЯ ФАЙЛ. `.ro-head` носи
+    // transition в css/rooms.css:820, а `padding: 14px 16px` е чак в
+    // css/style.css:1146. Първата ми версия търсеше само в СЪЩИЯ файл и
+    // отпечата „undefined → 7px 16px" — тоест намери дефекта, но не можа
+    // да каже КОЛКО. Търси се във всички файлове, по реда на четене.
+    let базова = null, базовФайл = null;
+    for (const r of всичкиПравила) {
+      if (r.селектор !== п.селектор) continue;
+      const d = r.декл.filter(x => x.свойство === п.свойство).pop();
+      if (d) { базова = d.стойност; базовФайл = r.файл + ':' + r.ред; }
+    }
+    for (const r of всичкиПравила) {
+      if (r.селектор === п.селектор) continue;
+      if (!класове.length || !класове.every(к => r.селектор.includes('.' + к))) continue;
+      const d = r.декл.filter(x => x.свойство === п.свойство).pop();
+      if (!d) continue;
+      н.mesti_buton.push({
+        преход: п, правило: r, свойство: п.свойство,
+        от: базова, базовФайл, до: d.стойност,
+        px: базова ? pxRazlika(базова, d.стойност) : null,
+        подПръста: САМОНАТИСК.test(r.селектор),
+        самНатискаем, съдържаБутон
+      });
+    }
+  }
 
   for (const к of keyframes) {
     if (к.счупена) { н.schupeni.push(к); continue; }
@@ -758,11 +1011,35 @@ function analiz(файлове /* [{име, текст}] */, разметка /*
     for (const у of к.употреби)
       if (у.безкрайна && !у.условна && у.скритРодител) н.skrito.push({ к, у });
 
+    // К1б мигане по ЦВЯТ (не само по прозрачност)
+    const цв = svetkaviciPoCvyat(к.цена.стъпки);
+    if (цв.светкавици > 0) {
+      for (const у of к.употреби) {
+        if (!у.трайност) continue;
+        const повт = у.безкрайна ? Infinity : parseFloat(у.повторения || '1') || 1;
+        if (!(у.безкрайна || повт >= 2 || цв.светкавици >= 3)) continue;
+        const обиколка = /alternate/i.test(у.посока) ? у.трайност * 2 : у.трайност;
+        const честота = цв.светкавици * 1000 / обиколка;
+        if (честота > 3) н.migane_cvyat.push({ к, у, честота, светкавици: цв.светкавици,
+                                               размах: цв.размах });
+      }
+    }
+
     // К6 бавни
-    for (const у of к.употреби)
-      if (!у.безкрайна && у.трайност && у.трайност > 400 &&
-          /(in|enter|reveal|show|appear|pop|влиза|появ)/i.test(к.име))
-        н.bavni.push({ к, у });
+    // 🪤 СТАРИЯТ ФИЛТЪР БЕШЕ ПОДНИЗ `/(in|enter|…)/` И КРАДЕШЕ ЧУЖДИ ИМЕНА:
+    // „logoW-in-k" и „secL-in-eDraw" влизаха заради буквите „in" НАСРЕД
+    // думата. Едно намигане и едно рисуване на линия не са „нещо, което
+    // мама чака". Сега се пита СЕМЕЙСТВОТО (то е закотвено на края на
+    // името) — същият капан, който вече е плащан в тази стая.
+    const семК = semeystvo(к.име);
+    if (семК === 'ВЛИЗА' || семК === 'ИЗСКАЧА') {
+      const вд = vremeDoVidimo(к.цена.стъпки);
+      for (const у of к.употреби) {
+        if (у.безкрайна || !у.трайност) continue;
+        const мс = у.трайност * вд.процент / 100;
+        if (мс > 400) н.bavni.push({ к, у, мс, процент: вд.процент, измерено: вд.измерено });
+      }
+    }
   }
 
   for (const у of употреби)
@@ -787,10 +1064,15 @@ function analiz(файлове /* [{име, текст}] */, разметка /*
     for (const к of keyframes) {
       const с = semeystvo(к.име);
       if (с !== 'ВЛИЗА' && с !== 'ИЗСКАЧА') continue;
+      // мери се ВРЕМЕТО ДО ВИДИМО, не цялата трайност — иначе всяко
+      // „изскочи-постой-изчезни" се брои за бавно влизане (виж мурПоп).
+      const вд = vremeDoVidimo(к.цена.стъпки);
       for (const у of к.употреби) {
         if (у.безкрайна || !у.трайност) continue;
-        if (у.трайност > стандарт * 1.5)
-          н.nad_standarta.push({ к, у, пъти: у.трайност / стандарт });
+        const мс = у.трайност * вд.процент / 100;
+        if (мс > стандарт * 1.5)
+          н.nad_standarta.push({ к, у, мс, пъти: мс / стандарт,
+                                 процент: вд.процент, измерено: вд.измерено });
       }
     }
   }
@@ -1093,6 +1375,145 @@ function samoproverka() {
       r.находки.prehodi.map(x => x.свойство).join(',') || 'НЕ ГО ВИДЯ');
   }
 
+  // ── ВРЕМЕ ДО ВИДИМО (К5б/К6) ─────────────────────────────────────
+  {
+    // точният случай, който старата мярка сбърка: поява 10% · стоене до
+    // 82% · гасене. Мама чака 260 мс, не 2.6 сек.
+    const css = ':root { --bl-t-enter: 320ms }\n' +
+                '@keyframes мурПоп { 0% { opacity: 0; transform: scale(.4) }\n' +
+                ' 10%,82% { opacity: 1; transform: scale(1) }\n' +
+                ' 100% { opacity: 0; transform: scale(.8) } }\n' +
+                '.мур { animation: мурПоп 2.6s both }';
+    const r = analiz([{ име: 'поп.css', текст: css }]);
+    T('изскочи-постой-изчезни: чака се 260мс, не 2.6с', 'МЪЛЧИ',
+      r.находки.bavni.length === 0 && r.находки.nad_standarta.length === 0,
+      'бавни ' + r.находки.bavni.length + ', над стандарта ' + r.находки.nad_standarta.length);
+  }
+  {
+    const css = ':root { --bl-t-enter: 320ms }\n' +
+                '@keyframes skRise { from { opacity: 0; transform: translateY(60px) } to { opacity: 1; transform: none } }\n' +
+                '.sk { animation: skRise 3s ease-out forwards }';
+    const r = analiz([{ име: 'изгрев.css', текст: css }]);
+    T('истинско 3-секундно влизане пак гърми', 'ГРЪМВА',
+      r.находки.bavni.length === 1 && Math.round(r.находки.bavni[0].мс) === 3000,
+      r.находки.bavni.length ? Math.round(r.находки.bavni[0].мс) + 'мс' : 'НЕ ГО ВИДЯ');
+  }
+  {
+    // „logoWink" и „secLineDraw" съдържат буквите „in" насред думата.
+    // Старият подниз ги обявяваше за бавно влизане.
+    const css = '@keyframes logoWink { 0%,100% { transform: none } 30% { transform: rotate(-7deg) } }\n' +
+                '@keyframes secLineDraw { from { stroke-dashoffset: 100 } to { stroke-dashoffset: 0 } }\n' +
+                '.lg { animation: logoWink 700ms ease }\n.ln { animation: secLineDraw 520ms ease }';
+    const r = analiz([{ име: 'подниз.css', текст: css }]);
+    T('„in" насред думата не прави влизане (logoWink/secLineDraw)', 'МЪЛЧИ',
+      r.находки.bavni.length === 0, r.находки.bavni.map(x => x.к.име).join(',') || 'нула');
+  }
+  {
+    // без opacity изобщо → числото е ГОРНА ГРАНИЦА и това си личи
+    const css = '@keyframes depthIn { 0% { --o: 0 } 70% { --o: 1 } 100% { --o: 1 } }\n' +
+                '.dp { animation: depthIn 700ms ease }';
+    const r = analiz([{ име: 'горна.css', текст: css }]);
+    T('без opacity се признава „неизмерено", не се гадае', 'ГРЪМВА',
+      r.находки.bavni.length === 1 && r.находки.bavni[0].измерено === false &&
+      r.находки.bavni[0].мс === 700,
+      r.находки.bavni.length ? 'измерено=' + r.находки.bavni[0].измерено : 'НЕ ГО ВИДЯ');
+  }
+
+  // ── МИГАНЕ ПО ЦВЯТ (К1б) ─────────────────────────────────────────
+  {
+    // 🪤 ТОЗИ ТЕСТ МЕ ХВАНА МЕН, НЕ КОДА. Първо го написах с .4s и го
+    // нарекох „опасно" — но една обиколка на 0.4 сек е 2.5 светкавици в
+    // секунда, тоест ПОД международния праг от 3. Уредът мълчеше правилно,
+    // а лъжеше очакването ми. Затова тук стоят И ДВЕТЕ трайности.
+    const бавно = '@keyframes алармаБавно { 0%,100% { background: #ffffff } 50% { background: #000000 } }\n' +
+                  '.al { animation: алармаБавно .4s infinite }';
+    const бързо = '@keyframes алармаЦвят { 0%,100% { background: #ffffff } 50% { background: #000000 } }\n' +
+                  '.al { animation: алармаЦвят .2s infinite }';
+    const rb = analiz([{ име: 'цвятбавно.css', текст: бавно }]);
+    const rf = analiz([{ име: 'цвят.css', текст: бързо }]);
+    T('бяло↔черно 5 пъти в секунда → опасно по цвят', 'ГРЪМВА',
+      rf.находки.migane_cvyat.length === 1 && rf.находки.migane_cvyat[0].честота === 5,
+      rf.находки.migane_cvyat.length ? rf.находки.migane_cvyat[0].честота.toFixed(1) + '/сек' : 'НЕ ГО ВИДЯ');
+    T('същото бяло↔черно, но 2.5/сек — под прага, мълчи', 'МЪЛЧИ',
+      rb.находки.migane_cvyat.length === 0, String(rb.находки.migane_cvyat.length));
+  }
+  {
+    // два пастела с почти еднаква яркост — това НЕ е светкавица
+    const css = '@keyframes нежно { 0%,100% { background: #fde8d8 } 50% { background: #fdf0e4 } }\n' +
+                '.ne { animation: нежно .3s infinite }';
+    const r = analiz([{ име: 'пастел.css', текст: css }]);
+    T('два близки пастела не са светкавица (под 10% яркост)', 'МЪЛЧИ',
+      r.находки.migane_cvyat.length === 0,
+      r.находки.migane_cvyat.length ? r.находки.migane_cvyat[0].размах.toFixed(3) : 'нула');
+  }
+  {
+    const css = '@keyframes бавноЦвят { 0%,100% { background: #ffffff } 50% { background: #000000 } }\n' +
+                '.bc { animation: бавноЦвят 2s infinite }';
+    const r = analiz([{ име: 'бавноцв.css', текст: css }]);
+    T('бяло↔черно веднъж на 2 сек не е опасно', 'МЪЛЧИ',
+      r.находки.migane_cvyat.length === 0, String(r.находки.migane_cvyat.length));
+  }
+
+  // ── К3 ПРИСЪДА: СВИТО ИЛИ МЕСТИ СТРАНИЦАТА ───────────────────────
+  {
+    const css = '.box { position: absolute; left: 0 }\n' +
+                '.box i { transition: width .25s ease }\n' +
+                '.row { transition: height .3s ease }';
+    const r = analiz([{ име: 'свито.css', текст: css }]);
+    const swito = r.находки.prehodi.filter(x => x.свито);
+    T('преход под абсолютен родител е СВИТ', 'ГРЪМВА',
+      swito.length === 1 && swito[0].селектор === '.box i' && swito[0].свито === 'ИЗВЪН ПОТОКА',
+      swito.map(x => x.селектор + '=' + x.свито).join(',') || 'НЕ ГО ВИДЯ');
+    T('преход в нормалния поток НЕ се обявява за свит', 'МЪЛЧИ',
+      r.находки.prehodi.some(x => x.селектор === '.row' && !x.свито),
+      r.находки.prehodi.map(x => x.селектор + '=' + (x.свито || 'страница')).join(' '));
+  }
+  {
+    const css = '.net-e { transition: font-size .3s ease }';
+    const html = '<svg viewBox="0 0 10 10"><text class="net-e">x</text></svg>';
+    const без = analiz([{ име: 'svg.css', текст: css }]);
+    const с = analiz([{ име: 'svg.css', текст: css }], [{ име: 'i.html', текст: html }]);
+    T('клас вътре в <svg> се разпознава от разметката', 'ГРЪМВА',
+      !без.находки.prehodi[0].свито && с.находки.prehodi[0].свито === 'В SVG',
+      'без разметка: ' + (без.находки.prehodi[0].свито || 'страница') +
+      ' → с разметка: ' + с.находки.prehodi[0].свито);
+  }
+
+  // ── К7 ПРЕХОД, КОЙТО МЕСТИ НАТИСКАЕМО ────────────────────────────
+  {
+    const css = '.ro-head { padding: 14px 16px; transition: padding .35s ease }\n' +
+                '.ro-head.shrunk { padding: 7px 16px }';
+    const html = '<header class="ro-head"><button class="ro-sosbtn">🆘</button></header>';
+    const без = analiz([{ име: 'глава.css', текст: css }]);
+    const с = analiz([{ име: 'глава.css', текст: css }], [{ име: 'i.html', текст: html }]);
+    T('кутия с бутон вътре, свита от ЧУЖД клас → гърми', 'ГРЪМВА',
+      с.находки.mesti_buton.length === 1 && с.находки.mesti_buton[0].px === 7 &&
+      с.находки.mesti_buton[0].подПръста === false,
+      с.находки.mesti_buton.length ? с.находки.mesti_buton[0].px + 'px, подПръста=' +
+        с.находки.mesti_buton[0].подПръста : 'НЕ ГО ВИДЯ');
+    T('без разметка не се гадае, че вътре има бутон', 'МЪЛЧИ',
+      без.находки.mesti_buton.length === 0, String(без.находки.mesti_buton.length));
+  }
+  {
+    // натискане ВЪРХУ самия бутон — пръстът вече е там, целта не бяга
+    const css = 'button.b { padding: 10px; transition: padding .2s ease }\n' +
+                'button.b:active { padding: 8px }';
+    const r = analiz([{ име: 'подпръста.css', текст: css }]);
+    T(':active върху самия бутон е ПОД ПРЪСТА, не бягаща цел', 'МЪЛЧИ',
+      r.находки.mesti_buton.length === 1 && r.находки.mesti_buton[0].подПръста === true,
+      r.находки.mesti_buton.length ? 'подПръста=' + r.находки.mesti_buton[0].подПръста : 'нищо');
+  }
+  {
+    // абсолютен елемент — колкото и да расте, не мести нищо
+    const css = '.pill { position: absolute; padding: 10px; transition: padding .2s ease }\n' +
+                '.pill.on { padding: 2px }';
+    const html = '<div class="pill"><button class="x">да</button></div>';
+    const r = analiz([{ име: 'абс.css', текст: css }], [{ име: 'i.html', текст: html }]);
+    T('абсолютна кутия не се брои за местеща', 'МЪЛЧИ',
+      r.находки.mesti_buton.length === 0,
+      String(r.находки.mesti_buton.length));
+  }
+
   // ── БРОЯЧЪТ ──────────────────────────────────────────────────────
   {
     const css = ['@keyframes k1{to{opacity:1}}', '@keyframes k2{to{opacity:1}}',
@@ -1278,18 +1699,48 @@ function glaven() {
     console.log('   → червени: ' + чрв + ' от ' + н.premestva.length + ' прегледани\n');
   }
 
+  console.log('К1б · МИГАНЕ ПО ЦВЯТ (фон/текст/сянка — не само прозрачност)');
+  if (!н.migane_cvyat.length) {
+    let цветни = 0, найБърза = null;
+    for (const к of r.keyframes) {
+      const цв = svetkaviciPoCvyat(к.цена.стъпки);
+      if (!цв.размах) continue;
+      цветни++;
+      for (const у of к.употреби) {
+        if (!у.трайност) continue;
+        const об = /alternate/i.test(у.посока) ? у.трайност * 2 : у.трайност;
+        if (!найБърза || об < найБърза.об) найБърза = { об, име: к.име, размах: цв.размах };
+      }
+    }
+    console.log('   ✅ нула. Проверени ' + цветни + ' анимации, които изобщо сменят цвят.');
+    if (найБърза)
+      console.log('      най-бързата от тях: ' + найБърза.име + ' — една обиколка на ' +
+                  ms(найБърза.об) + ' = ' + (1000 / найБърза.об).toFixed(1) +
+                  '/сек, разлика в яркостта ' + (найБърза.размах * 100).toFixed(1) +
+                  ' т. (прагът е 3/сек при 10 т.)');
+    console.log('');
+  } else {
+    for (const x of н.migane_cvyat)
+      console.log('   ❌ ' + pad(x.к.име, 20) + x.честота.toFixed(1) + '/сек  яркост ±' +
+                  (x.размах * 100).toFixed(0) + ' т.  ' + x.у.файл + ':' + x.у.ред);
+    console.log('');
+  }
+
   console.log('К3 · САМА ПРЕНАРЕЖДА СТРАНИЦАТА (CLS)');
   console.log('   @keyframes с layout-свойство: ' + н.podredba.length);
   const прБезЛюб = н.prehodi.filter(x => x.свойство !== 'all');
+  const прСвити = прБезЛюб.filter(x => x.свито);
+  const прЖиви = прБезЛюб.filter(x => !x.свито);
   console.log('   transition по layout-свойство: ' + прБезЛюб.length +
               ' (+' + (н.prehodi.length - прБезЛюб.length) + ' × „transition: all")');
-  if (прБезЛюб.length) {
-    const поСв = {};
-    for (const x of прБезЛюб) (поСв[x.свойство] = поСв[x.свойство] || []).push(x);
-    for (const [св, сп] of Object.entries(поСв).sort((a, b) => b[1].length - a[1].length))
-      console.log('      ' + pad(св, 16) + сп.length + '×   напр. ' + сп[0].файл + ':' + сп[0].ред +
-                  '  ' + сп[0].селектор.slice(0, 46));
-  }
+  console.log('   от тях СВИТИ (не могат да мръднат страницата): ' + прСвити.length);
+  for (const x of прСвити)
+    console.log('      🟢 ' + pad(x.свойство, 12) + pad(x.файл + ':' + x.ред, 20) +
+                pad(x.селектор.slice(0, 26), 28) + '← ' + x.свито);
+  console.log('   МОГАТ да пренаредят: ' + прЖиви.length);
+  for (const x of прЖиви)
+    console.log('      🟠 ' + pad(x.свойство, 12) + pad(x.файл + ':' + x.ред, 20) +
+                x.селектор.slice(0, 40));
   console.log('');
 
   console.log('К4 · БЕЗКРАЙНА БЕЗУСЛОВНА ВЪРХУ НЕЩО, СКРИТО ПО ПОДРАЗБИРАНЕ');
@@ -1333,19 +1784,42 @@ function glaven() {
     console.log('   стандартът за влизане е ' + ms(н.tokeni['--bl-t-enter']) +
                 '; над 1.5× от него: ' + н.nad_standarta.length + ' употреби, ' +
                 гр.size + ' различни');
-    for (const { x, бр } of [...гр.values()].sort((a, b) => b.x.у.трайност - a.x.у.трайност).slice(0, 12))
-      console.log('      ' + pad(ms(x.у.трайност), 8) + pad('×' + x.пъти.toFixed(1), 6) +
-                  pad(x.к.име, 20) + (бр > 1 ? бр + '× · ' : '') + x.у.файл + ':' + x.у.ред);
+    for (const { x, бр } of [...гр.values()].sort((a, b) => b.x.мс - a.x.мс).slice(0, 12))
+      console.log('      ' + pad(ms(Math.round(x.мс)), 8) + pad('×' + x.пъти.toFixed(1), 6) +
+                  pad(x.к.име, 20) + (бр > 1 ? бр + '× · ' : '') + x.у.файл + ':' + x.у.ред +
+                  (x.измерено ? '' : '   (неизмерено — горна граница)'));
     console.log('');
   }
 
-  console.log('К6 · НАД 400 мс НА НЕЩО, КОЕТО МАМА ЧАКА');
+  console.log('К7 · ПРЕХОД, КОЙТО МЕСТИ НАТИСКАЕМО НЕЩО (целта бяга под пръста)');
+  console.log('   прочетени ' + п.натискаеми_в_разметка + ' натискаеми в разметката, ' +
+              'от тях ' + п.кутии_с_бутон + ' класа-кутии с бутон вътре');
+  const бягащи = н.mesti_buton.filter(x => !x.подПръста);
+  const подПръста = н.mesti_buton.filter(x => x.подПръста);
+  if (!бягащи.length) console.log('   ✅ нула бягащи цели (' + подПръста.length +
+                                  ' × под пръста — :hover/:active върху самия бутон)\n');
+  else {
+    for (const x of бягащи) {
+      console.log('   🔴 ' + pad(x.свойство, 10) + pad((x.от || '?') + ' → ' + x.до, 26) +
+                  pad(x.px != null ? x.px + 'px' : '?', 8) +
+                  pad(x.преход.файл + ':' + x.преход.ред, 20) +
+                  x.преход.селектор + '   ← сменя го ' + x.правило.селектор);
+      console.log('      основата е в ' + (x.базовФайл || 'ненамерена') +
+                  ' · смяната в ' + x.правило.файл + ':' + x.правило.ред);
+    }
+    console.log('   (' + подПръста.length + ' други са под пръста — :hover/:active върху самия бутон)\n');
+  }
+
+  console.log('К6 · НАД 400 мс, ДОКАТО НЕЩО СТАНЕ ВИДИМО (мама чака)');
+  console.log('   мери се до ПЪРВАТА пълна видимост, не цялата трайност —');
+  console.log('   „изскочи·постой·изчезни" не е чакане, а стоене за четене.');
   if (!н.bavni.length) console.log('   ✅ нула\n');
   else {
-    const ред = н.bavni.slice().sort((a, b) => b.у.трайност - a.у.трайност);
+    const ред = н.bavni.slice().sort((a, b) => b.мс - a.мс);
     for (const x of ред.slice(0, 20))
-      console.log('   🟠 ' + pad(ms(x.у.трайност), 8) + pad(x.к.име, 22) +
-                  x.у.файл + ':' + x.у.ред + '  ' + x.у.селектор.slice(0, 44));
+      console.log('   🟠 ' + pad(ms(Math.round(x.мс)), 8) +
+                  pad(x.измерено ? (x.процент < 100 ? '(' + x.процент + '% от ' + ms(x.у.трайност) + ')' : '') : '≤ (неизмерено)', 20) +
+                  pad(x.к.име, 20) + x.у.файл + ':' + x.у.ред + '  ' + x.у.селектор.slice(0, 34));
     if (ред.length > 20) console.log('   … и още ' + (ред.length - 20));
     console.log('');
   }
@@ -1374,13 +1848,15 @@ function glaven() {
   }
   function p_(x) { return x; }
 
-  const червени = н.podredba.length + н.migane.length +
-                  н.premestva.filter(x => x.червено).length + н.schupeni.length;
+  const червени = н.podredba.length + н.migane.length + н.migane_cvyat.length +
+                  н.premestva.filter(x => x.червено).length + н.schupeni.length +
+                  бягащи.length;
   console.log('═══════════════════════════════════════════════════════════════');
   console.log(червени ? '❌ ЧЕРВЕНИ: ' + червени : '✅ НУЛА ЧЕРВЕНИ (подредба, мигане, движещи се бутони)');
   console.log('   оранжеви за преглед: боя ' + н.boya.length + ' · скрити ' +
               (new Set(н.skrito.map(x => x.у.файл + x.у.ред))).size + ' · бавни ' + н.bavni.length +
-              ' · разнобой ' + н.razlichna_skorost.length + ' · transition-подредба ' + прБезЛюб.length);
+              ' · разнобой ' + н.razlichna_skorost.length +
+              ' · transition-подредба ' + прЖиви.length + ' живи от ' + прБезЛюб.length);
   console.log('═══════════════════════════════════════════════════════════════');
   if (червени) process.exitCode = 1;
 }

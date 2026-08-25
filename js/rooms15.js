@@ -15,7 +15,17 @@
   'use strict';
 
   const load = (k, d) => { try { const v = JSON.parse(localStorage.getItem(k)); if (v == null) return d; if (Array.isArray(d) !== Array.isArray(v)) return d; if (d && typeof d === 'object' && (!v || typeof v !== 'object')) return d; return v; } catch (e) { return d; } };
-  const save = (k, v) => { try { localStorage.setItem(k, JSON.stringify(v)); return true; } catch (e) { return false; } };
+  // 🔴🔴 25.08 (ИЗМЕРЕНО, dev/interaktivno_stai2.js — 46 натискания при пълна памет):
+  //    `return false` беше НЯМ: почти никой не го четеше, а мама виждаше „✔ Записах“.
+  //    Сега падналият запис минава през ЧЕСТНИЯ канал на rooms.js (модал — вижда се
+  //    ВИНАГИ). Нарочно НЕ през BL_FX.cheer: fx.js:93 мълчи при тежък ден и при
+  //    намалено движение, тоест точно когато най-трябва.
+  //    ПЪТ НАЗАД: махаш `провалът();` от catch — връща се старото мълчание.
+  const провалът = () => {
+    try { if (window.BL_ZAPIS_PADNA) { window.BL_ZAPIS_PADNA(); return; } } catch (e) {}
+    try { alert('Паметта на телефона е пълна — това НЕ се записа. 😕 Написаното си остава в полето.'); } catch (e) {}
+  };
+  const save = (k, v) => { try { localStorage.setItem(k, JSON.stringify(v)); return true; } catch (e) { провалът(); return false; } };
   const el = (t, c, h) => { const n = document.createElement(t); if (c) n.className = c; if (h !== undefined) n.innerHTML = h; return n; };
   const esc = s => String(s == null ? '' : s).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;').replace(/'/g, '&#39;');
   const localDate = d => d.getFullYear() + '-' + String(d.getMonth() + 1).padStart(2, '0') + '-' + String(d.getDate()).padStart(2, '0');
@@ -211,7 +221,11 @@
           st = load('bl_wm_notlist', []);   // пресен прочит ПРЕДИ записа
           const k = st.findIndex(y => y && y.t === x.t);   // по ТЕКСТ, не по номер
           if (k > -1) st.splice(k, 1);
-          save('bl_wm_notlist', st); рисувай();
+          // 🔴 25.08 (ИЗМЕРЕНО при пълна памет): казваше „Махнах …“ и предлагаше
+          //    „върни го“ за ред, който още си стои в паметта — покана да
+          //    добави ВТОРО копие на нещо, което не е махано.
+          if (!save('bl_wm_notlist', st)) { махнато = null; return; }
+          рисувай();
           fx().buzz(8);
           каз(add, 'Махнах „' + махнато.t + '“. Ако не си искала — върни го.');
         });
@@ -230,7 +244,9 @@
           const b = реже(el('button', 'nl-idea', esc(т))); b.type = 'button'; пръст(b);
           b.addEventListener('click', () => {
             st = load('bl_wm_notlist', []);   // пресен прочит ПРЕДИ записа
-            st.push({ t: т, d: today() }); save('bl_wm_notlist', st); рисувай(); fx().buzz(8);
+            st.push({ t: т, d: today() });
+            if (!save('bl_wm_notlist', st)) return;   // 🔴 25.08: „✔“ без запис
+            рисувай(); fx().buzz(8);
             каз(add, 'Отказа се от това ✔ Времето му се връща при теб.');
           });
           пр.appendChild(b);
@@ -249,7 +265,12 @@
       // 🔴 МЪЛЧАЛИВ БУТОН: празно поле → тапът не правеше нищо видимо
       if (!v) { каз(add, 'Полето е празно. Напиши от какво се отказваш и пак натисни.', inp); return; }
       st = load('bl_wm_notlist', []);   // пресен прочит ПРЕДИ записа
-      st.push({ t: v.slice(0, 90), d: today() }); save('bl_wm_notlist', st); inp.value = ''; рисувай(); fx().buzz(10);
+      st.push({ t: v.slice(0, 90), d: today() });
+      // 🔴🔴 25.08 (ИЗМЕРЕНО при пълна памет): полето се чистеше ВИНАГИ и отдолу
+      //    пишеше „Записах го ✔“ — отказът ѝ изчезваше и от паметта, и от екрана.
+      //    Чистим САМО след потвърден запис; иначе текстът ѝ я чака в полето.
+      if (!save('bl_wm_notlist', st)) return;
+      inp.value = ''; рисувай(); fx().buzz(10);
       каз(add, 'Записах го ✔ Това вече не е твоя грижа.');
     };
     add.addEventListener('click', пиши);
@@ -262,7 +283,10 @@
     отмяна.addEventListener('click', () => {
       if (!махнато) { отмяна.hidden = true; return; }
       st = load('bl_wm_notlist', []);   // пресен прочит ПРЕДИ записа
-      st.push(махнато); save('bl_wm_notlist', st);
+      st.push(махнато);
+      // 🔴 25.08: „Върнах … ✔“ се казваше и при паднал запис — редът изчезваше
+      //    пак при следващото отваряне, а бутонът вече беше скрит.
+      if (!save('bl_wm_notlist', st)) return;
       каз(отмяна, 'Върнах „' + махнато.t + '“ ✔');
       махнато = null; рисувай(); fx().buzz(8);
     });

@@ -14,7 +14,17 @@
   'use strict';
 
   const load = (k, d) => { try { const v = JSON.parse(localStorage.getItem(k)); if (v == null) return d; if (Array.isArray(d) !== Array.isArray(v)) return d; if (d && typeof d === 'object' && (!v || typeof v !== 'object')) return d; return v; } catch (e) { return d; } };
-  const save = (k, v) => { try { localStorage.setItem(k, JSON.stringify(v)); return true; } catch (e) { return false; } };
+  // 🔴🔴 25.08 (ИЗМЕРЕНО, dev/interaktivno_stai2.js — 46 натискания при пълна памет):
+  //    `return false` беше НЯМ: почти никой не го четеше, а мама виждаше „✔ Записах“.
+  //    Сега падналият запис минава през ЧЕСТНИЯ канал на rooms.js (модал — вижда се
+  //    ВИНАГИ). Нарочно НЕ през BL_FX.cheer: fx.js:93 мълчи при тежък ден и при
+  //    намалено движение, тоест точно когато най-трябва.
+  //    ПЪТ НАЗАД: махаш `провалът();` от catch — връща се старото мълчание.
+  const провалът = () => {
+    try { if (window.BL_ZAPIS_PADNA) { window.BL_ZAPIS_PADNA(); return; } } catch (e) {}
+    try { alert('Паметта на телефона е пълна — това НЕ се записа. 😕 Написаното си остава в полето.'); } catch (e) {}
+  };
+  const save = (k, v) => { try { localStorage.setItem(k, JSON.stringify(v)); return true; } catch (e) { провалът(); return false; } };
   const el = (t, c, h) => { const n = document.createElement(t); if (c) n.className = c; if (h !== undefined) n.innerHTML = h; return n; };
   const esc = s => String(s == null ? '' : s).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;').replace(/'/g, '&#39;');
   const localDate = d => d.getFullYear() + '-' + String(d.getMonth() + 1).padStart(2, '0') + '-' + String(d.getDate()).padStart(2, '0');
@@ -72,7 +82,9 @@
         f.querySelector('.ec-del').addEventListener('click', () => {
           st = load('bl_echo', []);   // пресен прочит ПРЕДИ записа
           const k = st.findIndex(y => y && y.w === x.w && y.d === x.d && y.t === x.t);
-          st.splice(k > -1 ? k : i, 1); save('bl_echo', st); рисувай();
+          st.splice(k > -1 ? k : i, 1);
+          if (!save('bl_echo', st)) { рисувай(); return; }   // 🔴 25.08: снимката НЕ е изтрита
+          рисувай();
         });
         grid.appendChild(f);
       });
@@ -168,7 +180,11 @@
       r.querySelector('.rg-mark').addEventListener('click', () => {
         мои = load('bl_ranges', {});   // пресен прочит ПРЕДИ записа
         if (мои[д.id] != null) {
-          delete мои[д.id]; save('bl_ranges', мои);
+          delete мои[д.id];
+          // 🔴 25.08 (ИЗМЕРЕНО при пълна памет): „Дървото прибра цветчето 🌱“ се
+          //    казваше и когато махането не е записано — умението, което си
+          //    оттеглила, се връщаше при следващото отваряне.
+          if (!save('bl_ranges', мои)) { рисувай(); return; }
           // 🔴 г07/59 (огледално на dev.js:209): отбелязването пали цветчето в
           //    bl_ms_done и датата в bl_ms_d, но махането чистеше САМО
           //    bl_ranges. Дървото, Витрината, Реката и хапчето на банера
@@ -227,7 +243,11 @@
       // прибирането (същата логика като преди — само входът е инлайн вече)
       function прибери(n) {
         мои = load('bl_ranges', {});   // пресен прочит ПРЕДИ записа
-        мои[д.id] = Math.round(n * 10) / 10; save('bl_ranges', мои);
+        мои[д.id] = Math.round(n * 10) / 10;
+        // 🔴 25.08 (ИЗМЕРЕНО при пълна памет): конфетите и „🚶 Първи стъпки!“
+        //    идваха, дори когато месецът не е влязъл в паметта — маркерът на
+        //    лентата изчезваше при следващото влизане, а тя вече е празнувала.
+        if (!save('bl_ranges', мои)) { рисувай(); return; }
         // 🌳 мостът към Дървото/Витрината (одит-флот П23, проход 2 №8):
         // bl_ranges беше изолирано — отбелязваш умение, а Дървото не цъфти.
         // 🔴 05.08 (одит г11, №350 и №180): кофата се избираше по число, затова

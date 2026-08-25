@@ -13,7 +13,15 @@
   'use strict';
 
   const load = (k, d) => { try { const v = JSON.parse(localStorage.getItem(k)); if (v == null) return d; if (Array.isArray(d) !== Array.isArray(v)) return d; if (d && typeof d === 'object' && (!v || typeof v !== 'object')) return d; return v; } catch (e) { return d; } };
-  const save = (k, v) => { try { localStorage.setItem(k, JSON.stringify(v)); } catch (e) {} };
+  // 🪤 25.08 (dev/parvata_vrata.js, ИЗМЕРЕНО): `catch (e) {}` е ПРАЗНА уловка.
+  //    При пълна памет / частен прозорец записът пада тихо, а по-долу
+  //    `приложи()` чете ОБРАТНО от паметта — тоест бутонът не се превключва,
+  //    екранът не се сменя и НИЩО не се казва. Мама в 3 сутринта натиска
+  //    „🌙 Нощен вид“, не става нищо, натиска пак, и пак. Мълчаливият отказ е
+  //    по-лош от отказа. Общото BL_ZAPIS_PADNA (rooms.js:41) е модал — вижда
+  //    се ВИНАГИ (BL_FX.cheer мълчи нощем и в тежък ден, fx.js:93).
+  //    ПЪТ НАЗАД: върни `catch (e) {}` без известието и без `return`.
+  const save = (k, v) => { try { localStorage.setItem(k, JSON.stringify(v)); } catch (e) { if (window.BL_ZAPIS_PADNA) BL_ZAPIS_PADNA(); return false; } return true; };
 
   const нощ = () => { const h = new Date().getHours(); return h >= 23 || h < 6; };
 

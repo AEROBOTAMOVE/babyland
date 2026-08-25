@@ -45,8 +45,15 @@ function прегледай(име, текст) {
   редове.forEach((ред, i) => {
     if (/^\s*\/\//.test(ред)) return;                 // цял ред коментар
     if (!ИЗРАЗ.test(ред)) return;
+    // 🔴 25.08 — ПЪРВАТА ВЕРСИЯ ВИКАШЕ СРЕЩУ ЗДРАВ КОД (5 файла).
+    //   Приемаше за добър само `BL_UI` наблизо. Но проектът има ВТОРИ, по-нов
+    //   честен канал — `BL_ZAPIS_PADNA` (js/rooms.js:41), който сам минава
+    //   през BL_UI и пада на alert само ако го няма. Файловете rooms2/15/16/17/18
+    //   правеха точно това, правилно, а пазачът ги обяви за сурови.
+    //   Уред, който гони човек да „поправя" работещото, е по-лош от липсващ.
     const около = редове.slice(Math.max(0, i - 4), i + 2).join(' ');
-    (/BL_UI/.test(около) ? спазени : сурови).push(име + ':' + (i + 1) + '  ' + ред.trim().slice(0, 92));
+    ((/BL_UI/.test(около) || /BL_ZAPIS_PADNA/.test(около)) ? спазени : сурови)
+      .push(име + ':' + (i + 1) + '  ' + ред.trim().slice(0, 92));
   });
   return { сурови, спазени };
 }
@@ -79,6 +86,8 @@ const п = [
   ['  const н = prompt("Име:", x);',                         true,  'сурово prompt'],
   ['  } else alert(t);',                                     true,  'сурово alert'],
   ['  ? BL_UI.confirm(m) : Promise.resolve(confirm(m));',     false, 'confirm с BL_UI до него'],
+  ['  try { if (window.BL_ZAPIS_PADNA) { BL_ZAPIS_PADNA(); return; } } catch (e) {}\n  try { alert("…"); } catch (e) {}',
+                                                              false, 'alert като РЕЗЕРВ след BL_ZAPIS_PADNA'],
   ['  const r = await this.prompt(x);',                       false, 'ЧУЖД .prompt метод, не кутия'],
   ['  // тук имаше prompt(), махнат е',                       false, 'ред-коментар']
 ];

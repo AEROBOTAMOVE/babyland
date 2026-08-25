@@ -15,7 +15,17 @@
   'use strict';
 
   const load = (k, d) => { try { const v = JSON.parse(localStorage.getItem(k)); if (v == null) return d; if (Array.isArray(d) !== Array.isArray(v)) return d; if (d && typeof d === 'object' && (!v || typeof v !== 'object')) return d; return v; } catch (e) { return d; } };
-  const save = (k, v) => { try { localStorage.setItem(k, JSON.stringify(v)); return true; } catch (e) { return false; } };
+  // 🔴🔴 25.08 (ИЗМЕРЕНО, dev/interaktivno_stai2.js — 46 натискания при пълна памет):
+  //    `return false` беше НЯМ: почти никой не го четеше, а мама виждаше „✔ Записах“.
+  //    Сега падналият запис минава през ЧЕСТНИЯ канал на rooms.js (модал — вижда се
+  //    ВИНАГИ). Нарочно НЕ през BL_FX.cheer: fx.js:93 мълчи при тежък ден и при
+  //    намалено движение, тоест точно когато най-трябва.
+  //    ПЪТ НАЗАД: махаш `провалът();` от catch — връща се старото мълчание.
+  const провалът = () => {
+    try { if (window.BL_ZAPIS_PADNA) { window.BL_ZAPIS_PADNA(); return; } } catch (e) {}
+    try { alert('Паметта на телефона е пълна — това НЕ се записа. 😕 Написаното си остава в полето.'); } catch (e) {}
+  };
+  const save = (k, v) => { try { localStorage.setItem(k, JSON.stringify(v)); return true; } catch (e) { провалът(); return false; } };
   const el = (t, c, h) => { const n = document.createElement(t); if (c) n.className = c; if (h !== undefined) n.innerHTML = h; return n; };
   const esc = s => String(s == null ? '' : s).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;').replace(/'/g, '&#39;');
   const localDate = d => d.getFullYear() + '-' + String(d.getMonth() + 1).padStart(2, '0') + '-' + String(d.getDate()).padStart(2, '0');
@@ -287,7 +297,10 @@
       const данни = load('bl_spend', []);
       const име = (КАТ.find(k => k.id === катИзбор) || {}).н || '';
       данни.push({ d: today(), k: катИзбор, v: Math.round(v * 100) / 100 });
-      save('bl_spend', данни.slice(-400));
+      // 🔴🔴 25.08 (ИЗМЕРЕНО при пълна памет): полето се чистеше и отдолу
+      //    пишеше „✔ Записах 42 лв“ — сумата не влизаше никъде, а числото ѝ
+      //    изчезваше от екрана. Чистим САМО след потвърден запис.
+      if (!save('bl_spend', данни.slice(-400))) { данни.pop(); return; }
       сума.value = ''; рисувай(); fx().buzz(8);
       кажи('✔ Записах ' + (Math.round(v * 100) / 100) + ' лв за „' + име + '“ днес.');
     };
@@ -421,7 +434,9 @@
       });
       if (st.length > 12) list.appendChild(el('p', 'jr-privacy', 'Показвам последните 12 от общо ' + st.length + '. Всичките са в Реката.'));
     };
-    const пиши = () => { const v = inp.value.trim(); if (!v) return; st = load('bl_laughs', []); st.push({ t: v.slice(0, 120), d: today() }); save('bl_laughs', st); inp.value = ''; рисувай(); fx().buzz(10); fx().confetti(); };
+    // 🔴🔴 25.08 (ИЗМЕРЕНО при пълна памет): полето се чистеше и конфетите
+    //    падаха дори когато записът е паднал — смехът ѝ изчезваше без дума.
+    const пиши = () => { const v = inp.value.trim(); if (!v) return; st = load('bl_laughs', []); st.push({ t: v.slice(0, 120), d: today() }); if (!save('bl_laughs', st)) { st.pop(); return; } inp.value = ''; рисувай(); fx().buzz(10); fx().confetti(); };
     add.addEventListener('click', пиши);
     inp.addEventListener('keydown', e => { if (e.key === 'Enter') { e.preventDefault(); пиши(); } });
     ред.appendChild(inp); ред.appendChild(add);

@@ -333,9 +333,30 @@
     const бут = к.querySelector('.fd-qb');
     бут.style.minWidth = '44px'; бут.style.minHeight = '44px'; бут.style.boxSizing = 'border-box';
     бут.style.display = 'inline-flex'; бут.style.alignItems = 'center'; бут.style.justifyContent = 'center';
+    // 🔴 25.08 (dev/parvata_vrata.js, ИЗМЕРЕНО): БЛИЗНАКЪТ на вече платена
+    //    поправка. Празното ✔ правеше САМО `вход.focus()` — нито дума, нито
+    //    вибрация. Същият дефект беше намерен и оправен в askfield.js
+    //    (главното поле) и в calm.js („📥 Подреди“), а тук остана — а това е
+    //    екранът „Днес“, първото, което мама вижда. На телефон `focus()` често
+    //    не вдига дори клавиатурата: тя натиска, нищо не се случва, натиска
+    //    пак. Мълчаливият отказ се чете като счупено приложение.
+    //    Редът е `role="status"`, за да го прочете и екранният четец.
+    //    ПЪТ НАЗАД: махни `казвам` и върни `if (!т) { вход.focus(); return; }`.
+    const казвам = el('p', 'fd-qt fd-qsay');
+    казвам.hidden = true;
+    казвам.setAttribute('role', 'status');
+    казвам.style.marginTop = '6px';
+    к.appendChild(казвам);
     бут.addEventListener('click', () => {
       const т = вход.value.trim();
-      if (!т) { вход.focus(); return; }
+      if (!т) {
+        казвам.textContent = 'Напиши едно изречение — с твои думи. Дори три думи стигат. 💜';
+        казвам.hidden = false;
+        try { вход.focus({ preventScroll: true }); } catch (e) { try { вход.focus(); } catch (e2) {} }
+        fx().buzz(6);
+        return;
+      }
+      казвам.hidden = true; казвам.textContent = '';
       // 🔴 известният клас: състоянието е прочетено при РИСУВАНЕТО, а се записва
       //    при натискането — между двете „Днес“ може да се е пре-рисувал и да е
       //    записал отговор от друг ден. Четем прясно точно преди записа.

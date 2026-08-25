@@ -16,7 +16,17 @@
   //    rooms17.js и rooms18.js вече връщат истина/лъжа; тук — също.
   //    ПЪТ НАЗАД: махаш `return true` / `return false` — старите повиквания не
   //    четат отговора и продължават да работят точно както преди.
-  const save = (k, v) => { try { localStorage.setItem(k, JSON.stringify(v)); return true; } catch (e) { return false; } };
+  // 🔴🔴 25.08 (ИЗМЕРЕНО, dev/interaktivno_stai2.js — 46 натискания при пълна памет):
+  //    `return false` беше НЯМ: почти никой не го четеше, а мама виждаше „✔ Записах“.
+  //    Сега падналият запис минава през ЧЕСТНИЯ канал на rooms.js (модал — вижда се
+  //    ВИНАГИ). Нарочно НЕ през BL_FX.cheer: fx.js:93 мълчи при тежък ден и при
+  //    намалено движение, тоест точно когато най-трябва.
+  //    ПЪТ НАЗАД: махаш `провалът();` от catch — връща се старото мълчание.
+  const провалът = () => {
+    try { if (window.BL_ZAPIS_PADNA) { window.BL_ZAPIS_PADNA(); return; } } catch (e) {}
+    try { alert('Паметта на телефона е пълна — това НЕ се записа. 😕 Написаното си остава в полето.'); } catch (e) {}
+  };
+  const save = (k, v) => { try { localStorage.setItem(k, JSON.stringify(v)); return true; } catch (e) { провалът(); return false; } };
   // тихият честен ред „не можах да го запазя“ — един текст за целия файл
   const ПЪЛНА = '🤍 Паметта на телефона е пълна — не можах да го запазя. Изтрий нещо (снимки, видеа) и пробвай пак; написаното е още в полето.';
   const localDate = d => d.getFullYear() + '-' + String(d.getMonth() + 1).padStart(2, '0') + '-' + String(d.getDate()).padStart(2, '0');
@@ -988,14 +998,24 @@
         //    28-та" на друг. Държим ЕДНО число — 26-та, както е и гейтът горе
         //    и сгъването в preg20 — защото по-ранното броене е по-безопасната
         //    посока за жената, а не по-късното.
-        kickOut.innerHTML = 'Рано е за БРОЕНЕ (то тръгва към ~26-та) — но щом посягаш, значи го УСЕЩАШ. Това пърхане е злато ✨ Записах го в Историята ви.';
         const река = load('bl_river_manual', []);
-        const днес = new Date().toISOString().slice(0, 10);
-        if (!река.some(x => x && x.пърхане === днес)) {
+        // 🪤 ЧАСОВИ ПОЯС 25.08 (ИЗМЕРЕНО, TZ=Europe/Sofia): `toISOString()` дава
+        //    UTC. Между 00:00 и 02:59 ч. местно време той връща ВЧЕРАШНАТА дата
+        //    (проверено: 26.08 00:30 → „2026-08-25“). Тоест нощният тап на мама
+        //    се сверяваше с вчерашния ден: беше ли писала вечерта, пърхането след
+        //    полунощ се преглъщаше като „вече го има днес“. `today()` в този файл
+        //    брои по КАЛЕНДАРА ѝ — същия, по който се къса и серията.
+        const днес = today();
+        let вИсторията = река.some(x => x && x.пърхане === днес);
+        if (!вИсторията) {
           река.push({ ts: Date.now(), e: '🫧', t: 'Първите пърхания — ' + редна(с2сед) + ' седмица', пърхане: днес });
-          save('bl_river_manual', река);
-          fx().confetti(kickOut);
+          // 🔴 25.08 (ИЗМЕРЕНО при пълна памет): „Записах го в Историята ви“ се
+          //    печаташе ПРЕДИ записа и стоеше, дори когато той е паднал.
+          вИсторията = save('bl_river_manual', река);
+          if (вИсторията) fx().confetti(kickOut);
         }
+        kickOut.innerHTML = 'Рано е за БРОЕНЕ (то тръгва към ~26-та) — но щом посягаш, значи го УСЕЩАШ. Това пърхане е злато ✨'
+          + (вИсторията ? ' Записах го в Историята ви.' : '');
         kickBig.classList.add('pp'); setTimeout(() => kickBig.classList.remove('pp'), 500);
         return;
       }
@@ -1007,15 +1027,20 @@
         //    произход, което успокояваше точно жената, чиито десетки днес идват
         //    четири пъти по-бавно от обичайното ѝ. Сравнението със СОБСТВЕНАТА
         //    ѝ база е в рисувайИстория() и то е това, което значи нещо.
+        // В1.4: десетката се записва — данните на мама значат нещо
+        // 🔴 25.08 (ИЗМЕРЕНО при пълна памет): празникът и НУЛИРАНЕТО на брояча
+        //    идваха ПРЕДИ записа. При пълна памет тя виждаше „🎉 10 движения за
+        //    X мин“, броячът падаше на нула, а десетката не влизаше никъде — час
+        //    броене изчезваше. Сега първо записваме; падне ли, пръстенът ѝ остава
+        //    пълен и може да опита пак, след като освободи място.
+        const дни = load('bl_kicks', []);
+        дни.push({ ts: Date.now(), mins });
+        if (!save('bl_kicks', дни.slice(-40))) { kickCount = 10; return; }
         kickOut.innerHTML = `🎉 10 движения за <strong>${mins} мин</strong>! Браво, бебче.`;
         kickBig.querySelector('span').textContent = 'Отначало';
         светниПръстен();                          // всичките 10 светят за миг
         kickRing.classList.add('full'); setTimeout(() => kickRing.classList.remove('full'), 1200);
         kickCount = 0;
-        // В1.4: десетката се записва — данните на мама значат нещо
-        const дни = load('bl_kicks', []);
-        дни.push({ ts: Date.now(), mins });
-        save('bl_kicks', дни.slice(-40));
         рисувайИстория();
         fx().confetti(kickOut);                  // Б8.4: 10-то ритниче се празнува
       } else {
@@ -1412,7 +1437,10 @@
         //    (rooms17.js) стои в СЪЩАТА стая и също пише в него — копието от
         //    рисуването щеше да залее нейния запис.
         const d = load('bl_ms_done', {});
-        d[id] = !d[id]; save('bl_ms_done', d);
+        d[id] = !d[id];
+        // 🔴 25.08 (ИЗМЕРЕНО при пълна памет): отметката се рисуваше и без запис —
+        //    Дървото, Реката и Витрината после не я знаеха, а екранът я показваше.
+        if (!save('bl_ms_done', d)) return;
         const md = load('bl_ms_d', {});
         if (d[id]) { if (!md[id]) md[id] = Date.now(); } else { delete md[id]; } // за Реката и Дървото
         save('bl_ms_d', md);
@@ -2005,7 +2033,12 @@
       row.addEventListener('click', () => {
         // read-merge-write: обектът беше прочетен при СТРОЕЖА на картата
         const св = load('bl_vax', {});
-        св[i] = !св[i]; save('bl_vax', св); done[i] = св[i];
+        св[i] = !св[i];
+        // 🔴 25.08 (ИЗМЕРЕНО при пълна памет): ✔ до ваксината се рисуваше и без
+        //    запис. При следващото отваряне отметката я няма — а мама вече е
+        //    решила, че този прием е отбелязан. Знакът идва СЛЕД записа.
+        if (!save('bl_vax', св)) return;
+        done[i] = св[i];
         row.classList.toggle('done', !!св[i]);
         row.setAttribute('aria-pressed', св[i] ? 'true' : 'false');
         row.querySelector('.jr-check').textContent = св[i] ? '✔' : '';
@@ -2600,7 +2633,11 @@
       // ♿ 11.08 (клавиатура-четец): кошчето беше само картинка — при няколко
       //    списъка четецът не казваше КОЙ ще изтрие.
       del.setAttribute('aria-label', 'Изтрий списъка „' + L.name + '“');
-      del.addEventListener('click', () => { (window.BL_UI ? BL_UI.confirm('Да изтрия ли списъка „' + L.name + '“?', { emoji: '🗑', okText: 'Изтрий', cancelText: 'Остави', danger: true }) : Promise.resolve(confirm('Да изтрия ли списъка „' + L.name + '“?'))).then(да => { if (да) { lists = load('bl_custom_lists', []); const i = lists.findIndex(x => x && x.name === L.name); if (i > -1) lists.splice(i, 1); save('bl_custom_lists', lists); drawAll(); } }); });
+      // 🔴🔴 25.08 (ИЗМЕРЕНО при пълна памет): при паднал запис drawAll() пак се
+      //    викаше — списъкът се връщаше на екрана (значи изтриването не е минало),
+      //    но заедно с това се пресъздаваха ВСИЧКИ полета „Добави точка…“ и
+      //    недописаната точка на мама изчезваше. Рисуваме САМО след потвърден запис.
+      del.addEventListener('click', () => { (window.BL_UI ? BL_UI.confirm('Да изтрия ли списъка „' + L.name + '“?', { emoji: '🗑', okText: 'Изтрий', cancelText: 'Остави', danger: true }) : Promise.resolve(confirm('Да изтрия ли списъка „' + L.name + '“?'))).then(да => { if (да) { lists = load('bl_custom_lists', []); const i = lists.findIndex(x => x && x.name === L.name); if (i > -1) lists.splice(i, 1); if (!save('bl_custom_lists', lists)) return; drawAll(); } }); });
       head.appendChild(del);
       box.appendChild(head);
       const ul = el('div', 'jr-wins');
@@ -2613,7 +2650,10 @@
           const L2 = lists.find(x => x && x.name === L.name);
           const it2 = L2 && (L2.items || []).find(y => y && y.t === it.t);
           if (it2) it2.done = it.done; else if (L2) L2.items = L.items;
-          save('bl_custom_lists', lists);
+          // 🔴 25.08 (ИЗМЕРЕНО при пълна памет): отметката се рисуваше и конфетите
+          //    падаха, дори когато записът не е минал — при следващото отваряне
+          //    точката пак е неотметната. Знакът идва СЛЕД записа.
+          if (!save('bl_custom_lists', lists)) { it.done = !it.done; return; }
           r.classList.toggle('done'); r.querySelector('.jr-check').textContent = it.done ? '✔' : '';
           head.querySelector('span').textContent = L.items.filter(x => x.done).length + '/' + L.items.length;
           if (it.done && L.items.every(x => x.done) && window.BL_FX) { BL_FX.confetti(r); BL_FX.cheer('Списъкът е готов! 🎉'); }
@@ -2628,7 +2668,20 @@
       ab.setAttribute('aria-label', 'Добави точката в „' + L.name + '“');
       // 🔴 11.08: „+“ на празно поле мълчеше напълно. Сега курсорът се връща
       //    в полето — най-краткото „чакам да напишеш“, което екранът може да даде.
-      ab.addEventListener('click', () => { const v = ai.value.trim(); if (!v) { ai.focus(); ai.placeholder = 'Напиши точката тук…'; return; } L.items.push({ t: v, done: false }); lists = load('bl_custom_lists', []); const L2 = lists.find(x => x && x.name === L.name); if (L2) L2.items = L.items; else lists.push(L); save('bl_custom_lists', lists); drawAll(); });
+      // 🔴🔴 25.08 (ИЗМЕРЕНО при пълна памет): точката влизаше в L.items, после
+      //    drawAll() пресъздаваше реда от ПАМЕТТА (където я няма) и трие полето —
+      //    написаното изчезваше два пъти. Сега пипаме L.items чак след записа.
+      ab.addEventListener('click', () => {
+        const v = ai.value.trim();
+        if (!v) { ai.focus(); ai.placeholder = 'Напиши точката тук…'; return; }
+        const нови = L.items.concat([{ t: v, done: false }]);
+        lists = load('bl_custom_lists', []);   // пресен прочит ПРЕДИ записа
+        const L2 = lists.find(x => x && x.name === L.name);
+        if (L2) L2.items = нови; else lists.push({ name: L.name, items: нови });
+        if (!save('bl_custom_lists', lists)) return;
+        L.items = нови;
+        drawAll();
+      });
       ai.addEventListener('keydown', e => { if (e.key === 'Enter') { e.preventDefault(); ab.click(); } });
       ar.appendChild(ai); ar.appendChild(ab);
       box.appendChild(ar);
@@ -2642,7 +2695,10 @@
       if (!v) { шъп.textContent = '✍️ Дай име на списъка — после ще му трупаме точките.'; шъп.hidden = false; inp.focus(); return; }
       шъп.hidden = true;
       lists = load('bl_custom_lists', []);   // пресен прочит ПРЕДИ записа
-      lists.push({ name: v, items: [] }); save('bl_custom_lists', lists);
+      lists.push({ name: v, items: [] });
+      // 🔴🔴 25.08 (ИЗМЕРЕНО при пълна памет): полето се чистеше винаги — при
+      //    паднал запис името на списъка изчезваше и от паметта, и от екрана.
+      if (!save('bl_custom_lists', lists)) return;
       inp.value = ''; drawAll();
       if (window.BL_FX) BL_FX.buzz(10);
     });
