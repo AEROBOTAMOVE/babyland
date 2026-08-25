@@ -216,7 +216,7 @@
     const мк = (клас, етикет, тел) => {
       const a = el('a', клас, етикет); a.href = 'tel:' + тел; return a;
     };
-    бутони.appendChild(мк('wm-sosb wm-sosb-soft', '🤍 116 006 <small>безплатно · за жена, която не се чувства в безопасност вкъщи</small>', '116006'));
+    бутони.appendChild(мк('wm-sosb wm-sosb-soft', '🤍 0800 18 676 <small>безплатно · за жена, която не се чувства в безопасност вкъщи</small>', '080018676'));
     бутони.appendChild(мк('wm-sosb wm-sosb-red', '🚨 112 <small>веднага</small>', '112'));
     c.appendChild(бутони);
 
