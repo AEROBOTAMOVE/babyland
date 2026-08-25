@@ -7,7 +7,9 @@
   'use strict';
 
   const load = (k, d) => { try { const v = JSON.parse(localStorage.getItem(k)); if (v == null) return d; if (Array.isArray(d) !== Array.isArray(v)) return d; if (d && typeof d === 'object' && (!v || typeof v !== 'object')) return d; return v; } catch (e) { return d; } };
-  const save = (k, v) => { try { localStorage.setItem(k, JSON.stringify(v)); } catch (e) { return false; } return true; };
+  // 🔴 25.08: виж бележката в rooms.js — записът падаше тихо, а чашката/милилитрите
+  //   се рисуваха все едно е минал. ПЪТ НАЗАД: махаш извикването на BL_ZAPIS_PADNA.
+  const save = (k, v) => { try { localStorage.setItem(k, JSON.stringify(v)); } catch (e) { if (window.BL_ZAPIS_PADNA) BL_ZAPIS_PADNA(); return false; } return true; };
   const localDate = d => d.getFullYear() + '-' + String(d.getMonth() + 1).padStart(2, '0') + '-' + String(d.getDate()).padStart(2, '0');
   const today = () => localDate(new Date());
   const el = (t, c, h) => { const n = document.createElement(t); if (c) n.className = c; if (h !== undefined) n.innerHTML = h; return n; };
@@ -61,7 +63,11 @@
           data = load('bl_water', { d: today(), n: 0 });
           if (data.d !== today()) { data = { d: today(), n: 0 }; }   // виж бележката при мл
           data.n = i < data.n ? i : i + 1; // цъкаш последната пълна → маха я
-          save('bl_water', data); draw();
+          // 🔴 25.08: чашката се пълнеше и редът „Досега днес: N чаши“ се
+          //    вдигаше и при паднал запис — числото изчезваше при следващото
+          //    влизане. Рисуваме СЛЕД записа. ПЪТ НАЗАД: махаш `if (!…) return;`
+          if (!save('bl_water', data)) return;
+          draw();
           // празникът е за ЗАПОЧНАТОТО, не за някакъв изпълнен норматив
           if (data.n === 1) { fx().confetti(row); fx().cheer('Първата за днес 💧'); }
           else fx().buzz(6);
@@ -92,7 +98,9 @@
       b.addEventListener('click', () => {
         data = load('bl_ml', { d: today(), n: 0 });   // 🔴 пресен прочит ПРЕДИ записа
         if (data.d !== today()) data = { d: today(), n: 0 };   // полунощ мина, докато картата стоеше отворена
-        data.n += v; save('bl_ml', data); draw(); fx().buzz(8);
+        data.n += v;
+        if (!save('bl_ml', data)) return;   // 🔴 25.08: иначе едрото число расте без памет
+        draw(); fx().buzz(8);
         бележка.innerHTML = '';   // старото „върни“ вече не важи за това число
       });
       row.appendChild(b);
@@ -113,14 +121,18 @@
         if (!да) { бележка.innerHTML = 'Оставих ги както бяха. 💧'; return; }
         data = load('bl_ml', { d: today(), n: 0 });   // 🔴 пресен прочит ПРЕДИ записа
         if (data.d !== today()) data = { d: today(), n: 0 };
-        data.n = 0; save('bl_ml', data); draw();
+        data.n = 0;
+        if (!save('bl_ml', data)) return;   // 🔴 25.08: иначе едрото число пада на 0 без памет
+        draw();
         бележка.innerHTML = '';
         const върни = el('button', 'jr-chip', '↩️ Върни ' + беше + ' мл'); върни.type = 'button';
         върни.style.minHeight = '44px';
         върни.addEventListener('click', () => {
           data = load('bl_ml', { d: today(), n: 0 });   // 🔴 пресен прочит ПРЕДИ записа
           if (data.d !== today()) data = { d: today(), n: 0 };
-          data.n = беше; save('bl_ml', data); draw();
+          data.n = беше;
+          if (!save('bl_ml', data)) return;   // 🔴 25.08: иначе казва „Върнах ги“, без да ги е върнало
+          draw();
           бележка.innerHTML = 'Върнах ги. 💧'; fx().buzz(8);
         });
         бележка.appendChild(върни);
@@ -227,7 +239,12 @@
         const cur = load('bl_pharmacy', []);
         // 22.07: второто докосване мълчеше — мама не знаеше дали го е добавила
         if (cur.some(x => x.n === n)) { fx().cheer('„' + n + '“ вече е в аптечката ✔'); return; }
-        cur.push({ n, exp: '' }); save('bl_pharmacy', cur);
+        cur.push({ n, exp: '' });
+        // 🔴 25.08 (ИЗМЕРЕНО с пълна памет): чипът ставаше „✓ Термометър“ и при
+        //    паднал запис. Синхронизирай() поправя надписа чак при СЛЕДВАЩОТО
+        //    докосване в стаята — излезе ли мама веднага, тя остава с „✓“ за
+        //    нещо, което не е в аптечката, и не го купува.
+        if (!save('bl_pharmacy', cur)) return;
         b.textContent = '✓ ' + n; b.classList.add('on'); fx().buzz(8);
         // …и наистина да се ПОЯВИ горе, както пише отдолу
         if (typeof window.BL_PHARMACY_REDRAW === 'function') { try { window.BL_PHARMACY_REDRAW(); } catch (e) { } }

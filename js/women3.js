@@ -6,7 +6,13 @@
   'use strict';
 
   const load = (k, d) => { try { const v = JSON.parse(localStorage.getItem(k)); if (v == null) return d; if (Array.isArray(d) !== Array.isArray(v)) return d; if (d && typeof d === 'object' && (!v || typeof v !== 'object')) return d; return v; } catch (e) { return d; } };
-  const save = (k, v) => { try { localStorage.setItem(k, JSON.stringify(v)); } catch (e) {} };
+  // 🔴🔴 25.08 · ПРАЗНА УЛОВКА — виж дългата бележка в women2.js.
+  //    Тук цената е най-висока: „💾 Запази в дневничето" чистеше полето след
+  //    ТРИ МИНУТИ свободно писане, без да е проверило дали записът е минал.
+  //    ЖЕЛЯЗНО: поле се чисти САМО след потвърден запис.
+  //    ПЪТ НАЗАД: върни `catch (e) {}` без `return false` и махни проверките.
+  const save = (k, v) => { try { localStorage.setItem(k, JSON.stringify(v)); return true; } catch (e) { return false; } };
+  const НЕ_СЕ_ПОБРА = 'Не можах да го запазя — паметта на телефона е пълна. Написаното ти Е ТУК, в полето: освободи малко място (видеа, стари снимки) и натисни пак. Не го трий.';
   const localDate = d => d.getFullYear() + '-' + String(d.getMonth() + 1).padStart(2, '0') + '-' + String(d.getDate()).padStart(2, '0');
   const today = () => localDate(new Date());
   const el = (t, c, h) => { const n = document.createElement(t); if (c) n.className = c; if (h !== undefined) n.innerHTML = h; return n; };
@@ -218,7 +224,9 @@
       // 🔴 МЪЛЧАЛИВ БУТОН: тапът по „+“ с празно поле не правеше нищо видимо
       if (!v) { каз(add, 'Полето е празно. Напиши какво ти се иска и пак натисни +.', inp); return; }
       items = load('bl_wm_bucket', []);   // пресен прочит ПРЕДИ записа
-      items.push({ t: v.slice(0, 70) }); save('bl_wm_bucket', items); inp.value = ''; draw();
+      items.push({ t: v.slice(0, 70) });
+      if (!save('bl_wm_bucket', items)) { каз(add, НЕ_СЕ_ПОБРА, inp); fx().buzz(6); return; }   // полето остава пълно
+      inp.value = ''; draw();
       fx().buzz(8); каз(add, 'Записах го ✔ Стои само на този телефон.');
     };
     add.addEventListener('click', put);
@@ -232,7 +240,8 @@
       const нова = free[Math.floor(Math.random() * free.length)];
       items = load('bl_wm_bucket', []);   // пресен прочит ПРЕДИ записа
       items.push({ t: нова });
-      save('bl_wm_bucket', items); draw(); fx().buzz(8);
+      if (!save('bl_wm_bucket', items)) { каз(sug, НЕ_СЕ_ПОБРА); fx().buzz(6); return; }
+      draw(); fx().buzz(8);
       каз(sug, 'Сложих ти: ' + нова);
     });
     const отмяна = el('button', 'jr-chip jr-chip-soft', '↩ Върни последното махнато');
@@ -377,7 +386,9 @@
       // 🔴 МЪЛЧАЛИВ БУТОН: празно поле → тапът не правеше нищо видимо
       if (!v) { каз(add, 'Полето е празно. Кое беше първото? Пиши го и пак натисни +.', inp); return; }
       items = load('bl_wm_firsts', []);   // пресен прочит ПРЕДИ записа
-      items.push({ t: v.slice(0, 70), d: today() }); save('bl_wm_firsts', items); inp.value = ''; draw();
+      items.push({ t: v.slice(0, 70), d: today() });
+      if (!save('bl_wm_firsts', items)) { каз(add, НЕ_СЕ_ПОБРА, inp); fx().buzz(6); return; }
+      inp.value = ''; draw();
       fx().confetti && fx().confetti();
       каз(add, 'Записах го ✔ ' + today() + ' — денят, в който пак беше ти.');
     };
@@ -450,7 +461,12 @@
       const v = ta.value.trim();
       // 🔴 МЪЛЧАЛИВ БУТОН: празно поле → тапът не правеше нищо видимо
       if (!v) { каз(keep, 'Полето е празно. Напиши нещо и пак натисни 💾.', ta); return; }
-      const d = load('bl_wm_diary', []); d.push({ t: v, d: today() }); save('bl_wm_diary', d);
+      const d = load('bl_wm_diary', []); d.push({ t: v, d: today() });
+      // 🔴🔴 25.08: тук стоеше `save(...); ta.value = ''; keep.textContent =
+      //    '✔ В дневничето';` — БЕЗУСЛОВНО. При пълна памет мама виждаше „✔",
+      //    полето ѝ се изчистваше и три минути писане си отиваха без следа.
+      //    Полето се чисти САМО след потвърден запис.
+      if (!save('bl_wm_diary', d)) { каз(keep, НЕ_СЕ_ПОБРА, ta); fx().buzz(6); return; }
       ta.value = ''; keep.textContent = '✔ В дневничето'; setTimeout(() => keep.textContent = '💾 Запази в дневничето', 1600);
       // 🔴 05.08 (одит г08, №110): записът отива в същия ключ, който чете
       //    „Заключеното дневниче 🔒“ — но онази карта е построена по-рано в
@@ -658,11 +674,21 @@
     const запиши = (сДума) => {
       const log = чети();                                   // ПРЯСНО
       const беше = (log[today()] || '').trim();
-      log[today()] = ta.value; save('bl_wm_qme', log);
+      log[today()] = ta.value;
+      // 25.08: „Записано ✔" само ако наистина е записано
+      if (!save('bl_wm_qme', log)) { if (сДума) каз(брой, НЕ_СЕ_ПОБРА); return; }
       пишиБрой();
       if (сДума && ta.value.trim() && !казано) {
         казано = true; каз(брой, 'Записано ✔ Стои само на този телефон.');
-        if (window.BL_RIVER && BL_RIVER.add && !беше) BL_RIVER.add({ e: '💭', t: 'Отговорих си: ' + q, ts: Date.now() });
+        // 🔒 25.08 (ПОВЕРИТЕЛНОСТ): тук се подаваше САМИЯТ ВЪПРОС в общата
+        //    „река" — а въпросите са „Кое е нещото, което не си казала на
+        //    никого?" и „Кое е най-глупавото нещо, което си правила от любов?".
+        //    Реката се отваря от началния екран и я вижда всеки, който държи
+        //    телефона. Днес редът е мъртъв (js/river.js:430 изнася само
+        //    {collect, open, memoryFor} — `add` НЕ съществува), но добави ли го
+        //    някой, утечката пламва сама. Мигът остава, темата — не.
+        //    ПЪТ НАЗАД: върни `'Отговорих си: ' + q`.
+        if (window.BL_RIVER && BL_RIVER.add && !беше) BL_RIVER.add({ e: '💭', t: 'Отговорих си на въпроса за мен', ts: Date.now() });
       }
     };
     // 📱 `change` гърми чак при излизане от полето. Мама, която пише и заключва
@@ -889,7 +915,8 @@
       //    най-объркващо, защото полетата са ДВЕ — мама пълнеше „кой“ и чакаше.
       if (!v) { каз(add, 'В първото поле напиши какво ти казаха. „Кой“ може и да остане празно.', t); return; }
       items = load('bl_wm_compl', []);   // пресен прочит ПРЕДИ записа
-      items.push({ t: v.slice(0, 90), w: w.value.trim().slice(0, 20), d: today() }); save('bl_wm_compl', items);
+      items.push({ t: v.slice(0, 90), w: w.value.trim().slice(0, 20), d: today() });
+      if (!save('bl_wm_compl', items)) { каз(add, НЕ_СЕ_ПОБРА, t); fx().buzz(6); return; }   // и двете полета остават
       t.value = ''; w.value = ''; draw(); fx().buzz(8);
       каз(add, 'Прибрано ✔ Ще те чака за деня, в който ти трябва.');
     });
@@ -929,7 +956,8 @@
       let дебонс = null, казано = false;
       const запиши = (сДума) => {
         const d = чети();                                   // ПРЯСНО
-        d[k] = ta.value; save('bl_wm_trip', d);
+        d[k] = ta.value;
+        if (!save('bl_wm_trip', d)) { if (сДума) каз(ta, НЕ_СЕ_ПОБРА); return; }   // 25.08
         // 🔴 запазването беше НЕВИДИМО: мама пише, излиза от полето и нищо не
         //    ѝ казва, че е прието. А тази карта се пълни веднъж на месеци.
         if (сДума && ta.value.trim() && !казано) { казано = true; каз(ta, 'Записано ✔ Върни се след няколко месеца — тогава ще те разтърси.'); }

@@ -11,7 +11,12 @@
   'use strict';
 
   const load = (k, d) => { try { const v = JSON.parse(localStorage.getItem(k)); if (v == null) return d; if (Array.isArray(d) !== Array.isArray(v)) return d; if (d && typeof d === 'object' && (!v || typeof v !== 'object')) return d; return v; } catch (e) { return d; } };
-  const save = (k, v) => { try { localStorage.setItem(k, JSON.stringify(v)); } catch (e) {} };
+  // 🪤 25.08: `catch (e) {}` е ПРАЗНА уловка — записът пада (пълна памет,
+  //    частен прозорец), а бутонът долу пише „✔ Чакат те в 🧰 Инструменти“.
+  //    Същият дефект и същият лек като rooms.js:51 — връщаме дали е минало и
+  //    известието идва от общото BL_ZAPIS_PADNA (модал, вижда се винаги).
+  //    ПЪТ НАЗАД: `catch (e) {}` и без `return`.
+  const save = (k, v) => { try { localStorage.setItem(k, JSON.stringify(v)); } catch (e) { if (window.BL_ZAPIS_PADNA) BL_ZAPIS_PADNA(); return false; } return true; };
   const el = (t, c, h) => { const n = document.createElement(t); if (c) n.className = c; if (h !== undefined) n.innerHTML = h; return n; };
   const esc = s => String(s == null ? '' : s).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;').replace(/'/g, '&#39;');
   const card = t => { const c = el('section', 'jr-card'); c.appendChild(el('h4', 'jr-title', t)); return c; };
@@ -30,28 +35,49 @@
     box.innerHTML = '<div class="br-circle"><span class="br-word">Готова?</span></div>';
     c.appendChild(box);
     const b = el('button', 'jr-btn', '▶️ Дишай с мен'); b.type = 'button';
-    let running = false;
+    // 🔴 25.08 (dev/parvata_vrata.js, ИЗМЕРЕНО): три кръга 4-7-8 са 57 секунди
+    //    и нямаше НИТО ЕДИН начин да се спрат. Второто натискане на бутона
+    //    падаше в `if (running) return;`, тоест единствената контрола в
+    //    картата мълчеше цяла минута. Това е картата „за момента, в който
+    //    всичко е много“ — а точно там мама трябва да може да излезе, без да
+    //    затваря стаята. („Задръж 7 секунди“ не е и безобидно за всяка жена.)
+    //    ПЪТ НАЗАД: махни `спряно`, проверките за него и реда с `b.textContent
+    //    = '⏹ Стига засега'` — остава старото поведение.
+    let running = false, спряно = false;
     b.addEventListener('click', () => {
-      if (running) return;
-      running = true; b.textContent = 'Дишай…';
+      if (running) {                       // втората половина на същия бутон: изход
+        спряно = true;
+        return;
+      }
+      running = true; спряно = false; b.textContent = '⏹ Стига засега';
       const кръг = box.querySelector('.br-circle');
       const дума = box.querySelector('.br-word');
       let цикъл = 0;
       const фаза = (клас, текст, ms) => new Promise(res => {
         кръг.className = 'br-circle ' + клас;
         дума.textContent = текст;
-        setTimeout(res, ms);
+        // проверяваме на всеки половин екран, за да не чака мама до края на фазата
+        const стъпка = 250;
+        let минали = 0;
+        (function тик() {
+          if (спряно) return res();
+          if (минали >= ms) return res();
+          минали += стъпка;
+          setTimeout(тик, стъпка);
+        })();
       });
       (async () => {
-        while (цикъл < 3) {
+        while (цикъл < 3 && !спряно) {
           await фаза('br-in', 'Вдишай…', 4000);
+          if (спряно) break;
           await фаза('br-hold', 'Задръж…', 7000);
+          if (спряно) break;
           await фаза('br-out', 'Издишай…', 8000);
           цикъл++;
         }
         кръг.className = 'br-circle';
-        дума.textContent = 'Браво. 🤍';
-        running = false; b.textContent = '▶️ Пак';
+        дума.textContent = спряно ? 'Добре. Спираме. 🤍' : 'Браво. 🤍';
+        running = false; b.textContent = спряно ? '▶️ Пак, когато си готова' : '▶️ Пак';
       })();
     });
     c.appendChild(b);
@@ -114,7 +140,15 @@
             b.addEventListener('click', () => {
               const н = load('bl_notes_tools', []);
               кофи.сега.forEach(x => н.push({ t: x.slice(0, 120), d: Date.now() }));
-              save('bl_notes_tools', н.slice(-60)); out.dataset.kept = '1';
+              // 🔴 25.08: „✔ Чакат те…“ се пишеше БЕЗ да се гледа дали записът
+              //    е минал. Мама затваря, отива в Инструменти и там няма нищо —
+              //    а картата ѝ е обещала. Сега бутонът остава натискаем и
+              //    казва истината; голямото обяснение идва от BL_ZAPIS_PADNA.
+              if (!save('bl_notes_tools', н.slice(-60))) {
+                b.textContent = '😕 Не успях да ги запиша — паметта е пълна. Пробвай пак.';
+                return;
+              }
+              out.dataset.kept = '1';
               b.textContent = '✔ Чакат те в 🧰 Инструменти → Бележки — багажът е свален 💜'; b.disabled = true;
               if (window.BL_FX) BL_FX.buzz(10);
             });

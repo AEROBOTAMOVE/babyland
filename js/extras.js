@@ -159,9 +159,23 @@
     const opts = [];
     const a = window.BL_AGE ? BL_AGE(baby.birth) : null;
     if (a && a.ym > 0) opts.push({ emoji: '🎂', title: nm + ' на ' + a.ym + (a.ym === 1 ? ' месец!' : ' месеца!'), sub: 'Расте с любов и Baby Land' });
+    // 🔴 25.08 (обход „Игри и Лаборатория", ИЗМЕРЕНО): датата се вземаше без
+    //    нито една проверка. Празна или крива стойност в bl_firsts → картичката
+    //    излизаше с надпис „Invalid Date" — и мама я праща във Вайбър така.
+    //    Останалите четци на СЪЩИТЕ данни отдавна пазят: river.js:76 (`if (d)`)
+    //    и yearbook.js:38 (`.filter(([, d]) => d)`). Тук пазачът липсваше.
+    //    Няма дата → просто няма ред с дата (makeCardCanvas слага днешната).
+    //    ПЪТ НАЗАД: върни `date: new Date(firsts[f]).toLocaleDateString('bg-BG')`.
+    const дата = с => {
+      const t = new Date(с);
+      return (с && !isNaN(t.getTime())) ? t.toLocaleDateString('bg-BG') : '';
+    };
     Object.keys(firsts).forEach(f => {
       const emoji = f.split(' ')[0];
-      opts.push({ emoji, title: f.replace(/^\S+\s/, ''), sub: nm + ' го направи! Гордост!', date: new Date(firsts[f]).toLocaleDateString('bg-BG') });
+      const д = дата(firsts[f]);
+      const о = { emoji, title: f.replace(/^\S+\s/, ''), sub: nm + ' го направи! Гордост!' };
+      if (д) о.date = д;
+      opts.push(о);
     });
     opts.push({ emoji: '💜', title: 'Обичаме те, ' + nm + '!', sub: 'От мама, с цялото ѝ сърце' });
     const grid = el('div', 'shm-grid');
@@ -407,7 +421,17 @@
     { id: 'lex12', e: '🌟', n: 'Пълен лексикон', t: 'Всички 12 отговора', ok: () => Object.keys(load('bl_baby_lexicon', {})).length >= 12 },
     { id: 'firsts3', e: '👣', n: 'Колекционер на първи пъти', t: '3 отбелязани „първи пъти“', ok: () => Object.keys(load('bl_firsts', {})).length >= 3 },
     { id: 'capsule1', e: '💌', n: 'Писмо във времето', t: 'Запечатана капсула', ok: () => load('bl_capsules', []).length >= 1 },
-    { id: 'list1', e: '✅', n: 'Готов списък', t: 'Завършен твой списък (3+ точки)', ok: () => load('bl_custom_lists', []).some(l => l.items.length >= 3 && l.items.every(i => i.done)) },
+    // 🔴 25.08 (обход „Игри и Лаборатория", ИЗМЕРЕНО в пясъчник): това беше
+    //    ЕДИНСТВЕНОТО условие в целия каталог без пазач за кривия запис.
+    //    `bl_custom_lists = [{name:'х'}]` (списък без `items`) или един `null`
+    //    вътре → TypeError В СРЕДАТА на badgesCard() → и понеже sweepBadges()
+    //    се вика при СТРОЕЖА на картата, ЦЯЛАТА стая „Дневник на мама" спираше
+    //    дотам: без медальончета, без „Сподели споменче", БЕЗ „Ключалка на
+    //    дневника". Мама с внесено копие от друга версия оставаше без ключа на
+    //    собствения си дневник. Измерено: 3 карти → 0.
+    //    Всички съседни условия вече пазят така (`x && x.done`, `(… || [])`).
+    //    ПЪТ НАЗАД: върни реда без `l && Array.isArray(l.items) &&`.
+    { id: 'list1', e: '✅', n: 'Готов списък', t: 'Завършен твой списък (3+ точки)', ok: () => load('bl_custom_lists', []).some(l => l && Array.isArray(l.items) && l.items.length >= 3 && l.items.every(i => i && i.done)) },
     // ── 12.4.1: +16, вкл. за стаи 8 и 9 ──
     { id: 'checkin30', e: '🌳', n: 'Месец грижа', t: '30 дни минутка за теб', ok: () => Object.keys(load('bl_checkins', {})).length >= 30 },
     // 🔴 05.08 (одит г08, №83): двата медальона се мереха по bl_journal — ключ,
@@ -479,7 +503,18 @@
   function sweepBadges() {
     const got = load('bl_badges', {});
     let fresh = null;
-    BADGES.forEach(b => { if (!got[b.id] && b.ok()) { got[b.id] = Date.now(); fresh = b; } });
+    // 🔴 25.08: БЛИЗНАКЪТ на поправката в `list1`. Оправих условието, което
+    //    гърмеше — но остана вярно, че ЕДНО криво условие сред 40 сваля цялата
+    //    стая. Метенето на медальончета е УКРАСА; кривият запис не бива да
+    //    струва на мама ключалката на дневника ѝ. Уловката НЕ Е празна: тя
+    //    връща „не е взет" и се обажда, за да не пада тихо.
+    //    ПЪТ НАЗАД: върни `if (!got[b.id] && b.ok())`.
+    BADGES.forEach(b => {
+      let взет = false;
+      try { взет = !got[b.id] && b.ok(); }
+      catch (e) { взет = false; if (window.console && console.warn) console.warn('медальонче „' + b.id + '“ не можа да се провери:', e.message); }
+      if (взет) { got[b.id] = Date.now(); fresh = b; }
+    });
     if (fresh) { save('bl_badges', got); fx().cheer(fresh.e + ' Ново медальонче: „' + fresh.n + '“!'); }
     return got;
   }

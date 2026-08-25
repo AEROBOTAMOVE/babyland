@@ -7,7 +7,12 @@
   'use strict';
 
   const load = (k, d) => { try { const v = JSON.parse(localStorage.getItem(k)); if (v == null) return d; if (Array.isArray(d) !== Array.isArray(v)) return d; if (d && typeof d === 'object' && (!v || typeof v !== 'object')) return d; return v; } catch (e) { return d; } };
-  const save = (k, v) => { try { localStorage.setItem(k, JSON.stringify(v)); } catch (e) { return false; } return true; };
+  // 🔴🔴 25.08: `save` ВРЪЩАШЕ false при провал, но от 25 места го четяха ДВЕ
+  //   (снимката на деня и коремчето). Останалите обявяваха успех и продължаваха.
+  //   Известието живее в rooms.js (BL_ZAPIS_PADNA) — тук само се вика; ако
+  //   rooms.js по някаква причина липсва, пазим същото поведение като преди.
+  //   ПЪТ НАЗАД: махаш извикването — save пак ще мълчи.
+  const save = (k, v) => { try { localStorage.setItem(k, JSON.stringify(v)); } catch (e) { if (window.BL_ZAPIS_PADNA) BL_ZAPIS_PADNA(); return false; } return true; };
   const localDate = d => d.getFullYear() + '-' + String(d.getMonth() + 1).padStart(2, '0') + '-' + String(d.getDate()).padStart(2, '0');
   const today = () => localDate(new Date());
   const el = (t, c, h) => { const n = document.createElement(t); if (c) n.className = c; if (h !== undefined) n.innerHTML = h; return n; };
@@ -68,6 +73,13 @@
   const dstr = ts => new Date(ts).toLocaleDateString('bg-BG');
   const MOODS = ['😩', '😔', '😐', '🙂', '🥰'];
   const MOODCOL = ['#8fa3c7', '#9b8fc7', '#c7b58f', '#f0a8d0', '#f291bd'];
+  // 🟠 25.08 (ИЗМЕРЕНО с повреден профил, dev/interaktivno_stai.js): чекин без
+  //    настроение (внесено чуждо копие / стара версия) даваше MOODS[undefined] и
+  //    на екрана излизаше „24: undefined“ в съзвездието и „undefined“ в реда 💜
+  //    на седмичната картинка. Същият клас rooms4.js вече го е поправил на 11.08.
+  //    ПЪТ НАЗАД: заменяш `лице(...)` пак с `MOODS[...]`.
+  const имаЛице = r => !!(r && typeof r.m === 'number' && MOODS[r.m]);
+  const лице = r => имаЛице(r) ? MOODS[r.m] : '·';
 
   // ═══════════════ 📖 ДНЕВНИКЪТ МАКС (Н3) ═══════════════
 
@@ -106,7 +118,9 @@
       for (let i = 1; i < P.length; i++) svg += `<line x1="${P[i - 1].x}" y1="${P[i - 1].y}" x2="${P[i].x}" y2="${P[i].y}" class="cs-line"/>`;
       P.forEach((p, i) => {
         const r = 2.2 + p.e / 100 * 2.6;
-        svg += `<circle cx="${p.x}" cy="${p.y}" r="${r}" fill="${MOODCOL[p.m]}" class="cs-star" style="animation-delay:${(i % 7) * 0.4}s"><title>${p.d}: ${MOODS[p.m]}</title></circle>`;
+        // 🟠 25.08: без пазач звездата излизаше с fill="undefined" (тоест черна)
+        //    и подсказка „24: undefined“. Цветът пада към средния тон.
+        svg += `<circle cx="${p.x}" cy="${p.y}" r="${r}" fill="${MOODCOL[p.m] || MOODCOL[2]}" class="cs-star" style="animation-delay:${(i % 7) * 0.4}s"><title>${p.d}: ${лице(p)}</title></circle>`;
       });
       svg += `</svg>`;
       box.innerHTML = svg +
@@ -134,7 +148,7 @@
         if (!P.length) { bubble.textContent = 'Небето още е празно — първата звезда се пали в „Как си днес“. ✨'; bubble.hidden = false; return; }
         let best = P[0], bd = Infinity;
         P.forEach(p => { const d = (p.x - vx) * (p.x - vx) + (p.y - vy) * (p.y - vy); if (d < bd) { bd = d; best = p; } });
-        bubble.innerHTML = `<strong>${best.d}-и</strong> ${MOODS[best.m]}${best.w ? ' · „' + esc(best.w) + '“' : ''}`;
+        bubble.innerHTML = `<strong>${best.d}-и</strong> ${лице(best)}${best.w ? ' · „' + esc(best.w) + '“' : ''}`;
         bubble.hidden = false; if (window.BL_FX) BL_FX.buzz(5);
       });
     }
@@ -229,7 +243,12 @@
       BL_EXPR.shrinkImage(f, 340, url => {
         photos = load('bl_dayphoto', {});   // пресен прочит ПРЕДИ записа
         photos[t] = url;
-        if (!save('bl_dayphoto', photos)) { delete photos[t]; fx().cheer('Паметта се напълни — изтрий стара снимка. 😕'); }
+        // 🔴 25.08 (прочетено в js/fx.js:93-94): `cheer` МЪЛЧИ при тежък ден
+        //    (`тъженДен()` → настроение m<=1) и при reduce-motion. Тоест точно
+        //    единственото място в този файл, което ЧЕСТНО признаваше провала,
+        //    го казваше по канал, който в лош ден не издава звук. Съобщението
+        //    вече минава през BL_ZAPIS_PADNA (модал, вижда се винаги).
+        if (!save('bl_dayphoto', photos)) { delete photos[t]; }
         else { save('bl_photo_day', t); fx().buzz(12); fx().confetti(slot, 14); if (window.refreshToday) refreshToday(); }
         draw();
       });
@@ -293,7 +312,13 @@
       items = load('bl_letters', []);   // пресен прочит ПРЕДИ записа
       items.push({ who, t: v, ts: Date.now() });
       items = items.slice(-60);
-      save('bl_letters', items); save('bl_draft_letters', '');
+      // 🔴🔴 25.08 (ИЗМЕРЕНО с пълна памет, dev/interaktivno_stai.js): полето се
+      //    изчистваше и бутонът казваше „Оставено ✔“ ДОРИ когато записът е паднал.
+      //    Писмото на мама изчезваше и от паметта, и от екрана — наведнъж.
+      //    Сега: падне ли записът, текстът си остава в полето (BL_ZAPIS_PADNA ѝ
+      //    казва защо). ПЪТ НАЗАД: махаш `if (!…) return;` и връщаш голото save.
+      if (!save('bl_letters', items)) return;
+      save('bl_draft_letters', '');
       ta.value = ''; fx().buzz(12); draw();
       tick(send, 'Оставено ✔');
     });
@@ -344,7 +369,8 @@
     undo.addEventListener('click', () => {
       const cur = load('bl_pregw', []);
       if (!cur.length) { hint(row, 'Няма какво да върна — списъкът е празен. 💜'); return; }
-      const махнат = cur.pop(); save('bl_pregw', cur);
+      const махнат = cur.pop();
+      if (!save('bl_pregw', cur)) return;   // 🔴 25.08: иначе казваше „Върнах записа…“, без да е
       items.length = 0; cur.forEach(x => items.push(x));
       clearHint(row); fx().buzz(8); draw();
       hint(row, 'Върнах записа ' + махнат.kg + ' кг. 💜');
@@ -356,7 +382,9 @@
       items = load('bl_pregw', []);   // пресен прочит ПРЕДИ записа
       items.push({ d: today(), kg: v, w: pregWeek() });
       items = items.slice(-60);
-      save('bl_pregw', items); inp.value = ''; fx().buzz(10); draw();
+      // 🔴 25.08: „✔ Записано“ + изчистено поле дори при паднал запис (виж save горе)
+      if (!save('bl_pregw', items)) return;
+      inp.value = ''; fx().buzz(10); draw();
       tick(add, '✔ Записано');
     });
     function draw() {
@@ -418,10 +446,16 @@
     SYMPTOMS.forEach(s => {
       const b = el('button', 'jr-chip' + (cur.has(s) ? ' on' : ''), s); b.type = 'button';
       b.addEventListener('click', () => {
-        if (cur.has(s)) cur.delete(s); else { cur.add(s); fx().buzz(8); }
-        b.classList.toggle('on');
+        // 🔴 25.08 (същият клас като плана за раждане): чипът светваше „on“ и
+        //    при паднал запис. Мама отбелязва симптомите за прегледа, връща се
+        //    след ден — чиповете са тъмни. Първо записът, после светването.
+        const беше = cur.has(s);
+        if (беше) cur.delete(s); else cur.add(s);
         data = load('bl_pregsym', {});   // пресен прочит ПРЕДИ записа
-        data[w] = [...cur]; save('bl_pregsym', data);
+        data[w] = [...cur];
+        if (!save('bl_pregsym', data)) { if (беше) cur.add(s); else cur.delete(s); return; }
+        if (!беше) fx().buzz(8);
+        b.classList.toggle('on');
       });
       grid.appendChild(b);
     });
@@ -450,7 +484,8 @@
       BL_EXPR.shrinkImage(f, 340, url => {
         photos = load('bl_bump', {});   // пресен прочит ПРЕДИ записа
         photos[target] = url;
-        if (!save('bl_bump', photos)) { delete photos[target]; fx().cheer('Паметта се напълни. 😕'); }
+        // виж бележката при „Снимка на деня“: cheer мълчи в тежък ден (fx.js:93)
+        if (!save('bl_bump', photos)) { delete photos[target]; }
         else fx().buzz(12);
         draw();
       });
@@ -512,7 +547,11 @@
       t.addEventListener('click', () => {
         const беше = !!state[it];
         state = load('bl_birthplan', {});   // пресен прочит ПРЕДИ записа
-        state[it] = !беше; save('bl_birthplan', state);
+        state[it] = !беше;
+        // 🔴 25.08 (ИЗМЕРЕНО с пълна памет): отметката ✔ се рисуваше и когато
+        //    записът е паднал. Мама печата листа за болницата с осем желания —
+        //    а в паметта няма нито едно. Отметката идва СЛЕД записа.
+        if (!save('bl_birthplan', state)) { state[it] = беше; return; }
         r.classList.toggle('done'); t.querySelector('.jr-check').textContent = state[it] ? '✔' : '';
         t.setAttribute('aria-pressed', state[it] ? 'true' : 'false');
         fx().buzz(8);
@@ -554,7 +593,9 @@
       const cus = load('bl_birthplan_custom', []);
       // и по видимия етикет — иначе мама преписва реда, който ЧЕТЕ, и той влиза втори път
       if (items.some(x => x.toLowerCase() === v.toLowerCase() || етикет(x).toLowerCase() === v.toLowerCase())) { nudge(addRow, 'Тази точка вече е в списъка. 💜', inp); return; }
-      cus.push(v); save('bl_birthplan_custom', cus);
+      // 🔴 25.08: картата се пресъздаваше и при паднал запис — точката на мама
+      //    изчезваше от полето И от плана. Сега остава, докато не се запише.
+      cus.push(v); if (!save('bl_birthplan_custom', cus)) return;
       inp.value = ''; fx().buzz(8); c.replaceWith(birthPlanCard());
     };
     add.addEventListener('click', добави);
@@ -609,7 +650,11 @@
       // 🔇 12.08 (мерено): празно поле → бутонът не правеше нищо и не казваше нищо.
       if (!v) { nudge(btn, 'Още е празно. Може да е само едно изречение — то ще му стигне. 💌', ta); return; }
       clearHint(btn);
-      save('bl_letter_baby', { t: v, ts: Date.now() }); save('bl_draft_letterbaby', '');
+      // 🔴🔴 25.08: най-скъпото писмо в приложението. При паднал запис картата
+      //    се пресъздаваше, черновата се триеше и се празнуваше „Запечатано с
+      //    обич 💌“ — а нищо не беше запечатано. Първо записът, после празникът.
+      if (!save('bl_letter_baby', { t: v, ts: Date.now() })) return;
+      save('bl_draft_letterbaby', '');
       fx().confetti(btn); fx().cheer('Запечатано с обич 💌');
       c.replaceWith(letterToBabyCard());
     });
@@ -639,7 +684,9 @@
       if (items.some(x => x.n.toLowerCase() === v.toLowerCase())) { nudge(addRow, 'Това име вече е горе. 💜', inp); return; }
       clearHint(addRow);
       items = load('bl_names_vote', []);   // пресен прочит ПРЕДИ записа
-      items.push({ n: v, m: 0, t: 0 }); save('bl_names_vote', items); inp.value = ''; fx().buzz(8); draw();
+      items.push({ n: v, m: 0, t: 0 });
+      if (!save('bl_names_vote', items)) return;   // 🔴 25.08: иначе името изчезва от полето
+      inp.value = ''; fx().buzz(8); draw();
     };
     add.addEventListener('click', добавиИме);
     // 12.08: на телефон клавиатурата дава „Готово/Enter“ — то не правеше нищо тук.
@@ -696,7 +743,9 @@
       if (!v) { nudge(addRow, 'Коя песен? Стига и само „Ave Maria“. 🎵', inp); return; }
       clearHint(addRow);
       items = load('bl_playlist', []);   // пресен прочит ПРЕДИ записа
-      items.push({ t: v, d: Date.now() }); save('bl_playlist', items); inp.value = ''; fx().buzz(8); draw();
+      items.push({ t: v, d: Date.now() });
+      if (!save('bl_playlist', items)) return;     // 🔴 25.08: иначе песента изчезва от полето
+      inp.value = ''; fx().buzz(8); draw();
     };
     add.addEventListener('click', добави);
     inp.addEventListener('keydown', e => { if (e.key === 'Enter') { e.preventDefault(); добави(); } });
@@ -844,7 +893,7 @@
     html += '<div class="wp-l">🍼</div>';
     days.forEach(k => { const n = nurTs.filter(ts => localDate(new Date(ts)) === k).length; html += `<div class="wp-c">${n || '·'}</div>`; });
     html += '<div class="wp-l">💜</div>';
-    days.forEach(k => { html += `<div class="wp-c">${cks[k] ? MOODS[cks[k].m] : '·'}</div>`; });
+    days.forEach(k => { html += `<div class="wp-c">${лице(cks[k])}</div>`; });   // 🟠 25.08: без пазач писа „undefined“
     html += '<div class="wp-l">📸</div>';
     days.forEach(k => { html += `<div class="wp-c">${dph[k] ? '●' : '·'}</div>`; });
     html += '</div>';
@@ -980,7 +1029,8 @@
         if (!inp.value.trim()) { if (тихо !== true) nudge(inpRow, 'Напиши какво планираш за този ден. 🥄', inp); return; }
         clearHint(inpRow);
         menu = load('bl_menu', {});   // пресен прочит ПРЕДИ записа
-        menu[key] = inp.value.trim(); save('bl_menu', menu);
+        menu[key] = inp.value.trim();
+        if (!save('bl_menu', menu)) return;        // 🔴 25.08: иначе прозорчето се затваря върху нищо
         cell.querySelector('.mn-val').textContent = menu[key];
         picker.hidden = true; fx().buzz(8);
       };
@@ -1035,9 +1085,12 @@
           <div class="jr-quick"><button class="jr-chip ${st.done ? 'on' : ''}" data-a="done" type="button">Сготвих ✓</button>
           <button class="jr-chip ${st.fav ? 'on' : ''}" data-a="fav" type="button">Любимо 💜</button></div>`;
         row.querySelectorAll('[data-a]').forEach(b => b.addEventListener('click', () => {
-          st[b.dataset.a] = !st[b.dataset.a];
+          // 🔴 25.08 (същият клас): „Сготвих ✓“ светваше и при паднал запис.
+          const беше = !!st[b.dataset.a];
+          st[b.dataset.a] = !беше;
           state = load('bl_recipes_state', {});   // пресен прочит ПРЕДИ записа
-          state[r.n] = st; save('bl_recipes_state', state);
+          state[r.n] = st;
+          if (!save('bl_recipes_state', state)) { st[b.dataset.a] = беше; return; }
           b.classList.toggle('on'); fx().buzz(8);
         }));
         list.appendChild(цели(row));
@@ -1092,7 +1145,16 @@
           if (path) { path.setAttribute('stroke', colOf(k)); path.classList.add('rb-on'); }
           if (data.cols.length === RAINBOW.length) { fx().confetti(box); fx().cheer('ЦЯЛА ДЪГА тази седмица! 🌈'); }
         }
-        save('bl_rainbow', data);
+        // 🔴 25.08 (същият клас): дъгата се оцветяваше и броячът се вдигаше и при
+        //    паднал запис — до следващото влизане в стаята. При провал връщаме
+        //    рисунката към истината, вместо да оставим цвят без памет.
+        if (!save('bl_rainbow', data)) {
+          const p2 = box.querySelector(`path[data-k="${k}"]`);
+          const истина = load('bl_rainbow', { cols: [] });
+          const има = Array.isArray(истина.cols) && истина.cols.includes(k);
+          if (p2) { p2.setAttribute('stroke', има ? colOf(k) : '#e8e2f0'); p2.classList.toggle('rb-on', има); }
+          return;
+        }
         const n = box.querySelector('.rb-count'); if (n) n.textContent = `${data.cols.length} / ${RAINBOW.length} цвята тази седмица`;
         b.classList.toggle('on', data.cols.includes(k));   // по ИСТИНАТА, не сляпо
         b.setAttribute('aria-pressed', data.cols.includes(k) ? 'true' : 'false');
@@ -1147,7 +1209,11 @@
       if (manual.some(x => String(x).toLowerCase() === v.toLowerCase())) { nudge(addRow, 'Този вече е в паспорта. 💜', inp); return; }
       clearHint(addRow);
       manual = load('bl_allergy_manual', []);   // пресен прочит ПРЕДИ записа
-      manual.push(v); save('bl_allergy_manual', manual); inp.value = ''; fx().buzz(8); draw();
+      manual.push(v);
+      // 🔴 25.08: алергенът е записан В ПАНИКА. Ако записът падне, а полето се
+      //    изчисти, мама вярва, че е в паспорта за бабата — а го няма.
+      if (!save('bl_allergy_manual', manual)) return;
+      inp.value = ''; fx().buzz(8); draw();
     };
     add.addEventListener('click', добавиАл);
     inp.addEventListener('keydown', e => { if (e.key === 'Enter') { e.preventDefault(); добавиАл(); } });
@@ -1201,7 +1267,10 @@
       clearHint(row);
       items = load('bl_temps', []);
       items.push({ v, ts: Date.now() });
-      save('bl_temps', items.slice(-80)); inp.value = ''; fx().buzz(10); draw();
+      // 🔴 25.08: температурата се мери, за да се покаже на лекаря. Тихо паднал
+      //    запис + изчистено поле = дупка точно в дните на болестта.
+      if (!save('bl_temps', items.slice(-80))) return;
+      inp.value = ''; fx().buzz(10); draw();
     });
     function draw() {
       const last = items.filter(x => Date.now() - x.ts < 7 * 86400000).slice(-20);
@@ -1243,7 +1312,10 @@
       clearHint(addRow);
       items = load('bl_meds', []);   // пресен прочит ПРЕДИ записа
       items.push({ n: v, ts: Date.now() }); items = items.slice(-60);
-      save('bl_meds', items); inp.value = ''; draw(); fx().buzz(10);
+      // 🔴 25.08: дневникът на даденото пази мама от двойна доза при уморена
+      //    глава. „✔ Записано“ без запис е точно грешката, която той предотвратява.
+      if (!save('bl_meds', items)) return;
+      inp.value = ''; draw(); fx().buzz(10);
       tick(add, '✔ Записано');
     };
     add.addEventListener('click', добавиЛек);
@@ -1338,7 +1410,9 @@
       if (!v) { nudge(addRow, dt.value ? 'Само датата не стига — напиши и какво е това. 🧸' : 'Какво имате? Напр. „физиологичен серум“.', inp); return; }
       clearHint(addRow);
       sync();
-      items.push({ n: v, exp: dt.value || '' }); save('bl_pharmacy', items); inp.value = ''; dt.value = ''; fx().buzz(8); draw();
+      items.push({ n: v, exp: dt.value || '' });
+      if (!save('bl_pharmacy', items)) return;     // 🔴 25.08: „✔“ без запис
+      inp.value = ''; dt.value = ''; fx().buzz(8); draw();
       tick(add, '✔');
     };
     add.addEventListener('click', добавиАпт);
@@ -1433,7 +1507,9 @@
       if (!v) { nudge(addRow, 'Как се казва книжката? 📖', inp); return; }
       clearHint(addRow);
       items = load('bl_books', []);   // пресен прочит ПРЕДИ записа
-      items.push({ t: v, fav: false, ts: Date.now() }); save('bl_books', items); inp.value = ''; fx().buzz(8); draw();
+      items.push({ t: v, fav: false, ts: Date.now() });
+      if (!save('bl_books', items)) return;        // 🔴 25.08: иначе заглавието изчезва от полето
+      inp.value = ''; fx().buzz(8); draw();
     };
     add.addEventListener('click', добавиКн);
     inp.addEventListener('keydown', e => { if (e.key === 'Enter') { e.preventDefault(); добавиКн(); } });
@@ -1499,7 +1575,9 @@
         if (isNaN(t)) { nudge(btn, 'Напиши и колко лева са нужни (само число). 🐷', amt); return; }
         if (t <= 0) { nudge(btn, 'Сумата трябва да е над нула. 🐷', amt); return; }
         clearHint(btn);
-        save('bl_goal', { n, target: t, saved: 0 });
+        // 🔴 25.08: при паднал запис картата се пресъздаваше празна и двете
+        //    попълнени полета (за какво + колко) изчезваха.
+        if (!save('bl_goal', { n, target: t, saved: 0 })) return;
         c.replaceWith(goalCard());
       });
       c.appendChild(inp); c.appendChild(amt); c.appendChild(btn);
@@ -1535,7 +1613,11 @@
         const свеж = load('bl_goal', null);
         if (свеж && свеж.n === g.n && свеж.target === g.target) g.saved = свеж.saved;
         const преди = g.saved;
-        g.saved = +(g.saved + v).toFixed(2); save('bl_goal', g);
+        g.saved = +(g.saved + v).toFixed(2);
+        // 🔴 25.08: лентата и „N / M лв“ се движеха и при паднал запис — картата
+        //    НЕ се пресъздава при всяко докосване (нарочно, заради анимацията),
+        //    затова фалшивото число остава до излизане от стаята.
+        if (!save('bl_goal', g)) { g.saved = преди; return; }
         назад.hidden = false; назад.__преди = преди;
         // картата вече не се пресъздава при всяко докосване — лентата се движи
         обнови();
@@ -1548,7 +1630,9 @@
       if (назад.__преди === undefined) return;
       const свеж2 = load('bl_goal', null);   // пресен прочит ПРЕДИ записа
       if (свеж2 && свеж2.n === g.n && свеж2.target === g.target) { g.saved = свеж2.saved; }
-      g.saved = назад.__преди; save('bl_goal', g);
+      const предиВръщане = g.saved;
+      g.saved = назад.__преди;
+      if (!save('bl_goal', g)) { g.saved = предиВръщане; return; }   // 🔴 25.08: виж „+N лв“ горе
       назад.hidden = true; назад.__преди = undefined;
       обнови(); fx().buzz(8);
     });
@@ -1609,9 +1693,16 @@
         //    редът отдолу, нито паметта. Мама натиска пак и пак. Сега казваме.
         w = load('bl_wardrobe', {});   // пресен прочит ПРЕДИ записа
         if (!(w[sz] || 0)) { num.textContent = '0'; обобщение.textContent = 'Размер ' + sz + ' е вече на нула — по-надолу няма. 💜'; fx().buzz(5); setTimeout(освежи, 1600); return; }
-        w[sz] = w[sz] - 1; save('bl_wardrobe', w); num.textContent = w[sz]; fx().buzz(5); освежи();
+        // 🔴 25.08: числото в квадратчето се сменяше и при паднал запис — картата,
+        //    която пази мама „да не купи пак 62“, показваше бройки, които ги няма.
+        w[sz] = w[sz] - 1; if (!save('bl_wardrobe', w)) return;
+        num.textContent = w[sz]; fx().buzz(5); освежи();
       });
-      plus.addEventListener('click', () => { w = load('bl_wardrobe', {}); w[sz] = (w[sz] || 0) + 1; save('bl_wardrobe', w); num.textContent = w[sz]; fx().buzz(6); освежи(); });
+      plus.addEventListener('click', () => {
+        w = load('bl_wardrobe', {}); w[sz] = (w[sz] || 0) + 1;
+        if (!save('bl_wardrobe', w)) return;   // 🔴 25.08: виж „−“ по-горе
+        num.textContent = w[sz]; fx().buzz(6); освежи();
+      });
       grid.appendChild(cell);
     });
     c.appendChild(grid);
@@ -1706,7 +1797,15 @@
         const нови = load('bl_art_months', []);
         const имали = new Set(нови.map(x => x && x.ts));
         const добавка = стари.filter(x => x && !имали.has(x.ts));
-        if (добавка.length && !save('bl_art_months', нови.concat(добавка))) return;  // няма памет → пробваме пак утре
+        // 🤫 25.08: този блок върви при ЗАРЕЖДАНЕ на приложението, не при
+        //    натискане на мама. Ако мине през save(), при пълна памет тя щеше да
+        //    получава модал „Не можах да го запазя“ още на отваряне — за нещо,
+        //    което не е поискала. Пише се тихо; пробва се пак утре.
+        if (добавка.length) {
+          let ок = true;
+          try { localStorage.setItem('bl_art_months', JSON.stringify(нови.concat(добавка))); } catch (e) { ок = false; }
+          if (!ок) return;
+        }
       }
       localStorage.setItem('bl_art_merged', '1');
     } catch (e) {}

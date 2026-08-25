@@ -9,7 +9,11 @@
 (function () {
   'use strict';
   const load = (k, d) => { try { const v = JSON.parse(localStorage.getItem(k)); if (v == null) return d; if (Array.isArray(d) !== Array.isArray(v)) return d; return v; } catch (e) { return d; } };
-  const save = (k, v) => { try { localStorage.setItem(k, JSON.stringify(v)); } catch (e) {} };
+  // 🔴 25.08 (ИЗМЕРЕНО, dev/broyachi_dnevnik.js П4.3): при пълна памет
+  //    `catch (e) {}` изяждаше грешката МЪЛЧЕШКОМ — измерено живо: 0 записани,
+  //    а на екрана светваше „↺ Върни последното“ върху несъществуващ запис и
+  //    нито дума защо. Записът вече казва ДА или НЕ.
+  const save = (k, v) => { try { localStorage.setItem(k, JSON.stringify(v)); } catch (e) { return false; } return true; };
   const el = (tag, cls, html) => { const n = document.createElement(tag); if (cls) n.className = cls; if (html !== undefined) n.innerHTML = html; return n; };
   const card = (titleHtml) => { const c = el('section', 'jr-card'); c.appendChild(el('h4', 'jr-title', titleHtml)); return c; };
   const hhmm = ts => { const d = new Date(ts); return String(d.getHours()).padStart(2, '0') + ':' + String(d.getMinutes()).padStart(2, '0'); };
@@ -47,6 +51,11 @@
 
     const row = el('div', 'jr-quick');
     let undoTimer = null;
+    // 🕰️ ЧАСЪТ на записа, който ТАЗИ карта е добавила. Стаята може да живее
+    //    и в скрития панел (втора нарисувана карта със същия ключ): сляпото
+    //    `log.pop()` махаше НАЙ-НОВИЯ запис, който можеше да е чужд. Връщаме
+    //    точно своя. ПЪТ НАЗАД: `log.pop()` върху пресен прочит.
+    let последенЧас = null;
     const undo = el('button', 'jr-chip', '↺ Върни последното'); undo.type = 'button'; undo.hidden = true;
     [['left', '🤱 Ляво'], ['right', '🤱 Дясно'], ['both', '🤲 Двете']].forEach(([v, lbl]) => {
       const b = el('button', 'jr-chip', lbl); b.type = 'button';
@@ -56,10 +65,17 @@
         бел.hidden = true;
         const log = load('bl_pump', []);
         const ml = ч.ml;
-        log.push({ t: Date.now(), s: v, ml: ml });
+        const запис = { t: Date.now(), s: v, ml: ml };
+        log.push(запис);
         // 🔴 г13/16: пръстенът беше 24 записа — при по три помпения на ден първите
         //   падаха мълчаливо още на четвъртия ден. 200 стигат за месеци напред.
-        save('bl_pump', log.slice(-200));
+        if (!save('bl_pump', log.slice(-200))) {
+          // мл-тата НЕ се трият от полето — има ги за втори опит
+          бел.textContent = '💛 Паметта на телефона се напълни — това изцеждане НЕ се записа. Изтрий някоя стара снимка или гласов запис и бутни пак.';
+          бел.hidden = false;
+          return;
+        }
+        последенЧас = запис.t;
         amt.value = '';
         refresh();
         if (window.BL_FX) BL_FX.buzz(6);
@@ -71,7 +87,17 @@
     c.appendChild(row);
     undo.addEventListener('click', () => {
       const log = load('bl_pump', []);
-      if (log.length) { log.pop(); save('bl_pump', log); refresh(); }
+      const i = последенЧас == null ? -1 : log.map(x => (x && x.t)).lastIndexOf(последенЧас);
+      if (i > -1) {
+        log.splice(i, 1);
+        if (!save('bl_pump', log)) {
+          бел.textContent = '💛 Паметта е пълна — не мога да махна записа сега.';
+          бел.hidden = false;
+          return;
+        }
+        последенЧас = null;
+        refresh();
+      }
       undo.hidden = true; clearTimeout(undoTimer);
     });
     c.appendChild(undo);

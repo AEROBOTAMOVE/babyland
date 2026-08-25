@@ -440,7 +440,13 @@
       if (м == null || м < 6) return null;
       return !load('bl_menu', {})[today()] ? 'Какво е менюто днес? 🥄' : null;
     },
-    'Здраве и SOS': () => (load('bl_pharmacy', []).some(x => x.exp && new Date(x.exp) < new Date()) ? 'Нещо в аптечката е изтекло ⚠️' : null),
+    // 🟠 25.08 (обход „Игри и Лаборатория", ИЗМЕРЕНО): `x.exp` без пазач за
+    //    `x` — един празен ред в аптечката (внесено копие, недописан запис) и
+    //    тук гърми TypeError. Извикването е в setTimeout без уловка, значи
+    //    подсказката просто изчезва мълчаливо за ВСЯКА стая след това.
+    //    Близнакът в hero.js:75 пази същите данни правилно (`x && x.exp`).
+    //    ПЪТ НАЗАД: върни `x.exp &&`.
+    'Здраве и SOS': () => (load('bl_pharmacy', []).some(x => x && x.exp && new Date(x.exp) < new Date()) ? 'Нещо в аптечката е изтекло ⚠️' : null),
     'Бременност': () => {
       const lmp = window.BL_EXPECT ? BL_EXPECT.lmp() : load('bl_lmp', '');
       if (!lmp) return null;

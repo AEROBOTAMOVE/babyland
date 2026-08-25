@@ -7,7 +7,32 @@
   'use strict';
 
   const load = (k, d) => { try { const v = JSON.parse(localStorage.getItem(k)); if (v == null) return d; if (Array.isArray(d) !== Array.isArray(v)) return d; if (d && typeof d === 'object' && (!v || typeof v !== 'object')) return d; return v; } catch (e) { return d; } };
-  const save = (k, v) => { try { localStorage.setItem(k, JSON.stringify(v)); } catch (e) {} };
+  // ══════════════════════════════════════════════════════════════
+  // 🔴🔴 25.08 · ПРАЗНАТА УЛОВКА — „🔒 Заключено" ВЪРХУ НИЩО
+  //
+  // Беше:  const save = (k, v) => { try { localStorage.setItem(…) } catch (e) {} };
+  //
+  // Тоест при пълна памет записът падаше ТИХО, а редът след него изписваше
+  // „🔒 Заключено. Стои само на този телефон." И — най-лошото — чистеше полето.
+  // Написаното изчезваше ДВА ПЪТИ: от паметта и от екрана. В тази стая това е
+  // дневничето, изповедалнята, писмото до себе си след година и трите минути
+  // свободно писане — най-дългите и най-личните текстове в приложението.
+  //
+  // ИЗМЕРЕНО с dev/interaktivno_jenata.js (сценарий С6, пълна памет): 76 места
+  // в петте файла на стаята обявяваха успех, който не е станал; 24 от тях и
+  // чистеха полето.
+  //
+  // ЖЕЛЯЗНОТО ПРАВИЛО ОТТУК НАТАТЪК:
+  //     ПОЛЕ СЕ ЧИСТИ САМО СЛЕД ПОТВЪРДЕН ЗАПИС.
+  // `save` връща да/не; всяко място, което чисти поле или казва „записано",
+  // го пита. При „не" редът ОСТАВА в полето и мама чува какво е станало.
+  // Същият модел като js/quickadd.js, js/pump.js и js/women4.js.
+  //
+  // ПЪТ НАЗАД: върни едноредовия `save` отгоре и махни проверките `if (!save…`.
+  // ══════════════════════════════════════════════════════════════
+  const save = (k, v) => { try { localStorage.setItem(k, JSON.stringify(v)); return true; } catch (e) { return false; } };
+  // едно изречение за всички места — казва къде Е текстът ѝ и какво да направи
+  const НЕ_СЕ_ПОБРА = 'Не можах да го запазя — паметта на телефона е пълна. Написаното ти Е ТУК, в полето: освободи малко място (видеа, стари снимки) и натисни пак. Не го трий.';
   const localDate = d => d.getFullYear() + '-' + String(d.getMonth() + 1).padStart(2, '0') + '-' + String(d.getDate()).padStart(2, '0');
   const today = () => localDate(new Date());
   const el = (t, c, h) => { const n = document.createElement(t); if (c) n.className = c; if (h !== undefined) n.innerHTML = h; return n; };
@@ -84,6 +109,32 @@
   };
   // 👆 11.08: измерено — „+“ беше 36×42. Прагът за пръст е 44×44.
   const пръст = b => { b.style.minWidth = '44px'; b.style.minHeight = '44px'; return b; };
+
+  // ══════════════════════════════════════════════════════════════
+  // 🔴 25.08 · ДЪЛГИЯТ ТЕКСТ СЕ ГУБЕШЕ, КОГАТО ТЕЛЕФОНЪТ ЗАТВОРИ ПРИЛОЖЕНИЕТО
+  //
+  // Полетата тук се пазеха САМО на `change` — тоест едва когато мама излезе от
+  // полето. Ако телефонът затвори приложението, докато тя пише (обаждане,
+  // бебето се събуди, заключен екран), `change` и `blur` НИКОГА не гърмят и
+  // написаното си отива без следа.
+  //
+  // women3.js (qmeCard, tripCard) и women5.js (родиCard) вече слушат `input` с
+  // изчакване точно заради това. Тези тук — не. ИЗМЕРЕНО с
+  // dev/interaktivno_jenata.js (сценарий С2, само `input`, без `change`):
+  // „Гардеробът СЕГА", „Мечтите ми" и „Ако имах един свободен ден" оставяха
+  // паметта празна. Един помощник за трите, за да не се разминат пак.
+  //
+  // ⚠️ Тихо при `input` (мама пише), с дума при `change`/`blur` (мама спря) —
+  //    иначе „Записано ✔" мига на всеки 600 ms и става папагал.
+  // ПЪТ НАЗАД: върни голото `x.addEventListener('change', f)` на трите места.
+  // ══════════════════════════════════════════════════════════════
+  const пази = (възел, запиши) => {
+    let ч = null;
+    възел.addEventListener('input', () => { clearTimeout(ч); ч = setTimeout(() => запиши(false), 600); });
+    възел.addEventListener('change', () => { clearTimeout(ч); запиши(true); });
+    възел.addEventListener('blur', () => { clearTimeout(ч); запиши(true); });
+    return възел;
+  };
 
   // 🔴 11.08 (обиколка по телефон, В10): една дълга дума без интервал —
   //   поставен линк, име на парфюм, каквото и да е — разпъваше картата.
@@ -195,7 +246,9 @@
       if (!v) { каз(row2, 'Полето е празно. Напиши нещо и пак натисни ➕.', inp); return; }
       const cur = чети();
       if (cur.some(x => x.t === v)) { каз(row2, '„' + v + '“ вече е в списъка ✔', inp); inp.select(); return; }
-      cur.push({ t: v }); save(key, cur); inp.value = ''; draw();
+      cur.push({ t: v });
+      if (!save(key, cur)) { каз(row2, НЕ_СЕ_ПОБРА, inp); fx().buzz(6); return; }   // полето остава пълно
+      inp.value = ''; draw();
       fx().buzz(6); каз(row2, 'Добавено ✔');
     };
     add.addEventListener('click', put);
@@ -210,7 +263,9 @@
           const cur = чети();
           // 🔴 МЪЛЧАЛИВ БУТОН: дубликат → тапът не правеше нищо видимо
           if (cur.some(x => x.t === p)) { каз(чипове, '„' + p + '“ вече е в списъка ✔'); return; }
-          cur.push({ t: p }); save(key, cur); draw(); fx().buzz(6);
+          cur.push({ t: p });
+          if (!save(key, cur)) { каз(чипове, НЕ_СЕ_ПОБРА); fx().buzz(6); return; }
+          draw(); fx().buzz(6);
           каз(чипове, 'Добавих „' + p + '“ ✔');
         });
         чипове.appendChild(b);
@@ -254,23 +309,26 @@
       // 🔴 11.08: записваше се тихо — картата не мърдаше с нито един пиксел и
       //   мама нямаше как да разбере, че размерът е приет (измерено: innerHTML
       //   не се променя). Тих знак, който сам си отива.
-      i.addEventListener('change', () => {
+      пази(i, сДума => {
         const cur = load('bl_wm_wardrobe', { sizes: {}, note: '' });   // ПРЯСНО
         if (!cur.sizes || typeof cur.sizes !== 'object') cur.sizes = {};
-        cur.sizes[k] = i.value.trim(); save('bl_wm_wardrobe', cur);
+        cur.sizes[k] = i.value.trim();
+        if (!save('bl_wm_wardrobe', cur)) { if (сДума) каз(grid, НЕ_СЕ_ПОБРА); return; }
         w.sizes = cur.sizes;
-        каз(grid, (i.value.trim() ? 'Записах „' + k + '“ ✔' : 'Изчистих „' + k + '“.'));
+        if (сДума) каз(grid, (i.value.trim() ? 'Записах „' + k + '“ ✔' : 'Изчистих „' + k + '“.'));
       });
       b.innerHTML = '<span>' + e + '</span><small>' + k + '</small>';
       b.appendChild(i); grid.appendChild(b);
     });
     c.appendChild(grid);
     const n = поле(el('textarea', 'jr-note')); n.placeholder = 'Какво ми стои добре точно сега…'; n.value = w.note || ''; n.rows = 2;
-    n.addEventListener('change', () => {
+    пази(n, сДума => {
       const cur = load('bl_wm_wardrobe', { sizes: {}, note: '' });
       if (!cur.sizes || typeof cur.sizes !== 'object') cur.sizes = {};
-      cur.note = n.value; save('bl_wm_wardrobe', cur); w.note = n.value;
-      каз(n, n.value.trim() ? 'Записано ✔' : 'Празно е — нищо не пазя.');
+      cur.note = n.value;
+      if (!save('bl_wm_wardrobe', cur)) { if (сДума) каз(n, НЕ_СЕ_ПОБРА); return; }
+      w.note = n.value;
+      if (сДума) каз(n, n.value.trim() ? 'Записано ✔' : 'Празно е — нищо не пазя.');
     });
     c.appendChild(n);
     c.appendChild(el('p', 'wm-kind', '💜 Размерът е число на етикета, не оценка за теб.'));
@@ -466,7 +524,9 @@
       if (!v) { каз(row2, 'Празно е. Напиши какво искаш и пак натисни ➕.', inp); return; }
       const cur = чети();
       if (cur.indexOf(v) > -1) { каз(row2, '„' + v + '“ вече е в списъка ✔', inp); inp.select(); return; }
-      cur.push(v); save('bl_wm_wish', cur); inp.value = ''; draw(); fx().buzz(6);
+      cur.push(v);
+      if (!save('bl_wm_wish', cur)) { каз(row2, НЕ_СЕ_ПОБРА, inp); fx().buzz(6); return; }
+      inp.value = ''; draw(); fx().buzz(6);
       каз(row2, 'Добавено ✔');
     };
     add.addEventListener('click', put);
@@ -666,7 +726,11 @@
       // 🔴 МЪЛЧАЛИВ БУТОН: празно поле → тапът не правеше НИЩО видимо
       if (!v) { каз(b, 'Полето е празно. Напиши каквото ти тежи и пак натисни 🔒.', ta); return; }
       const cur = чети();                                                // ПРЯСНО
-      cur.push({ t: v, d: today() }); save(key, cur);
+      cur.push({ t: v, d: today() });
+      // 🔴🔴 25.08: тук стоеше голо `save(key, cur); ta.value = '';` — точката,
+      //    в която дългият личен текст на мама изчезваше два пъти при пълна
+      //    памет. Полето се чисти САМО след потвърден запис.
+      if (!save(key, cur)) { каз(b, НЕ_СЕ_ПОБРА, ta); fx().buzz(6); return; }
       ta.value = ''; draw(); fx().buzz(10);
       каз(b, '🔒 Заключено. Стои само на този телефон.');
     });
@@ -742,7 +806,10 @@
       // 🔴 МЪЛЧАЛИВ БУТОН: празно поле → тапът не правеше нищо видимо
       if (!v) { каз(b, 'Още не си написала нищо. Кажи си нещо и пак натисни 💌.', ta); return; }
       const cur = чети();                                       // ПРЯСНО
-      cur.push({ t: v, d: today() }); save('bl_wm_letters', cur);
+      cur.push({ t: v, d: today() });
+      // 🔴 25.08: писмо, което мама чака 365 дни, не бива да се обяви за
+      //    „запечатано", ако не е стигнало до паметта. Полето остава пълно.
+      if (!save('bl_wm_letters', cur)) { каз(b, НЕ_СЕ_ПОБРА, ta); fx().buzz(6); return; }
       ta.value = ''; draw(); fx().confetti && fx().confetti();
       каз(b, '💌 Запечатано. Ще те чака точно година.');
     });
@@ -759,10 +826,12 @@
       w.appendChild(el('p', 'wm-qt', e + ' ' + t));
       const ta = el('textarea', 'jr-note'); ta.rows = 3; поле(ta); ta.value = d[k] || ''; ta.placeholder = 'Мечтаех…';
       // 🔴 11.08: записваше се тихо — нищо в картата не мърдаше (измерено).
-      ta.addEventListener('change', () => {
+      пази(ta, сДума => {
         const cur = load('bl_wm_dreams', { then: '', now: '' });   // ПРЯСНО
-        cur[k] = ta.value; save('bl_wm_dreams', cur); d[k] = ta.value;
-        каз(ta, ta.value.trim() ? 'Записано ✔' : 'Празно е — нищо не пазя.');
+        cur[k] = ta.value;
+        if (!save('bl_wm_dreams', cur)) { if (сДума) каз(ta, НЕ_СЕ_ПОБРА); return; }
+        d[k] = ta.value;
+        if (сДума) каз(ta, ta.value.trim() ? 'Записано ✔' : 'Празно е — нищо не пазя.');
       });
       w.appendChild(ta); grid.appendChild(w);
     });
@@ -774,9 +843,9 @@
     const c = card('Ако имах един свободен ден ☀️' + sub('попълни го · после го покажи на когото искаш'));
     const v = load('bl_wm_freeday', '');
     const ta = el('textarea', 'jr-note'); ta.rows = 4; поле(ta); ta.value = typeof v === 'string' ? v : ''; ta.placeholder = 'Ставам в… после…';
-    ta.addEventListener('change', () => {
-      save('bl_wm_freeday', ta.value);
-      каз(ta, ta.value.trim() ? 'Записано ✔ Стои си тук.' : 'Празно е — нищо не пазя.');
+    пази(ta, сДума => {
+      if (!save('bl_wm_freeday', ta.value)) { if (сДума) каз(ta, НЕ_СЕ_ПОБРА); return; }
+      if (сДума) каз(ta, ta.value.trim() ? 'Записано ✔ Стои си тук.' : 'Празно е — нищо не пазя.');
     });
     c.appendChild(ta);
     const share = el('button', 'jr-chip wm-share', '📤 Изпрати го'); share.type = 'button'; пръст(share);

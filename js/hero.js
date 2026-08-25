@@ -43,11 +43,20 @@
     try {
       const бебе = чети('bl_baby', {});
       // ваксина в идните 7 дни (rooms2 пази отметките, датите идват от възрастта)
-      const опити = (чети('bl_lab', { list: [] }).list || []).filter(x => !x.closed);
+      // 🟠 25.08 (обход „Игри и Лаборатория"): два дребни, но истински дефекта
+      //    в един ред. (1) `x => !x.closed` гърми на празен запис в списъка —
+      //    уловката отдолу го гълта и плакатът мълчаливо се връща на общия
+      //    поздрав. (2) `о.d` идва СУРОВО от паметта (тоест и от внесено
+      //    резервно копие) и влиза в `pilot.innerHTML` няколко реда по-долу —
+      //    правило 8 на къщата не прави изключение за числа. Тук е и по-лесно:
+      //    това Е число, значи се чете като число.
+      //    ПЪТ НАЗАД: върни `x => !x.closed` и `(о.d || 7)`.
+      const опити = (чети('bl_lab', { list: [] }).list || []).filter(x => x && !x.closed);
       if (опити.length) {
         const о = опити[0];
         const в = Object.keys(о.log || {}).length;
-        return 'Опитът ви: вечер ' + в + ' от ' + (о.d || 7) + ' 🔬';
+        const общо = Math.max(1, Math.min(60, Math.round(Number(о.d)) || 7));
+        return 'Опитът ви: вечер ' + в + ' от ' + общо + ' 🔬';
       }
       if (бебе.birth && window.BL_RIVER) {
         const мем = BL_RIVER.memoryFor(365) || BL_RIVER.memoryFor(180);
@@ -65,7 +74,7 @@
     try {
       const дн = new Date(), кл = дн.getFullYear() + '-' + String(дн.getMonth() + 1).padStart(2, '0') + '-' + String(дн.getDate()).padStart(2, '0');
       if (room === 'Лабораторията') {
-        const о = (чети('bl_lab', { list: [] }).list || []).filter(x => !x.closed);
+        const о = (чети('bl_lab', { list: [] }).list || []).filter(x => x && !x.closed);   // 25.08: празен запис гърмеше
         return о.length && !(о[0].log || {})[кл] ? '🔬' : '';
       }
       if (room === 'Дневник на мама') return !чети('bl_checkins', {})[кл] ? '💜' : '';

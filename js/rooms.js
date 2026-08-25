@@ -29,7 +29,26 @@
     }
     catch (e) { return d; }
   };
-  const save = (k, v) => { try { localStorage.setItem(k, JSON.stringify(v)); } catch (e) {} };
+  // 🔴🔴 25.08 (ИЗМЕРЕНО, dev/interaktivno_stai.js — 44 натискания при пълна памет):
+  //   `catch (e) {}` е ПРАЗНА уловка. Записът пада (пълна памет, частен режим),
+  //   а мама вижда „✔ Записано“, „Капсулата е запечатана 💌“, отметка до победата.
+  //   Тоест приложението ѝ казва, че помни неща, които не помни.
+  //   ⚠️ Съобщението НЕ минава през BL_FX.cheer: fx.js:93-94 мълчи при тежък ден
+  //   (`тъженДен()` → m<=1) и при reduce-motion. Точно в деня, в който тя е
+  //   отбелязала 😩, известието за загубен запис нямаше да се появи изобщо.
+  //   BL_UI.note е модал — вижда се винаги.
+  //   ПЪТ НАЗАД: махаш извикването на BL_ZAPIS_PADNA от save — старото поведение.
+  window.BL_ZAPIS_PADNA = window.BL_ZAPIS_PADNA || function () {
+    const сега = Date.now();
+    if (сега - (window._blПровалКазан || 0) < 5000) return;   // не крещи по десет пъти
+    window._blПровалКазан = сега;
+    const т = 'Паметта на телефона е пълна — това НЕ се записа. 😕\n\n'
+      + 'Освободи място (изтрий стари снимки или гласови бележки от приложението) и опитай пак. '
+      + 'Написаното си остава в полето, докато си тук.';
+    try { if (window.BL_UI && BL_UI.note) { BL_UI.note(т, { emoji: '💾', title: 'Не можах да го запазя' }); return; } } catch (e) {}
+    try { alert(т); } catch (e) {}
+  };
+  const save = (k, v) => { try { localStorage.setItem(k, JSON.stringify(v)); } catch (e) { window.BL_ZAPIS_PADNA(); return false; } return true; };
   const localDate = d => d.getFullYear() + '-' + String(d.getMonth() + 1).padStart(2, '0') + '-' + String(d.getDate()).padStart(2, '0');
   const today = () => localDate(new Date());
   const monday = () => {
@@ -46,6 +65,14 @@
 
   const MOODS = ['😩', '😔', '😐', '🙂', '🥰'];
   const MOOD_WORDS = ['Тежък ден — и това е ок. 🤗', 'По-мек ден ти желая. 💙', '„Горе-долу“ се брои. ☁️', 'Мъничко слънце! 🌤️', 'ГРЕЕШ! ✨'];
+  // 🟠 25.08 (ИЗМЕРЕНО с повреден профил, dev/interaktivno_stai.js): запис без
+  //    настроение (внесено чуждо копие, стара версия) даваше MOODS[undefined] и
+  //    на екрана на мама излизаше буквално „undefined“ — в „Месечното огледало“
+  //    и в лентата на седмицата. rooms4.js вече е поправен по същия начин на
+  //    11.08 („ИЗМЕРЕНО с чекин без личице“); тук беше останало.
+  //    ПЪТ НАЗАД: заменяш `лице(r)` пак с `MOODS[r.m]`.
+  const имаЛице = r => !!(r && typeof r.m === 'number' && MOODS[r.m]);
+  const лице = r => имаЛице(r) ? MOODS[r.m] : '·';
 
   // ── П5 CK2: живият отговор — чете вчера, серията и енергията ѝ.
   // Не етикет към емоджито, а изречение от някой, който я помни от вчера.
@@ -91,7 +118,9 @@
       if (m <= 1 && серия >= 2) return (серия + 1) + ' поредни дни идваш при себе си — дори когато е тежко. Това е сила. 💜';
       if (m >= 3 && серия >= 5) return MOOD_WORDS[m] + ' Ден ' + (серия + 1) + ' поред за теб.';
     } catch (e) {}
-    return MOOD_WORDS[m];
+    // 🟠 25.08: при непознато настроение връщаше undefined и в „Как си днес“
+    //    се изписваше буквално „undefined“ на мястото на топлия отговор.
+    return MOOD_WORDS[m] || 'Добре че си тук. 💜';
   }
 
   // ═══════════════ 📖 ДНЕВНИКЪТ НА МАМА ═══════════════
@@ -186,7 +215,17 @@
       if (m === undefined) { reply.textContent = 'Първо си избери личице 😊'; return; }
       checkins = load('bl_checkins', {});   // пресен прочит ПРЕДИ записа
       checkins[t] = { m, e: +range.value, w: word.value.trim() };
-      save('bl_checkins', checkins);
+      // 🔴🔴 25.08 (ИЗМЕРЕНО с пълна памет): това е ЯДРОТО на приложението —
+      //    минутката за мама. Бутонът казваше „Записано! 💜“, пускаше конфети и
+      //    рисуваше звездата в седмицата ДОРИ когато записът е паднал. Мама с
+      //    натрупани 40 дни серия щеше да види как денят ѝ „се записва“ и
+      //    изчезва. Празникът и седмицата идват СЛЕД записа.
+      //    ПЪТ НАЗАД: махаш `if (!…) { … return; }` и връщаш голото save.
+      if (!save('bl_checkins', checkins)) {
+        delete checkins[t];
+        reply.textContent = 'Не можах да го запазя — виж съобщението горе. Личицето ти още е избрано, опитай пак. 💜';
+        return;
+      }
       // П5 CK4: празнуваме слънцето, ПРЕГРЪЩАМЕ тъгата (без конфети върху тежък ден)
       const тихо = matchMedia('(prefers-reduced-motion: reduce)').matches;
       if (!тихо && window.BL_FX) {
@@ -239,7 +278,10 @@
         const d = new Date(); d.setDate(d.getDate() - i);
         const key = localDate(d);
         const rec = checkins[key];
-        const cell = el('button', 'jr-day' + (key === t ? ' today' : '') + (rec ? ' ck-d' + rec.m : ''), rec ? MOODS[rec.m] : '·');
+        // 🟠 25.08: при запис без настроение класът ставаше „ck-dundefined“, а
+        //    съдържанието — undefined (el() пропуска html===undefined → празна
+        //    кутийка). Денят се показва като неотбелязан, което той и е.
+        const cell = el('button', 'jr-day' + (key === t ? ' today' : '') + (имаЛице(rec) ? ' ck-d' + rec.m : ''), лице(rec));
         cell.type = 'button';
         // ♿ 11.08 (клавиатура-четец): подсказката беше суровата дата „2026-08-11",
         //    а навсякъде другаде в стаята датите са по нашенски. Седемте кутийки
@@ -393,10 +435,18 @@
           } else махни();
           return;
         }
-        if (doneToday.has(label)) doneToday.delete(label); else doneToday.add(label);
+        const бешеОтметнато = doneToday.has(label);
+        if (бешеОтметнато) doneToday.delete(label); else doneToday.add(label);
         winsByDay = load('bl_wins', {});   // пресен прочит ПРЕДИ записа
         winsByDay[t] = [...doneToday];
-        save('bl_wins', winsByDay);
+        // 🔴 25.08 (ИЗМЕРЕНО с пълна памет): отметката ✔ се рисуваше и при паднал
+        //    запис. „Месечното огледало“ отдолу брои същия ключ — мама виждаше
+        //    шест отметнати победи горе и „Малки победи: 0“ долу, на един екран.
+        //    При провал връщаме и паметта в главата, и вида на реда.
+        if (!save('bl_wins', winsByDay)) {
+          if (бешеОтметнато) doneToday.add(label); else doneToday.delete(label);
+          return;
+        }
         row.classList.toggle('done');
         row.querySelector('.jr-check').textContent = doneToday.has(label) ? '✔' : '';
         if (doneToday.has(label)) { row.classList.add('pop'); setTimeout(() => row.classList.remove('pop'), 500); }
@@ -412,17 +462,40 @@
     addInp.type = 'text'; addInp.maxLength = 60; addInp.placeholder = 'Добави своя победа…';
     const addBtn = el('button', 'jr-chip', '+ Добави');
     addBtn.type = 'button';
-    addBtn.addEventListener('click', () => {
+    // 🔇 25.08 (ИЗМЕРЕНО с натискане, dev/interaktivno_stai.js): при празно поле
+    //    `if (!v) return;` правеше НУЛА промяна в екрана и НУЛА в паметта —
+    //    мълчалив бутон. Точно този клас беше изчистен в rooms3.js на 12.08
+    //    (единайсет бутона, вж. nudge() там), но тук беше останал. И „Enter“ от
+    //    телефонната клавиатура не работеше — само тапът по „+ Добави“.
+    //    ПЪТ НАЗАД: връщаш `if (!v) return;` и махаш реда с keydown.
+    const хинтПобеда = el('p', 'jr-hint', '');
+    const добавиПобеда = () => {
       const v = addInp.value.trim();
-      if (!v) return;
+      if (!v) {
+        хинтПобеда.textContent = 'Напиши своята победа — колкото и малка да ти се струва. 💜';
+        try { addInp.focus({ preventScroll: true }); } catch (e) { try { addInp.focus(); } catch (e2) {} }
+        if (window.BL_FX) BL_FX.buzz(6);
+        return;
+      }
       customWins = load('bl_wins_custom', []);   // пресен прочит ПРЕДИ записа
+      if (customWins.some(x => String(x).toLowerCase() === v.toLowerCase())) {
+        хинтПобеда.textContent = 'Тази вече е в списъка ти. 💜';
+        try { addInp.focus({ preventScroll: true }); } catch (e) {}
+        return;
+      }
       customWins.push(v);
-      save('bl_wins_custom', customWins);
+      // 🔴 25.08: при паднал запис редът се появяваше на екрана и полето се
+      //    изчистваше — победата изглеждаше добавена, а я нямаше в паметта.
+      if (!save('bl_wins_custom', customWins)) return;
+      хинтПобеда.textContent = '';
       list.appendChild(winRow(v, true));
       addInp.value = '';
-    });
+    };
+    addBtn.addEventListener('click', добавиПобеда);
+    addInp.addEventListener('keydown', e => { if (e.key === 'Enter') { e.preventDefault(); добавиПобеда(); } });
     addRow.appendChild(addInp); addRow.appendChild(addBtn);
     c3.appendChild(addRow);
+    c3.appendChild(хинтПобеда);   // причината стои ПОД реда, до който се отнася
     root.appendChild(c3);
 
     /* ── 4. Скъсай листа 💥 ── */
@@ -432,6 +505,11 @@
     const ta = el('textarea', 'jr-paper');
     ta.placeholder = 'Ядът, страхът, умората… напиши ги. После ги скъсваме заедно.';
     ta.rows = 5;
+    // 🔒 ЕДИНСТВЕНОТО поле в стаите БЕЗ чернова — и то НАРОЧНО. Заглавието
+    //    обещава „никой никога няма да го прочете“; чернова в localStorage би
+    //    направила точно обратното. Отбелязано изрично, за да не го „поправи“
+    //    следващият одит по навик (dev/interaktivno_stai.js чете този флаг).
+    ta.dataset.bezChernova = '1';
     stage.appendChild(ta);
     c4.appendChild(stage);
     const tearBtn = el('button', 'jr-btn jr-tearbtn', 'СКЪСАЙ ГО! 💥');
@@ -538,21 +616,40 @@
     });
     c7.appendChild(capType);
     const capText = el('textarea', 'jr-paper'); capText.rows = 4; capText.placeholder = 'Скъпо мое… (напиши каквото сърцето ти диктува)';
+    // 🔴 25.08: най-дългият текст в тази стая нямаше НИКАКВА чернова. Мама пише
+    //    писмо до бебето си, някой я вика, тя затваря стаята — и текстът го няма.
+    //    Съседните полета (писмата в rooms3.js:284, бележката за прегледа) отдавна
+    //    пазят чернова през `data-draft` (daily.js:513 записва на всяко писане).
+    //    ПЪТ НАЗАД: махаш двата реда по-долу и реда `save('bl_draft_capsule','')`.
+    capText.dataset.draft = 'bl_draft_capsule';
+    capText.value = load('bl_draft_capsule', '');
     c7.appendChild(capText);
     const sealBtn = el('button', 'jr-btn', 'Запечатай капсулата 💌'); sealBtn.type = 'button';
+    const capHint = el('p', 'jr-hint', '');
     const capList = el('div', 'jr-caplist');
     sealBtn.addEventListener('click', () => {
       const txt = capText.value.trim();
-      if (!txt) return;
+      // 🔇 25.08 (ИЗМЕРЕНО): празно поле → бутонът правеше НИЩО и не казваше нищо.
+      if (!txt) {
+        capHint.textContent = 'Още е празно. Може да е само едно изречение — то ще му стигне. 💌';
+        try { capText.focus({ preventScroll: true }); } catch (e) { try { capText.focus(); } catch (e2) {} }
+        if (window.BL_FX) BL_FX.buzz(6);
+        return;
+      }
+      capHint.textContent = '';
       const unlock = toWhom === 'self' ? localDate(new Date(Date.now() + 365 * 86400000)) : t;
       capsules = load('bl_capsules', []);   // пресен прочит ПРЕДИ записа
       capsules.push({ to: toWhom, text: txt, sealed: t, unlock });
-      save('bl_capsules', capsules);
+      // 🔴🔴 25.08: полето се изчистваше и се празнуваше „Капсулата е запечатана“
+      //    ДОРИ когато записът е паднал — писмото изчезваше и от паметта, и от
+      //    екрана. Празникът идва СЛЕД записа, не вместо него.
+      if (!save('bl_capsules', capsules)) return;
+      save('bl_draft_capsule', '');
       capText.value = '';
       if (window.BL_FX) { BL_FX.confetti(sealBtn); BL_FX.cheer('Капсулата е запечатана 💌'); }
       drawCaps();
     });
-    c7.appendChild(sealBtn); c7.appendChild(capList);
+    c7.appendChild(sealBtn); c7.appendChild(capHint); c7.appendChild(capList);
     function drawCaps() {
       capsules = load('bl_capsules', []);   // пресен прочит при всяко рисуване
       if (!capsules.length) { capList.innerHTML = '<p class="jr-privacy">Още няма капсули. Напиши първата — сълзи гарантирани след време. 🥹</p>'; return; }
@@ -582,15 +679,18 @@
       const now = new Date(), ym = now.getFullYear() + '-' + String(now.getMonth() + 1).padStart(2, '0');
       const cks = load('bl_checkins', {});
       const days = Object.keys(cks).filter(k => k.startsWith(ym));
-      const moods = days.map(k => cks[k].m);
+      // 🟠 25.08 (ИЗМЕРЕНО): един запис без настроение правеше средното NaN и
+      //    редът пишеше „Средно настроение undefined“, а вълната — „undefined 🙂“.
+      //    Броим само истинските лица; денят пак се брои за „минутка за теб“.
+      const moods = days.filter(k => имаЛице(cks[k])).map(k => cks[k].m);
       const avg = moods.length ? (moods.reduce((a, b) => a + b, 0) / moods.length) : null;
-      const wave = days.slice(-14).map(k => ['😩', '😔', '😐', '🙂', '🥰'][cks[k].m]).join(' ');
+      const wave = days.slice(-14).map(k => лице(cks[k])).join(' ');
       const me = load('bl_metime', { minutes: 0 });
       const winsAll = load('bl_wins', {});
       const winCount = Object.keys(winsAll).filter(k => k.startsWith(ym)).reduce((a, k) => a + winsAll[k].length, 0);
       mirror.innerHTML =
         `<div class="jr-mrow"><span>Минутки за теб този месец</span><strong>${days.length}</strong></div>` +
-        (avg !== null ? `<div class="jr-mrow"><span>Средно настроение</span><strong>${['😩', '😔', '😐', '🙂', '🥰'][Math.round(avg)]}</strong></div>` : '') +
+        (avg !== null ? `<div class="jr-mrow"><span>Средно настроение</span><strong>${MOODS[Math.round(avg)] || '·'}</strong></div>` : '') +
         (wave ? `<div class="jr-wave">${wave}</div>` : '') +
         `<div class="jr-mrow"><span>„Мое време“ (седмица)</span><strong>${me.minutes} мин</strong></div>` +
         `<div class="jr-mrow"><span>Малки победи</span><strong>${winCount}</strong></div>` +

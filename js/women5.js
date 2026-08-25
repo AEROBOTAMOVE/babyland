@@ -55,9 +55,12 @@
       if (поле !== 'ticked') st.ticked = св.ticked;
       if (поле !== 'when') st.when = св.when || '';
       if (поле !== 'own') { st.own.length = 0; св.own.forEach(x => st.own.push(x)); }
-      save('bl_wm_visit', { ticked: st.ticked, own: st.own, when: st.when });
+      return save('bl_wm_visit', { ticked: st.ticked, own: st.own, when: st.when });   // 25.08: върдиктът нагоре
     };
     const знПр = знак();
+    // 🔴 25.08: листът за кабинета е нещо, което мама носи СЪС СЕБЕ СИ.
+    //    Обявим ли го за записан, без да е — тя отива на преглед с празни ръце.
+    const НЕ_СЕ_ПОБРА_ПР = 'Не можах да го запазя — паметта на телефона е пълна. Отметката НЕ е приета: освободи малко място (видеа, стари снимки) и я сложи пак.';
 
     const кутия = el('div', 'wm-sent');
     ИЗРЕЧЕНИЯ.forEach(т => {
@@ -67,7 +70,14 @@
       б.addEventListener('click', () => {
         const i = st.ticked.indexOf(т);
         if (i >= 0) st.ticked.splice(i, 1); else st.ticked.push(т);
-        запази('ticked'); б.classList.toggle('done');
+        // 🔴 25.08: отметката се рисуваше БЕЗУСЛОВНО. При пълна памет
+        //    изречението светваше „✔", а листът за кабинета оставаше празен —
+        //    мама отива на преглед с лист, който го няма. Връщаме отметката.
+        if (!запази('ticked')) {
+          if (i >= 0) st.ticked.push(т); else st.ticked.splice(st.ticked.indexOf(т), 1);
+          знПр.кажи(НЕ_СЕ_ПОБРА_ПР, 7000); fx().buzz(6); return;
+        }
+        б.classList.toggle('done');
         б.querySelector('.jr-check').textContent = st.ticked.indexOf(т) >= 0 ? '✔' : '';
         fx().buzz(8);
       });
@@ -83,7 +93,10 @@
     ОТКОГА.forEach(о => {
       const б = el('button', 'jr-chip' + (st.when === о ? ' on' : ''), о); б.type = 'button'; пръст(б, 0, 44);
       б.addEventListener('click', () => {
-        st.when = st.when === о ? '' : о; запази('when');
+        const беше = st.when;
+        st.when = st.when === о ? '' : о;
+        // 🔴 25.08: „Отбелязах: от месеци." се казваше и когато записът е паднал
+        if (!запази('when')) { st.when = беше; знПр.кажи(НЕ_СЕ_ПОБРА_ПР, 7000); fx().buzz(6); return; }
         редОт.querySelectorAll('.jr-chip').forEach(x => x.classList.remove('on'));
         if (st.when) б.classList.add('on');
         // 🔇 при ВТОРИ тап чипът само угасваше — на екрана изглежда като „нищо“
@@ -134,7 +147,10 @@
       const ev = load('bl_events', []);        // ✅ чете се ПРЯСНО вътре в слушателя
       const id = 'e' + Date.now();
       ev.push({ id: id, t: 'Моят преглед', d: дата.value, e: '🩺' });
-      save('bl_events', ev);
+      // 🔴 25.08: тук стоеше голо `save(...)` и веднага след него „✔ В календара"
+      //    + `дата.value = ''`. При пълна памет прегледът НЕ влизаше в календара,
+      //    а мама си мислеше, че е записан — и датата ѝ се изтриваше от полето.
+      if (!save('bl_events', ev)) { знПр.кажи(НЕ_СЕ_ПОБРА, 7000); fx().buzz(6); return; }   // датата остава
       последноСъбитие = id;
       знПр.кажи('Прегледът ти е в календара за ' + дата.value + '. ✓', 5000);
       дата.value = '';
@@ -300,7 +316,8 @@
     c.appendChild(el('p', 'jr-privacy',
       'Не „когато стане“. Вечер с дата. Разликата между двете е, че едната се случва.'));
     const st = load('bl_wm_evening', { date: '', what: '', done: [] });
-    const запази = () => save('bl_wm_evening', st);
+    const запази = () => save('bl_wm_evening', st);   // 25.08: върдиктът се ползва в `пази`
+    const НЕ_ПОБРА = 'Не можах да го запазя — паметта на телефона е пълна. Написаното ти Е ТУК: освободи малко място и натисни пак.';
 
     const ред = el('div', 'jr-addrow');
     const дата = el('input', 'jr-word'); дата.type = 'date'; дата.min = today(); дата.value = st.date || '';
@@ -322,8 +339,21 @@
         : н === 0 ? '<strong>Днес.</strong> ' + esc(st.what || 'Тръгвай.')
         : 'Тази вечер вече мина' + (st.what ? ' — <strong>' + esc(st.what) + '</strong>' : '') + '. Сложи нова дата, когато си готова.';
     };
-    const пази = () => { st.date = дата.value; st.what = какво.value.trim().slice(0, 60); запази(); рисувай(); };
-    дата.addEventListener('change', пази); какво.addEventListener('change', пази); какво.addEventListener('blur', пази);
+    // 🔴 25.08: `запази()` се викаше и се изхвърляше, а `рисувай()` веднага
+    //    изписваше „Записах <какво>". При пълна памет това е обещание върху
+    //    нищо — вечерта, която картата обещава, не е записана никъде.
+    const пази = () => {
+      st.date = дата.value; st.what = какво.value.trim().slice(0, 60);
+      if (!запази()) { линия.textContent = НЕ_ПОБРА; return; }
+      рисувай();
+    };
+    дата.addEventListener('change', пази);
+    // 🔴 25.08: „какво" се пазеше само на `change`/`blur` — губеше се, ако
+    //    телефонът затвори приложението, докато мама пише.
+    let дебК = null;
+    какво.addEventListener('input', () => { clearTimeout(дебК); дебК = setTimeout(пази, 600); });
+    какво.addEventListener('change', () => { clearTimeout(дебК); пази(); });
+    какво.addEventListener('blur', () => { clearTimeout(дебК); пази(); });
     c.appendChild(ред); c.appendChild(линия); рисувай();
 
     const идеи = el('div', 'nl-ideas');
@@ -486,7 +516,7 @@
     let предишноИме = null;
     const сп = списък({
       данни: st,
-      запази: () => { save('bl_wm_hora', st); б.hidden = !st.length; if (!st.length) { изх.innerHTML = ''; изх.hidden = true; } },
+      запази: () => { const ок = save('bl_wm_hora', st); б.hidden = !st.length; if (!st.length) { изх.innerHTML = ''; изх.hidden = true; } return ок; },
       подкана: 'име…',
       подсказки: НИШКА_ЧИПОВЕ, отмятане: true,
       празно: 'Тук още е празно. Едно име стига за начало.'
@@ -612,9 +642,12 @@
     //    следа. Сега се записва и докато пише, с изчакване, и го казва.
     const знР = знак();
     let ч = 0;
-    const пази = () => { st.t = т.value.slice(0, 4000); save('bl_wm_birthstory', st); };
-    т.addEventListener('input', () => { clearTimeout(ч); ч = setTimeout(() => { пази(); знР.кажи('Записано. ✓'); }, 1000); });
-    т.addEventListener('change', () => { clearTimeout(ч); пази(); знР.кажи('Записано. ✓'); });
+    // 🔴 25.08: разказът за раждането е до 4000 знака — най-дългият текст в
+    //    стаята. „Записано. ✓" се изписваше безусловно; сега пита записа.
+    const НЕ_ПОБРА = 'Не можах да го запазя — паметта на телефона е пълна. Разказът ти Е ТУК, в полето: освободи малко място и не го трий.';
+    const пази = () => { st.t = т.value.slice(0, 4000); return save('bl_wm_birthstory', st); };
+    т.addEventListener('input', () => { clearTimeout(ч); ч = setTimeout(() => { знР.кажи(пази() === false ? НЕ_ПОБРА : 'Записано. ✓', 7000); }, 1000); });
+    т.addEventListener('change', () => { clearTimeout(ч); знР.кажи(пази() === false ? НЕ_ПОБРА : 'Записано. ✓', 7000); });
     c.appendChild(т); c.appendChild(знР.възел);
     c.appendChild(el('p', 'lb-kind',
       '💜 Ако не е минало както си искала — това е загуба и има право да се тъгува. Не е нужно да си благодарна за всичко.'));

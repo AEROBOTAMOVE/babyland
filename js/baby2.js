@@ -107,12 +107,67 @@
       'Записите в стаите (тегло, сън, зъбки, храни) са едни — не се делят по деца. Възрастта и ваксините тук са само за ' + (имеИма ? esc(b2.name) : 'второто дете') + '.'));
 
     const ред = el('div', 'jr-addrow');
+    // ── „Промени": инлайн поле, НЕ системен prompt ──
+    // 🔴 25.08 — какво имаше тук и защо беше счупено на ДВЕ места:
+    //   1) Два сурови prompt(). В режим „приложение" (иконка на екрана)
+    //      системната кутия на част от телефоните ИЗОБЩО не се показва —
+    //      мама натиска „Промени" и не се случва нищо. Същото е записано в
+    //      js/rooms17.js и js/wisdom2.js, където вече е поправено по този
+    //      модел; тази карта е останала последната със сурови prompt-ове.
+    //   2) По-тежкото: датата се пишеше на ръка и минаваше през
+    //      /^\d{4}-\d{2}-\d{2}$/. Напише ли мама „25.08.2026" или „2026-8-5",
+    //      проверката не пасва и полето става ПРАЗНО — рождената дата на
+    //      второто дете се ИЗТРИВА без нито една дума, а с нея изчезват
+    //      възрастта и целият ваксинационен календар. Тя е натиснала
+    //      „промени име", а е загубила датата.
+    //   Полето type=date маха и двата проблема наведнъж: календарът на
+    //   телефона не връща невалиден формат, така че няма какво да се изтрие.
+    // ПЪТ НАЗАД: блокът е самостоятелен; връщането на двата prompt-а
+    //   възстановява точно старото поведение.
     const ред1 = el('button', 'jr-chip', '✏️ Промени'); ред1.type = 'button';
     ред1.addEventListener('click', () => {
-      const н = prompt('Име:', b2.name || ''); if (н == null) return;
-      const д = prompt('Дата на раждане (ГГГГ-ММ-ДД, празно ако го чакате):', b2.birth || ''); if (д == null) return;
-      save('bl_baby2', Object.assign({}, b2, { name: (н.trim() || b2.name).slice(0, 24), birth: /^\d{4}-\d{2}-\d{2}$/.test(д.trim()) ? д.trim() : '' }));
-      c.replaceWith(картаВторо());
+      const старо = c.querySelector('.b2-edit');
+      if (старо) { старо.remove(); ред1.setAttribute('aria-expanded', 'false'); return; }   // втори тап затваря
+      ред1.setAttribute('aria-expanded', 'true');
+      const w = el('div', 'b2-edit b2-form');
+
+      const име = el('input', 'jr-word');
+      име.placeholder = 'Как се казва?'; име.maxLength = 24; име.value = b2.name || '';
+      име.setAttribute('aria-label', 'Име на второто дете');
+
+      const дата = el('input', 'jr-word'); дата.type = 'date';
+      дата.value = /^\d{4}-\d{2}-\d{2}$/.test(b2.birth || '') ? b2.birth : '';
+      дата.setAttribute('aria-label', 'Рождена дата (или очаквана)');
+
+      const пол = el('div', 'b2-sex');
+      let избран = b2.sex || 'girl';
+      [['girl', '👧 момиче'], ['boy', '👦 момче'], ['wait', '🤰 чакаме го']].forEach(([v, т]) => {
+        const b = el('button', 'jr-chip' + (v === избран ? ' b2-on' : ''), т); b.type = 'button';
+        b.addEventListener('click', () => { избран = v; пол.querySelectorAll('.jr-chip').forEach(x => x.classList.remove('b2-on')); b.classList.add('b2-on'); });
+        пол.appendChild(b);
+      });
+
+      const греш = el('p', 'prof-err');
+      const запази = el('button', 'jr-btn', '💾 Запази'); запази.type = 'button';
+      const откажи = el('button', 'jr-chip', 'Откажи'); откажи.type = 'button';
+      откажи.addEventListener('click', () => { w.remove(); ред1.setAttribute('aria-expanded', 'false'); ред1.focus(); });
+
+      запази.addEventListener('click', () => {
+        const n = име.value.trim();
+        // същото правило като при добавянето: стига ЕДНОТО от двете
+        if (!n && !дата.value) { греш.textContent = 'Стига ми името ИЛИ датата — което вече имате 💛'; return; }
+        // 🪤 запазваме ОСТАНАЛИТЕ полета (sex, d — деня на добавяне), иначе
+        //    „промених само името" изтрива кога сме се запознали с него
+        save('bl_baby2', Object.assign({}, b2, { name: n.slice(0, 24), birth: дата.value || '', sex: избран }));
+        fx().cheer('Записано 💜');
+        c.replaceWith(картаВторо());
+      });
+
+      const бут = el('div', 'jr-addrow');
+      бут.appendChild(запази); бут.appendChild(откажи);
+      w.appendChild(име); w.appendChild(дата); w.appendChild(пол); w.appendChild(бут); w.appendChild(греш);
+      c.appendChild(w);
+      try { име.focus(); } catch (e) {}
     });
     const ред2 = el('button', 'jr-chip', '🗑 Премахни'); ред2.type = 'button';
     ред2.addEventListener('click', () => {

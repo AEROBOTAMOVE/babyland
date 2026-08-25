@@ -11,7 +11,11 @@
   'use strict';
 
   const load = (k, d) => { try { const v = JSON.parse(localStorage.getItem(k)); if (v == null) return d; if (Array.isArray(d) !== Array.isArray(v)) return d; if (d && typeof d === 'object' && (!v || typeof v !== 'object')) return d; return v; } catch (e) { return d; } };
-  const save = (k, v) => { try { localStorage.setItem(k, JSON.stringify(v)); } catch (e) {} };
+  // 🔴 25.08 · ПРАЗНА УЛОВКА — виж дългата бележка в women2.js.
+  //    ЖЕЛЯЗНО: поле се чисти САМО след потвърден запис.
+  //    ПЪТ НАЗАД: върни `catch (e) {}` без `return false`.
+  const save = (k, v) => { try { localStorage.setItem(k, JSON.stringify(v)); return true; } catch (e) { return false; } };
+  const НЕ_СЕ_ПОБРА = 'Не можах да го запазя — паметта на телефона е пълна. Написаното ти Е ТУК, в полето: освободи малко място (видеа, стари снимки) и натисни пак. Не го трий.';
   const localDate = d => d.getFullYear() + '-' + String(d.getMonth() + 1).padStart(2, '0') + '-' + String(d.getDate()).padStart(2, '0');
   const today = () => localDate(new Date());
   const el = (t, c, h) => { const n = document.createElement(t); if (c) n.className = c; if (h !== undefined) n.innerHTML = h; return n; };
@@ -482,22 +486,31 @@
       const d = new Date(b);
       return !isNaN(d) && d <= new Date() && d.getFullYear() >= 1920;
     };
-    const sync = () => {
+    const sync = (сДума) => {
       if (!валидна(dt.value)) {
-        каз(out, 'Тази дата не се връзва — рождената ти дата е в миналото. Провери годината. 💜', dt);
-        dt.value = load('bl_me', {}).birth || '';
+        // при тихото писане не крещим — само не записваме кривата дата
+        if (сДума) { каз(out, 'Тази дата не се връзва — рождената ти дата е в миналото. Провери годината. 💜', dt); dt.value = load('bl_me', {}).birth || ''; }
         return;
       }
-      save('bl_me', { name: nm.value.trim(), birth: dt.value });
+      if (!save('bl_me', { name: nm.value.trim(), birth: dt.value })) { if (сДума) каз(out, НЕ_СЕ_ПОБРА, nm); return; }   // 25.08
       draw();
       // НЕ render() — виж бележката при `зависима`. Пречертават се само трите
       // карти, които наистина четат bl_me; останалите 57 (и недописаният в тях
       // текст на мама) не се пипат.
       освежиЗависимите();
       имеРед();
-      каз(out, dt.value || nm.value.trim() ? 'Записано ✔ — стои само на този телефон.' : 'Полетата са празни. Нищо не е записано.');
+      if (сДума) каз(out, dt.value || nm.value.trim() ? 'Записано ✔ — стои само на този телефон.' : 'Полетата са празни. Нищо не е записано.');
     };
-    nm.addEventListener('change', sync); dt.addEventListener('change', sync);
+    // 🔴 25.08: името се пазеше САМО на `change`. Затвори ли телефонът
+    //    приложението, докато мама го пише, то се губи — а от него зависи
+    //    целият поздрав на стаята („Добро утро, {име}. Не «мамо». {име}.").
+    //    Тихо при писане, с дума при излизане от полето. ПЪТ НАЗАД: върни
+    //    `nm.addEventListener('change', sync)` и махни `дебИме`.
+    let дебИме = null;
+    nm.addEventListener('input', () => { clearTimeout(дебИме); дебИме = setTimeout(() => sync(false), 600); });
+    nm.addEventListener('change', () => { clearTimeout(дебИме); sync(true); });
+    nm.addEventListener('blur', () => { clearTimeout(дебИме); sync(true); });
+    dt.addEventListener('change', () => sync(true));
     c.appendChild(row); c.appendChild(out); draw();
 
     // ═══ 💃 29.07: КАК ДА ТЕ НАРИЧАМ ═══
@@ -520,11 +533,17 @@
     const гал = el('input', 'jr-word');
     гал.placeholder = 'Как те викаха, когато беше само ти…'; гал.maxLength = 24;
     гал.value = load(ГАЛЕНО, { n: '' }).n || '';
-    гал.addEventListener('change', () => {
-      save(ГАЛЕНО, { n: гал.value.trim().slice(0, 24) });
+    // 🔴 25.08: галеното име също се пазеше само на `change`. То е буквално
+    //    „как да те наричам" — най-скъпото за губене поле в стаята.
+    const пазиГал = сДума => {
+      if (!save(ГАЛЕНО, { n: гал.value.trim().slice(0, 24) })) { if (сДума) каз(редГал, НЕ_СЕ_ПОБРА, гал); return; }
       имеРед();
-      каз(редГал, гал.value.trim() ? 'Записано ✔ Оттук нататък така ще ти казвам.' : 'Изчистено. Ще ползвам името ти, ако си го дала.');
-    });
+      if (сДума) каз(редГал, гал.value.trim() ? 'Записано ✔ Оттук нататък така ще ти казвам.' : 'Изчистено. Ще ползвам името ти, ако си го дала.');
+    };
+    let дебГал = null;
+    гал.addEventListener('input', () => { clearTimeout(дебГал); дебГал = setTimeout(() => пазиГал(false), 600); });
+    гал.addEventListener('change', () => { clearTimeout(дебГал); пазиГал(true); });
+    гал.addEventListener('blur', () => { clearTimeout(дебГал); пазиГал(true); });
     редГал.appendChild(гал);
     const пак = el('button', 'jr-chip jr-chip-soft', '↻ Още веднъж'); пак.type = 'button'; пръст(пак);
     let бр = 0;
@@ -668,7 +687,11 @@
         // 🔴 МЪЛЧАЛИВ БУТОН: празно поле → тапът не правеше нищо видимо.
         if (!v) { каз(row, 'Напиши си желанието и пак натисни ✨ — новолунието е точно за това.', i); return; }
         const w = load('bl_moonwish', []);
-        w.push({ t: v, d: today() }); save('bl_moonwish', w);
+        w.push({ t: v, d: today() });
+        // 🔴 25.08: тук стоеше голо `save(...); i.value = '';` — при пълна памет
+        //    желанието на мама изчезваше и от паметта, и от полето, а тя четеше
+        //    „Записано ✨". Полето се чисти САМО след потвърден запис.
+        if (!save('bl_moonwish', w)) { каз(row, НЕ_СЕ_ПОБРА, i); fx().buzz(6); return; }
         i.value = ''; желания(); назад.hidden = false;
         fx().confetti && fx().confetti();
         каз(row, 'Записано ✨ Само тук, само за теб.');

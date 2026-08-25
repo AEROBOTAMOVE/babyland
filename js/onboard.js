@@ -5,7 +5,16 @@
   'use strict';
   const $ = id => document.getElementById(id);
   const load = (k, d) => { try { const v = JSON.parse(localStorage.getItem(k)); if (v == null) return d; if (Array.isArray(d) !== Array.isArray(v)) return d; if (d && typeof d === 'object' && (!v || typeof v !== 'object')) return d; return v; } catch (e) { return d; } };
-  const save = (k, v) => { try { localStorage.setItem(k, JSON.stringify(v)); } catch (e) {} };
+  // 🪤 25.08 (dev/parvata_vrata.js): празната уловка правеше най-скъпата лъжа
+  //    в приложението — „Здравей 💜 Радвам се, че сте тук.“ след запис, който
+  //    не е минал (частен прозорец, пълна памет). Мама вижда посрещане, а на
+  //    следващия екран приложението пак не знае нищо за бебето ѝ.
+  //    Връщаме дали е минало; голямото обяснение е общото BL_ZAPIS_PADNA
+  //    (rooms.js:41 — модал, вижда се винаги, сам се сдържа да не крещи).
+  //    ⚠️ НЕ спираме затварянето: ако складът изобщо не работи, блокираният
+  //    оверлей би заключил мама на първия екран завинаги. Казваме истината и
+  //    я пускаме напред. ПЪТ НАЗАД: `catch (e) {}` и без `return`.
+  const save = (k, v) => { try { localStorage.setItem(k, JSON.stringify(v)); } catch (e) { if (window.BL_ZAPIS_PADNA) BL_ZAPIS_PADNA(); return false; } return true; };
 
   // днешната дата като „ГГГГ-ММ-ДД“ по МЕСТНО време. Три копия на този израз
   // живееха инлайн из файла; сравняваме низ с низ, за да не влизаме изобщо в
@@ -150,6 +159,19 @@
 
   document.addEventListener('DOMContentLoaded', () => {
     if (!$('onbOverlay')) return;
+    // 🟠 25.08 (dev/parvata_vrata.js): картата е `max-height: 92vh; overflow-y:
+    //    auto` (style.css:1430), а клавиатурата на телефона изяжда долната ѝ
+    //    трета. Рожденият ден на МАМА и „Готово 💜“ са най-отдолу — коментарът
+    //    на редЗащо по-горе го казва сам: „Готово“ и без това е на ръба на
+    //    видимото. Фокусираното поле се издърпва в средата на картата (същият
+    //    похват като daily.js:283 и lab.js:583).
+    //    ПЪТ НАЗАД: махни следващите четири реда.
+    ['onbName', 'onbDate', 'onbMeDate', 'onbPreterm'].forEach(id => {
+      const п = $(id); if (!п) return;
+      п.addEventListener('focus', () => {
+        setTimeout(() => { try { п.scrollIntoView({ block: 'center', behavior: 'smooth' }); } catch (e) {} }, 250);
+      });
+    });
     $('onbSex').addEventListener('click', e => {
       const b = e.target.closest('.onb-sexbtn'); if (!b) return;
       const предишен = sex;
@@ -209,7 +231,7 @@
         return спри($('onbMeDate'), 'Тази дата е в бъдещето 💛 Тук е твоят рожден ден — провери годината.');
       }
       const baby = { name: $('onbName').value.trim(), sex: waiting ? '' : sex, birth: waiting ? '' : $('onbDate').value };
-      save('bl_baby', baby);
+      const мина = save('bl_baby', baby);
       // 🤰 БРЕМЕННАТА (одит-флот П23, проход 2 №1): очакваната дата на раждане
       // отваря ЦЯЛАТА бременностна машина (седмици, калкулатор, приспиване на
       // стаите). Досега датата се ИЗХВЪРЛЯШЕ и апп-ът стоеше празен пред точно
@@ -252,7 +274,18 @@
       if (meDate) { const me = load('bl_me', { birth: '', name: '' }); save('bl_me', { name: me.name || '', birth: meDate }); }
       save('bl_onboarded', true);
       // проход 4: най-топлият пръв момент — мека вибрация + лично „здравей".
-      if (window.BL_FX) { BL_FX.buzz(14); if (BL_FX.cheer) BL_FX.cheer('Здравей 💜 Радвам се, че сте тук.'); }
+      // 🔴 25.08: поздравът се дава САМО ако записът наистина е минал. Иначе
+      //    остава един честен ред в самата карта (BL_ZAPIS_PADNA вече е
+      //    обяснил защо) — не две съобщения за едно и също.
+      if (window.BL_FX) BL_FX.buzz(14);
+      if (!мина) {
+        // не затваряме: иначе честният ред изчезва заедно с картата, а мама
+        // остава с усещането, че всичко е наред. Изходът ѝ е ЦЯЛ — „По-късно“
+        // и докосването на фона работят и сега; тя може и да освободи място и
+        // да натисне „Готово“ пак.
+        return кажи('Този телефон не ми даде да запазя данните. Освободи мъничко място (или отвори приложението в обикновен, не „частен“ прозорец) и натисни „Готово“ пак. С „По-късно“ пак влизаш. 🤍', $('onbSave'));
+      }
+      if (window.BL_FX && BL_FX.cheer) BL_FX.cheer('Здравей 💜 Радвам се, че сте тук.');
       close();
       if (window.refreshToday) window.refreshToday();
       // 🤰 проход 2 №8: бременната да ВИДИ какво отключи датата ѝ — водим я

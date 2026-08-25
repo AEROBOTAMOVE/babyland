@@ -180,7 +180,13 @@
 .cv-eq { font-size: 16px; font-weight: 800; color: var(--lav); }
 .cv-tbl { font-size: 12.5px; font-weight: 700; color: var(--ink-soft); line-height: 1.7; background: #faf8ff; border-radius: 12px; padding: 9px 12px; }
 .gl-bar { position: relative; height: 30px; background: #f0eaf8; border-radius: 999px; overflow: hidden; margin: 8px 0; }
-.gl-fill { height: 100%; background: linear-gradient(90deg, #f7a8cb, #b9a7e0); border-radius: 999px; transition: width 0.6s cubic-bezier(0.22, 1, 0.36, 1); }
+/* Лентата се пълни по TRANSFORM, не по width: js/rooms3.js:1592 отдавна
+   слага style="width:100%; transform:scaleX(…)" и си носи собствен
+   transition. Тук обаче беше останало старото `transition: width 0.6s` —
+   мъртво (вграденият стил го надвива), но и капан: ако някой ден лентата
+   се направи без вграден стил, всеки процент щеше да пресмята подредбата.
+   Смяната е само на СВОЙСТВОТО; времето и кривата са същите. */
+.gl-fill { height: 100%; background: linear-gradient(90deg, #f7a8cb, #b9a7e0); border-radius: 999px; transform-origin: left center; transition: transform 0.6s cubic-bezier(0.22, 1, 0.36, 1); }
 .gl-txt { position: absolute; inset: 0; display: flex; align-items: center; justify-content: center; font-size: 12px; font-weight: 800; color: var(--ink); }
 .wd-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 7px; }
 .wd-cell { background: #faf8ff; border-radius: 12px; padding: 8px 6px; text-align: center; }
@@ -815,7 +821,11 @@
 /* 🧳 Чантата: % готовност */
 .bg-prog { margin: 8px 0 4px; }
 .bg-track { height: 9px; border-radius: 6px; background: var(--soft, #f0e8f2); overflow: hidden; }
-.bg-fill { height: 100%; border-radius: 6px; background: linear-gradient(90deg, #f7a8cb, #b9a7e0); transition: width .5s ease; }
+/* Същият случай като .gl-fill: js/rooms6.js:563 пълни чантата по
+   transform:scaleX(…) и си носи собствен transition. Старото
+   `transition: width .5s` тук беше мъртъв остатък от преди преминаването.
+   Сменено е само СВОЙСТВОТО — времето и кривата остават .5s ease. */
+.bg-fill { height: 100%; border-radius: 6px; background: linear-gradient(90deg, #f7a8cb, #b9a7e0); transform-origin: left center; transition: transform .5s ease; }
 .bg-txt { font-size: .82rem; margin: 6px 0 0; opacity: .9; }
 
 /* ═══ ROOMS 7 — втори пакет ъпгрейди ═══ */

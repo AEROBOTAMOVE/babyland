@@ -11,6 +11,28 @@
   const save = (k, v) => { try { localStorage.setItem(k, JSON.stringify(v)); } catch (e) {} };
   const esc = s => String(s == null ? '' : s).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;').replace(/'/g, '&#39;');
 
+  // 🔋 25.08 (обход „Игри и Лаборатория"): ОБЩИЯТ ПАЗАЧ на тиктакащите неща.
+  //   mountFlip го има от 22.07 и коментарът му обяснява защо: „работа за нищо,
+  //   точно от рода, който изяжда батерията на слаб Android". Само че двете
+  //   ВЪРТЕЛЕЖКИ в същия файл — денонощният кръг (на 5.2 сек) и мрежата (на
+  //   3.4 сек) — го нямаха. Те не просто тиктакат: всяко завъртане ПРЕСТРОЯВА
+  //   innerHTML (мрежата — до 37 бутона + нови SVG листа) и закача нови
+  //   слушатели. Завинаги, включително докато телефонът е в джоба.
+  //   js/izvan_ekrana.js НЕ покрива това: той спира CSS-анимации
+  //   (animation-play-state), а не JS-часовници.
+  //   ⚠️ `offsetParent` е СЛЯПО за position:fixed (капанът, записан в
+  //   izvan_ekrana.js) — затова се ползва само върху .day24/.netsec, които са
+  //   в нормалния поток (css/home.css:63 и :276, проверено).
+  //   ПЪТ НАЗАД: махни `if (!сиСтрува(sec)) return;` от двата setInterval-а.
+  function сиСтрува(възел) {
+    if (document.hidden) return false;                       // телефонът е заключен/в джоба
+    const стая = document.getElementById('roomOverlay');
+    if (стая && !стая.hidden) return false;                  // отгоре има отворена стая
+    if (!възел || !възел.isConnected || !възел.offsetParent) return false;
+    const r = възел.getBoundingClientRect();
+    return r.bottom > 0 && r.top < innerHeight;              // и наистина е в кадър
+  }
+
   // ═══════════ 🌅 ЖИВОТО НЕБЕ — hero-то диша с деня И слуша копчето ═══════════
   // Правилото: 🌙 тъмна тема → нощно небе. ☀️ светла тема → небето по часа
   // (а в малките часове — мек здрач, за да е светло, както мама е поискала).
@@ -197,7 +219,7 @@
     let start = 0, best = 99;
     DAY.forEach((d, i) => { const diff = Math.min(Math.abs(d.h - h), 24 - Math.abs(d.h - h)); if (diff < best) { best = diff; start = i; } });
     show(start);
-    if (!reduce) timer = setInterval(() => show((cur + 1) % DAY.length), 5200);
+    if (!reduce) timer = setInterval(() => { if (!сиСтрува(sec)) return; show((cur + 1) % DAY.length); }, 5200);
 
     const io = new IntersectionObserver(en => { en.forEach(e => { if (e.isIntersecting) { sec.classList.add('shown'); io.disconnect(); } }); }, { threshold: 0.15 });
     io.observe(sec);
@@ -680,7 +702,7 @@
         let i = 0;
         setTimeout(() => {
           show(0);
-          timer = setInterval(() => { i = (i + 1) % NET.length; show(i); }, 3400);
+          timer = setInterval(() => { if (!сиСтрува(sec)) return; i = (i + 1) % NET.length; show(i); }, 3400);
         }, 1200);
       });
     }, { threshold: 0.25 });

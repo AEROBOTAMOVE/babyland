@@ -512,7 +512,22 @@
     if (!t || !t.matches) return;
     const isDraft = t.dataset && t.dataset.draft;
     if (!isDraft && !t.matches('.lx-inp')) return;
-    if (isDraft) save(t.dataset.draft, t.value);
+    // 🔴 25.08 — ТОЗИ ОБРАБОТЧИК ЛЪЖЕШЕ ЗА ЦЯЛОТО ПРИЛОЖЕНИЕ.
+    //   Тук стоеше `if (isDraft) save(...);` и после БЕЗУСЛОВНО „✓ запазено".
+    //   А `save` (ред 21) си връща да/не най-честно — резултатът просто се
+    //   хвърляше. И понеже това е ГЛОБАЛЕН слушател, важеше за ВСЯКО поле с
+    //   data-draft в приложението: при пълна памет мама вижда зелена отметка
+    //   под всеки текст, който току-що е загубила.
+    //   Сега отметката казва какво е станало, а голямото обяснение идва от
+    //   общото BL_ZAPIS_PADNA (rooms.js:41) — модал, който се вижда винаги,
+    //   за разлика от BL_FX.cheer, който МЪЛЧИ при тежък ден и при
+    //   намалено движение (fx.js:93) — тоест точно когато най-трябва.
+    //   ПЪТ НАЗАД: върни двата реда към `save(...)` без проверка.
+    let паднал = false;
+    if (isDraft) {
+      паднал = (save(t.dataset.draft, t.value) === false);
+      if (паднал) { try { if (window.BL_ZAPIS_PADNA) BL_ZAPIS_PADNA(); } catch (e) {} }
+    }
     clearTimeout(tickTimers.get(t));
     let tick = t._blTick;
     if (!tick || !tick.isConnected) {
@@ -520,8 +535,14 @@
       t._blTick = tick;
       t.insertAdjacentElement('afterend', tick);
     }
+    // 🪤 Без свой клас в CSS нарочно: стиловете са чужд периметър, а червената
+    //   дума не бива да чака съгласуване. Връща се в изходно при успех.
+    tick.textContent = паднал ? '⚠️ НЕ се запази' : '✓ запазено';
+    tick.style.color = паднал ? '#c0392b' : '';
+    tick.style.fontWeight = паднал ? '700' : '';
     tick.classList.add('on');
-    tickTimers.set(t, setTimeout(() => tick.classList.remove('on'), 1400));
+    // при провал отметката стои по-дълго — иначе изчезва, преди мама да я види
+    tickTimers.set(t, setTimeout(() => tick.classList.remove('on'), паднал ? 6000 : 1400));
   });
 
   // ═══════════════ Свързване с „Днес“ и стаите ═══════════════

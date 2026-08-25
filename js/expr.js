@@ -104,7 +104,14 @@
       const запиши = () => {
         const т = п.value.trim().slice(0, 60);
         items = load(key, []);   // пресен прочит ПРЕДИ записа
-        if (т && items.length) { items[items.length - 1].note = т; save(key, items); draw(); }
+        if (т && items.length) {
+          items[items.length - 1].note = т;
+          // 🟠 25.08: записът на надписа беше единственият тук БЕЗ проверка —
+          //    при пълна памет думите ѝ изчезваха, а редът се затваряше все
+          //    едно всичко е наред. Сега редът ОСТАВА отворен и си казваме защо.
+          if (!save(key, items)) { знак(бележка, '😕 Паметта е пълна — надписът не се запази.', 5000); return; }
+          draw();
+        }
         затвори();
       };
       ок.addEventListener('click', запиши);
@@ -189,7 +196,15 @@
         items = load(key, []);   // пресен прочит ПРЕДИ записа
         const k = items.findIndex(x => x && x.ts === it.ts);   // по ЧАС, не по номер
         if (k > -1) { върнато.i = k; items.splice(k, 1); }
-        save(key, items); ov.hidden = true; draw();
+        // 🟠 25.08: при пълна памет триенето не минаваше, а картата казваше
+        //    „Махнах я“ и вдигаше „↺ Върни снимката“ — снимката се появяваше
+        //    пак при следващото рисуване и мама не разбираше кое е истина.
+        if (!save(key, items)) {
+          върнато = null; ov.hidden = true; draw();
+          знак(бележка, '😕 Паметта е пълна — снимката НЕ е изтрита. Още е тук.', 6000);
+          return;
+        }
+        ov.hidden = true; draw();
         отмяна.hidden = false;
         clearTimeout(отмяна._t);
         отмяна._t = setTimeout(() => { отмяна.hidden = true; върнато = null; }, 10000);
@@ -393,7 +408,14 @@
           items = load(key, []);   // пресен прочит ПРЕДИ записа
           const k = items.findIndex(x => x && x.ts === it.ts);   // по ЧАС, не по номер
           if (k > -1) { върнато.i = k; items.splice(k, 1); }
-          save(key, items); draw();
+          // 🟠 25.08 — същото като при снимките: триене, което не е минало,
+          //    не бива да се обявява за минало.
+          if (!save(key, items)) {
+            върнато = null; draw();
+            знак(бележка, '😕 Паметта е пълна — записът НЕ е изтрит. Още е тук.', 6000);
+            return;
+          }
+          draw();
           отмяна.hidden = false;
           clearTimeout(отмяна._t);
           отмяна._t = setTimeout(() => { отмяна.hidden = true; върнато = null; }, 10000);

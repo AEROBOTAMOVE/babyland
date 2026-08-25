@@ -8,7 +8,17 @@
 
   const D = window.BL_DATA;
   const load = (k, d) => { try { const v = JSON.parse(localStorage.getItem(k)); if (v == null) return d; if (Array.isArray(d) !== Array.isArray(v)) return d; if (d && typeof d === 'object' && (!v || typeof v !== 'object')) return d; return v; } catch (e) { return d; } };
-  const save = (k, v) => { try { localStorage.setItem(k, JSON.stringify(v)); } catch (e) {} };
+  // 🔴 25.08 (ИЗМЕРЕНО с dev/interaktivno_stai2.js, 90 случая в 5 стаи):
+  //    `catch (e) {}` гълташе QuotaExceededError и връщаше undefined. При пълна
+  //    памет мама виждаше „✔ Запазено“, полето ѝ се изчистваше — и написаното
+  //    изчезваше ДВА ПЪТИ: веднъж от екрана, веднъж от паметта. Никой не можеше
+  //    да провери записа, защото нямаше какво да се провери.
+  //    rooms17.js и rooms18.js вече връщат истина/лъжа; тук — също.
+  //    ПЪТ НАЗАД: махаш `return true` / `return false` — старите повиквания не
+  //    четат отговора и продължават да работят точно както преди.
+  const save = (k, v) => { try { localStorage.setItem(k, JSON.stringify(v)); return true; } catch (e) { return false; } };
+  // тихият честен ред „не можах да го запазя“ — един текст за целия файл
+  const ПЪЛНА = '🤍 Паметта на телефона е пълна — не можах да го запазя. Изтрий нещо (снимки, видеа) и пробвай пак; написаното е още в полето.';
   const localDate = d => d.getFullYear() + '-' + String(d.getMonth() + 1).padStart(2, '0') + '-' + String(d.getDate()).padStart(2, '0');
   const today = () => localDate(new Date());
   // 🕛 19.08 (ИЗМЕРЕНО): възрастта се смяташе по ЧАСОВЕ, а се показва в ДНИ.
@@ -430,8 +440,14 @@
       if (!hist.length) { histBox.innerHTML = ''; return; }
       // проход 4 [23]: всеки ред е триещ се — уморена майка често записва грешна мярка
       // (двоен тап), а грешката иначе трови кривата ѝ завинаги. ✕ → BL_UI.confirm.
+      // 🔴 25.08 (ИЗМЕРЕНО с dev/interaktivno_stai2.js, профил „повредена памет“):
+      //    ред от bl_growth без `p` (стар формат или внесено чуждо копие) се
+      //    изписваше буквално „пundefined“ до теглото на бебето. Същото важи за
+      //    липсваща дата/месец/тегло. Липсващото поле вече е тире, не машинна
+      //    дума — а редът си остава триещ се, за да може да се махне.
+      const ч = v => (v === undefined || v === null || v === '' || (typeof v === 'number' && isNaN(v))) ? '—' : esc(String(v));
       histBox.innerHTML = '<p class="jr-weekcap">История: <span class="jr-sub">(✕ маха сгрешен ред)</span></p>' + hist.slice(-6).reverse().map((h, i) =>
-        `<div class="bb-histrow"><span>${h.d}</span><span>${h.m} мес</span><span>${h.w} кг</span><span class="bb-hp" title="персентил">п${h.p}</span><button type="button" class="bb-del" data-i="${hist.length - 1 - i}" aria-label="Изтрий този ред">✕</button></div>`).join('');
+        `<div class="bb-histrow"><span>${ч((h || {}).d)}</span><span>${ч((h || {}).m)} мес</span><span>${ч((h || {}).w)} кг</span><span class="bb-hp" title="персентил">${(h && h.p != null && !isNaN(h.p)) ? 'п' + esc(String(h.p)) : '—'}</span><button type="button" class="bb-del" data-i="${hist.length - 1 - i}" aria-label="Изтрий този ред">✕</button></div>`).join('');
     }
     histBox.addEventListener('click', e => {
       const b = e.target.closest('.bb-del'); if (!b) return;
@@ -560,12 +576,29 @@
     //    „Пелени днес" показваше 0. Заедно с това четем склада наново (друга
     //    карта може да е писала междувременно).
     const дневник = () => { const д = today(); const o = load('bl_diapers', {}); if (!o[д] || typeof o[д] !== 'object') o[д] = { wet: 0, dirty: 0 }; return { д, o }; };
+    // 🔴🔴 25.08 (ИЗМЕРЕНО с dev/interaktivno_stai2.js, проба „полунощ“):
+    //    ЗАПИСЪТ се поправи на 11.08 (`дневник()` пита датата при всеки клик),
+    //    но ЧИСЛОТО НА ЕКРАНА остана от строежа — `dip[t][k]`, снимка отпреди
+    //    полунощ. Майка с отворено приложение 23:50 → 00:10 виждаше „4“ от
+    //    вчера, бутваше „+“ и числото скачаше на „1“. Измерено: на екрана
+    //    4 → 1, а в паметта вчера=4 и днес=1. Едно нещо, две числа — и по-
+    //    страшното: изглежда като изтрит напредък.
+    //    Същият лек като при храненето и съня в тази стая (те вече го имат):
+    //    числата се прерисуват от СКЛАДА — на минутен тик и при връщане в
+    //    приложението, тоест полунощ ги заварва верни.
+    //    ПЪТ НАЗАД: върни `dip[t][k]` и махни рисувайПелени/dipTick/onDipVis.
+    const броячи = {};
+    const рисувайПелени = () => {
+      const { д, o } = дневник();
+      Object.keys(броячи).forEach(k => { броячи[k].textContent = (o[д][k] || 0); });
+    };
     const grid = el('div', 'bb-dip');
     [['wet', '💧 Мокри'], ['dirty', '💩 Каки']].forEach(([k, lbl]) => {
       const box = el('div', 'bb-dipbox');
       box.appendChild(el('span', 'bb-diplbl', lbl));
       const minus = el('button', 'bb-dipbtn', '−'); minus.type = 'button';
-      const num = el('span', 'bb-dipnum', dip[t][k]);
+      const num = el('span', 'bb-dipnum', (dip[t] && dip[t][k]) || 0);
+      броячи[k] = num;
       const plus = el('button', 'bb-dipbtn', '+'); plus.type = 'button';
       // ♿ 11.08 (клавиатура-четец): двете кутийки („Мокри" и „Каки") дават
       //    четири еднакви бутона „минус"/„плюс" — четецът не казваше на КОЯ.
@@ -575,12 +608,30 @@
       plus.setAttribute('aria-label', 'Едно повече: ' + чисто);
       num.setAttribute('aria-live', 'polite');
       num.setAttribute('aria-label', чисто + ' днес');
-      minus.addEventListener('click', () => { const { д, o } = дневник(); o[д][k] = Math.max(0, (o[д][k] || 0) - 1); num.textContent = o[д][k]; save('bl_diapers', o); });
-      plus.addEventListener('click', () => { const { д, o } = дневник(); o[д][k] = (o[д][k] || 0) + 1; num.textContent = o[д][k]; save('bl_diapers', o); box.classList.add('pp'); setTimeout(() => box.classList.remove('pp'), 300); });
+      // 🔴 числото се рисува СЛЕД записа и само ако той е минал: при пълна памет
+      //    броячът показваше „5“, а на другия ден пак беше 4.
+      const бутни = (посока, ев) => {
+        const { д, o } = дневник();
+        const беше = o[д][k] || 0;
+        o[д][k] = Math.max(0, беше + посока);
+        if (!save('bl_diapers', o)) { дипБел.textContent = ПЪЛНА; дипБел.hidden = false; return false; }
+        дипБел.hidden = true;
+        рисувайПелени();
+        return true;
+      };
+      minus.addEventListener('click', () => { бутни(-1); });
+      plus.addEventListener('click', () => { if (бутни(+1)) { box.classList.add('pp'); setTimeout(() => box.classList.remove('pp'), 300); } });
       box.appendChild(minus); box.appendChild(num); box.appendChild(plus);
       grid.appendChild(box);
     });
-    c4.appendChild(grid);
+    const дипБел = el('p', 'jr-hint', ''); дипБел.hidden = true;
+    дипБел.setAttribute('aria-live', 'polite');
+    c4.appendChild(grid); c4.appendChild(дипБел);
+    рисувайПелени();
+    // 🕛 полунощ заварва числата верни, без мама да презарежда
+    const dipTick = setInterval(() => { if (!grid.isConnected) { clearInterval(dipTick); return; } рисувайПелени(); }, 60000);
+    const onDipVis = () => { if (!grid.isConnected) { document.removeEventListener('visibilitychange', onDipVis); return; } if (!document.hidden) рисувайПелени(); };
+    document.addEventListener('visibilitychange', onDipVis);
     // 🟠 11.08 (обиколка като майка): до брояча стоеше гола присъда „6+ = млякото
     //    стига“. В 22 ч. с 4 отбелязани пелени тя се чете като „млякото не стига“
     //    — а числото е само това, което мама е успяла да ЦЪКНЕ. Картата за съня
@@ -1289,7 +1340,14 @@
       else if (поправено) { бележка5.textContent = поправено; бележка5.hidden = false; }
       else бележка5.hidden = true;
       cf.push({ n, e: '🏠', from: m, cat: 'Мои', alrg: alrgI.checked, how: howI.value.trim() || 'Добавена от теб.' });
-      save('bl_custom_foods', cf);
+      // 🔴 25.08 (ИЗМЕРЕНО): при пълна памет трите полета се изчистваха и
+      //    викачът обявяваше „„X“ е в календара! 🍽️“ — а храната я нямаше
+      //    никъде. Полетата се чистят СЛЕД записа, не преди.
+      if (!save('bl_custom_foods', cf)) {
+        бележка5.textContent = ПЪЛНА;
+        бележка5.hidden = false;
+        return;
+      }
       nameI2.value = ''; monI.value = ''; howI.value = ''; alrgI.checked = false;
       // 🍽️ банерът казваше „в календара!“ и когато записът не се вижда никъде —
       //    скрит от активен чип или от възрастовия филтър. Отваряме „Мои“ и,
@@ -1630,7 +1688,17 @@
       // 3.1.5: докато ключалката стои заключена, тайните не тръгват никъде —
       // дори в копието. Отключи (влез в Дневника с ПИН-а) и свали пак.
       // 05.08: + rage/maika/money — същият катинар (secrets.js), същият файл.
-      const ЗАКЛЮЧЕНИ = /^(bl_wm_diary|bl_wm_confess|bl_wm_sins|bl_wm_rage|bl_wm_maika|bl_wm_money)$/;
+      // 🗝️ 25.08: списъкът стоеше преписан ДУМА ПО ДУМА и тук, и в
+      //    js/profile.js:937. Два преписа на едно правило се разминават рано или
+      //    късно, а цената тук е изтекла тайна: който е пипнал единия файл, си
+      //    мисли, че е свършил работата. Изворът е ЕДИН — js/tayni.js (зареден
+      //    в index.html:1405, точно преди този файл), а обосновката за всеки
+      //    ключ е записана там.
+      //    Резервният израз остава НАРОЧНО: не се ли зареди файлът, поведението
+      //    е точно днешното, а не „нищо не е тайна“.
+      //    ПЪТ НАЗАД: махаш лявата страна на `||`.
+      const ЗАКЛЮЧЕНИ = (window.BL_ТАЙНИ && window.BL_ТАЙНИ.ключове) ||
+        /^(bl_wm_diary|bl_wm_confess|bl_wm_sins|bl_wm_rage|bl_wm_maika|bl_wm_money)$/;
       const тайно = window.BL_PIN && BL_PIN.has && BL_PIN.has() && !BL_PIN.unlocked();
       for (let i = 0; i < localStorage.length; i++) {
         const k = localStorage.key(i);
@@ -2111,13 +2179,26 @@
       row.innerHTML = `<span class="jr-check">${state[ключ] ? '✔' : ''}</span> ${it}`;
       if (state[ключ]) doneN++;
       row.addEventListener('click', () => {
-        const was = doneN;
         state = load(key, {});          // пресен прочит ПРЕДИ записа
-        state[ключ] = !state[ключ]; save(key, state);
-        row.classList.toggle('done'); row.querySelector('.jr-check').textContent = state[ключ] ? '✔' : '';
+        state[ключ] = !state[ключ];
+        // 🔴 25.08 (ИЗМЕРЕНО): отметката се рисуваше ПРЕДИ записа и без да го
+        //    проверява. При пълна памет мама отмяташе цялата чанта за родилния
+        //    дом — десет реда с ✔ — и на другия ден намираше празен списък.
+        //    Нищо не се рисува, преди записът да е минал.
+        if (!save(key, state)) {
+          state[ключ] = !state[ключ];   // връщаме обекта както си беше
+          capt.textContent = ПЪЛНА;
+          if (window.BL_FX) BL_FX.buzz(4);
+          return;
+        }
+        // 🔢 броим ОТ ЗАПИСАНОТО, не от брояча в паметта на екрана: същият
+        //    ключ може да е нарисуван и в скрития панел и двете числа се
+        //    разминаваха („3 / 5 готови“ при четири ✔).
+        row.classList.toggle('done', !!state[ключ]); row.querySelector('.jr-check').textContent = state[ключ] ? '✔' : '';
         row.setAttribute('aria-pressed', state[ключ] ? 'true' : 'false');
         if (state[ключ]) { row.classList.add('pop'); setTimeout(() => row.classList.remove('pop'), 400); }
-        doneN += state[ключ] ? 1 : -1; updateCap();
+        const was = doneN;
+        doneN = ключове.filter(к => state[к]).length; updateCap();
         if (window.BL_FX) { BL_FX.buzz(10); if (was < items.length && doneN === items.length) { BL_FX.confetti(row); BL_FX.cheer('Готово! 🎉'); } }
       });
       list.appendChild(row);
@@ -2359,7 +2440,19 @@
       }
       шът.hidden = true;
       const сега = load(key, []);       // пресен прочит ПРЕДИ записа (виж капана горе)
-      сега.push({ t: v, d: Date.now() }); save(key, сега);
+      сега.push({ t: v, d: Date.now() });
+      // 🔴🔴 25.08 (ИЗМЕРЕНО): тази карта стои в ШЕСТ стаи. При пълна памет
+      //    записът падаше мълчаливо, полето се изчистваше и бутонът пишеше
+      //    „✔ Запазено“. Тоест написаното от мама изчезваше от екрана И от
+      //    паметта, с потвърждение отгоре. Полето вече НЕ се чисти, преди
+      //    записът да е минал наистина.
+      if (!save(key, сега)) {
+        шът.textContent = ПЪЛНА;
+        шът.hidden = false;
+        btn.textContent = 'Не се побра 😕';
+        clearTimeout(btn._t); btn._t = setTimeout(() => { if (btn.isConnected) btn.textContent = 'Запази бележката 📌'; }, 3200);
+        return;
+      }
       ta.value = ''; save('bl_draft_' + key, '');
       draw();
       // тих знак, че е прието

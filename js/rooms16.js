@@ -15,7 +15,7 @@
   'use strict';
 
   const load = (k, d) => { try { const v = JSON.parse(localStorage.getItem(k)); if (v == null) return d; if (Array.isArray(d) !== Array.isArray(v)) return d; if (d && typeof d === 'object' && (!v || typeof v !== 'object')) return d; return v; } catch (e) { return d; } };
-  const save = (k, v) => { try { localStorage.setItem(k, JSON.stringify(v)); } catch (e) {} };
+  const save = (k, v) => { try { localStorage.setItem(k, JSON.stringify(v)); return true; } catch (e) { return false; } };
   const el = (t, c, h) => { const n = document.createElement(t); if (c) n.className = c; if (h !== undefined) n.innerHTML = h; return n; };
   const esc = s => String(s == null ? '' : s).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;').replace(/'/g, '&#39;');
   const localDate = d => d.getFullYear() + '-' + String(d.getMonth() + 1).padStart(2, '0') + '-' + String(d.getDate()).padStart(2, '0');
@@ -226,6 +226,20 @@
       const поМесец = {};
       данни.forEach(x => { if (x && x.d) поМесец[String(x.d).slice(0, 7)] = (поМесец[String(x.d).slice(0, 7)] || 0) + (+x.v || 0); });
       const месеци = Object.keys(поМесец).sort().slice(-6);
+      // 🔴 25.08 (ИЗМЕРЕНО с dev/interaktivno_stai2.js, профил „повредена памет“):
+      //    записи БЕЗ дата (внесено чуждо копие или по-стар формат) минаваха
+      //    празната проверка горе — има ги, значи не сме празни — но всеки от
+      //    тях отпадаше на реда с `x.d`. Оставаха НУЛА месеца, а сборът се
+      //    делеше на тях: „Средно: NaN лв/месец. За 0 месеца: 0 лв.“ на екрана
+      //    на майка, която брои парите си. Числото не се дели на нула — казваме
+      //    честно какво имаме и не хвърляме нейните записи.
+      //    ПЪТ НАЗАД: махни този блок; NaN-ът се връща.
+      if (!месеци.length) {
+        box.appendChild(el('p', 'jr-privacy',
+          'Имам ' + (window.BL_BROI ? BL_BROI(данни.length, 'запис', 'записа') : данни.length + ' записа') +
+          ', но без дата — най-често идват от копие с по-стара подредба. Не мога да ги подредя по месеци и не искам да ти показвам сметка, която не е вярна. Новите записи оттук нататък си носят датата. 💜'));
+        return;
+      }
       const макс = Math.max(...месеци.map(k => поМесец[k]), 1);
       const МЕС = ['ян', 'фев', 'мар', 'апр', 'май', 'юни', 'юли', 'авг', 'сеп', 'окт', 'ное', 'дек'];
       const bars = el('div', 'sp-bars');

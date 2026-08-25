@@ -16,19 +16,32 @@
   'use strict';
 
   const load = (k, d) => { try { const v = JSON.parse(localStorage.getItem(k)); if (v == null) return d; if (Array.isArray(d) !== Array.isArray(v)) return d; if (d && typeof d === 'object' && (!v || typeof v !== 'object')) return d; return v; } catch (e) { return d; } };
-  const save = (k, v) => { try { localStorage.setItem(k, JSON.stringify(v)); } catch (e) {} };
+  // 🔴 25.08 (ИЗМЕРЕНО, dev/broyachi_dnevnik.js П4.3): `catch (e) {}` гълташе
+  //    препълнената памет и картата ѝ казваше „🔒 Прибрано“ ВЪРХУ НИЩО —
+  //    измерено живо: записани 0, а на екрана „Прибрано. Никой освен теб няма
+  //    да го види.“ Записът връща ДА/НЕ, за да има какво да се провери.
+  const save = (k, v) => { try { localStorage.setItem(k, JSON.stringify(v)); } catch (e) { return false; } return true; };
   const el = (t, c, h) => { const n = document.createElement(t); if (c) n.className = c; if (h !== undefined) n.innerHTML = h; return n; };
   const esc = s => String(s == null ? '' : s).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;').replace(/'/g, '&#39;');
   const localDate = d => d.getFullYear() + '-' + String(d.getMonth() + 1).padStart(2, '0') + '-' + String(d.getDate()).padStart(2, '0');
   const today = () => localDate(new Date());
   const fx = () => window.BL_FX || { confetti() {}, cheer() {}, buzz() {} };
 
+  // 📓 БЕЗ ТАВАН — нарочно. Това е НЕЙНИЯТ дневник: ред, писан преди месеци,
+  //    не е „стар запис“, а спомен. По-добре честно „паметта е пълна“ (долу),
+  //    отколкото тихо изядени изречения. Ако някой ден се сложи таван, той
+  //    трябва да ПИТА, не да реже сам.
   function пишиТайнияРед(v, изход) {
     const items = load('bl_wm_diary', []);
     items.push({ t: v.slice(0, 200), d: today() });
-    save('bl_wm_diary', items);
+    if (!save('bl_wm_diary', items)) {
+      // редът остава в полето — има го поне още веднъж, за да не се загуби
+      изход.textContent = '😕 Паметта на телефона е пълна — редът НЕ е записан. Оставям го тук, за да не се загуби: изтрий някоя стара снимка или гласов запис и бутни пак. 💜';
+      return false;
+    }
     fx().buzz(10); fx().confetti && fx().confetti();
     изход.textContent = '🔒 Прибрано. Никой освен теб няма да го види.';
+    return true;
   }
 
   function mountQuickAdd(container) {
@@ -46,12 +59,11 @@
     const изход = el('p', 'qa-out');
     const прати = () => {
       const v = inp.value.trim(); if (!v) { inp.focus(); return; }
+      // полето се изчиства САМО ако редът наистина е влязъл в паметта
+      const запиши = () => { if (пишиТайнияРед(v, изход)) inp.value = ''; };
       const заключено = window.BL_PIN && BL_PIN.has && BL_PIN.has() && !BL_PIN.unlocked();
-      if (заключено) {
-        BL_PIN.ask('🔒 Преди тайния ред', () => { пишиТайнияРед(v, изход); inp.value = ''; });
-      } else {
-        пишиТайнияРед(v, изход); inp.value = '';
-      }
+      if (заключено) BL_PIN.ask('🔒 Преди тайния ред', запиши);
+      else запиши();
     };
     b1.addEventListener('click', прати);
     inp.addEventListener('keydown', e => { if (e.key === 'Enter') { e.preventDefault(); прати(); } });

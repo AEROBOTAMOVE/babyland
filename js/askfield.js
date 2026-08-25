@@ -86,17 +86,73 @@
     const inp = el('input', 'ask-inp'); inp.type = 'text'; inp.maxLength = 200;
     inp.placeholder = 'Напиши на ' + p.name + '…';
     inp.setAttribute('aria-label', 'Съобщение до ' + p.name);
+    // 🔴🔴 25.08 (dev/parvata_vrata.js, ИЗМЕРЕНО): това е ГЛАВНОТО поле за
+    //    писане в приложението — и то беше единственото голямо поле БЕЗ
+    //    чернова. Написаното изчезваше при всяко от: свайп надолу по главата
+    //    (helper.js:2856 затваря стаята при dy>110), бутона „назад“ на
+    //    телефона (popstate), затваряне на стаята, презареждане на PWA-то.
+    //    Тоест мама пише дълъг въпрос, бебето изплаква, тя оставя телефона —
+    //    и въпросът го няма. Ключът е ПО СТАЯ: въпросът към Мила няма нищо
+    //    общо с въпроса към Ема.
+    //    `dataset.draft` е конвенцията на проекта (daily.js:513 записва на
+    //    всяко натискане и показва „✓ запазено“); записваме и сами, за да не
+    //    зависи най-важното поле от чужд файл.
+    //    ПЪТ НАЗАД: махни ЧЕРНОВА, двата реда под него и `inp.dataset.draft`.
+    const ЧЕРНОВА = 'bl_draft_ask_' + стая;
+    inp.dataset.draft = ЧЕРНОВА;
+    inp.value = load(ЧЕРНОВА, '') || '';
+    inp.addEventListener('input', () => save(ЧЕРНОВА, inp.value));
+    // 🟠 клавиатурата на телефона покрива долната трета на екрана, а полето е
+    //    най-отгоре в стаята — при фокус се издърпва в средата (същият похват
+    //    като daily.js:283 и lab.js:583).
+    inp.addEventListener('focus', () => {
+      setTimeout(() => { try { inp.scrollIntoView({ block: 'center', behavior: 'smooth' }); } catch (e) {} }, 250);
+    });
     const прати = el('button', 'ask-send', '➤'); прати.type = 'button'; прати.setAttribute('aria-label', 'Изпрати');
 
+    // 💬 един ред ПОД полето — единственото място, където полето говори.
+    //    Не минава през BL_FX.cheer: този канал мълчи нощем, в „тежък ден“ и
+    //    при „по-малко движение“ (fx.js:94) — тоест точно пред уморената мама.
+    //    Класът е `ask-line` (вече съществува и е проверен в двете теми —
+    //    наследява цвета на картата); `ask-say` е само закачалка за после.
+    const каз = el('p', 'ask-line ask-say'); каз.hidden = true;
+    каз.style.marginTop = '7px';
+    каз.setAttribute('role', 'status');
+    const кажи = т => { каз.textContent = т; каз.hidden = false; };
+    const мълчи = () => { каз.hidden = true; каз.textContent = ''; };
+
+    let праща = false;                       // 🟠 срещу двойното натискане
     const изпрати = текст => {
-      const v = (текст || inp.value).trim(); if (!v) { inp.focus(); return; }
-      // запомни последния въпрос за тази стая (22.3)
+      const v = (текст || inp.value).trim();
+      // 🔴 25.08 (ИЗМЕРЕНО): празно ➤ правеше САМО `inp.focus()` — на телефон
+      //    това често не вдига дори клавиатурата. Мама натиска, нищо не се
+      //    случва, и приложението изглежда счупено на първата си минута.
+      if (!v) { кажи('Напиши въпроса си в полето — с твои думи, както го мислиш. 💜'); inp.focus(); if (window.BL_FX) BL_FX.buzz(6); return; }
+      // 🟠 25.08 (ИЗМЕРЕНО): чиповете подават текста си като аргумент, значи
+      //    проверката за празно не ги пазеше — двойно докосване (обичайно на
+      //    телефон) пращаше въпроса ДВА пъти и мама виждаше дублиран разговор.
+      if (праща) return;
+      праща = true;
+      мълчи();
+      const запазено = inp.value;
+      inp.value = '';
+      try {
+        MamaHelper.showTab('chat');
+        MamaHelper.ask(v);
+      } catch (e) {
+        // 🔴 записът/изпращането падна — думите ѝ се ВРЪЩАТ, не изчезват
+        inp.value = запазено || v;
+        save(ЧЕРНОВА, inp.value);
+        кажи('Нещо се запъна и въпросът не тръгна. Думите ти са тук — пробвай пак. 🤍');
+        праща = false;
+        return;
+      }
+      // чак СЛЕД като въпросът е тръгнал: чистим черновата и помним последното
+      try { localStorage.removeItem(ЧЕРНОВА); } catch (e) {}
       const посл = load('bl_ask_last', {});
       посл[стая] = { q: v.slice(0, 120), d: new Date().toISOString().slice(0, 10) };
       save('bl_ask_last', посл);
-      inp.value = '';
-      MamaHelper.showTab('chat');
-      MamaHelper.ask(v);
+      setTimeout(() => { праща = false; }, 900);
     };
     прати.addEventListener('click', () => изпрати());
     inp.addEventListener('keydown', e => { if (e.key === 'Enter') { e.preventDefault(); изпрати(); } });
@@ -114,7 +170,10 @@
         // 🎤 разпознатото СТОИ в полето — не тръгва само. В тези стаи мама
         //    може да каже на глас „страх ме е от него“; последната дума дали
         //    да замине остава нейна, не на микрофона.
-        rec.onresult = ev => { const t = ev.results[0] && ev.results[0][0] ? ev.results[0][0].transcript : ''; if (t) { inp.value = t; inp.focus(); } };
+        //    ⤷ и казаното се пази като чернова веднага: гласът е точно за
+        //      мама с бебе на ръце, а тя най-често е и тази, която ще бъде
+        //      прекъсната преди да натисне ➤.
+        rec.onresult = ev => { const t = ev.results[0] && ev.results[0][0] ? ev.results[0][0].transcript : ''; if (t) { inp.value = t; save(ЧЕРНОВА, t); inp.focus(); } };
         rec.onend = () => { mic.classList.remove('on'); rec = null; };
         rec.onerror = () => { mic.classList.remove('on'); rec = null; };
         try { rec.start(); } catch (e) { mic.classList.remove('on'); rec = null; }
@@ -123,6 +182,7 @@
     }
     ред2.appendChild(inp); ред2.appendChild(прати);
     c.appendChild(ред2);
+    c.appendChild(каз);
 
     // 3-те примерни чипа (22.5)
     if (примери.length) {
@@ -136,11 +196,25 @@
     }
 
     // последният въпрос в тази стая (22.3)
+    // 🔴 25.08 (ИЗМЕРЕНО): бутонът обещаваше „↩ последно попита: X“ и правеше
+    //    САМО `showTab('chat')`. Но разговорът НЕ СЕ ПАЗИ — helper.js рисува
+    //    мехурите в DOM-а и нищо не отива в паметта (нула ключа `bl_chat*`).
+    //    Тоест на следващия ден мама натиска надпис с ТОЧНИТЕ си думи и се
+    //    озовава в празен чат с поздрав. Обещание, което картата не удържа.
+    //    Сега бутонът ВРЪЩА въпроса в полето — тя го вижда, може да го
+    //    промени и сама решава дали да го прати. Нищо не тръгва без нея.
+    //    ПЪТ НАЗАД: върни надписа „↩ последно попита“ и тялото
+    //    `() => { MamaHelper.showTab('chat'); }`.
     const посл = load('bl_ask_last', {})[стая];
     if (посл && посл.q) {
-      const л = el('button', 'ask-last', '↩ последно попита: „' + esc(посл.q.slice(0, 46)) + (посл.q.length > 46 ? '…' : '') + '“');
+      const л = el('button', 'ask-last', '↩ Попитай пак: „' + esc(посл.q.slice(0, 46)) + (посл.q.length > 46 ? '…' : '') + '“');
       л.type = 'button';
-      л.addEventListener('click', () => { MamaHelper.showTab('chat'); });
+      л.addEventListener('click', () => {
+        inp.value = посл.q;
+        save(ЧЕРНОВА, inp.value);
+        мълчи();
+        inp.focus();
+      });
       c.appendChild(л);
     }
     return c;

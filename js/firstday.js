@@ -19,7 +19,11 @@
   'use strict';
   const el = (t, c, h) => { const n = document.createElement(t); if (c) n.className = c; if (h !== undefined) n.innerHTML = h; return n; };
   const load = (k, d) => { try { const v = JSON.parse(localStorage.getItem(k)); if (v == null) return d; if (Array.isArray(d) !== Array.isArray(v)) return d; if (d && typeof d === 'object' && (!v || typeof v !== 'object')) return d; return v; } catch (e) { return d; } };
-  const save = (k, v) => { try { localStorage.setItem(k, JSON.stringify(v)); } catch (e) {} };
+  // 🪤 25.08: празната уловка обявяваше „Записано — тече към Реката 💜“ и при
+  //    провалил се запис. Връщаме дали е минало; известието е общото
+  //    BL_ZAPIS_PADNA (rooms.js:41) — модал, който се вижда винаги.
+  //    ПЪТ НАЗАД: `catch (e) {}` и без `return`.
+  const save = (k, v) => { try { localStorage.setItem(k, JSON.stringify(v)); } catch (e) { if (window.BL_ZAPIS_PADNA) BL_ZAPIS_PADNA(); return false; } return true; };
   const esc = s => String(s == null ? '' : s).replace(/[&<>"']/g, m => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[m]));
   const днес = () => { const d = new Date(); return d.getFullYear() + '-' + String(d.getMonth() + 1).padStart(2, '0') + '-' + String(d.getDate()).padStart(2, '0'); };
   const fx = () => window.BL_FX || { buzz() {}, cheer() {}, confetti() {} };
@@ -90,17 +94,99 @@
     const х = el('button', 'fd-tx', '✕'); х.type = 'button';
     х.setAttribute('aria-label', 'Не питай повече');
     х.title = 'Не ме питай това';
-    х.addEventListener('click', () => { save('bl_tone_off', true); ред.remove(); });
+    // 🟠 25.08 (dev/parvata_vrata.js, ИЗМЕРЕНО): ✕ е 44×44 и стои ДО трите
+    //    отговора — коментарът горе го казва сам. Едно случайно докосване
+    //    записваше bl_tone_off завинаги, а ключът се четеше на едно-единствено
+    //    място (тук) и не се махаше от НИКЪДЕ в приложението. Тоест погрешен
+    //    тап убиваше въпроса „как си“ за цял живот, без път назад.
+    //    Две врати: веднага („↩ върни“) и трайна (превключвател в настройките,
+    //    по образеца на night.js).
+    //    ПЪТ НАЗАД: върни `() => { save('bl_tone_off', true); ред.remove(); }`
+    //    и махни обвивката на BL_SETTINGS_CARD долу.
+    х.addEventListener('click', () => {
+      save('bl_tone_off', true);
+      ред.innerHTML = '<span class="fd-tq">Няма да питам повече. 🤍</span>';
+      const назад = el('button', 'fd-tb', '↩ върни'); назад.type = 'button';
+      назад.style.minHeight = '44px'; назад.style.boxSizing = 'border-box';
+      назад.addEventListener('click', () => {
+        save('bl_tone_off', false);
+        ред.remove();
+        монтирайТон(container);
+      });
+      ред.appendChild(назад);
+    });
     ред.appendChild(х);
     inner.appendChild(ред);
   }
-  // „на ръба“ млъква фойерверките за целия ден
+  // трайната врата назад: щом веднъж е казала „не питай“, единственият начин
+  // да си върне въпроса е тук. Показва се само когато е изключен — иначе
+  // настройките се пълнят с ключета, които нищо не решават.
+  {
+    const предишни = window.BL_SETTINGS_CARD;
+    if (предишни) {
+      window.BL_SETTINGS_CARD = function () {
+        const c = предишни();
+        try {
+          if (load('bl_tone_off', false)) {
+            const grid = c.querySelector('.set-grid');
+            if (grid) {
+              const b = document.createElement('button');
+              b.className = 'set-tgl';
+              b.type = 'button';
+              b.innerHTML = '🌤️ Върни въпроса „Как си днес?“<span class="set-dot"></span>';
+              b.addEventListener('click', () => {
+                save('bl_tone_off', false);
+                b.classList.add('on');
+                b.innerHTML = '🌤️ Готово — утре пак ще те питам<span class="set-dot"></span>';
+                b.disabled = true;
+              });
+              grid.appendChild(b);
+            }
+          }
+        } catch (e) {}
+        return c;
+      };
+    }
+  }
+  // ═══ 🎉 КОЕ Е ПРАЗНИК И КОЕ Е СЪОБЩЕНИЕ ═══
+  // 🔴🔴 25.08 (dev/parvata_vrata.js, ИЗМЕРЕНО — 7 истински текста от 7 чужди
+  //   файла): `BL_FX.cheer` НЕ Е канал само за празници. По него вървят и:
+  //     „Паметта се напълни — изтрий нещо старо. 😕“        (expr.js:148)
+  //     „Паметта се напълни — изтрий стара снимка. 😕“      (extras2.js:238)
+  //     „Паметта се напълни. 😕“                            (rooms17.js:85)
+  //     „Камерата не е позволена…“                          (games2.js:349)
+  //     „Не чух нищо. Ако телефонът пита за микрофона…“     (extras.js:1016)
+  //     „Картата е в тази стая — превърти надолу 👇“        (printbox.js:59)
+  //     „Чака те при въпросите за педиатъра…“               (dev.js:270)
+  //   Досега редът тук гасеше ВСИЧКИ 7 за цял ден. Тоест жената, която е
+  //   натиснала „🫂 на ръба“, качва снимка при пълна памет, снимката НЕ се
+  //   записва и приложението не ѝ казва нито дума. Точно същият дефект е
+  //   описан в onboard.js:74-82 — платен веднъж, но само за онбординга.
+  //   (fx.js:94 вече гаси cheer при „тежък ден“ и rooms.js:36 / profile.js:521
+  //   пишат защо това е капан. Тук просто спираме да го задълбочаваме.)
+  //
+  //   Правилото: празник е това, което носи САЛЮТНО емоджи, или извикването
+  //   без текст (fx.js:101 му слага „💜 Браво!“). Всичко останало е
+  //   ИНФОРМАЦИЯ и минава. Несиметрична цена: изтърван банер в 3 ч. е дребно,
+  //   изядено „паметта е пълна“ е загубена снимка.
+  //   ⚠️ флагът `u` е задължителен — без него класът чупи емоджитата на
+  //   сурогати и не хваща нищо (същият капан като helper.js:186).
+  //   ЕДНО определение за целия проект: night.js го ползва оттук, не си пази
+  //   копие (дублираната константа презаписва мълчаливо).
+  //   ПЪТ НАЗАД: върни `if (тонДнес() === 'на ръба') return;` без проверката.
+  const САЛЮТ = /[🎉✨🥳🎊💥⚡🌟💃🤸🌈🎂🏆🥇🎈🍾🌳]/u;
+  window.BL_PRAZNIK = function (т) {
+    if (т === undefined || т === null || String(т).trim() === '') return true;
+    return САЛЮТ.test(String(т));
+  };
+
+  // „на ръба“ млъква фойерверките за целия ден — но не и думите, които ѝ трябват
   document.addEventListener('DOMContentLoaded', () => {
     if (!window.BL_FX) return;
     const конф = BL_FX.confetti ? BL_FX.confetti.bind(BL_FX) : null;
     const ура = BL_FX.cheer ? BL_FX.cheer.bind(BL_FX) : null;
     if (конф) BL_FX.confetti = function () { if (тонДнес() !== 'на ръба') return конф.apply(null, arguments); };
-    if (ура) BL_FX.cheer = function (т) { if (тонДнес() === 'на ръба') return; return ура.apply(null, arguments); };
+    if (ура) BL_FX.cheer = function (т) { if (тонДнес() === 'на ръба' && window.BL_PRAZNIK(т)) return; return ура.apply(null, arguments); };
   });
 
   // ═══════════ 🤰 13.3.3 БРЕМЕННАТА МАМА ═══════════
@@ -196,17 +282,40 @@
     'Какво искаш да не забравиш никога?', 'Какво ще кажеш на бебето, когато порасне?',
     'Кой миг днес беше само ваш?', 'Какво пожелаваш на утрешния ден?'
   ];
-  function карта30(container) {
-    const inner = container.querySelector('.td-inner');
-    if (!inner || inner.classList.contains('td-welcome') || inner.querySelector('.fd-q30')) return;
-    const с = load('bl_q30', { start: '', a: {} });
-    if (!с.start) { с.start = днес(); save('bl_q30', с); }
-    const ден = Math.min(30, Math.floor((new Date(днес()) - new Date(с.start)) / 86400000) + 1);
-    if (Object.keys(с.a).length >= 30) return;                 // историята е събрана
-    if (с.a[ден]) return;                                      // днешният е отговорен
+  // 🔴🔴 25.08 (dev/parvata_vrata.js, ИЗМЕРЕНО) — ТРИ неща наведнъж:
+  //   1) недописаният отговор изчезваше при всяко пре-рисуване на „Днес“
+  //      (а refreshToday() се вика от десетина места, вкл. при затваряне на
+  //      стая) и при презареждане. Полето на дневника отдавна пази чернова
+  //      през `data-draft` (daily.js:279); това тук беше единственото
+  //      всекидневно поле без нея.
+  //   2) записаният отговор се ЗАКЛЮЧВАШЕ до полунощ: `if (с.a[ден]) return`
+  //      махаше картата и нямаше нито едно място в приложението, откъдето
+  //      днешният ред да се поправи. Дневникът има „✏️ Допиши или поправи“
+  //      (daily.js:257) точно за това — тук го нямаше.
+  //   3) клавиатурата покриваше полето (то е най-долу в „Днес“).
+  //   ПЪТ НАЗАД: махни ЧЕРНОВА30 и функциите готовРед/постройQ30 и върни
+  //   старото тяло на карта30 (`if (с.a[ден]) return;` + един innerHTML).
+  const ЧЕРНОВА30 = 'bl_draft_q30';
+  const въпросЗа = n => ВЪПРОСИ[(n - 1) % ВЪПРОСИ.length];
+
+  // дневникът е ОБЩ (Реката, съзвездието, медальончетата го четат) — при
+  // поправка не трием реда и не бутаме втори, а сменяме текста на СЪЩИЯ.
+  function влейВДневника(ден, нов, стар) {
+    const дневник = load('bl_prompt_log', []);
+    const въпрос = въпросЗа(ден);
+    let i = -1;
+    if (стар) for (let k = дневник.length - 1; k >= 0; k--) {
+      if (дневник[k] && дневник[k].q === въпрос && дневник[k].t === стар) { i = k; break; }
+    }
+    if (i >= 0) дневник[i] = { d: дневник[i].d, q: въпрос, t: нов };
+    else дневник.push({ d: Date.now(), q: въпрос, t: нов });
+    save('bl_prompt_log', дневник);
+  }
+
+  function постройQ30(inner, ден, началенТекст, старОтговор) {
     const к = el('div', 'fd-q30');
     к.innerHTML = `<span class="fd-qn">🌱 ${ден}/30</span>
-      <p class="fd-qt">${esc(ВЪПРОСИ[(ден - 1) % ВЪПРОСИ.length])}</p>
+      <p class="fd-qt">${esc(въпросЗа(ден))}</p>
       <div class="fd-qrow"><input class="fd-qi" type="text" maxlength="140" placeholder="Едно изречение стига…" aria-label="Отговорът ти за днес">
       <button class="fd-qb" type="button" aria-label="Запиши отговора">✔</button></div>`;
     const вход = к.querySelector('.fd-qi');
@@ -215,29 +324,75 @@
     //    който мама отваря с една ръка. 38 е под прага за пръст.
     //    ПЪТ НАЗАД: махни двата реда `style` долу.
     вход.style.minHeight = '44px'; вход.style.boxSizing = 'border-box';
+    вход.dataset.draft = ЧЕРНОВА30;
+    вход.value = началенТекст !== undefined ? началенТекст : (load(ЧЕРНОВА30, '') || '');
+    вход.addEventListener('input', () => save(ЧЕРНОВА30, вход.value));
+    вход.addEventListener('focus', () => {
+      setTimeout(() => { try { вход.scrollIntoView({ block: 'center', behavior: 'smooth' }); } catch (e) {} }, 250);
+    });
     const бут = к.querySelector('.fd-qb');
     бут.style.minWidth = '44px'; бут.style.minHeight = '44px'; бут.style.boxSizing = 'border-box';
     бут.style.display = 'inline-flex'; бут.style.alignItems = 'center'; бут.style.justifyContent = 'center';
     бут.addEventListener('click', () => {
       const т = вход.value.trim();
       if (!т) { вход.focus(); return; }
-      // 🔴 известният клас: `с` е прочетено при РИСУВАНЕТО, а се записва при
-      //    натискането — между двете „Днес“ може да се е пре-рисувал и да е
+      // 🔴 известният клас: състоянието е прочетено при РИСУВАНЕТО, а се записва
+      //    при натискането — между двете „Днес“ може да се е пре-рисувал и да е
       //    записал отговор от друг ден. Четем прясно точно преди записа.
-      const с2 = load('bl_q30', { start: с.start, a: {} });
-      if (!с2.start) с2.start = с.start || днес();
+      const с2 = load('bl_q30', { start: днес(), a: {} });
+      if (!с2.start) с2.start = днес();
       с2.a = с2.a || {};
-      с2.a[ден] = т; save('bl_q30', с2); с.a = с2.a;
-      // влива се в дневника → Реката я вижда, съзвездието я брои
-      const дневник = load('bl_prompt_log', []);
-      дневник.push({ d: Date.now(), q: ВЪПРОСИ[(ден - 1) % ВЪПРОСИ.length], t: т });
-      save('bl_prompt_log', дневник);
-      к.innerHTML = `<span class="fd-qn">🌱 ${ден}/30</span><p class="fd-qt">Записано — тече към Реката. 💜${ден >= 30 ? ' Трийсетте дни са ИСТОРИЯ — виж я в Дневника!' : ''}</p>`;
+      с2.a[ден] = т;
+      // 🔴 25.08: „Записано — тече към Реката 💜“ се пишеше и когато записът е
+      //    паднал. Отговорът на деня е точно това, което мама вярва, че се
+      //    трупа за 30 дни — лъжата тук струва цялата ѝ история. Падне ли
+      //    записът, думите ѝ ОСТАВАТ в полето и картата не се сменя.
+      if (!save('bl_q30', с2)) {
+        вход.value = т;
+        бут.setAttribute('aria-label', 'Опитай пак');
+        return;
+      }
+      влейВДневника(ден, т, старОтговор);
+      try { localStorage.removeItem(ЧЕРНОВА30); } catch (e) {}
+      к.remove();
+      inner.appendChild(готовРед(inner, ден, т, true));
       fx().buzz(8);
-      setTimeout(() => к.remove(), 2400);
     });
-    вход.addEventListener('keydown', e => { if (e.key === 'Enter') к.querySelector('.fd-qb').click(); });
-    inner.appendChild(к);
+    вход.addEventListener('keydown', e => { if (e.key === 'Enter') бут.click(); });
+    return к;
+  }
+
+  // редът СЛЕД записа: казва, че е минало — и оставя врата назад.
+  // `прясно` = току-що натиснала ✔ (тогава е празник); при ново отваряне на
+  // „Днес“ същият ред е тих, за да не натяква всеки ден със същите думи.
+  function готовРед(inner, ден, отговор, прясно) {
+    const г = el('div', 'fd-q30');
+    г.innerHTML = прясно
+      ? `<span class="fd-qn">🌱 ${ден}/30</span><p class="fd-qt">Записано — тече към Реката. 💜${ден >= 30 ? ' Трийсетте дни са ИСТОРИЯ — виж я в Дневника!' : ''}</p>`
+      : `<span class="fd-qn">🌱 ${ден}/30</span><p class="fd-qt">Отговори за днес ✔ Утре — нов въпрос.</p>`;
+    const п = el('button', 'fd-tb fd-q30fix', '✏️ Допиши или поправи'); п.type = 'button';
+    п.style.minHeight = '44px'; п.style.boxSizing = 'border-box';
+    п.addEventListener('click', () => {
+      г.remove();
+      inner.appendChild(постройQ30(inner, ден, отговор, отговор));
+      const в = inner.querySelector('.fd-qi');
+      if (в) { try { в.focus({ preventScroll: true }); } catch (e) { try { в.focus(); } catch (e2) {} } }
+    });
+    г.appendChild(п);
+    return г;
+  }
+
+  function карта30(container) {
+    const inner = container.querySelector('.td-inner');
+    if (!inner || inner.classList.contains('td-welcome') || inner.querySelector('.fd-q30')) return;
+    const с = load('bl_q30', { start: '', a: {} });
+    if (!с.start) { с.start = днес(); save('bl_q30', с); }
+    const ден = Math.min(30, Math.floor((new Date(днес()) - new Date(с.start)) / 86400000) + 1);
+    // редът за поправка се дава ПРЕДИ проверката за „събрани 30“ — иначе
+    // точно последният, тридесетият отговор оставаше единственият незаменим.
+    if (с.a[ден]) { inner.appendChild(готовРед(inner, ден, с.a[ден], false)); return; }
+    if (Object.keys(с.a).length >= 30) return;                 // историята е събрана
+    inner.appendChild(постройQ30(inner, ден));
   }
 
   // ═══════════ 🎬 13.3.4 ДЕМО-РЕЖИМЪТ ═══════════

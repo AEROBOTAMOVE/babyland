@@ -7,7 +7,11 @@
 (function () {
   'use strict';
   const load = (k, d) => { try { const v = JSON.parse(localStorage.getItem(k)); if (v == null) return d; if (Array.isArray(d) !== Array.isArray(v)) return d; if (d && typeof d === 'object' && (!v || typeof v !== 'object')) return d; return v; } catch (e) { return d; } };
-  const save = (k, v) => { try { localStorage.setItem(k, JSON.stringify(v)); } catch (e) {} };
+  // 🔴🔴 25.08: тук уловката беше НАПЪЛНО празна И БЕЗ върната стойност — тоест
+  //   „Писмо за месеца“ нямаше как да разбере, че не се е запечатало, и триеше
+  //   картата с текста на мама. Сега връща истина/лъжа и казва на мама.
+  //   ПЪТ НАЗАД: `catch (e) {}` без връщане, както беше.
+  const save = (k, v) => { try { localStorage.setItem(k, JSON.stringify(v)); } catch (e) { if (window.BL_ZAPIS_PADNA) BL_ZAPIS_PADNA(); return false; } return true; };
   const localDate = d => d.getFullYear() + '-' + String(d.getMonth() + 1).padStart(2, '0') + '-' + String(d.getDate()).padStart(2, '0');
   const today = () => localDate(new Date());
   const el = (t, c, h) => { const n = document.createElement(t); if (c) n.className = c; if (h !== undefined) n.innerHTML = h; return n; };
@@ -117,7 +121,9 @@
       if (дни < 0) { кажи('Тази дата вече е минала, а тук е за предстоящото. Провери годината. 📅', dt); return; }
       const ev = load('bl_events', []);
       ev.push({ id: 'e' + Date.now(), t: v, d: dt.value, e: /преглед|лекар|педиат/i.test(v) ? '🩺' : '📌' });
-      save('bl_events', ev);
+      // 🔴 25.08: „✔ Записах: …“ + изчистени полета дори при паднал запис.
+      //    Точно тази карта е за прегледи — пропуснат преглед не се наваксва.
+      if (!save('bl_events', ev)) return;
       const кога = д.toLocaleDateString('bg-BG');
       // датата на bg-BG вече свършва с „г.“ — втора точка след нея е „г..“
       хинт.textContent = дни > 30
@@ -293,7 +299,13 @@
     // предпопълване от Реката: миговете на този месец (събрани по-горе)
     const seed = мигове.length ? 'Този месец: ' + мигове.map(m => m.txt).join(' · ') + '.\n\n' : '';
     const ta = el('textarea', 'jr-paper'); ta.rows = 5;
-    ta.value = seed ? seed + 'Мило мое, ' : '';
+    // 🔴 25.08: писмото за месеца е петредово поле БЕЗ чернова — най-дългият
+    //    текст в стаята изчезваше при излизане. Черновата бие предпопълването:
+    //    щом мама вече е писала, връщаме нейното, не нашия шаблон.
+    //    ПЪТ НАЗАД: махаш `ta.dataset.draft` и оставяш само реда със `seed`.
+    ta.dataset.draft = 'bl_draft_monthletter';
+    const чернова = load('bl_draft_monthletter', '');
+    ta.value = чернова || (seed ? seed + 'Мило мое, ' : '');
     ta.placeholder = 'Мило мое… (какво искаш да помниш от този месец?)';
     const btn = el('button', 'jr-btn', 'Запечатай писмото 💌'); btn.type = 'button';
     const хинт = el('p', 'jr-privacy', '');
@@ -310,7 +322,13 @@
       // известният клас 6: прясно от паметта ВЪТРЕ в слушателя, не копие отпреди
       const letters2 = load('bl_month_letters', {});
       letters2[key] = { t: v, ts: Date.now() };
-      save('bl_month_letters', letters2);
+      // 🔴🔴 25.08 (ИЗМЕРЕНО с пълна памет): картата се пресъздаваше и се
+      //    празнуваше „Писмото за месеца е запечатано 💌“ ДОРИ когато записът е
+      //    паднал — а пресъздадената карта е с празно поле. Целият месец, написан
+      //    от мама, изчезваше в мига, в който ѝ казахме, че е запазен.
+      //    ПЪТ НАЗАД: махаш `if (!…) return;` и връщаш голото save.
+      if (!save('bl_month_letters', letters2)) return;
+      save('bl_draft_monthletter', '');
       // 🔴 г09/283: пишеше „в съкровищницата“, а правилата на journal.js пращат
       //    „писмо за месеца“ в „✍️ Пиши и помни“. Не наричаме секция, в която го няма.
       fx().confetti(btn); fx().cheer('Писмото за месеца е запечатано 💌');
@@ -394,7 +412,18 @@
       }
     }
     // 📖 неделен дайджест: 3-те топ статии за възрастта (веднъж седмично)
-    if (new Date().getDay() === 0 && load('bl_digest_w', '') !== today() && window.BL_LIB && BL_LIB.count()) {
+    // 🔴 25.08 (ИЗМЕРЕНО: 3 копия след 3 обвързвания, dev/interaktivno_stai.js):
+    //    БЛИЗНАКЪТ на поправката за пелена-пазача двайсет реда по-горе. Съседите
+    //    си имат пазач (`!inner.querySelector('.td-game')`), дайджестът — не.
+    //    BL_TODAY_BIND минава втори и трети път върху същия контейнер (веригата
+    //    prevBind се вика от десетина модула), и в неделя мама виждаше ТРИ
+    //    еднакви реда „📖 Неделно четиво за вас“ един под друг.
+    //    ⚠️ И вторият капан: `save('bl_digest_w', '')` по-долу пишеше ПРАЗЕН низ,
+    //    а условието сравнява с today() — тоест маркировката не се случваше
+    //    никога и ключът стоеше празен завинаги. Махнат е: дайджестът и без това
+    //    е замислен да се вижда цялата неделя, а пазачът горе стига.
+    //    ПЪТ НАЗАД: махаш `!inner.querySelector('.td-digest') &&` от реда долу.
+    if (new Date().getDay() === 0 && !inner.querySelector('.td-digest') && window.BL_LIB && BL_LIB.count()) {
       const baby = getBaby();
       const a = baby.birth && window.BL_AGE ? BL_AGE(baby.birth) : null;
       const q = a ? (a.months < 4 ? 'новородено сън плач' : a.months < 9 ? 'захранване сън зъби' : 'прохождане говор хранене') : 'бременност подготовка';
@@ -407,7 +436,6 @@
           dg.appendChild(b);
         });
         inner.appendChild(dg);
-        save('bl_digest_w', ''); // показва се цялата неделя; маркираме при затваряне на деня
       }
     }
   }

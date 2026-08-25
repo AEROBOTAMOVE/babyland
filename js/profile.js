@@ -930,7 +930,12 @@
     const НЕ = /^(bl_pin|bl_pin_h)$/;
     // 3.1.5 · 05.08: + rage/maika/money — те са зад същия катинар (secrets.js),
     // а влизаха в „копие БЕЗ тайните“, което пътува по мейл и в облака.
-    const ЗАКЛЮЧЕНИ = /^(bl_wm_diary|bl_wm_confess|bl_wm_sins|bl_wm_rage|bl_wm_maika|bl_wm_money)$/;
+    // 25.08: списъкът се премести в js/tayni.js — беше преписан ДУМА ПО ДУМА и
+    // тук, и в js/rooms2.js:1633. Два преписа на едно правило се разминават, а
+    // цената тук е изтекла тайна. Резервният израз пази поведението, ако
+    // файлът не се зареди (виж ПЪТ НАЗАД в js/tayni.js).
+    const ЗАКЛЮЧЕНИ = (window.BL_ТАЙНИ && window.BL_ТАЙНИ.ключове) ||
+      /^(bl_wm_diary|bl_wm_confess|bl_wm_sins|bl_wm_rage|bl_wm_maika|bl_wm_money)$/;
     async function свали(безТайни, бутон, надпис, сПарола) {
       // 🔴 05.08 (одит г14, №362): целият път беше без try/catch. RangeError от
       //    JSON.stringify върху две години снимки отхвърляше обещанието мълчаливо
