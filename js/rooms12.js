@@ -216,7 +216,17 @@
       else if (последно.вид === 'станало') { const м = st.find(y => y && y.t === последно.обект.t); if (м) м.k = 'want'; }
       save('bl_wm_places', st); покажиОтмяна(null); рисувай(); fx().buzz(6);
     });
-    const put = k => { const v = inp.value.trim(); if (!v) return; st = load('bl_wm_places', []); st.push({ t: v.slice(0, 60), k, d: today() }); save('bl_wm_places', st); inp.value = ''; покажиОтмяна(null); рисувай(); fx().buzz(8); };
+    // 🔴🔴 25.08 (dev/pylna_pamet.js, живо натискане при пълна памет): полето се
+    //    чистеше, преди да се знае дали мястото е влязло в паметта — написаното
+    //    от мама изчезваше ДВА пъти. Полето се чисти САМО след потвърден запис;
+    //    обяснението идва от BL_ZAPIS_PADNA, който `save` вече вика (ред 18).
+    const put = k => {
+      const v = inp.value.trim(); if (!v) return;
+      st = load('bl_wm_places', []);
+      st.push({ t: v.slice(0, 60), k, d: today() });
+      if (!save('bl_wm_places', st)) { st.pop(); return; }
+      inp.value = ''; покажиОтмяна(null); рисувай(); fx().buzz(8);
+    };
     бил.addEventListener('click', () => put('was'));
     искам.addEventListener('click', () => put('want'));
     inp.addEventListener('keydown', e => { if (e.key === 'Enter') { e.preventDefault(); put('want'); } });
@@ -321,7 +331,15 @@
       st.splice(Math.min(махнато.къде, st.length), 0, махнато.какво);
       save('bl_lab_flipped', st); махнато = null; отмени.hidden = true; рисувай(); fx().buzz(6);
     });
-    const put = () => { const v = inp.value.trim(); if (!v) return; st = load('bl_lab_flipped', []); st.push({ t: v.slice(0, 70), d: today(), back: '' }); save('bl_lab_flipped', st); inp.value = ''; махнато = null; отмени.hidden = true; рисувай(); fx().buzz(8); };
+    // 🔴🔴 25.08 (dev/pylna_pamet.js, пълна памет): същият дефект като при
+    //    местата — полето се чистеше преди потвърден запис.
+    const put = () => {
+      const v = inp.value.trim(); if (!v) return;
+      st = load('bl_lab_flipped', []);
+      st.push({ t: v.slice(0, 70), d: today(), back: '' });
+      if (!save('bl_lab_flipped', st)) { st.pop(); return; }
+      inp.value = ''; махнато = null; отмени.hidden = true; рисувай(); fx().buzz(8);
+    };
     add.addEventListener('click', put);
     inp.addEventListener('keydown', e => { if (e.key === 'Enter') { e.preventDefault(); put(); } });
     const row = el('div', 'jr-addrow'); row.appendChild(inp); row.appendChild(add); целРед(row, inp);

@@ -137,7 +137,18 @@
       const има = items.find(i => String(i.t).toLowerCase() === v.toLowerCase());
       if (има) { знак(бележка, '„' + v + '“ вече е в списъка ✔'); inp.select(); return; }
       items = load('bl_registry', []);   // пресен прочит ПРЕДИ записа
-      items.push({ t: v, done: false }); save('bl_registry', items); inp.value = ''; draw();
+      // 🔴🔴 25.08 (dev/pylna_pamet.js, живо натискане при пълна памет): полето
+      //    се чистеше и отдолу пишеше „✔ Добавих", а в паметта нямаше нищо.
+      //    ЖЕЛЯЗНО: полето се чисти САМО след потвърден запис. `save` тук е тих
+      //    (ред 11) → истината идва от знака и от общия модал BL_ZAPIS_PADNA.
+      items.push({ t: v, done: false });
+      if (!save('bl_registry', items)) {
+        items.pop();
+        знак(бележка, '😕 Не можах да го добавя — паметта на телефона е пълна. Написаното ти стои в полето.', 6000);
+        if (window.BL_ZAPIS_PADNA) BL_ZAPIS_PADNA();
+        return;
+      }
+      inp.value = ''; draw();
       знак(бележка, '✔ Добавих „' + v + '“'); fx().buzz(8);
     });
     inp.addEventListener('keydown', e => { if (e.key === 'Enter') { e.preventDefault(); addB.click(); } });
