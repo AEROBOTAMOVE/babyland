@@ -113,7 +113,15 @@
           it.done = !it.done;
           items = load('bl_registry', []);   // пресен прочит ПРЕДИ записа
           const мой = items.find(x => x && x.t === it.t); if (мой) мой.done = it.done;
-          save('bl_registry', items);
+          // 🔴 25.08 (dev/lazhliv_uspeh.js): отговорът се хвърляше — отметката
+          //    светваше и „✔ купено" излизаше и когато записът е паднал. При
+          //    следващото отваряне отметката я нямаше. `save` тук е тих (ред 11),
+          //    затова истината идва от общия модал BL_ZAPIS_PADNA (js/rooms.js:41).
+          if (!save('bl_registry', items)) {
+            it.done = !it.done;                     // връщаме и паметта на екрана назад
+            if (window.BL_ZAPIS_PADNA) BL_ZAPIS_PADNA();
+            return;
+          }
           r.classList.toggle('done'); r.querySelector('.jr-check').textContent = it.done ? '✔' : '';
           знак(бележка, it.done ? '✔ „' + it.t + '“ — купено' : '↩ „' + it.t + '“ пак чака', 2200);
         });
@@ -239,13 +247,17 @@
           знак(бележка, '😕 Паметта се напълни — изтрий стара снимка.', 6000);
           delete photos[target];
         } else {
-          save('bl_photo_day', today()); // брои се в дневната разходка
           знак(бележка, '✔ Прибрах я при ' + (target === 0 ? 'раждането' : target + ' м.'));
           // 🔁 11.08 (клас Б8): ключът `bl_photo_day` се чете от „днешната
           //    разходка" (js/daily.js, js/profile.js). rooms3.js пре-рисува
           //    след запис, тази карта — не: мама слага снимка, а началният
           //    екран още твърди, че снимка няма, до следващото зареждане.
-          if (window.refreshToday) { try { refreshToday(); } catch (e) {} }
+          // 🔵 25.08 (dev/lazhliv_uspeh.js го извади): „✔ Прибрах я" е за СНИМКАТА,
+          //    а тя е вече ПРОВЕРЕНА три реда по-горе (`if (!save('bl_photos', …))`).
+          //    `bl_photo_day` е само отметка за дневната разходка — стои СЛЕД
+          //    надписа, защото надписът не зависи от нея; а падне ли, няма смисъл
+          //    да пращаме началния екран да се пре-рисува за нищо.
+          if (save('bl_photo_day', today()) && window.refreshToday) { try { refreshToday(); } catch (e) {} }
         }
         URL.revokeObjectURL(img.src);
         draw();

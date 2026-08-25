@@ -220,13 +220,20 @@
         r.innerHTML = `<span class="jr-check">${done[id] ? '✔' : ''}</span><span class="dv-mslbl">${lbl}</span><span class="dv-mstxt">${ms[k]}</span>`;
         r.addEventListener('click', () => {
           const d = load('bl_ms_done', {});
-          d[id] = !d[id]; save('bl_ms_done', d);
+          d[id] = !d[id];
           const md = load('bl_ms_d', {});
           // 🔴 г07/59: махнеш ли отметката, датата в bl_ms_d оставаше — Дървото
           //    забравяше умението, а Витрината и хапчето на банера продължаваха
           //    да го броят. Изключването чисти и датата.
           if (d[id]) { if (!md[id]) md[id] = Date.now(); } else { delete md[id]; }
-          save('bl_ms_d', md);
+          // 🔴 25.08 (dev/lazhliv_uspeh.js): и двата записа хвърляха отговора си,
+          //    а отметката пак светваше и „Ново умение! Дървото цъфна" пак падаше —
+          //    при пълна памет умението изчезваше при следващото отваряне.
+          //    Двата записа са ЕДНО действие: опитваме и двата, но екранът мърда
+          //    само ако и двата са минали. `save` вече вика BL_ZAPIS_PADNA (ред 11).
+          const окОтметка = save('bl_ms_done', d);
+          const окДата = save('bl_ms_d', md);
+          if (!окОтметка || !окДата) return;
           r.classList.toggle('done'); r.querySelector('.jr-check').textContent = d[id] ? '✔' : '';
           if (d[id]) { fx().confetti(r, 14); fx().cheer('Ново умение! Дървото цъфна 🌳'); }
         });
@@ -304,7 +311,10 @@
       const s = абзаци.length ? абзаци.join(' ') : txt.textContent.trim();
       const кратко = s.length > 400 ? s.slice(0, 400).replace(/\s\S*$/, '') + '…' : s;
       notes.push({ t: '📖 ' + кратко, d: Date.now() });
-      save('bl_notes_dev', notes);
+      // 🔴 25.08 (dev/lazhliv_uspeh.js): при пълна памет приказката НЕ влизаше в
+      //    „Мигове за спомен", а приложението пускаше конфети и го обявяваше.
+      //    `save` вече вика BL_ZAPIS_PADNA (dev.js:11) — тук остава да не лъжем.
+      if (!save('bl_notes_dev', notes)) return;
       fx().confetti(keep, 14); fx().cheer('Приказката е в „Мигове за спомен“ 💜');
     });
     sc.appendChild(keep);

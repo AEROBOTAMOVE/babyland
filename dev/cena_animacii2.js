@@ -826,6 +826,62 @@ function pxRazlika(a, b) {
 const САМОНАТИСК = /:(hover|active|focus|focus-visible|focus-within)\b/i;
 
 // ─────────────────────────────────────────────────────────────────────
+// СЪЩИЯТ ЛИ ЕЛЕМЕНТ Е? (за К7)
+// ─────────────────────────────────────────────────────────────────────
+// 🪤 ПЪРВАТА МИ ВЕРСИЯ ПИТАШЕ `r.селектор.includes('.' + клас)` И ДАДЕ
+// 12 ЧЕРВЕНИ, ОТ КОИТО 11 БЯХА ЛЪЖА. Трите начина, по които се излъга:
+//   1. ПОДНИЗ: „.ro-fab" се съдържа в „.ro-fab-hint" — два различни
+//      елемента, обявени за един. (Точно капанът, който тази стая вече
+//      е плащала: голият клас краде по начало на думата.)
+//   2. ПСЕВДО-ЕЛЕМЕНТ: „.pin-btn" срещу „.pin-btn::after" — ::after е
+//      ДРУГА кутия. Бутонът не мърда, мърда украсата му.
+//   3. ПОТОМЪК: „.bn-item" срещу „.bn-item.bn-active span" — последният
+//      компаунд е <span> ВЪТРЕ в бутона, не самият бутон.
+// Затова тук се сравняват КОМПАУНДИ по цели жетони, а не низове.
+function razborKompaund(сел) {
+  const посл = posleden(сел);
+  const псевдоЕл = ((посл.match(/::[-\w]+/) ||
+                     посл.match(/:(before|after|first-line|first-letter|placeholder|backdrop|marker)\b/i) ||
+                     [''])[0] || '').replace(/^:{1,2}/, '').toLowerCase();
+  const без = посл.replace(/::?[-\w]+(\([^)]*\))?/g, '');
+  return {
+    псевдоЕл,
+    класове: new Set((без.match(/\.[-\w-￿]+/g) || []).map(x => x.slice(1))),
+    ид: (без.match(/#[-\w-￿]+/g) || []).map(x => x.slice(1)),
+    таг: ((без.match(/^[a-zA-Z][-\w]*/) || [''])[0] || '').toLowerCase()
+  };
+}
+function sashtiyatElement(цел, сменящ) {
+  if (цел.псевдоЕл !== сменящ.псевдоЕл) return false;
+  if (цел.таг && сменящ.таг && цел.таг !== сменящ.таг) return false;
+  for (const к of цел.класове) if (!сменящ.класове.has(к)) return false;
+  for (const i of цел.ид) if (!сменящ.ид.includes(i)) return false;
+  return цел.класове.size > 0 || цел.ид.length > 0;
+}
+// „Невидим по подразбиране" — за да не се брои ВЛИЗАНЕ за бягаща цел.
+// Модалната кутия се плъзга нагоре, докато булото се отваря: мама още
+// не гледа натам, камо ли да посяга. Различно е от бутон, който се мести
+// ПОД пръста ѝ.
+function nevidimiPoPodrazbirane(t, набор) {
+  obhodPravila(t, (стек, декл) => {
+    const контекст = стек.slice(0, -1).join(' ');
+    if (/prefers-reduced-motion|@media\s+print/i.test(контекст)) return;
+    const сел = стек[стек.length - 1] || '';
+    if (!сел || сел.startsWith('@')) return;
+    const крие = декл.some(d =>
+      (d.свойство === 'opacity' && parseFloat(d.стойност) === 0) ||
+      (d.свойство === 'display' && /^none/i.test(d.стойност)) ||
+      (d.свойство === 'visibility' && /^hidden/i.test(d.стойност)));
+    if (!крие) return;
+    for (const част of сел.split(',')) {
+      const п = част.trim();
+      if (/^[.#][-\w-￿]+$/.test(п)) набор.add(п.slice(1));
+    }
+  });
+  return набор;
+}
+
+// ─────────────────────────────────────────────────────────────────────
 // ГЛАВНИЯТ АНАЛИЗ — работи върху СПИСЪК ОТ ФАЙЛОВЕ В ПАМЕТТА,
 // затова самопроверката може да го нахрани с измислени файлове.
 // ─────────────────────────────────────────────────────────────────────
@@ -838,7 +894,9 @@ function analiz(файлове /* [{име, текст}] */, разметка /*
   const употреби = [];
   const скрити = new Set();
   const преходи = [];
+  const преходиДвижение = [];
   const абсолютни = new Set();
+  const невидими = new Set();
   const всичкиПравила = [];
   const { набор: svgНабор, блокове: svgБлокове } = svgKlasove(разметка);
   const { набор: съдържаНатискаемо, натискаеми: намеренНатискаеми } =
@@ -870,6 +928,7 @@ function analiz(файлове /* [{име, текст}] */, разметка /*
 
     skritiPoPodrazbirane(без, скрити);
     absolutniKlasove(без, абсолютни);
+    nevidimiPoPodrazbirane(без, невидими);
 
     obhodPravila(без, (стек, декл) => {
       преглед.правила++;
@@ -881,8 +940,11 @@ function analiz(файлове /* [{име, текст}] */, разметка /*
         if (d.свойство !== 'transition' && d.свойство !== 'transition-property') continue;
         for (const парче of razdeliZapetai(d.стойност)) {
           const п = парче.trim().split(/\s+/)[0].toLowerCase();
-          if (ПОДРЕДБА.has(п) || п === 'all')
-            преходи.push({ файл: ф.име, ред: redNa(nach, d.индекс), селектор: сел, свойство: п });
+          const запис = { файл: ф.име, ред: redNa(nach, d.индекс), селектор: сел, свойство: п };
+          if (ПОДРЕДБА.has(п) || п === 'all') преходи.push(запис);
+          // за К7 движението е по-широко от подредбата: transform:translate
+          // мести целта също толкова истински, колкото и padding.
+          else if (п === 'transform' || п === 'translate') преходиДвижение.push(запис);
         }
       }
     });
@@ -920,6 +982,9 @@ function analiz(файлове /* [{име, текст}] */, разметка /*
 
   // К3 — всеки преход по подредба получава ПРИСЪДА, не само ред в списък
   for (const п of преходи) п.свито = svitoLi(п.селектор, абсолютни, svgНабор);
+  // transform НЕ се свива от „извън потока": абсолютен бутон, който се
+  // плъзга, си бяга от пръста точно толкова, колкото и всеки друг.
+  for (const п of преходиДвижение) п.свито = null;
 
   // ── К7 · ПРЕХОД, КОЙТО МЕСТИ НАТИСКАЕМО НЕЩО ─────────────────────
   // К2 гледа само БЕЗКРАЙНИ @keyframes. Но нищо не мести бутон така
@@ -930,13 +995,22 @@ function analiz(файлове /* [{име, текст}] */, разметка /*
   //    пръстът вече е там, целта не бяга.
   // 🔴 ако идва отвън (клас от скрол, от таймер, от чуждо докосване) —
   //    целта се мести, докато мама посяга.
-  for (const п of преходи) {
-    if (п.свито) continue;
-    const цел = posleden(п.селектор);
-    const класове = (цел.match(/\.[-\w-￿]+/g) || []).map(x => x.slice(1));
+  преглед.преходи_движение = преходиДвижение.length;
+  // 🔢 БРОЯЧИ НА ОТСЕЯНОТО. „Една находка" не значи нищо, ако не се вижда
+  // колко кандидата са минали и къде са отпаднали. В тази стая вече е
+  // плащано: „0 находки" се оказа „0 ПРЕГЛЕДАНИ".
+  const сито = { кандидати: 0, свити: 0, ненатискаеми: 0, псевдо: 0, невидими: 0,
+                 двойки: 0, друг_елемент: 0, скриващи: 0, само_мащаб: 0 };
+  for (const п of преходи.concat(преходиДвижение)) {
+    сито.кандидати++;
+    if (п.свито) { сито.свити++; continue; }
+    const целК = razborKompaund(п.селектор);
+    const класове = [...целК.класове];
     const самНатискаем = natiskaemo(п.селектор, null, tapКласове);
     const съдържаБутон = класове.some(к => съдържаНатискаемо.has(к));
-    if (!самНатискаем && !съдържаБутон) continue;
+    if (!самНатискаем && !съдържаБутон) { сито.ненатискаеми++; continue; }
+    if (целК.псевдоЕл) { сито.псевдо++; continue; }     // ::before/::after не се натиска
+    if (класове.some(к => невидими.has(к))) { сито.невидими++; continue; } // влизане, не бягство
     // 🪤 БАЗОВАТА СТОЙНОСТ НЕ ЖИВЕЕ В СЪЩИЯ ФАЙЛ. `.ro-head` носи
     // transition в css/rooms.css:820, а `padding: 14px 16px` е чак в
     // css/style.css:1146. Първата ми версия търсеше само в СЪЩИЯ файл и
@@ -950,18 +1024,38 @@ function analiz(файлове /* [{име, текст}] */, разметка /*
     }
     for (const r of всичкиПравила) {
       if (r.селектор === п.селектор) continue;
-      if (!класове.length || !класове.every(к => r.селектор.includes('.' + к))) continue;
+      if (!sashtiyatElement(целК, razborKompaund(r.селектор))) { сито.друг_елемент++; continue; }
       const d = r.декл.filter(x => x.свойство === п.свойство).pop();
       if (!d) continue;
+      сито.двойки++;
+      // самото правило крие елемента → това е ВЛИЗАНЕ/ИЗЛИЗАНЕ, не бягство
+      if (r.декл.some(x => (x.свойство === 'opacity' && parseFloat(x.стойност) === 0) ||
+                           (x.свойство === 'display' && /^none/i.test(x.стойност)) ||
+                           (x.свойство === 'visibility' && /^hidden/i.test(x.стойност)))) {
+        сито.скриващи++; continue;
+      }
+      // предшественик, невидим по подразбиране → пак влизане
+      const предци = r.селектор.replace(/\([^)]*\)/g, '').trim().split(/[\s>+~]+/).slice(0, -1).join(' ');
+      if ((предци.match(/\.[-\w-￿]+/g) || []).some(x => невидими.has(x.slice(1)))) {
+        сито.скриващи++; continue;
+      }
+      let px;
+      if (п.свойство === 'transform' || п.свойство === 'translate') {
+        const a = razborTranslate(базова || 'none'), b = razborTranslate(d.стойност);
+        px = Math.hypot(b.tx - a.tx, b.ty - a.ty);
+        if (px < 0.5) { сито.само_мащаб++; continue; }  // scale/rotate — центърът не бяга
+      } else {
+        px = базова ? pxRazlika(базова, d.стойност) : null;
+      }
       н.mesti_buton.push({
         преход: п, правило: r, свойство: п.свойство,
-        от: базова, базовФайл, до: d.стойност,
-        px: базова ? pxRazlika(базова, d.стойност) : null,
+        от: базова, базовФайл, до: d.стойност, px,
         подПръста: САМОНАТИСК.test(r.селектор),
         самНатискаем, съдържаБутон
       });
     }
   }
+  н.sito = сито;
 
   for (const к of keyframes) {
     if (к.счупена) { н.schupeni.push(к); continue; }
@@ -1513,6 +1607,69 @@ function samoproverka() {
       r.находки.mesti_buton.length === 0,
       String(r.находки.mesti_buton.length));
   }
+  {
+    // transform:translate мести целта точно толкова, колкото padding —
+    // и НЕ се извинява с „position:absolute".
+    const css = 'button.sos { position: absolute; transform: translateY(0); transition: transform .3s ease }\n' +
+                '.panel.otvoren button.sos { transform: translateY(-24px) }';
+    const r = analiz([{ име: 'плъзга.css', текст: css }]);
+    T('плъзгащ се бутон по чужд клас → гърми (дори абсолютен)', 'ГРЪМВА',
+      r.находки.mesti_buton.length === 1 && Math.round(r.находки.mesti_buton[0].px) === 24 &&
+      r.находки.mesti_buton[0].подПръста === false,
+      r.находки.mesti_buton.length ? r.находки.mesti_buton[0].px + 'px' : 'НЕ ГО ВИДЯ');
+  }
+  {
+    // scale/rotate не местят центъра — пръстът стига до същата точка
+    const css = 'button.z { transform: scale(1); transition: transform .2s ease }\n' +
+                '.grid.on button.z { transform: scale(1.1) rotate(4deg) }';
+    const r = analiz([{ име: 'мащаб.css', текст: css }]);
+    T('само scale/rotate не е бягаща цел', 'МЪЛЧИ',
+      r.находки.mesti_buton.length === 0, String(r.находки.mesti_buton.length));
+  }
+  {
+    // 🪤 ТРИТЕ ЛЪЖИ НА ПЪРВАТА МИ ВЕРСИЯ НА К7, ЗАКОВАНИ ТУК ЗАВИНАГИ.
+    // Ако някой ден пак сравня селектори като низове, тези три ще паднат.
+    const подниз = 'button.ro-fab { transform: translateY(0); transition: transform .25s ease }\n' +
+                   '.ro-fab-hint { transform: translateY(-50%) }';
+    const псевдо = 'button.pin-btn { transform: translateY(0); transition: transform .3s ease }\n' +
+                   '.pin-btn::after { transform: translate(-50%, -50%) }';
+    const потомък = 'button.bn-item { transform: translateY(0); transition: transform .3s ease }\n' +
+                    '.bn-item.bn-active span { transform: translateY(-22px) }';
+    const a = analiz([{ име: 'подниз.css', текст: подниз }]);
+    const b = analiz([{ име: 'псевдо.css', текст: псевдо }]);
+    const c = analiz([{ име: 'потомък.css', текст: потомък }]);
+    T('„.ro-fab" НЕ е „.ro-fab-hint" (подниз)', 'МЪЛЧИ',
+      a.находки.mesti_buton.length === 0, String(a.находки.mesti_buton.length));
+    T('„.pin-btn" НЕ е „.pin-btn::after" (псевдо-елемент)', 'МЪЛЧИ',
+      b.находки.mesti_buton.length === 0, String(b.находки.mesti_buton.length));
+    T('„.bn-item" НЕ е „.bn-item.bn-active span" (потомък)', 'МЪЛЧИ',
+      c.находки.mesti_buton.length === 0, String(c.находки.mesti_buton.length));
+    // …но истинското състояние върху СЪЩИЯ елемент трябва да мине
+    const истинско = 'button.bn-item { transform: translateY(0); transition: transform .3s ease }\n' +
+                     '.bar.on button.bn-item { transform: translateY(-22px) }';
+    const d = analiz([{ име: 'истинско.css', текст: истинско }]);
+    T('същият елемент с чуждо състояние ВСЕ ПАК гърми', 'ГРЪМВА',
+      d.находки.mesti_buton.length === 1 && Math.round(d.находки.mesti_buton[0].px) === 22,
+      d.находки.mesti_buton.length ? d.находки.mesti_buton[0].px + 'px' : 'НЕ ГО ВИДЯ');
+  }
+  {
+    // модал: булото е opacity:0 по подразбиране → кутията ВЛИЗА, не бяга
+    const css = '.md-veil { opacity: 0; }\n.md-veil.on { opacity: 1 }\n' +
+                '.md-box { transform: translateY(-16px); transition: transform .3s ease }\n' +
+                '.md-veil.on .md-box { transform: none }';
+    const html = '<div class="md-veil"><div class="md-box"><button class="ok">ок</button></div></div>';
+    const r = analiz([{ име: 'модал.css', текст: css }], [{ име: 'i.html', текст: html }]);
+    T('кутия, влизаща заедно с булото, не е бягаща цел', 'МЪЛЧИ',
+      r.находки.mesti_buton.length === 0, String(r.находки.mesti_buton.length));
+  }
+  {
+    // правилото, което САМО крие елемента, е излизане, не бягство
+    const css = 'button.rc { transform: none; transition: transform .22s ease }\n' +
+                '.rc.reveal { opacity: 0; transform: translateY(36px) }';
+    const r = analiz([{ име: 'крие.css', текст: css }]);
+    T('правило с opacity:0 е скриване, не бягаща цел', 'МЪЛЧИ',
+      r.находки.mesti_buton.length === 0, String(r.находки.mesti_buton.length));
+  }
 
   // ── БРОЯЧЪТ ──────────────────────────────────────────────────────
   {
@@ -1794,6 +1951,13 @@ function glaven() {
   console.log('К7 · ПРЕХОД, КОЙТО МЕСТИ НАТИСКАЕМО НЕЩО (целта бяга под пръста)');
   console.log('   прочетени ' + п.натискаеми_в_разметка + ' натискаеми в разметката, ' +
               'от тях ' + п.кутии_с_бутон + ' класа-кутии с бутон вътре');
+  const с_ = н.sito;
+  console.log('   ситото: ' + с_.кандидати + ' прехода по движение → ' +
+              'свити ' + с_.свити + ' · не се натискат ' + с_.ненатискаеми +
+              ' · ::before/::after ' + с_.псевдо + ' · невидими ' + с_.невидими);
+  console.log('            остават ' + (с_.кандидати - с_.свити - с_.ненатискаеми -
+              с_.псевдо - с_.невидими) + ' → двойки основа/състояние ' + с_.двойки +
+              ' → отпадат: влизане ' + с_.скриващи + ' · само мащаб ' + с_.само_мащаб);
   const бягащи = н.mesti_buton.filter(x => !x.подПръста);
   const подПръста = н.mesti_buton.filter(x => x.подПръста);
   if (!бягащи.length) console.log('   ✅ нула бягащи цели (' + подПръста.length +

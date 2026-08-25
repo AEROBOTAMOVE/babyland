@@ -177,8 +177,12 @@
     const пак = пръст(el('button', 'jr-chip', '↺ Отговори пак')); пак.type = 'button'; пак.hidden = true;
     c.appendChild(out); c.appendChild(хинт); c.appendChild(пак);
     пак.addEventListener('click', () => {
+      // 🔴 25.08 (dev/lazhliv_uspeh.js): нулирането чистеше екрана ПРЕДИ да знае
+      //    дали е записано. При пълна памет старите отговори оставаха в паметта,
+      //    екранът беше празен — и при следващото отваряне се връщаха от нищото.
+      //    Сега: първо записът, после екранът. `save` вече казва истината (ред 14).
+      if (!save(КЛЮЧ, { d: today(), a: {} })) return;
       Object.keys(отг).forEach(k => delete отг[k]);
-      save(КЛЮЧ, { d: today(), a: {} });
       бутони.forEach(b => { b.classList.remove('on'); b.setAttribute('aria-pressed', 'false'); });
       out.innerHTML = ''; преброй();
     });

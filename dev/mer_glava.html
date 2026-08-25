@@ -1,0 +1,106 @@
+<!doctype html>
+<meta charset="utf-8">
+<title>Измерване: колко се мести 🆘, когато главата на стаята се свие</title>
+<!--
+  ═══════════════════════════════════════════════════════════════════
+  МЕРАЧ НА ЕДНО ЧИСЛО, НЕ УКРАСА.
+
+  Въпросът: `.ro-head` се свива при скрол (js/helper.js:2573 —
+  `head.classList.toggle('shrunk', box.scrollTop > 46)`). Свиването върви
+  350 мс по преход. Колко МИЛИМЕТРА се мести 🆘 бутонът през това време?
+
+  Тук НЕ се мери анимация — мери се СТАТИЧНА геометрия в двете крайни
+  състояния. Затова няма чакане, няма requestAnimationFrame, няма скрит
+  раздел, който да мълчи. Класът се слага и веднага се чете
+  getBoundingClientRect(). Двете числа се вадят.
+
+  Разметката е СНЕТА ДУМА ПО ДУМА от index.html:1309-1317, а стиловете са
+  живите файлове. Ако някой ден те се сменят, мерачът ще каже новото число,
+  не старото.
+  ═══════════════════════════════════════════════════════════════════
+-->
+<link rel="stylesheet" href="../css/style.css">
+<link rel="stylesheet" href="../css/rooms.css">
+<style>
+  body { margin: 0; }
+  #сцена { width: 380px; }              /* тесен телефон */
+  #изход { font: 13px/1.7 monospace; white-space: pre; padding: 16px; }
+</style>
+
+<div id="сцена" class="ro-panel ro-lav">
+  <!-- копие на index.html:1309-1317 -->
+  <header class="ro-head">
+    <button class="ro-nav" id="roBack" aria-label="Назад">←</button>
+    <div class="ro-avatar" id="roAva"><span class="ro-badge">🐣</span></div>
+    <div class="ro-who">
+      <div class="ro-name" id="roName">Стая на съня</div>
+      <div class="ro-sub" id="roSub">помощничка Мила</div>
+    </div>
+    <button class="ro-nav ro-sosbtn" id="roSos" aria-label="СОС">🆘</button>
+    <button class="ro-nav" id="roClose" aria-label="Затвори">✕</button>
+  </header>
+</div>
+<div id="изход">мери…</div>
+
+<script>
+(function () {
+  const глава = document.querySelector('.ro-head');
+  const цели = { '🆘 СОС': 'roSos', '✕ затвори': 'roClose', '← назад': 'roBack',
+                 'помощничка': 'roAva', 'име на стаята': 'roName' };
+
+  // спираме прехода, за да четем КРАЙНИТЕ състояния, а не някакъв кадър
+  // по средата. Иначе мерачът мери собственото си чакане.
+  глава.style.transition = 'none';
+  for (const id of Object.values(цели)) {
+    const e = document.getElementById(id);
+    if (e) e.style.transition = 'none';
+  }
+
+  function снимка() {
+    const из = { глава: глава.getBoundingClientRect().height };
+    for (const [име, id] of Object.entries(цели)) {
+      const e = document.getElementById(id);
+      if (!e) continue;
+      const r = e.getBoundingClientRect();
+      из[име] = { център: r.top + r.height / 2, горе: r.top, ляво: r.left,
+                  ш: r.width, в: r.height };
+    }
+    return из;
+  }
+
+  глава.classList.remove('shrunk');
+  const широка = снимка();
+  глава.classList.add('shrunk');
+  const свита = снимка();
+  глава.classList.remove('shrunk');
+
+  const редове = [];
+  редове.push('ВИСОЧИНА НА ГЛАВАТА:  ' + широка.глава.toFixed(1) + 'px  →  ' +
+              свита.глава.toFixed(1) + 'px   (разлика ' +
+              (широка.глава - свита.глава).toFixed(1) + 'px)');
+  редове.push('');
+  редове.push('КОЛКО СЕ МЕСТИ ВСЯКА ЦЕЛ (център, вертикално):');
+  let найГолямо = 0, найГоляма = '';
+  for (const име of Object.keys(цели)) {
+    if (!широка[име] || !свита[име]) continue;
+    const д = широка[име].център - свита[име].център;
+    const дх = широка[име].ляво - свита[име].ляво;
+    if (Math.abs(д) > найГолямо) { найГолямо = Math.abs(д); найГоляма = име; }
+    редове.push('  ' + име.padEnd(16) + 'нагоре ' + д.toFixed(1) + 'px' +
+                (Math.abs(дх) > 0.5 ? '   встрани ' + (-дх).toFixed(1) + 'px' : '') +
+                '   размер ' + широка[име].ш.toFixed(0) + '×' + широка[име].в.toFixed(0) +
+                ' → ' + свита[име].ш.toFixed(0) + '×' + свита[име].в.toFixed(0));
+  }
+  редове.push('');
+  редове.push('НАЙ-МЕСТЕНАТА ЦЕЛ: ' + найГоляма + ' — ' + найГолямо.toFixed(1) + 'px');
+  редове.push('ПРАГЪТ на К2 (колкото пътува пръстът за 300 мс): 8px');
+  редове.push('ПРИСЪДА: ' + (найГолямо >= 8 ? '🔴 над прага' : '🟢 под прага'));
+  редове.push('');
+  редове.push('преходът е 350 мс, cubic-bezier(0.22,1,0.36,1) — тази крива е');
+  редове.push('на 99.6% от пътя още на 300-ата милисекунда, тоест мама вижда');
+  редове.push('практически цялото разстояние, докато пръстът ѝ пътува.');
+
+  document.getElementById('изход').textContent = редове.join('\n');
+  window.__МЕРКА = { широка, свита, найГолямо, найГоляма };
+})();
+</script>

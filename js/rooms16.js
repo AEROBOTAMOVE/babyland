@@ -64,7 +64,12 @@
         row.addEventListener('click', () => {
           const беше = !!взети[п];
           взети = load('bl_shoplist_done', {});   // пресен прочит ПРЕДИ записа
-          взети[п] = !беше; save('bl_shoplist_done', взети); рисувай(); fx().buzz(6);
+          взети[п] = !беше;
+          // 🔴 25.08 (ИЗМЕРЕНО при пълна памет): „🛒 Всичко е в количката!“ се
+          //    честваше по обекта в ПАМЕТТА. При паднал запис тя чува празника
+          //    пред щанда, а на касата отметките ги няма.
+          if (!save('bl_shoplist_done', взети)) return;
+          рисувай(); fx().buzz(6);
           if (продукти.every(x => взети[x])) { fx().confetti(); fx().cheer('🛒 Всичко е в количката!'); }
         });
         list.appendChild(row);
@@ -89,7 +94,8 @@
     нула.addEventListener('click', () => {
       взети = load('bl_shoplist_done', {});   // пресен прочит ПРЕДИ записа
       продукти.forEach(п => { delete взети[п]; });
-      save('bl_shoplist_done', взети); рисувай(); fx().buzz(8);
+      if (!save('bl_shoplist_done', взети)) { рисувай(); return; }   // 🔴 25.08
+      рисувай(); fx().buzz(8);
     });
     ред.appendChild(пр); ред.appendChild(нула);
     карта.appendChild(ред);
@@ -284,7 +290,9 @@
           const питай = window.BL_UI && BL_UI.confirm
             ? BL_UI.confirm('Да махна ли последния записан разход — ' + посл.v + ' лв?', { emoji: '📊', okText: 'Махни', cancelText: 'Остави', danger: true })
             : Promise.resolve(confirm('Да махна ли последния записан разход — ' + посл.v + ' лв?'));
-          питай.then(да => { if (!да) return; const д2 = load('bl_spend', []); д2.pop(); save('bl_spend', д2); рисувай(); });
+          // 🔴 25.08: при паднал запис редът си оставаше — рисувай() го връща
+          //    на екрана, но без дума мама решава, че е махнала грешния разход.
+          питай.then(да => { if (!да) return; const д2 = load('bl_spend', []); д2.pop(); if (!save('bl_spend', д2)) { рисувай(); return; } рисувай(); });
         });
         box.appendChild(назад);
       }
@@ -367,13 +375,18 @@
           if (st[п.id]) {
             (window.BL_UI ? BL_UI.confirm('Да махна ли „първи път“ за „' + п.н + '“? Датата ' + esc(d) + ' ще се загуби.', { emoji: п.e, okText: 'Махни', cancelText: 'Остави', danger: true })
               : Promise.resolve(confirm('Да махна ли отметката?'))).then(да => {
-              if (да) { st = load('bl_utensils', {}); delete st[п.id]; save('bl_utensils', st); рисувай(); fx().buzz(8); }
+              if (да) { st = load('bl_utensils', {}); delete st[п.id]; if (!save('bl_utensils', st)) { рисувай(); return; } рисувай(); fx().buzz(8); }
             });
             return;
           }
           st = load('bl_utensils', {});   // пресен прочит ПРЕДИ записа
-          st[п.id] = today(); fx().confetti(row); fx().cheer(п.e + ' ' + п.н + '!');
-          save('bl_utensils', st); рисувай(); fx().buzz(8);
+          st[п.id] = today();
+          // 🔴 25.08 (ИЗМЕРЕНО при пълна памет): конфетите и „🥄 Лъжица!“ бяха
+          //    ПРЕДИ записа — първият път с прибора се празнуваше и после го
+          //    нямаше в „първи път: …“. Празникът идва СЛЕД паметта.
+          if (!save('bl_utensils', st)) return;
+          fx().confetti(row); fx().cheer(п.e + ' ' + п.н + '!');
+          рисувай(); fx().buzz(8);
         });
         list.appendChild(row);
       });

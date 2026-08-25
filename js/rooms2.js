@@ -27,6 +27,17 @@
     try { alert('Паметта на телефона е пълна — това НЕ се записа. 😕 Написаното си остава в полето.'); } catch (e) {}
   };
   const save = (k, v) => { try { localStorage.setItem(k, JSON.stringify(v)); return true; } catch (e) { провалът(); return false; } };
+  // 🤫 25.08: ТРИ записа в този файл са чисто счетоводство — не носят нищо,
+  //    писано от мама, и падането им НЕ ѝ отнема нищо видимо:
+  //      bl_backup_last  — датата на последното копие (файлът вече е свален;
+  //                        не се ли запише, напомнянето просто пита пак = безопасно)
+  //      bl_cheer_day    — „конфетите вече паднаха днес“ (най-много втори път)
+  //      bl_baby_stage   — аватарът да подскочи веднъж на нов етап
+  //    Ако и те вдигат модала, мама получава „това НЕ се записа“ веднага след
+  //    вярното „Изпратено към Изтегляния 💜“ — и почва да не вярва и на
+  //    истинското предупреждение. Тук мълчим НАРОЧНО.
+  //    ⚠️ Не местѝ друг запис тук: правилото е „нищо на мама не е заложено“.
+  const saveТихо = (k, v) => { try { localStorage.setItem(k, JSON.stringify(v)); return true; } catch (e) { return false; } };
   // тихият честен ред „не можах да го запазя“ — един текст за целия файл
   const ПЪЛНА = '🤍 Паметта на телефона е пълна — не можах да го запазя. Изтрий нещо (снимки, видеа) и пробвай пак; написаното е още в полето.';
   const localDate = d => d.getFullYear() + '-' + String(d.getMonth() + 1).padStart(2, '0') + '-' + String(d.getDate()).padStart(2, '0');
@@ -498,7 +509,11 @@
       const b = el('button', 'jr-chip', lbl); b.type = 'button';
       b.addEventListener('click', () => {
         const prev = load('bl_feed', null);
-        save('bl_feed', { t: Date.now(), s: v });
+        // 🔴 25.08 (ИЗМЕРЕНО при пълна памет): при паднал запис часовникът се
+        //    пресмяташе, чипът „↺ Върни предишното“ изскачаше и логът за
+        //    прогнозата продължаваше — все едно храненето е записано. А после
+        //    „последно хранене преди…“ показваше старото, без нито дума.
+        if (!save('bl_feed', { t: Date.now(), s: v })) return;
         const fl = load('bl_feedlog', []); fl.push(Date.now()); save('bl_feedlog', fl.slice(-16));  // ротиращ лог само с времена — за прогнозата
         refreshFeed(); тикЧасовник();
         feedКаз.hidden = true;
@@ -526,7 +541,10 @@
           undoChip.hidden = true; clearTimeout(undoTimer);
           return;
         }
-        save('bl_feed', undoPrev);
+        // 🔴 25.08 (ИЗМЕРЕНО при пълна памет): чипът ↺ се скриваше и undoPrev
+        //    се нулираше, дори когато връщането не е минало — пътят назад
+        //    изчезваше, без нищо да се е върнало.
+        if (!save('bl_feed', undoPrev)) { refreshFeed(); тикЧасовник(); return; }
         // ↺ отмяната връщаше bl_feed, но времето оставаше в bl_feedlog завинаги —
         //    и после се броеше в прогнозата и на 24-часовия кръг. Махаме и следата.
         //    Но само ако логът е СЪЩИЯТ: махне ли се чуждо време, прогнозата ѝ
@@ -809,6 +827,13 @@
         tth.setAttribute('aria-label', имеЗъб);
         tth.setAttribute('aria-pressed', teethSet.has(idx) ? 'true' : 'false');
         tth.addEventListener('click', () => {
+          // 🔴 25.08 (ИЗМЕРЕНО при пълна памет): зъбчето светваше, конфетите
+          //    хвърчаха и броячът се вдигаше, а `save('bl_teeth', …)` най-долу
+          //    падаше мълчаливо. „Първото зъбче“ се празнуваше веднъж и после
+          //    го нямаше никъде. Записваме ПЪРВО, после празнуваме.
+          const бъдещ = new Set(teethSet);
+          if (бъдещ.has(idx)) бъдещ.delete(idx); else бъдещ.add(idx);
+          if (!save('bl_teeth', [...бъдещ])) return;
           if (teethSet.has(idx)) {
             teethSet.delete(idx);
             // 🦷 отметката назад чистеше само брояча. Датата оставаше и Реката
@@ -824,7 +849,7 @@
           }
           tth.classList.toggle('in');
           tth.setAttribute('aria-pressed', teethSet.has(idx) ? 'true' : 'false');
-          save('bl_teeth', [...teethSet]); thCount();
+          thCount();   // самият запис вече мина най-горе
         });
         rowE.appendChild(tth);
       }
@@ -1248,7 +1273,10 @@
             del.setAttribute('aria-label', 'Махни „' + f.n + '“ от моите храни');
             del.addEventListener('click', () => {
               const махни = () => {
-                save('bl_custom_foods', load('bl_custom_foods', []).filter(x => !x || x.n !== f.n));
+                // 🔴 25.08 (ИЗМЕРЕНО при пълна памет): при паднал запис храната
+                //    си оставаше, но кодът продължаваше и чистеше пробването и
+                //    датата ѝ — оставаше „Тиквичкаа“ БЕЗ историята си.
+                if (!save('bl_custom_foods', load('bl_custom_foods', []).filter(x => !x || x.n !== f.n))) { draw(); drawTried(); return; }
                 tried = load('bl_tried', {});   // пресен прочит ПРЕДИ записа
                 if (tried[f.n] != null) { delete tried[f.n]; save('bl_tried', tried); }
                 const td = load('bl_tried_d', {});
@@ -1520,7 +1548,14 @@
         }
         бележкаД.hidden = true;
         const сега = load('bl_firsts', {});   // пресен прочит ПРЕДИ записа
-        сега[f] = di.value; save('bl_firsts', сега); fdata[f] = di.value;
+        сега[f] = di.value;
+        // 🔴 25.08 (ИЗМЕРЕНО при пълна памет): конфетите и „Първа усмивка! 🎉“
+        //    идваха, а датата не влизаше в паметта. Полето за дата задържа
+        //    показаното, така че мама нямаше как да усети, че го няма.
+        //    Датата ѝ ОСТАВА в полето (за разлика от двете проверки горе, където
+        //    самата дата е сгрешена) — тук няма какво да се поправя, само място.
+        if (!save('bl_firsts', сега)) return;
+        fdata[f] = di.value;
         row.classList.add('pp'); setTimeout(() => row.classList.remove('pp'), 400);
         if (window.BL_FX) { BL_FX.confetti(row); BL_FX.cheer(f.replace(/^\S+\s/, '') + '! 🎉'); }
       });
@@ -1623,7 +1658,8 @@
       const b = e.target.closest('.tl-favdel'); if (!b) return;
       const име = b.dataset.n;
       const f = load('bl_fav_names', []).filter(x => x !== име);
-      save('bl_fav_names', f); drawFavs();
+      if (!save('bl_fav_names', f)) { drawFavs(); return; }   // 🔴 25.08: името си остава
+      drawFavs();
       if (window.BL_FX) BL_FX.buzz(8);
     });
     spin.addEventListener('click', () => {
@@ -1643,7 +1679,9 @@
           clearTimeout(favB._t); favB._t = setTimeout(() => { if (favB.isConnected) favB.textContent = '💜 Запази'; }, 1800);
           return;
         }
-        f.push(pk.n); save('bl_fav_names', f); drawFavs();
+        f.push(pk.n);
+        if (!save('bl_fav_names', f)) return;   // 🔴 25.08: „✔ Запазено“ без запис
+        drawFavs();
         favB.textContent = '✔ Запазено';
         if (window.BL_FX) BL_FX.buzz(10);
       });
@@ -1747,7 +1785,7 @@
       // 🔴 05.08 (одит г14, №120): при заключена ключалка дневникът и изповедите
       //    НЕ влизат — това копие е непълно. Непълното не гаси напомнянето за
       //    архив и не отключва медальона „Пазителка“.
-      save(тайно ? 'bl_backup_partial_last' : 'bl_backup_last', today()); // напомнянето на „Днес“ знае кога е било
+      saveТихо(тайно ? 'bl_backup_partial_last' : 'bl_backup_last', today()); // напомнянето на „Днес“ знае кога е било
       // 🔒 05.08: „Свалено (без тайните 🔒)“ се пишеше седем реда по-горе и
       //    ВЕДНАГА се презаписваше от „Свалено! 💜“ — в същия синхронен блок.
       //    Мама виждаше само зеленото, сменяше телефона и там дневникът и
@@ -2081,7 +2119,12 @@
     tSave.addEventListener('click', () => {
       const t = parseFloat(tI.value);
       if (isNaN(t) || t < 34 || t > 43) return;
-      const arr = load('bl_temps', []); arr.push({ v: t, ts: Date.now() }); save('bl_temps', arr.slice(-80));  // същия shape/cap като rooms3 tempCard
+      const arr = load('bl_temps', []); arr.push({ v: t, ts: Date.now() });
+      // 🔴 25.08 (ИЗМЕРЕНО при пълна памет): бутонът се заключваше и пишеше
+      //    „✔ Записано — посоката е в дневника“, без числото да е влязло.
+      //    Мама в 3 ч. през нощта мери на всеки час точно за да види ПОСОКАТА;
+      //    заключеният бутон ѝ отнемаше и втория опит.
+      if (!save('bl_temps', arr.slice(-80))) return;  // същия shape/cap като rooms3 tempCard
       tSave.dataset.saved = String(t); tSave.disabled = true; tSave.textContent = '✔ Записано — посоката е в дневника 🌡️';
       // …и дневникът наистина да го покаже СЕГА, а не чак след презареждане
       if (typeof window.BL_TEMPS_REDRAW === 'function') { try { window.BL_TEMPS_REDRAW(); } catch (e) { } }
@@ -2285,7 +2328,7 @@
       '<circle cx="24" cy="11" r="7"/><rect x="19" y="17" width="10" height="18" rx="5"/><rect x="14" y="34" width="4" height="14" rx="2" transform="rotate(-13 16 41)"/><rect x="30" y="34" width="4" height="14" rx="2" transform="rotate(13 32 41)"/>'  // прохожда
     ];
     let pop = '';
-    try { const prev = load('bl_baby_stage', -1); if (st > prev) pop = ' bb-ava-pop'; save('bl_baby_stage', st); } catch (e) {}
+    try { const prev = load('bl_baby_stage', -1); if (st > prev) pop = ' bb-ava-pop'; saveТихо('bl_baby_stage', st); } catch (e) {}
     return `<div class="td-ava bb-ava${pop}"><svg viewBox="0 0 48 56" class="bb-sil" aria-hidden="true">${poses[st]}</svg></div>`;
   }
 
@@ -2387,7 +2430,7 @@
     if (празнуваме) {
       const label = мес % 12 === 0 ? (мес / 12) + (мес / 12 === 1 ? ' годинка' : ' годинки') : мес + '-месечнина';
       banner = `<div class="td-cheer">🎉 Днес ${esc(nm)} празнува <strong>${esc(label)}</strong>! Прегърни го от нас. 💜${клампнато ? '<br><small>Днес е ' + now.getDate() + '-и, защото този месец е по-къс — месечнината не се губи. 😉</small>' : ''}</div>`;
-      if (load('bl_cheer_day', '') !== today()) { save('bl_cheer_day', today()); setTimeout(() => window.BL_FX && BL_FX.confetti(), 700); }
+      if (load('bl_cheer_day', '') !== today()) { saveТихо('bl_cheer_day', today()); setTimeout(() => window.BL_FX && BL_FX.confetti(), 700); }
     }
 
     container.innerHTML =
@@ -2550,15 +2593,21 @@
       const inp = el('textarea', 'jr-paper lx-inp'); inp.rows = 1; inp.placeholder = '🌸 мама…';
       inp.value = lex[q] || '';
       inp.addEventListener('input', () => {
-        lex = load('bl_baby_lexicon', {});   // пресен прочит ПРЕДИ записа
-        if (inp.value.trim()) lex[q] = inp.value.trim(); else delete lex[q];
-        save('bl_baby_lexicon', lex); upd();
+        const пресен = load('bl_baby_lexicon', {});   // пресен прочит ПРЕДИ записа
+        if (inp.value.trim()) пресен[q] = inp.value.trim(); else delete пресен[q];
+        // 🔴 25.08 (ИЗМЕРЕНО при пълна памет): пръстенът „12/30“ се вдигаше и
+        //    „Лексиконът е пълен! 🌟“ се празнуваше по копието в ПАМЕТТА. При
+        //    паднал запис книгата-спомен на детето оставаше празна, а екранът
+        //    я броеше за попълнена. `lex` мърда САМО след потвърден запис.
+        if (!save('bl_baby_lexicon', пресен)) return;
+        lex = пресен; upd();
         const ld = load('bl_lex_d', {});
         if (lex[q] && !ld[q]) { ld[q] = Date.now(); save('bl_lex_d', ld); } // отговорът в Реката
       });
       inp.addEventListener('change', () => {
         if (ВЪПРОСИ.every(x => lex[x]) && window.BL_FX && !load('bl_lex_done', false)) {
-          save('bl_lex_done', true); BL_FX.confetti(c); BL_FX.cheer('Лексиконът е пълен! 🌟');
+          if (!save('bl_lex_done', true)) return;   // 🔴 25.08: празникът чака записа
+          BL_FX.confetti(c); BL_FX.cheer('Лексиконът е пълен! 🌟');
         }
       });
       c.appendChild(inp);
