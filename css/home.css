@@ -519,8 +519,17 @@ header.hero.sky-night .hero-flip { color: #ece8f5; }
 .bn-e { font-size: 1.9rem; line-height: 1; }
 .bn-txt { display: flex; flex-direction: column; gap: 2px; flex: 1; min-width: 0; }
 .bn-txt strong { font-size: 1rem; }
-.bn-s { font-size: .8rem; opacity: .8; }
-.bn-go { font-size: 1.2rem; opacity: .5; }
+/* 👁️ 19.08 ИЗМЕРЕНО (dev/test_telefon.js, 360×760): opacity .8 сваляше
+   контраста до 4.35 при праг 4.5 — под стандарта, а точно този ред е
+   поканата „Една минутка за теб". Прозрачността РАЗРЕЖДА контраста
+   умножително; цветът остава същият, само не се разводнява толкова.
+   ПЪТ НАЗАД: opacity: .8; */
+.bn-s { font-size: .8rem; opacity: .92; }
+/* 👁️ 19.08 ИЗМЕРЕНО: стрелката беше на 2.29 — половината от прага.
+   ИЗМЕРЕНО В СТРАНИЦАТА: .5→2.29 · .8→4.35 (ПАК ПАДА) · .86→4.97 ✅
+   Първият ми опит беше .8 и НЕ СТИГАШЕ — числото го каза, не окото.
+   ПЪТ НАЗАД: opacity: .5; */
+.bn-go { font-size: 1.2rem; opacity: .86; }
 
 /* 📲 8.5.2 Инсталирането */
 .inst-card { margin-top: 14px; padding: 16px 18px; border-radius: 18px; background: var(--card, #fff); border: 1px solid var(--line, #e8e0ea); }
