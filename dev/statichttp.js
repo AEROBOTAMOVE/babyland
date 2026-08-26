@@ -29,7 +29,6 @@
 const http = require('http');
 const fs = require('fs');
 const path = require('path');
-const url = require('url');
 
 const ПОРТ = Number(process.argv[2]) || 8791;
 const КОРЕН = path.resolve(__dirname, '..');
@@ -52,8 +51,10 @@ const сървър = http.createServer((зая, отг) => {
   if (зая.method !== 'GET' && зая.method !== 'HEAD') {
     отг.writeHead(405, { 'Content-Length': 0 }); отг.end(); return;
   }
+  // 🪤 `url.parse()` е остарял (Node сам предупреждава: DEP0169, без CVE-та за
+  //   дупките му). Новият URL иска пълен адрес, затова се дава основа.
   let път;
-  try { път = decodeURIComponent(url.parse(зая.url).pathname || '/'); }
+  try { път = decodeURIComponent(new URL(зая.url, 'http://x').pathname || '/'); }
   catch (e) { отг.writeHead(400, { 'Content-Length': 0 }); отг.end(); return; }
   if (път === '/' || път === '') път = '/index.html';
 

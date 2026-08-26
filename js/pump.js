@@ -125,9 +125,14 @@
       const кога = ts => ts >= днес0 ? hhmm(ts)
         : ts >= днес0 - 86400000 ? 'вчера ' + hhmm(ts)
         : new Date(ts).toLocaleDateString('bg-BG', { day: 'numeric', month: 'numeric' }) + ' ' + hhmm(ts);
-      const прегл = log.slice(-3).reverse()
+      // 🔴 26.08 (ИЗМЕРЕНО, dev/kriv_zapis.js): крив bl_pump даваше ред
+      //    „Двете · Invalid Date NaN:NaN · Двете · Invalid Date NaN:NaN".
+      //    Час, който не е час, не помага на никого — по-добре по-къс списък.
+      //    ПЪТ НАЗАД: махаш .filter(...) — един израз.
+      const logОК = log.filter(x => x && isFinite(x.t) && x.t > 0);
+      const прегл = logОК.slice(-3).reverse()
         .map(x => `${страна(x.s)} · ${кога(x.t)}${x.ml ? ' · ' + x.ml + ' мл' : ''}`).join(' · ');
-      hist.innerHTML = 'Последни: ' + прегл;
+      hist.innerHTML = logОК.length ? 'Последни: ' + прегл : '';
     }
     refresh();
     const tick = setInterval(() => { if (!out.isConnected) { clearInterval(tick); return; } refresh(); }, 60000);

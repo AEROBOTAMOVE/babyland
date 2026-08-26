@@ -40,8 +40,12 @@
     const H = window.BL_SLEEPHIST;
     if (!H) { c.appendChild(el('p', 'jr-privacy', 'Броячът на съня не е зареден.')); return c; }
 
-    const нощи = H.брой();
-    const дн = H.днес();
+    // 🔴 26.08 (ИЗМЕРЕНО): при крив bl_sleep_hist тук идваше NaN и плочката
+    //    показваше „NaN мин днес досега" и „NaN мин средно за 3 дни".
+    //    Числото, което не е число, се показва като „—", не като NaN.
+    const числоИли = v => (typeof v === 'number' && isFinite(v)) ? v : null;
+    const нощи = числоИли(H.брой()) || 0;
+    const дн = числоИли(H.днес());
 
     if (!нощи && !дн) {
       c.appendChild(el('p', 'jr-privacy',
@@ -51,7 +55,7 @@
       return c;
     }
 
-    const ср = H.средно(today(), 14);
+    const ср = числоИли(H.средно(today(), 14));
     const box = el('div', 'nm-grid');
     box.innerHTML =
       `<div class="nm-b"><span class="nm-n">${дн ? час(дн) : '—'}</span><span class="nm-l">днес досега</span></div>` +
