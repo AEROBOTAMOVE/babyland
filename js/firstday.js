@@ -135,7 +135,14 @@
               b.type = 'button';
               b.innerHTML = '🌤️ Върни въпроса „Как си днес?“<span class="set-dot"></span>';
               b.addEventListener('click', () => {
-                save('bl_tone_off', false);
+                // 🔴 26.08 (dev/lazhliv_uspeh.js): казваше „Готово“ И ЗАКЛЮЧВАШЕ
+                //    бутона, без да гледа върнатото от save. При пълна памет
+                //    настройката не се връщаше, а бутонът вече беше мъртъв —
+                //    тоест нито стана, нито можеше да се пробва пак.
+                if (!save('bl_tone_off', false)) {
+                  b.innerHTML = '⚠️ Паметта е пълна — пробвай пак<span class="set-dot"></span>';
+                  return;   // бутонът ОСТАВА жив
+                }
                 b.classList.add('on');
                 b.innerHTML = '🌤️ Готово — утре пак ще те питам<span class="set-dot"></span>';
                 b.disabled = true;
