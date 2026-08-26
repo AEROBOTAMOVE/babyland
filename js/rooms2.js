@@ -577,7 +577,8 @@
       const h = Math.floor(mins / 60), m = mins % 60;
       feedOut.innerHTML = изтекло < -60000
         ? `Последното хранене е записано с час <strong>напред</strong> (${new Date(f.t).toLocaleTimeString('bg-BG', { hour: '2-digit', minute: '2-digit' })}) — часовникът на телефона се е разминал. Отбележи наново при следващото. 💜`
-        : `Последно (${sideWord(f.s)}) преди <strong>${h ? h + ' ч ' : ''}${m} мин</strong>.`;
+        : (isFinite(m) ? `Последно (${sideWord(f.s)}) преди <strong>${h ? h + ' ч ' : ''}${m} мин</strong>.`
+                       : 'Записът за последното хранене не се чете. Следващото ще се брои нормално. 💜');   // 🔴 26.08 (ИЗМЕРЕНО): даваше „преди NaN мин"
       // проход 4: прогноза напред от медианния интервал (три извора, дедуп на близнаци <60с)
       const ts = [...load('bl_nursing', []).map(x => x.ts), ...load('bl_feedlog', []), f.t].filter(Boolean).sort((a, b) => a - b);
       const uniq = ts.filter((x, i) => i === 0 || x - ts[i - 1] > 60000);
@@ -796,7 +797,9 @@
       s.segs.forEach(seg => { if (днес(seg.s)) svg += `<path d="${дъга(ъгъл(seg.s), ъгъл(Math.min(seg.e, d0 + 86399000)), 44)}" fill="none" stroke="#b9a7e6" stroke-width="7" stroke-linecap="round" opacity=".85"/>`; });
       if (s.open && днес(s.open)) svg += `<path d="${дъга(ъгъл(s.open), ъгъл(Date.now()), 44)}" fill="none" stroke="#b9a7e6" stroke-width="7" stroke-linecap="round" stroke-dasharray="2 4" opacity=".9"/>`;
       // хранения — точки
-      const feeds = [...load('bl_nursing', []).map(x => x.ts), ...load('bl_feedlog', []), (load('bl_feed', null) || {}).t].filter(x => x && днес(x));
+      // 🔴 26.08 (ИЗМЕРЕНО): `[null]` в кърменето гърмеше на x.ts и гасеше
+      //    денонощния кръг — картата, която показва деня на бебето.
+      const feeds = [...load('bl_nursing', []).filter(x => x).map(x => x.ts), ...load('bl_feedlog', []), (load('bl_feed', null) || {}).t].filter(x => x && днес(x));
       const uniq = [...new Set(feeds.map(x => Math.round(x / 300000)))].map(x => x * 300000);  // групирай на 5 мин
       uniq.forEach(ts => { const [x, y] = точка(ъгъл(ts), 58); svg += `<circle cx="${x.toFixed(1)}" cy="${y.toFixed(1)}" r="4" fill="#e56ba4" stroke="#fff" stroke-width="1.5"/>`; });
       // стрелка „сега"
@@ -1256,7 +1259,7 @@
       //    годинката — тоест еднопосочната врата остава отворена точно за
       //    случая, който я откри. Календарът по възраст („Всички" и
       //    категориите) си остава непокътнат — там нищо не изгрява по-рано.
-      allFoods.filter(f => (curCat === 'Всички' || (curCat === 'Алергени' ? !!f.alrg : f.cat === curCat)) && (curCat === 'Мои' || !a || f.from <= ageCap + 0.5))
+      allFoods.filter(f => f && (curCat === 'Всички' || (curCat === 'Алергени' ? !!f.alrg : f.cat === curCat)) && (curCat === 'Мои' || !a || f.from <= ageCap + 0.5))
         .forEach(f => {
           const done = tried[f.n];
           const cardE = el('button', 'fd-card' + (done ? ' tried' : ''));
@@ -2189,8 +2192,12 @@
     const sos = load('bl_sos', { pedName: '', pedPhone: '', closeName: '', closePhone: '' });
     function contactRow(nk, pk, ph) {
       const row = el('div', 'sos-row');
-      const ni = el('input', 'jr-word'); ni.placeholder = ph; ni.value = sos[nk];
-      const pi = el('input', 'jr-word'); pi.placeholder = 'телефон…'; pi.type = 'tel'; pi.value = sos[pk];
+      // 🔴 26.08 (ИЗМЕРЕНО, dev/kriv_zapis.js): при крив bl_sos тук влизаше
+      //    `undefined` и мама виждаше буквално „undefined" в полето за името
+      //    на педиатъра си — на екрана, който отваря, когато бърза.
+      //    ПЪТ НАЗАД: махаш `|| ''` от двата реда.
+      const ni = el('input', 'jr-word'); ni.placeholder = ph; ni.value = sos[nk] || '';
+      const pi = el('input', 'jr-word'); pi.placeholder = 'телефон…'; pi.type = 'tel'; pi.value = sos[pk] || '';
       const call = el('a', 'sos-call', '📞');
       // 📱 11.08 (измерено 39×40 на 375px телефон): това е бутонът, който се
       //    натиска с трепереща ръка. Под 44 пиксела пръстът го изпуска.
@@ -2500,7 +2507,10 @@
     function draw() {
       notes = load(key, []);            // пресен прочит при всяко рисуване
       list.innerHTML = notes.length ? '' : '<p class="jr-privacy">Твоето бяло поле — пиши каквото искаш, колкото искаш. 🤍</p>';
-      notes.slice().reverse().forEach((n, ri) => {
+      // 🔴 26.08 (ИЗМЕРЕНО): `[null]` тук гърмеше на `n.t` и убиваше БЯЛОТО
+      //    ПОЛЕ — картата, в която мама пише свободно. Едно и също място
+      //    обслужва СЕДЕМ стаи, тоест един крив запис гасеше седем карти.
+      notes.filter(x => x && x.t != null).slice().reverse().forEach((n, ri) => {
         const row = el('div', 'nt-row');
         row.innerHTML = `<div class="nt-txt">${esc(n.t)}</div><div class="nt-meta"><span>${new Date(n.d).toLocaleDateString('bg-BG')}</span><button class="nt-del" type="button" aria-label="Изтрий">🗑</button></div>`;
         row.querySelector('.nt-del').addEventListener('click', () => {
@@ -2682,12 +2692,15 @@
       lists = load('bl_custom_lists', []);   // пресен прочит при всяко рисуване
       holder.innerHTML = '';
       if (!lists.length) { holder.appendChild(el('p', 'jr-privacy', 'Списък за пътуване, за гости, за бабата… — твой избор, твои точки.')); return; }
-      lists.forEach((L, li) => holder.appendChild(oneList(L, li)));
+      // 🔴 26.08 (ИЗМЕРЕНО): крив bl_custom_lists гърмеше на L.name и на
+      //    L.items.filter — и убиваше картата със списъците в Инструменти.
+      lists.filter(L => L && L.name != null).forEach((L, li) => holder.appendChild(oneList(L, li)));
     }
     function oneList(L, li) {
       const box = el('div', 'cl-box');
       const head = el('div', 'cl-head');
-      head.innerHTML = `<strong>${esc(L.name)}</strong><span>${L.items.filter(i => i.done).length}/${L.items.length}</span>`;
+      const точки = Array.isArray(L.items) ? L.items.filter(i => i) : [];   // 26.08: липсващ items убиваше картата
+      head.innerHTML = `<strong>${esc(L.name)}</strong><span>${точки.filter(i => i.done).length}/${точки.length}</span>`;
       const del = el('button', 'nt-del', '🗑'); del.type = 'button';
       // ♿ 11.08 (клавиатура-четец): кошчето беше само картинка — при няколко
       //    списъка четецът не казваше КОЙ ще изтрие.

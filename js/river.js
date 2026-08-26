@@ -88,28 +88,28 @@
       const хубави = (Array.isArray(arr) ? arr : []).filter(Boolean);
       if (хубави.length) R.push({ ts: new Date(d + 'T12:00').getTime(), e: '🙏', txt: 'Три хубави неща: ' + trim(хубави.join(' · '), 90) });
     });
-    load('bl_letters', []).forEach(x => R.push({ ts: x.ts, e: '💌', txt: (x.who === 'мама' ? '🌸 мама' : '🧢 тати') + ' остави писмо: ' + trim(x.t, 60) }));
+    load('bl_letters', []).forEach(x => x && R.push({ ts: x.ts, e: '💌', txt: (x.who === 'мама' ? '🌸 мама' : '🧢 тати') + ' остави писмо: ' + trim(x.t, 60) }));
     const lb = load('bl_letter_baby', null);
     if (lb) R.push({ ts: lb.ts, e: '💌', txt: 'Мама запечата писмо до ' + nm + ' 💜' });
-    load('bl_voice', []).forEach(x => R.push({ ts: x.ts, e: '🎙️', txt: 'Гласова бележка на мама' }));
+    load('bl_voice', []).forEach(x => x && R.push({ ts: x.ts, e: '🎙️', txt: 'Гласова бележка на мама' }));
     // гласовите складове от rooms15 — иначе записите ѝ не се появяват в лентата
-    load('bl_voice_diary', []).forEach(x => R.push({ ts: x.ts, e: '🎙️', txt: 'Гласов дневник на мама' + (x.label ? ' · ' + x.label : '') }));
-    load('bl_voice_womb', []).forEach(x => R.push({ ts: x.ts, e: '🤰', txt: 'Гласово писмо в корема' + (x.label ? ' · ' + x.label : '') }));
-    load('bl_voice_songs', []).forEach(x => R.push({ ts: x.ts, e: '🎵', txt: 'Песничка с гласа на мама' + (x.label ? ' · ' + x.label : '') }));
+    load('bl_voice_diary', []).forEach(x => x && R.push({ ts: x.ts, e: '🎙️', txt: 'Гласов дневник на мама' + (x.label ? ' · ' + x.label : '') }));
+    load('bl_voice_womb', []).forEach(x => x && R.push({ ts: x.ts, e: '🤰', txt: 'Гласово писмо в корема' + (x.label ? ' · ' + x.label : '') }));
+    load('bl_voice_songs', []).forEach(x => x && R.push({ ts: x.ts, e: '🎵', txt: 'Песничка с гласа на мама' + (x.label ? ' · ' + x.label : '') }));
 
     // 💃 стая 8 — жената, не майката. Тези мигове са нейни, не на бебето.
-    load('bl_wm_firsts', []).forEach(x => R.push({ ts: new Date(x.d + 'T12:00').getTime(), e: '🌟', txt: 'Първо за МЕН: ' + trim(x.t, 60), big: true }));
+    load('bl_wm_firsts', []).forEach(x => x && R.push({ ts: new Date(x.d + 'T12:00').getTime(), e: '🌟', txt: 'Първо за МЕН: ' + trim(x.t, 60), big: true }));
     load('bl_wm_bucket', []).forEach(x => { if (x.done && x.d) R.push({ ts: new Date(x.d + 'T12:00').getTime(), e: '🔥', txt: 'Отметнах от списъка: ' + trim(x.t, 55), big: true }); });
-    load('bl_wm_letters', []).forEach(x => R.push({ ts: new Date(x.d + 'T12:00').getTime(), e: '💌', txt: 'Запечата писмо до себе си след година' }));
-    load('bl_wm_moonwish', []).concat(load('bl_moonwish', [])).forEach(x => R.push({ ts: new Date(x.d + 'T12:00').getTime(), e: '🌑', txt: 'Новолуние: „' + trim(x.t, 50) + '“' }));
-    load('bl_wm_compl', []).forEach(x => R.push({ ts: new Date(x.d + 'T12:00').getTime(), e: '💌', txt: 'Комплимент от ' + trim(x.w || 'някого', 16) + ': „' + trim(x.t, 44) + '“' }));
-    Object.entries(load('bl_wm_last', {})).forEach(([k, d]) => R.push({ ts: new Date(d + 'T12:00').getTime(), e: '💋', txt: 'Отделих си време за: ' + k }));
+    load('bl_wm_letters', []).forEach(x => x && R.push({ ts: new Date(x.d + 'T12:00').getTime(), e: '💌', txt: 'Запечата писмо до себе си след година' }));
+    load('bl_wm_moonwish', []).concat(load('bl_moonwish', [])).forEach(x => x && R.push({ ts: new Date(x.d + 'T12:00').getTime(), e: '🌑', txt: 'Новолуние: „' + trim(x.t, 50) + '“' }));
+    load('bl_wm_compl', []).forEach(x => x && R.push({ ts: new Date(x.d + 'T12:00').getTime(), e: '💌', txt: 'Комплимент от ' + trim(x.w || 'някого', 16) + ': „' + trim(x.t, 44) + '“' }));
+    Object.entries(load('bl_wm_last', {})).forEach(([k, d]) => d && R.push({ ts: new Date(d + 'T12:00').getTime(), e: '💋', txt: 'Отделих си време за: ' + k }));
     // 5.7: по-новите кътчета на стая 8 — реката още не ги знаеше
     load('bl_wm_mirror', []).forEach(x => x && x.d && R.push({ ts: new Date(x.d + 'T12:00').getTime(), e: '🪞', txt: 'Днес се харесах' }));
     load('bl_wm_places', []).forEach(x => x && x.d && R.push({ ts: new Date(x.d + 'T12:00').getTime(), e: x.k === 'was' ? '📍' : '✨', txt: (x.k === 'was' ? 'Била съм: ' : 'Искам да ида: ') + trim(x.t, 40), big: x.k === 'was' }));
 
     // 🔬 стая 9 — какво открих за бебето си сама
-    (load('bl_lab', {}).done || []).forEach(x => R.push({ ts: new Date(x.d + 'T12:00').getTime(), e: '🔬', txt: 'Открих: ' + trim(x.t, 60), big: true }));
+    (load('bl_lab', {}).done || []).forEach(x => x && R.push({ ts: new Date(x.d + 'T12:00').getTime(), e: '🔬', txt: 'Открих: ' + trim(x.t, 60), big: true }));
     load('bl_lab_timeline', []).forEach(x => x && x.d && R.push({ ts: new Date(x.d + 'T12:00').getTime(), e: '🕵️', txt: 'Отбелязах промяна: ' + trim(x.t, 55) }));
     load('bl_lab_flipped', []).forEach(x => { if (x && x.back) R.push({ ts: new Date(x.back + 'T12:00').getTime(), e: '🔄', txt: '„' + trim(x.t, 40) + '“ се върна', big: true }); });
 
@@ -121,18 +121,35 @@
     load('bl_goal_stickers', []).forEach(x => x && x.d && R.push({ ts: new Date(x.d + 'T12:00').getTime(), e: x.e || '🏆', txt: 'Цел постигната: ' + trim(x.n, 45) }));
 
     // растежът и грижите
-    load('bl_growth', []).forEach(x => R.push({ ts: new Date(x.d + 'T12:00').getTime(), e: '📏', txt: nm + ': ' + x.w + ' кг (' + x.p + '-и персентил)' }));
+    // 🪤 26.08 (ИЗМЕРЕНО, dev/kriv_zapis.js): трите реда отдолу бяха БЕЗ пазача
+    //    `x && x.…`, който съседните им редове имат. При крив запис в Реката
+    //    влизаха лодки „: undefined кг (undefined-и персентил)" с Invalid Date.
+    //    Пазачът е същият като на съседите — нищо ново, само последователно.
+    //    ПЪТ НАЗАД: махаш `x && x.d &&` / `x && x.ts &&` от началото на реда.
+    // 🔴🔴 26.08 (ИЗМЕРЕНО): запис с ВАЛИДНА дата, но празни числа минаваше
+    //    и през двете нива защита — `load` чисти само дупки в масива, а
+    //    отсяването на ред 203 гледа само датата. На реката на мама
+    //    излизаше лодка „Мия: null кг (null-и персентил)".
+    //    Пазачът `x && x.d` НЕ помага тук: датата е наред, липсва ТЕГЛОТО.
+    //    Затова се проверява самата стойност, която влиза в текста, а
+    //    персентилът просто отпада, ако го няма — вместо да пише „null-и".
+    //    ПЪТ НАЗАД: върни едноредовата версия от git.
+    load('bl_growth', []).forEach(x => {
+      if (!x || !x.d || x.w == null || x.w === '') return;
+      const прц = (x.p == null || x.p === '') ? '' : ' (' + x.p + '-и персентил)';
+      R.push({ ts: new Date(x.d + 'T12:00').getTime(), e: '📏', txt: nm + ': ' + x.w + ' кг' + прц });
+    });
     Object.entries(load('bl_firsts', {})).forEach(([f, d]) => { if (d) R.push({ ts: new Date(d + 'T12:00').getTime(), e: '🌟', txt: 'ПЪРВО: ' + trim(f, 60), big: true }); });
-    Object.entries(load('bl_teeth_d', {})).forEach(([i, ts]) => R.push({ ts, e: '🦷', txt: 'Ново зъбче проби! (' + (load('bl_teeth', []).length) + ' общо)', big: true }));
+    Object.entries(load('bl_teeth_d', {})).forEach(([i, ts]) => ts && R.push({ ts, e: '🦷', txt: 'Ново зъбче проби! (' + (load('bl_teeth', []).length) + ' общо)', big: true }));
     Object.entries(load('bl_ms_d', {})).forEach(([id, ts]) => {
       const lbl = { motor: 'едро моторно', fine: 'фино моторно', speech: 'говор', social: 'социално' }[id.split('_')[1]] || 'умение';
       R.push({ ts, e: '🧸', txt: 'Ново умение разцъфна (' + lbl + ', ~' + id.split('_')[0] + ' м.)' });
     });
-    load('bl_baby_sounds', []).forEach(x => R.push({ ts: x.ts, e: '🎙️', txt: 'Звуков миг: ' + (x.label || 'запис') + ' на ' + nm }));
+    load('bl_baby_sounds', []).forEach(x => x && x.ts && R.push({ ts: x.ts, e: '🎙️', txt: 'Звуков миг: ' + (x.label || 'запис') + ' на ' + nm }));
 
     // храната
-    Object.entries(load('bl_tried_d', {})).forEach(([f, ts]) => R.push({ ts, e: '🥄', txt: 'Опитахме ' + trim(f, 30) + ' ' + (load('bl_tried', {})[f] || '') }));
-    load('bl_food_faces', []).forEach(x => R.push({ ts: x.ts, e: '😋', txt: 'Гримасата при „' + trim(x.note, 24) + '“', img: x.img }));
+    Object.entries(load('bl_tried_d', {})).forEach(([f, ts]) => ts && R.push({ ts, e: '🥄', txt: 'Опитахме ' + trim(f, 30) + ' ' + (load('bl_tried', {})[f] || '') }));
+    load('bl_food_faces', []).forEach(x => x && x.ts && R.push({ ts: x.ts, e: '😋', txt: 'Гримасата при „' + trim(x.note, 24) + '“', img: x.img }));
 
     // лексиконът (със задна дата само ако имаме кога)
     const lex = load('bl_baby_lexicon', {});
@@ -140,7 +157,7 @@
 
     // снимките
     const dph = load('bl_dayphoto', {});
-    Object.entries(dph).forEach(([d, img]) => R.push({ ts: new Date(d + 'T12:00').getTime(), e: '📸', txt: 'Снимката на деня', img }));
+    Object.entries(dph).forEach(([d, img]) => img && R.push({ ts: new Date(d + 'T12:00').getTime(), e: '📸', txt: 'Снимката на деня', img }));
     if (baby.birth) {
       Object.entries(load('bl_photos', {})).forEach(([m, img]) => {
         const dd = BL_DATE.addMonths(baby.birth, +m);
@@ -166,7 +183,10 @@
     //   продължаваше да пише седмицата. Един и същи списък, едно и също правило.
     const наПауза = !!(window.BL_EXPECT && BL_EXPECT.paused && BL_EXPECT.paused());
     if (!наПауза) load('bl_pregw', []).forEach(x => {
-      if (x && x.d) R.push({ ts: new Date(x.d + 'T12:00').getTime(), e: '📈', txt: 'Кантарът: ' + x.kg + ' кг' + (x.w ? ' (' + x.w + '-та с.)' : '') });
+      // 🔴 26.08: `x && x.d` пази ДАТАТА, но не и килограмите — запис с
+      //    валидна дата и празно тегло даваше „Кантарът: undefined кг".
+      //    Проверява се стойността, която ВЛИЗА в текста.
+      if (x && x.d && x.kg != null && x.kg !== '') R.push({ ts: new Date(x.d + 'T12:00').getTime(), e: '📈', txt: 'Кантарът: ' + x.kg + ' кг' + (x.w ? ' (' + x.w + '-та с.)' : '') });
     });
     // 🔴 05.08 (СКЕПТИКЪТ към №181): rooms3.js вече ПРЕЛИВА bl_art в
     //    bl_art_months (еднократно, флаг bl_art_merged). Двата реда четяха без
@@ -178,7 +198,7 @@
     load('bl_art_months', []).forEach(x => { if (!x || _артTs.has(x.ts)) return; R.push({ ts: x.ts, e: '🎨', txt: 'Рисунка: „' + trim(x.note || 'без име', 30) + '“', img: x.img }); });
 
     // развитието и книжките
-    load('bl_books', []).forEach(x => R.push({ ts: x.ts, e: '📚', txt: 'Нова книжка: ' + trim(x.t, 46) + (x.fav ? ' 💜' : '') }));
+    load('bl_books', []).forEach(x => x && R.push({ ts: x.ts, e: '📚', txt: 'Нова книжка: ' + trim(x.t, 46) + (x.fav ? ' 💜' : '') }));
 
     // месечнините — синтетични, от рождената дата
     if (baby.birth) {

@@ -170,7 +170,8 @@
     const рисувай = () => {
       st = load('bl_wm_places', []);   // пресен прочит при всяко рисуване
       list.innerHTML = '';
-      const бх = st.filter(x => x.k === 'was'), их = st.filter(x => x.k === 'want');
+      // 🔴 26.08 (ИЗМЕРЕНО): `[null]` гърмеше на x.k и гасеше картата с местата.
+      const бх = st.filter(x => x && x.k === 'was'), их = st.filter(x => x && x.k === 'want');
       if (!st.length) { list.appendChild(el('p', 'jr-privacy', 'Още празна. Сложи първото — може да е и „Боровец, 2016“.')); return; }
       [['📍 Била съм', бх], ['✨ Искам', их]].forEach(([име, arr]) => {
         if (!arr.length) return;
@@ -295,7 +296,8 @@
       st = load('bl_lab_flipped', []);   // пресен прочит при всяко рисуване
       list.innerHTML = '';
       if (!st.length) { list.appendChild(el('p', 'jr-privacy', 'Още нищо. Като нещо спре да работи — сложи го тук.')); return; }
-      st.slice().reverse().forEach((x, ri) => {
+      // 🔴 26.08 (ИЗМЕРЕНО): `[null]` гърмеше на x.back и убиваше картата.
+      st.filter(x => x && x.t != null).slice().reverse().forEach((x, ri) => {
         const i = st.length - 1 - ri;
         const row = el('div', 'fl-row' + (x.back ? ' fl-back' : ''));
         row.innerHTML = `<span class="fl-t">${esc(x.t)}</span>
@@ -322,7 +324,7 @@
         });
         list.appendChild(row);
       });
-      const върнати = st.filter(x => x.back).length;
+      const върнати = st.filter(x => x && x.back).length;   // 🔴 26.08: `[null]` гърмеше тук
       if (върнати) list.appendChild(el('p', 'jr-privacy', '↩ ' + върнати + ' от тях се върнаха. Затова не изхвърляй нищо веднага.'));
     };
     отмени.addEventListener('click', () => {

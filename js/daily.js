@@ -316,7 +316,9 @@
       const last = log.slice(-2).reverse();
       if (last.length) {
         const hist = el('div', 'pr-hist');
-        last.forEach(r => {
+        // 🔴 26.08 (ИЗМЕРЕНО): `[null]` в bl_prompt_log гърмеше на r.q и
+        //    убиваше картата с подканата на деня.
+        last.filter(r => r && r.q != null).forEach(r => {
           hist.appendChild(el('div', 'pr-hrow',
             `<span class="pr-hq">„${esc(r.q)}“</span><span class="pr-ht">${esc(r.t)}</span><span class="pr-hd">${new Date(r.d).toLocaleDateString('bg-BG')}</span>`));
         });

@@ -432,7 +432,13 @@
       tick(add, '✔ Записано');
     });
     function draw() {
-      items = load('bl_pregw', []);   // пресен прочит при всяко рисуване
+      // 🪤 26.08 (ИЗМЕРЕНО, dev/kriv_zapis.js): при крив bl_pregw кривата рисуваше
+      //    точки с подсказка „undefined: undefined кг" и „Последно: undefined кг".
+      //    Записът е {d, kg} — минават само тези. Карта, която обещава „меко,
+      //    без терор от кантара", не бива да показва измислено тегло.
+      //    ПЪТ НАЗАД: махаш .filter(...) — един израз.
+      items = load('bl_pregw', [])
+        .filter(x => x && typeof x.kg === 'number' && isFinite(x.kg));   // пресен прочит при всяко рисуване
       undo.hidden = !items.length;
       if (!items.length) { box.innerHTML = '<p class="jr-privacy">Записвай колкото често ИСКАШ — кривата е за теб, не ти за нея. 🤍</p>'; return; }
       const last = items.slice(-14);
@@ -915,7 +921,14 @@
       c.appendChild(пит);
     }
     function drawHist() {
-      const items = load('bl_nursing', []).slice(-5).reverse();
+      // 🪤 26.08 (ИЗМЕРЕНО, dev/kriv_zapis.js): при крив bl_nursing (внесено копие,
+      //    списък от числа) редът излизаше „🍼 шише · NaN:NaN · Invalid Date".
+      //    Записът на кърменето е {s, dur, ts} — взимаме само тези, които са
+      //    такива. По-добре по-къс списък, отколкото измислени часове.
+      //    ПЪТ НАЗАД: махаш .filter(...) — един израз.
+      const items = load('bl_nursing', [])
+        .filter(x => x && typeof x.ts === 'number' && isFinite(x.ts) && typeof x.dur === 'number' && isFinite(x.dur))
+        .slice(-5).reverse();
       hist.innerHTML = items.length ? '<p class="jr-weekcap">Последни:</p>' : '';
       items.forEach(it => hist.appendChild(el('p', 'nr-hrow',
         `${it.s === 'Л' ? '🤱 ляво' : it.s === 'Д' ? '🤱 дясно' : '🍼 шише'} · <strong>${fmt(it.dur)}</strong> · ${new Date(it.ts).toLocaleTimeString('bg-BG', { hour: '2-digit', minute: '2-digit' })} ${dstr(it.ts)}`)));
@@ -962,7 +975,9 @@
     const baby = getBaby();
     const recs = [];
     const nur = load('bl_nursing', []);
-    if (nur.length) { const m = nur.reduce((a, x) => x.dur > a.dur ? x : a); const durTxt = m.dur >= 60 ? Math.round(m.dur / 60) + ' мин' : m.dur + ' сек'; recs.push(`🤱 Най-дълго хранене: <strong>${durTxt}</strong> (${dstr(m.ts)})`); }
+    // 🔴 26.08 (ИЗМЕРЕНО): крив запис даваше „undefined сек (Invalid Date)".
+    const nurОК = nur.filter(x => x && isFinite(x.dur) && isFinite(x.ts));
+    if (nurОК.length) { const m = nurОК.reduce((a, x) => x.dur > a.dur ? x : a); const durTxt = m.dur >= 60 ? Math.round(m.dur / 60) + ' мин' : m.dur + ' сек'; recs.push(`🤱 Най-дълго хранене: <strong>${durTxt}</strong> (${dstr(m.ts)})`); }
     const dip = load('bl_diapers', {});
     // 🟡 11.08 (обиколка във времето): рекордът се вадеше и от ден-ключ с БЪДЕЩА
     //    дата. Измерено наживо: bl_diapers['2026-08-13'] при днешна дата 11.08 →

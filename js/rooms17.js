@@ -83,6 +83,7 @@
         const f = el('figure', 'ec-item');
         // 🟡 12.08: бележката на мама минава през esc(), а адресът на снимката
         //    и седмицата влизаха сурови в атрибути. Едно правило за целия ред.
+        if (!x || !x.img) return;   // 🔴 26.08 (ИЗМЕРЕНО): `[null]` гърмеше тук и гасеше ехографиите
         f.innerHTML = `<img src="${esc(x.img)}" alt="ехо на ${esc(String(x.w))} седмица" loading="lazy">
           <figcaption><strong>${esc(String(x.w))} с.</strong>${x.t ? '<span>' + esc(x.t) + '</span>' : ''}</figcaption>
           <button class="ec-del" type="button" aria-label="изтрий">✕</button>`;
@@ -344,8 +345,12 @@
     const нощи = Object.keys(сън).length;
     const редове = [];
 
-    if (нощи >= 3) {
-      const ср = Math.round(Object.values(сън).reduce((a, b) => a + b, 0) / нощи);
+    // 🔴 26.08 (ИЗМЕРЕНО): стойности-текстове в bl_sleep_hist даваха
+    //    „спи NaN ч NaN мин средно на нощ" — число, каквото няма.
+    const минути = Object.values(сън).filter(v => typeof v === 'number' && isFinite(v) && v >= 0);
+    if (минути.length >= 3) {
+      const нощи = минути.length;
+      const ср = Math.round(минути.reduce((a, b) => a + b, 0) / нощи);
       редове.push(['😴', 'спи', Math.floor(ср / 60) + ' ч ' + (ср % 60) + ' мин', 'средно на нощ, от ' + нощи + ' измерени']);
     }
     // ⚠️ картата „Пелени днес“ създава {wet:0,dirty:0} при ВСЯКО отваряне на

@@ -423,6 +423,7 @@
       if (!st.length) { list.appendChild(el('p', 'jr-privacy', 'Още нищо. Първото ще дойде — понякога смехът е техен, понякога е твой.')); return; }
       st.slice().reverse().slice(0, 12).forEach((x, ri) => {
         const i = st.length - 1 - ri;
+        if (!x || x.t == null) return;   // 🔴 26.08: `[null]` гърмеше на x.t и убиваше картата
         const row = el('div', 'lg-row');
         row.innerHTML = `<span class="lg-e">😄</span><span class="lg-t">${esc(x.t)}<small>${esc(x.d)}</small></span><button class="nt-del" type="button" aria-label="Махни „${esc(x.t)}“ от ${esc(x.d)}">🗑</button>`;
         // 🔴 12.08 (обиколка на телефона, ИЗМЕРЕНО в браузъра): едно изречение

@@ -164,7 +164,11 @@
         p.style.gridColumn = '1 / -1';
         grid.appendChild(p); return;
       }
-      items.slice().reverse().forEach((it, ri) => {
+      // 🔴 26.08 (ИЗМЕРЕНО, dev/kriv_zapis.js): при `[null]` в списъка тук
+      //    гърмеше `it.img` и УБИВАШЕ картата — а с нея и всичко след нея в
+      //    стаята. Засягаше 3 карти в 3 различни стаи (рисунки, гримаси, обриви).
+      //    ПЪТ НАЗАД: махаш `.filter(x => x && x.img)`.
+      items.filter(x => x && x.img).slice().reverse().forEach((it, ri) => {
         const idx = items.length - 1 - ri;
         const cell = el('button', 'pho-cell'); cell.type = 'button';
         cell.innerHTML = `<img src="${esc(it.img)}" alt=""><span class="pho-m">${esc(it.note) || dstr(it.ts)}</span>`;
@@ -396,7 +400,10 @@
     function draw() {
       items = load(key, []);   // пресен прочит при всяко рисуване
       list.innerHTML = items.length ? '' : `<p class="jr-privacy">${opts.empty || 'Тук ще живеят малките звуци, които не искаш да забравиш. 🎙️'}</p>`;
-      items.slice().reverse().forEach((it, ri) => {
+      // 🔴 26.08 (ИЗМЕРЕНО): същият дефект при гласовите записи — `it.label`
+      //    върху null убиваше 5 карти в 4 стаи (гласова бележка, гласов
+      //    дневник, песничка, писмо в корема, звуци на бебето).
+      items.filter(x => x && x.a).slice().reverse().forEach((it, ri) => {
         const idx = items.length - 1 - ri;
         const row = el('div', 'vc-row');
         row.innerHTML = `<span class="vc-lbl">${esc(it.label) || '🎙️'}</span><audio controls preload="none" src="${esc(it.a)}"></audio>

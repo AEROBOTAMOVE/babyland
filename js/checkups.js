@@ -239,7 +239,9 @@
       let имаНещо = false;
 
       // тегло — последно измерване
-      const g = load('bl_growth', []);
+      // 🔴 26.08 (ИЗМЕРЕНО): крив запис даваше „Тегло последно: undefined кг"
+      //    в картата, която мама показва НА ЛЕКАРЯ. По-добре редът да липсва.
+      const g = load('bl_growth', []).filter(x => x && x.w != null && x.w !== '' && isFinite(Number(x.w)));
       if (g.length) {
         имаНещо = true;
         const last = g[g.length - 1];
@@ -258,7 +260,13 @@
       const t = load('bl_temps', []);
       if (t.length) {
         имаНещо = true;
-        const посл = t.slice(-5).reverse()
+        // 🔴 26.08 (ИЗМЕРЕНО, dev/kriv_zapis.js): при крив bl_temps тук се
+        //    изписваше „undefined° (NaN.NaN.NaN)" — и то в картата, която
+        //    мама показва НА ЛЕКАРЯ. Измислена температура е по-лоша от
+        //    липсваща: по нея се взимат решения.
+        //    ПЪТ НАЗАД: махаш .filter(...) — един израз.
+        const посл = t.filter(x => x && x.v != null && x.v !== '' && isFinite(Number(x.v)) && isFinite(x.ts))
+          .slice(-5).reverse()
           .map(x => esc(String(x.v)) + '° (' + дата(x.ts) + ')').join(' · ');
         кутия.appendChild(ред('🌡️', 'Последни температури', посл));
       }
