@@ -1,0 +1,2402 @@
+[
+ {
+  "v": "будя се преди него в 5 и после не мога да заспя пак",
+  "r": "Дневник на мама",
+  "otkade": "ден по часове / 6:00",
+  "rezultat": "tishina",
+  "karta": null,
+  "flag": null
+ },
+ {
+  "v": "мъникът се събужда в 5 всяка сутрин как да го върна на 7",
+  "r": "Моето бебе",
+  "otkade": "ден по часове / 6:00",
+  "rezultat": "tishina",
+  "karta": null,
+  "flag": null
+ },
+ {
+  "v": "сутрин първо ли да храня или първо да преповивам",
+  "r": "Моето бебе",
+  "otkade": "ден по часове / 6:00",
+  "rezultat": "tishina",
+  "karta": null,
+  "flag": null
+ },
+ {
+  "v": "буди се точно в 4 и е бодър и весел а аз съм труп",
+  "r": "Моето бебе",
+  "otkade": "ден по часове / 6:00",
+  "rezultat": "namerena",
+  "karta": "zd-son2",
+  "flag": null
+ },
+ {
+  "v": "сутрин повръща жълта течност на гладно",
+  "r": "Здраве и SOS",
+  "otkade": "ден по часове / 6:00",
+  "rezultat": "namerena",
+  "karta": "zd-vomit",
+  "flag": null
+ },
+ {
+  "v": "по колко време да го разхождам сутрин",
+  "r": "Развитие и игри",
+  "otkade": "ден по часове / 9:00",
+  "rezultat": "tishina",
+  "karta": null,
+  "flag": null
+ },
+ {
+  "v": "в колко часа е най добре да излизаме навън с бебето",
+  "r": "Моето бебе",
+  "otkade": "ден по часове / 9:00",
+  "rezultat": "tishina",
+  "karta": null,
+  "flag": null
+ },
+ {
+  "v": "може ли да спи в количката навън вместо в леглото",
+  "r": "Моето бебе",
+  "otkade": "ден по часове / 9:00",
+  "rezultat": "namerena",
+  "karta": "in-stroller",
+  "flag": null
+ },
+ {
+  "v": "сутрин след разходка е кисел и не иска да яде",
+  "r": "Захранване",
+  "otkade": "ден по часове / 9:00",
+  "rezultat": "namerena",
+  "karta": "zh-otkaz",
+  "flag": null
+ },
+ {
+  "v": "кога да си взема душ като не мога да го оставя сам",
+  "r": "Дневник на мама",
+  "otkade": "ден по часове / 9:00",
+  "rezultat": "namerena",
+  "karta": "mb-dushut",
+  "flag": null
+ },
+ {
+  "v": "колко дрямки трябва да има на 5 месеца",
+  "r": "Моето бебе",
+  "otkade": "ден по часове / 13:00",
+  "rezultat": "tishina",
+  "karta": null,
+  "flag": null
+ },
+ {
+  "v": "спи само по 20 минути и се буди с плач",
+  "r": "Моето бебе",
+  "otkade": "ден по часове / 13:00",
+  "rezultat": "namerena",
+  "karta": "mb-cry",
+  "flag": null
+ },
+ {
+  "v": "да го будя ли за да яде на обед",
+  "r": "Захранване",
+  "otkade": "ден по часове / 13:00",
+  "rezultat": "tishina",
+  "karta": null,
+  "flag": null
+ },
+ {
+  "v": "обедната дрямка стана 3 часа да я режа ли",
+  "r": "Моето бебе",
+  "otkade": "ден по часове / 13:00",
+  "rezultat": "namerena",
+  "karta": "mb5-driamki",
+  "flag": null
+ },
+ {
+  "v": "заспива в скута ми и щом го сложа в леглото се буди",
+  "r": "Моето бебе",
+  "otkade": "ден по часове / 13:00",
+  "rezultat": "namerena",
+  "karta": "mb-san",
+  "flag": null
+ },
+ {
+  "v": "цял ден не съм яла нищо докато го гледам",
+  "r": "Дневник на мама",
+  "otkade": "ден по часове / 13:00",
+  "rezultat": "tishina",
+  "karta": null,
+  "flag": null
+ },
+ {
+  "v": "всяка вечер около 6 почва да реве и не спира с часове",
+  "r": "Здраве и SOS",
+  "otkade": "ден по часове / 18:00",
+  "rezultat": "namerena",
+  "karta": "zd-son2",
+  "flag": null
+ },
+ {
+  "v": "колко често да го къпя",
+  "r": "Моето бебе",
+  "otkade": "ден по часове / 18:00",
+  "rezultat": "namerena",
+  "karta": "lb2-banya",
+  "flag": null
+ },
+ {
+  "v": "водата колко градуса да е за къпане",
+  "r": "Моето бебе",
+  "otkade": "ден по часове / 18:00",
+  "rezultat": "namerena",
+  "karta": "mb-bath",
+  "flag": null
+ },
+ {
+  "v": "може ли да го къпя всеки ден през зимата",
+  "r": "Моето бебе",
+  "otkade": "ден по часове / 18:00",
+  "rezultat": "namerena",
+  "karta": "lb2-banya",
+  "flag": null
+ },
+ {
+  "v": "след баня с какво да го мажа",
+  "r": "Моето бебе",
+  "otkade": "ден по часове / 18:00",
+  "rezultat": "namerena",
+  "karta": "mb-bath",
+  "flag": null
+ },
+ {
+  "v": "вечер съм като изцедена и нямам сили за нищо",
+  "r": "Дневник на мама",
+  "otkade": "ден по часове / 18:00",
+  "rezultat": "namerena",
+  "karta": "dn-nedospivane",
+  "flag": "mama:heavy"
+ },
+ {
+  "v": "да го будя ли за последно хранене преди аз да си легна",
+  "r": "Захранване",
+  "otkade": "ден по часове / 23:00",
+  "rezultat": "tishina",
+  "karta": null,
+  "flag": null
+ },
+ {
+  "v": "заспива само на цицка и не мога да го сложа иначе",
+  "r": "Моето бебе",
+  "otkade": "ден по часове / 23:00",
+  "rezultat": "namerena",
+  "karta": "br-pytuvane",
+  "flag": null
+ },
+ {
+  "v": "буди се на всеки час цяла нощ помощ",
+  "r": "Моето бебе",
+  "otkade": "ден по часове / 3:00",
+  "rezultat": "namerena",
+  "karta": "mb-otbi-nosht",
+  "flag": null
+ },
+ {
+  "v": "нощем плаче и не иска нито цица нито биберон",
+  "r": "Здраве и SOS",
+  "otkade": "ден по часове / 3:00",
+  "rezultat": "namerena",
+  "karta": "dn-tajno",
+  "flag": null
+ },
+ {
+  "v": "нощем да паля ли лампата като го храня",
+  "r": "Моето бебе",
+  "otkade": "ден по часове / 3:00",
+  "rezultat": "tishina",
+  "karta": null,
+  "flag": null
+ },
+ {
+  "v": "в 3 през нощта имам чувството че полудявам",
+  "r": "Дневник на мама",
+  "otkade": "ден по часове / 3:00",
+  "rezultat": "tishina",
+  "karta": null,
+  "flag": null
+ },
+ {
+  "v": "на трети ден млякото още не идва",
+  "r": "Захранване",
+  "otkade": "първите 40 дни / ден 3",
+  "rezultat": "namerena",
+  "karta": "mb-kolko-mliako",
+  "flag": null
+ },
+ {
+  "v": "трети ден е и плача без причина по цял ден",
+  "r": "Дневник на мама",
+  "otkade": "първите 40 дни / ден 3",
+  "rezultat": "namerena",
+  "karta": "dn-tajno",
+  "flag": "mama:heavy"
+ },
+ {
+  "v": "пъпчето кърви малко",
+  "r": "Здраве и SOS",
+  "otkade": "първите 40 дни / ден 4",
+  "rezultat": "namerena",
+  "karta": "mb-navel",
+  "flag": null
+ },
+ {
+  "v": "кога пада пъпчето",
+  "r": "Моето бебе",
+  "otkade": "първите 40 дни / ден 5",
+  "rezultat": "namerena",
+  "karta": "mb-navel",
+  "flag": null
+ },
+ {
+  "v": "на 5 дни е и личицето му е жълтичко",
+  "r": "Здраве и SOS",
+  "otkade": "първите 40 дни / ден 5",
+  "rezultat": "namerena",
+  "karta": "zd-jaltenica",
+  "flag": null
+ },
+ {
+  "v": "не е акало два дни а е само на 7 дни",
+  "r": "Здраве и SOS",
+  "otkade": "първите 40 дни / ден 7",
+  "rezultat": "namerena",
+  "karta": "zd-zapek",
+  "flag": null
+ },
+ {
+  "v": "акото е зелено и лепкаво на 10 дни",
+  "r": "Моето бебе",
+  "otkade": "първите 40 дни / ден 10",
+  "rezultat": "namerena",
+  "karta": "zh-akoto",
+  "flag": null
+ },
+ {
+  "v": "на 10 ден още не си е върнало теглото от раждането",
+  "r": "Захранване",
+  "otkade": "първите 40 дни / ден 10",
+  "rezultat": "namerena",
+  "karta": "zh-weight",
+  "flag": null
+ },
+ {
+  "v": "гърдите ми са като камъни и много болят",
+  "r": "Захранване",
+  "otkade": "първите 40 дни / ден 4",
+  "rezultat": "tishina",
+  "karta": null,
+  "flag": null
+ },
+ {
+  "v": "зърната ми са в рани и плача докато кърмя",
+  "r": "Захранване",
+  "otkade": "първите 40 дни / ден 6",
+  "rezultat": "namerena",
+  "karta": "dn-tajno",
+  "flag": null
+ },
+ {
+  "v": "на 14 дни спи по цял ден и не иска да суче",
+  "r": "Захранване",
+  "otkade": "първите 40 дни / ден 14",
+  "rezultat": "namerena",
+  "karta": "mb-otkaz-gyrda",
+  "flag": null
+ },
+ {
+  "v": "кога мога за първи път да изляза навън с новородено",
+  "r": "Моето бебе",
+  "otkade": "първите 40 дни / ден 12",
+  "rezultat": "tishina",
+  "karta": null,
+  "flag": null
+ },
+ {
+  "v": "може ли да идват гости при новородено",
+  "r": "Моето бебе",
+  "otkade": "първите 40 дни / ден 8",
+  "rezultat": "tishina",
+  "karta": null,
+  "flag": null
+ },
+ {
+  "v": "на 21 ден почна да реве всяка вечер по три часа",
+  "r": "Здраве и SOS",
+  "otkade": "първите 40 дни / ден 21",
+  "rezultat": "namerena",
+  "karta": "lb-koliki",
+  "flag": null
+ },
+ {
+  "v": "колко пъти на ден пикае нормално новородено",
+  "r": "Моето бебе",
+  "otkade": "първите 40 дни / ден 5",
+  "rezultat": "namerena",
+  "karta": "zh-kolko-pati-den",
+  "flag": null
+ },
+ {
+  "v": "как да разбера че се е наситило от гърдата",
+  "r": "Захранване",
+  "otkade": "първите 40 дни / ден 9",
+  "rezultat": "tishina",
+  "karta": null,
+  "flag": null
+ },
+ {
+  "v": "на 3 седмици иска да суче на всеки час нормално ли е",
+  "r": "Захранване",
+  "otkade": "първите 40 дни / ден 21",
+  "rezultat": "namerena",
+  "karta": "mb-kolko-mliako",
+  "flag": null
+ },
+ {
+  "v": "може ли да му дам биберон или ще откаже гърдата",
+  "r": "Захранване",
+  "otkade": "първите 40 дни / ден 15",
+  "rezultat": "namerena",
+  "karta": "zh-mahni-shishe",
+  "flag": null
+ },
+ {
+  "v": "кога да го кача на кола за първи път",
+  "r": "Моето бебе",
+  "otkade": "първите 40 дни / ден 2",
+  "rezultat": "tishina",
+  "karta": null,
+  "flag": null
+ },
+ {
+  "v": "първата разходка колко дълга да е",
+  "r": "Моето бебе",
+  "otkade": "първите 40 дни / ден 13",
+  "rezultat": "namerena",
+  "karta": "lb2-razhodki",
+  "flag": null
+ },
+ {
+  "v": "на 1 месец още не ме гледа в очите",
+  "r": "Развитие и игри",
+  "otkade": "първите 40 дни / ден 30",
+  "rezultat": "namerena",
+  "karta": "rz-autizam",
+  "flag": null
+ },
+ {
+  "v": "кога почва да се усмихва наистина а не от газове",
+  "r": "Развитие и игри",
+  "otkade": "първите 40 дни / ден 35",
+  "rezultat": "namerena",
+  "karta": "rz-smyah",
+  "flag": null
+ },
+ {
+  "v": "на 40 дни какво се прави черкуване или не",
+  "r": "Дневник на мама",
+  "otkade": "първите 40 дни / ден 40",
+  "rezultat": "tishina",
+  "karta": null,
+  "flag": null
+ },
+ {
+  "v": "още кървя на 30 ден нормално ли е",
+  "r": "Жената в мен",
+  "otkade": "първите 40 дни / ден 30",
+  "rezultat": "namerena",
+  "karta": "mm-lohia",
+  "flag": null
+ },
+ {
+  "v": "шевовете ме болят като седна",
+  "r": "Жената в мен",
+  "otkade": "първите 40 дни / ден 6",
+  "rezultat": "tishina",
+  "karta": null,
+  "flag": null
+ },
+ {
+  "v": "не мога да акам след раждането и ме е страх да се напъна",
+  "r": "Жената в мен",
+  "otkade": "първите 40 дни / ден 3",
+  "rezultat": "namerena",
+  "karta": "zg-pak",
+  "flag": null
+ },
+ {
+  "v": "коремът ми е като на 5 месеца бременна още",
+  "r": "Жената в мен",
+  "otkade": "първите 40 дни / ден 20",
+  "rezultat": "namerena",
+  "karta": "nia-body2",
+  "flag": null
+ },
+ {
+  "v": "новороденото киха постоянно настинало ли е",
+  "r": "Здраве и SOS",
+  "otkade": "първите 40 дни / ден 11",
+  "rezultat": "namerena",
+  "karta": "zd-nastinka",
+  "flag": null
+ },
+ {
+  "v": "на 2 месеца колко трябва да яде на едно хранене",
+  "r": "Захранване",
+  "otkade": "месец по месец / 2 м",
+  "rezultat": "namerena",
+  "karta": "bz-hrani",
+  "flag": null
+ },
+ {
+  "v": "след ваксините на 2 месеца има ли температура",
+  "r": "Здраве и SOS",
+  "otkade": "месец по месец / 2 м",
+  "rezultat": "namerena",
+  "karta": "zd-temperatura",
+  "flag": null
+ },
+ {
+  "v": "на 3 месеца се дави в собствените си лиги",
+  "r": "Моето бебе",
+  "otkade": "месец по месец / 3 м",
+  "rezultat": "samo_flag",
+  "karta": null,
+  "flag": "red:da"
+ },
+ {
+  "v": "на 3 месеца изведнъж спря да спи както преди какво стана",
+  "r": "Моето бебе",
+  "otkade": "месец по месец / 3 м",
+  "rezultat": "namerena",
+  "karta": "rz-autizam",
+  "flag": null
+ },
+ {
+  "v": "на 4 месеца още не се обръща",
+  "r": "Развитие и игри",
+  "otkade": "месец по месец / 4 м",
+  "rezultat": "namerena",
+  "karta": "rz-obrashtane",
+  "flag": null
+ },
+ {
+  "v": "на 4 месеца мога ли да почна с ябълка",
+  "r": "Захранване",
+  "otkade": "месец по месец / 4 м",
+  "rezultat": "tishina",
+  "karta": null,
+  "flag": null
+ },
+ {
+  "v": "на 5 месеца лиги до пода зъб ли никне",
+  "r": "Здраве и SOS",
+  "otkade": "месец по месец / 5 м",
+  "rezultat": "tishina",
+  "karta": null,
+  "flag": null
+ },
+ {
+  "v": "на 6 месеца с какво да почна захранването",
+  "r": "Захранване",
+  "otkade": "месец по месец / 6 м",
+  "rezultat": "namerena",
+  "karta": "zah-koga",
+  "flag": null
+ },
+ {
+  "v": "на 6 месеца още не сяда само",
+  "r": "Развитие и игри",
+  "otkade": "месец по месец / 6 м",
+  "rezultat": "namerena",
+  "karta": "rz-sedene",
+  "flag": null
+ },
+ {
+  "v": "на 7 месеца не иска пюре само цица",
+  "r": "Захранване",
+  "otkade": "месец по месец / 7 м",
+  "rezultat": "namerena",
+  "karta": "zh-blw",
+  "flag": null
+ },
+ {
+  "v": "на 8 месеца пълзи назад вместо напред",
+  "r": "Развитие и игри",
+  "otkade": "месец по месец / 8 м",
+  "rezultat": "namerena",
+  "karta": "rz-palzene",
+  "flag": null
+ },
+ {
+  "v": "на 8 месеца пищи щом изляза от стаята за секунда",
+  "r": "Развитие и игри",
+  "otkade": "месец по месец / 8 м",
+  "rezultat": "tishina",
+  "karta": null,
+  "flag": null
+ },
+ {
+  "v": "на 9 месеца колко зъба трябва да има",
+  "r": "Моето бебе",
+  "otkade": "месец по месец / 9 м",
+  "rezultat": "tishina",
+  "karta": null,
+  "flag": null
+ },
+ {
+  "v": "на 10 месеца казва мама но на всичко наред",
+  "r": "Развитие и игри",
+  "otkade": "месец по месец / 10 м",
+  "rezultat": "tishina",
+  "karta": null,
+  "flag": null
+ },
+ {
+  "v": "на 11 месеца още не ходи и се притеснявам",
+  "r": "Развитие и игри",
+  "otkade": "месец по месец / 11 м",
+  "rezultat": "namerena",
+  "karta": "rz-prohojdane",
+  "flag": null
+ },
+ {
+  "v": "на 1 година спира ли се адаптираното мляко",
+  "r": "Захранване",
+  "otkade": "месец по месец / 12 м",
+  "rezultat": "namerena",
+  "karta": "mb-kolko-mliako",
+  "flag": null
+ },
+ {
+  "v": "на 13 месеца хвърля всичко на пода нарочно",
+  "r": "Развитие и игри",
+  "otkade": "месец по месец / 13 м",
+  "rezultat": "namerena",
+  "karta": "rz-hvarlia",
+  "flag": null
+ },
+ {
+  "v": "на 14 месеца хапе другите деца",
+  "r": "Развитие и игри",
+  "otkade": "месец по месец / 14 м",
+  "rezultat": "namerena",
+  "karta": "rz-zahapva-deca",
+  "flag": null
+ },
+ {
+  "v": "на 15 месеца не казва нито една дума",
+  "r": "Развитие и игри",
+  "otkade": "месец по месец / 15 м",
+  "rezultat": "namerena",
+  "karta": "gz-kysno-govor",
+  "flag": null
+ },
+ {
+  "v": "на 16 месеца се хвърля на земята в магазина",
+  "r": "Развитие и игри",
+  "otkade": "месец по месец / 16 м",
+  "rezultat": "namerena",
+  "karta": "zah-koga",
+  "flag": null
+ },
+ {
+  "v": "на 18 месеца още е с памперс кога да го махна",
+  "r": "Моето бебе",
+  "otkade": "месец по месец / 18 м",
+  "rezultat": "tishina",
+  "karta": null,
+  "flag": null
+ },
+ {
+  "v": "на 18 месеца рита и удря когато му кажа не",
+  "r": "Развитие и игри",
+  "otkade": "месец по месец / 18 м",
+  "rezultat": "namerena",
+  "karta": "br-dvijenia",
+  "flag": null
+ },
+ {
+  "v": "на 20 месеца отказва всичко освен банан",
+  "r": "Захранване",
+  "otkade": "месец по месец / 20 м",
+  "rezultat": "namerena",
+  "karta": "zh-otkaz",
+  "flag": null
+ },
+ {
+  "v": "на 2 години как да го отбия от цицата",
+  "r": "Захранване",
+  "otkade": "месец по месец / 24 м",
+  "rezultat": "namerena",
+  "karta": "mb-otbi-kak",
+  "flag": null
+ },
+ {
+  "v": "на 2 години не иска да спи сам в стаята си",
+  "r": "Моето бебе",
+  "otkade": "месец по месец / 24 м",
+  "rezultat": "namerena",
+  "karta": "mb-san",
+  "flag": null
+ },
+ {
+  "v": "на 2 години казва не на абсолютно всичко",
+  "r": "Развитие и игри",
+  "otkade": "месец по месец / 24 м",
+  "rezultat": "tishina",
+  "karta": null,
+  "flag": null
+ },
+ {
+  "v": "на 2 години и половина още не говори изречения",
+  "r": "Развитие и игри",
+  "otkade": "месец по месец / 30 м",
+  "rezultat": "namerena",
+  "karta": "rz-govor",
+  "flag": null
+ },
+ {
+  "v": "на 30 месеца пишка в гащите всеки ден",
+  "r": "Моето бебе",
+  "otkade": "месец по месец / 30 м",
+  "rezultat": "namerena",
+  "karta": "rz-gyrne",
+  "flag": null
+ },
+ {
+  "v": "на 3 години има въображаем приятел",
+  "r": "Развитие и игри",
+  "otkade": "месец по месец / 36 м",
+  "rezultat": "tishina",
+  "karta": null,
+  "flag": null
+ },
+ {
+  "v": "на 3 години пита откъде идват бебетата",
+  "r": "Развитие и игри",
+  "otkade": "месец по месец / 36 м",
+  "rezultat": "tishina",
+  "karta": null,
+  "flag": null
+ },
+ {
+  "v": "на 3 години още се събужда по няколко пъти нощем",
+  "r": "Моето бебе",
+  "otkade": "месец по месец / 36 м",
+  "rezultat": "tishina",
+  "karta": null,
+  "flag": null
+ },
+ {
+  "v": "кога се маха биберона",
+  "r": "Моето бебе",
+  "otkade": "месец по месец / преход",
+  "rezultat": "namerena",
+  "karta": "zh-mahni-shishe",
+  "flag": null
+ },
+ {
+  "v": "кога се сваля решетката и се минава на голямо легло",
+  "r": "Моето бебе",
+  "otkade": "месец по месец / преход",
+  "rezultat": "tishina",
+  "karta": null,
+  "flag": null
+ },
+ {
+  "v": "кога почва да се страхува от непознати",
+  "r": "Развитие и игри",
+  "otkade": "месец по месец / 8 м",
+  "rezultat": "tishina",
+  "karta": null,
+  "flag": null
+ },
+ {
+  "v": "на колко месеца хваща лъжицата сам",
+  "r": "Захранване",
+  "otkade": "месец по месец / 10 м",
+  "rezultat": "namerena",
+  "karta": "zh-koga-start",
+  "flag": null
+ },
+ {
+  "v": "кога спира нощното хранене",
+  "r": "Захранване",
+  "otkade": "месец по месец / преход",
+  "rezultat": "namerena",
+  "karta": "lb2-noshtni",
+  "flag": null
+ },
+ {
+  "v": "как да облека бебето зимата в количката",
+  "r": "Моето бебе",
+  "otkade": "сезони и празници / зима",
+  "rezultat": "namerena",
+  "karta": "in-stroller",
+  "flag": null
+ },
+ {
+  "v": "колко пласта дрехи при 5 градуса навън",
+  "r": "Моето бебе",
+  "otkade": "сезони и празници / зима",
+  "rezultat": "namerena",
+  "karta": "zd-temperatura",
+  "flag": null
+ },
+ {
+  "v": "може ли да го изведа при минус 5",
+  "r": "Моето бебе",
+  "otkade": "сезони и празници / зима",
+  "rezultat": "namerena",
+  "karta": "zim-studeno-razhodka",
+  "flag": null
+ },
+ {
+  "v": "първи сняг може ли да го изнеса да го види",
+  "r": "Развитие и игри",
+  "otkade": "сезони и празници / зима",
+  "rezultat": "tishina",
+  "karta": null,
+  "flag": null
+ },
+ {
+  "v": "навън е 38 градуса как да разхладя бебето",
+  "r": "Здраве и SOS",
+  "otkade": "сезони и празници / лято",
+  "rezultat": "namerena",
+  "karta": "zd-temperatura",
+  "flag": null
+ },
+ {
+  "v": "може ли бебе да стои под климатик",
+  "r": "Здраве и SOS",
+  "otkade": "сезони и празници / лято",
+  "rezultat": "namerena",
+  "karta": "in2-vlazhnost",
+  "flag": null
+ },
+ {
+  "v": "може ли вентилатор в стаята на бебето",
+  "r": "Моето бебе",
+  "otkade": "сезони и празници / лято",
+  "rezultat": "tishina",
+  "karta": null,
+  "flag": null
+ },
+ {
+  "v": "слънцезащитен крем от колко месеца",
+  "r": "Здраве и SOS",
+  "otkade": "сезони и празници / лято",
+  "rezultat": "namerena",
+  "karta": "zd-slance",
+  "flag": null
+ },
+ {
+  "v": "колко вода да пие бебето в жегите",
+  "r": "Захранване",
+  "otkade": "сезони и празници / лято",
+  "rezultat": "namerena",
+  "karta": "zh-voda",
+  "flag": null
+ },
+ {
+  "v": "коледа с бебе как да оцелея",
+  "r": "Дневник на мама",
+  "otkade": "сезони и празници / Коледа",
+  "rezultat": "tishina",
+  "karta": null,
+  "flag": null
+ },
+ {
+  "v": "всички искат да го гушкат по празниците а аз не искам",
+  "r": "Дневник на мама",
+  "otkade": "сезони и празници / Коледа",
+  "rezultat": "namerena",
+  "karta": "dn-pomosht",
+  "flag": null
+ },
+ {
+  "v": "на нова година фойерверките ще го уплашат ли",
+  "r": "Развитие и игри",
+  "otkade": "сезони и празници / Нова година",
+  "rezultat": "tishina",
+  "karta": null,
+  "flag": null
+ },
+ {
+  "v": "може ли бебето да хапне от баницата с късметите",
+  "r": "Захранване",
+  "otkade": "сезони и празници / Нова година",
+  "rezultat": "tishina",
+  "karta": null,
+  "flag": null
+ },
+ {
+  "v": "мартеница на бебе къде се връзва",
+  "r": "Моето бебе",
+  "otkade": "сезони и празници / Баба Марта",
+  "rezultat": "tishina",
+  "karta": null,
+  "flag": null
+ },
+ {
+  "v": "великден с боядисани яйца и дете на 1 година може ли",
+  "r": "Захранване",
+  "otkade": "сезони и празници / Великден",
+  "rezultat": "namerena",
+  "karta": "zh-bez-meso",
+  "flag": null
+ },
+ {
+  "v": "торта на първи рожден ден може ли да яде",
+  "r": "Захранване",
+  "otkade": "сезони и празници / рожден ден",
+  "rezultat": "namerena",
+  "karta": "zh-sladko",
+  "flag": null
+ },
+ {
+  "v": "какво да подаря за първи рожден ден",
+  "r": "Развитие и игри",
+  "otkade": "сезони и празници / рожден ден",
+  "rezultat": "tishina",
+  "karta": null,
+  "flag": null
+ },
+ {
+  "v": "есента постоянно е сополиво от градината",
+  "r": "Здраве и SOS",
+  "otkade": "сезони и празници / есен",
+  "rezultat": "namerena",
+  "karta": "in-gradina",
+  "flag": null
+ },
+ {
+  "v": "грипен сезон да го водя ли на детската площадка",
+  "r": "Здраве и SOS",
+  "otkade": "сезони и празници / зима",
+  "rezultat": "namerena",
+  "karta": "br-kakvo-nosi",
+  "flag": null
+ },
+ {
+  "v": "смяната на часа обърка съня му",
+  "r": "Моето бебе",
+  "otkade": "сезони и празници / смяна на часа",
+  "rezultat": "namerena",
+  "karta": "mb-smyana-chas",
+  "flag": null
+ },
+ {
+  "v": "как да го занеса на гости да не реве",
+  "r": "Развитие и игри",
+  "otkade": "местата / на гости",
+  "rezultat": "namerena",
+  "karta": "lb-koliki",
+  "flag": null
+ },
+ {
+  "v": "на гости няма къде да го приспя",
+  "r": "Моето бебе",
+  "otkade": "местата / на гости",
+  "rezultat": "namerena",
+  "karta": "dn-pisane",
+  "flag": null
+ },
+ {
+  "v": "в магазина реве и всички ме гледат",
+  "r": "Дневник на мама",
+  "otkade": "местата / магазин",
+  "rezultat": "namerena",
+  "karta": "lb-koliki",
+  "flag": null
+ },
+ {
+  "v": "къде да го преповия в мола",
+  "r": "Инструменти",
+  "otkade": "местата / мол",
+  "rezultat": "tishina",
+  "karta": null,
+  "flag": null
+ },
+ {
+  "v": "как да пазарувам сама с бебе на ръце",
+  "r": "Дневник на мама",
+  "otkade": "местата / магазин",
+  "rezultat": "tishina",
+  "karta": null,
+  "flag": null
+ },
+ {
+  "v": "в колата плаче през целия път",
+  "r": "Моето бебе",
+  "otkade": "местата / кола",
+  "rezultat": "namerena",
+  "karta": "mb-cry",
+  "flag": null
+ },
+ {
+  "v": "колко часа може да стои в столчето за кола",
+  "r": "Здраве и SOS",
+  "otkade": "местата / кола",
+  "rezultat": "namerena",
+  "karta": "in2-stolche-hranene",
+  "flag": null
+ },
+ {
+  "v": "кога се обръща столчето с лице напред",
+  "r": "Инструменти",
+  "otkade": "местата / кола",
+  "rezultat": "namerena",
+  "karta": "rz-obrashtane",
+  "flag": null
+ },
+ {
+  "v": "на море с бебе от колко месеца",
+  "r": "Моето бебе",
+  "otkade": "местата / море",
+  "rezultat": "namerena",
+  "karta": "mb-more-plaj",
+  "flag": null
+ },
+ {
+  "v": "бебето изгоря от слънце на плажа",
+  "r": "Здраве и SOS",
+  "otkade": "местата / море",
+  "rezultat": "namerena",
+  "karta": "zd-slance",
+  "flag": "red:da"
+ },
+ {
+  "v": "може ли бебе в морската вода",
+  "r": "Моето бебе",
+  "otkade": "местата / море",
+  "rezultat": "namerena",
+  "karta": "zh-voda",
+  "flag": null
+ },
+ {
+  "v": "в самолета го болят ушите при кацане",
+  "r": "Здраве и SOS",
+  "otkade": "местата / самолет",
+  "rezultat": "namerena",
+  "karta": "zd-ear",
+  "flag": null
+ },
+ {
+  "v": "при лекаря плаче преди изобщо да го е пипнал",
+  "r": "Здраве и SOS",
+  "otkade": "местата / лекар",
+  "rezultat": "namerena",
+  "karta": "dn-tajno",
+  "flag": null
+ },
+ {
+  "v": "какво да питам педиатъра на прегледа",
+  "r": "Инструменти",
+  "otkade": "местата / лекар",
+  "rezultat": "tishina",
+  "karta": null,
+  "flag": null
+ },
+ {
+  "v": "в парка другите деца му вземат играчките",
+  "r": "Развитие и игри",
+  "otkade": "местата / парк",
+  "rezultat": "tishina",
+  "karta": null,
+  "flag": null
+ },
+ {
+  "v": "на площадката яде пясък",
+  "r": "Здраве и SOS",
+  "otkade": "местата / площадка",
+  "rezultat": "tishina",
+  "karta": null,
+  "flag": null
+ },
+ {
+  "v": "на сватба с бебе как се оцелява",
+  "r": "Дневник на мама",
+  "otkade": "местата / сватба",
+  "rezultat": "tishina",
+  "karta": null,
+  "flag": null
+ },
+ {
+  "v": "как да кърмя навън да не ме зяпат",
+  "r": "Захранване",
+  "otkade": "местата / навън",
+  "rezultat": "namerena",
+  "karta": "mb-kurmene-navun",
+  "flag": null
+ },
+ {
+  "v": "в ресторант с бебе кога е удачно",
+  "r": "Дневник на мама",
+  "otkade": "местата / ресторант",
+  "rezultat": "namerena",
+  "karta": "zh-na-pat-hrana",
+  "flag": null
+ },
+ {
+  "v": "в автобуса с количка сама не се справям",
+  "r": "Дневник на мама",
+  "otkade": "местата / градски транспорт",
+  "rezultat": "namerena",
+  "karta": "bz-pomosht",
+  "flag": "mama:heavy"
+ },
+ {
+  "v": "на село при баба искат да му дадат от всичко да яде",
+  "r": "Захранване",
+  "otkade": "местата / село",
+  "rezultat": "tishina",
+  "karta": null,
+  "flag": null
+ },
+ {
+  "v": "в чакалнята при джипито другите деца кашлят",
+  "r": "Здраве и SOS",
+  "otkade": "местата / лекар",
+  "rezultat": "tishina",
+  "karta": null,
+  "flag": null
+ },
+ {
+  "v": "на детски рожден ден с много деца от колко години",
+  "r": "Развитие и игри",
+  "otkade": "местата / рожден ден",
+  "rezultat": "tishina",
+  "karta": null,
+  "flag": null
+ },
+ {
+  "v": "при зъболекар с дете първо посещение кога",
+  "r": "Здраве и SOS",
+  "otkade": "местата / зъболекар",
+  "rezultat": "tishina",
+  "karta": null,
+  "flag": null
+ },
+ {
+  "v": "как да пътувам 5 часа с кола с бебе",
+  "r": "Моето бебе",
+  "otkade": "местата / път",
+  "rezultat": "namerena",
+  "karta": "br-pytuvane",
+  "flag": null
+ },
+ {
+  "v": "в хотела как да го приспя на непознато място",
+  "r": "Моето бебе",
+  "otkade": "местата / хотел",
+  "rezultat": "namerena",
+  "karta": "mb-san",
+  "flag": null
+ },
+ {
+  "v": "свекърва ми казва че го глезя като го нося",
+  "r": "Дневник на мама",
+  "otkade": "хората / свекърва",
+  "rezultat": "namerena",
+  "karta": "lb3-razglezvane",
+  "flag": null
+ },
+ {
+  "v": "свекърва иска да му даде вода на 2 месеца",
+  "r": "Захранване",
+  "otkade": "хората / свекърва",
+  "rezultat": "namerena",
+  "karta": "zh-voda",
+  "flag": null
+ },
+ {
+  "v": "майка ми казва че млякото ми е слабо",
+  "r": "Захранване",
+  "otkade": "хората / майка",
+  "rezultat": "namerena",
+  "karta": "mb-kolko-mliako",
+  "flag": null
+ },
+ {
+  "v": "мъжът ми не става нощем и се карам с него",
+  "r": "Дневник на мама",
+  "otkade": "хората / съпруг",
+  "rezultat": "namerena",
+  "karta": "dn-partnior",
+  "flag": null
+ },
+ {
+  "v": "мъжът ми не помага изобщо с бебето",
+  "r": "Дневник на мама",
+  "otkade": "хората / съпруг",
+  "rezultat": "namerena",
+  "karta": "nia-partnior",
+  "flag": null
+ },
+ {
+  "v": "мъжът ми ревнува че съм само с бебето",
+  "r": "Жената в мен",
+  "otkade": "хората / съпруг",
+  "rezultat": "namerena",
+  "karta": "nia-partnior",
+  "flag": null
+ },
+ {
+  "v": "приятелките ми без деца се отдръпнаха",
+  "r": "Дневник на мама",
+  "otkade": "хората / приятелки",
+  "rezultat": "namerena",
+  "karta": "nia-prijatelki",
+  "flag": null
+ },
+ {
+  "v": "нямам с кого да си говоря освен с бебето",
+  "r": "Дневник на мама",
+  "otkade": "хората / самота",
+  "rezultat": "tishina",
+  "karta": null,
+  "flag": null
+ },
+ {
+  "v": "как да кажа на шефа че ще се върна по късно на работа",
+  "r": "Инструменти",
+  "otkade": "хората / шеф",
+  "rezultat": "namerena",
+  "karta": "nia-rabota",
+  "flag": null
+ },
+ {
+  "v": "връщам се на работа а бебето е на 8 месеца и ме боли",
+  "r": "Дневник на мама",
+  "otkade": "хората / шеф",
+  "rezultat": "namerena",
+  "karta": "nia-rabota",
+  "flag": null
+ },
+ {
+  "v": "съседите се оплакват че бебето плаче нощем",
+  "r": "Дневник на мама",
+  "otkade": "хората / съседи",
+  "rezultat": "namerena",
+  "karta": "dn-tajno",
+  "flag": null
+ },
+ {
+  "v": "хората пипат бебето по ръцете без да питат",
+  "r": "Здраве и SOS",
+  "otkade": "хората / непознати",
+  "rezultat": "tishina",
+  "karta": null,
+  "flag": null
+ },
+ {
+  "v": "как да кажа на роднините да не идват болни",
+  "r": "Здраве и SOS",
+  "otkade": "хората / роднини",
+  "rezultat": "namerena",
+  "karta": "nd-rodninite-savetite",
+  "flag": null
+ },
+ {
+  "v": "лекарят ми каза нещо а аз не разбрах и ме е срам да питам пак",
+  "r": "Инструменти",
+  "otkade": "хората / лекар",
+  "rezultat": "tishina",
+  "karta": null,
+  "flag": null
+ },
+ {
+  "v": "всички ми дават съвети а аз не знам кого да слушам",
+  "r": "Дневник на мама",
+  "otkade": "хората / всички",
+  "rezultat": "tishina",
+  "karta": null,
+  "flag": null
+ },
+ {
+  "v": "баба му дава сладко тайно от мен",
+  "r": "Захранване",
+  "otkade": "хората / баба",
+  "rezultat": "tishina",
+  "karta": null,
+  "flag": null
+ },
+ {
+  "v": "мъжът ми казва че съм се променила много",
+  "r": "Жената в мен",
+  "otkade": "хората / съпруг",
+  "rezultat": "namerena",
+  "karta": "nia-partnior",
+  "flag": null
+ },
+ {
+  "v": "сестра ми роди по същото време и постоянно сравнява децата",
+  "r": "Дневник на мама",
+  "otkade": "хората / сестра",
+  "rezultat": "tishina",
+  "karta": null,
+  "flag": null
+ },
+ {
+  "v": "как да оставя бебето на някого за първи път",
+  "r": "Дневник на мама",
+  "otkade": "хората / раздяла",
+  "rezultat": "tishina",
+  "karta": null,
+  "flag": null
+ },
+ {
+  "v": "детегледачка от колко месеца е ок",
+  "r": "Инструменти",
+  "otkade": "хората / детегледачка",
+  "rezultat": "tishina",
+  "karta": null,
+  "flag": null
+ },
+ {
+  "v": "свекървата иска бебето да спи у тях",
+  "r": "Дневник на мама",
+  "otkade": "хората / свекърва",
+  "rezultat": "namerena",
+  "karta": "ema-babini",
+  "flag": null
+ },
+ {
+  "v": "мъжът ми не иска второ дете а аз искам",
+  "r": "Жената в мен",
+  "otkade": "хората / съпруг",
+  "rezultat": "namerena",
+  "karta": "nia-partnior",
+  "flag": null
+ },
+ {
+  "v": "родителите ми се месят във възпитанието",
+  "r": "Развитие и игри",
+  "otkade": "хората / родители",
+  "rezultat": "tishina",
+  "karta": null,
+  "flag": null
+ },
+ {
+  "v": "хората питат кога второто а аз още не съм се съвзела",
+  "r": "Дневник на мама",
+  "otkade": "хората / непознати",
+  "rezultat": "tishina",
+  "karta": null,
+  "flag": null
+ },
+ {
+  "v": "мъжът ми хърка и ме буди а и без това не спя",
+  "r": "Дневник на мама",
+  "otkade": "хората / съпруг",
+  "rezultat": "namerena",
+  "karta": "dn-nedospivane",
+  "flag": null
+ },
+ {
+  "v": "гости идват а къщата е в хаос и ме е срам",
+  "r": "Дневник на мама",
+  "otkade": "хората / гости",
+  "rezultat": "namerena",
+  "karta": "nd-tri-neshta",
+  "flag": null
+ },
+ {
+  "v": "коремът ми е мек и виси и година след раждането",
+  "r": "Жената в мен",
+  "otkade": "тялото на майката / 12 м след",
+  "rezultat": "namerena",
+  "karta": "nia-body2",
+  "flag": null
+ },
+ {
+  "v": "косата ми пада на кичури",
+  "r": "Жената в мен",
+  "otkade": "тялото на майката / 4 м след",
+  "rezultat": "namerena",
+  "karta": "pp-kosopad",
+  "flag": null
+ },
+ {
+  "v": "изпускам урина като кихна",
+  "r": "Жената в мен",
+  "otkade": "тялото на майката / 3 м след",
+  "rezultat": "namerena",
+  "karta": "nw-izpuskane-urina",
+  "flag": null
+ },
+ {
+  "v": "боли ме кръста от постоянно носене",
+  "r": "Жената в мен",
+  "otkade": "тялото на майката / 6 м след",
+  "rezultat": "namerena",
+  "karta": "nia-glavobolie",
+  "flag": null
+ },
+ {
+  "v": "имам разстояние между коремните мускули",
+  "r": "Жената в мен",
+  "otkade": "тялото на майката / 5 м след",
+  "rezultat": "tishina",
+  "karta": null,
+  "flag": null
+ },
+ {
+  "v": "кога мога да почна спорт след раждане",
+  "r": "Жената в мен",
+  "otkade": "тялото на майката / 2 м след",
+  "rezultat": "namerena",
+  "karta": "br-dvizhenie",
+  "flag": null
+ },
+ {
+  "v": "кога може секс след раждането",
+  "r": "Жената в мен",
+  "otkade": "тялото на майката / 2 м след",
+  "rezultat": "namerena",
+  "karta": "nw-seksat-sled",
+  "flag": null
+ },
+ {
+  "v": "боли ме при секс след раждането",
+  "r": "Жената в мен",
+  "otkade": "тялото на майката / 4 м след",
+  "rezultat": "namerena",
+  "karta": "nw-seksat-sled",
+  "flag": null
+ },
+ {
+  "v": "нямам никакво желание за секс",
+  "r": "Жената в мен",
+  "otkade": "тялото на майката / 6 м след",
+  "rezultat": "namerena",
+  "karta": "nia-libido",
+  "flag": null
+ },
+ {
+  "v": "кога идва цикълът след раждане",
+  "r": "Жената в мен",
+  "otkade": "тялото на майката / 5 м след",
+  "rezultat": "namerena",
+  "karta": "pp-cikyl",
+  "flag": null
+ },
+ {
+  "v": "може ли да забременея докато кърмя",
+  "r": "Жената в мен",
+  "otkade": "тялото на майката / 6 м след",
+  "rezultat": "namerena",
+  "karta": "nw-karmeneto-predpazva",
+  "flag": null
+ },
+ {
+  "v": "какви противозачатъчни при кърмене",
+  "r": "Жената в мен",
+  "otkade": "тялото на майката / 3 м след",
+  "rezultat": "namerena",
+  "karta": "pp-kontracepcia",
+  "flag": null
+ },
+ {
+  "v": "гърдите ми се смалиха след кърменето",
+  "r": "Жената в мен",
+  "otkade": "тялото на майката / след отбиване",
+  "rezultat": "namerena",
+  "karta": "mb-kolko-mliako",
+  "flag": null
+ },
+ {
+  "v": "имам бучка в гърдата и боли",
+  "r": "Здраве и SOS",
+  "otkade": "тялото на майката / кърмене",
+  "rezultat": "namerena",
+  "karta": "lb-mastit",
+  "flag": null
+ },
+ {
+  "v": "температура 39 и червена гореща гърда",
+  "r": "Здраве и SOS",
+  "otkade": "тялото на майката / кърмене",
+  "rezultat": "namerena",
+  "karta": "zd-temperatura",
+  "flag": null
+ },
+ {
+  "v": "хемороиди след раждането",
+  "r": "Жената в мен",
+  "otkade": "тялото на майката / 1 м след",
+  "rezultat": "namerena",
+  "karta": "nia-hemoroidi",
+  "flag": null
+ },
+ {
+  "v": "зъбите ми се развалиха след бременността",
+  "r": "Жената в мен",
+  "otkade": "тялото на майката / 8 м след",
+  "rezultat": "tishina",
+  "karta": null,
+  "flag": null
+ },
+ {
+  "v": "щитовидната след раждане проверява ли се",
+  "r": "Жената в мен",
+  "otkade": "тялото на майката / 6 м след",
+  "rezultat": "tishina",
+  "karta": null,
+  "flag": null
+ },
+ {
+  "v": "постоянно ми е студено и съм без сили",
+  "r": "Жената в мен",
+  "otkade": "тялото на майката / 5 м след",
+  "rezultat": "tishina",
+  "karta": null,
+  "flag": null
+ },
+ {
+  "v": "мога ли да отслабна докато кърмя",
+  "r": "Жената в мен",
+  "otkade": "тялото на майката / 6 м след",
+  "rezultat": "namerena",
+  "karta": "nia-ogledalo",
+  "flag": null
+ },
+ {
+  "v": "стриите ще изчезнат ли някога",
+  "r": "Жената в мен",
+  "otkade": "тялото на майката / 10 м след",
+  "rezultat": "namerena",
+  "karta": "br-strii",
+  "flag": null
+ },
+ {
+  "v": "белегът от цезаровото ме дърпа",
+  "r": "Жената в мен",
+  "otkade": "тялото на майката / 3 м след",
+  "rezultat": "namerena",
+  "karta": "mm-sechenie",
+  "flag": null
+ },
+ {
+  "v": "боли ме китката от вдигане на бебето",
+  "r": "Жената в мен",
+  "otkade": "тялото на майката / 4 м след",
+  "rezultat": "namerena",
+  "karta": "nia-kitka",
+  "flag": null
+ },
+ {
+  "v": "какво да ям докато кърмя",
+  "r": "Захранване",
+  "otkade": "тялото на майката / кърмене",
+  "rezultat": "namerena",
+  "karta": "br-hranene",
+  "flag": null
+ },
+ {
+  "v": "може ли кафе докато кърмя",
+  "r": "Захранване",
+  "otkade": "тялото на майката / кърмене",
+  "rezultat": "namerena",
+  "karta": "br-hranene",
+  "flag": null
+ },
+ {
+  "v": "може ли чаша вино докато кърмя",
+  "r": "Захранване",
+  "otkade": "тялото на майката / кърмене",
+  "rezultat": "namerena",
+  "karta": "nia-vino",
+  "flag": null
+ },
+ {
+  "v": "колко са майчинските за първата година",
+  "r": "Инструменти",
+  "otkade": "пари и документи",
+  "rezultat": "tishina",
+  "karta": null,
+  "flag": null
+ },
+ {
+  "v": "къде се вади акт за раждане",
+  "r": "Инструменти",
+  "otkade": "пари и документи",
+  "rezultat": "namerena",
+  "karta": "in-dokumenti",
+  "flag": null
+ },
+ {
+  "v": "как се издава егн на бебето",
+  "r": "Инструменти",
+  "otkade": "пари и документи",
+  "rezultat": "namerena",
+  "karta": "in-dokumenti",
+  "flag": null
+ },
+ {
+  "v": "как се прави лична карта на бебе",
+  "r": "Инструменти",
+  "otkade": "пари и документи",
+  "rezultat": "tishina",
+  "karta": null,
+  "flag": null
+ },
+ {
+  "v": "паспорт на бебе за пътуване какво трябва",
+  "r": "Инструменти",
+  "otkade": "пари и документи",
+  "rezultat": "namerena",
+  "karta": "in-samolet",
+  "flag": null
+ },
+ {
+  "v": "детските надбавки как се кандидатства",
+  "r": "Инструменти",
+  "otkade": "пари и документи",
+  "rezultat": "namerena",
+  "karta": "lb-noi",
+  "flag": null
+ },
+ {
+  "v": "еднократната помощ при раждане колко е",
+  "r": "Инструменти",
+  "otkade": "пари и документи",
+  "rezultat": "namerena",
+  "karta": "lb-noi",
+  "flag": null
+ },
+ {
+  "v": "как се избира личен лекар на бебето",
+  "r": "Инструменти",
+  "otkade": "пари и документи",
+  "rezultat": "namerena",
+  "karta": "in-smyana-lekar",
+  "flag": null
+ },
+ {
+  "v": "болничен за гледане на болно дете колко дни се полагат",
+  "r": "Инструменти",
+  "otkade": "пари и документи",
+  "rezultat": "namerena",
+  "karta": "in-bolnichen-dete",
+  "flag": null
+ },
+ {
+  "v": "бащата има ли отпуск при раждане",
+  "r": "Инструменти",
+  "otkade": "пари и документи",
+  "rezultat": "namerena",
+  "karta": "in-poeme-otpuska",
+  "flag": null
+ },
+ {
+  "v": "кога може майчинството да се прехвърли на бащата",
+  "r": "Инструменти",
+  "otkade": "пари и документи",
+  "rezultat": "namerena",
+  "karta": "in-poeme-otpuska",
+  "flag": null
+ },
+ {
+  "v": "колко струва да отгледаш бебе първата година",
+  "r": "Инструменти",
+  "otkade": "пари и документи",
+  "rezultat": "namerena",
+  "karta": "in-budget",
+  "flag": null
+ },
+ {
+  "v": "какво наистина трябва да купя преди раждането",
+  "r": "Бременност",
+  "otkade": "пари и документи",
+  "rezultat": "namerena",
+  "karta": "ch-spisak",
+  "flag": null
+ },
+ {
+  "v": "мога ли да работя докато съм в майчинство",
+  "r": "Инструменти",
+  "otkade": "пари и документи",
+  "rezultat": "namerena",
+  "karta": "br-rabota",
+  "flag": null
+ },
+ {
+  "v": "как се записва дете в детска градина по точки",
+  "r": "Инструменти",
+  "otkade": "пари и документи",
+  "rezultat": "namerena",
+  "karta": "in-gradina",
+  "flag": null
+ },
+ {
+  "v": "имунизационният календар безплатен ли е",
+  "r": "Здраве и SOS",
+  "otkade": "пари и документи",
+  "rezultat": "namerena",
+  "karta": "zd-vaksini",
+  "flag": null
+ },
+ {
+  "v": "здравните вноски докато съм в майчинство кой ги плаща",
+  "r": "Инструменти",
+  "otkade": "пари и документи",
+  "rezultat": "tishina",
+  "karta": null,
+  "flag": null
+ },
+ {
+  "v": "количка втора употреба безопасна ли е",
+  "r": "Инструменти",
+  "otkade": "пари и документи",
+  "rezultat": "namerena",
+  "karta": "in-second",
+  "flag": null
+ },
+ {
+  "v": "столчето за кола задължително ли е по закон",
+  "r": "Инструменти",
+  "otkade": "пари и документи",
+  "rezultat": "namerena",
+  "karta": "in2-stolche-hranene",
+  "flag": null
+ },
+ {
+  "v": "мога ли да ползвам старите дрешки от първото дете",
+  "r": "Инструменти",
+  "otkade": "пари и документи",
+  "rezultat": "namerena",
+  "karta": "ch-razmeri",
+  "flag": null
+ },
+ {
+  "v": "плаче вече 4 часа и нищо не помага",
+  "r": "Здраве и SOS",
+  "otkade": "тежките нощи",
+  "rezultat": "namerena",
+  "karta": "dn-tajno",
+  "flag": null
+ },
+ {
+  "v": "искам да го оставя и да изляза от къщи",
+  "r": "Дневник на мама",
+  "otkade": "тежките нощи",
+  "rezultat": "tishina",
+  "karta": null,
+  "flag": null
+ },
+ {
+  "v": "изнервих се и изкрещях на бебето",
+  "r": "Дневник на мама",
+  "otkade": "тежките нощи",
+  "rezultat": "namerena",
+  "karta": "dn-sram-sled-gniv",
+  "flag": null
+ },
+ {
+  "v": "разтърсих го от нерви и сега ме е страх",
+  "r": "Здраве и SOS",
+  "otkade": "тежките нощи",
+  "rezultat": "namerena",
+  "karta": "nm-kogato-izdarzhas",
+  "flag": "red:da+mama:mother"
+ },
+ {
+  "v": "не съм спала 3 нощи и почвам да виждам странни неща",
+  "r": "Дневник на мама",
+  "otkade": "тежките нощи",
+  "rezultat": "tishina",
+  "karta": null,
+  "flag": null
+ },
+ {
+  "v": "мисля си че не ставам за майка",
+  "r": "Дневник на мама",
+  "otkade": "тежките нощи",
+  "rezultat": "namerena",
+  "karta": "nia-maika-mi",
+  "flag": "mama:heavy"
+ },
+ {
+  "v": "имам лоши мисли за бебето и се плаша от себе си",
+  "r": "Дневник на мама",
+  "otkade": "тежките нощи",
+  "rezultat": "namerena",
+  "karta": "lb-natraplivi",
+  "flag": null
+ },
+ {
+  "v": "той плаче и аз плача с него",
+  "r": "Дневник на мама",
+  "otkade": "тежките нощи",
+  "rezultat": "namerena",
+  "karta": "dn-tajno",
+  "flag": null
+ },
+ {
+  "v": "какво да правя ако не издържам повече",
+  "r": "Дневник на мама",
+  "otkade": "тежките нощи",
+  "rezultat": "namerena",
+  "karta": "dn-vreme",
+  "flag": "mama:heavy"
+ },
+ {
+  "v": "може ли да го оставя да плаче малко в леглото",
+  "r": "Моето бебе",
+  "otkade": "тежките нощи",
+  "rezultat": "namerena",
+  "karta": "mb-cry",
+  "flag": null
+ },
+ {
+  "v": "нощем не диша спокойно и все го гледам",
+  "r": "Здраве и SOS",
+  "otkade": "тежките нощи",
+  "rezultat": "tishina",
+  "karta": null,
+  "flag": null
+ },
+ {
+  "v": "не мога да спя защото го проверявам на всеки 10 минути",
+  "r": "Дневник на мама",
+  "otkade": "тежките нощи",
+  "rezultat": "namerena",
+  "karta": "br-son-pozi",
+  "flag": null
+ },
+ {
+  "v": "температура 39 през нощта какво правя сега",
+  "r": "Здраве и SOS",
+  "otkade": "тежките нощи",
+  "rezultat": "namerena",
+  "karta": "zd-temperatura",
+  "flag": null
+ },
+ {
+  "v": "кога се вика бърза помощ при бебе",
+  "r": "Здраве и SOS",
+  "otkade": "тежките нощи",
+  "rezultat": "tishina",
+  "karta": null,
+  "flag": null
+ },
+ {
+  "v": "не мога да го събудя добре и е отпуснато",
+  "r": "Здраве и SOS",
+  "otkade": "тежките нощи",
+  "rezultat": "namerena",
+  "karta": "mb-otpusnato",
+  "flag": "red:da"
+ },
+ {
+  "v": "посиня около устата за секунда",
+  "r": "Здраве и SOS",
+  "otkade": "тежките нощи",
+  "rezultat": "samo_flag",
+  "karta": null,
+  "flag": "red:da"
+ },
+ {
+  "v": "падна от леглото на пода",
+  "r": "Здраве и SOS",
+  "otkade": "тежките нощи",
+  "rezultat": "samo_flag",
+  "karta": null,
+  "flag": "red:da"
+ },
+ {
+  "v": "задави се с мляко и се уплаших до смърт",
+  "r": "Здраве и SOS",
+  "otkade": "тежките нощи",
+  "rezultat": "namerena",
+  "karta": "mb-kolko-mliako",
+  "flag": "red:da"
+ },
+ {
+  "v": "глътна нещо малко и не знам какво беше",
+  "r": "Здраве и SOS",
+  "otkade": "тежките нощи",
+  "rezultat": "samo_flag",
+  "karta": null,
+  "flag": "red:da"
+ },
+ {
+  "v": "цяла нощ повръща и не задържа дори вода",
+  "r": "Здраве и SOS",
+  "otkade": "тежките нощи",
+  "rezultat": "namerena",
+  "karta": "zd-vomit",
+  "flag": null
+ },
+ {
+  "v": "днес ми се усмихна за първи път и се разплаках",
+  "r": "Дневник на мама",
+  "otkade": "радостите",
+  "rezultat": "tishina",
+  "karta": null,
+  "flag": null
+ },
+ {
+  "v": "каза мама за първи път",
+  "r": "Развитие и игри",
+  "otkade": "радостите",
+  "rezultat": "tishina",
+  "karta": null,
+  "flag": null
+ },
+ {
+  "v": "направи първите си стъпки днес",
+  "r": "Развитие и игри",
+  "otkade": "радостите",
+  "rezultat": "namerena",
+  "karta": "rz-prohojdane",
+  "flag": null
+ },
+ {
+  "v": "как да запазя спомените от първата година",
+  "r": "Дневник на мама",
+  "otkade": "радостите",
+  "rezultat": "namerena",
+  "karta": "dn-pisane",
+  "flag": null
+ },
+ {
+  "v": "какво да пиша в дневника за него",
+  "r": "Дневник на мама",
+  "otkade": "радостите",
+  "rezultat": "namerena",
+  "karta": "dn-pisane",
+  "flag": null
+ },
+ {
+  "v": "кога да отрежа първата коса",
+  "r": "Моето бебе",
+  "otkade": "радостите",
+  "rezultat": "namerena",
+  "karta": "pp-kosopad",
+  "flag": null
+ },
+ {
+  "v": "първото зъбче излезе какво се прави с него",
+  "r": "Моето бебе",
+  "otkade": "радостите",
+  "rezultat": "namerena",
+  "karta": "zd-teeth",
+  "flag": null
+ },
+ {
+  "v": "как се празнува проходка с питка",
+  "r": "Дневник на мама",
+  "otkade": "радостите",
+  "rezultat": "tishina",
+  "karta": null,
+  "flag": null
+ },
+ {
+  "v": "прегърна ме сам за първи път",
+  "r": "Дневник на мама",
+  "otkade": "радостите",
+  "rezultat": "tishina",
+  "karta": null,
+  "flag": null
+ },
+ {
+  "v": "почна да се смее на глас",
+  "r": "Развитие и игри",
+  "otkade": "радостите",
+  "rezultat": "tishina",
+  "karta": null,
+  "flag": null
+ },
+ {
+  "v": "кога ме познава че съм мама",
+  "r": "Развитие и игри",
+  "otkade": "радостите",
+  "rezultat": "tishina",
+  "karta": null,
+  "flag": null
+ },
+ {
+  "v": "първата дума беше на татко и малко ми стана криво",
+  "r": "Дневник на мама",
+  "otkade": "радостите",
+  "rezultat": "namerena",
+  "karta": "rz-govor",
+  "flag": null
+ },
+ {
+  "v": "какви игри да играя с бебе на 6 месеца",
+  "r": "Развитие и игри",
+  "otkade": "радостите",
+  "rezultat": "namerena",
+  "karta": "rz-igri",
+  "flag": null
+ },
+ {
+  "v": "как да му чета книжка на 1 година като къса страниците",
+  "r": "Развитие и игри",
+  "otkade": "радостите",
+  "rezultat": "tishina",
+  "karta": null,
+  "flag": null
+ },
+ {
+  "v": "още не го обичам и ме е срам да го кажа",
+  "r": "Дневник на мама",
+  "otkade": "срамните въпроси",
+  "rezultat": "samo_flag",
+  "karta": null,
+  "flag": "mama:heavy"
+ },
+ {
+  "v": "понякога съжалявам че родих",
+  "r": "Дневник на мама",
+  "otkade": "срамните въпроси",
+  "rezultat": "samo_flag",
+  "karta": null,
+  "flag": "mama:heavy"
+ },
+ {
+  "v": "завиждам на бездетните си приятелки",
+  "r": "Дневник на мама",
+  "otkade": "срамните въпроси",
+  "rezultat": "namerena",
+  "karta": "nia-prijatelki",
+  "flag": null
+ },
+ {
+  "v": "мразя да кърмя а всички казват че е красиво",
+  "r": "Захранване",
+  "otkade": "срамните въпроси",
+  "rezultat": "namerena",
+  "karta": "nm-dokoga-karmya",
+  "flag": null
+ },
+ {
+  "v": "не искам да кърмя изобщо лоша майка ли съм",
+  "r": "Захранване",
+  "otkade": "срамните въпроси",
+  "rezultat": "namerena",
+  "karta": "nia-vina",
+  "flag": null
+ },
+ {
+  "v": "дадох му адаптирано и се чувствам виновна",
+  "r": "Захранване",
+  "otkade": "срамните въпроси",
+  "rezultat": "namerena",
+  "karta": "nia-vina",
+  "flag": null
+ },
+ {
+  "v": "сложих го пред телевизора за да си почина",
+  "r": "Развитие и игри",
+  "otkade": "срамните въпроси",
+  "rezultat": "namerena",
+  "karta": "rz-ekran",
+  "flag": null
+ },
+ {
+  "v": "радвам се когато заспи защото мога да съм сама",
+  "r": "Дневник на мама",
+  "otkade": "срамните въпроси",
+  "rezultat": "namerena",
+  "karta": "mb-dushut",
+  "flag": null
+ },
+ {
+  "v": "не ми е сладко да си играя с него скучно ми е",
+  "r": "Дневник на мама",
+  "otkade": "срамните въпроси",
+  "rezultat": "namerena",
+  "karta": "rz-igri",
+  "flag": null
+ },
+ {
+  "v": "пикая се като се смея и не смея да го кажа на никого",
+  "r": "Жената в мен",
+  "otkade": "срамните въпроси",
+  "rezultat": "tishina",
+  "karta": null,
+  "flag": null
+ },
+ {
+  "v": "изпускам газове след раждането и не мога да ги удържа",
+  "r": "Жената в мен",
+  "otkade": "срамните въпроси",
+  "rezultat": "namerena",
+  "karta": "nw-izpuskane-urina",
+  "flag": null
+ },
+ {
+  "v": "гнус ми е от собственото ми тяло",
+  "r": "Жената в мен",
+  "otkade": "срамните въпроси",
+  "rezultat": "tishina",
+  "karta": null,
+  "flag": null
+ },
+ {
+  "v": "мъжът ми ме иска а мен ме отвращава",
+  "r": "Жената в мен",
+  "otkade": "срамните въпроси",
+  "rezultat": "namerena",
+  "karta": "nia-partnior",
+  "flag": null
+ },
+ {
+  "v": "не съм се къпала три дни",
+  "r": "Дневник на мама",
+  "otkade": "срамните въпроси",
+  "rezultat": "namerena",
+  "karta": "nia-dush",
+  "flag": null
+ },
+ {
+  "v": "оставих го да плаче за да си допия кафето",
+  "r": "Дневник на мама",
+  "otkade": "срамните въпроси",
+  "rezultat": "namerena",
+  "karta": "dn-tajno",
+  "flag": null
+ },
+ {
+  "v": "мисля за бившия си в тези тежки дни",
+  "r": "Жената в мен",
+  "otkade": "срамните въпроси",
+  "rezultat": "tishina",
+  "karta": null,
+  "flag": null
+ },
+ {
+  "v": "не искам да имам второ дете никога",
+  "r": "Жената в мен",
+  "otkade": "срамните въпроси",
+  "rezultat": "namerena",
+  "karta": "nia-vtoro",
+  "flag": null
+ },
+ {
+  "v": "изкрещях му и той се уплаши от мен",
+  "r": "Дневник на мама",
+  "otkade": "срамните въпроси",
+  "rezultat": "namerena",
+  "karta": "dn-sram-sled-gniv",
+  "flag": "mama:dv"
+ },
+ {
+  "v": "мляко тече по мен и мирише а нямам време да се преоблека",
+  "r": "Жената в мен",
+  "otkade": "срамните въпроси",
+  "rezultat": "namerena",
+  "karta": "wm-nyama-vreme",
+  "flag": null
+ },
+ {
+  "v": "родих с цезарово и ме е срам че не родих нормално",
+  "r": "Жената в мен",
+  "otkade": "срамните въпроси",
+  "rezultat": "namerena",
+  "karta": "dn-telo-posle",
+  "flag": null
+ },
+ {
+  "v": "второто дете расте ли различно от първото",
+  "r": "Моето бебе",
+  "otkade": "втори и трети път майка",
+  "rezultat": "namerena",
+  "karta": "zh-weight",
+  "flag": null
+ },
+ {
+  "v": "как да кърмя новороденото и да гледам тригодишното едновременно",
+  "r": "Захранване",
+  "otkade": "втори и трети път майка",
+  "rezultat": "namerena",
+  "karta": "bz-hrani",
+  "flag": null
+ },
+ {
+  "v": "голямото се върна на памперси откакто дойде бебето",
+  "r": "Развитие и игри",
+  "otkade": "втори и трети път майка",
+  "rezultat": "namerena",
+  "karta": "nd-golyamoto-varna",
+  "flag": null
+ },
+ {
+  "v": "нямам същите чувства към второто",
+  "r": "Дневник на мама",
+  "otkade": "втори и трети път майка",
+  "rezultat": "namerena",
+  "karta": "dn-samota",
+  "flag": null
+ },
+ {
+  "v": "второто раждане по бързо ли е",
+  "r": "Бременност",
+  "otkade": "втори и трети път майка",
+  "rezultat": "namerena",
+  "karta": "nb-trae-razhdanet",
+  "flag": null
+ },
+ {
+  "v": "с второто пак ли ще имам цезарово",
+  "r": "Бременност",
+  "otkade": "втори и трети път майка",
+  "rezultat": "namerena",
+  "karta": "dn-telo-posle",
+  "flag": null
+ },
+ {
+  "v": "как да ги приспя и двете едновременно",
+  "r": "Моето бебе",
+  "otkade": "втори и трети път майка",
+  "rezultat": "namerena",
+  "karta": "ema-dva",
+  "flag": null
+ },
+ {
+  "v": "разлика 2 години между децата тежко ли е",
+  "r": "Дневник на мама",
+  "otkade": "втори и трети път майка",
+  "rezultat": "tishina",
+  "karta": null,
+  "flag": null
+ },
+ {
+  "v": "голямото удари бебето",
+  "r": "Развитие и игри",
+  "otkade": "втори и трети път майка",
+  "rezultat": "namerena",
+  "karta": "nd-golyamoto-varna",
+  "flag": "mama:mother"
+ },
+ {
+  "v": "нямам време за голямото и ме гризе съвестта",
+  "r": "Дневник на мама",
+  "otkade": "втори и трети път майка",
+  "rezultat": "namerena",
+  "karta": "wm-nyama-vreme",
+  "flag": null
+ },
+ {
+  "v": "трето дете на 40 години рисковано ли е",
+  "r": "Бременност",
+  "otkade": "втори и трети път майка",
+  "rezultat": "tishina",
+  "karta": null,
+  "flag": null
+ },
+ {
+  "v": "как да обясня на голямото дете че идва бебе",
+  "r": "Развитие и игри",
+  "otkade": "втори и трети път майка",
+  "rezultat": "tishina",
+  "karta": null,
+  "flag": null
+ },
+ {
+  "v": "на 6 седмица ми е много лошо всяка сутрин",
+  "r": "Бременност",
+  "otkade": "бременност / 1 триместър",
+  "rezultat": "tishina",
+  "karta": null,
+  "flag": null
+ },
+ {
+  "v": "кога се чува сърцето на бебето",
+  "r": "Бременност",
+  "otkade": "бременност / 1 триместър",
+  "rezultat": "namerena",
+  "karta": "zd-sarce-osobenost",
+  "flag": null
+ },
+ {
+  "v": "кога почват да се усещат ритниците",
+  "r": "Бременност",
+  "otkade": "бременност / 2 триместър",
+  "rezultat": "namerena",
+  "karta": "br-dvijenia",
+  "flag": "preg:da"
+ },
+ {
+  "v": "може ли да спя по гръб докато съм бременна",
+  "r": "Бременност",
+  "otkade": "бременност / 2 триместър",
+  "rezultat": "namerena",
+  "karta": "zd-bezopasen-son",
+  "flag": null
+ },
+ {
+  "v": "боли ме кръста на 30 седмица",
+  "r": "Бременност",
+  "otkade": "бременност / 3 триместър",
+  "rezultat": "namerena",
+  "karta": "br-diskomfort",
+  "flag": null
+ },
+ {
+  "v": "може ли да си боядисам косата бременна",
+  "r": "Бременност",
+  "otkade": "бременност",
+  "rezultat": "namerena",
+  "karta": "br-boya-sauna-vana",
+  "flag": null
+ },
+ {
+  "v": "какво не се яде при бременност",
+  "r": "Бременност",
+  "otkade": "бременност",
+  "rezultat": "tishina",
+  "karta": null,
+  "flag": null
+ },
+ {
+  "v": "може ли кафе при бременност",
+  "r": "Бременност",
+  "otkade": "бременност",
+  "rezultat": "namerena",
+  "karta": "br-hranene",
+  "flag": null
+ },
+ {
+  "v": "може ли да летя със самолет на 7 месец",
+  "r": "Бременност",
+  "otkade": "бременност / 3 триместър",
+  "rezultat": "tishina",
+  "karta": null,
+  "flag": null
+ },
+ {
+  "v": "какво са фалшивите контракции",
+  "r": "Бременност",
+  "otkade": "бременност / 3 триместър",
+  "rezultat": "namerena",
+  "karta": "br-kontrakcii",
+  "flag": null
+ },
+ {
+  "v": "кога да тръгна за родилното",
+  "r": "Бременност",
+  "otkade": "бременност / раждане",
+  "rezultat": "namerena",
+  "karta": "br-kontrakcii",
+  "flag": null
+ },
+ {
+  "v": "как да разбера че ми изтичат водите",
+  "r": "Бременност",
+  "otkade": "бременност / раждане",
+  "rezultat": "namerena",
+  "karta": "br-kontrakcii",
+  "flag": null
+ },
+ {
+  "v": "страх ме е от раждането ужасно много",
+  "r": "Бременност",
+  "otkade": "бременност / раждане",
+  "rezultat": "namerena",
+  "karta": "br-strah-razhdane",
+  "flag": null
+ },
+ {
+  "v": "епидурална прави ли се на всеки",
+  "r": "Бременност",
+  "otkade": "бременност / раждане",
+  "rezultat": "namerena",
+  "karta": "nb-epiduraln-pravi",
+  "flag": null
+ },
+ {
+  "v": "кога е последният преглед преди раждане",
+  "r": "Бременност",
+  "otkade": "бременност / 3 триместър",
+  "rezultat": "namerena",
+  "karta": "ch-spisak",
+  "flag": null
+ },
+ {
+  "v": "бебето е седалищно на 34 седмица",
+  "r": "Бременност",
+  "otkade": "бременност / 3 триместър",
+  "rezultat": "namerena",
+  "karta": "br-sedalishtno",
+  "flag": null
+ },
+ {
+  "v": "може ли секс през бременността",
+  "r": "Бременност",
+  "otkade": "бременност",
+  "rezultat": "namerena",
+  "karta": "br-seks-bezopasno",
+  "flag": null
+ },
+ {
+  "v": "качих 20 килограма много ли е",
+  "r": "Бременност",
+  "otkade": "бременност",
+  "rezultat": "namerena",
+  "karta": "br-telo",
+  "flag": null
+ },
+ {
+  "v": "може ли да вдигам голямото дете докато съм бременна",
+  "r": "Бременност",
+  "otkade": "бременност",
+  "rezultat": "namerena",
+  "karta": "lb-stolche",
+  "flag": null
+ },
+ {
+  "v": "какво да сложа в чантата за родилното",
+  "r": "Бременност",
+  "otkade": "бременност / раждане",
+  "rezultat": "namerena",
+  "karta": "br-chanta",
+  "flag": null
+ },
+ {
+  "v": "къде да пиша ако нещо не работи в приложението",
+  "r": "Лабораторията",
+  "otkade": "самото приложение",
+  "rezultat": "tishina",
+  "karta": null,
+  "flag": null
+ },
+ {
+  "v": "може ли приложението да ми напомня за ваксините",
+  "r": "Лабораторията",
+  "otkade": "самото приложение",
+  "rezultat": "namerena",
+  "karta": "zd-vaksini",
+  "flag": null
+ },
+ {
+  "v": "искам да добавите нещо за близнаци",
+  "r": "Лабораторията",
+  "otkade": "самото приложение",
+  "rezultat": "namerena",
+  "karta": "bz-what",
+  "flag": null
+ },
+ {
+  "v": "има ли начин да търся по дума в цялото приложение",
+  "r": "Лабораторията",
+  "otkade": "самото приложение",
+  "rezultat": "tishina",
+  "karta": null,
+  "flag": null
+ }
+]
