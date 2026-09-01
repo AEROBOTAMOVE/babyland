@@ -26,12 +26,23 @@ const fs = require('fs');
 const path = require('path');
 process.chdir(path.resolve(__dirname, '..'));
 
-const S = 'C:/Users/User/AppData/Local/Temp/claude/C--Users-User-Downloads-----/' +
-          'a78d0ad3-272e-4eb0-929e-dba161c5ab2a/scratchpad';
+// 🔴 26.08: тук стоеше закован път до ВРЕМЕННАТА папка на сесията. Тя се
+//    изчиства — и уредът умира мълчаливо, точно както умря korpus350 днес.
+const S = require('path').join(__dirname);
 
 let zaredi;
-try { zaredi = require(S + '/pyasachnik.js').zaredi; }
+try { zaredi = require('./pyasachnik.js').zaredi; }
 catch (e) { console.log('🔴 няма пясъчник: ' + e.message); process.exit(1); }
+
+// 🔴 26.08 — БРЕМЕННИЯТ ГЕЙТ БЕШЕ ВИНАГИ ЗАТВОРЕН.
+//    helper.js:1861 иска room === 'Бременност' ИЛИ въведена дата на цикъл;
+//    без стая pregLevel връща false за ВСИЧКО. Този уред викаше BL_PREGFLAG(т)
+//    БЕЗ стая, значи всяко бременностно число, което е показвал, е било нула
+//    по конструкция. Измерено: без стая 4 от 20 · със стая 6 от 20.
+//    Тук стаята се дава винаги — уредът трябва да МОЖЕ да види флага; дали
+//    жената е в тази стая е въпрос на живото приложение, не на измервача.
+function стаяЗаФлаг() { return 'Бременност'; }
+
 const W = zaredi(null);
 const KB = W.KB;
 
@@ -62,9 +73,9 @@ function виновник(т) {
     из.push('МАЙКА:' + м + '[' + (в.length > 20 ? 'ПРАВИЛОТО за подлога (партньор + насилие)'
             : (в.join(' | ') || 'ПРАВИЛО, не флаг от списъка')) + ']');
   }
-  if (W.BL_PREGFLAG && W.BL_PREGFLAG(т)) {
+  if (W.BL_PREGFLAG && W.BL_PREGFLAG(т, стаяЗаФлаг(т))) {
     const все = KB.pregFlags.slice(), в = [];
-    for (const f of все) { KB.pregFlags = [f]; try { if (W.BL_PREGFLAG(т)) в.push(f); } catch (e) {} }
+    for (const f of все) { KB.pregFlags = [f]; try { if (W.BL_PREGFLAG(т, стаяЗаФлаг(т))) в.push(f); } catch (e) {} }
     KB.pregFlags = все;
     из.push('БРЕМЕННОСТ[' + в.join(' | ') + ']');
   }
@@ -80,7 +91,7 @@ if (питане.length) {
 }
 
 let корпус;
-try { корпус = JSON.parse(fs.readFileSync(S + '/rez350.json', 'utf8')); }
+try { корпус = JSON.parse(fs.readFileSync(require('path').join(__dirname, 'korpus350.json'), 'utf8')); }
 catch (e) { console.log('🔴 няма корпус: ' + e.message); process.exit(1); }
 if (!Array.isArray(корпус) || корпус.length < 100) {
   console.log('🔴 корпусът е ' + (корпус && корпус.length) + ' записа — очаквам 350'); process.exit(1);
@@ -94,7 +105,7 @@ for (const x of корпус) {
   const флаг = (() => {
     try { if (W.BL_REDFLAG(т)) return true; } catch (e) {}
     try { if (W.BL_MOTHERFLAG && W.BL_MOTHERFLAG(т)) return true; } catch (e) {}
-    try { if (W.BL_PREGFLAG && W.BL_PREGFLAG(т)) return true; } catch (e) {}
+    try { if (W.BL_PREGFLAG && W.BL_PREGFLAG(т, стаяЗаФлаг(т))) return true; } catch (e) {}
     return false;
   })();
   if (о === 'SPESHNO') { спешни++; if (!флаг) пр.push([т, стая]); }
