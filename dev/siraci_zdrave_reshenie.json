@@ -1,0 +1,962 @@
+[
+ {
+  "statia": "lib-4b7e13c6",
+  "karta": "zd-kak-se-meri-temp",
+  "zashto": "Статията е точно как се мери и кое число важи — прякото продължение на картата.",
+  "sigurnost": "visoka"
+ },
+ {
+  "statia": "lib-d5f9efab",
+  "karta": "lb-gradina-bolno",
+  "zashto": "Картата пита кога се връщаме в яслата; статията дава критериите по симптом.",
+  "sigurnost": "visoka"
+ },
+ {
+  "statia": "lib-mod-0050",
+  "karta": "zd-temp2",
+  "zashto": "Картата обяснява какво значи температурата; статията разгръща защо треската е защита.",
+  "sigurnost": "visoka"
+ },
+ {
+  "statia": "lib-zd-stomashen-virus-obezvodnyavane",
+  "karta": "zd-stomashen-virus",
+  "zashto": "Картата казва кога става опасен; статията показва къде точно се гледа обезводняването.",
+  "sigurnost": "visoka"
+ },
+ {
+  "statia": "lib-zab-miene-zabi",
+  "karta": "lb-parvi-zabi",
+  "zashto": "Картата казва че се мият от първия ден; статията дава хватките при дете, което не дава.",
+  "sigurnost": "visoka"
+ },
+ {
+  "statia": "lib-dd022105",
+  "karta": "zd-diarr",
+  "zashto": "Водниста диария и повръщане с ротавирус — картата за диарията е естественият вход.",
+  "sigurnost": "visoka"
+ },
+ {
+  "statia": "lib-fb0e1af9",
+  "karta": "lb-nikat-zabi",
+  "zashto": "Картата е за никненето; статията добавя кое е нормално и кога към зъболекар.",
+  "sigurnost": "visoka"
+ },
+ {
+  "statia": "lib-663511ee",
+  "karta": "lb-gradina-bolno",
+  "zashto": "Правилото 48 часа без епизод е точно отговорът на въпроса кога се връщаме.",
+  "sigurnost": "visoka"
+ },
+ {
+  "statia": "lib-mod-0055",
+  "karta": "zd-stomashen-virus",
+  "zashto": "Поенето на глътки при стомашен вирус е практиката зад картата.",
+  "sigurnost": "visoka"
+ },
+ {
+  "statia": "lib-a3b1a1fc",
+  "karta": "zd-sled-vaksina",
+  "zashto": "Картата е за нощта след ваксината; статията казва кое повишение е очаквано.",
+  "sigurnost": "visoka"
+ },
+ {
+  "statia": "lib-aed60fb5",
+  "karta": "ns-obrivna-bolest",
+  "zashto": "Картата пита коя обривна болест е; статията различава варицела от ръка-крак-уста.",
+  "sigurnost": "visoka"
+ },
+ {
+  "statia": "lib-69d5d4bb",
+  "karta": "ns-obrivna-bolest",
+  "zashto": "Пълният списък обривни болести — точното разгръщане на картата.",
+  "sigurnost": "visoka"
+ },
+ {
+  "statia": "lib-mod-0052",
+  "karta": "zd-rash2",
+  "zashto": "Обща карта за обривите; статията подрежда вирусните обриви без паника.",
+  "sigurnost": "visoka"
+ },
+ {
+  "statia": "lib-bbbc7476",
+  "karta": "nr-yaslata-parvite",
+  "zashto": "Картата е за първите седмици в яслата; статията обяснява поредицата вируси и адаптацията.",
+  "sigurnost": "visoka"
+ },
+ {
+  "statia": "lib-5402ee39",
+  "karta": "lb-bateria",
+  "zashto": "Картата е за батерийки и магнити; статията е пълната безопасност на играчките.",
+  "sigurnost": "visoka"
+ },
+ {
+  "statia": "lib-c4ccd465",
+  "karta": "ns-teche-krav",
+  "zashto": "Статията е сборник дребни паники, а кръвта от носле е основната от тях.",
+  "sigurnost": "sredna"
+ },
+ {
+  "statia": "lib-3842dd3e",
+  "karta": "lb2-aki-cvetove",
+  "zashto": "Картата е пътеводител на цветовете; статията казва кое е вариация и кое иска лекар.",
+  "sigurnost": "visoka"
+ },
+ {
+  "statia": "lib-d6bca168",
+  "karta": "zd-rash2",
+  "zashto": "Картата за обривите; статията дава спешните признаци и разликата екзема-подсичане.",
+  "sigurnost": "visoka"
+ },
+ {
+  "statia": "lib-pp-udar-glava",
+  "karta": "zd-udar-glava",
+  "zashto": "Картата е за удара в главата; статията дава списъка знаци за следващите часове.",
+  "sigurnost": "visoka"
+ },
+ {
+  "statia": "lib-bc9e0372",
+  "karta": "mb-temperatura-tialo",
+  "zashto": "Картата пита топло ли му е; статията дава тила и гърдите вместо ръчичките, плюс стаята.",
+  "sigurnost": "visoka"
+ },
+ {
+  "statia": "lib-3b6b7931",
+  "karta": "mb-cry",
+  "zashto": "Картата е за плача; статията добавя какво помага и какво правиш, ако не издържаш.",
+  "sigurnost": "visoka"
+ },
+ {
+  "statia": "lib-mod-0054",
+  "karta": "zd-cough",
+  "zashto": "Картата за кашлицата; статията казва кога дългата кашлица още е ок.",
+  "sigurnost": "visoka"
+ },
+ {
+  "statia": "lib-6ac1c965",
+  "karta": "zd-sled-vaksina",
+  "zashto": "Второто разгръщане на същата карта — кое е очаквано и кое не се чака.",
+  "sigurnost": "visoka"
+ },
+ {
+  "statia": "lib-39fd62b6",
+  "karta": "zd-atopichen-dermatit",
+  "zashto": "Картата е за атопичния дерматит; статията дава грижата и тригерите.",
+  "sigurnost": "visoka"
+ },
+ {
+  "statia": "lib-3dbcae54",
+  "karta": "zd-nastinka",
+  "zashto": "Картата пита паника ли е хремата; статията казва кога сополите и нощната кашлица искат УНГ.",
+  "sigurnost": "visoka"
+ },
+ {
+  "statia": "lib-ba770778",
+  "karta": "lb-gradina-bolno",
+  "zashto": "Взрив в яслата и уведомяването са другата страна на въпроса кога се връщаме.",
+  "sigurnost": "visoka"
+ },
+ {
+  "statia": "lib-2fd59ac7",
+  "karta": "ns-boli-garloto",
+  "zashto": "Херпангината и афтите са точно защо го боли гърлото.",
+  "sigurnost": "visoka"
+ },
+ {
+  "statia": "lib-fbf78e68",
+  "karta": "ns-vashki-ostrici",
+  "zashto": "Картата е за въшки и острици; статията дава хигиената и семейното лечение.",
+  "sigurnost": "visoka"
+ },
+ {
+  "statia": "lib-d4663f5a",
+  "karta": "ns-rana-schupeno",
+  "zashto": "Картата включва избит зъб; статията дава първия час и абсцеса.",
+  "sigurnost": "visoka"
+ },
+ {
+  "statia": "lib-f29060b2",
+  "karta": "ns-obrivna-bolest",
+  "zashto": "Петата болест е класически въпрос коя обривна болест е.",
+  "sigurnost": "visoka"
+ },
+ {
+  "statia": "lib-7df6e14e",
+  "karta": "lb-petehii",
+  "zashto": "Картата е тестът с чашата; статията обяснява менингита и сепсиса зад него.",
+  "sigurnost": "visoka"
+ },
+ {
+  "statia": "lib-7439d781",
+  "karta": "lb-petehii",
+  "zashto": "Самият тест с чашата, стъпка по стъпка.",
+  "sigurnost": "visoka"
+ },
+ {
+  "statia": "lib-2f20a479",
+  "karta": "mb-sluh",
+  "zashto": "Картата за слуха; статията дава домашните проверки и за слуха, и за зрението.",
+  "sigurnost": "visoka"
+ },
+ {
+  "statia": "lib-e6f6804e",
+  "karta": "zh-lekarstvo-hranene",
+  "zashto": "Картата е как влиза лекарството; статията пази от грешна доза и дублирана съставка.",
+  "sigurnost": "sredna"
+ },
+ {
+  "statia": "lib-9d524e6e",
+  "karta": "ns-urinna-infekciya",
+  "zashto": "Картата е за уринната инфекция; статията обяснява температурата без ясна причина.",
+  "sigurnost": "visoka"
+ },
+ {
+  "statia": "lib-0f8fed54",
+  "karta": "in-izbor-pediatar",
+  "zashto": "Картата е изборът на педиатър; статията дава въпросите преди записване.",
+  "sigurnost": "visoka"
+ },
+ {
+  "statia": "lib-f296fc2f",
+  "karta": "in-izbor-pediatar",
+  "zashto": "Продължение на същия избор — и кога второто мнение е разумно.",
+  "sigurnost": "visoka"
+ },
+ {
+  "statia": "lib-42860c5b",
+  "karta": "in-dom-po-stai",
+  "zashto": "Картата е обезопасяване стая по стая; статията е точно това плюс какво се прави при инцидент.",
+  "sigurnost": "visoka"
+ },
+ {
+  "statia": "lib-caac8117",
+  "karta": "zd-nastinka",
+  "zashto": "Картата различава хремата от паниката; статията различава грипа от настинката.",
+  "sigurnost": "visoka"
+ },
+ {
+  "statia": "lib-c83fed9e",
+  "karta": "zd-breath",
+  "zashto": "Пневмонията се познава по дишането, не по кашлицата — точно темата на картата.",
+  "sigurnost": "visoka"
+ },
+ {
+  "statia": "lib-b357b595",
+  "karta": "in-zdravna-knizhka",
+  "zashto": "Картата е за ваксините на хартия; статията казва къде е РЗИ в тази верига.",
+  "sigurnost": "sredna"
+ },
+ {
+  "statia": "lib-e055a029",
+  "karta": "zd-sled-vaksina",
+  "zashto": "Статията отделя обичайната реакция от тревожния знак — сърцевината на картата.",
+  "sigurnost": "visoka"
+ },
+ {
+  "statia": "lib-ed575c92",
+  "karta": "nd-doma",
+  "zashto": "Картата е недоносеното у дома; статията дава ежедневието и границите за лекар.",
+  "sigurnost": "visoka"
+ },
+ {
+  "statia": "lib-152d6eab",
+  "karta": "in-gradina",
+  "zashto": "Картата е за градината и яслата; статията дава официалния маршрут при инфекция в колектива.",
+  "sigurnost": "sredna"
+ },
+ {
+  "statia": "lib-cddd58f2",
+  "karta": "zd-korem-podut",
+  "zashto": "Картата пита газове или нещо друго; статията дава хирургичния корем.",
+  "sigurnost": "visoka"
+ },
+ {
+  "statia": "lib-bb71cbac",
+  "karta": "ns-vashki-ostrici",
+  "zashto": "Гъбички, глисти и въшки от колектива — същият кръг като картата.",
+  "sigurnost": "visoka"
+ },
+ {
+  "statia": "lib-b79e5d7e",
+  "karta": "in-gradina",
+  "zashto": "Картата е за яслата; статията дава писмения план при алергия там.",
+  "sigurnost": "sredna"
+ },
+ {
+  "statia": "lib-d3b0b407",
+  "karta": "zd-hripove",
+  "zashto": "Астмата е едно от трите състояния в статията, а картата е за хриптенето.",
+  "sigurnost": "niska"
+ },
+ {
+  "statia": "lib-0ea90700",
+  "karta": "zd-noshtem",
+  "zashto": "Картата е къде се ходи през нощта; статията дава какво да кажеш по телефона.",
+  "sigurnost": "sredna"
+ },
+ {
+  "statia": "lib-mod-0053",
+  "karta": "zd-koga-e-speshno",
+  "zashto": "Картата е за трите нива на спешност; статията е обратната страна — кое не е спешно.",
+  "sigurnost": "visoka"
+ },
+ {
+  "statia": "lib-51899efa",
+  "karta": "zd-vaksini",
+  "zashto": "Картата пита кога са ваксините; статията казва кога се отлагат и кога не.",
+  "sigurnost": "visoka"
+ },
+ {
+  "statia": "lib-nov-izvan-kalendara",
+  "karta": "zd-vaksini",
+  "zashto": "Календарът и това, което е извън него — естествено продължение.",
+  "sigurnost": "visoka"
+ },
+ {
+  "statia": "lib-sez-dujd",
+  "karta": "lb3-nastinka",
+  "zashto": "Картата е митът за чорапите; статията обяснява защо мокрото не разболява.",
+  "sigurnost": "visoka"
+ },
+ {
+  "statia": "lib-pp-rana",
+  "karta": "ns-rana-schupeno",
+  "zashto": "Картата е за раната; статията казва как се спира кървенето и кога е за шев.",
+  "sigurnost": "visoka"
+ },
+ {
+  "statia": "lib-0527249f",
+  "karta": "zh-laktoza",
+  "zashto": "Картата различава лактозата от алергията към кравето мляко; статията е самата алергия.",
+  "sigurnost": "visoka"
+ },
+ {
+  "statia": "lib-c2a5f965",
+  "karta": "zd-allerg",
+  "zashto": "Картата е алергичната реакция; статията подрежда кое чака лекар и кое 112.",
+  "sigurnost": "visoka"
+ },
+ {
+  "statia": "lib-1d9d7c90",
+  "karta": "ns-karlezh-vadi",
+  "zashto": "Картата е за кърлежа; статията е целият оглед след разходка.",
+  "sigurnost": "visoka"
+ },
+ {
+  "statia": "lib-f2e57cb0",
+  "karta": "zd-temp-tri-dni",
+  "zashto": "Когато се стигне до лекар на третия ден, статията подрежда какво да покажеш.",
+  "sigurnost": "sredna"
+ },
+ {
+  "statia": "lib-4a99b69a",
+  "karta": "zah-alergeni",
+  "zashto": "Картата е за въвеждането на алергени; статията казва кога храната наистина е виновна.",
+  "sigurnost": "visoka"
+ },
+ {
+  "statia": "lib-3cadd817",
+  "karta": "zd-priemat-v-bolnica",
+  "zashto": "Картата е приемът в болница; статията дава страха от процедурите и изреченията.",
+  "sigurnost": "visoka"
+ },
+ {
+  "statia": "lib-16c210bd",
+  "karta": "mb-skin",
+  "zashto": "Картата е за кожата; статията дава прането и дразненето от дрехи.",
+  "sigurnost": "visoka"
+ },
+ {
+  "statia": "lib-35c99a5c",
+  "karta": "dn-skrol",
+  "zashto": "Картата е нощният скрол; статията учи как се чете жълто заглавие.",
+  "sigurnost": "sredna"
+ },
+ {
+  "statia": "lib-605214aa",
+  "karta": "zd-allerg",
+  "zashto": "Анафилаксията е тежкият край на алергичната реакция — същата карта.",
+  "sigurnost": "visoka"
+ },
+ {
+  "statia": "lib-0ec6c3ba",
+  "karta": null,
+  "zashto": "Карта на блогове и портали — няма карта, на която това да е отговор."
+ },
+ {
+  "statia": "lib-f43c7738",
+  "karta": "mb-font",
+  "zashto": "Картата е мекото място на главата; статията дава фонтанелата, формата и обиколката.",
+  "sigurnost": "visoka"
+ },
+ {
+  "statia": "lib-072f5c8b",
+  "karta": "in-gradina",
+  "zashto": "Картата е градината и яслата; статията казва къде се сигнализира при проблем там.",
+  "sigurnost": "sredna"
+ },
+ {
+  "statia": "lib-162dd7fd",
+  "karta": "nia-sama",
+  "zashto": "Картата е за самотния родител; статията е точно неговите въпроси.",
+  "sigurnost": "visoka"
+ },
+ {
+  "statia": "lib-46d83d81",
+  "karta": "br-sedmici",
+  "zashto": "Картата обяснява броенето на седмиците; статията как да четеш сайтовете по седмици.",
+  "sigurnost": "sredna"
+ },
+ {
+  "statia": "lib-2e3cf5dc",
+  "karta": "ch-spisak",
+  "zashto": "Картата е какво реално трябва; статията казва къде магазинът помага и къде не.",
+  "sigurnost": "sredna"
+ },
+ {
+  "statia": "lib-ba604718",
+  "karta": "in-photos",
+  "zashto": "Картата е за снимките на бебето; статията пази същите снимки онлайн.",
+  "sigurnost": "sredna"
+ },
+ {
+  "statia": "lib-b896a545",
+  "karta": null,
+  "zashto": "Бранд клубове за бебешко мляко — реклама, не въпрос на майка. Няма подходяща карта."
+ },
+ {
+  "statia": "lib-39acda31",
+  "karta": "zd-antibiotik-ne-pomaga",
+  "zashto": "Картата е за антибиотика; статията добавя добавките и митовете от аптеката.",
+  "sigurnost": "visoka"
+ },
+ {
+  "statia": "lib-9aa9d56b",
+  "karta": "zd-koga-e-speshno",
+  "zashto": "Картата е за трите нива; статията е майчиният усет и обаждането на 112.",
+  "sigurnost": "visoka"
+ },
+ {
+  "statia": "lib-9159f52d",
+  "karta": "lb-davene",
+  "zashto": "Картата е дави се или се задавя; статията е самата разлика плюс безопасност при храна.",
+  "sigurnost": "visoka"
+ },
+ {
+  "statia": "lib-c61a5cd5",
+  "karta": "zd-temperatura",
+  "zashto": "Домашната аптечка почва от жаропонижаващото — картата за температурата е входът.",
+  "sigurnost": "sredna"
+ },
+ {
+  "statia": "lib-607f32bb",
+  "karta": "zh-voda",
+  "zashto": "Картата е кога да пие вода; статията е когато не иска.",
+  "sigurnost": "visoka"
+ },
+ {
+  "statia": "lib-b7bafa66",
+  "karta": "in-bezopasnost",
+  "zashto": "Картата е домът става опасен; статията е водата — най-тихата опасност.",
+  "sigurnost": "visoka"
+ },
+ {
+  "statia": "lib-8631efc4",
+  "karta": "zd-himia-liznal",
+  "zashto": "Картата е близнал препарат; статията е пълното отравяне и вярната посока.",
+  "sigurnost": "visoka"
+ },
+ {
+  "statia": "lib-a3f7d21b",
+  "karta": "lb3-povivane",
+  "zashto": "Картата е митът за стегнатото повиване; дисплазията е точно защо митът е опасен.",
+  "sigurnost": "visoka"
+ },
+ {
+  "statia": "lib-nov-sekretoren",
+  "karta": "zd-otit-vazpalenie",
+  "zashto": "Картата е възпаленото ухо; статията е течността, която остава след него.",
+  "sigurnost": "visoka"
+ },
+ {
+  "statia": "lib-daea648f",
+  "karta": "lb2-razhodki",
+  "zashto": "Картата е за разходките; статията дава планирането, жегата и насекомите.",
+  "sigurnost": "visoka"
+ },
+ {
+  "statia": "lib-ae86bd64",
+  "karta": null,
+  "zashto": "Мета-текст за самото приложение, не отговор на майчин въпрос."
+ },
+ {
+  "statia": "lib-98ec912d",
+  "karta": "in-order",
+  "zashto": "Картата е домът с бебе; статията подрежда батко, котката, дима и влагата.",
+  "sigurnost": "sredna"
+ },
+ {
+  "statia": "lib-10d95c3a",
+  "karta": "zd-slance",
+  "zashto": "Картата е бебето и слънцето; статията е самата слънцезащита и репелентите.",
+  "sigurnost": "visoka"
+ },
+ {
+  "statia": "lib-mod-0051",
+  "karta": "zd-reanimacia",
+  "zashto": "Картата е стъпките, когато не диша; статията е задавянето до тях.",
+  "sigurnost": "visoka"
+ },
+ {
+  "statia": "lib-293f4e30",
+  "karta": "mb-bath",
+  "zashto": "Картата е къпането; статията е седалката, хлъзгавото и температурата на водата.",
+  "sigurnost": "visoka"
+ },
+ {
+  "statia": "lib-b1aebd4c",
+  "karta": "mb-intim-podsichane",
+  "zashto": "Картата е подсичането; статията решава кърпичка, вода или крем.",
+  "sigurnost": "visoka"
+ },
+ {
+  "statia": "lib-9f242083",
+  "karta": "lb-petehii",
+  "zashto": "Картата е тестът с чашата; статията е кога обривът не е за изчакване.",
+  "sigurnost": "visoka"
+ },
+ {
+  "statia": "lib-8748ea97",
+  "karta": "ns-boli-garloto",
+  "zashto": "Скарлатината идва от стрептококово гърло — точно въпросът на картата.",
+  "sigurnost": "visoka"
+ },
+ {
+  "statia": "lib-ad3f9572",
+  "karta": "in-bezopasnost",
+  "zashto": "Картата е за опасностите вкъщи; статията добавя жега, буря, ток и евакуация.",
+  "sigurnost": "sredna"
+ },
+ {
+  "statia": "lib-5711b6a1",
+  "karta": "nm-zapusheno-nosle",
+  "zashto": "Картата е запушеното носле; статията дава и очите, и ушите, и чистенето без прекаляване.",
+  "sigurnost": "visoka"
+ },
+ {
+  "statia": "lib-d928e0d1",
+  "karta": "zd-ear",
+  "zashto": "Картата е за ушите; статията е самата ушна инфекция и какво следва.",
+  "sigurnost": "visoka"
+ },
+ {
+  "statia": "lib-4af75a61",
+  "karta": "in-dom-po-stai",
+  "zashto": "Картата е обезопасяване стая по стая; токовият удар и домашната готовност са част от него.",
+  "sigurnost": "sredna"
+ },
+ {
+  "statia": "lib-08550493",
+  "karta": "nia-tovar-predavane",
+  "zashto": "Картата е невидимият товар; статията е точно за него, вината и натиска.",
+  "sigurnost": "sredna"
+ },
+ {
+  "statia": "lib-42a3e7a5",
+  "karta": "in-bavachka",
+  "zashto": "Картата е да го оставиш с някого; статията дава писмения план и границите.",
+  "sigurnost": "visoka"
+ },
+ {
+  "statia": "lib-nov-preraste",
+  "karta": "zah-alergeni",
+  "zashto": "Картата е въвеждането на алергени; статията казва че диетата има срок.",
+  "sigurnost": "visoka"
+ },
+ {
+  "statia": "lib-a84d5f55",
+  "karta": "nb-parite-razhdanet",
+  "zashto": "Картата е парите за раждането; статията е частният пакет и изборът на екип.",
+  "sigurnost": "sredna"
+ },
+ {
+  "statia": "lib-6f2d3b0d",
+  "karta": "br-plan-razhdane",
+  "zashto": "Картата е подготовката за раждането; статията е училищата за родители и какво да питаш.",
+  "sigurnost": "visoka"
+ },
+ {
+  "statia": "lib-fb25e6b1",
+  "karta": "in-napravlenie",
+  "zashto": "Картата е пътят до специалист; статията казва кой специалист за какво.",
+  "sigurnost": "visoka"
+ },
+ {
+  "statia": "lib-zab-parvi-preglet",
+  "karta": "lb-parvi-zabi",
+  "zashto": "Картата почва хигиената от първия зъб; статията е първият преглед при зъболекар.",
+  "sigurnost": "visoka"
+ },
+ {
+  "statia": "lib-cae6aef9",
+  "karta": "zd-cough",
+  "zashto": "Магарешката кашлица е най-опасната кашлица — картата за кашлицата е входът.",
+  "sigurnost": "visoka"
+ },
+ {
+  "statia": "lib-748cd457",
+  "karta": "zd-temp-tri-dni",
+  "zashto": "Картата е температура, която не пада; статията е кога повтарящите инфекции не са нормални.",
+  "sigurnost": "sredna"
+ },
+ {
+  "statia": "lib-94eb1354",
+  "karta": "nb-parite-razhdanet",
+  "zashto": "Картата е парите около раждането; съхранението на стволови клетки е платено решение там.",
+  "sigurnost": "sredna"
+ },
+ {
+  "statia": "lib-67301387",
+  "karta": "lb-nikat-zabi",
+  "zashto": "Картата казва какво Е и какво НЕ Е никнене; статията оборва че слюнката доказва зъбки.",
+  "sigurnost": "visoka"
+ },
+ {
+  "statia": "lib-3b22f015",
+  "karta": "zd-pelenen-obriv",
+  "zashto": "Картата е обривът под пелената; статията добавя запека и урината от същия памперс.",
+  "sigurnost": "visoka"
+ },
+ {
+  "statia": "lib-ef0f6186",
+  "karta": "zd-atopichen-dermatit",
+  "zashto": "Същата тема — екземата на вълни и защо плаши повече отколкото е.",
+  "sigurnost": "visoka"
+ },
+ {
+  "statia": "lib-1174fdd8",
+  "karta": "zd-reanimacia",
+  "zashto": "Картата е първата помощ, когато не диша; статията е останалите три спешни случая.",
+  "sigurnost": "sredna"
+ },
+ {
+  "statia": "lib-bda98dfe",
+  "karta": "zd-atopichen-dermatit",
+  "zashto": "Атопичният марш тръгва от екземата — прякото продължение на картата.",
+  "sigurnost": "visoka"
+ },
+ {
+  "statia": "lib-3031edf3",
+  "karta": "zh-himia",
+  "zashto": "Картата е бурканчета или домашно; статията чете етикета и сигналите за разваленото.",
+  "sigurnost": "visoka"
+ },
+ {
+  "statia": "lib-caca0a57",
+  "karta": "zd-vaksini",
+  "zashto": "Картата е календарът; статията подрежда колебанието без спор.",
+  "sigurnost": "visoka"
+ },
+ {
+  "statia": "lib-97cf2fdb",
+  "karta": "ema-babini",
+  "zashto": "Картата пита да проверим ли баба; статията казва кои домашни хватки може да навредят.",
+  "sigurnost": "visoka"
+ },
+ {
+  "statia": "lib-c931aa5f",
+  "karta": "lb-opasen-plach",
+  "zashto": "Картата е кога плачът е тревожен; косъм-турникетът е точно такъв случай.",
+  "sigurnost": "visoka"
+ },
+ {
+  "statia": "lib-d61abbb5",
+  "karta": "br-plan-razhdane",
+  "zashto": "Картата е подготовката; статията казва кой какво прави от дулата до консултанта.",
+  "sigurnost": "sredna"
+ },
+ {
+  "statia": "lib-c0dfa511",
+  "karta": "nb-parite-razhdanet",
+  "zashto": "Картата е парите за раждането; статията е частните болници и пакетите.",
+  "sigurnost": "sredna"
+ },
+ {
+  "statia": "lib-8c5bea4f",
+  "karta": "zd-koga-e-speshno",
+  "zashto": "Картата е трите нива на спешност; статията е самите тревожни знаци.",
+  "sigurnost": "visoka"
+ },
+ {
+  "statia": "lib-c83f8ac9",
+  "karta": "dn-sravnenie",
+  "zashto": "Картата е че другите майки изглеждат по-добре; групите са мястото, където става.",
+  "sigurnost": "sredna"
+ },
+ {
+  "statia": "lib-6d001559",
+  "karta": "br-plan-razhdane",
+  "zashto": "Курсовете и групите за родители са част от подготовката — картата на подготовката.",
+  "sigurnost": "sredna"
+ },
+ {
+  "statia": "lib-d887c524",
+  "karta": "mb-intim-lekar",
+  "zashto": "Картата е кога интимната грижа е за педиатър; подутият тестис е спешният случай.",
+  "sigurnost": "visoka"
+ },
+ {
+  "statia": "lib-8bdfa4fa",
+  "karta": "rz-zanimania",
+  "zashto": "Картата е плуване, Монтесори и център; статията дели играта от терапията.",
+  "sigurnost": "visoka"
+ },
+ {
+  "statia": "lib-4763b775",
+  "karta": "in-online-uslugi",
+  "zashto": "Картата е онлайн здравните услуги; статията е платформите за лекари.",
+  "sigurnost": "visoka"
+ },
+ {
+  "statia": "lib-63afa43a",
+  "karta": "zh-laktoza",
+  "zashto": "Картата различава лактозата от алергията; статията прави същото разграничение по-широко.",
+  "sigurnost": "visoka"
+ },
+ {
+  "statia": "lib-bebb64fc",
+  "karta": "zd-himia-liznal",
+  "zashto": "Картата е близнал препарат; статията дава точните стъпки при отравяне.",
+  "sigurnost": "visoka"
+ },
+ {
+  "statia": "lib-df189ec6",
+  "karta": "zd-rash2",
+  "zashto": "Картата е обривите; импетигото е обривът с медени корички.",
+  "sigurnost": "visoka"
+ },
+ {
+  "statia": "lib-f2f9ae82",
+  "karta": "in-sharene",
+  "zashto": "Картата пита колко чисто трябва; статията казва кой препарат е излишен и опасен.",
+  "sigurnost": "visoka"
+ },
+ {
+  "statia": "lib-f3fc9381",
+  "karta": "ns-rana-schupeno",
+  "zashto": "Картата е раната; статията са дребните рани, занозата и нокътят.",
+  "sigurnost": "visoka"
+ },
+ {
+  "statia": "lib-ecacc03d",
+  "karta": "mb-nokti-kak",
+  "zashto": "Картата е ноктите — колко често и как; статията добавя възпалението около нокътя.",
+  "sigurnost": "visoka"
+ },
+ {
+  "statia": "lib-373bb27d",
+  "karta": "in-second",
+  "zashto": "Картата е втора употреба; статията е покупката от непознат профил и рекламацията.",
+  "sigurnost": "visoka"
+ },
+ {
+  "statia": "lib-73beb03f",
+  "karta": "zg-pak",
+  "zashto": "Картата е кога пак по твоето време; статията е зачеването и ранната загуба.",
+  "sigurnost": "sredna"
+ },
+ {
+  "statia": "lib-90099b16",
+  "karta": "zg-s-kogo",
+  "zashto": "Картата е че има с кого; статията дава фондовете и психологическата подкрепа.",
+  "sigurnost": "sredna"
+ },
+ {
+  "statia": "lib-23c2fb96",
+  "karta": "mb-malko-mliako",
+  "zashto": "Картата е страхът че млякото не стига; статията дава как се брои и кога е обезводняване.",
+  "sigurnost": "visoka"
+ },
+ {
+  "statia": "lib-c281f53d",
+  "karta": null,
+  "zashto": "Карта на медийни портали — няма въпрос на майка, на който да е отговор."
+ },
+ {
+  "statia": "lib-9c6cda6e",
+  "karta": "in2-ne-kupuvai",
+  "zashto": "Картата е какво да НЕ купуваш; статията е филтърът за рекламите.",
+  "sigurnost": "visoka"
+ },
+ {
+  "statia": "lib-28baba1b",
+  "karta": "ni-kogato-dnes",
+  "zashto": "Картата е когато днес няма пари къде се почуква; статията дава организациите.",
+  "sigurnost": "visoka"
+ },
+ {
+  "statia": "lib-0ef8bcc5",
+  "karta": null,
+  "zashto": "Списък родителски блогове — няма подходяща карта."
+ },
+ {
+  "statia": "lib-aab0d4c3",
+  "karta": "zd-priemat-v-bolnica",
+  "zashto": "Картата е приемът в болница; статията дава правата и къде се жалва.",
+  "sigurnost": "visoka"
+ },
+ {
+  "statia": "lib-1d52f68b",
+  "karta": "zah-alergeni",
+  "zashto": "Картата е за алергените при захранване; статията дава реакциите и кога е спешно.",
+  "sigurnost": "visoka"
+ },
+ {
+  "statia": "lib-sez-planina",
+  "karta": "ni-pat-bebe",
+  "zashto": "Картата е на път с бебе; планината е третият вариант след колата и морето.",
+  "sigurnost": "sredna"
+ },
+ {
+  "statia": "lib-4eeef873",
+  "karta": null,
+  "zashto": "Списък здравни портали — няма карта, чието продължение да е."
+ },
+ {
+  "statia": "lib-ef81e327",
+  "karta": "in-zdravna-knizhka",
+  "zashto": "Картата е книжката на хартия; статията е домашната папка при хронична диагноза.",
+  "sigurnost": "sredna"
+ },
+ {
+  "statia": "lib-66b7ae24",
+  "karta": "zd-noshtem",
+  "zashto": "Картата е къде се ходи през нощта; статията е скриптът за 112.",
+  "sigurnost": "visoka"
+ },
+ {
+  "statia": "lib-597d6420",
+  "karta": "nia-strah-ot-nego",
+  "zashto": "Картата е когато вкъщи не е безопасно; статията дава закрилата и къде се сигнализира.",
+  "sigurnost": "visoka"
+ },
+ {
+  "statia": "lib-6dca1c4d",
+  "karta": "dn-skrol",
+  "zashto": "Картата е скролът в три през нощта; статията е точно как се чете без да се подлудиш.",
+  "sigurnost": "visoka"
+ },
+ {
+  "statia": "lib-ec95ecde",
+  "karta": null,
+  "zashto": "Списание и предавания — няма подходяща карта."
+ },
+ {
+  "statia": "lib-42c523a3",
+  "karta": "in2-vlazhnost",
+  "zashto": "Картата е овлажнител и климатик; статията е влагата, мухълът и въздухът.",
+  "sigurnost": "visoka"
+ },
+ {
+  "statia": "lib-281633b7",
+  "karta": "mb-more-plaj",
+  "zashto": "Картата е първото море; басейнът е същата вода и същата кожа.",
+  "sigurnost": "sredna"
+ },
+ {
+  "statia": "lib-a056cdc9",
+  "karta": "dn-skrol",
+  "zashto": "Картата е нощният скрол; статията отсява инфлуенсърите от специалистите.",
+  "sigurnost": "sredna"
+ },
+ {
+  "statia": "lib-108e02ea",
+  "karta": "zg-pak",
+  "zashto": "Картата е кога пак; инвитро е един от пътищата и статията подрежда офертите.",
+  "sigurnost": "sredna"
+ },
+ {
+  "statia": "lib-194d8d60",
+  "karta": "in-izbor-pediatar",
+  "zashto": "Картата е изборът на педиатър; статията е картата на всички роли около детето.",
+  "sigurnost": "visoka"
+ },
+ {
+  "statia": "lib-9530dd98",
+  "karta": "zd-allerg",
+  "zashto": "Картата е алергичната реакция; статията дава шепата знаци, при които не се чака.",
+  "sigurnost": "visoka"
+ },
+ {
+  "statia": "lib-f19e0bb4",
+  "karta": null,
+  "zashto": "Осиновяване и приемна грижа — няма карта по тази тема."
+ },
+ {
+  "statia": "lib-f0c783a4",
+  "karta": "in2-bebefon",
+  "zashto": "Картата е бебефонът; статията добавя камерите и поверителността.",
+  "sigurnost": "visoka"
+ },
+ {
+  "statia": "lib-eac89432",
+  "karta": "rz-gyrne",
+  "zashto": "Картата е гърнето без бой и бързане; статията е задържането след болезнено изхождане.",
+  "sigurnost": "visoka"
+ },
+ {
+  "statia": "lib-53ad5dd9",
+  "karta": "zd-hripove",
+  "zashto": "Картата е хриптенето; статията е инхалаторът и грешките с него.",
+  "sigurnost": "visoka"
+ },
+ {
+  "statia": "lib-02d6102d",
+  "karta": "zh-lekarstvo-hranene",
+  "zashto": "Картата е как влиза лекарството; статията чете листовката.",
+  "sigurnost": "visoka"
+ },
+ {
+  "statia": "lib-f66ad575",
+  "karta": "zd-antibiotik-ne-pomaga",
+  "zashto": "Картата е кога антибиотикът не помага; резистентността е защо.",
+  "sigurnost": "visoka"
+ },
+ {
+  "statia": "lib-8211f730",
+  "karta": null,
+  "zashto": "Портал за семейно здраве — няма карта, на която да е продължение."
+ },
+ {
+  "statia": "lib-cb7a4cde",
+  "karta": null,
+  "zashto": "Списък болнични сайтове — няма подходяща карта."
+ },
+ {
+  "statia": "lib-b0670fe1",
+  "karta": "ni-kogato-dnes",
+  "zashto": "Картата е къде се почуква при липса на пари; МТСП е една от вратите.",
+  "sigurnost": "sredna"
+ },
+ {
+  "statia": "lib-9dbd2af4",
+  "karta": "dn-sravnenie",
+  "zashto": "Картата е сравнението с другите майки; форумите са мястото на сравнението.",
+  "sigurnost": "sredna"
+ },
+ {
+  "statia": "lib-87128b38",
+  "karta": null,
+  "zashto": "Как се гледат подкасти и видеа за родители — няма карта по темата."
+ },
+ {
+  "statia": "lib-5e1cf2f9",
+  "karta": "in-bezopasnost",
+  "zashto": "Картата е домът става опасен; огънят и димът са част от същия дом.",
+  "sigurnost": "sredna"
+ },
+ {
+  "statia": "lib-c36337a3",
+  "karta": null,
+  "zashto": "Давност и доверие на блогове — няма подходяща карта."
+ }
+]

@@ -1,0 +1,356 @@
+[
+ {
+  "statia": "lib-5df0e6f6",
+  "karta": "nia-shevove-dolu",
+  "zashto": "Статията е точно за разкъсванията, епизиотомията и шевовете долу; картата пита кога зарастват и колко болят",
+  "sigurnost": "visoka"
+ },
+ {
+  "statia": "lib-zhm-depresia",
+  "karta": "nw-beybi-blus",
+  "zashto": "Картата разделя блуса от депресията, статията е следващият пласт по същата тема",
+  "sigurnost": "visoka"
+ },
+ {
+  "statia": "lib-nov-sun-mama",
+  "karta": "dn-nedospivane",
+  "zashto": "Статията е за съня на МАЙКАТА на парчета; картата е за недоспиването, не за приятелките",
+  "sigurnost": "visoka"
+ },
+ {
+  "statia": "lib-949bdc00",
+  "karta": "pp-trevojnost-dylbochina",
+  "zashto": "Картата разграничава блус, депресия и тревожност; статията разгръща същата карта до натрапливи мисли и психоза",
+  "sigurnost": "visoka"
+ },
+ {
+  "statia": "lib-11f426d8",
+  "karta": "dn-tatko-kak-pomogna",
+  "zashto": "Картата е за това как двамата да си помогнат; статията казва кой какво реално поема",
+  "sigurnost": "visoka"
+ },
+ {
+  "statia": "lib-745c9bce",
+  "karta": "pp-kontracepcia",
+  "zashto": "Картата е за предпазването докато кърмиш; статията добавя семейно планиране, инфекции и интимност",
+  "sigurnost": "visoka"
+ },
+ {
+  "statia": "lib-dcff7950",
+  "karta": "mm-sechenie",
+  "zashto": "Картата е възстановяване след цезарово, статията е раната, болката и движението след секцио",
+  "sigurnost": "visoka"
+ },
+ {
+  "statia": "lib-984a6220",
+  "karta": "dn-sravnenie",
+  "zashto": "Картата е другите майки изглеждат по-добре, статията обяснява защо лентата е нагласена сцена",
+  "sigurnost": "visoka"
+ },
+ {
+  "statia": "lib-0d185a32",
+  "karta": "nd-vinata-syankata",
+  "zashto": "Картата е за вината, която идва при всичко; статията е същата вина, която винаги намира повод",
+  "sigurnost": "visoka"
+ },
+ {
+  "statia": "lib-40a74399",
+  "karta": "pp-cikyl",
+  "zashto": "Картата пита кога се връща цикълът, статията е точно за първата менструация след раждането",
+  "sigurnost": "visoka"
+ },
+ {
+  "statia": "lib-c60db8de",
+  "karta": "nia-vina",
+  "zashto": "Картата е вината, че искаш да си сама; статията е радостта да си сама и срамът след нея",
+  "sigurnost": "visoka"
+ },
+ {
+  "statia": "lib-vt-podgotovka",
+  "karta": "lb2-revnost",
+  "zashto": "Картата е ревността от новото бебе, статията е подготовката на голямото преди то да дойде",
+  "sigurnost": "visoka"
+ },
+ {
+  "statia": "lib-21a1bc11",
+  "karta": "nd-rodninite-savetite",
+  "zashto": "Картата е за границата с роднините, статията подрежда подкрепата и границите след раждането",
+  "sigurnost": "visoka"
+ },
+ {
+  "statia": "lib-932fd138",
+  "karta": "nia-libido",
+  "zashto": "Картата казва не искам да ме докосват, статията обяснява защо вечер не искаш още докосване",
+  "sigurnost": "visoka"
+ },
+ {
+  "statia": "lib-d25ca13b",
+  "karta": "dn-pomosht",
+  "zashto": "Картата и статията носят едно и също изречение - да поискаш помощ не е слабост",
+  "sigurnost": "visoka"
+ },
+ {
+  "statia": "lib-vt-parva-sreshta",
+  "karta": "dn-vtoro-serce",
+  "zashto": "Картата е вината и страхът пред двете деца, статията е практичният отговор как изглежда първият месец с двете",
+  "sigurnost": "visoka"
+ },
+ {
+  "statia": "lib-4de59f2b",
+  "karta": "dn-telo-posle",
+  "zashto": "Картата е тялото се възстановява, статията изрежда кървенето, шевовете и червените флагове",
+  "sigurnost": "visoka"
+ },
+ {
+  "statia": "lib-5addf4ce",
+  "karta": "nia-tazovo-dano",
+  "zashto": "Картата е тежестта долу и пролапсът; статията носи същите въпроси - топка във влагалището и изпускане на урина",
+  "sigurnost": "visoka"
+ },
+ {
+  "statia": "lib-30938319",
+  "karta": "pp-seks",
+  "zashto": "Картата е сексът след раждането, статията добавя тялото, либидото и връзката",
+  "sigurnost": "visoka"
+ },
+ {
+  "statia": "lib-nov-lekar-sama",
+  "karta": "nia-moqt-red",
+  "zashto": "Картата е за отлаганите СВОИ прегледи, статията решава точно пречката - няма с кого да остане бебето",
+  "sigurnost": "visoka"
+ },
+ {
+  "statia": "lib-c997fb6b",
+  "karta": "dn-samota",
+  "zashto": "Картата е самотата в майчинството, статията е самотата в пълна къща",
+  "sigurnost": "visoka"
+ },
+ {
+  "statia": "lib-e90620b9",
+  "karta": "nia-skrining",
+  "zashto": "Картата обяснява прегледа на шестата седмица, статията минава през него, тазовото дъно, секса и контрацепцията",
+  "sigurnost": "visoka"
+ },
+ {
+  "statia": "lib-48c85937",
+  "karta": "nia-koya",
+  "zashto": "Картата е не се познавам вече, статията е ти преди бебето не е изчезнала",
+  "sigurnost": "visoka"
+ },
+ {
+  "statia": "lib-mod-0045",
+  "karta": "dn-partnior",
+  "zashto": "Картата е с половинката се отдалечихме, статията е двамата след като станахте трима",
+  "sigurnost": "visoka"
+ },
+ {
+  "statia": "lib-dv-ne-vijda",
+  "karta": "nia-tovar-predavane",
+  "zashto": "Картата е как се предава невидимото, статията е той не вижда какво има за вършене",
+  "sigurnost": "visoka"
+ },
+ {
+  "statia": "lib-d30a25b0",
+  "karta": "nia-skrining",
+  "zashto": "Картата е твоят скрининг след раждането, статията добавя кръвно, анемия, щитовидна и диабет",
+  "sigurnost": "visoka"
+ },
+ {
+  "statia": "lib-e13bbec3",
+  "karta": "nd-vina",
+  "zashto": "Картата е вината, че бебето е подранило; статията е тревожността и вината, които остават след НИКУ",
+  "sigurnost": "visoka"
+ },
+ {
+  "statia": "lib-dv-skarvane",
+  "karta": "nd-sled-kryasaka",
+  "zashto": "Картата е поправката след крясъка; статията е какво вижда детето при кавга и какво следва после",
+  "sigurnost": "sredna"
+ },
+ {
+  "statia": "lib-53c17f45",
+  "karta": "mm-lohia",
+  "zashto": "Картата е кървенето след раждане, статията казва при кои сигнали не се чака",
+  "sigurnost": "visoka"
+ },
+ {
+  "statia": "lib-7ae686c4",
+  "karta": "nia-lipsva",
+  "zashto": "Картата е липсва ми предишният живот, статията е загубата на спонтанност",
+  "sigurnost": "visoka"
+ },
+ {
+  "statia": "lib-mod-0016",
+  "karta": "dn-skrol",
+  "zashto": "Картата е скролът в три през нощта и сравняването на бебето с чужди бебета; статията е точно това",
+  "sigurnost": "visoka"
+ },
+ {
+  "statia": "lib-mod-0046",
+  "karta": "nia-vkus",
+  "zashto": "Картата е не помня какво обичах, статията отговаря кога пак ще съм аз - сглобяваш се напред",
+  "sigurnost": "sredna"
+ },
+ {
+  "statia": "lib-mod-0047",
+  "karta": "nd-samotata-mezhdu",
+  "zashto": "Картата е самотата между четири стени, статията е самотата насред пълната къща",
+  "sigurnost": "visoka"
+ },
+ {
+  "statia": "lib-f6425e7a",
+  "karta": "mm-lohia",
+  "zashto": "Картата е кървенето след раждане, статията е лохиите, съсиреците и връщането на цикъла",
+  "sigurnost": "visoka"
+ },
+ {
+  "statia": "lib-1ca5c23f",
+  "karta": "nb-zaduh-sarcebien",
+  "zashto": "Единствената карта, чиито червени флагове са задух, болка в гърдите и подут прасец - същият съсирек, за който е статията",
+  "sigurnost": "sredna"
+ },
+ {
+  "statia": "lib-00c2d3ea",
+  "karta": "nia-work",
+  "zashto": "Картата е връщането на работа и оставянето на детето, статията добавя кърменето, цеденето, яслата и правата",
+  "sigurnost": "visoka"
+ },
+ {
+  "statia": "lib-547cab7c",
+  "karta": "dn-dostatachno-dobra",
+  "zashto": "Картата е достатъчно добра е достатъчно, статията е критикът в главата, който повтаря че се проваляш",
+  "sigurnost": "visoka"
+ },
+ {
+  "statia": "lib-mod-0015",
+  "karta": "nia-koya",
+  "zashto": "Картата е не се познавам вече, статията е изгубих себе си и как бавно се намираш",
+  "sigurnost": "visoka"
+ },
+ {
+  "statia": "lib-rod-gosti",
+  "karta": "nia-replika",
+  "zashto": "Ключовете на картата включват как да откажа гости; статията дава точните изречения за посещенията",
+  "sigurnost": "visoka"
+ },
+ {
+  "statia": "lib-e0ca71ed",
+  "karta": "pp-kosopad",
+  "zashto": "Картата е следродилният косопад, статията е косопадът и огледалото",
+  "sigurnost": "visoka"
+ },
+ {
+  "statia": "lib-d6d2cf21",
+  "karta": "dn-nedospivane",
+  "zashto": "Картата е недоспиването не е дреболия, статията е изтощението, което сънят не лекува",
+  "sigurnost": "visoka"
+ },
+ {
+  "statia": "lib-716f9613",
+  "karta": "lb-trevojnost",
+  "zashto": "Картата е следродилната тревожност, статията е травматичното раждане с ретроспекции - най-близкото, което има",
+  "sigurnost": "sredna"
+ },
+ {
+  "statia": "lib-347311c8",
+  "karta": "dn-pisane",
+  "zashto": "Картата казва пиши, защото ще забравиш; статията е тъгата, че бебето вече го няма",
+  "sigurnost": "visoka"
+ },
+ {
+  "statia": "lib-d8150fd6",
+  "karta": "bz-what",
+  "zashto": "Картата е близнаци - оцеляването е успех; статията е привързването, храненето и вината при две бебета",
+  "sigurnost": "visoka"
+ },
+ {
+  "statia": "lib-6d217767",
+  "karta": "nia-replika",
+  "zashto": "Картата е не знам как да го кажа; статията дава точните изречения, с които се иска помощ",
+  "sigurnost": "visoka"
+ },
+ {
+  "statia": "lib-17d668b3",
+  "karta": "nia-rabota",
+  "zashto": "Картата е страх ме е да се върна на работа, статията е администрацията и раздялата",
+  "sigurnost": "visoka"
+ },
+ {
+  "statia": "lib-mod-0012",
+  "karta": "nia-rabota",
+  "zashto": "Картата е страхът от връщането, статията казва че болката и облекчението вървят заедно",
+  "sigurnost": "visoka"
+ },
+ {
+  "statia": "lib-fe389a89",
+  "karta": "nia-body2",
+  "zashto": "Картата е тялото след, статията е тялото ти е инструмент, не украса",
+  "sigurnost": "visoka"
+ },
+ {
+  "statia": "lib-9789e368",
+  "karta": "lb3-razglezvane",
+  "zashto": "Картата е ще го разглезиш с това носене, статията е привързаността и ко-регулацията",
+  "sigurnost": "visoka"
+ },
+ {
+  "statia": "lib-9d938606",
+  "karta": "nia-dush",
+  "zashto": "Картата е не съм се къпала от дни - същата отложена основна нужда; статията е за топлата храна на спокойствие",
+  "sigurnost": "sredna"
+ },
+ {
+  "statia": "lib-e5918abf",
+  "karta": "dn-pomosht",
+  "zashto": "Картата е да поискаш помощ не е слабост, статията изброява към кого конкретно се обръщаш у дома",
+  "sigurnost": "visoka"
+ },
+ {
+  "statia": "lib-439b1301",
+  "karta": null,
+  "zashto": "Статията е справочник за институция - обществено здраве и статистика; няма въпрос на майка, на който да е естествено продължение",
+  "sigurnost": "visoka"
+ },
+ {
+  "statia": "lib-774c3050",
+  "karta": "nia-yad-adres",
+  "zashto": "Картата е гневът към него, а не към бебето, с ключ той спи а аз ставам; статията е ревността, че той излиза свободно",
+  "sigurnost": "visoka"
+ },
+ {
+  "statia": "lib-aa110922",
+  "karta": "br-sled-sekcio-razhdane",
+  "zashto": "Картата е второто раждане след секцио, статията е точно рискът на плацентата при предишно секцио",
+  "sigurnost": "sredna"
+ },
+ {
+  "statia": "lib-db22eee9",
+  "karta": "nia-ogledalo",
+  "zashto": "Картата е не се харесвам в огледалото, статията е косопадът, кожата и образът на тялото",
+  "sigurnost": "visoka"
+ },
+ {
+  "statia": "lib-454660db",
+  "karta": "nw-tyaloto-sled",
+  "zashto": "Картата е тялото след раждането и коремът, който още изглежда бременен; статията е защо дънките не се закопчават",
+  "sigurnost": "visoka"
+ },
+ {
+  "statia": "lib-rod-celuvki",
+  "karta": "nd-rodninite-savetite",
+  "zashto": "Ключ на картата е бебето по устата; статията дава медицинската причина, с която се казва не го целувай",
+  "sigurnost": "visoka"
+ },
+ {
+  "statia": "lib-mod-0010",
+  "karta": "nia-tovar-predavane",
+  "zashto": "Картата е все аз помня всичко, статията е невидимият товар, който само ти носиш",
+  "sigurnost": "visoka"
+ },
+ {
+  "statia": "lib-8b51f0a8",
+  "karta": "nd-nepoiskani-saveti",
+  "zashto": "Картата е непоисканите съвети, статията е точно кое от едно време не важи и как се слага граница",
+  "sigurnost": "visoka"
+ }
+]
