@@ -23,8 +23,11 @@
 // ═══════════════════════════════════════════════════════════
 const path = require('path');
 process.chdir(path.resolve(__dirname, '..'));
-const S = 'C:/Users/User/AppData/Local/Temp/claude/C--Users-User-Downloads-----/' +
-          'a78d0ad3-272e-4eb0-929e-dba161c5ab2a/scratchpad';
+// 🔴 01.09: тук стоеше ЗАКОВАН път до временната папка на ЕДНА сесия —
+//    точно дефектът, заради който беше написан dev/pyasachnik.js. Работеше
+//    по случайност: папката още съществуваше. Утре нямаше да я има и уредът
+//    щеше да гърми или, по-лошо, да мине по резервния път и да мери друго.
+const S = __dirname;
 let W;
 try { W = require(S + '/pyasachnik.js').zaredi(null); }
 catch (e) { console.log('🔴 няма пясъчник: ' + e.message); process.exit(2); }
