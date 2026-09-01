@@ -1423,6 +1423,14 @@ h1, h2, h3 { font-family: 'Comfortaa', 'Comfortaa-fallback', 'Nunito', sans-seri
 /* тъмен режим за новите неща */
 [data-theme="dark"] .onb-card { background: #2a2640; }
 [data-theme="dark"] .onb-sexbtn { background: #342f4e; border-color: #423b60; color: var(--ink); }
+/* 👁️ 01.09: dev/kontrast.js, пуснат за първи път в БРАУЗЪРА, намери три текста
+   на контраст 3.4 при праг 4.5 — всичките с клас .onb-lbl-soft в ТЪМНА тема.
+   Причината не е цветът, а opacity: .68 — в светла тема основата е достатъчно
+   тъмна и .68 минава, в тъмна не. Самият уред пише в главата си, че точно този
+   клас е ОЦЕЛЯЛ от предишна поправка („кръгът е затворен по СПИСЪК, не по
+   КОРЕН... .onb-lbl-soft оцеля"). Сега е затворен по корена: в тъмна тема
+   прозрачността се вдига. */
+[data-theme="dark"] .onb-lbl-soft { opacity: .92; }
 [data-theme="dark"] .room-ready { background: linear-gradient(135deg, #2b4038, #4a2f42); }
 
 

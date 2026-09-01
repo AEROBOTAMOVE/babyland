@@ -111,7 +111,34 @@
   function прегледай(корен, име) {
     уталожиАнимациите();
     const ел = натискаемите(корен);
-    const кутии = ел.map(e => ({ e, r: кутия(e), рект: e.getBoundingClientRect() }));
+    // 🔴 01.09: уредът четеше САМО кутията на елемента и обявяваше за малки
+    //    неща, на които ОТДАВНА е сложена невидима зона през ::after —
+    //    точно техниката, която самият проект ползва за .brief-x, .ec-del
+    //    и .mdot, за да не се подуват кръгчета и чертички. Тоест пазачът
+    //    викаше вълк за поправено. Пазач, който вика вълк, спира да се чете.
+    //    Сега зоната от ::before/::after се брои като част от целта.
+    const зона = (e) => {
+      let ш = 0, в = 0;
+      for (const пс of ['::before', '::after']) {
+        const cs = getComputedStyle(e, пс);
+        if (!cs || cs.content === 'none' || cs.position === 'static') continue;
+        const w = parseFloat(cs.width), h = parseFloat(cs.height);
+        if (w > ш) ш = w;
+        if (h > в) в = h;
+      }
+      return { ш, в };
+    };
+    const кутии = ел.map(e => {
+      const рект = e.getBoundingClientRect();
+      const z = зона(e);
+      const r = кутия(e);
+      // целта е по-голямата от кутията и невидимата зона
+      const разширен = {
+        width: Math.max(r.width || рект.width, z.ш),
+        height: Math.max(r.height || рект.height, z.в)
+      };
+      return { e, r: разширен, рект, зона: z };
+    });
     const малки = [], залепени = [];
     for (const { e, r, рект } of кутии) {
       const н = надпис(e);
