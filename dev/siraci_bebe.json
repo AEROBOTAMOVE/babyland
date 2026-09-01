@@ -1,0 +1,872 @@
+[
+ {
+  "statia": "lib-70d8bffe",
+  "zaglavie": "Жълтеницата при новороденото: кога е нормално и кога не",
+  "staya": "Моето бебе",
+  "karta": "sn-kolko-4-6",
+  "karta_zaglavie": "Колко спи бебето на 4, 5 и 6 месеца",
+  "karta_staya": "Моето бебе",
+  "tochki": 1.067,
+  "zaeta": true
+ },
+ {
+  "statia": "lib-60721356",
+  "zaglavie": "От пюре към бучки: текстури, венци и напъване срещу задавяне",
+  "staya": "Захранване",
+  "karta": "zh-blw",
+  "karta_zaglavie": "Пюрета или парченца?",
+  "karta_staya": "Захранване",
+  "tochki": 0.914,
+  "zaeta": true
+ },
+ {
+  "statia": "lib-ce380e1f",
+  "zaglavie": "Виси на гърдата и не спи — скок на растежа",
+  "staya": "Моето бебе",
+  "karta": "nm-vecher-iska",
+  "karta_zaglavie": "Вечер иска на всеки час — кластерно кърмене",
+  "karta_staya": "Моето бебе",
+  "tochki": 0.889,
+  "zaeta": true
+ },
+ {
+  "statia": "lib-mod-0029",
+  "zaglavie": "Отвикване от нощните хранения — кога и как",
+  "staya": "Моето бебе",
+  "karta": "mb-otbi-nosht",
+  "karta_zaglavie": "Нощното отбиване",
+  "karta_staya": "Моето бебе",
+  "tochki": 0.8,
+  "zaeta": true
+ },
+ {
+  "statia": "lib-nov-red-na-denya",
+  "zaglavie": "Редът на деня: мляко и чиния, кое преди кое",
+  "staya": "Захранване",
+  "karta": "zh-milk-qty",
+  "karta_zaglavie": "Колко мляко след като започне захранването",
+  "karta_staya": "Захранване",
+  "tochki": 0.8,
+  "zaeta": false
+ },
+ {
+  "statia": "lib-cdc0d92f",
+  "zaglavie": "Сън 0-3: дрямки, нощни събуждания и асоциации",
+  "staya": "Моето бебе",
+  "karta": "lb-regresia-san",
+  "karta_zaglavie": "Регресията на съня (не си виновна ти!)",
+  "karta_staya": "Моето бебе",
+  "tochki": 0.711,
+  "zaeta": true
+ },
+ {
+  "statia": "lib-4a16538a",
+  "zaglavie": "Сън 6-12 месеца, регресии, зъби, сепарационна тревожност и дремки",
+  "staya": "Моето бебе",
+  "karta": "lb-regresia-san",
+  "karta_zaglavie": "Регресията на съня (не си виновна ти!)",
+  "karta_staya": "Моето бебе",
+  "tochki": 0.711,
+  "zaeta": true
+ },
+ {
+  "statia": "lib-nov-povivane",
+  "zaglavie": "Повиването: горе прибрано, долу свободно",
+  "staya": "Моето бебе",
+  "karta": "lb3-povivane",
+  "karta_zaglavie": "„Повивай го стегнато, да са прави крачетата!“",
+  "karta_staya": "Моето бебе",
+  "tochki": 0.711,
+  "zaeta": false
+ },
+ {
+  "statia": "lib-e2490c32",
+  "zaglavie": "Растежът и наддаването: какво казва кантарът и какво не",
+  "staya": "Моето бебе",
+  "karta": "zh-weight",
+  "karta_zaglavie": "Наддава ли достатъчно",
+  "karta_staya": "Захранване",
+  "tochki": 0.667,
+  "zaeta": false
+ },
+ {
+  "statia": "lib-mod-0033",
+  "zaglavie": "Регресията на 18 месеца — малкото упорито човече",
+  "staya": "Моето бебе",
+  "karta": "sn-kolko-7-12",
+  "karta_zaglavie": "Колко спи бебето от 7 месеца до годинката",
+  "karta_staya": "Моето бебе",
+  "tochki": 0.64,
+  "zaeta": true
+ },
+ {
+  "statia": "lib-1adbd232",
+  "zaglavie": "Хранене 12-24 месеца: семейна храна, мляко, захар, междинни хранения",
+  "staya": "Захранване",
+  "karta": "zh-milk-qty",
+  "karta_zaglavie": "Колко мляко след като започне захранването",
+  "karta_staya": "Захранване",
+  "tochki": 0.571,
+  "zaeta": false
+ },
+ {
+  "statia": "lib-4b472141",
+  "zaglavie": "След NICU: какво да следи родителят у дома и кога недоносеното/болното бебе е за лекар",
+  "staya": "Моето бебе",
+  "karta": "nd-doma",
+  "karta_zaglavie": "Недоносеното у дома",
+  "karta_staya": "Моето бебе",
+  "tochki": 0.571,
+  "zaeta": true
+ },
+ {
+  "statia": "lib-6eab9f01",
+  "zaglavie": "Недоносено след изписване: кислород, апнеи, мониторинг, дишане и у дома безопасност",
+  "staya": "Моето бебе",
+  "karta": "nd-doma",
+  "karta_zaglavie": "Недоносеното у дома",
+  "karta_staya": "Моето бебе",
+  "tochki": 0.571,
+  "zaeta": true
+ },
+ {
+  "statia": "lib-nov-evtino",
+  "zaglavie": "Захранване с малко пари",
+  "staya": "Захранване",
+  "karta": "zh-milk-qty",
+  "karta_zaglavie": "Колко мляко след като започне захранването",
+  "karta_staya": "Захранване",
+  "tochki": 0.571,
+  "zaeta": false
+ },
+ {
+  "statia": "lib-zah-plyu",
+  "zaglavie": "Плюе всичко ново: колко пъти се предлага",
+  "staya": "Захранване",
+  "karta": "zh-kolko-pati-opit",
+  "karta_zaglavie": "Опитах веднъж и не го хареса",
+  "karta_staya": "Захранване",
+  "tochki": 0.56,
+  "zaeta": true
+ },
+ {
+  "statia": "lib-4fd97361",
+  "zaglavie": "Адаптираното мляко: приготвяне, шише и честите засечки",
+  "staya": "Моето бебе",
+  "karta": "sn-kolko-4-6",
+  "karta_zaglavie": "Колко спи бебето на 4, 5 и 6 месеца",
+  "karta_staya": "Моето бебе",
+  "tochki": 0.533,
+  "zaeta": true
+ },
+ {
+  "statia": "lib-63d0bf2d",
+  "zaglavie": "Хранене 6-9 месеца: текстури, желязо, алергени и безопасност",
+  "staya": "Захранване",
+  "karta": "zah-koga",
+  "karta_zaglavie": "Кога започваме захранване?",
+  "karta_staya": "Захранване",
+  "tochki": 0.533,
+  "zaeta": true
+ },
+ {
+  "statia": "lib-ca981338",
+  "zaglavie": "Хранене 24-36 месеца: селективност, правила на масата и самостоятелност",
+  "staya": "Захранване",
+  "karta": "lb-med-sol",
+  "karta_zaglavie": "Мед, сол, захар — кога?",
+  "karta_staya": "Захранване",
+  "tochki": 0.533,
+  "zaeta": true
+ },
+ {
+  "statia": "lib-d9f4a3e0",
+  "zaglavie": "Недоносено бебе: НИКУ, проследяване и коригирана възраст",
+  "staya": "Моето бебе",
+  "karta": "sn-kolko-4-6",
+  "karta_zaglavie": "Колко спи бебето на 4, 5 и 6 месеца",
+  "karta_staya": "Моето бебе",
+  "tochki": 0.533,
+  "zaeta": true
+ },
+ {
+  "statia": "lib-7ff401c1",
+  "zaglavie": "Преход от шише към чаша: мляко, сън, зъби и навици",
+  "staya": "Моето бебе",
+  "karta": "sn-kolko-4-6",
+  "karta_zaglavie": "Колко спи бебето на 4, 5 и 6 месеца",
+  "karta_staya": "Моето бебе",
+  "tochki": 0.533,
+  "zaeta": true
+ },
+ {
+  "statia": "lib-20a8649f",
+  "zaglavie": "Сън при малко дете: нощно будене, рутина и граници",
+  "staya": "Моето бебе",
+  "karta": "sn-kolko-4-6",
+  "karta_zaglavie": "Колко спи бебето на 4, 5 и 6 месеца",
+  "karta_staya": "Моето бебе",
+  "tochki": 0.533,
+  "zaeta": true
+ },
+ {
+  "statia": "lib-fcc81c0a",
+  "zaglavie": "Храни, които да се избягват при бебета и малки деца",
+  "staya": "Захранване",
+  "karta": "lb-med-sol",
+  "karta_zaglavie": "Мед, сол, захар — кога?",
+  "karta_staya": "Захранване",
+  "tochki": 0.533,
+  "zaeta": true
+ },
+ {
+  "statia": "lib-eba573d7",
+  "zaglavie": "Растеж, тегло, персентили и кога да се притесняваме",
+  "staya": "Моето бебе",
+  "karta": "sn-kolko-4-6",
+  "karta_zaglavie": "Колко спи бебето на 4, 5 и 6 месеца",
+  "karta_staya": "Моето бебе",
+  "tochki": 0.533,
+  "zaeta": true
+ },
+ {
+  "statia": "lib-7f893ed6",
+  "zaglavie": "Стерилизация на бутилки, биберони, помпа и залъгалки",
+  "staya": "Моето бебе",
+  "karta": "sn-kolko-4-6",
+  "karta_zaglavie": "Колко спи бебето на 4, 5 и 6 месеца",
+  "karta_staya": "Моето бебе",
+  "tochki": 0.533,
+  "zaeta": true
+ },
+ {
+  "statia": "lib-9c637089",
+  "zaglavie": "Сън 3-6 месеца, рутина, дневни дремки и нощни хранения",
+  "staya": "Моето бебе",
+  "karta": "lb-regresia-san",
+  "karta_zaglavie": "Регресията на съня (не си виновна ти!)",
+  "karta_staya": "Моето бебе",
+  "tochki": 0.533,
+  "zaeta": true
+ },
+ {
+  "statia": "lib-97d16f0d",
+  "zaglavie": "Сън 24-36 месеца, страхове, протакане и преход към легло",
+  "staya": "Моето бебе",
+  "karta": "sn-kolko-4-6",
+  "karta_zaglavie": "Колко спи бебето на 4, 5 и 6 месеца",
+  "karta_staya": "Моето бебе",
+  "tochki": 0.533,
+  "zaeta": true
+ },
+ {
+  "statia": "lib-1513eb78",
+  "zaglavie": "Кърмене: болки в зърната, рагади, кандидоза, грешно засукване и кога да се търси помощ",
+  "staya": "Моето бебе",
+  "karta": "mb-zahapva",
+  "karta_zaglavie": "Бебето хапе, докато кърми",
+  "karta_staya": "Моето бебе",
+  "tochki": 0.533,
+  "zaeta": false
+ },
+ {
+  "statia": "lib-f42f3f4c",
+  "zaglavie": "Смесено хранене: дохранване, адаптирано мляко, шише, вина и план за запазване на кърменето",
+  "staya": "Моето бебе",
+  "karta": "lb3-bira",
+  "karta_zaglavie": "„Пий по една бира — прави мляко!“",
+  "karta_staya": "Моето бебе",
+  "tochki": 0.533,
+  "zaeta": false
+ },
+ {
+  "statia": "lib-665208e6",
+  "zaglavie": "Неонаталният скрининг и редките болести",
+  "staya": "Моето бебе",
+  "karta": "sn-kolko-0-3",
+  "karta_zaglavie": "Колко спи бебето от раждането до 3 месеца",
+  "karta_staya": "Моето бебе",
+  "tochki": 0.533,
+  "zaeta": true
+ },
+ {
+  "statia": "lib-296c5027",
+  "zaglavie": "Захранване по метода BLW: как минава първата седмица",
+  "staya": "Захранване",
+  "karta": "zah-koga",
+  "karta_zaglavie": "Кога започваме захранване?",
+  "karta_staya": "Захранване",
+  "tochki": 0.533,
+  "zaeta": true
+ },
+ {
+  "statia": "lib-36485aab",
+  "zaglavie": "Отказва да яде: практическото, не паниката",
+  "staya": "Захранване",
+  "karta": "zah-parvo",
+  "karta_zaglavie": "С какво да започнем?",
+  "karta_staya": "Захранване",
+  "tochki": 0.533,
+  "zaeta": true
+ },
+ {
+  "statia": "lib-mod-0030",
+  "zaglavie": "Буди се в 5 сутринта — какво да пробваш",
+  "staya": "Моето бебе",
+  "karta": "sn-ranno-sabuzhdane",
+  "karta_zaglavie": "Буди се в 5 сутринта",
+  "karta_staya": "Моето бебе",
+  "tochki": 0.533,
+  "zaeta": true
+ },
+ {
+  "statia": "lib-mod-0031",
+  "zaglavie": "Регресията на 8-10 месеца — пълзи, значи не спи",
+  "staya": "Моето бебе",
+  "karta": "sn-kolko-0-3",
+  "karta_zaglavie": "Колко спи бебето от раждането до 3 месеца",
+  "karta_staya": "Моето бебе",
+  "tochki": 0.533,
+  "zaeta": true
+ },
+ {
+  "statia": "lib-b41c7e6a",
+  "zaglavie": "Прииждането на млякото (нагрубяване ден 3-5) — какво помага",
+  "staya": "Моето бебе",
+  "karta": "mb-zahapva",
+  "karta_zaglavie": "Бебето хапе, докато кърми",
+  "karta_staya": "Моето бебе",
+  "tochki": 0.533,
+  "zaeta": false
+ },
+ {
+  "statia": "lib-nov-origvane",
+  "zaglavie": "Оригването: трите положения и какво, ако не се оригне",
+  "staya": "Моето бебе",
+  "karta": "sn-kolko-1-3g",
+  "karta_zaglavie": "Колко спи детето от годинката до 3 години",
+  "karta_staya": "Моето бебе",
+  "tochki": 0.533,
+  "zaeta": true
+ },
+ {
+  "statia": "lib-a406fb9e",
+  "zaglavie": "Сънят на бебето: безопасност и кога се пита лекар",
+  "staya": "Моето бебе",
+  "karta": "zd-son2",
+  "karta_zaglavie": "Сънят на бебето",
+  "karta_staya": "Здраве и SOS",
+  "tochki": 0.5,
+  "zaeta": false
+ },
+ {
+  "statia": "lib-19a29f30",
+  "zaglavie": "Екрани, YouTube, телефон и таблет при бебе/дете 0-3",
+  "staya": "Моето бебе",
+  "karta": "rz-ekran",
+  "karta_zaglavie": "Екраните",
+  "karta_staya": "Развитие и игри",
+  "tochki": 0.5,
+  "zaeta": true
+ },
+ {
+  "statia": "lib-mod-0019",
+  "zaglavie": "Днес не яде нищо (и утре пак)",
+  "staya": "Захранване",
+  "karta": "zh-priderliv",
+  "karta_zaglavie": "Придирливото дете — фазата, която подлудява",
+  "karta_staya": "Захранване",
+  "tochki": 0.492,
+  "zaeta": true
+ },
+ {
+  "statia": "lib-47ee8b4c",
+  "zaglavie": "Кърма, формула и смесено хранене — без вина и без натиск",
+  "staya": "Моето бебе",
+  "karta": "nd-hrani",
+  "karta_zaglavie": "Храненето на недоносеното",
+  "karta_staya": "Моето бебе",
+  "tochki": 0.48,
+  "zaeta": true
+ },
+ {
+  "statia": "lib-mod-0024",
+  "zaglavie": "Семейната маса — най-силният ти инструмент",
+  "staya": "Захранване",
+  "karta": "zh-obshta-masa",
+  "karta_zaglavie": "Кога сяда на масата с нас",
+  "karta_staya": "Захранване",
+  "tochki": 0.471,
+  "zaeta": true
+ },
+ {
+  "statia": "lib-c2e6e1d8",
+  "zaglavie": "Формула, непоносимост, алергия към белтъка на кравето мляко и митове за лактоза",
+  "staya": "Моето бебе",
+  "karta": "zh-laktoza",
+  "karta_zaglavie": "Лактоза или алергия към кравето мляко",
+  "karta_staya": "Захранване",
+  "tochki": 0.462,
+  "zaeta": true
+ },
+ {
+  "statia": "lib-46cf78e7",
+  "zaglavie": "Дете 1-3 не пие вода: сокове, чайове, навици и хидратация",
+  "staya": "Захранване",
+  "karta": "zh-voda",
+  "karta_zaglavie": "Кога да пие вода",
+  "karta_staya": "Захранване",
+  "tochki": 0.457,
+  "zaeta": true
+ },
+ {
+  "statia": "lib-f1acbe97",
+  "zaglavie": "Изтощеният родител: сън, психика и двойката",
+  "staya": "Моето бебе",
+  "karta": "sn-3-noshtta",
+  "karta_zaglavie": "Три през нощта и нищо не помага",
+  "karta_staya": "Моето бебе",
+  "tochki": 0.457,
+  "zaeta": true
+ },
+ {
+  "statia": "lib-45209867",
+  "zaglavie": "Новородено: дишане, грухтене, посиняване, шумно дишане и сърдечни червени флагове",
+  "staya": "Моето бебе",
+  "karta": "rz-gukane",
+  "karta_zaglavie": "Бебето не гука",
+  "karta_staya": "Моето бебе",
+  "tochki": 0.457,
+  "zaeta": true
+ },
+ {
+  "statia": "lib-b5bcbd6a",
+  "zaglavie": "Как да четеш етикет на бебешка храна",
+  "staya": "Захранване",
+  "karta": "zh-parvo",
+  "karta_zaglavie": "С какво се започва",
+  "karta_staya": "Захранване",
+  "tochki": 0.436,
+  "zaeta": true
+ },
+ {
+  "statia": "lib-584aeb6a",
+  "zaglavie": "Витамин D, желязо и добавки при бебе/дете",
+  "staya": "Захранване",
+  "karta": "br-vitamini",
+  "karta_zaglavie": "Витамините — кое наистина трябва",
+  "karta_staya": "Бременност",
+  "tochki": 0.429,
+  "zaeta": true
+ },
+ {
+  "statia": "lib-nov-chuzhdi-ratse",
+  "zaglavie": "Бабата вече му даде",
+  "staya": "Захранване",
+  "karta": "rz-sravnenie",
+  "karta_zaglavie": "Детето на съседката вече…",
+  "karta_staya": "Развитие и игри",
+  "tochki": 0.429,
+  "zaeta": true
+ },
+ {
+  "statia": "lib-mod-0027",
+  "zaglavie": "Приспиване без „остави го да плаче“",
+  "staya": "Моето бебе",
+  "karta": "nm-noshtnite-sabuzhdan",
+  "karta_zaglavie": "Нощните събуждания след 6 месеца",
+  "karta_staya": "Моето бебе",
+  "tochki": 0.427,
+  "zaeta": true
+ },
+ {
+  "statia": "lib-fff3f698",
+  "zaglavie": "Скрининги при новородено: слух, метаболитни състояния и родителски маршрут",
+  "staya": "Моето бебе",
+  "karta": "lb-skrining",
+  "karta_zaglavie": "Скринингите на новороденото (какво е това боцкане)",
+  "karta_staya": "Моето бебе",
+  "tochki": 0.4,
+  "zaeta": true
+ },
+ {
+  "statia": "lib-3f729e32",
+  "zaglavie": "В НИКУ: кенгуру-грижа, мляко и пътят до вкъщи",
+  "staya": "Моето бебе",
+  "karta": "nd-what",
+  "karta_zaglavie": "Недоносеното бебе",
+  "karta_staya": "Моето бебе",
+  "tochki": 0.4,
+  "zaeta": true
+ },
+ {
+  "statia": "lib-b3af7186",
+  "zaglavie": "Първи зъби, миене, паста с флуор, захар, шише и кариес",
+  "staya": "Моето бебе",
+  "karta": "lb-parvi-zabi",
+  "karta_zaglavie": "Първите зъбки се мият от ПЪРВИЯ ден",
+  "karta_staya": "Здраве и SOS",
+  "tochki": 0.385,
+  "zaeta": true
+ },
+ {
+  "statia": "lib-2618e509",
+  "zaglavie": "Алергия към белтъка на кравето мляко (АБКМ)",
+  "staya": "Моето бебе",
+  "karta": "zh-laktoza",
+  "karta_zaglavie": "Лактоза или алергия към кравето мляко",
+  "karta_staya": "Захранване",
+  "tochki": 0.385,
+  "zaeta": true
+ },
+ {
+  "statia": "lib-2ec5e4f7",
+  "zaglavie": "Преминаване от кърма към формула, смесено хранене и отказ от шише",
+  "staya": "Моето бебе",
+  "karta": "ema-hrana",
+  "karta_zaglavie": "Какво да пробвам за храненето?",
+  "karta_staya": "Лабораторията",
+  "tochki": 0.375,
+  "zaeta": true
+ },
+ {
+  "statia": "lib-mod-0021",
+  "zaglavie": "Хапката пред екрана — защо не",
+  "staya": "Захранване",
+  "karta": "rz-ekran",
+  "karta_zaglavie": "Екраните",
+  "karta_staya": "Развитие и игри",
+  "tochki": 0.357,
+  "zaeta": true
+ },
+ {
+  "statia": "lib-2e84d651",
+  "zaglavie": "Кърменето: честно за проблемите и какво помага",
+  "staya": "Моето бебе",
+  "karta": "lb3-bira",
+  "karta_zaglavie": "„Пий по една бира — прави мляко!“",
+  "karta_staya": "Моето бебе",
+  "tochki": 0.356,
+  "zaeta": false
+ },
+ {
+  "statia": "lib-4ce1515c",
+  "zaglavie": "Кошмари, нощни страхове и нощно ходене при малки деца",
+  "staya": "Моето бебе",
+  "karta": "lb-regresia-san",
+  "karta_zaglavie": "Регресията на съня (не си виновна ти!)",
+  "karta_staya": "Моето бебе",
+  "tochki": 0.356,
+  "zaeta": true
+ },
+ {
+  "statia": "lib-d833bed8",
+  "zaglavie": "Вродено сърдечно: хранене, дишане, растеж и червените флагове",
+  "staya": "Захранване",
+  "karta": "zh-jelezo",
+  "karta_zaglavie": "Желязото — защо всички говорят за него",
+  "karta_staya": "Захранване",
+  "tochki": 0.356,
+  "zaeta": true
+ },
+ {
+  "statia": "lib-93bac0f0",
+  "zaglavie": "Кърменето: най-задаваните въпроси и къде има подкрепа",
+  "staya": "Моето бебе",
+  "karta": "lb3-bira",
+  "karta_zaglavie": "„Пий по една бира — прави мляко!“",
+  "karta_staya": "Моето бебе",
+  "tochki": 0.356,
+  "zaeta": false
+ },
+ {
+  "statia": "lib-31ca8eb9",
+  "zaglavie": "Храна навън: какво да носиш в ресторант и на гости",
+  "staya": "Захранване",
+  "karta": "zh-na-pat-hrana",
+  "karta_zaglavie": "Хранене на път и навън",
+  "karta_staya": "Захранване",
+  "tochki": 0.356,
+  "zaeta": true
+ },
+ {
+  "statia": "lib-mod-0023",
+  "zaglavie": "Навън с малко дете — оцеляване на масата",
+  "staya": "Захранване",
+  "karta": "zh-na-pat-hrana",
+  "karta_zaglavie": "Хранене на път и навън",
+  "karta_staya": "Захранване",
+  "tochki": 0.356,
+  "zaeta": true
+ },
+ {
+  "statia": "lib-1f5ff46b",
+  "zaglavie": "Новородено трепери, стряска се, тресе брадичка: нормален рефлекс срещу риск",
+  "staya": "Моето бебе",
+  "karta": "lb2-treperene",
+  "karta_zaglavie": "Трепереща брадичка и стряскане — нормално ли е?",
+  "karta_staya": "Здраве и SOS",
+  "tochki": 0.35,
+  "zaeta": true
+ },
+ {
+  "statia": "lib-rit-den",
+  "zaglavie": "Ритъмът на деня: как изглежда по възрасти",
+  "staya": "Моето бебе",
+  "karta": "mb5-driamki",
+  "karta_zaglavie": "Дневните дремки: колко и докога",
+  "karta_staya": "Моето бебе",
+  "tochki": 0.337,
+  "zaeta": true
+ },
+ {
+  "statia": "lib-9f01de2c",
+  "zaglavie": "Ниско тегло при раждане: растеж, хранене и проследяване",
+  "staya": "Моето бебе",
+  "karta": "ema-razlichno",
+  "karta_zaglavie": "„Всяко бебе е различно“",
+  "karta_staya": "Лабораторията",
+  "tochki": 0.333,
+  "zaeta": true
+ },
+ {
+  "statia": "lib-a735ab15",
+  "zaglavie": "Повръщане и обезводняване: кога храненето става тревога",
+  "staya": "Захранване",
+  "karta": "bz-hrani",
+  "karta_zaglavie": "Храненето на близнаци",
+  "karta_staya": "Захранване",
+  "tochki": 0.32,
+  "zaeta": true
+ },
+ {
+  "statia": "lib-95d743fb",
+  "zaglavie": "Бурканчета, паучове, домашна храна, етикети, сол/захар и хигиена",
+  "staya": "Захранване",
+  "karta": "zh-himia",
+  "karta_zaglavie": "Бурканчета или домашно",
+  "karta_staya": "Захранване",
+  "tochki": 0.32,
+  "zaeta": true
+ },
+ {
+  "statia": "lib-6e3e4ac8",
+  "zaglavie": "Недоносено/NICU: кожа-до-кожа, кенгуру грижа, температура и безопасна позиция",
+  "staya": "Моето бебе",
+  "karta": "mb-intim-lekar",
+  "karta_zaglavie": "Кога интимната грижа е за педиатър",
+  "karta_staya": "Моето бебе",
+  "tochki": 0.32,
+  "zaeta": false
+ },
+ {
+  "statia": "lib-fcda80c8",
+  "zaglavie": "Гости при новородено, целувки, хигиена и семейни граници",
+  "staya": "Моето бебе",
+  "karta": "mb-navyn",
+  "karta_zaglavie": "Кога навън с новороденото",
+  "karta_staya": "Моето бебе",
+  "tochki": 0.291,
+  "zaeta": true
+ },
+ {
+  "statia": "lib-4a0c334a",
+  "zaglavie": "Кога апетитът „пораства“ с новите умения",
+  "staya": "Захранване",
+  "karta": "rz-prohojdane",
+  "karta_zaglavie": "Кога ще проходи?",
+  "karta_staya": "Развитие и игри",
+  "tochki": 0.286,
+  "zaeta": true
+ },
+ {
+  "statia": "lib-748c8915",
+  "zaglavie": "Първите 30 дни: какво наблюдаваме у новороденото",
+  "staya": "Моето бебе",
+  "karta": "lb-skrining",
+  "karta_zaglavie": "Скринингите на новороденото (какво е това боцкане)",
+  "karta_staya": "Моето бебе",
+  "tochki": 0.267,
+  "zaeta": true
+ },
+ {
+  "statia": "lib-fdee24e7",
+  "zaglavie": "Бронхиолит: тежест, хранене, дишане и наблюдение 0-2",
+  "staya": "Захранване",
+  "karta": "zh-kolko-trae",
+  "karta_zaglavie": "Колко трае едно хранене",
+  "karta_staya": "Захранване",
+  "tochki": 0.267,
+  "zaeta": true
+ },
+ {
+  "statia": "lib-951912fd",
+  "zaglavie": "Вродени сърдечни проблеми: посиняване, шум, умора при хранене, новородено",
+  "staya": "Моето бебе",
+  "karta": "sn-kolko-0-3",
+  "karta_zaglavie": "Колко спи бебето от раждането до 3 месеца",
+  "karta_staya": "Моето бебе",
+  "tochki": 0.267,
+  "zaeta": true
+ },
+ {
+  "statia": "lib-5f878ca5",
+  "zaglavie": "Недоспиване на родителя, нощно хранене и план за безопасност",
+  "staya": "Моето бебе",
+  "karta": "sn-budene-za-hranene",
+  "karta_zaglavie": "Да го будя ли за ядене през нощта",
+  "karta_staya": "Моето бебе",
+  "tochki": 0.267,
+  "zaeta": true
+ },
+ {
+  "statia": "lib-c285ca42",
+  "zaglavie": "Новородено: акане, урина, мекониум, бледи изпражнения, кръв и диария",
+  "staya": "Моето бебе",
+  "karta": "sn-kolko-0-3",
+  "karta_zaglavie": "Колко спи бебето от раждането до 3 месеца",
+  "karta_staya": "Моето бебе",
+  "tochki": 0.267,
+  "zaeta": true
+ },
+ {
+  "statia": "lib-3bf27555",
+  "zaglavie": "Порциите: колкото шепа, не колкото чиния",
+  "staya": "Захранване",
+  "karta": "zh-weight",
+  "karta_zaglavie": "Наддава ли достатъчно",
+  "karta_staya": "Захранване",
+  "tochki": 0.267,
+  "zaeta": false
+ },
+ {
+  "statia": "lib-622f50cf",
+  "zaglavie": "Апетитът скача и спада — растежните вълни",
+  "staya": "Захранване",
+  "karta": "zah-koga",
+  "karta_zaglavie": "Кога започваме захранване?",
+  "karta_staya": "Захранване",
+  "tochki": 0.267,
+  "zaeta": true
+ },
+ {
+  "statia": "lib-20ad16e5",
+  "zaglavie": "Защо бебето свали от теглото веднага след раждането",
+  "staya": "Моето бебе",
+  "karta": "sn-kolko-0-3",
+  "karta_zaglavie": "Колко спи бебето от раждането до 3 месеца",
+  "karta_staya": "Моето бебе",
+  "tochki": 0.267,
+  "zaeta": true
+ },
+ {
+  "statia": "lib-d4bbca7e",
+  "zaglavie": "Персентилът, кривата и кога тревогата за теглото е основателна",
+  "staya": "Моето бебе",
+  "karta": "mb-rastej",
+  "karta_zaglavie": "Как да разбера дали расте добре?",
+  "karta_staya": "Моето бебе",
+  "tochki": 0.267,
+  "zaeta": true
+ },
+ {
+  "statia": "lib-mod-0022",
+  "zaglavie": "Био или реалност — какво наистина има значение",
+  "staya": "Захранване",
+  "karta": "zah-parvo",
+  "karta_zaglavie": "С какво да започнем?",
+  "karta_staya": "Захранване",
+  "tochki": 0.267,
+  "zaeta": true
+ },
+ {
+  "statia": "lib-20a5a000",
+  "zaglavie": "Към кого се обръщаш, когато кърменето заяде",
+  "staya": "Моето бебе",
+  "karta": "rz-obrashtane",
+  "karta_zaglavie": "Кога се обръща",
+  "karta_staya": "Развитие и игри",
+  "tochki": 0.25,
+  "zaeta": true
+ },
+ {
+  "statia": "lib-4cf38c06",
+  "zaglavie": "Къса юздичка на езика: щракане, лошо засукване, болки в зърната и тегло",
+  "staya": "Моето бебе",
+  "karta": "lb-boli-kurmene",
+  "karta_zaglavie": "Кърменето боли — нормално ли е?",
+  "karta_staya": "Моето бебе",
+  "tochki": 0.242,
+  "zaeta": true
+ },
+ {
+  "statia": "lib-fcfc0bf6",
+  "zaglavie": "Пилорна стеноза: повръщане на фонтан при кърмаче",
+  "staya": "Моето бебе",
+  "karta": "lb2-plyene",
+  "karta_zaglavie": "Плюе след хранене — това рефлукс ли е?",
+  "karta_staya": "Моето бебе",
+  "tochki": 0.229,
+  "zaeta": true
+ },
+ {
+  "statia": "lib-ce4f57d7",
+  "zaglavie": "Първите седмици: колики, сън, хранене и най-честите страхове",
+  "staya": "Моето бебе",
+  "karta": "rz-gukane",
+  "karta_zaglavie": "Бебето не гука",
+  "karta_staya": "Моето бебе",
+  "tochki": 0.229,
+  "zaeta": true
+ },
+ {
+  "statia": "lib-0b9ccecc",
+  "zaglavie": "Млечница/кандидоза в устата при бебе: разпознаване, хранене и хигиена",
+  "staya": "Моето бебе",
+  "karta": "mb-plach-vidove",
+  "karta_zaglavie": "Различните плачове",
+  "karta_staya": "Моето бебе",
+  "tochki": 0.229,
+  "zaeta": true
+ },
+ {
+  "statia": "lib-7204d6aa",
+  "zaglavie": "Методите за приспиване: сравнение без присъда",
+  "staya": "Моето бебе",
+  "karta": "sn-zaspivane-samo",
+  "karta_zaglavie": "Как да заспива само — какви пътища има",
+  "karta_staya": "Моето бебе",
+  "tochki": 0.2,
+  "zaeta": true
+ },
+ {
+  "statia": "lib-900cf794",
+  "zaglavie": "Консултанти и програми за сън: на какво да гледаш, преди да тръгнеш",
+  "staya": "Моето бебе",
+  "karta": "lb-regresia-san",
+  "karta_zaglavie": "Регресията на съня (не си виновна ти!)",
+  "karta_staya": "Моето бебе",
+  "tochki": 0.178,
+  "zaeta": true
+ },
+ {
+  "statia": "lib-ad0299d2",
+  "zaglavie": "Хъркане, дишане през уста, трета сливица и сънна апнея при малко дете",
+  "staya": "Моето бебе",
+  "karta": "mb5-driamki",
+  "karta_zaglavie": "Дневните дремки: колко и докога",
+  "karta_staya": "Моето бебе",
+  "tochki": 0.168,
+  "zaeta": true
+ },
+ {
+  "statia": "lib-36e46237",
+  "zaglavie": "Пластмаси, шишета, кутии и материали в контакт с храни: бебешка безопасност",
+  "staya": "Моето бебе",
+  "karta": "lb-med-sol",
+  "karta_zaglavie": "Мед, сол, захар — кога?",
+  "karta_staya": "Захранване",
+  "tochki": 0.167,
+  "zaeta": true
+ }
+]

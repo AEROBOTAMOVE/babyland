@@ -123,7 +123,14 @@ function безКоментари(s) {
   паднали += увис.length;
 
   const инд = new Set(JSON.parse(fs.readFileSync('lib/index.json', 'utf8')).items.map(x => x.id));
-  const libs = [...s.matchAll(/lib:\s*['"]([^'"]+)['"]/g)].map(m => m[1]);
+  // 🪤 26.08: полето lib вече може да е и СПИСЪК. Старият израз четеше само
+  //    единичния низ — масивите щяха да са НЕВИДИМИ за този пазач и счупена
+  //    препратка вътре в масив нямаше да гръмне НИКОГА. Пазач, който не вижда
+  //    новия вид на данните, е по-опасен от липсващ: той твърди, че е чисто.
+  const libs = [];
+  for (const m of s.matchAll(/lib:\s*\[([^\]]*)\]/g))
+    for (const x of m[1].matchAll(/['"]([^'"]+)['"]/g)) libs.push(x[1]);
+  for (const m of s.matchAll(/lib:\s*['"]([^'"]+)['"]/g)) libs.push(m[1]);
   const сч = libs.filter(l => !инд.has(l));
   редове.push((сч.length ? '🔴' : '✅') + ' библиотека  ' + libs.length
     + ' препратки · счупени ' + сч.length + (сч.length ? ': ' + сч.slice(0, 6).join(', ') : ''));

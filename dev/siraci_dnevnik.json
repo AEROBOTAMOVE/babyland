@@ -1,0 +1,592 @@
+[
+ {
+  "statia": "lib-5df0e6f6",
+  "zaglavie": "Перинеални разкъсвания, епизиотомия, шевове, болка и тазово дъно след раждане",
+  "staya": "Дневник на мама",
+  "karta": "dn-telo-posle",
+  "karta_zaglavie": "Тялото се възстановява",
+  "karta_staya": "Дневник на мама",
+  "tochki": 0.747,
+  "zaeta": true
+ },
+ {
+  "statia": "lib-zhm-depresia",
+  "zaglavie": "Следродилна депресия и тревожност — не е слабост и не е твоя вина",
+  "staya": "Жената в мен",
+  "karta": "nw-beybi-blus",
+  "karta_zaglavie": "Бейби блус или следродилна депресия",
+  "karta_staya": "Жената в мен",
+  "tochki": 0.72,
+  "zaeta": true
+ },
+ {
+  "statia": "lib-nov-sun-mama",
+  "zaglavie": "Сънят ти е на парчета — как се краде час",
+  "staya": "Жената в мен",
+  "karta": "nia-prijatelki",
+  "karta_zaglavie": "Приятелките ми изчезнаха",
+  "karta_staya": "Жената в мен",
+  "tochki": 0.711,
+  "zaeta": true
+ },
+ {
+  "statia": "lib-949bdc00",
+  "zaglavie": "Психиката след раждане: тъга, депресия, натрапливи мисли, психоза",
+  "staya": "Дневник на мама",
+  "karta": "dn-tatko-depresia",
+  "karta_zaglavie": "И бащите преживяват следродилно",
+  "karta_staya": "Дневник на мама",
+  "tochki": 0.615,
+  "zaeta": false
+ },
+ {
+  "statia": "lib-11f426d8",
+  "zaglavie": "Бащата и партньорът след раждането: кой какво поема",
+  "staya": "Дневник на мама",
+  "karta": "dn-tatko-depresia",
+  "karta_zaglavie": "И бащите преживяват следродилно",
+  "karta_staya": "Дневник на мама",
+  "tochki": 0.615,
+  "zaeta": false
+ },
+ {
+  "statia": "lib-745c9bce",
+  "zaglavie": "Репродуктивно и сексуално здраве: семейно планиране, контрацепция след раждане, инфекции, интимност след бебе",
+  "staya": "Дневник на мама",
+  "karta": "nia-zdrave",
+  "karta_zaglavie": "Това е за Вита, не за мен",
+  "karta_staya": "Жената в мен",
+  "tochki": 0.6,
+  "zaeta": true
+ },
+ {
+  "statia": "lib-dcff7950",
+  "zaglavie": "След секцио: раната, болката, движението и възстановяването",
+  "staya": "Дневник на мама",
+  "karta": "mm-sechenie",
+  "karta_zaglavie": "Възстановяване след цезарово",
+  "karta_staya": "Здраве и SOS",
+  "tochki": 0.556,
+  "zaeta": false
+ },
+ {
+  "statia": "lib-984a6220",
+  "zaglavie": "Сравняването с други майки",
+  "staya": "Жената в мен",
+  "karta": "dn-sravnenie",
+  "karta_zaglavie": "Другите майки изглеждат по-добре",
+  "karta_staya": "Дневник на мама",
+  "tochki": 0.556,
+  "zaeta": true
+ },
+ {
+  "statia": "lib-0d185a32",
+  "zaglavie": "Вината, постоянният спътник",
+  "staya": "Жената в мен",
+  "karta": "nia-vina",
+  "karta_zaglavie": "Чувствам се виновна, че искам да съм сама",
+  "karta_staya": "Жената в мен",
+  "tochki": 0.5,
+  "zaeta": true
+ },
+ {
+  "statia": "lib-40a74399",
+  "zaglavie": "Менструацията се върна",
+  "staya": "Жената в мен",
+  "karta": "nw-karmeneto-predpazva",
+  "karta_zaglavie": "Кърменето не е предпазване",
+  "karta_staya": "Жената в мен",
+  "tochki": 0.5,
+  "zaeta": true
+ },
+ {
+  "statia": "lib-c60db8de",
+  "zaglavie": "Радостта да си сама — и срамът",
+  "staya": "Жената в мен",
+  "karta": "nia-vina",
+  "karta_zaglavie": "Чувствам се виновна, че искам да съм сама",
+  "karta_staya": "Жената в мен",
+  "tochki": 0.5,
+  "zaeta": true
+ },
+ {
+  "statia": "lib-vt-podgotovka",
+  "zaglavie": "Преди второто: как се подготвя голямото дете",
+  "staya": "Дневник на мама",
+  "karta": "lb2-revnost",
+  "karta_zaglavie": "Ревността от новото бебе",
+  "karta_staya": "Развитие и игри",
+  "tochki": 0.5,
+  "zaeta": true
+ },
+ {
+  "statia": "lib-21a1bc11",
+  "zaglavie": "Партньорът, бащата, бабите и дядовците: подкрепа и граници",
+  "staya": "Дневник на мама",
+  "karta": "dn-tatko-depresia",
+  "karta_zaglavie": "И бащите преживяват следродилно",
+  "karta_staya": "Дневник на мама",
+  "tochki": 0.492,
+  "zaeta": false
+ },
+ {
+  "statia": "lib-932fd138",
+  "zaglavie": "Близостта с партньора след бебе",
+  "staya": "Жената в мен",
+  "karta": "nia-libido",
+  "karta_zaglavie": "Желанието изчезна някъде",
+  "karta_staya": "Жената в мен",
+  "tochki": 0.471,
+  "zaeta": true
+ },
+ {
+  "statia": "lib-d25ca13b",
+  "zaglavie": "Да поискаш помощ не е слабост",
+  "staya": "Жената в мен",
+  "karta": "nia-tovar-predavane",
+  "karta_zaglavie": "Как се предава невидимото",
+  "karta_staya": "Жената в мен",
+  "tochki": 0.444,
+  "zaeta": true
+ },
+ {
+  "statia": "lib-vt-parva-sreshta",
+  "zaglavie": "Две деца, един ден: как изглежда първият месец",
+  "staya": "Дневник на мама",
+  "karta": "bz-what",
+  "karta_zaglavie": "Близнаци: оцеляването е успех",
+  "karta_staya": "Моето бебе",
+  "tochki": 0.429,
+  "zaeta": true
+ },
+ {
+  "statia": "lib-4de59f2b",
+  "zaglavie": "След раждане: кървене, тяло, шевове и червени флагове",
+  "staya": "Дневник на мама",
+  "karta": "dn-telo-posle",
+  "karta_zaglavie": "Тялото се възстановява",
+  "karta_staya": "Дневник на мама",
+  "tochki": 0.427,
+  "zaeta": true
+ },
+ {
+  "statia": "lib-5addf4ce",
+  "zaglavie": "Майката след раждане - кървене, болка, настроение, тазово дъно, кога да търси помощ",
+  "staya": "Дневник на мама",
+  "karta": "zg-tialoto",
+  "karta_zaglavie": "Тялото ти сега",
+  "karta_staya": "Дневник на мама",
+  "tochki": 0.427,
+  "zaeta": false
+ },
+ {
+  "statia": "lib-30938319",
+  "zaglavie": "Тяло, интимност, либидо и връзка след раждане",
+  "staya": "Дневник на мама",
+  "karta": "dn-telo-posle",
+  "karta_zaglavie": "Тялото се възстановява",
+  "karta_staya": "Дневник на мама",
+  "tochki": 0.427,
+  "zaeta": true
+ },
+ {
+  "statia": "lib-nov-lekar-sama",
+  "zaglavie": "Трябва ми лекар за мен, а няма с кого да оставя бебето",
+  "staya": "Жената в мен",
+  "karta": "nia-moqt-red",
+  "karta_zaglavie": "Твоят ред все го няма",
+  "karta_staya": "Жената в мен",
+  "tochki": 0.421,
+  "zaeta": true
+ },
+ {
+  "statia": "lib-c997fb6b",
+  "zaglavie": "Самотата в пълна къща",
+  "staya": "Жената в мен",
+  "karta": "dn-samota",
+  "karta_zaglavie": "Самотата в майчинството",
+  "karta_staya": "Дневник на мама",
+  "tochki": 0.417,
+  "zaeta": true
+ },
+ {
+  "statia": "lib-e90620b9",
+  "zaglavie": "След раждане: прегледът, тазовото дъно, сексът и контрацепцията",
+  "staya": "Дневник на мама",
+  "karta": "nia-zdrave",
+  "karta_zaglavie": "Това е за Вита, не за мен",
+  "karta_staya": "Жената в мен",
+  "tochki": 0.4,
+  "zaeta": true
+ },
+ {
+  "statia": "lib-48c85937",
+  "zaglavie": "Ти преди бебето не е изчезнала",
+  "staya": "Дневник на мама",
+  "karta": "nia-bremenna-za-men",
+  "karta_zaglavie": "Аз още чакам — тази стая моя ли е?",
+  "karta_staya": "Жената в мен",
+  "tochki": 0.4,
+  "zaeta": true
+ },
+ {
+  "statia": "lib-mod-0045",
+  "zaglavie": "Двамата, след като станахте трима",
+  "staya": "Жената в мен",
+  "karta": "br-partniore",
+  "karta_zaglavie": "Той не го усеща като теб",
+  "karta_staya": "Бременност",
+  "tochki": 0.4,
+  "zaeta": false
+ },
+ {
+  "statia": "lib-dv-ne-vijda",
+  "zaglavie": "Той не вижда какво има за вършене",
+  "staya": "Жената в мен",
+  "karta": "br-partniore",
+  "karta_zaglavie": "Той не го усеща като теб",
+  "karta_staya": "Бременност",
+  "tochki": 0.4,
+  "zaeta": false
+ },
+ {
+  "statia": "lib-d30a25b0",
+  "zaglavie": "Следродилно физическо проследяване: кръвно, анемия, щитовидна жлеза, диабет",
+  "staya": "Дневник на мама",
+  "karta": "dn-tatko-depresia",
+  "karta_zaglavie": "И бащите преживяват следродилно",
+  "karta_staya": "Дневник на мама",
+  "tochki": 0.369,
+  "zaeta": false
+ },
+ {
+  "statia": "lib-e13bbec3",
+  "zaglavie": "След НИКУ: тревожността и вината, които остават у мама",
+  "staya": "Дневник на мама",
+  "karta": "dn-tatko-depresia",
+  "karta_zaglavie": "И бащите преживяват следродилно",
+  "karta_staya": "Дневник на мама",
+  "tochki": 0.369,
+  "zaeta": false
+ },
+ {
+  "statia": "lib-dv-skarvane",
+  "zaglavie": "Скарването пред детето: какво вижда то и какво се прави после",
+  "staya": "Жената в мен",
+  "karta": "nia-partnior",
+  "karta_zaglavie": "Той не ме вижда вече",
+  "karta_staya": "Жената в мен",
+  "tochki": 0.369,
+  "zaeta": true
+ },
+ {
+  "statia": "lib-53c17f45",
+  "zaglavie": "Съсиреци, сепсис и кървене след раждане: кога не се чака",
+  "staya": "Дневник на мама",
+  "karta": "mm-lohia",
+  "karta_zaglavie": "Кървенето след раждане",
+  "karta_staya": "Здраве и SOS",
+  "tochki": 0.357,
+  "zaeta": false
+ },
+ {
+  "statia": "lib-7ae686c4",
+  "zaglavie": "Загубата на спонтанност",
+  "staya": "Жената в мен",
+  "karta": "nia-lipsva",
+  "karta_zaglavie": "Липсва ми предишният ми живот",
+  "karta_staya": "Жената в мен",
+  "tochki": 0.356,
+  "zaeta": false
+ },
+ {
+  "statia": "lib-mod-0016",
+  "zaglavie": "Спри да се сравняваш с майките онлайн",
+  "staya": "Дневник на мама",
+  "karta": "dn-skrol",
+  "karta_zaglavie": "Скролът в три през нощта",
+  "karta_staya": "Дневник на мама",
+  "tochki": 0.356,
+  "zaeta": true
+ },
+ {
+  "statia": "lib-mod-0046",
+  "zaglavie": "Кога пак ще съм аз?",
+  "staya": "Жената в мен",
+  "karta": "nia-vreme",
+  "karta_zaglavie": "Нямам никакво време за себе си",
+  "karta_staya": "Жената в мен",
+  "tochki": 0.356,
+  "zaeta": true
+ },
+ {
+  "statia": "lib-mod-0047",
+  "zaglavie": "Самотата насред пълната къща",
+  "staya": "Жената в мен",
+  "karta": "nia-prijatelki",
+  "karta_zaglavie": "Приятелките ми изчезнаха",
+  "karta_staya": "Жената в мен",
+  "tochki": 0.356,
+  "zaeta": true
+ },
+ {
+  "statia": "lib-f6425e7a",
+  "zaglavie": "Следродилно кървене, лохии, съсиреци и връщане на цикъла",
+  "staya": "Дневник на мама",
+  "karta": "sn-kolko-4-6",
+  "karta_zaglavie": "Колко спи бебето на 4, 5 и 6 месеца",
+  "karta_staya": "Моето бебе",
+  "tochki": 0.333,
+  "zaeta": true
+ },
+ {
+  "statia": "lib-1ca5c23f",
+  "zaglavie": "Кръвен съсирек след раждане: ДВТ, белодробна емболия, задух, болка в гърдите, подут крак",
+  "staya": "Дневник на мама",
+  "karta": "sn-kolko-0-3",
+  "karta_zaglavie": "Колко спи бебето от раждането до 3 месеца",
+  "karta_staya": "Моето бебе",
+  "tochki": 0.333,
+  "zaeta": true
+ },
+ {
+  "statia": "lib-00c2d3ea",
+  "zaglavie": "Връщане на работа: кърмене, цедене, раздяла, ясла и правата ти",
+  "staya": "Дневник на мама",
+  "karta": "nia-cv",
+  "karta_zaglavie": "CV на майката",
+  "karta_staya": "Жената в мен",
+  "tochki": 0.333,
+  "zaeta": false
+ },
+ {
+  "statia": "lib-547cab7c",
+  "zaglavie": "Критикът в главата ти",
+  "staya": "Жената в мен",
+  "karta": "lb-natraplivi",
+  "karta_zaglavie": "Натрапливите мисли — казвам ти истината",
+  "karta_staya": "Дневник на мама",
+  "tochki": 0.333,
+  "zaeta": true
+ },
+ {
+  "statia": "lib-mod-0015",
+  "zaglavie": "„Изгубих себе си“ — и как бавно се намираш",
+  "staya": "Дневник на мама",
+  "karta": "nia-koya",
+  "karta_zaglavie": "Не се познавам вече",
+  "karta_staya": "Жената в мен",
+  "tochki": 0.333,
+  "zaeta": true
+ },
+ {
+  "statia": "lib-rod-gosti",
+  "zaglavie": "Гостите след раждането: кой влиза, кога и за колко",
+  "staya": "Дневник на мама",
+  "karta": "nia-prijatelki",
+  "karta_zaglavie": "Приятелките ми изчезнаха",
+  "karta_staya": "Жената в мен",
+  "tochki": 0.333,
+  "zaeta": true
+ },
+ {
+  "statia": "lib-e0ca71ed",
+  "zaglavie": "Косопадът и огледалото",
+  "staya": "Жената в мен",
+  "karta": "pp-kosopad",
+  "karta_zaglavie": "Следродилният косопад",
+  "karta_staya": "Здраве и SOS",
+  "tochki": 0.313,
+  "zaeta": false
+ },
+ {
+  "statia": "lib-d6d2cf21",
+  "zaglavie": "Изтощението, което сънят не лекува",
+  "staya": "Жената в мен",
+  "karta": "dn-nedospivane",
+  "karta_zaglavie": "Недоспиването не е дреболия",
+  "karta_staya": "Дневник на мама",
+  "tochki": 0.308,
+  "zaeta": true
+ },
+ {
+  "statia": "lib-716f9613",
+  "zaglavie": "Травматично раждане, секцио, NICU, ретроспекции и страх от следваща бременност",
+  "staya": "Дневник на мама",
+  "karta": "dn-dostatachno-dobra",
+  "karta_zaglavie": "Достатъчно добра е наистина достатъчно",
+  "karta_staya": "Дневник на мама",
+  "tochki": 0.3,
+  "zaeta": false
+ },
+ {
+  "statia": "lib-347311c8",
+  "zaglavie": "Тъгата, че расте твърде бързо",
+  "staya": "Жената в мен",
+  "karta": "nia-vina",
+  "karta_zaglavie": "Чувствам се виновна, че искам да съм сама",
+  "karta_staya": "Жената в мен",
+  "tochki": 0.3,
+  "zaeta": true
+ },
+ {
+  "statia": "lib-d8150fd6",
+  "zaglavie": "Близнаци/триплети: NICU разделяне, привързване, хранене, рутини и майчина вина",
+  "staya": "Дневник на мама",
+  "karta": "dn-tajno",
+  "karta_zaglavie": "Понякога ми е тежко и се чувствам виновна…",
+  "karta_staya": "Дневник на мама",
+  "tochki": 0.291,
+  "zaeta": true
+ },
+ {
+  "statia": "lib-6d217767",
+  "zaglavie": "Как се иска помощ, без да се извиняваш",
+  "staya": "Дневник на мама",
+  "karta": "dn-tatko-kak-pomogna",
+  "karta_zaglavie": "Как двамата да си помогнете",
+  "karta_staya": "Дневник на мама",
+  "tochki": 0.291,
+  "zaeta": false
+ },
+ {
+  "statia": "lib-17d668b3",
+  "zaglavie": "Връщането на работа: администрацията и раздялата",
+  "staya": "Дневник на мама",
+  "karta": "nia-rabota",
+  "karta_zaglavie": "Страх ме е да се върна на работа",
+  "karta_staya": "Жената в мен",
+  "tochki": 0.286,
+  "zaeta": true
+ },
+ {
+  "statia": "lib-mod-0012",
+  "zaglavie": "Връщането на работа боли — и това е нормално",
+  "staya": "Дневник на мама",
+  "karta": "nia-rabota",
+  "karta_zaglavie": "Страх ме е да се върна на работа",
+  "karta_staya": "Жената в мен",
+  "tochki": 0.286,
+  "zaeta": true
+ },
+ {
+  "statia": "lib-fe389a89",
+  "zaglavie": "Тялото ти е инструмент, не украса",
+  "staya": "Жената в мен",
+  "karta": "nia-body2",
+  "karta_zaglavie": "Тялото след",
+  "karta_staya": "Жената в мен",
+  "tochki": 0.267,
+  "zaeta": true
+ },
+ {
+  "statia": "lib-9789e368",
+  "zaglavie": "Привързаност, ко-регулация и емоционално развитие 0-3",
+  "staya": "Дневник на мама",
+  "karta": "lb3-razglezvane",
+  "karta_zaglavie": "„Ще го разглезиш с това носене!“",
+  "karta_staya": "Моето бебе",
+  "tochki": 0.25,
+  "zaeta": false
+ },
+ {
+  "statia": "lib-9d938606",
+  "zaglavie": "Кога яде топла храна на спокойствие",
+  "staya": "Жената в мен",
+  "karta": "ema-hrana",
+  "karta_zaglavie": "Какво да пробвам за храненето?",
+  "karta_staya": "Лабораторията",
+  "tochki": 0.25,
+  "zaeta": true
+ },
+ {
+  "statia": "lib-e5918abf",
+  "zaglavie": "Следродилна подкрепа у дома: педиатър, акушерка, консултант и местни услуги",
+  "staya": "Дневник на мама",
+  "karta": "dn-pomosht",
+  "karta_zaglavie": "Да поискаш помощ не е слабост",
+  "karta_staya": "Дневник на мама",
+  "tochki": 0.24,
+  "zaeta": true
+ },
+ {
+  "statia": "lib-439b1301",
+  "zaglavie": "НЦОЗА: обществено здраве, статистика, психично здраве, превенция и здравно-информационни материали",
+  "staya": "Дневник на мама",
+  "karta": "dn-psiholog-bg",
+  "karta_zaglavie": "На психолог: откъде се почва",
+  "karta_staya": "Дневник на мама",
+  "tochki": 0.229,
+  "zaeta": true
+ },
+ {
+  "statia": "lib-774c3050",
+  "zaglavie": "Ревността, че той излиза свободно",
+  "staya": "Жената в мен",
+  "karta": "nia-chanta",
+  "karta_zaglavie": "Чантата, която е само моя",
+  "karta_staya": "Жената в мен",
+  "tochki": 0.229,
+  "zaeta": false
+ },
+ {
+  "statia": "lib-aa110922",
+  "zaglavie": "Плацентата след предишно секцио: рискът от кървене",
+  "staya": "Дневник на мама",
+  "karta": "mm-sechenie",
+  "karta_zaglavie": "Възстановяване след цезарово",
+  "karta_staya": "Здраве и SOS",
+  "tochki": 0.222,
+  "zaeta": false
+ },
+ {
+  "statia": "lib-db22eee9",
+  "zaglavie": "Следродилен косопад, кожа и образ на тялото",
+  "staya": "Дневник на мама",
+  "karta": "br-partniore",
+  "karta_zaglavie": "Той не го усеща като теб",
+  "karta_staya": "Бременност",
+  "tochki": 0.2,
+  "zaeta": false
+ },
+ {
+  "statia": "lib-454660db",
+  "zaglavie": "Дънките отпреди не се закопчават",
+  "staya": "Жената в мен",
+  "karta": "mb5-regresia-4m",
+  "karta_zaglavie": "Четвъртият месец: не се разваля, а порасна",
+  "karta_staya": "Моето бебе",
+  "tochki": 0.2,
+  "zaeta": true
+ },
+ {
+  "statia": "lib-rod-celuvki",
+  "zaglavie": "Целувките по лицето и другите неща, за които се мълчи",
+  "staya": "Дневник на мама",
+  "karta": "dn-pri-baba",
+  "karta_zaglavie": "При баба е по-спокоен",
+  "karta_staya": "Дневник на мама",
+  "tochki": 0.2,
+  "zaeta": true
+ },
+ {
+  "statia": "lib-mod-0010",
+  "zaglavie": "Невидимият товар, който само ти носиш",
+  "staya": "Дневник на мама",
+  "karta": "nd-zabravyam",
+  "karta_zaglavie": "Дните се сливат и не помниш нищо",
+  "karta_staya": "Дневник на мама",
+  "tochki": 0.188,
+  "zaeta": false
+ },
+ {
+  "statia": "lib-8b51f0a8",
+  "zaglavie": "Баби и дядовци: кое от едно време не важи и как да поставиш граници",
+  "staya": "Дневник на мама",
+  "karta": "nia-time",
+  "karta_zaglavie": "Времето за теб",
+  "karta_staya": "Жената в мен",
+  "tochki": 0.182,
+  "zaeta": true
+ }
+]

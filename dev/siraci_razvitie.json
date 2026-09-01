@@ -1,0 +1,802 @@
+[
+ {
+  "statia": "lib-nov-pesnichki",
+  "zaglavie": "Песничките и ритъмът: защо помагат на говора",
+  "staya": "Развитие и игри",
+  "karta": "rz-muzika",
+  "karta_zaglavie": "Музиката",
+  "karta_staya": "Развитие и игри",
+  "tochki": 1.2,
+  "zaeta": true
+ },
+ {
+  "statia": "lib-dve-ezika-kak",
+  "zaglavie": "Двуезично семейство: кой на какъв език говори",
+  "staya": "Развитие и игри",
+  "karta": "rz-dvuezichie",
+  "karta_zaglavie": "Две кухни, един готвач",
+  "karta_staya": "Развитие и игри",
+  "tochki": 0.842,
+  "zaeta": true
+ },
+ {
+  "statia": "lib-mod-0008",
+  "zaglavie": "Ревност към бебето",
+  "staya": "Развитие и игри",
+  "karta": "lb2-revnost",
+  "karta_zaglavie": "Ревността от новото бебе",
+  "karta_staya": "Развитие и игри",
+  "tochki": 0.8,
+  "zaeta": true
+ },
+ {
+  "statia": "lib-muz-ritam",
+  "zaglavie": "Ритъмът вкъщи: тенджери, лъжици и защо това е музика",
+  "staya": "Развитие и игри",
+  "karta": "rz-muzika",
+  "karta_zaglavie": "Музиката",
+  "karta_staya": "Развитие и игри",
+  "tochki": 0.8,
+  "zaeta": true
+ },
+ {
+  "statia": "lib-0f473fbe",
+  "zaglavie": "Колко дълго да дадеш на един опит и кога да спреш",
+  "staya": "Лабораторията",
+  "karta": "lb-zashto7",
+  "karta_zaglavie": "Защо опитът е 7 вечери",
+  "karta_staya": "Лабораторията",
+  "tochki": 0.711,
+  "zaeta": true
+ },
+ {
+  "statia": "lib-nov-bez-yasla",
+  "zaglavie": "Детето не ходи на ясла: изостава ли социално",
+  "staya": "Развитие и игри",
+  "karta": "rz-sravnenie",
+  "karta_zaglavie": "Детето на съседката вече…",
+  "karta_staya": "Развитие и игри",
+  "tochki": 0.686,
+  "zaeta": true
+ },
+ {
+  "statia": "lib-7e8cd180",
+  "zaglavie": "Първите игри са лицето ти (0–4 месеца)",
+  "staya": "Развитие и игри",
+  "karta": "sn-kolko-4-6",
+  "karta_zaglavie": "Колко спи бебето на 4, 5 и 6 месеца",
+  "karta_staya": "Моето бебе",
+  "tochki": 0.667,
+  "zaeta": true
+ },
+ {
+  "statia": "lib-mod-0001",
+  "zaglavie": "Екрани и телефон — честно, без вина",
+  "staya": "Развитие и игри",
+  "karta": "nr-ekranite-chestno",
+  "karta_zaglavie": "Екраните — честно, без морал",
+  "karta_staya": "Развитие и игри",
+  "tochki": 0.64,
+  "zaeta": true
+ },
+ {
+  "statia": "lib-ek-hranene",
+  "zaglavie": "Хранене пред екран: защо се връща обратно",
+  "staya": "Развитие и игри",
+  "karta": "rz-ekran",
+  "karta_zaglavie": "Екраните",
+  "karta_staya": "Развитие и игри",
+  "tochki": 0.571,
+  "zaeta": true
+ },
+ {
+  "statia": "lib-kn-parva",
+  "zaglavie": "Първата книжка: от коя възраст и коя точно",
+  "staya": "Развитие и игри",
+  "karta": "zah-koga",
+  "karta_zaglavie": "Кога започваме захранване?",
+  "karta_staya": "Захранване",
+  "tochki": 0.5,
+  "zaeta": true
+ },
+ {
+  "statia": "lib-ya-parva-sedmica",
+  "zaglavie": "Първата седмица в ясла: ден по ден",
+  "staya": "Развитие и игри",
+  "karta": "nr-yaslata-parvite",
+  "karta_zaglavie": "Яслата: първите две седмици",
+  "karta_staya": "Развитие и игри",
+  "tochki": 0.5,
+  "zaeta": true
+ },
+ {
+  "statia": "lib-4f909614",
+  "zaglavie": "Играе до другите деца, не с тях (18 м – 2 г.)",
+  "staya": "Развитие и игри",
+  "karta": "rz-udrya",
+  "karta_zaglavie": "Удря и бута другите деца",
+  "karta_staya": "Развитие и игри",
+  "tochki": 0.48,
+  "zaeta": true
+ },
+ {
+  "statia": "lib-gv-balgarski-chujbina",
+  "zaglavie": "Българският вкъщи, когато живеете в чужбина",
+  "staya": "Развитие и игри",
+  "karta": "rz-dvuezichie",
+  "karta_zaglavie": "Две кухни, един готвач",
+  "karta_staya": "Развитие и игри",
+  "tochki": 0.48,
+  "zaeta": true
+ },
+ {
+  "statia": "lib-46c431e3",
+  "zaglavie": "Екранът, говорът и играта — и как е при двуезичните",
+  "staya": "Развитие и игри",
+  "karta": "rz-ekran",
+  "karta_zaglavie": "Екраните",
+  "karta_staya": "Развитие и игри",
+  "tochki": 0.457,
+  "zaeta": true
+ },
+ {
+  "statia": "lib-ef76cbbb",
+  "zaglavie": "Развитие 13-18 месеца - прохождане, думи, сочене, тръшкане, самостоятелност",
+  "staya": "Развитие и игри",
+  "karta": "rz-hvarlia",
+  "karta_zaglavie": "Защо хвърля всичко на пода",
+  "karta_staya": "Развитие и игри",
+  "tochki": 0.457,
+  "zaeta": true
+ },
+ {
+  "statia": "lib-f66e844d",
+  "zaglavie": "Тазобедрени стави, стъпала и първите обувки",
+  "staya": "Развитие и игри",
+  "karta": "rz-prohojdane",
+  "karta_zaglavie": "Кога ще проходи?",
+  "karta_staya": "Развитие и игри",
+  "tochki": 0.457,
+  "zaeta": true
+ },
+ {
+  "statia": "lib-ad75ff5b",
+  "zaglavie": "Когато вярваш, започваш да виждаш",
+  "staya": "Лабораторията",
+  "karta": "ema-kakvo-ne",
+  "karta_zaglavie": "Какво НЕ проверяваме тук",
+  "karta_staya": "Лабораторията",
+  "tochki": 0.457,
+  "zaeta": true
+ },
+ {
+  "statia": "lib-8644740f",
+  "zaglavie": "Съвпадение ли беше, или причина",
+  "staya": "Лабораторията",
+  "karta": "ema-kakvo-ne",
+  "karta_zaglavie": "Какво НЕ проверяваме тук",
+  "karta_staya": "Лабораторията",
+  "tochki": 0.457,
+  "zaeta": true
+ },
+ {
+  "statia": "lib-ek-videorazgovor",
+  "zaglavie": "Видеоразговорът с баба: единственият екран, който е различен",
+  "staya": "Развитие и игри",
+  "karta": "rz-ekran",
+  "karta_zaglavie": "Екраните",
+  "karta_staya": "Развитие и игри",
+  "tochki": 0.457,
+  "zaeta": true
+ },
+ {
+  "statia": "lib-mod-0009",
+  "zaglavie": "Да си играе само — и защо е важно",
+  "staya": "Развитие и игри",
+  "karta": "rz-igri2",
+  "karta_zaglavie": "Скучае ли му?",
+  "karta_staya": "Развитие и игри",
+  "tochki": 0.427,
+  "zaeta": true
+ },
+ {
+  "statia": "lib-gv-dumite-prez-denya",
+  "zaglavie": "Как да говориш на бебето: думите през деня",
+  "staya": "Развитие и игри",
+  "karta": "gz-kysno-govor",
+  "karta_zaglavie": "Късно проговаряне — кога да питам",
+  "karta_staya": "Развитие и игри",
+  "tochki": 0.417,
+  "zaeta": true
+ },
+ {
+  "statia": "lib-ec90671c",
+  "zaglavie": "Ясла/градина 0-3: тревожност, раздяла, корем/главоболие без ясна болест и сензорно претоварване",
+  "staya": "Развитие и игри",
+  "karta": "rz-obrashtane",
+  "karta_zaglavie": "Кога се обръща",
+  "karta_staya": "Развитие и игри",
+  "tochki": 0.4,
+  "zaeta": true
+ },
+ {
+  "statia": "lib-267c772b",
+  "zaglavie": "Кое да пробваш първо, като всичко гори",
+  "staya": "Лабораторията",
+  "karta": "ema-hrana",
+  "karta_zaglavie": "Какво да пробвам за храненето?",
+  "karta_staya": "Лабораторията",
+  "tochki": 0.4,
+  "zaeta": true
+ },
+ {
+  "statia": "lib-c0530753",
+  "zaglavie": "„Хайде уж“: играта на въображението (2,5–3 г.)",
+  "staya": "Развитие и игри",
+  "karta": "nr-igrata-naistina",
+  "karta_zaglavie": "Играта 0-3: какво наистина развива",
+  "karta_staya": "Развитие и игри",
+  "tochki": 0.4,
+  "zaeta": true
+ },
+ {
+  "statia": "lib-nov-sama",
+  "zaglavie": "Опит, когато няма кой да те смени",
+  "staya": "Лабораторията",
+  "karta": "ema-hrana",
+  "karta_zaglavie": "Какво да пробвам за храненето?",
+  "karta_staya": "Лабораторията",
+  "tochki": 0.4,
+  "zaeta": true
+ },
+ {
+  "statia": "lib-muz-fon",
+  "zaglavie": "Музика за фон и музика за игра — не са едно и също",
+  "staya": "Развитие и игри",
+  "karta": "rz-muzika",
+  "karta_zaglavie": "Музиката",
+  "karta_staya": "Развитие и игри",
+  "tochki": 0.4,
+  "zaeta": true
+ },
+ {
+  "statia": "lib-muz-tanc",
+  "zaglavie": "Танцът с бебе на ръце: движението, което успокоява",
+  "staya": "Развитие и игри",
+  "karta": "rz-muzika",
+  "karta_zaglavie": "Музиката",
+  "karta_staya": "Развитие и игри",
+  "tochki": 0.4,
+  "zaeta": true
+ },
+ {
+  "statia": "lib-kn-kak",
+  "zaglavie": "Как се чете на дете, което не слуша",
+  "staya": "Развитие и игри",
+  "karta": "rz-obrashtane",
+  "karta_zaglavie": "Кога се обръща",
+  "karta_staya": "Развитие и игри",
+  "tochki": 0.4,
+  "zaeta": true
+ },
+ {
+  "statia": "lib-68a786a5",
+  "zaglavie": "Игра, учене, внимание и ранно развитие 0-3",
+  "staya": "Развитие и игри",
+  "karta": "nr-igrata-naistina",
+  "karta_zaglavie": "Играта 0-3: какво наистина развива",
+  "karta_staya": "Развитие и игри",
+  "tochki": 0.381,
+  "zaeta": true
+ },
+ {
+  "statia": "lib-e364aac4",
+  "zaglavie": "Игра, играчки, развитие, екранно време 0-3 години",
+  "staya": "Развитие и игри",
+  "karta": "nr-igrata-naistina",
+  "karta_zaglavie": "Играта 0-3: какво наистина развива",
+  "karta_staya": "Развитие и игри",
+  "tochki": 0.381,
+  "zaeta": true
+ },
+ {
+  "statia": "lib-ek-spirane",
+  "zaglavie": "Как се спира екранът без скандал",
+  "staya": "Развитие и игри",
+  "karta": "nr-ekranite-chestno",
+  "karta_zaglavie": "Екраните — честно, без морал",
+  "karta_staya": "Развитие и игри",
+  "tochki": 0.381,
+  "zaeta": true
+ },
+ {
+  "statia": "lib-09a639d0",
+  "zaglavie": "Тръшкане, удряне, хапане и агресивно поведение 1-3 години",
+  "staya": "Развитие и игри",
+  "karta": "rz-inat-2g",
+  "karta_zaglavie": "„Не!“ на две години",
+  "karta_staya": "Развитие и игри",
+  "tochki": 0.376,
+  "zaeta": true
+ },
+ {
+  "statia": "lib-gyr-yasla",
+  "zaglavie": "Гърнето и яслата: как да не се бият двете правила",
+  "staya": "Развитие и игри",
+  "karta": "rz-gyrne",
+  "karta_zaglavie": "Гърнето — без бой и без бързане",
+  "karta_staya": "Развитие и игри",
+  "tochki": 0.376,
+  "zaeta": true
+ },
+ {
+  "statia": "lib-fc8807da",
+  "zaglavie": "Плачът, привързаността и границите — какво казва науката",
+  "staya": "Развитие и игри",
+  "karta": "mb-cry",
+  "karta_zaglavie": "Плачът",
+  "karta_staya": "Моето бебе",
+  "tochki": 0.375,
+  "zaeta": false
+ },
+ {
+  "statia": "lib-4f535e88",
+  "zaglavie": "Плачът преди сън — колко да чакаш",
+  "staya": "Лабораторията",
+  "karta": "mb-cry",
+  "karta_zaglavie": "Плачът",
+  "karta_staya": "Моето бебе",
+  "tochki": 0.375,
+  "zaeta": false
+ },
+ {
+  "statia": "lib-c63578f1",
+  "zaglavie": "Бебето порасна, старият отговор изтече",
+  "staya": "Лабораторията",
+  "karta": "ema-obarnali",
+  "karta_zaglavie": "Работеше, а сега не",
+  "karta_staya": "Лабораторията",
+  "tochki": 0.369,
+  "zaeta": true
+ },
+ {
+  "statia": "lib-5f14ea39",
+  "zaglavie": "Дневник на съня за двайсет секунди",
+  "staya": "Лабораторията",
+  "karta": "lb-zashto7",
+  "karta_zaglavie": "Защо опитът е 7 вечери",
+  "karta_staya": "Лабораторията",
+  "tochki": 0.356,
+  "zaeta": true
+ },
+ {
+  "statia": "lib-6d23a29d",
+  "zaglavie": "Тръшкане, хапане, удряне и граници при 1-3 години",
+  "staya": "Развитие и игри",
+  "karta": "sn-kolko-4-6",
+  "karta_zaglavie": "Колко спи бебето на 4, 5 и 6 месеца",
+  "karta_staya": "Моето бебе",
+  "tochki": 0.333,
+  "zaeta": true
+ },
+ {
+  "statia": "lib-35902530",
+  "zaglavie": "Развитие 0-3 месеца - сън, хранене, сетива, контакт и червени флагове",
+  "staya": "Развитие и игри",
+  "karta": "sn-kolko-4-6",
+  "karta_zaglavie": "Колко спи бебето на 4, 5 и 6 месеца",
+  "karta_staya": "Моето бебе",
+  "tochki": 0.333,
+  "zaeta": true
+ },
+ {
+  "statia": "lib-8f37b4a3",
+  "zaglavie": "Развитие 19-24 месеца - реч, игра, граници, сън, агресия, гърне",
+  "staya": "Развитие и игри",
+  "karta": "sn-kolko-4-6",
+  "karta_zaglavie": "Колко спи бебето на 4, 5 и 6 месеца",
+  "karta_staya": "Моето бебе",
+  "tochki": 0.333,
+  "zaeta": true
+ },
+ {
+  "statia": "lib-8c3d0a65",
+  "zaglavie": "Развитие 25-36 месеца - говор, въображаема игра, ясла, социалност, самостоятелност",
+  "staya": "Развитие и игри",
+  "karta": "sn-kolko-4-6",
+  "karta_zaglavie": "Колко спи бебето на 4, 5 и 6 месеца",
+  "karta_staya": "Моето бебе",
+  "tochki": 0.333,
+  "zaeta": true
+ },
+ {
+  "statia": "lib-936f6ada",
+  "zaglavie": "Записване за 20 секунди, без тетрадка",
+  "staya": "Лабораторията",
+  "karta": "sn-kolko-4-6",
+  "karta_zaglavie": "Колко спи бебето на 4, 5 и 6 месеца",
+  "karta_staya": "Моето бебе",
+  "tochki": 0.333,
+  "zaeta": true
+ },
+ {
+  "statia": "lib-igr-pet-minuti",
+  "zaglavie": "Играта, когато си на дъното: пет минути на пода",
+  "staya": "Развитие и игри",
+  "karta": "wm-nyama-vreme",
+  "karta_zaglavie": "„Нямам време за нищо“",
+  "karta_staya": "Жената в мен",
+  "tochki": 0.333,
+  "zaeta": true
+ },
+ {
+  "statia": "lib-praz-chujdi-rojdeni",
+  "zaglavie": "Рождените дни на другите деца: как се оцелява",
+  "staya": "Развитие и игри",
+  "karta": "sn-kolko-4-6",
+  "karta_zaglavie": "Колко спи бебето на 4, 5 и 6 месеца",
+  "karta_staya": "Моето бебе",
+  "tochki": 0.333,
+  "zaeta": true
+ },
+ {
+  "statia": "lib-vs-sutrin",
+  "zaglavie": "Сутринта: обличането и тръгването без война",
+  "staya": "Развитие и игри",
+  "karta": "lb2-razhodki",
+  "karta_zaglavie": "Разходките: кога, колко, как облечено?",
+  "karta_staya": "Моето бебе",
+  "tochki": 0.333,
+  "zaeta": true
+ },
+ {
+  "statia": "lib-6bcc675d",
+  "zaglavie": "Хапане в ясла: инцидент реплики за родители и персонал",
+  "staya": "Развитие и игри",
+  "karta": "rz-zahapva-deca",
+  "karta_zaglavie": "Хапе другите деца",
+  "karta_staya": "Развитие и игри",
+  "tochki": 0.32,
+  "zaeta": true
+ },
+ {
+  "statia": "lib-35045d9e",
+  "zaglavie": "Първите дни в ясла: раздяла, тревожност и болежки",
+  "staya": "Развитие и игри",
+  "karta": "nr-yaslata-parvite",
+  "karta_zaglavie": "Яслата: първите две седмици",
+  "karta_staya": "Развитие и игри",
+  "tochki": 0.32,
+  "zaeta": true
+ },
+ {
+  "statia": "lib-mod-0002",
+  "zaglavie": "Тръшкането — какво става в главичката",
+  "staya": "Развитие и игри",
+  "karta": "rz-inat-2g",
+  "karta_zaglavie": "„Не!“ на две години",
+  "karta_staya": "Развитие и игри",
+  "tochki": 0.32,
+  "zaeta": true
+ },
+ {
+  "statia": "lib-nov-knizhki",
+  "zaglavie": "Книжките: коя кога, как се чете и защо изяжда страниците",
+  "staya": "Развитие и игри",
+  "karta": "lb2-syada-palzi",
+  "karta_zaglavie": "Кога сяда? Кога пълзи? (и защо някои прескачат)",
+  "karta_staya": "Развитие и игри",
+  "tochki": 0.32,
+  "zaeta": true
+ },
+ {
+  "statia": "lib-kn-edna-i-sashta",
+  "zaglavie": "Иска една и съща книжка сто пъти",
+  "staya": "Развитие и игри",
+  "karta": "rz-igri2",
+  "karta_zaglavie": "Скучае ли му?",
+  "karta_staya": "Развитие и игри",
+  "tochki": 0.32,
+  "zaeta": true
+ },
+ {
+  "statia": "lib-mod-0005",
+  "zaglavie": "Лека нощ без битки",
+  "staya": "Развитие и игри",
+  "karta": "nm-ritualat-predi",
+  "karta_zaglavie": "Ритуалът преди сън",
+  "karta_staya": "Моето бебе",
+  "tochki": 0.308,
+  "zaeta": true
+ },
+ {
+  "statia": "lib-igr-kashon",
+  "zaglavie": "Кашонът: пет игри от една кутия",
+  "staya": "Развитие и игри",
+  "karta": "rz-edna-godina-igri",
+  "karta_zaglavie": "На какво се учи едногодишното",
+  "karta_staya": "Развитие и игри",
+  "tochki": 0.291,
+  "zaeta": true
+ },
+ {
+  "statia": "lib-praz-rojden-1",
+  "zaglavie": "Първият рожден ден: колко е достатъчно",
+  "staya": "Развитие и игри",
+  "karta": "rz-edna-godina-igri",
+  "karta_zaglavie": "На какво се учи едногодишното",
+  "karta_staya": "Развитие и игри",
+  "tochki": 0.291,
+  "zaeta": true
+ },
+ {
+  "statia": "lib-3cd1056c",
+  "zaglavie": "Маршрут при притеснение за развитие в България - педиатър, логопед, психолог, ерготерапевт",
+  "staya": "Развитие и игри",
+  "karta": "in-napravlenie",
+  "karta_zaglavie": "Направлението: пътят до специалист",
+  "karta_staya": "Инструменти",
+  "tochki": 0.286,
+  "zaeta": true
+ },
+ {
+  "statia": "lib-eefb0bcd",
+  "zaglavie": "Слухов скрининг и логопед: кога се търси помощ",
+  "staya": "Развитие и игри",
+  "karta": "mb-sluh",
+  "karta_zaglavie": "Слухът",
+  "karta_staya": "Моето бебе",
+  "tochki": 0.286,
+  "zaeta": false
+ },
+ {
+  "statia": "lib-nov-pri-lekarya",
+  "zaglavie": "Какво от тетрадката ти върши работа при лекаря",
+  "staya": "Лабораторията",
+  "karta": "nia-rabota",
+  "karta_zaglavie": "Страх ме е да се върна на работа",
+  "karta_staya": "Жената в мен",
+  "tochki": 0.286,
+  "zaeta": true
+ },
+ {
+  "statia": "lib-601f6a90",
+  "zaglavie": "Дислексия и СОП: защо при 0-3 години е рано за тази дума",
+  "staya": "Развитие и игри",
+  "karta": "rz-cvetove-broene",
+  "karta_zaglavie": "Цветовете, броенето и буквите — рано ли е",
+  "karta_staya": "Развитие и игри",
+  "tochki": 0.282,
+  "zaeta": true
+ },
+ {
+  "statia": "lib-ya-bolejki",
+  "zaglavie": "Болежките през първата година в ясла: колко е нормално",
+  "staya": "Развитие и игри",
+  "karta": "nr-yaslata-parvite",
+  "karta_zaglavie": "Яслата: първите две седмици",
+  "karta_staya": "Развитие и игри",
+  "tochki": 0.278,
+  "zaeta": true
+ },
+ {
+  "statia": "lib-50f13b36",
+  "zaglavie": "Опит с ритуал преди сън",
+  "staya": "Лабораторията",
+  "karta": "nm-ritualat-predi",
+  "karta_zaglavie": "Ритуалът преди сън",
+  "karta_staya": "Моето бебе",
+  "tochki": 0.278,
+  "zaeta": true
+ },
+ {
+  "statia": "lib-muz-prispivna",
+  "zaglavie": "Приспивната песен: защо е една и съща всяка вечер",
+  "staya": "Развитие и игри",
+  "karta": "nm-ritualat-predi",
+  "karta_zaglavie": "Ритуалът преди сън",
+  "karta_staya": "Моето бебе",
+  "tochki": 0.278,
+  "zaeta": true
+ },
+ {
+  "statia": "lib-fe031bec",
+  "zaglavie": "Работеше... до миналата седмица",
+  "staya": "Лабораторията",
+  "karta": "ema-obarnali",
+  "karta_zaglavie": "Работеше, а сега не",
+  "karta_staya": "Лабораторията",
+  "tochki": 0.267,
+  "zaeta": true
+ },
+ {
+  "statia": "lib-540d06cc",
+  "zaglavie": "Телефонът вместо тетрадка",
+  "staya": "Лабораторията",
+  "karta": "ema-tetradka",
+  "karta_zaglavie": "Тетрадката с откритията",
+  "karta_staya": "Лабораторията",
+  "tochki": 0.267,
+  "zaeta": false
+ },
+ {
+  "statia": "lib-067309d4",
+  "zaglavie": "Малкото дете: граници, тръшкане и първите дни в ясла",
+  "staya": "Развитие и игри",
+  "karta": "lb-gradina-bolno",
+  "karta_zaglavie": "Болно дете и ясла: кога се връщаме?",
+  "karta_staya": "Здраве и SOS",
+  "tochki": 0.25,
+  "zaeta": true
+ },
+ {
+  "statia": "lib-684dbbfa",
+  "zaglavie": "Обществени места с бебе/малко дете: ресторант, гости, площадка, шум и претоварване",
+  "staya": "Развитие и игри",
+  "karta": "mb-cry",
+  "karta_zaglavie": "Плачът",
+  "karta_staya": "Моето бебе",
+  "tochki": 0.25,
+  "zaeta": false
+ },
+ {
+  "statia": "lib-praz-koleda",
+  "zaglavie": "Празниците с малко дете: много хора, много шум и как да мине",
+  "staya": "Развитие и игри",
+  "karta": "nd-nastinki",
+  "karta_zaglavie": "Вирусите и недоносеното",
+  "karta_staya": "Здраве и SOS",
+  "tochki": 0.25,
+  "zaeta": false
+ },
+ {
+  "statia": "lib-c90a3cc2",
+  "zaglavie": "Тоалетен регрес след стрес, болест, ясла или ново бебе",
+  "staya": "Развитие и игри",
+  "karta": "nia-work",
+  "karta_zaglavie": "Връщането на работа",
+  "karta_staya": "Жената в мен",
+  "tochki": 0.231,
+  "zaeta": true
+ },
+ {
+  "statia": "lib-bcaa91af",
+  "zaglavie": "Регрес в развитието: загуба на умения 0-3",
+  "staya": "Развитие и игри",
+  "karta": "rz-sravnenie",
+  "karta_zaglavie": "Детето на съседката вече…",
+  "karta_staya": "Развитие и игри",
+  "tochki": 0.229,
+  "zaeta": true
+ },
+ {
+  "statia": "lib-3e96e745",
+  "zaglavie": "Ранно развитие и терапевти: логопед, психолог, ерготерапевт, рехабилитатор - квалификация подбор",
+  "staya": "Развитие и игри",
+  "karta": "rz-hvarlia",
+  "karta_zaglavie": "Защо хвърля всичко на пода",
+  "karta_staya": "Развитие и игри",
+  "tochki": 0.229,
+  "zaeta": true
+ },
+ {
+  "statia": "lib-549d24f2",
+  "zaglavie": "Регрес и загуба на умения 0-3 - кога не се чака",
+  "staya": "Развитие и игри",
+  "karta": "rz-sravnenie",
+  "karta_zaglavie": "Детето на съседката вече…",
+  "karta_staya": "Развитие и игри",
+  "tochki": 0.229,
+  "zaeta": true
+ },
+ {
+  "statia": "lib-kn-kade-stoyat",
+  "zaglavie": "Къде стоят книжките вкъщи",
+  "staya": "Развитие и игри",
+  "karta": "rz-hvarlia",
+  "karta_zaglavie": "Защо хвърля всичко на пода",
+  "karta_staya": "Развитие и игри",
+  "tochki": 0.229,
+  "zaeta": true
+ },
+ {
+  "statia": "lib-kn-biblioteka",
+  "zaglavie": "Библиотеката с малко дете: безплатното място в града",
+  "staya": "Развитие и игри",
+  "karta": "rz-sravnenie",
+  "karta_zaglavie": "Детето на съседката вече…",
+  "karta_staya": "Развитие и игри",
+  "tochki": 0.229,
+  "zaeta": true
+ },
+ {
+  "statia": "lib-igr-voda",
+  "zaglavie": "Игра с вода в мивката и в легена",
+  "staya": "Развитие и игри",
+  "karta": "rz-hvarlia",
+  "karta_zaglavie": "Защо хвърля всичко на пода",
+  "karta_staya": "Развитие и игри",
+  "tochki": 0.229,
+  "zaeta": true
+ },
+ {
+  "statia": "lib-mod-0007",
+  "zaglavie": "Фазата на „защо“",
+  "staya": "Развитие и игри",
+  "karta": "gz-doma-slusham",
+  "karta_zaglavie": "Как да помогна у дома, като се запъва",
+  "karta_staya": "Развитие и игри",
+  "tochki": 0.213,
+  "zaeta": true
+ },
+ {
+  "statia": "lib-322278c4",
+  "zaglavie": "Домашни любимци и бебе: алергии, ухапвания, хигиена и граници",
+  "staya": "Развитие и игри",
+  "karta": "zd-komari",
+  "karta_zaglavie": "Комари и ужилвания",
+  "karta_staya": "Здраве и SOS",
+  "tochki": 0.2,
+  "zaeta": true
+ },
+ {
+  "statia": "lib-80fe6b41",
+  "zaglavie": "Гърне и тоалетни навици: готовност, регрес и безопасен подход",
+  "staya": "Развитие и игри",
+  "karta": "rz-gyrne",
+  "karta_zaglavie": "Гърнето — без бой и без бързане",
+  "karta_staya": "Развитие и игри",
+  "tochki": 0.188,
+  "zaeta": true
+ },
+ {
+  "statia": "lib-a1d555a7",
+  "zaglavie": "Тръшкане, удряне, хапане и емоционална регулация 1-3 години",
+  "staya": "Развитие и игри",
+  "karta": "rz-inat-2g",
+  "karta_zaglavie": "„Не!“ на две години",
+  "karta_staya": "Развитие и игри",
+  "tochki": 0.188,
+  "zaeta": true
+ },
+ {
+  "statia": "lib-igr-testo",
+  "zaglavie": "Тесто, брашно и ориз: сензорните игри без магазин",
+  "staya": "Развитие и игри",
+  "karta": "rz-molivche",
+  "karta_zaglavie": "Молив, ножички и пластилин",
+  "karta_staya": "Развитие и игри",
+  "tochki": 0.178,
+  "zaeta": true
+ },
+ {
+  "statia": "lib-9c6bceaf",
+  "zaglavie": "Детето не дава да се мие коса, зъби, лице или нокти - сензорни и поведенчески битки",
+  "staya": "Развитие и игри",
+  "karta": "dn-samota",
+  "karta_zaglavie": "Самотата в майчинството",
+  "karta_staya": "Дневник на мама",
+  "tochki": 0.167,
+  "zaeta": true
+ },
+ {
+  "statia": "lib-b0bc1cc2",
+  "zaglavie": "Говор и движение: кои закъснения не се изчакват",
+  "staya": "Развитие и игри",
+  "karta": "rz-edna-godina-igri",
+  "karta_zaglavie": "На какво се учи едногодишното",
+  "karta_staya": "Развитие и игри",
+  "tochki": 0.145,
+  "zaeta": true
+ },
+ {
+  "statia": "lib-14c20cdf",
+  "zaglavie": "Сензорна чувствителност: шум, дрехи, храна, допир 0-3",
+  "staya": "Развитие и игри",
+  "karta": "mb-sluh",
+  "karta_zaglavie": "Слухът",
+  "karta_staya": "Моето бебе",
+  "tochki": 0.143,
+  "zaeta": false
+ }
+]

@@ -1,0 +1,1022 @@
+[
+ {
+  "statia": "lib-c482dd10",
+  "zaglavie": "Ясла и детска кухня: прием, документи и местните правила",
+  "staya": "Инструменти",
+  "karta": "lb-yasla-dokumenti",
+  "karta_zaglavie": "Ясла и детска кухня — какво се иска",
+  "karta_staya": "Инструменти",
+  "tochki": 0.889,
+  "zaeta": true
+ },
+ {
+  "statia": "lib-nov-nosht-3",
+  "zaglavie": "3 през нощта и телефонът в ръката",
+  "staya": "Бременност",
+  "karta": "br-kakvo-e-normalno",
+  "karta_zaglavie": "Кога да звънна на лекаря",
+  "karta_staya": "Бременност",
+  "tochki": 0.727,
+  "zaeta": true
+ },
+ {
+  "statia": "lib-fb957681",
+  "zaglavie": "София: ясли, детска кухня, здраве и социални — накратко",
+  "staya": "Инструменти",
+  "karta": "lb-yasla-dokumenti",
+  "karta_zaglavie": "Ясла и детска кухня — какво се иска",
+  "karta_staya": "Инструменти",
+  "tochki": 0.711,
+  "zaeta": true
+ },
+ {
+  "statia": "lib-pt-samolet",
+  "zaglavie": "Самолетът с бебе: ушите, багажът и часовете",
+  "staya": "Инструменти",
+  "karta": "in-samolet",
+  "karta_zaglavie": "Със самолет, с бебе",
+  "karta_staya": "Инструменти",
+  "tochki": 0.7,
+  "zaeta": true
+ },
+ {
+  "statia": "lib-24f43aca",
+  "zaglavie": "Желязо и витамин D: анемията при мама и бебето",
+  "staya": "Бременност",
+  "karta": "br-vitamini",
+  "karta_zaglavie": "Витамините — кое наистина трябва",
+  "karta_staya": "Бременност",
+  "tochki": 0.686,
+  "zaeta": true
+ },
+ {
+  "statia": "lib-nov-kraka",
+  "zaglavie": "Краката в бременността: отоци, крампи и вени",
+  "staya": "Бременност",
+  "karta": "br-kramp",
+  "karta_zaglavie": "Крампите в краката",
+  "karta_staya": "Бременност",
+  "tochki": 0.686,
+  "zaeta": false
+ },
+ {
+  "statia": "lib-12a871fb",
+  "zaglavie": "Ухапвания от насекоми, кърлежи, комари и репеленти при дете/бременна",
+  "staya": "Бременност",
+  "karta": "zd-komari",
+  "karta_zaglavie": "Комари и ужилвания",
+  "karta_staya": "Здраве и SOS",
+  "tochki": 0.6,
+  "zaeta": true
+ },
+ {
+  "statia": "lib-b5dd3825",
+  "zaglavie": "Фетална морфология: 60 минути, в които виждат всичко",
+  "staya": "Бременност",
+  "karta": "nb-skriningi-meri",
+  "karta_zaglavie": "Скринингите — какво мери всеки",
+  "karta_staya": "Бременност",
+  "tochki": 0.571,
+  "zaeta": true
+ },
+ {
+  "statia": "lib-44b8354c",
+  "zaglavie": "Раждане след раждането възстановяване цезарово нормално раждане",
+  "staya": "Бременност",
+  "karta": "br-sled-sekcio-razhdane",
+  "karta_zaglavie": "Второто раждане след секцио",
+  "karta_staya": "Бременност",
+  "tochki": 0.565,
+  "zaeta": true
+ },
+ {
+  "statia": "lib-mod-0040",
+  "zaglavie": "Второ раждане, след като първото беше трудно",
+  "staya": "Бременност",
+  "karta": "br-sled-sekcio-razhdane",
+  "karta_zaglavie": "Второто раждане след секцио",
+  "karta_staya": "Бременност",
+  "tochki": 0.565,
+  "zaeta": true
+ },
+ {
+  "statia": "lib-nov-zapek",
+  "zaglavie": "Запек и хемороиди в бременността",
+  "staya": "Бременност",
+  "karta": "nia-hemoroidi",
+  "karta_zaglavie": "Първото ходене по нужда след раждането",
+  "karta_staya": "Жената в мен",
+  "tochki": 0.563,
+  "zaeta": true
+ },
+ {
+  "statia": "lib-nov-kiselini",
+  "zaglavie": "Киселини, които не те оставят да спиш",
+  "staya": "Бременност",
+  "karta": "br-kiselini-nosht",
+  "karta_zaglavie": "Киселините и нощта",
+  "karta_staya": "Бременност",
+  "tochki": 0.56,
+  "zaeta": false
+ },
+ {
+  "statia": "lib-tools-pripoznavane",
+  "zaglavie": "Кой се вписва като баща: припознаване, име и издръжка",
+  "staya": "Инструменти",
+  "karta": "in-izdrazhka-bashta",
+  "karta_zaglavie": "Бащата на хартия: припознаване, издръжка, родителски права",
+  "karta_staya": "Инструменти",
+  "tochki": 0.554,
+  "zaeta": false
+ },
+ {
+  "statia": "lib-5655c926",
+  "zaglavie": "Хранене на мама в бременност, при кърмене и след раждането",
+  "staya": "Бременност",
+  "karta": "nb-anemiyata-bremennos",
+  "karta_zaglavie": "Анемията в бременността",
+  "karta_staya": "Бременност",
+  "tochki": 0.533,
+  "zaeta": true
+ },
+ {
+  "statia": "lib-37b29984",
+  "zaglavie": "Първият преглед: какво носиш и какво чуваш",
+  "staya": "Бременност",
+  "karta": "br-pregledi",
+  "karta_zaglavie": "Прегледите — какво кога",
+  "karta_staya": "Бременност",
+  "tochki": 0.533,
+  "zaeta": true
+ },
+ {
+  "statia": "lib-094feb0a",
+  "zaglavie": "Столчета за кола: осемте въпроса и краткият отговор",
+  "staya": "Инструменти",
+  "karta": "in-second",
+  "karta_zaglavie": "Кое може втора употреба и кое не",
+  "karta_staya": "Инструменти",
+  "tochki": 0.5,
+  "zaeta": true
+ },
+ {
+  "statia": "lib-04dd3b75",
+  "zaglavie": "Медицинското за ясла: ваксини, болничен, правила за връщане",
+  "staya": "Инструменти",
+  "karta": "lb-gradina-bolno",
+  "karta_zaglavie": "Болно дете и ясла: кога се връщаме?",
+  "karta_staya": "Здраве и SOS",
+  "tochki": 0.5,
+  "zaeta": true
+ },
+ {
+  "statia": "lib-3b8f1426",
+  "zaglavie": "Столчета, колички и кошове: безопасността на движение",
+  "staya": "Инструменти",
+  "karta": "in-second",
+  "karta_zaglavie": "Кое може втора употреба и кое не",
+  "karta_staya": "Инструменти",
+  "tochki": 0.5,
+  "zaeta": true
+ },
+ {
+  "statia": "lib-e66a2f73",
+  "zaglavie": "Скринингът в 11–13 седмица: какво всъщност мери",
+  "staya": "Бременност",
+  "karta": "nb-skriningi-meri",
+  "karta_zaglavie": "Скринингите — какво мери всеки",
+  "karta_staya": "Бременност",
+  "tochki": 0.492,
+  "zaeta": true
+ },
+ {
+  "statia": "lib-3fc5ee56",
+  "zaglavie": "Изписване на новородено: епикриза, документи и въпроси към родилното",
+  "staya": "Инструменти",
+  "karta": "in-dokumenti",
+  "karta_zaglavie": "Документите след раждането",
+  "karta_staya": "Инструменти",
+  "tochki": 0.48,
+  "zaeta": true
+ },
+ {
+  "statia": "lib-9afedd35",
+  "zaglavie": "Лекарства, билки и добавки в бременност, кърмене и за бебето",
+  "staya": "Бременност",
+  "karta": "br-vitamini",
+  "karta_zaglavie": "Витамините — кое наистина трябва",
+  "karta_staya": "Бременност",
+  "tochki": 0.457,
+  "zaeta": true
+ },
+ {
+  "statia": "lib-preg-ttc-ovulation",
+  "zaglavie": "Опитите да забременееш — какво наистина помага",
+  "staya": "Бременност",
+  "karta": "br-vitamini",
+  "karta_zaglavie": "Витамините — кое наистина трябва",
+  "karta_staya": "Бременност",
+  "tochki": 0.457,
+  "zaeta": true
+ },
+ {
+  "statia": "lib-1640ce7f",
+  "zaglavie": "Подготовка за раждане, признаци на родова дейност, багаж, секцио/индукция",
+  "staya": "Бременност",
+  "karta": "br-chanta",
+  "karta_zaglavie": "Какво да сложа в чантата за болницата?",
+  "karta_staya": "Бременност",
+  "tochki": 0.436,
+  "zaeta": true
+ },
+ {
+  "statia": "lib-nov-obmenna-karta",
+  "zaglavie": "Обменната карта: листът, който пътува с теб",
+  "staya": "Бременност",
+  "karta": "br-chanta",
+  "karta_zaglavie": "Какво да сложа в чантата за болницата?",
+  "karta_staya": "Бременност",
+  "tochki": 0.436,
+  "zaeta": true
+ },
+ {
+  "statia": "lib-15a2a233",
+  "zaglavie": "Дете с увреждане: ТЕЛК, права и къде има подкрепа",
+  "staya": "Инструменти",
+  "karta": "rz-sravnenie",
+  "karta_zaglavie": "Детето на съседката вече…",
+  "karta_staya": "Развитие и игри",
+  "tochki": 0.429,
+  "zaeta": true
+ },
+ {
+  "statia": "lib-9a205e31",
+  "zaglavie": "Батерии-копчета, магнити, водни перли и дребни части",
+  "staya": "Инструменти",
+  "karta": "lb-bateria",
+  "karta_zaglavie": "Батерийки и магнити — нулева толерантност",
+  "karta_staya": "Здраве и SOS",
+  "tochki": 0.417,
+  "zaeta": true
+ },
+ {
+  "statia": "lib-41c519cf",
+  "zaglavie": "КЗП, ДАМТН и безопасност предпазна вратичка: бебешки продукти, онлайн покупки, опасни стоки и потребителски жалби",
+  "staya": "Инструменти",
+  "karta": "in-second",
+  "karta_zaglavie": "Кое може втора употреба и кое не",
+  "karta_staya": "Инструменти",
+  "tochki": 0.4,
+  "zaeta": true
+ },
+ {
+  "statia": "lib-a2782e56",
+  "zaglavie": "Третият триместър: прегледите зачестяват",
+  "staya": "Бременност",
+  "karta": "br-gestacionen-diabet",
+  "karta_zaglavie": "Кръвната захар в бременността",
+  "karta_staya": "Бременност",
+  "tochki": 0.4,
+  "zaeta": true
+ },
+ {
+  "statia": "lib-1bd2c732",
+  "zaglavie": "Цезарово: първите 24 часа, час по час",
+  "staya": "Бременност",
+  "karta": "br-seks-pozi",
+  "karta_zaglavie": "Удобните пози, когато коремът расте",
+  "karta_staya": "Бременност",
+  "tochki": 0.4,
+  "zaeta": false
+ },
+ {
+  "statia": "lib-061236c1",
+  "zaglavie": "Плаче в столчето за кола: безопасност, комфорт и родителски сценарии",
+  "staya": "Инструменти",
+  "karta": "mb-cry",
+  "karta_zaglavie": "Плачът",
+  "karta_staya": "Моето бебе",
+  "tochki": 0.375,
+  "zaeta": false
+ },
+ {
+  "statia": "lib-b1733a0a",
+  "zaglavie": "Документите на детето: какво, къде и в какъв ред",
+  "staya": "Инструменти",
+  "karta": "lb-yasla-dokumenti",
+  "karta_zaglavie": "Ясла и детска кухня — какво се иска",
+  "karta_staya": "Инструменти",
+  "tochki": 0.356,
+  "zaeta": true
+ },
+ {
+  "statia": "lib-bcbdadb9",
+  "zaglavie": "Радон и радиационен риск в жилище: бременност, бебе, дете",
+  "staya": "Бременност",
+  "karta": "br-test",
+  "karta_zaglavie": "Кога тестът показва вярно?",
+  "karta_staya": "Бременност",
+  "tochki": 0.356,
+  "zaeta": true
+ },
+ {
+  "statia": "lib-3d1dbcc7",
+  "zaglavie": "Разделени родители - лекар, ясла, пътуване, документи и конфликт около детето",
+  "staya": "Инструменти",
+  "karta": "lb-yasla-dokumenti",
+  "karta_zaglavie": "Ясла и детска кухня — какво се иска",
+  "karta_staya": "Инструменти",
+  "tochki": 0.356,
+  "zaeta": true
+ },
+ {
+  "statia": "lib-8f39e925",
+  "zaglavie": "Детската кухня: регистрация, меню и алергии",
+  "staya": "Инструменти",
+  "karta": "lb-yasla-dokumenti",
+  "karta_zaglavie": "Ясла и детска кухня — какво се иска",
+  "karta_staya": "Инструменти",
+  "tochki": 0.356,
+  "zaeta": true
+ },
+ {
+  "statia": "lib-mod-0038",
+  "zaglavie": "До кога да работиш — честният отговор",
+  "staya": "Бременност",
+  "karta": "br-test",
+  "karta_zaglavie": "Кога тестът показва вярно?",
+  "karta_staya": "Бременност",
+  "tochki": 0.356,
+  "zaeta": true
+ },
+ {
+  "statia": "lib-26f03d1e",
+  "zaglavie": "Тазова болка в бременност и след раждане: симфиза, кръст, ишиас",
+  "staya": "Бременност",
+  "karta": "br-sedmici",
+  "karta_zaglavie": "Как се броят седмиците (и защо е объркващо)",
+  "karta_staya": "Бременност",
+  "tochki": 0.343,
+  "zaeta": false
+ },
+ {
+  "statia": "lib-fdfaa456",
+  "zaglavie": "Тромбоза и емболия в бременност/след раждане: болка в крак, задух, спешност",
+  "staya": "Бременност",
+  "karta": "br-sedmici",
+  "karta_zaglavie": "Как се броят седмиците (и защо е объркващо)",
+  "karta_staya": "Бременност",
+  "tochki": 0.343,
+  "zaeta": false
+ },
+ {
+  "statia": "lib-7e0c8521",
+  "zaglavie": "Навигационна карта: бременност по седмици и бебе по месеци като търсене структура",
+  "staya": "Бременност",
+  "karta": "br-sedmici",
+  "karta_zaglavie": "Как се броят седмиците (и защо е объркващо)",
+  "karta_staya": "Бременност",
+  "tochki": 0.343,
+  "zaeta": false
+ },
+ {
+  "statia": "lib-afed8a41",
+  "zaglavie": "Домашно насилие и контрол: безопасен план в бременност",
+  "staya": "Бременност",
+  "karta": "br-sedmici",
+  "karta_zaglavie": "Как се броят седмиците (и защо е объркващо)",
+  "karta_staya": "Бременност",
+  "tochki": 0.343,
+  "zaeta": false
+ },
+ {
+  "statia": "lib-075d6648",
+  "zaglavie": "България 2026: помощи и подпомагане за новородени",
+  "staya": "Инструменти",
+  "karta": "ch-budjet",
+  "karta_zaglavie": "Колко струва едно бебе месечно?",
+  "karta_staya": "Инструменти",
+  "tochki": 0.343,
+  "zaeta": false
+ },
+ {
+  "statia": "lib-43ca324f",
+  "zaglavie": "Загуба на бременност: скръбта след спонтанен аборт или мъртво раждане",
+  "staya": "Бременност",
+  "karta": "br-sedmici",
+  "karta_zaglavie": "Как се броят седмиците (и защо е объркващо)",
+  "karta_staya": "Бременност",
+  "tochki": 0.343,
+  "zaeta": false
+ },
+ {
+  "statia": "lib-c233424a",
+  "zaglavie": "Първите два часа с бебето — какво става наистина",
+  "staya": "Бременност",
+  "karta": "br-sled-sekcio-razhdane",
+  "karta_zaglavie": "Второто раждане след секцио",
+  "karta_staya": "Бременност",
+  "tochki": 0.343,
+  "zaeta": true
+ },
+ {
+  "statia": "lib-cde8c8e8",
+  "zaglavie": "Пренатален скрининг: НИПТ, морфология, амниоцентеза",
+  "staya": "Бременност",
+  "karta": "nb-skriningi-meri",
+  "karta_zaglavie": "Скринингите — какво мери всеки",
+  "karta_staya": "Бременност",
+  "tochki": 0.337,
+  "zaeta": true
+ },
+ {
+  "statia": "lib-051cd5b3",
+  "zaglavie": "Слънце и жега: плаж, кола и пътуване без риск",
+  "staya": "Инструменти",
+  "karta": "ni-pat-bebe",
+  "karta_zaglavie": "На път с бебе — кола, самолет, море",
+  "karta_staya": "Инструменти",
+  "tochki": 0.333,
+  "zaeta": true
+ },
+ {
+  "statia": "lib-57119b7c",
+  "zaglavie": "Разделени родители, съгласие, медицински решения и документи за дете",
+  "staya": "Инструменти",
+  "karta": "ema-razlichno",
+  "karta_zaglavie": "„Всяко бебе е различно“",
+  "karta_staya": "Лабораторията",
+  "tochki": 0.333,
+  "zaeta": true
+ },
+ {
+  "statia": "lib-4440166d",
+  "zaglavie": "Информирано съгласие при раждане и процедури за новородено",
+  "staya": "Инструменти",
+  "karta": "sn-kolko-0-3",
+  "karta_zaglavie": "Колко спи бебето от раждането до 3 месеца",
+  "karta_staya": "Моето бебе",
+  "tochki": 0.333,
+  "zaeta": true
+ },
+ {
+  "statia": "lib-e63e364c",
+  "zaglavie": "Триместър по триместър: прегледи, тестове и симптоми",
+  "staya": "Бременност",
+  "karta": "sn-kolko-4-6",
+  "karta_zaglavie": "Колко спи бебето на 4, 5 и 6 месеца",
+  "karta_staya": "Моето бебе",
+  "tochki": 0.333,
+  "zaeta": true
+ },
+ {
+  "statia": "lib-0be474bd",
+  "zaglavie": "ДАЗД: държавна агенция за закрила на детето - насилие, занемаряване, права, онлайн риск и институционален маршрут",
+  "staya": "Инструменти",
+  "karta": "sn-kolko-4-6",
+  "karta_zaglavie": "Колко спи бебето на 4, 5 и 6 месеца",
+  "karta_staya": "Моето бебе",
+  "tochki": 0.333,
+  "zaeta": true
+ },
+ {
+  "statia": "lib-4e174b22",
+  "zaglavie": "Баща, отпуск, участие след раждане, партньорска подкрепа и НОИ маршрут",
+  "staya": "Инструменти",
+  "karta": "ema-razlichno",
+  "karta_zaglavie": "„Всяко бебе е различно“",
+  "karta_staya": "Лабораторията",
+  "tochki": 0.333,
+  "zaeta": true
+ },
+ {
+  "statia": "lib-a5e586a7",
+  "zaglavie": "Козметика, перилни препарати и слънцезащита за бебе",
+  "staya": "Инструменти",
+  "karta": "sn-kolko-4-6",
+  "karta_zaglavie": "Колко спи бебето на 4, 5 и 6 месеца",
+  "karta_staya": "Моето бебе",
+  "tochki": 0.333,
+  "zaeta": true
+ },
+ {
+  "statia": "lib-bf5e65f8",
+  "zaglavie": "Храните, които изчакват до раждането",
+  "staya": "Бременност",
+  "karta": "sn-kolko-0-3",
+  "karta_zaglavie": "Колко спи бебето от раждането до 3 месеца",
+  "karta_staya": "Моето бебе",
+  "tochki": 0.333,
+  "zaeta": true
+ },
+ {
+  "statia": "lib-7eb1fde0",
+  "zaglavie": "Заболя те глава — какво можеш да вземеш",
+  "staya": "Бременност",
+  "karta": "sn-kolko-4-6",
+  "karta_zaglavie": "Колко спи бебето на 4, 5 и 6 месеца",
+  "karta_staya": "Моето бебе",
+  "tochki": 0.333,
+  "zaeta": true
+ },
+ {
+  "statia": "lib-mod-0037",
+  "zaglavie": "Бременните тела в телефона не са истински",
+  "staya": "Бременност",
+  "karta": "dn-sravnenie",
+  "karta_zaglavie": "Другите майки изглеждат по-добре",
+  "karta_staya": "Дневник на мама",
+  "tochki": 0.333,
+  "zaeta": true
+ },
+ {
+  "statia": "lib-d041c941",
+  "zaglavie": "Щитовидна жлеза, анемия и лекарствата в бременност и кърмене",
+  "staya": "Бременност",
+  "karta": "br-partniore",
+  "karta_zaglavie": "Той не го усеща като теб",
+  "karta_staya": "Бременност",
+  "tochki": 0.32,
+  "zaeta": false
+ },
+ {
+  "statia": "lib-8b24078a",
+  "zaglavie": "Форумни въпроси: избор на болница, лекар, раждане, епидурална, секцио",
+  "staya": "Бременност",
+  "karta": "br-strah-razhdane",
+  "karta_zaglavie": "Страх от раждането",
+  "karta_staya": "Бременност",
+  "tochki": 0.32,
+  "zaeta": true
+ },
+ {
+  "statia": "lib-a63cf17a",
+  "zaglavie": "Болничен за гледане на болно дете, справки в НОИ и платени обезщетения",
+  "staya": "Инструменти",
+  "karta": "in-bolnichen-dete",
+  "karta_zaglavie": "Болничен за гледане на болно дете",
+  "karta_staya": "Инструменти",
+  "tochki": 0.32,
+  "zaeta": true
+ },
+ {
+  "statia": "lib-432237c2",
+  "zaglavie": "Имунизационен паспорт, електронно здраве, личен лекар, НЗОК и ваксини",
+  "staya": "Инструменти",
+  "karta": "in-dokumenti",
+  "karta_zaglavie": "Документите след раждането",
+  "karta_staya": "Инструменти",
+  "tochki": 0.32,
+  "zaeta": true
+ },
+ {
+  "statia": "lib-e24d283e",
+  "zaglavie": "Първи триместър - гадене, зацапване, болка, страх от спонтанен аборт/извънматочна",
+  "staya": "Бременност",
+  "karta": "br-toshnota",
+  "karta_zaglavie": "Гаденето нормално ли е?",
+  "karta_staya": "Бременност",
+  "tochki": 0.32,
+  "zaeta": true
+ },
+ {
+  "statia": "lib-mod-0034",
+  "zaglavie": "Спри да гуглиш симптомите в 3 през нощта",
+  "staya": "Бременност",
+  "karta": "br-kiselini-nosht",
+  "karta_zaglavie": "Киселините и нощта",
+  "karta_staya": "Бременност",
+  "tochki": 0.32,
+  "zaeta": false
+ },
+ {
+  "statia": "lib-mod-0036",
+  "zaglavie": "Партньорът в раждането — как да е опора, а не статист",
+  "staya": "Бременност",
+  "karta": "br-partniore",
+  "karta_zaglavie": "Той не го усеща като теб",
+  "karta_staya": "Бременност",
+  "tochki": 0.32,
+  "zaeta": false
+ },
+ {
+  "statia": "lib-1c2e59e9",
+  "zaglavie": "Намалени движения на плода и предупредителни сигнали преди раждане",
+  "staya": "Бременност",
+  "karta": "br-broene-ritania",
+  "karta_zaglavie": "Броенето на движенията",
+  "karta_staya": "Бременност",
+  "tochki": 0.3,
+  "zaeta": true
+ },
+ {
+  "statia": "lib-ffc95cdd",
+  "zaglavie": "Пътна безопасност: детски столчета, пътуване, МВР/Пътна полиция и ДАБДП",
+  "staya": "Инструменти",
+  "karta": "in-second",
+  "karta_zaglavie": "Кое може втора употреба и кое не",
+  "karta_staya": "Инструменти",
+  "tochki": 0.3,
+  "zaeta": true
+ },
+ {
+  "statia": "lib-881835e7",
+  "zaglavie": "Бебеносене: дишане, позиция и кой слинг за коя възраст",
+  "staya": "Инструменти",
+  "karta": "nm-nosene-sling",
+  "karta_zaglavie": "Носене: слинг, раница и шал",
+  "karta_staya": "Моето бебе",
+  "tochki": 0.3,
+  "zaeta": true
+ },
+ {
+  "statia": "lib-21f21266",
+  "zaglavie": "Бебеносене: слинг и раница без риск",
+  "staya": "Инструменти",
+  "karta": "nm-nosene-sling",
+  "karta_zaglavie": "Носене: слинг, раница и шал",
+  "karta_staya": "Моето бебе",
+  "tochki": 0.3,
+  "zaeta": true
+ },
+ {
+  "statia": "lib-15297ea3",
+  "zaglavie": "Тютюнопушене, вейпинг и пасивно излагане при бременност, бебе и дете",
+  "staya": "Бременност",
+  "karta": "nb-zaduh-sarcebien",
+  "karta_zaglavie": "Задух, сърцебиене и прималяване",
+  "karta_staya": "Бременност",
+  "tochki": 0.291,
+  "zaeta": true
+ },
+ {
+  "statia": "lib-e560f0fb",
+  "zaglavie": "БАБХ: безопасност на храни, бебешки храни, формула, контактни материали, сигнали и областни дирекции",
+  "staya": "Бременност",
+  "karta": "br-kakvo-e-normalno",
+  "karta_zaglavie": "Кога да звънна на лекаря",
+  "karta_staya": "Бременност",
+  "tochki": 0.291,
+  "zaeta": true
+ },
+ {
+  "statia": "lib-1b7f0cdd",
+  "zaglavie": "Близнаци и тризнаци: бременност, първи месеци и помощите",
+  "staya": "Бременност",
+  "karta": "br-seks-bezopasno",
+  "karta_zaglavie": "Секс при нормална бременност — да, безопасно е",
+  "karta_staya": "Бременност",
+  "tochki": 0.291,
+  "zaeta": false
+ },
+ {
+  "statia": "lib-2ea75414",
+  "zaglavie": "Чантата до вратата и часът, в който тръгваш",
+  "staya": "Бременност",
+  "karta": "br-chanta",
+  "karta_zaglavie": "Какво да сложа в чантата за болницата?",
+  "karta_staya": "Бременност",
+  "tochki": 0.291,
+  "zaeta": true
+ },
+ {
+  "statia": "lib-0874bde0",
+  "zaglavie": "Какво струва един медиен източник за бременност и деца",
+  "staya": "Бременност",
+  "karta": "br-bez-osigurovki",
+  "karta_zaglavie": "Без осигуровки в бременността",
+  "karta_staya": "Бременност",
+  "tochki": 0.282,
+  "zaeta": true
+ },
+ {
+  "statia": "lib-99144b4b",
+  "zaglavie": "Помощни средства, медицински изделия, диетични храни и НЗОК/АСП маршрут",
+  "staya": "Инструменти",
+  "karta": "dn-tatko-kak-pomogna",
+  "karta_zaglavie": "Как двамата да си помогнете",
+  "karta_staya": "Дневник на мама",
+  "tochki": 0.273,
+  "zaeta": false
+ },
+ {
+  "statia": "lib-86d683b3",
+  "zaglavie": "ИАЛ/БДА: лекарства, листовки, нежелани реакции, бременност, кърмене и деца",
+  "staya": "Бременност",
+  "karta": "nb-planovo-sekcio",
+  "karta_zaglavie": "Планово секцио: денят",
+  "karta_staya": "Бременност",
+  "tochki": 0.267,
+  "zaeta": true
+ },
+ {
+  "statia": "lib-306fc4c3",
+  "zaglavie": "България 2026: семейни помощи при бременност, раждане и отглеждане на дете - АСП маршрут",
+  "staya": "Бременност",
+  "karta": "nb-streptoko-grupa",
+  "karta_zaglavie": "Стрептокок група Б",
+  "karta_staya": "Бременност",
+  "tochki": 0.267,
+  "zaeta": true
+ },
+ {
+  "statia": "lib-838f809e",
+  "zaglavie": "Холестаза в бременността: сърбежът по дланите и стъпалата",
+  "staya": "Бременност",
+  "karta": "nb-streptoko-grupa",
+  "karta_zaglavie": "Стрептокок група Б",
+  "karta_staya": "Бременност",
+  "tochki": 0.267,
+  "zaeta": true
+ },
+ {
+  "statia": "lib-ff98ba7f",
+  "zaglavie": "В малкото населено място: как се стига до лекар и подкрепа",
+  "staya": "Инструменти",
+  "karta": "in-izbor-pediatar",
+  "karta_zaglavie": "Изборът на педиатър",
+  "karta_staya": "Инструменти",
+  "tochki": 0.267,
+  "zaeta": false
+ },
+ {
+  "statia": "lib-6fbabcb8",
+  "zaglavie": "Гади ти се и нищо не се задържа",
+  "staya": "Бременност",
+  "karta": "br-dvijenia",
+  "karta_zaglavie": "Кога ще усетя бебето да мърда?",
+  "karta_staya": "Бременност",
+  "tochki": 0.267,
+  "zaeta": false
+ },
+ {
+  "statia": "lib-d30eec25",
+  "zaglavie": "Семейни помощи от АСП: кои са, къде се подават и с какви документи",
+  "staya": "Инструменти",
+  "karta": "lb-noi",
+  "karta_zaglavie": "Майчинството по документи (НОИ, без паника)",
+  "karta_staya": "Инструменти",
+  "tochki": 0.256,
+  "zaeta": true
+ },
+ {
+  "statia": "lib-3367ad69",
+  "zaglavie": "Деца със специални потребности 0-3: общностни въпроси, грижа, работа и ранна подкрепа",
+  "staya": "Инструменти",
+  "karta": "nd-nastinki",
+  "karta_zaglavie": "Вирусите и недоносеното",
+  "karta_staya": "Здраве и SOS",
+  "tochki": 0.25,
+  "zaeta": false
+ },
+ {
+  "statia": "lib-99bab05f",
+  "zaglavie": "Ранна интервенция, недоносени деца и специални потребности: Карин дом, Нашите недоносени деца, общностен маршрут",
+  "staya": "Инструменти",
+  "karta": "nd-nastinki",
+  "karta_zaglavie": "Вирусите и недоносеното",
+  "karta_staya": "Здраве и SOS",
+  "tochki": 0.25,
+  "zaeta": false
+ },
+ {
+  "statia": "lib-7327f7da",
+  "zaglavie": "Пътуване с дете, един родител, паспорт, декларация, чужбина и консулски маршрути",
+  "staya": "Инструменти",
+  "karta": "dv-govor",
+  "karta_zaglavie": "Кога проговаря",
+  "karta_staya": "Развитие и игри",
+  "tochki": 0.25,
+  "zaeta": true
+ },
+ {
+  "statia": "lib-pt-nosht-chuzhdo",
+  "zaglavie": "Първата нощ на чуждо място",
+  "staya": "Инструменти",
+  "karta": "nd-nastinki",
+  "karta_zaglavie": "Вирусите и недоносеното",
+  "karta_staya": "Здраве и SOS",
+  "tochki": 0.25,
+  "zaeta": false
+ },
+ {
+  "statia": "lib-59e12211",
+  "zaglavie": "НЗИС и еЗдраве: електронно здравно досие, е-рецепти, е-направления, имунизации и детски документи",
+  "staya": "Инструменти",
+  "karta": "in-dokumenti",
+  "karta_zaglavie": "Документите след раждането",
+  "karta_staya": "Инструменти",
+  "tochki": 0.24,
+  "zaeta": true
+ },
+ {
+  "statia": "lib-36ee3f6a",
+  "zaglavie": "Пътуване в чужбина с дете: документи и застраховка",
+  "staya": "Инструменти",
+  "karta": "ni-dokumenti-red",
+  "karta_zaglavie": "Документите по ред — кое кога и къде",
+  "karta_staya": "Инструменти",
+  "tochki": 0.24,
+  "zaeta": true
+ },
+ {
+  "statia": "lib-53c0f715",
+  "zaglavie": "Материална помощ и социална подкрепа: къде се пита",
+  "staya": "Инструменти",
+  "karta": "ni-kogato-dnes",
+  "karta_zaglavie": "Когато днес няма пари — къде се почуква",
+  "karta_staya": "Инструменти",
+  "tochki": 0.237,
+  "zaeta": true
+ },
+ {
+  "statia": "lib-e8c9ef36",
+  "zaglavie": "Морбили, МПР ваксина, контакт и обрив с температура",
+  "staya": "Бременност",
+  "karta": "zd-sled-vaksina",
+  "karta_zaglavie": "Нощта след ваксината",
+  "karta_staya": "Здраве и SOS",
+  "tochki": 0.231,
+  "zaeta": true
+ },
+ {
+  "statia": "lib-pt-aptechka",
+  "zaglavie": "Аптечката за път с малко дете",
+  "staya": "Инструменти",
+  "karta": "br-pytuvane",
+  "karta_zaglavie": "Пътуването",
+  "karta_staya": "Бременност",
+  "tochki": 0.231,
+  "zaeta": true
+ },
+ {
+  "statia": "lib-89d8f8ac",
+  "zaglavie": "Инфекции в бременността: хранителни, вирусни и контактни рискове",
+  "staya": "Бременност",
+  "karta": "br-vitamini",
+  "karta_zaglavie": "Витамините — кое наистина трябва",
+  "karta_staya": "Бременност",
+  "tochki": 0.229,
+  "zaeta": true
+ },
+ {
+  "statia": "lib-bb8948fe",
+  "zaglavie": "Оле Мале и каузални източници: родители на деца с увреждания, работа и достойнство",
+  "staya": "Инструменти",
+  "karta": "in-napravlenie",
+  "karta_zaglavie": "Направлението: пътят до специалист",
+  "karta_staya": "Инструменти",
+  "tochki": 0.229,
+  "zaeta": true
+ },
+ {
+  "statia": "lib-935e0b94",
+  "zaglavie": "НЗОК за дете: направления, помощни средства, храни",
+  "staya": "Инструменти",
+  "karta": "in-napravlenie",
+  "karta_zaglavie": "Направлението: пътят до специалист",
+  "karta_staya": "Инструменти",
+  "tochki": 0.229,
+  "zaeta": true
+ },
+ {
+  "statia": "lib-9d9010bc",
+  "zaglavie": "Пътна безопасност 0-3: столче, такси, автобус, количка и пешеходни ситуации",
+  "staya": "Инструменти",
+  "karta": "lb-stolche",
+  "karta_zaglavie": "Столчето за кола — правилата, които спасяват",
+  "karta_staya": "Инструменти",
+  "tochki": 0.213,
+  "zaeta": true
+ },
+ {
+  "statia": "lib-532a1754",
+  "zaglavie": "Повръщане в колата и кинетоза при малко дете",
+  "staya": "Инструменти",
+  "karta": "mb-kola-stolche",
+  "karta_zaglavie": "Пътуване с кола: столчето на практика",
+  "karta_staya": "Моето бебе",
+  "tochki": 0.211,
+  "zaeta": true
+ },
+ {
+  "statia": "lib-77883388",
+  "zaglavie": "Варицела: дете, бебе, бременна и контакт в семейството",
+  "staya": "Бременност",
+  "karta": "nb-zabolekar-bremennos",
+  "karta_zaglavie": "Зъболекар в бременността",
+  "karta_staya": "Бременност",
+  "tochki": 0.2,
+  "zaeta": true
+ },
+ {
+  "statia": "lib-d3908ca6",
+  "zaglavie": "Второ мнение, спор с лекар и жалба: майка/бебе/дете",
+  "staya": "Инструменти",
+  "karta": "mb-intim-lekar",
+  "karta_zaglavie": "Кога интимната грижа е за педиатър",
+  "karta_staya": "Моето бебе",
+  "tochki": 0.2,
+  "zaeta": false
+ },
+ {
+  "statia": "lib-b77c9ff2",
+  "zaglavie": "Изгаряния и попарвания - горещи напитки, кухня, баня, слънце и маркуч",
+  "staya": "Инструменти",
+  "karta": "rz-hodene",
+  "karta_zaglavie": "Първите стъпки",
+  "karta_staya": "Развитие и игри",
+  "tochki": 0.2,
+  "zaeta": false
+ },
+ {
+  "statia": "lib-8b4535f8",
+  "zaglavie": "Домашната аптечка и папката за спешен случай",
+  "staya": "Инструменти",
+  "karta": "br-partniore",
+  "karta_zaglavie": "Той не го усеща като теб",
+  "karta_staya": "Бременност",
+  "tochki": 0.2,
+  "zaeta": false
+ },
+ {
+  "statia": "lib-309bd48c",
+  "zaglavie": "Проходилки, бънджита и занимания центрове: безопасност и развитие",
+  "staya": "Инструменти",
+  "karta": "rz-edna-godina-igri",
+  "karta_zaglavie": "На какво се учи едногодишното",
+  "karta_staya": "Развитие и игри",
+  "tochki": 0.182,
+  "zaeta": true
+ },
+ {
+  "statia": "lib-56e66e95",
+  "zaglavie": "Индивидуална оценка на потребностите и социални услуги за дете с увреждане",
+  "staya": "Инструменти",
+  "karta": "lb-yasla-dokumenti",
+  "karta_zaglavie": "Ясла и детска кухня — какво се иска",
+  "karta_staya": "Инструменти",
+  "tochki": 0.178,
+  "zaeta": true
+ },
+ {
+  "statia": "lib-81cfffca",
+  "zaglavie": "Спор с институция: обжалване, списъци на чакащи и кои документи тежат",
+  "staya": "Инструменти",
+  "karta": "lb-yasla-dokumenti",
+  "karta_zaglavie": "Ясла и детска кухня — какво се иска",
+  "karta_staya": "Инструменти",
+  "tochki": 0.178,
+  "zaeta": true
+ },
+ {
+  "statia": "lib-993991c7",
+  "zaglavie": "Изтеглени продукти: как се проверява дали е и вашият",
+  "staya": "Инструменти",
+  "karta": "in-dom-po-stai",
+  "karta_zaglavie": "Обезопасяване — стая по стая",
+  "karta_staya": "Инструменти",
+  "tochki": 0.168,
+  "zaeta": false
+ },
+ {
+  "statia": "lib-96975523",
+  "zaglavie": "Ранна интервенция, рехабилитация, логопед и подкрепа при увреждане 0-3",
+  "staya": "Инструменти",
+  "karta": "ema-razlichno",
+  "karta_zaglavie": "„Всяко бебе е различно“",
+  "karta_staya": "Лабораторията",
+  "tochki": 0.167,
+  "zaeta": true
+ },
+ {
+  "statia": "lib-03bf1ab0",
+  "zaglavie": "ГРАО и гражданска регистрация: раждане, ЕГН, чужбина и адрес",
+  "staya": "Инструменти",
+  "karta": "sn-kolko-0-3",
+  "karta_zaglavie": "Колко спи бебето от раждането до 3 месеца",
+  "karta_staya": "Моето бебе",
+  "tochki": 0.167,
+  "zaeta": true
+ },
+ {
+  "statia": "lib-abf701bf",
+  "zaglavie": "Дете с увреждане, ТЕЛК/НЕЛК, родителски маршрут и безопасни граници",
+  "staya": "Инструменти",
+  "karta": "dn-samota",
+  "karta_zaglavie": "Самотата в майчинството",
+  "karta_staya": "Дневник на мама",
+  "tochki": 0.167,
+  "zaeta": true
+ },
+ {
+  "statia": "lib-8c090e78",
+  "zaglavie": "Когато дете е в риск: 112, 116 111 и кой може да помогне",
+  "staya": "Инструменти",
+  "karta": "rz-sravnenie",
+  "karta_zaglavie": "Детето на съседката вече…",
+  "karta_staya": "Развитие и игри",
+  "tochki": 0.143,
+  "zaeta": true
+ }
+]
