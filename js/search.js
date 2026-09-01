@@ -252,10 +252,38 @@
   }
 
   let _drawSig = '';   // проход 4: подпис на набора — стъпаловидно само при СМЯНА (не при всеки клавиш)
+  // ── 📓 ТЕФТЕРЪТ С ПРОПУСКИТЕ ──
+  // Единственият канал, по който истинска майка казва какво ѝ липсва.
+  // Затова не бива да се пълни с шума на собственото си писане.
+  let _миссЧас = null;
+  const започваС = (дълъг, къс) => дълъг.length > къс.length && дълъг.indexOf(къс) === 0;
+  function изчистиНачалата(q) {
+    const m = lsGet('bl_agent_miss', []);
+    const чист = m.filter(x => !започваС(q, String(x.q || '')));
+    if (чист.length !== m.length) lsSet('bl_agent_miss', чист);
+  }
+  function отложиПропуск(q) {
+    clearTimeout(_миссЧас);
+    _миссЧас = setTimeout(function () {
+      const т = norm(q).trim();
+      if (т.length < 6) return;                // две-три букви не са въпрос
+      if (т.split(/\s+/).length < 2) return;   // и една дума не е
+      изчистиНачалата(q);
+      const m = lsGet('bl_agent_miss', []);
+      const кратък = q.slice(0, 120);
+      if (m.some(x => x.q === кратък)) return;
+      if (m.some(x => започваС(String(x.q || ''), кратък))) return;
+      m.push({ q: кратък, room: 'търсачката', ts: Date.now() });
+      lsSet('bl_agent_miss', m.slice(-80));
+    }, 1200);
+  }
+
   function draw(q) {
     const box = $('searchResults');
     if (!norm(q).trim() || norm(q).trim().length < 2) { greet(); return; }
     const res = search(q);
+    // успешният въпрос изтрива своите недописани парчета от тефтера
+    if (res.length) { clearTimeout(_миссЧас); изчистиНачалата(q); }
     const ans = answerBubble(q);
     const sig = (ans ? ans.cls + ':' + ans.html.length : '-') + '#' + res.map(r => r.id || r.label).join('|');
     const fresh = (sig !== _drawSig); _drawSig = sig;
@@ -275,11 +303,10 @@
     if (!res.length) {
       if (!ans) {
         // 8.3.4: пропускът се записва — злато за библиотеката (както в чата)
-        const miss = lsGet('bl_agent_miss', []);
-        if (norm(q).trim().length > 3 && !miss.some(m => m.q === q.slice(0, 120))) {
-          miss.push({ q: q.slice(0, 120), room: 'търсачката', ts: Date.now() });
-          lsSet('bl_agent_miss', miss.slice(-80));
-        }
+        // 🔴 01.09: тук се записваше пропуск на ВСЯКА БУКВА, защото draw()
+        //    виси на 'input'. Тефтерът се пълнеше с недописани парчета на
+        //    въпроси, на които Е отговорено. Сега записът чака и чисти.
+        отложиПропуск(q);
         const room = routeRoom(norm(q));
         const d = document.createElement('div');
         d.className = 'sf-answer sf-chat';
