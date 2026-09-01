@@ -42,13 +42,31 @@
 
 Сега има работещ сървър (`.claude/launch.json` → `babyland`, порт 8911).
 
+### ✅ ЗАТВОРЕНИ на 01.09 — пуснати в браузъра, находките поправени
+
+**`dev/kontrast.js`** → три текста на контраст **3.4 при праг 4.5**, в ТЪМНА тема,
+всичките с клас `.onb-lbl-soft`. Причината не е цветът, а `opacity: .68` — в светла
+тема основата е достатъчно тъмна и минава, в тъмна не. Самият уред пишеше в главата
+си, че точно този клас е ОЦЕЛЯЛ от предишна поправка („кръгът е затворен по СПИСЪК,
+не по КОРЕН"). Мерено след поправката: **3.4 → 4.98**, и двете теми на 0 паднали.
+
+**`dev/dopir.js`** → шест находки от ТРИ РАЗЛИЧНИ ВИДА:
+- истински: „Спешни номера" и вратата към „Здраве и SOS" на 44px, при собствен праг
+  **48 за спешните** — точно там, където майката бърза с една ръка;
+- истинска: балончето 34px широко — расте ЗОНАТА, не кутията;
+- **фалшива, и тя беше в САМИЯ УРЕД**: точките на слайдера бяха отчетени като 34×10,
+  а в `css/touch.css` отдавна стои `.mdot::after { 44×44 }` — невидима зона точно за
+  това. Уредът четеше кутията и не виждаше псевдо-елемента. Пазач, който вика вълк за
+  поправено, спира да се чете → поправен да брои зоната.
+  Мерено в двете посоки: **6 → 0**, а подставено копче 20×18 още се хваща.
+
+### ОСТАВАТ ЧЕТИРИНАЙСЕТ
 ```
 dev/audit.js            dev/vsichko.js          dev/sintaksis.js
-dev/kontrast.js         dev/dopir.js            dev/kirilica.js
-dev/interaktivno.js     dev/klyuchove.js        dev/raf_podporka.js
-dev/test_biblioteka.js  dev/test_ezik.js        dev/test_flagove.js
-dev/test_nebe.js        dev/test_otgovori.js    dev/test_pamet.js
-dev/test_telefon.js     dev/test_vhod.js
+dev/kirilica.js         dev/interaktivno.js     dev/klyuchove.js
+dev/raf_podporka.js     dev/test_biblioteka.js  dev/test_ezik.js
+dev/test_flagove.js     dev/test_nebe.js        dev/test_otgovori.js
+dev/test_pamet.js       dev/test_telefon.js     dev/test_vhod.js
 ```
 
 ⚠️ Първо се прочита ГЛАВАТА на всеки — някои може да са остарели и да мерят нещо,
