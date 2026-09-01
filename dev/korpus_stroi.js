@@ -164,7 +164,7 @@ for (const [т, r] of НЕВИННИ) добави(т, 'NEVINNO', r);
 // и приложението. Истинската стойност идва от изречения, които някой е НАПИСАЛ
 // на езика на майката, без да гледа списъците. Те живеят в отделни файлове, за
 // да могат да се допълват, без този строител да се пипа.
-for (const [файл, вид] of [['korpus_speshni.json', 'SPESHNO'], ['korpus_nevinni.json', 'NEVINNO']]) {
+for (const [файл, вид] of [['korpus_speshni.json', 'SPESHNO'], ['korpus_nevinni.json', 'NEVINNO'], ['korpus_nevinni2.json', 'NEVINNO']]) {
   const п = path.join(__dirname, файл);
   if (!fs.existsSync(п)) { console.log('  ⚠️ няма dev/' + файл + ' — тази част липсва'); continue; }
   let сп = [];
