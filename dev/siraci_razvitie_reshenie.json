@@ -1,0 +1,482 @@
+[
+ {
+  "statia": "lib-nov-pesnichki",
+  "karta": "rz-govor",
+  "zashto": "Майка, която чака първата дума, точно това търси — какво да прави днес; песента влиза преди думата.",
+  "sigurnost": "visoka"
+ },
+ {
+  "statia": "lib-dve-ezika-kak",
+  "karta": "rz-dvuezichie",
+  "zashto": "Картата е за двата езика вкъщи, статията дава правилото кой език кога звучи.",
+  "sigurnost": "visoka"
+ },
+ {
+  "statia": "lib-mod-0008",
+  "karta": "lb2-revnost",
+  "zashto": "Същата тема: голямото ревнува новото бебе.",
+  "sigurnost": "visoka"
+ },
+ {
+  "statia": "lib-muz-ritam",
+  "karta": "rz-muzika",
+  "zashto": "Продължение на Музиката: с какво се прави ритъм вкъщи без инструменти.",
+  "sigurnost": "visoka"
+ },
+ {
+  "statia": "lib-0f473fbe",
+  "karta": "lb-zashto7",
+  "zashto": "Картата обяснява ЗАЩО седем вечери; статията — докъде се търпи и кога се спира.",
+  "sigurnost": "visoka"
+ },
+ {
+  "statia": "lib-nov-bez-yasla",
+  "karta": "in-gradina",
+  "zashto": "Картата е решението за ясла; статията отговаря на обратния въпрос — ами ако не ходи.",
+  "sigurnost": "visoka"
+ },
+ {
+  "statia": "lib-7e8cd180",
+  "karta": "rz-igri",
+  "zashto": "Какво да играем днес с бебе под 4 месеца — отговорът е лицето ти, не играчка.",
+  "sigurnost": "visoka"
+ },
+ {
+  "statia": "lib-mod-0001",
+  "karta": "nr-ekranite-chestno",
+  "zashto": "Същият честен тон, разширява картата за екраните без морализиране.",
+  "sigurnost": "visoka"
+ },
+ {
+  "statia": "lib-ek-hranene",
+  "karta": "zh-masata",
+  "zashto": "Картата е за детето, което не сяда да яде; храненето пред екран е точно този капан.",
+  "sigurnost": "sredna"
+ },
+ {
+  "statia": "lib-kn-parva",
+  "karta": "rz-edna-godina-igri",
+  "zashto": "Майка, която пита на какво се учи едногодишното, стига до първата книжка по възраст.",
+  "sigurnost": "sredna"
+ },
+ {
+  "statia": "lib-ya-parva-sedmica",
+  "karta": "nr-yaslata-parvite",
+  "zashto": "Картата е за първите две седмици; статията ги разписва ден по ден.",
+  "sigurnost": "visoka"
+ },
+ {
+  "statia": "lib-4f909614",
+  "karta": "rz-spodelyane",
+  "zashto": "Картата е за Мое и защо още не споделя; статията обяснява паралелната игра и грабнатата играчка.",
+  "sigurnost": "visoka"
+ },
+ {
+  "statia": "lib-gv-balgarski-chujbina",
+  "karta": "rz-dvuezichie",
+  "zashto": "Втори ъгъл на същата карта: как се задържа българският, когато живеете другаде.",
+  "sigurnost": "visoka"
+ },
+ {
+  "statia": "lib-46c431e3",
+  "karta": "nr-govorat-norma",
+  "zashto": "Картата е за нормата на говора; статията подрежда трите най-чести притеснения, вкл. всичко разбира, но не говори.",
+  "sigurnost": "sredna"
+ },
+ {
+  "statia": "lib-ef76cbbb",
+  "karta": "rz-prohojdane",
+  "zashto": "Майка, която чака стъпките, получава цялата картина на 13-18 месеца.",
+  "sigurnost": "sredna"
+ },
+ {
+  "statia": "lib-f66e844d",
+  "karta": "rz-obuvki",
+  "zashto": "Статията е точно за стъпалата, тазобедрените стави и първите обувки.",
+  "sigurnost": "visoka"
+ },
+ {
+  "statia": "lib-ad75ff5b",
+  "karta": "em-how",
+  "zashto": "Честният опит се проваля точно от това — очакването кара окото да вижда успех.",
+  "sigurnost": "visoka"
+ },
+ {
+  "statia": "lib-8644740f",
+  "karta": "ema-nauka",
+  "zashto": "Картата пита дали е наука; статията отговаря на самия въпрос съвпадение или причина.",
+  "sigurnost": "visoka"
+ },
+ {
+  "statia": "lib-ek-videorazgovor",
+  "karta": "rz-ekran",
+  "zashto": "Изключението от правилото на картата: видеовръзката с истински човек не е гледане.",
+  "sigurnost": "visoka"
+ },
+ {
+  "statia": "lib-mod-0009",
+  "karta": "rz-igri2",
+  "zashto": "Картата е за скуката и за детето, което не си играе само; статията строи точно това умение.",
+  "sigurnost": "visoka"
+ },
+ {
+  "statia": "lib-gv-dumite-prez-denya",
+  "karta": "rz-gukane",
+  "zashto": "Майка, чието бебе не гука, търси какво да прави днес — да говори на глас това, което така или иначе прави.",
+  "sigurnost": "visoka"
+ },
+ {
+  "statia": "lib-ec90671c",
+  "karta": "rz-sboguvane",
+  "zashto": "Картата е за сбогуването на вратата; статията обяснява тревожността и болежките без болест.",
+  "sigurnost": "visoka"
+ },
+ {
+  "statia": "lib-267c772b",
+  "karta": "ema-dva",
+  "zashto": "Картата казва, че два опита наведнъж не стават; статията подрежда кой е първи, когато всичко гори.",
+  "sigurnost": "visoka"
+ },
+ {
+  "statia": "lib-c0530753",
+  "karta": "nr-igrata-naistina",
+  "zashto": "Картата е за това какво наистина развива играта; въображаемата игра е следващата ѝ глава.",
+  "sigurnost": "visoka"
+ },
+ {
+  "statia": "lib-nov-sama",
+  "karta": "nia-sama",
+  "zashto": "Картата е точно за майката, чиито съвети са писани за двама; статията пренарежда метода за един възрастен.",
+  "sigurnost": "visoka"
+ },
+ {
+  "statia": "lib-muz-fon",
+  "karta": "rz-muzika",
+  "zashto": "Разграничава двата вида музика — фон и игра; директно продължение на картата.",
+  "sigurnost": "visoka"
+ },
+ {
+  "statia": "lib-muz-tanc",
+  "karta": "mb-cry",
+  "zashto": "Картата е как да успокоя бебето; люлеенето и танцът работят, когато думите не вършат работа.",
+  "sigurnost": "visoka"
+ },
+ {
+  "statia": "lib-kn-kak",
+  "karta": "rz-edna-godina-igri",
+  "zashto": "Едногодишното не сяда до края на приказката — статията казва как се чете на тази възраст.",
+  "sigurnost": "sredna"
+ },
+ {
+  "statia": "lib-68a786a5",
+  "karta": "nr-igrata-naistina",
+  "zashto": "Същата тема в пълен вид: какво в първите три години наистина помага.",
+  "sigurnost": "visoka"
+ },
+ {
+  "statia": "lib-e364aac4",
+  "karta": "rz-igri",
+  "zashto": "Картата има ключове за играчки по възраст и какво да купя; статията е точно това плюс честният отговор за екраните.",
+  "sigurnost": "visoka"
+ },
+ {
+  "statia": "lib-ek-spirane",
+  "karta": "rz-ekran",
+  "zashto": "Продължението на картата: не гледането е проблемът, а спирането.",
+  "sigurnost": "visoka"
+ },
+ {
+  "statia": "lib-09a639d0",
+  "karta": "rz-udrya",
+  "zashto": "Картата е за удрянето и бутането на другите деца; статията дава цялата рамка 1-3 години.",
+  "sigurnost": "visoka"
+ },
+ {
+  "statia": "lib-gyr-yasla",
+  "karta": "rz-gyrne",
+  "zashto": "Същата тема: гърнето, но когато вкъщи и в яслата правилата се бият.",
+  "sigurnost": "visoka"
+ },
+ {
+  "statia": "lib-fc8807da",
+  "karta": "lb3-razglezvane",
+  "zashto": "Картата обръща бабиното ще го разглезиш; статията донася какво казва науката за плача и привързаността.",
+  "sigurnost": "visoka"
+ },
+ {
+  "statia": "lib-4f535e88",
+  "karta": "sn-zaspivane-samo",
+  "zashto": "Картата описва пътищата към самостоятелното заспиване; статията отговаря на най-трудния въпрос — колко се чака при плач.",
+  "sigurnost": "visoka"
+ },
+ {
+  "statia": "lib-c63578f1",
+  "karta": "ema-obarnali",
+  "zashto": "Картата е работеше, а сега не; статията обяснява причината — детето се е сменило.",
+  "sigurnost": "visoka"
+ },
+ {
+  "statia": "lib-5f14ea39",
+  "karta": "ema-tetradka",
+  "zashto": "Картата е тетрадката с откритията; статията я свива до три реда на вечер.",
+  "sigurnost": "visoka"
+ },
+ {
+  "statia": "lib-6d23a29d",
+  "karta": "nr-granicite-bez",
+  "zashto": "Картата е за границите без крясък; статията обяснява защо тръшкането не е разглезване.",
+  "sigurnost": "visoka"
+ },
+ {
+  "statia": "lib-35902530",
+  "karta": "rz-korem",
+  "zashto": "Времето по коремче е грижата на 0-3 месеца; статията дава цялата картина за същия период, с червените флагове.",
+  "sigurnost": "sredna"
+ },
+ {
+  "statia": "lib-8f37b4a3",
+  "karta": "rz-hiperaktiven",
+  "zashto": "Майка, която се пита хиперактивен ли е на 2 години, има нужда точно от нормалната буря на 19-24 месеца.",
+  "sigurnost": "sredna"
+ },
+ {
+  "statia": "lib-8c3d0a65",
+  "karta": "rz-cvetove-broene",
+  "zashto": "Картата пита рано ли е за буквите; статията дава цялата норма на 25-36 месеца.",
+  "sigurnost": "sredna"
+ },
+ {
+  "statia": "lib-936f6ada",
+  "karta": "ema-zabravih",
+  "zashto": "Картата е за пропуснатото отмятане; статията прави записа толкова кратък, че да не се пропуска.",
+  "sigurnost": "visoka"
+ },
+ {
+  "statia": "lib-igr-pet-minuti",
+  "karta": "wm-nyama-vreme",
+  "zashto": "Отговорът на нямам време: пет минути на пода се броят.",
+  "sigurnost": "visoka"
+ },
+ {
+  "statia": "lib-praz-chujdi-rojdeni",
+  "karta": "nr-gnevniyat-izblik",
+  "zashto": "Картата има ключове за изблик пред хора; рожденият ден на друго дете е класическото място за такъв изблик.",
+  "sigurnost": "sredna"
+ },
+ {
+  "statia": "lib-vs-sutrin",
+  "karta": "rz-ne-slusha",
+  "zashto": "Картата е за детето, което не изпълнява; статията решава най-честата сутрешна битка с две думи избор.",
+  "sigurnost": "sredna"
+ },
+ {
+  "statia": "lib-6bcc675d",
+  "karta": "rz-zahapva-deca",
+  "zashto": "Същата тема, но в яслата: какво се казва на персонала и на другия родител.",
+  "sigurnost": "visoka"
+ },
+ {
+  "statia": "lib-35045d9e",
+  "karta": "nr-yaslata-parvite",
+  "zashto": "Втори ъгъл на същата карта: раздялата, тревожността и болежките през първите дни.",
+  "sigurnost": "visoka"
+ },
+ {
+  "statia": "lib-mod-0002",
+  "karta": "nr-gnevniyat-izblik",
+  "zashto": "Картата има ключ какво става в мозъка; статията е точно това обяснение.",
+  "sigurnost": "visoka"
+ },
+ {
+  "statia": "lib-nov-knizhki",
+  "karta": "rz-parvi-dumi",
+  "zashto": "Календарът на думите се движи от четенето; статията дава коя книжка на коя възраст.",
+  "sigurnost": "sredna"
+ },
+ {
+  "statia": "lib-kn-edna-i-sashta",
+  "karta": "rz-igri2",
+  "zashto": "Картата е за скуката; статията обръща въпроса — дотяга на теб, не на него.",
+  "sigurnost": "sredna"
+ },
+ {
+  "statia": "lib-mod-0005",
+  "karta": "nm-ritualat-predi",
+  "zashto": "Картата е ритуалът преди сън; статията показва как се спира вечерното пазарене.",
+  "sigurnost": "visoka"
+ },
+ {
+  "statia": "lib-igr-kashon",
+  "karta": "rz-igri",
+  "zashto": "Директен отговор на какво да играем днес, без да се купува нищо.",
+  "sigurnost": "visoka"
+ },
+ {
+  "statia": "lib-praz-rojden-1",
+  "karta": "rz-edna-godina-igri",
+  "zashto": "Картата е за годинката; статията отговаря колко празник издържа едногодишното.",
+  "sigurnost": "sredna"
+ },
+ {
+  "statia": "lib-3cd1056c",
+  "karta": "rz-autizam",
+  "zashto": "Картата е страхът за развитието; статията дава реалния маршрут в България — при кого и с какво.",
+  "sigurnost": "visoka"
+ },
+ {
+  "statia": "lib-eefb0bcd",
+  "karta": "mb-sluh",
+  "zashto": "Забавената реч не се оценява, без да се провери слухът — точното продължение на картата.",
+  "sigurnost": "visoka"
+ },
+ {
+  "statia": "lib-nov-pri-lekarya",
+  "karta": "in-profilaktika",
+  "zashto": "Картата е за прегледа; статията казва какво от записките върши работа там.",
+  "sigurnost": "visoka"
+ },
+ {
+  "statia": "lib-601f6a90",
+  "karta": "rz-cvetove-broene",
+  "zashto": "Картата пита рано ли е за буквите; статията отговаря защо и думата дислексия е рано.",
+  "sigurnost": "visoka"
+ },
+ {
+  "statia": "lib-ya-bolejki",
+  "karta": "lb-gradina-bolno",
+  "zashto": "Картата е болно дете и ясла; статията казва колко боледуване е нормално през първата година там.",
+  "sigurnost": "visoka"
+ },
+ {
+  "statia": "lib-50f13b36",
+  "karta": "ema-san",
+  "zashto": "Картата пита какво да пробвам за съня; статията е готовият опит с ритуала.",
+  "sigurnost": "visoka"
+ },
+ {
+  "statia": "lib-muz-prispivna",
+  "karta": "nm-ritualat-predi",
+  "zashto": "Приспивната е част от ритуала и работи, защото е същата.",
+  "sigurnost": "visoka"
+ },
+ {
+  "statia": "lib-fe031bec",
+  "karta": "ema-obarnali",
+  "zashto": "Втори ъгъл на същата карта: да повторя ли опита, или да го оставя.",
+  "sigurnost": "sredna"
+ },
+ {
+  "statia": "lib-540d06cc",
+  "karta": "ema-tetradka",
+  "zashto": "Същата карта, друг носител: телефонът вместо тетрадка.",
+  "sigurnost": "visoka"
+ },
+ {
+  "statia": "lib-067309d4",
+  "karta": "nr-granicite-bez",
+  "zashto": "Картата е за границите; статията обяснява, че упоритото не е умора, глад или страх.",
+  "sigurnost": "sredna"
+ },
+ {
+  "statia": "lib-684dbbfa",
+  "karta": "rz-ploshtadka",
+  "zashto": "Картата е за площадката; статията разширява до ресторант, гости и шум — и как се излиза навреме.",
+  "sigurnost": "sredna"
+ },
+ {
+  "statia": "lib-praz-koleda",
+  "karta": "nd-rodninite-savetite",
+  "zashto": "Семейните събирания са мястото на тази карта; статията казва защо се провалят и какво помага. По-слаба връзка — картата е за границата, статията за преживяването.",
+  "sigurnost": "niska"
+ },
+ {
+  "statia": "lib-c90a3cc2",
+  "karta": "rz-noshtno-suho",
+  "zashto": "Картата е за мокрото легло след постигнат контрол; статията обяснява тоалетния регрес и причините му.",
+  "sigurnost": "visoka"
+ },
+ {
+  "statia": "lib-bcaa91af",
+  "karta": "rz-autizam",
+  "zashto": "Загубата на вече усвоено умение е най-тежкият страх за развитието — точно тази карта.",
+  "sigurnost": "visoka"
+ },
+ {
+  "statia": "lib-3e96e745",
+  "karta": "in-napravlenie",
+  "zashto": "Картата води до специалист; статията учи как се различава добрият специалист от продавача на страх.",
+  "sigurnost": "sredna"
+ },
+ {
+  "statia": "lib-549d24f2",
+  "karta": "nr-govorat-norma",
+  "zashto": "Картата е за това кое НЕ се чака; статията добавя регреса към списъка на нечакащите.",
+  "sigurnost": "sredna"
+ },
+ {
+  "statia": "lib-kn-kade-stoyat",
+  "karta": "in-order",
+  "zashto": "Картата е подредбата на дома с бебе; статията е за едно конкретно място — къде стоят книжките.",
+  "sigurnost": "sredna"
+ },
+ {
+  "statia": "lib-kn-biblioteka",
+  "karta": "rz-ploshtadka",
+  "zashto": "Втора карта за местата навън: библиотеката е площадката на дъждовния ден и е безплатна.",
+  "sigurnost": "sredna"
+ },
+ {
+  "statia": "lib-igr-voda",
+  "karta": "rz-igri2",
+  "zashto": "Водата задържа вниманието по-дълго от всичко друго вкъщи — пряк отговор на скуката.",
+  "sigurnost": "visoka"
+ },
+ {
+  "statia": "lib-mod-0007",
+  "karta": "rz-parvi-dumi",
+  "zashto": "Календарът на говора продължава дотук: фазата на защо.",
+  "sigurnost": "sredna"
+ },
+ {
+  "statia": "lib-322278c4",
+  "karta": "zd-uhapvane-zhivotno",
+  "zashto": "Картата е ухапване от куче и котка; статията дава цялата рамка животно и малко дете.",
+  "sigurnost": "visoka"
+ },
+ {
+  "statia": "lib-80fe6b41",
+  "karta": "rz-gyrne",
+  "zashto": "Същата тема в пълен вид: готовност, регрес и защо натискът не работи.",
+  "sigurnost": "visoka"
+ },
+ {
+  "statia": "lib-a1d555a7",
+  "karta": "rz-inat-2g",
+  "zashto": "Картата е двегодишното не; статията обяснява какво стои зад тръшкането и хапането.",
+  "sigurnost": "visoka"
+ },
+ {
+  "statia": "lib-igr-testo",
+  "karta": "rz-molivche",
+  "zashto": "Картата е за молива и пластилина; статията ги прави от три неща от шкафа.",
+  "sigurnost": "visoka"
+ },
+ {
+  "statia": "lib-9c6bceaf",
+  "karta": "lb-parvi-zabi",
+  "zashto": "Картата настоява зъбите да се мият всеки ден; статията решава най-честата пречка — детето не дава.",
+  "sigurnost": "visoka"
+ },
+ {
+  "statia": "lib-b0bc1cc2",
+  "karta": "nr-govorat-norma",
+  "zashto": "Картата е кое е норма и кое не се чака; статията добавя движението към същия списък.",
+  "sigurnost": "visoka"
+ },
+ {
+  "statia": "lib-14c20cdf",
+  "karta": "rz-autizam",
+  "zashto": "Силната реакция към шум, дрехи и текстури е чест повод за страх за развитието; статията подрежда кое е чувствителност и кое е флаг.",
+  "sigurnost": "sredna"
+ }
+]

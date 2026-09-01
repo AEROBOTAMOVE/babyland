@@ -1,0 +1,524 @@
+[
+ {
+  "statia": "lib-70d8bffe",
+  "karta": "zd-jaltenica",
+  "zashto": "Статията Е жълтеницата — картата за жълтеницата няма нито една статия",
+  "sigurnost": "visoka"
+ },
+ {
+  "statia": "lib-60721356",
+  "karta": "zh-blw",
+  "zashto": "Точно за прехода пюре към парченца и текстурите, за които пита картата",
+  "sigurnost": "visoka"
+ },
+ {
+  "statia": "lib-ce380e1f",
+  "karta": "nm-vecher-iska",
+  "zashto": "Кластерното кърмене и скокът на растежа са едно и също преживяване за майката",
+  "sigurnost": "visoka"
+ },
+ {
+  "statia": "lib-mod-0029",
+  "karta": "mb-otbi-nosht",
+  "zashto": "Отвикването от нощни хранения Е нощното отбиване",
+  "sigurnost": "visoka"
+ },
+ {
+  "statia": "lib-nov-red-na-denya",
+  "karta": "zh-milk-qty",
+  "zashto": "Отговаря точно кога млякото е преди чинията и кога след нея",
+  "sigurnost": "visoka"
+ },
+ {
+  "statia": "lib-cdc0d92f",
+  "karta": "sn-kolko-0-3",
+  "zashto": "Статията е за сън 0-3 месеца, картата пита точно за тази възраст",
+  "sigurnost": "visoka"
+ },
+ {
+  "statia": "lib-4a16538a",
+  "karta": "sn-kolko-7-12",
+  "zashto": "Статията е за сън 6-12 месеца, картата е за 7 месеца до годинката",
+  "sigurnost": "visoka"
+ },
+ {
+  "statia": "lib-nov-povivane",
+  "karta": "lb3-povivane",
+  "zashto": "Картата оборва мита за стегнатото повиване, статията показва как се повива правилно",
+  "sigurnost": "visoka"
+ },
+ {
+  "statia": "lib-e2490c32",
+  "karta": "zh-weight",
+  "zashto": "Картата пита наддава ли достатъчно, статията чете кантара",
+  "sigurnost": "visoka"
+ },
+ {
+  "statia": "lib-mod-0033",
+  "karta": "sn-regresii-kraj",
+  "zashto": "Регресията на 18 месеца е следващата регресия след тези в картата",
+  "sigurnost": "sredna"
+ },
+ {
+  "statia": "lib-1adbd232",
+  "karta": "zh-obshta-masa",
+  "zashto": "След годинката детето сяда на общата маса — точно това е статията",
+  "sigurnost": "visoka"
+ },
+ {
+  "statia": "lib-4b472141",
+  "karta": "nd-doma",
+  "zashto": "Какво следи родителят у дома след НИКУ — картата е за недоносеното у дома",
+  "sigurnost": "visoka"
+ },
+ {
+  "statia": "lib-6eab9f01",
+  "karta": "nd-doma",
+  "zashto": "Кислород, апнеи и монитор у дома след изписване",
+  "sigurnost": "visoka"
+ },
+ {
+  "statia": "lib-nov-evtino",
+  "karta": "ni-parite-parvata",
+  "zashto": "Картата е за парите в първата година, статията показва евтиното захранване",
+  "sigurnost": "sredna"
+ },
+ {
+  "statia": "lib-zah-plyu",
+  "karta": "zh-kolko-pati-opit",
+  "zashto": "Колко пъти се предлага нова храна — точният отговор на картата",
+  "sigurnost": "visoka"
+ },
+ {
+  "statia": "lib-4fd97361",
+  "karta": "za-prigotviane-mlyako",
+  "zashto": "Приготвяне на адаптирано мляко и шишето — картата няма нито една статия",
+  "sigurnost": "visoka"
+ },
+ {
+  "statia": "lib-63d0bf2d",
+  "karta": "zah-koga",
+  "zashto": "Естественото продължение след старта: какво следва на 6-9 месеца",
+  "sigurnost": "visoka"
+ },
+ {
+  "statia": "lib-ca981338",
+  "karta": "zh-priderliv",
+  "zashto": "Селективността на 24-36 месеца е точно придирливата фаза",
+  "sigurnost": "visoka"
+ },
+ {
+  "statia": "lib-d9f4a3e0",
+  "karta": "nd-korr",
+  "zashto": "Статията обяснява коригираната възраст и проследяването",
+  "sigurnost": "visoka"
+ },
+ {
+  "statia": "lib-7ff401c1",
+  "karta": "zh-mahni-shishe",
+  "zashto": "Преходът шише към чаша Е отиването на шишето",
+  "sigurnost": "visoka"
+ },
+ {
+  "statia": "lib-20a8649f",
+  "karta": "sn-kolko-1-3g",
+  "zashto": "Сънят при малко дете — картата е за годинката до 3 години",
+  "sigurnost": "visoka"
+ },
+ {
+  "statia": "lib-fcc81c0a",
+  "karta": "zh-opasni",
+  "zashto": "Храните за избягване са точно кое НЕ се дава",
+  "sigurnost": "visoka"
+ },
+ {
+  "statia": "lib-eba573d7",
+  "karta": "mb-rastej",
+  "zashto": "Персентили и тегло — картата пита дали расте добре",
+  "sigurnost": "visoka"
+ },
+ {
+  "statia": "lib-7f893ed6",
+  "karta": "mb-sterilizirane",
+  "zashto": "Статията Е стерилизацията на шишета и биберони",
+  "sigurnost": "visoka"
+ },
+ {
+  "statia": "lib-9c637089",
+  "karta": "sn-kolko-4-6",
+  "zashto": "Сън 3-6 месеца срещу карта за съня на 4, 5 и 6 месеца",
+  "sigurnost": "visoka"
+ },
+ {
+  "statia": "lib-97d16f0d",
+  "karta": "sn-kolko-1-3g",
+  "zashto": "Сън 24-36 месеца попада в диапазона на картата",
+  "sigurnost": "visoka"
+ },
+ {
+  "statia": "lib-1513eb78",
+  "karta": "lb-boli-kurmene",
+  "zashto": "Рагади, кандидоза и грешен захват са причините болката да е реална",
+  "sigurnost": "visoka"
+ },
+ {
+  "statia": "lib-f42f3f4c",
+  "karta": "lb3-kolastra",
+  "zashto": "Картата е натискът да се даде шише, статията е дохранването без вина",
+  "sigurnost": "visoka"
+ },
+ {
+  "statia": "lib-665208e6",
+  "karta": "lb-skrining",
+  "zashto": "Неонаталният скрининг Е боцкането от картата",
+  "sigurnost": "visoka"
+ },
+ {
+  "statia": "lib-296c5027",
+  "karta": "zh-blw",
+  "zashto": "Първата седмица по метода на детския избор — картата пита пюрета или парченца",
+  "sigurnost": "visoka"
+ },
+ {
+  "statia": "lib-36485aab",
+  "karta": "zh-otkaz",
+  "zashto": "Картата е не иска да яде, статията дава практическото без паника",
+  "sigurnost": "visoka"
+ },
+ {
+  "statia": "lib-mod-0030",
+  "karta": "sn-ranno-sabuzhdane",
+  "zashto": "Едно и също: будене в 5 сутринта",
+  "sigurnost": "visoka"
+ },
+ {
+  "statia": "lib-mod-0031",
+  "karta": "nm-regresiit-meseca",
+  "zashto": "Регресията на 8-10 месеца е буквално темата на картата",
+  "sigurnost": "visoka"
+ },
+ {
+  "statia": "lib-b41c7e6a",
+  "karta": "lb-mastit",
+  "zashto": "Нагрубяването ден 3-5 е горещата болезнена гърда, за която пита картата",
+  "sigurnost": "visoka"
+ },
+ {
+  "statia": "lib-nov-origvane",
+  "karta": "mb-origvane",
+  "zashto": "Статията Е оригването — картата няма нито една статия",
+  "sigurnost": "visoka"
+ },
+ {
+  "statia": "lib-a406fb9e",
+  "karta": "zd-son2",
+  "zashto": "Безопасност на съня и кога е медицинско — картата за съня в здравната стая",
+  "sigurnost": "visoka"
+ },
+ {
+  "statia": "lib-19a29f30",
+  "karta": "rz-ekran",
+  "zashto": "Екрани при дете 0-3 — картата е точно за екраните",
+  "sigurnost": "visoka"
+ },
+ {
+  "statia": "lib-mod-0019",
+  "karta": "zh-priderliv",
+  "zashto": "Днес не яде нищо е самата придирлива фаза",
+  "sigurnost": "visoka"
+ },
+ {
+  "statia": "lib-47ee8b4c",
+  "karta": "mb-kolko-mliako",
+  "zashto": "По какво се разбира, че бебето яде достатъчно — въпросът на картата",
+  "sigurnost": "visoka"
+ },
+ {
+  "statia": "lib-mod-0024",
+  "karta": "zh-obshta-masa",
+  "zashto": "Семейната маса е точно кога сяда на масата с нас",
+  "sigurnost": "visoka"
+ },
+ {
+  "statia": "lib-c2e6e1d8",
+  "karta": "zh-laktoza",
+  "zashto": "Алергия към белтъка срещу мит за лактозата — темата на картата",
+  "sigurnost": "visoka"
+ },
+ {
+  "statia": "lib-46cf78e7",
+  "karta": "zh-voda",
+  "zashto": "Дете, което не пие вода, а живее на сок",
+  "sigurnost": "visoka"
+ },
+ {
+  "statia": "lib-f1acbe97",
+  "karta": "dn-nedospivane",
+  "zashto": "Изтощеният родител, психиката и двойката — картата е за недоспиването",
+  "sigurnost": "visoka"
+ },
+ {
+  "statia": "lib-45209867",
+  "karta": "zd-breath",
+  "zashto": "Грухтене, шумно и трудно дишане при новородено",
+  "sigurnost": "visoka"
+ },
+ {
+  "statia": "lib-b5bcbd6a",
+  "karta": "zh-skrita-sol",
+  "zashto": "Четенето на етикет е как се хваща скритата сол и захар",
+  "sigurnost": "visoka"
+ },
+ {
+  "statia": "lib-584aeb6a",
+  "karta": "lb2-vitamind",
+  "zashto": "Витамин Д и добавките — картата няма нито една статия",
+  "sigurnost": "visoka"
+ },
+ {
+  "statia": "lib-nov-chuzhdi-ratse",
+  "karta": "lb-med-sol",
+  "zashto": "Медът от бабата е точно въпросът на картата за мед, сол и захар",
+  "sigurnost": "visoka"
+ },
+ {
+  "statia": "lib-mod-0027",
+  "karta": "sn-zaspivane-samo",
+  "zashto": "Нежният път е един от пътищата, за които пита картата",
+  "sigurnost": "visoka"
+ },
+ {
+  "statia": "lib-fff3f698",
+  "karta": "lb-skrining",
+  "zashto": "Слухов и метаболитен скрининг плюс маршрута на родителя",
+  "sigurnost": "visoka"
+ },
+ {
+  "statia": "lib-3f729e32",
+  "karta": "nd-what",
+  "zashto": "Кенгуру-грижа и пътят до вкъщи — първата среща с недоносеното",
+  "sigurnost": "visoka"
+ },
+ {
+  "statia": "lib-b3af7186",
+  "karta": "lb-parvi-zabi",
+  "zashto": "Миене от първия зъб, флуор и кариес — темата на картата",
+  "sigurnost": "visoka"
+ },
+ {
+  "statia": "lib-2618e509",
+  "karta": "zh-laktoza",
+  "zashto": "АБКМ е точно алергията към кравето мляко от картата",
+  "sigurnost": "visoka"
+ },
+ {
+  "statia": "lib-2ec5e4f7",
+  "karta": "mb-otbi-kak",
+  "zashto": "Преходът кърма към формула и отказът от шише е как се отбива",
+  "sigurnost": "visoka"
+ },
+ {
+  "statia": "lib-mod-0021",
+  "karta": "nr-ekranite-chestno",
+  "zashto": "Хапката пред екрана е честният разговор за екраните",
+  "sigurnost": "sredna"
+ },
+ {
+  "statia": "lib-2e84d651",
+  "karta": "mb-malko-mliako",
+  "zashto": "Честно за проблемите при майка, която се страхува, че млякото не стига",
+  "sigurnost": "sredna"
+ },
+ {
+  "statia": "lib-4ce1515c",
+  "karta": "rz-noshtni-strahove",
+  "zashto": "Кошмари срещу нощни страхове — точно разликата от картата",
+  "sigurnost": "visoka"
+ },
+ {
+  "statia": "lib-d833bed8",
+  "karta": null,
+  "zashto": "Няма карта за вродено сърдечно заболяване; закачането ѝ за хранителна карта би плашило без повод",
+  "sigurnost": "niska"
+ },
+ {
+  "statia": "lib-93bac0f0",
+  "karta": "mb-malko-mliako",
+  "zashto": "Най-честият въпрос е имам ли достатъчно мляко — точно страхът от картата",
+  "sigurnost": "visoka"
+ },
+ {
+  "statia": "lib-31ca8eb9",
+  "karta": "zh-na-pat-hrana",
+  "zashto": "Ресторант и гости е храненето навън от картата",
+  "sigurnost": "visoka"
+ },
+ {
+  "statia": "lib-mod-0023",
+  "karta": "zh-na-pat-hrana",
+  "zashto": "Оцеляване на масата навън с малко дете",
+  "sigurnost": "visoka"
+ },
+ {
+  "statia": "lib-1f5ff46b",
+  "karta": "lb2-treperene",
+  "zashto": "Трепереща брадичка и стряскане — буквално картата",
+  "sigurnost": "visoka"
+ },
+ {
+  "statia": "lib-rit-den",
+  "karta": "nm-budnoto-vreme",
+  "zashto": "Ритъмът на деня по възрасти е рамката около будното време",
+  "sigurnost": "visoka"
+ },
+ {
+  "statia": "lib-9f01de2c",
+  "karta": "nd-hrani",
+  "zashto": "Ниско тегло при раждане: растеж, хранене и проследяване",
+  "sigurnost": "sredna"
+ },
+ {
+  "statia": "lib-a735ab15",
+  "karta": "zd-vomit",
+  "zashto": "Кога повръщането е тревога — картата пита повръщане или избълване",
+  "sigurnost": "visoka"
+ },
+ {
+  "statia": "lib-95d743fb",
+  "karta": "zh-himia",
+  "zashto": "Бурканчета срещу домашно, етикети и хигиена — темата на картата",
+  "sigurnost": "visoka"
+ },
+ {
+  "statia": "lib-6e3e4ac8",
+  "karta": "nd-what",
+  "zashto": "Кожа до кожа и кенгуру грижа при недоносено",
+  "sigurnost": "visoka"
+ },
+ {
+  "statia": "lib-fcda80c8",
+  "karta": "nd-rodninite-savetite",
+  "zashto": "Гостите, целувките и границата пред роднините",
+  "sigurnost": "visoka"
+ },
+ {
+  "statia": "lib-4a0c334a",
+  "karta": "zh-portion",
+  "zashto": "Апетитът пада при зъби и скача при прохождане — обяснява колебанията в порцията",
+  "sigurnost": "sredna"
+ },
+ {
+  "statia": "lib-748c8915",
+  "karta": "zd-koga-e-speshno",
+  "zashto": "Малките знаци у новороденото и кога стават спешни",
+  "sigurnost": "sredna"
+ },
+ {
+  "statia": "lib-fdee24e7",
+  "karta": "zd-bronhiolit",
+  "zashto": "Статията Е бронхиолитът от картата",
+  "sigurnost": "visoka"
+ },
+ {
+  "statia": "lib-951912fd",
+  "karta": "zd-dishane-chisla",
+  "zashto": "Учестеното дишане и посиняването са сърдечните червени флагове",
+  "sigurnost": "sredna"
+ },
+ {
+  "statia": "lib-5f878ca5",
+  "karta": "nm-kogato-izdarzhas",
+  "zashto": "Недоспиване и план за безопасност при майка, която не издържа",
+  "sigurnost": "visoka"
+ },
+ {
+  "statia": "lib-c285ca42",
+  "karta": "lb2-aki-cvetove",
+  "zashto": "Мекониум, бледи изпражнения и кръв — пътеводителят на цветовете",
+  "sigurnost": "visoka"
+ },
+ {
+  "statia": "lib-3bf27555",
+  "karta": "zh-porcii-vazrast",
+  "zashto": "Порцията е колкото юмручето — картата пита колко му е порцията",
+  "sigurnost": "visoka"
+ },
+ {
+  "statia": "lib-622f50cf",
+  "karta": "zh-portion",
+  "zashto": "Растежните вълни обясняват защо ту много, ту малко",
+  "sigurnost": "visoka"
+ },
+ {
+  "statia": "lib-20ad16e5",
+  "karta": "mb-rastej",
+  "zashto": "Физиологичното сваляне на тегло е първият въпрос дали расте добре",
+  "sigurnost": "visoka"
+ },
+ {
+  "statia": "lib-d4bbca7e",
+  "karta": "mb-rastej",
+  "zashto": "Персентилът и посоката на кривата",
+  "sigurnost": "visoka"
+ },
+ {
+  "statia": "lib-mod-0022",
+  "karta": "zh-himia",
+  "zashto": "Био срещу реалност е същият избор като бурканче срещу домашно",
+  "sigurnost": "sredna"
+ },
+ {
+  "statia": "lib-20a5a000",
+  "karta": "lb3-bira",
+  "zashto": "Срещу бабиния съвет: към кого наистина се обръщаш за кърменето",
+  "sigurnost": "sredna"
+ },
+ {
+  "statia": "lib-4cf38c06",
+  "karta": "lb-boli-kurmene",
+  "zashto": "Късата юздичка е честа причина зърната да болят",
+  "sigurnost": "visoka"
+ },
+ {
+  "statia": "lib-fcfc0bf6",
+  "karta": "lb2-plyene",
+  "zashto": "Повръщането на фонтан е червеният флаг зад въпроса рефлукс ли е",
+  "sigurnost": "visoka"
+ },
+ {
+  "statia": "lib-ce4f57d7",
+  "karta": "mb-colic",
+  "zashto": "Вечерният плач в първите седмици е коликите от картата",
+  "sigurnost": "sredna"
+ },
+ {
+  "statia": "lib-0b9ccecc",
+  "karta": "zd-mlechnica",
+  "zashto": "Статията Е млечницата — бялото, което не се изтрива",
+  "sigurnost": "visoka"
+ },
+ {
+  "statia": "lib-7204d6aa",
+  "karta": "sn-zaspivane-samo",
+  "zashto": "Сравнение на методите е точно какви пътища има",
+  "sigurnost": "visoka"
+ },
+ {
+  "statia": "lib-900cf794",
+  "karta": "sn-3-noshtta",
+  "zashto": "Майка на предела мисли за консултант — статията казва какво да пита преди да плати",
+  "sigurnost": "sredna"
+ },
+ {
+  "statia": "lib-ad0299d2",
+  "karta": "zd-hyrkane-son",
+  "zashto": "Хъркане и сънна апнея — картата няма нито една статия",
+  "sigurnost": "visoka"
+ },
+ {
+  "statia": "lib-36e46237",
+  "karta": "zh-zamraziavane",
+  "zashto": "Пластмасите и кутиите опират до замразяване и претопляне",
+  "sigurnost": "sredna"
+ }
+]

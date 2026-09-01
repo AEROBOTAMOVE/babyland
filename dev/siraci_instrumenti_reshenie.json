@@ -1,0 +1,614 @@
+[
+ {
+  "statia": "lib-c482dd10",
+  "karta": "lb-yasla-dokumenti",
+  "zashto": "Точно същата тема: прием, документи и местни правила за ясла и детска кухня.",
+  "sigurnost": "visoka"
+ },
+ {
+  "statia": "lib-nov-nosht-3",
+  "karta": "br-kakvo-e-normalno",
+  "zashto": "Статията учи как да отделиш телесен сигнал от тревожна мисъл и кога да звъннеш — това е самата карта.",
+  "sigurnost": "visoka"
+ },
+ {
+  "statia": "lib-fb957681",
+  "karta": "in-gradina",
+  "zashto": "Софийските ясли, градини и класирането са естественото продължение на картата за градината и яслата.",
+  "sigurnost": "visoka"
+ },
+ {
+  "statia": "lib-pt-samolet",
+  "karta": "in-samolet",
+  "zashto": "Ушите при кацане и ръчният багаж са практиката зад картата за летене с бебе.",
+  "sigurnost": "visoka"
+ },
+ {
+  "statia": "lib-24f43aca",
+  "karta": "br-vitamini",
+  "zashto": "Желязото и витамин D са двете добавки, за които майката пита след картата за витамините.",
+  "sigurnost": "sredna"
+ },
+ {
+  "statia": "lib-nov-kraka",
+  "karta": "br-otoci-krak",
+  "zashto": "Статията тръгва от отоците и стига до вената, която иска преглед същия ден.",
+  "sigurnost": "visoka"
+ },
+ {
+  "statia": "lib-12a871fb",
+  "karta": "zd-komari",
+  "zashto": "Кърлежи, комари и репеленти — същият въпрос, разгърнат.",
+  "sigurnost": "visoka"
+ },
+ {
+  "statia": "lib-b5dd3825",
+  "karta": "nb-skriningi-meri",
+  "zashto": "Феталната морфология е един от скринингите, които картата изброява.",
+  "sigurnost": "visoka"
+ },
+ {
+  "statia": "lib-44b8354c",
+  "karta": "br-plan-razhdane",
+  "zashto": "Майка с готов план има нужда да чуе, че раждането не върви по сценарий и кое иска телефон.",
+  "sigurnost": "sredna"
+ },
+ {
+  "statia": "lib-mod-0040",
+  "karta": "br-strah-razhdane",
+  "zashto": "Страхът след трудно първо раждане е точно страхът от раждането, за който е картата.",
+  "sigurnost": "visoka"
+ },
+ {
+  "statia": "lib-nov-zapek",
+  "karta": "br-diskomfort",
+  "zashto": "Запекът и хемороидите в бременността са сред дребните мъки, за които пита картата.",
+  "sigurnost": "sredna"
+ },
+ {
+  "statia": "lib-nov-kiselini",
+  "karta": "br-kiselini-nosht",
+  "zashto": "Същата тема дума по дума: киселини, които не дават да се спи.",
+  "sigurnost": "visoka"
+ },
+ {
+  "statia": "lib-tools-pripoznavane",
+  "karta": "in-izdrazhka-bashta",
+  "zashto": "Припознаване, име и издръжка — картата за бащата на хартия.",
+  "sigurnost": "visoka"
+ },
+ {
+  "statia": "lib-5655c926",
+  "karta": "br-hranene",
+  "zashto": "Разнообразие вместо ядене за двама — прякото продължение на картата какво да ям.",
+  "sigurnost": "visoka"
+ },
+ {
+  "statia": "lib-37b29984",
+  "karta": "br-pregledi",
+  "zashto": "Първият преглед между 8 и 12 седмица е първата спирка от графика на прегледите.",
+  "sigurnost": "visoka"
+ },
+ {
+  "statia": "lib-094feb0a",
+  "karta": "lb-stolche",
+  "zashto": "Осемте въпроса за столчето са практиката зад правилата, които спасяват.",
+  "sigurnost": "visoka"
+ },
+ {
+  "statia": "lib-04dd3b75",
+  "karta": "lb-gradina-bolno",
+  "zashto": "Медицинското за ясла и правилата за връщане след болест са същият въпрос.",
+  "sigurnost": "visoka"
+ },
+ {
+  "statia": "lib-3b8f1426",
+  "karta": "ni-kolichka-stolche",
+  "zashto": "Монтажът, щипковият тест и втората употреба са същността на картата за количка, столче и легло.",
+  "sigurnost": "visoka"
+ },
+ {
+  "statia": "lib-e66a2f73",
+  "karta": "nb-skriningi-meri",
+  "zashto": "Скринингът в 11-13 седмица е буквално един от скринингите в картата.",
+  "sigurnost": "visoka"
+ },
+ {
+  "statia": "lib-3fc5ee56",
+  "karta": "nb-denyat-izpisvane",
+  "zashto": "Епикризата и въпросите към родилното се случват точно в деня на изписването.",
+  "sigurnost": "visoka"
+ },
+ {
+  "statia": "lib-9afedd35",
+  "karta": "nm-lekarstva-kafe",
+  "zashto": "Билки, добавки и активна съставка при кърмене — същата предпазливост като в картата.",
+  "sigurnost": "sredna"
+ },
+ {
+  "statia": "lib-preg-ttc-ovulation",
+  "karta": "br-test",
+  "zashto": "Жената, която чака чертичка всеки месец, пита точно това преди самия тест.",
+  "sigurnost": "visoka"
+ },
+ {
+  "statia": "lib-1640ce7f",
+  "karta": "br-kontrakcii",
+  "zashto": "Признаците на родова дейност са въпросът как разбирам, че почва.",
+  "sigurnost": "visoka"
+ },
+ {
+  "statia": "lib-nov-obmenna-karta",
+  "karta": "br-chanta",
+  "zashto": "Обменната карта е листът, който влиза в чантата за родилното.",
+  "sigurnost": "visoka"
+ },
+ {
+  "statia": "lib-15a2a233",
+  "karta": "rz-autizam",
+  "zashto": "Майка, която се страхува за развитието, следващо пита за ТЕЛК, права и къде има подкрепа.",
+  "sigurnost": "sredna"
+ },
+ {
+  "statia": "lib-9a205e31",
+  "karta": "lb-bateria",
+  "zashto": "Батерии-копчета и магнити — същата нулева толерантност, разширена с водни перли.",
+  "sigurnost": "visoka"
+ },
+ {
+  "statia": "lib-41c519cf",
+  "karta": "in2-ne-kupuvai",
+  "zashto": "Как се усеща опасен продукт и къде се подава жалба продължава списъка какво да не купуваш.",
+  "sigurnost": "sredna"
+ },
+ {
+  "statia": "lib-a2782e56",
+  "karta": "br-pregledi",
+  "zashto": "Зачестяването на прегледите от 28 седмица е следващата глава от графика.",
+  "sigurnost": "visoka"
+ },
+ {
+  "statia": "lib-1bd2c732",
+  "karta": "nb-planovo-sekcio",
+  "zashto": "Първите 24 часа след секцио идват веднага след деня на самото секцио.",
+  "sigurnost": "visoka"
+ },
+ {
+  "statia": "lib-061236c1",
+  "karta": "mb-kola-stolche",
+  "zashto": "Плачът в столчето е най-честият проблем при пътуване с кола.",
+  "sigurnost": "visoka"
+ },
+ {
+  "statia": "lib-b1733a0a",
+  "karta": "ni-dokumenti-red",
+  "zashto": "Кое, къде и в какъв ред е точно обещанието на картата за документите по ред.",
+  "sigurnost": "visoka"
+ },
+ {
+  "statia": "lib-bcbdadb9",
+  "karta": "in-dom-po-stai",
+  "zashto": "Радонът е риск в самото жилище; най-близката карта е обезопасяването на дома, но връзката е слаба.",
+  "sigurnost": "niska"
+ },
+ {
+  "statia": "lib-3d1dbcc7",
+  "karta": "in-palnomoshtno",
+  "zashto": "Кой води детето на лекар и го взима от яслата е точно спорът при разделени родители.",
+  "sigurnost": "visoka"
+ },
+ {
+  "statia": "lib-8f39e925",
+  "karta": "lb-yasla-dokumenti",
+  "zashto": "Регистрацията и менюто на детската кухня са втората половина на същата карта.",
+  "sigurnost": "visoka"
+ },
+ {
+  "statia": "lib-mod-0038",
+  "karta": "br-spirane-rabota",
+  "zashto": "Честният отговор до кога да работиш е самият въпрос на картата.",
+  "sigurnost": "visoka"
+ },
+ {
+  "statia": "lib-26f03d1e",
+  "karta": "br-diskomfort",
+  "zashto": "Тазовата болка и ишиасът са сред мъките, за които майката пита нормално ли е.",
+  "sigurnost": "sredna"
+ },
+ {
+  "statia": "lib-fdfaa456",
+  "karta": "nb-zaduh-sarcebien",
+  "zashto": "Задухът и болката в крака са същите сигнали, които картата разграничава от нормалното.",
+  "sigurnost": "visoka"
+ },
+ {
+  "statia": "lib-7e0c8521",
+  "karta": "br-sedmici",
+  "zashto": "Търсенето по седмица и по месец продължава картата за броенето на седмиците.",
+  "sigurnost": "sredna"
+ },
+ {
+  "statia": "lib-afed8a41",
+  "karta": "nia-strah-ot-nego",
+  "zashto": "Безопасният план при насилие е точно съдържанието на картата за небезопасен дом.",
+  "sigurnost": "visoka"
+ },
+ {
+  "statia": "lib-075d6648",
+  "karta": "ni-parite-parvata",
+  "zashto": "Помощите за новородени са парите в първата година, разписани поименно.",
+  "sigurnost": "visoka"
+ },
+ {
+  "statia": "lib-43ca324f",
+  "karta": "zg-zashto",
+  "zashto": "Скръбта след загуба и че вината не е твоя са една и съща тема.",
+  "sigurnost": "visoka"
+ },
+ {
+  "statia": "lib-c233424a",
+  "karta": "nb-apgar-chisloto",
+  "zashto": "Апгар е първата минута; статията разказва следващите два часа.",
+  "sigurnost": "visoka"
+ },
+ {
+  "statia": "lib-cde8c8e8",
+  "karta": "nb-skriningi-meri",
+  "zashto": "НИПТ, морфология и амниоцентеза са точно това, което картата разграничава.",
+  "sigurnost": "visoka"
+ },
+ {
+  "statia": "lib-051cd5b3",
+  "karta": "mb-more-plaj",
+  "zashto": "Жегата, слънцето, водата и колата са проверките преди първото море.",
+  "sigurnost": "visoka"
+ },
+ {
+  "statia": "lib-57119b7c",
+  "karta": "in-palnomoshtno",
+  "zashto": "Съгласието и медицинските решения при разделени родители са същият документ.",
+  "sigurnost": "visoka"
+ },
+ {
+  "statia": "lib-4440166d",
+  "karta": "nb-slagat-bebeto",
+  "zashto": "Информираното съгласие е правото да питаш точно за това, което слагат на бебето.",
+  "sigurnost": "visoka"
+ },
+ {
+  "statia": "lib-e63e364c",
+  "karta": "br-sedmici",
+  "zashto": "Триместър по триместър е разгърнатото броене на седмиците.",
+  "sigurnost": "sredna"
+ },
+ {
+  "statia": "lib-0be474bd",
+  "karta": "nia-strah-ot-nego",
+  "zashto": "ДАЗД е институционалният изход от същата карта за небезопасен дом.",
+  "sigurnost": "sredna"
+ },
+ {
+  "statia": "lib-4e174b22",
+  "karta": "in-poeme-otpuska",
+  "zashto": "Отпускът на бащата и НОИ маршрутът са точно кой може да поеме отпуската.",
+  "sigurnost": "visoka"
+ },
+ {
+  "statia": "lib-a5e586a7",
+  "karta": "mb-skin",
+  "zashto": "По-малко продукти, проба на малко местенце и сянка вместо крем — грижата за бебешката кожа.",
+  "sigurnost": "visoka"
+ },
+ {
+  "statia": "lib-bf5e65f8",
+  "karta": "br-hranene",
+  "zashto": "Списъкът кое изчаква до раждането е втората половина на какво да ям и какво не.",
+  "sigurnost": "visoka"
+ },
+ {
+  "statia": "lib-7eb1fde0",
+  "karta": "nb-temperatu-lekarstva",
+  "zashto": "Какво може да се вземе при главоболие е същият въпрос за лекарствата в бременността.",
+  "sigurnost": "visoka"
+ },
+ {
+  "statia": "lib-mod-0037",
+  "karta": "br-telo",
+  "zashto": "Идеалните коремчета в лентата са обратната страна на въпроса колко килограма е нормално.",
+  "sigurnost": "visoka"
+ },
+ {
+  "statia": "lib-d041c941",
+  "karta": "nb-anemiyata-bremennos",
+  "zashto": "Анемията и щитовидната се четат заедно; картата е точно за анемията в бременността.",
+  "sigurnost": "visoka"
+ },
+ {
+  "statia": "lib-8b24078a",
+  "karta": "br-strah-razhdane",
+  "zashto": "Изборът на болница и лекар е това, което майката прави със страха си от раждането.",
+  "sigurnost": "sredna"
+ },
+ {
+  "statia": "lib-a63cf17a",
+  "karta": "in-bolnichen-dete",
+  "zashto": "Едно и също: болничен за болно дете и обезщетенията към него.",
+  "sigurnost": "visoka"
+ },
+ {
+  "statia": "lib-432237c2",
+  "karta": "in-zdravna-knizhka",
+  "zashto": "Имунизационният паспорт и ваксините на хартия са същият документ.",
+  "sigurnost": "visoka"
+ },
+ {
+  "statia": "lib-e24d283e",
+  "karta": "br-kakvo-e-normalno",
+  "zashto": "Зацапване и болка в първия триместър са класическото кога да звънна на лекаря.",
+  "sigurnost": "visoka"
+ },
+ {
+  "statia": "lib-mod-0034",
+  "karta": "dn-skrol",
+  "zashto": "Нощното гуглене на симптоми е същият скрол в три през нощта.",
+  "sigurnost": "visoka"
+ },
+ {
+  "statia": "lib-mod-0036",
+  "karta": "nb-koy-e-s-men",
+  "zashto": "Как партньорът да е опора продължава картата кой влиза с теб в залата.",
+  "sigurnost": "visoka"
+ },
+ {
+  "statia": "lib-1c2e59e9",
+  "karta": "br-broene-ritania",
+  "zashto": "Намалените движения са причината изобщо да се броят ританията.",
+  "sigurnost": "visoka"
+ },
+ {
+  "statia": "lib-ffc95cdd",
+  "karta": "lb-stolche",
+  "zashto": "Стандартите и въпросът може ли отпред са същите правила, които спасяват.",
+  "sigurnost": "visoka"
+ },
+ {
+  "statia": "lib-881835e7",
+  "karta": "nm-nosene-sling",
+  "zashto": "Дишане, позиция на жабка и слинг по възраст са същността на носенето.",
+  "sigurnost": "visoka"
+ },
+ {
+  "statia": "lib-21f21266",
+  "karta": "nm-nosene-sling",
+  "zashto": "Двете проверки при всяко носене допълват същата карта.",
+  "sigurnost": "visoka"
+ },
+ {
+  "statia": "lib-15297ea3",
+  "karta": "dn-pusha-kurmya",
+  "zashto": "Пасивното излагане и какво помага, ако спирането не е по силите ти, е същият разговор.",
+  "sigurnost": "sredna"
+ },
+ {
+  "statia": "lib-e560f0fb",
+  "karta": "zh-himia",
+  "zashto": "Подут капак и чуждо тяло в бурканчето е точно въпросът бурканчета или домашно.",
+  "sigurnost": "visoka"
+ },
+ {
+  "statia": "lib-1b7f0cdd",
+  "karta": "bz-what",
+  "zashto": "Бременност, първи месеци и помощи при близнаци — същата карта, разгърната.",
+  "sigurnost": "visoka"
+ },
+ {
+  "statia": "lib-2ea75414",
+  "karta": "br-chanta",
+  "zashto": "Три торби вместо куфар и обаждането преди тръгване е самото съдържание на чантата.",
+  "sigurnost": "visoka"
+ },
+ {
+  "statia": "lib-0874bde0",
+  "karta": "ema-nauka",
+  "zashto": "Как се чете здравен източник, без да се плашиш, е въпросът това наука ли е.",
+  "sigurnost": "visoka"
+ },
+ {
+  "statia": "lib-99144b4b",
+  "karta": "in-napravlenie",
+  "zashto": "Помощните средства и диетичните храни минават по същия маршрут като направлението.",
+  "sigurnost": "sredna"
+ },
+ {
+  "statia": "lib-86d683b3",
+  "karta": "nb-temperatu-lekarstva",
+  "zashto": "Къде се проверява листовка и нежелана реакция е същата предпазливост към лекарствата в бременността.",
+  "sigurnost": "sredna"
+ },
+ {
+  "statia": "lib-306fc4c3",
+  "karta": "ni-parite-parvata",
+  "zashto": "Помощите при бременност и раждане са част от парите в първата година.",
+  "sigurnost": "visoka"
+ },
+ {
+  "statia": "lib-838f809e",
+  "karta": "br-kozha",
+  "zashto": "Сърбежът по дланите без обрив е кожна промяна, която не се търпи — картата е за кожата.",
+  "sigurnost": "visoka"
+ },
+ {
+  "statia": "lib-ff98ba7f",
+  "karta": "in-izbor-pediatar",
+  "zashto": "Кой е верният лекар в малко населено място е самият избор на педиатър.",
+  "sigurnost": "visoka"
+ },
+ {
+  "statia": "lib-6fbabcb8",
+  "karta": "br-toshnota",
+  "zashto": "Как се яде, когато нищо не се задържа, е следващата стъпка след гаденето.",
+  "sigurnost": "visoka"
+ },
+ {
+  "statia": "lib-d30eec25",
+  "karta": "ni-parite-parvata",
+  "zashto": "Кои са семейните помощи и къде се подават е ядрото на парите в първата година.",
+  "sigurnost": "visoka"
+ },
+ {
+  "statia": "lib-3367ad69",
+  "karta": "rz-autizam",
+  "zashto": "Грижата, работата и ранната подкрепа са пътят напред за майка, която се страхува за развитието.",
+  "sigurnost": "sredna"
+ },
+ {
+  "statia": "lib-99bab05f",
+  "karta": "nd-doma",
+  "zashto": "Ранната интервенция и организациите са следващата стъпка след прибирането на недоносеното у дома.",
+  "sigurnost": "sredna"
+ },
+ {
+  "statia": "lib-7327f7da",
+  "karta": "in-palnomoshtno",
+  "zashto": "Кой може да пътува с детето е същият въпрос за пълномощното и съгласието.",
+  "sigurnost": "sredna"
+ },
+ {
+  "statia": "lib-pt-nosht-chuzhdo",
+  "karta": "sn-pytuvane",
+  "zashto": "Първата нощ на чуждо място е сърцевината на съня на път.",
+  "sigurnost": "visoka"
+ },
+ {
+  "statia": "lib-59e12211",
+  "karta": "in-online-uslugi",
+  "zashto": "Здравното досие и е-направленията са точно онлайн услугите от картата.",
+  "sigurnost": "visoka"
+ },
+ {
+  "statia": "lib-36ee3f6a",
+  "karta": "ni-pat-bebe",
+  "zashto": "Документите и застраховката за чужбина са подготовката за път с бебе.",
+  "sigurnost": "sredna"
+ },
+ {
+  "statia": "lib-53c0f715",
+  "karta": "ni-kogato-dnes",
+  "zashto": "Материалната помощ и социалната подкрепа са точно къде се почуква, когато няма пари.",
+  "sigurnost": "visoka"
+ },
+ {
+  "statia": "lib-e8c9ef36",
+  "karta": "ns-obrivna-bolest",
+  "zashto": "Морбили е една от обривните болести, които картата различава.",
+  "sigurnost": "visoka"
+ },
+ {
+  "statia": "lib-pt-aptechka",
+  "karta": "ni-pat-bebe",
+  "zashto": "Аптечката за път е част от подготовката за пътуване с бебе.",
+  "sigurnost": "sredna"
+ },
+ {
+  "statia": "lib-89d8f8ac",
+  "karta": "nb-streptoko-grupa",
+  "zashto": "Инфекциите в бременността са същото семейство въпроси като стрептокок група Б.",
+  "sigurnost": "sredna"
+ },
+ {
+  "statia": "lib-bb8948fe",
+  "karta": "nd-samotata-mezhdu",
+  "zashto": "Самотата, доходът и работата на родител на дете с увреждане допират картата за самотата между четири стени, но съвпадението е частично.",
+  "sigurnost": "niska"
+ },
+ {
+  "statia": "lib-935e0b94",
+  "karta": "in-napravlenie",
+  "zashto": "Направленията и помощните средства по НЗОК са точно пътят до специалист.",
+  "sigurnost": "visoka"
+ },
+ {
+  "statia": "lib-9d9010bc",
+  "karta": "ni-kolichka-stolche",
+  "zashto": "Такси, автобус и количка допълват картата за количка и столче по същество.",
+  "sigurnost": "sredna"
+ },
+ {
+  "statia": "lib-532a1754",
+  "karta": "lb2-kola-pat",
+  "zashto": "Кинетозата се появява точно на дългия път, за който е правилото на двата часа.",
+  "sigurnost": "visoka"
+ },
+ {
+  "statia": "lib-77883388",
+  "karta": "ns-obrivna-bolest",
+  "zashto": "Варицелата е обривна болест; статията добавя бременната и бебето вкъщи.",
+  "sigurnost": "visoka"
+ },
+ {
+  "statia": "lib-d3908ca6",
+  "karta": "in-smyana-lekar",
+  "zashto": "Второто мнение и спорът с лекар водят до записване и смяна на личен лекар.",
+  "sigurnost": "visoka"
+ },
+ {
+  "statia": "lib-b77c9ff2",
+  "karta": "ns-popari-vednaga",
+  "zashto": "Изгаряния и попарвания — същите точни стъпки веднага.",
+  "sigurnost": "visoka"
+ },
+ {
+  "statia": "lib-8b4535f8",
+  "karta": "zd-koga-e-speshno",
+  "zashto": "Аптечката и папката за спешен случай са това, което подготвяш, след като знаеш трите нива на спешност.",
+  "sigurnost": "sredna"
+ },
+ {
+  "statia": "lib-309bd48c",
+  "karta": "lb3-prohodilka",
+  "zashto": "Проходилките и бънджитата са точно митът, който картата оборва.",
+  "sigurnost": "visoka"
+ },
+ {
+  "statia": "lib-56e66e95",
+  "karta": "ni-kogato-dnes",
+  "zashto": "Индивидуалната оценка е вратата към социалните услуги, тоест къде се почуква.",
+  "sigurnost": "sredna"
+ },
+ {
+  "statia": "lib-81cfffca",
+  "karta": "in-neprieti-gradina",
+  "zashto": "Обжалване и списъци на чакащи са продължението на отказа за градина.",
+  "sigurnost": "visoka"
+ },
+ {
+  "statia": "lib-993991c7",
+  "karta": "in-second",
+  "zashto": "Проверката за изтеглен продукт е задължителната стъпка при втора употреба.",
+  "sigurnost": "sredna"
+ },
+ {
+  "statia": "lib-96975523",
+  "karta": "gz-kysno-govor",
+  "zashto": "Логопедът и ранната интервенция са отговорът на въпроса кога да питам при късно проговаряне.",
+  "sigurnost": "sredna"
+ },
+ {
+  "statia": "lib-03bf1ab0",
+  "karta": "in-dokumenti",
+  "zashto": "ГРАО, актът за раждане и ЕГН са първите документи след раждането.",
+  "sigurnost": "visoka"
+ },
+ {
+  "statia": "lib-abf701bf",
+  "karta": "rz-autizam",
+  "zashto": "ТЕЛК маршрутът е следващата стъпка за майка, която се страхува за развитието на детето.",
+  "sigurnost": "sredna"
+ },
+ {
+  "statia": "lib-8c090e78",
+  "karta": "nia-strah-ot-nego",
+  "zashto": "Телефоните 112 и 116 111 са изходът от същата карта за небезопасен дом.",
+  "sigurnost": "sredna"
+ }
+]
