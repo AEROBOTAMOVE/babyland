@@ -1,4 +1,4 @@
-const { zaredi } = require('C:/Users/User/AppData/Local/Temp/claude/C--Users-User-Downloads-----/a78d0ad3-272e-4eb0-929e-dba161c5ab2a/scratchpad/pyasachnik.js');
+const { zaredi } = require('./pyasachnik.js');
 const W = zaredi(null);
 const ф = (т, с) => { let r = [];
   try { if (W.BL_REDFLAG(т)) r.push('ЧЕРВЕН'); } catch (e) {}

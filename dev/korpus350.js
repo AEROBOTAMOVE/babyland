@@ -30,11 +30,11 @@ const S = 'C:/Users/User/AppData/Local/Temp/claude/C--Users-User-Downloads-----/
 const СПИСЪК = process.argv.includes('--spisak');
 
 let zaredi;
-try { zaredi = require(S + '/pyasachnik.js').zaredi; }
+try { zaredi = require('./pyasachnik.js').zaredi; }
 catch (e) { console.log('🔴 няма пясъчник: ' + e.message); process.exit(1); }
 
 let корпус;
-try { корпус = JSON.parse(fs.readFileSync(S + '/rez350.json', 'utf8')); }
+try { корпус = JSON.parse(fs.readFileSync(require('path').join(__dirname, 'korpus350.json'), 'utf8')); }
 catch (e) { console.log('🔴 няма корпус: ' + e.message); process.exit(1); }
 
 if (!Array.isArray(корпус) || корпус.length < 100) {

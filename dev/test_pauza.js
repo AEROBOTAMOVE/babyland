@@ -1,4 +1,4 @@
-const { zaredi } = require('C:/Users/User/AppData/Local/Temp/claude/C--Users-User-Downloads-----/a78d0ad3-272e-4eb0-929e-dba161c5ab2a/scratchpad/pyasachnik.js');
+const { zaredi } = require('./pyasachnik.js');
 const fs = require('fs');
 const h = fs.readFileSync('C:/Users/User/Downloads/ЛОЦО/АПЛИКАЦИЯ ЗА БЕЙБИ ЛЕНД/babyland/js/helper.js', 'utf8');
 // самата регулярка, извадена от кода — проверяваме я срещу истински заглавия
