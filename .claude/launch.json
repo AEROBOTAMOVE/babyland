@@ -4,14 +4,29 @@
     {
       "name": "babyland",
       "runtimeExecutable": "perl",
-      "runtimeArgs": ["dev/statichttp.pl", "8794"],
+      "runtimeArgs": [
+        "dev/statichttp.pl",
+        "8794"
+      ],
       "port": 8794
     },
     {
       "name": "babyland-r79",
       "runtimeExecutable": "perl",
-      "runtimeArgs": ["dev/statichttp.pl", "8873"],
+      "runtimeArgs": [
+        "dev/statichttp.pl",
+        "8873"
+      ],
       "port": 8873
+    },
+    {
+      "name": "babyland-node",
+      "runtimeExecutable": "C:/Users/User/AppData/Local/OpenAI/Codex/bin/5b9024f90663758b/node.exe",
+      "runtimeArgs": [
+        "dev/statichttp.js",
+        "8911"
+      ],
+      "port": 8911
     }
   ]
 }
