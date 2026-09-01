@@ -5,7 +5,8 @@
   "otkade": "ден по часове / 6:00",
   "rezultat": "tishina",
   "karta": null,
-  "flag": null
+  "flag": null,
+  "v_drugi_stai": null
  },
  {
   "v": "мъникът се събужда в 5 всяка сутрин как да го върна на 7",
@@ -13,7 +14,8 @@
   "otkade": "ден по часове / 6:00",
   "rezultat": "tishina",
   "karta": null,
-  "flag": null
+  "flag": null,
+  "v_drugi_stai": null
  },
  {
   "v": "сутрин първо ли да храня или първо да преповивам",
@@ -21,7 +23,8 @@
   "otkade": "ден по часове / 6:00",
   "rezultat": "tishina",
   "karta": null,
-  "flag": null
+  "flag": null,
+  "v_drugi_stai": null
  },
  {
   "v": "буди се точно в 4 и е бодър и весел а аз съм труп",
@@ -29,7 +32,8 @@
   "otkade": "ден по часове / 6:00",
   "rezultat": "namerena",
   "karta": "zd-son2",
-  "flag": null
+  "flag": null,
+  "v_drugi_stai": null
  },
  {
   "v": "сутрин повръща жълта течност на гладно",
@@ -37,7 +41,8 @@
   "otkade": "ден по часове / 6:00",
   "rezultat": "namerena",
   "karta": "zd-vomit",
-  "flag": null
+  "flag": null,
+  "v_drugi_stai": null
  },
  {
   "v": "по колко време да го разхождам сутрин",
@@ -45,7 +50,8 @@
   "otkade": "ден по часове / 9:00",
   "rezultat": "tishina",
   "karta": null,
-  "flag": null
+  "flag": null,
+  "v_drugi_stai": null
  },
  {
   "v": "в колко часа е най добре да излизаме навън с бебето",
@@ -53,7 +59,8 @@
   "otkade": "ден по часове / 9:00",
   "rezultat": "tishina",
   "karta": null,
-  "flag": null
+  "flag": null,
+  "v_drugi_stai": null
  },
  {
   "v": "може ли да спи в количката навън вместо в леглото",
@@ -61,7 +68,8 @@
   "otkade": "ден по часове / 9:00",
   "rezultat": "namerena",
   "karta": "in-stroller",
-  "flag": null
+  "flag": null,
+  "v_drugi_stai": null
  },
  {
   "v": "сутрин след разходка е кисел и не иска да яде",
@@ -69,7 +77,8 @@
   "otkade": "ден по часове / 9:00",
   "rezultat": "namerena",
   "karta": "zh-otkaz",
-  "flag": null
+  "flag": null,
+  "v_drugi_stai": null
  },
  {
   "v": "кога да си взема душ като не мога да го оставя сам",
@@ -77,7 +86,8 @@
   "otkade": "ден по часове / 9:00",
   "rezultat": "namerena",
   "karta": "mb-dushut",
-  "flag": null
+  "flag": null,
+  "v_drugi_stai": null
  },
  {
   "v": "колко дрямки трябва да има на 5 месеца",
@@ -85,7 +95,8 @@
   "otkade": "ден по часове / 13:00",
   "rezultat": "tishina",
   "karta": null,
-  "flag": null
+  "flag": null,
+  "v_drugi_stai": null
  },
  {
   "v": "спи само по 20 минути и се буди с плач",
@@ -93,7 +104,8 @@
   "otkade": "ден по часове / 13:00",
   "rezultat": "namerena",
   "karta": "mb-cry",
-  "flag": null
+  "flag": null,
+  "v_drugi_stai": null
  },
  {
   "v": "да го будя ли за да яде на обед",
@@ -101,7 +113,8 @@
   "otkade": "ден по часове / 13:00",
   "rezultat": "tishina",
   "karta": null,
-  "flag": null
+  "flag": null,
+  "v_drugi_stai": null
  },
  {
   "v": "обедната дрямка стана 3 часа да я режа ли",
@@ -109,7 +122,8 @@
   "otkade": "ден по часове / 13:00",
   "rezultat": "namerena",
   "karta": "mb5-driamki",
-  "flag": null
+  "flag": null,
+  "v_drugi_stai": null
  },
  {
   "v": "заспива в скута ми и щом го сложа в леглото се буди",
@@ -117,7 +131,8 @@
   "otkade": "ден по часове / 13:00",
   "rezultat": "namerena",
   "karta": "mb-san",
-  "flag": null
+  "flag": null,
+  "v_drugi_stai": null
  },
  {
   "v": "цял ден не съм яла нищо докато го гледам",
@@ -125,7 +140,8 @@
   "otkade": "ден по часове / 13:00",
   "rezultat": "tishina",
   "karta": null,
-  "flag": null
+  "flag": null,
+  "v_drugi_stai": null
  },
  {
   "v": "всяка вечер около 6 почва да реве и не спира с часове",
@@ -133,7 +149,8 @@
   "otkade": "ден по часове / 18:00",
   "rezultat": "namerena",
   "karta": "zd-son2",
-  "flag": null
+  "flag": null,
+  "v_drugi_stai": null
  },
  {
   "v": "колко често да го къпя",
@@ -141,7 +158,8 @@
   "otkade": "ден по часове / 18:00",
   "rezultat": "namerena",
   "karta": "lb2-banya",
-  "flag": null
+  "flag": null,
+  "v_drugi_stai": null
  },
  {
   "v": "водата колко градуса да е за къпане",
@@ -149,7 +167,8 @@
   "otkade": "ден по часове / 18:00",
   "rezultat": "namerena",
   "karta": "mb-bath",
-  "flag": null
+  "flag": null,
+  "v_drugi_stai": null
  },
  {
   "v": "може ли да го къпя всеки ден през зимата",
@@ -157,7 +176,8 @@
   "otkade": "ден по часове / 18:00",
   "rezultat": "namerena",
   "karta": "lb2-banya",
-  "flag": null
+  "flag": null,
+  "v_drugi_stai": null
  },
  {
   "v": "след баня с какво да го мажа",
@@ -165,7 +185,8 @@
   "otkade": "ден по часове / 18:00",
   "rezultat": "namerena",
   "karta": "mb-bath",
-  "flag": null
+  "flag": null,
+  "v_drugi_stai": null
  },
  {
   "v": "вечер съм като изцедена и нямам сили за нищо",
@@ -173,7 +194,8 @@
   "otkade": "ден по часове / 18:00",
   "rezultat": "namerena",
   "karta": "dn-nedospivane",
-  "flag": "mama:heavy"
+  "flag": "mama:heavy",
+  "v_drugi_stai": null
  },
  {
   "v": "да го будя ли за последно хранене преди аз да си легна",
@@ -181,7 +203,8 @@
   "otkade": "ден по часове / 23:00",
   "rezultat": "tishina",
   "karta": null,
-  "flag": null
+  "flag": null,
+  "v_drugi_stai": null
  },
  {
   "v": "заспива само на цицка и не мога да го сложа иначе",
@@ -189,7 +212,8 @@
   "otkade": "ден по часове / 23:00",
   "rezultat": "namerena",
   "karta": "br-pytuvane",
-  "flag": null
+  "flag": null,
+  "v_drugi_stai": null
  },
  {
   "v": "буди се на всеки час цяла нощ помощ",
@@ -197,7 +221,8 @@
   "otkade": "ден по часове / 3:00",
   "rezultat": "namerena",
   "karta": "mb-otbi-nosht",
-  "flag": null
+  "flag": null,
+  "v_drugi_stai": null
  },
  {
   "v": "нощем плаче и не иска нито цица нито биберон",
@@ -205,7 +230,8 @@
   "otkade": "ден по часове / 3:00",
   "rezultat": "namerena",
   "karta": "dn-tajno",
-  "flag": null
+  "flag": null,
+  "v_drugi_stai": null
  },
  {
   "v": "нощем да паля ли лампата като го храня",
@@ -213,7 +239,8 @@
   "otkade": "ден по часове / 3:00",
   "rezultat": "tishina",
   "karta": null,
-  "flag": null
+  "flag": null,
+  "v_drugi_stai": null
  },
  {
   "v": "в 3 през нощта имам чувството че полудявам",
@@ -221,7 +248,8 @@
   "otkade": "ден по часове / 3:00",
   "rezultat": "tishina",
   "karta": null,
-  "flag": null
+  "flag": null,
+  "v_drugi_stai": null
  },
  {
   "v": "на трети ден млякото още не идва",
@@ -229,7 +257,8 @@
   "otkade": "първите 40 дни / ден 3",
   "rezultat": "namerena",
   "karta": "mb-kolko-mliako",
-  "flag": null
+  "flag": null,
+  "v_drugi_stai": null
  },
  {
   "v": "трети ден е и плача без причина по цял ден",
@@ -237,7 +266,8 @@
   "otkade": "първите 40 дни / ден 3",
   "rezultat": "namerena",
   "karta": "dn-tajno",
-  "flag": "mama:heavy"
+  "flag": "mama:heavy",
+  "v_drugi_stai": null
  },
  {
   "v": "пъпчето кърви малко",
@@ -245,7 +275,8 @@
   "otkade": "първите 40 дни / ден 4",
   "rezultat": "namerena",
   "karta": "mb-navel",
-  "flag": null
+  "flag": null,
+  "v_drugi_stai": null
  },
  {
   "v": "кога пада пъпчето",
@@ -253,7 +284,8 @@
   "otkade": "първите 40 дни / ден 5",
   "rezultat": "namerena",
   "karta": "mb-navel",
-  "flag": null
+  "flag": null,
+  "v_drugi_stai": null
  },
  {
   "v": "на 5 дни е и личицето му е жълтичко",
@@ -261,7 +293,8 @@
   "otkade": "първите 40 дни / ден 5",
   "rezultat": "namerena",
   "karta": "zd-jaltenica",
-  "flag": null
+  "flag": null,
+  "v_drugi_stai": null
  },
  {
   "v": "не е акало два дни а е само на 7 дни",
@@ -269,7 +302,8 @@
   "otkade": "първите 40 дни / ден 7",
   "rezultat": "namerena",
   "karta": "zd-zapek",
-  "flag": null
+  "flag": null,
+  "v_drugi_stai": null
  },
  {
   "v": "акото е зелено и лепкаво на 10 дни",
@@ -277,7 +311,8 @@
   "otkade": "първите 40 дни / ден 10",
   "rezultat": "namerena",
   "karta": "zh-akoto",
-  "flag": null
+  "flag": null,
+  "v_drugi_stai": null
  },
  {
   "v": "на 10 ден още не си е върнало теглото от раждането",
@@ -285,7 +320,8 @@
   "otkade": "първите 40 дни / ден 10",
   "rezultat": "namerena",
   "karta": "zh-weight",
-  "flag": null
+  "flag": null,
+  "v_drugi_stai": null
  },
  {
   "v": "гърдите ми са като камъни и много болят",
@@ -293,7 +329,8 @@
   "otkade": "първите 40 дни / ден 4",
   "rezultat": "tishina",
   "karta": null,
-  "flag": null
+  "flag": null,
+  "v_drugi_stai": null
  },
  {
   "v": "зърната ми са в рани и плача докато кърмя",
@@ -301,7 +338,8 @@
   "otkade": "първите 40 дни / ден 6",
   "rezultat": "namerena",
   "karta": "dn-tajno",
-  "flag": null
+  "flag": null,
+  "v_drugi_stai": null
  },
  {
   "v": "на 14 дни спи по цял ден и не иска да суче",
@@ -309,7 +347,8 @@
   "otkade": "първите 40 дни / ден 14",
   "rezultat": "namerena",
   "karta": "mb-otkaz-gyrda",
-  "flag": null
+  "flag": null,
+  "v_drugi_stai": null
  },
  {
   "v": "кога мога за първи път да изляза навън с новородено",
@@ -317,7 +356,8 @@
   "otkade": "първите 40 дни / ден 12",
   "rezultat": "tishina",
   "karta": null,
-  "flag": null
+  "flag": null,
+  "v_drugi_stai": null
  },
  {
   "v": "може ли да идват гости при новородено",
@@ -325,7 +365,8 @@
   "otkade": "първите 40 дни / ден 8",
   "rezultat": "tishina",
   "karta": null,
-  "flag": null
+  "flag": null,
+  "v_drugi_stai": null
  },
  {
   "v": "на 21 ден почна да реве всяка вечер по три часа",
@@ -333,7 +374,8 @@
   "otkade": "първите 40 дни / ден 21",
   "rezultat": "namerena",
   "karta": "lb-koliki",
-  "flag": null
+  "flag": null,
+  "v_drugi_stai": null
  },
  {
   "v": "колко пъти на ден пикае нормално новородено",
@@ -341,7 +383,8 @@
   "otkade": "първите 40 дни / ден 5",
   "rezultat": "namerena",
   "karta": "zh-kolko-pati-den",
-  "flag": null
+  "flag": null,
+  "v_drugi_stai": null
  },
  {
   "v": "как да разбера че се е наситило от гърдата",
@@ -349,7 +392,8 @@
   "otkade": "първите 40 дни / ден 9",
   "rezultat": "tishina",
   "karta": null,
-  "flag": null
+  "flag": null,
+  "v_drugi_stai": null
  },
  {
   "v": "на 3 седмици иска да суче на всеки час нормално ли е",
@@ -357,7 +401,8 @@
   "otkade": "първите 40 дни / ден 21",
   "rezultat": "namerena",
   "karta": "mb-kolko-mliako",
-  "flag": null
+  "flag": null,
+  "v_drugi_stai": null
  },
  {
   "v": "може ли да му дам биберон или ще откаже гърдата",
@@ -365,7 +410,8 @@
   "otkade": "първите 40 дни / ден 15",
   "rezultat": "namerena",
   "karta": "zh-mahni-shishe",
-  "flag": null
+  "flag": null,
+  "v_drugi_stai": null
  },
  {
   "v": "кога да го кача на кола за първи път",
@@ -373,7 +419,8 @@
   "otkade": "първите 40 дни / ден 2",
   "rezultat": "tishina",
   "karta": null,
-  "flag": null
+  "flag": null,
+  "v_drugi_stai": null
  },
  {
   "v": "първата разходка колко дълга да е",
@@ -381,7 +428,8 @@
   "otkade": "първите 40 дни / ден 13",
   "rezultat": "namerena",
   "karta": "lb2-razhodki",
-  "flag": null
+  "flag": null,
+  "v_drugi_stai": null
  },
  {
   "v": "на 1 месец още не ме гледа в очите",
@@ -389,7 +437,8 @@
   "otkade": "първите 40 дни / ден 30",
   "rezultat": "namerena",
   "karta": "rz-autizam",
-  "flag": null
+  "flag": null,
+  "v_drugi_stai": null
  },
  {
   "v": "кога почва да се усмихва наистина а не от газове",
@@ -397,7 +446,8 @@
   "otkade": "първите 40 дни / ден 35",
   "rezultat": "namerena",
   "karta": "rz-smyah",
-  "flag": null
+  "flag": null,
+  "v_drugi_stai": null
  },
  {
   "v": "на 40 дни какво се прави черкуване или не",
@@ -405,7 +455,8 @@
   "otkade": "първите 40 дни / ден 40",
   "rezultat": "tishina",
   "karta": null,
-  "flag": null
+  "flag": null,
+  "v_drugi_stai": null
  },
  {
   "v": "още кървя на 30 ден нормално ли е",
@@ -413,15 +464,17 @@
   "otkade": "първите 40 дни / ден 30",
   "rezultat": "namerena",
   "karta": "mm-lohia",
-  "flag": null
+  "flag": null,
+  "v_drugi_stai": null
  },
  {
   "v": "шевовете ме болят като седна",
   "r": "Жената в мен",
   "otkade": "първите 40 дни / ден 6",
-  "rezultat": "tishina",
-  "karta": null,
-  "flag": null
+  "rezultat": "namerena",
+  "karta": "nia-shevove-dolu",
+  "flag": null,
+  "v_drugi_stai": null
  },
  {
   "v": "не мога да акам след раждането и ме е страх да се напъна",
@@ -429,7 +482,8 @@
   "otkade": "първите 40 дни / ден 3",
   "rezultat": "namerena",
   "karta": "zg-pak",
-  "flag": null
+  "flag": null,
+  "v_drugi_stai": null
  },
  {
   "v": "коремът ми е като на 5 месеца бременна още",
@@ -437,7 +491,8 @@
   "otkade": "първите 40 дни / ден 20",
   "rezultat": "namerena",
   "karta": "nia-body2",
-  "flag": null
+  "flag": null,
+  "v_drugi_stai": null
  },
  {
   "v": "новороденото киха постоянно настинало ли е",
@@ -445,7 +500,8 @@
   "otkade": "първите 40 дни / ден 11",
   "rezultat": "namerena",
   "karta": "zd-nastinka",
-  "flag": null
+  "flag": null,
+  "v_drugi_stai": null
  },
  {
   "v": "на 2 месеца колко трябва да яде на едно хранене",
@@ -453,7 +509,8 @@
   "otkade": "месец по месец / 2 м",
   "rezultat": "namerena",
   "karta": "bz-hrani",
-  "flag": null
+  "flag": null,
+  "v_drugi_stai": null
  },
  {
   "v": "след ваксините на 2 месеца има ли температура",
@@ -461,7 +518,8 @@
   "otkade": "месец по месец / 2 м",
   "rezultat": "namerena",
   "karta": "zd-temperatura",
-  "flag": null
+  "flag": null,
+  "v_drugi_stai": null
  },
  {
   "v": "на 3 месеца се дави в собствените си лиги",
@@ -469,7 +527,8 @@
   "otkade": "месец по месец / 3 м",
   "rezultat": "samo_flag",
   "karta": null,
-  "flag": "red:da"
+  "flag": "red:da",
+  "v_drugi_stai": null
  },
  {
   "v": "на 3 месеца изведнъж спря да спи както преди какво стана",
@@ -477,7 +536,8 @@
   "otkade": "месец по месец / 3 м",
   "rezultat": "namerena",
   "karta": "rz-autizam",
-  "flag": null
+  "flag": null,
+  "v_drugi_stai": null
  },
  {
   "v": "на 4 месеца още не се обръща",
@@ -485,7 +545,8 @@
   "otkade": "месец по месец / 4 м",
   "rezultat": "namerena",
   "karta": "rz-obrashtane",
-  "flag": null
+  "flag": null,
+  "v_drugi_stai": null
  },
  {
   "v": "на 4 месеца мога ли да почна с ябълка",
@@ -493,7 +554,8 @@
   "otkade": "месец по месец / 4 м",
   "rezultat": "tishina",
   "karta": null,
-  "flag": null
+  "flag": null,
+  "v_drugi_stai": null
  },
  {
   "v": "на 5 месеца лиги до пода зъб ли никне",
@@ -501,7 +563,8 @@
   "otkade": "месец по месец / 5 м",
   "rezultat": "tishina",
   "karta": null,
-  "flag": null
+  "flag": null,
+  "v_drugi_stai": null
  },
  {
   "v": "на 6 месеца с какво да почна захранването",
@@ -509,7 +572,8 @@
   "otkade": "месец по месец / 6 м",
   "rezultat": "namerena",
   "karta": "zah-koga",
-  "flag": null
+  "flag": null,
+  "v_drugi_stai": null
  },
  {
   "v": "на 6 месеца още не сяда само",
@@ -517,7 +581,8 @@
   "otkade": "месец по месец / 6 м",
   "rezultat": "namerena",
   "karta": "rz-sedene",
-  "flag": null
+  "flag": null,
+  "v_drugi_stai": null
  },
  {
   "v": "на 7 месеца не иска пюре само цица",
@@ -525,7 +590,8 @@
   "otkade": "месец по месец / 7 м",
   "rezultat": "namerena",
   "karta": "zh-blw",
-  "flag": null
+  "flag": null,
+  "v_drugi_stai": null
  },
  {
   "v": "на 8 месеца пълзи назад вместо напред",
@@ -533,7 +599,8 @@
   "otkade": "месец по месец / 8 м",
   "rezultat": "namerena",
   "karta": "rz-palzene",
-  "flag": null
+  "flag": null,
+  "v_drugi_stai": null
  },
  {
   "v": "на 8 месеца пищи щом изляза от стаята за секунда",
@@ -541,7 +608,8 @@
   "otkade": "месец по месец / 8 м",
   "rezultat": "tishina",
   "karta": null,
-  "flag": null
+  "flag": null,
+  "v_drugi_stai": null
  },
  {
   "v": "на 9 месеца колко зъба трябва да има",
@@ -549,7 +617,8 @@
   "otkade": "месец по месец / 9 м",
   "rezultat": "tishina",
   "karta": null,
-  "flag": null
+  "flag": null,
+  "v_drugi_stai": null
  },
  {
   "v": "на 10 месеца казва мама но на всичко наред",
@@ -557,7 +626,8 @@
   "otkade": "месец по месец / 10 м",
   "rezultat": "tishina",
   "karta": null,
-  "flag": null
+  "flag": null,
+  "v_drugi_stai": null
  },
  {
   "v": "на 11 месеца още не ходи и се притеснявам",
@@ -565,7 +635,8 @@
   "otkade": "месец по месец / 11 м",
   "rezultat": "namerena",
   "karta": "rz-prohojdane",
-  "flag": null
+  "flag": null,
+  "v_drugi_stai": null
  },
  {
   "v": "на 1 година спира ли се адаптираното мляко",
@@ -573,7 +644,8 @@
   "otkade": "месец по месец / 12 м",
   "rezultat": "namerena",
   "karta": "mb-kolko-mliako",
-  "flag": null
+  "flag": null,
+  "v_drugi_stai": null
  },
  {
   "v": "на 13 месеца хвърля всичко на пода нарочно",
@@ -581,7 +653,8 @@
   "otkade": "месец по месец / 13 м",
   "rezultat": "namerena",
   "karta": "rz-hvarlia",
-  "flag": null
+  "flag": null,
+  "v_drugi_stai": null
  },
  {
   "v": "на 14 месеца хапе другите деца",
@@ -589,7 +662,8 @@
   "otkade": "месец по месец / 14 м",
   "rezultat": "namerena",
   "karta": "rz-zahapva-deca",
-  "flag": null
+  "flag": null,
+  "v_drugi_stai": null
  },
  {
   "v": "на 15 месеца не казва нито една дума",
@@ -597,7 +671,8 @@
   "otkade": "месец по месец / 15 м",
   "rezultat": "namerena",
   "karta": "gz-kysno-govor",
-  "flag": null
+  "flag": null,
+  "v_drugi_stai": null
  },
  {
   "v": "на 16 месеца се хвърля на земята в магазина",
@@ -605,7 +680,8 @@
   "otkade": "месец по месец / 16 м",
   "rezultat": "namerena",
   "karta": "zah-koga",
-  "flag": null
+  "flag": null,
+  "v_drugi_stai": null
  },
  {
   "v": "на 18 месеца още е с памперс кога да го махна",
@@ -613,7 +689,8 @@
   "otkade": "месец по месец / 18 м",
   "rezultat": "tishina",
   "karta": null,
-  "flag": null
+  "flag": null,
+  "v_drugi_stai": null
  },
  {
   "v": "на 18 месеца рита и удря когато му кажа не",
@@ -621,7 +698,8 @@
   "otkade": "месец по месец / 18 м",
   "rezultat": "namerena",
   "karta": "br-dvijenia",
-  "flag": null
+  "flag": null,
+  "v_drugi_stai": null
  },
  {
   "v": "на 20 месеца отказва всичко освен банан",
@@ -629,7 +707,8 @@
   "otkade": "месец по месец / 20 м",
   "rezultat": "namerena",
   "karta": "zh-otkaz",
-  "flag": null
+  "flag": null,
+  "v_drugi_stai": null
  },
  {
   "v": "на 2 години как да го отбия от цицата",
@@ -637,7 +716,8 @@
   "otkade": "месец по месец / 24 м",
   "rezultat": "namerena",
   "karta": "mb-otbi-kak",
-  "flag": null
+  "flag": null,
+  "v_drugi_stai": null
  },
  {
   "v": "на 2 години не иска да спи сам в стаята си",
@@ -645,7 +725,8 @@
   "otkade": "месец по месец / 24 м",
   "rezultat": "namerena",
   "karta": "mb-san",
-  "flag": null
+  "flag": null,
+  "v_drugi_stai": null
  },
  {
   "v": "на 2 години казва не на абсолютно всичко",
@@ -653,7 +734,8 @@
   "otkade": "месец по месец / 24 м",
   "rezultat": "tishina",
   "karta": null,
-  "flag": null
+  "flag": null,
+  "v_drugi_stai": null
  },
  {
   "v": "на 2 години и половина още не говори изречения",
@@ -661,7 +743,8 @@
   "otkade": "месец по месец / 30 м",
   "rezultat": "namerena",
   "karta": "rz-govor",
-  "flag": null
+  "flag": null,
+  "v_drugi_stai": null
  },
  {
   "v": "на 30 месеца пишка в гащите всеки ден",
@@ -669,7 +752,8 @@
   "otkade": "месец по месец / 30 м",
   "rezultat": "namerena",
   "karta": "rz-gyrne",
-  "flag": null
+  "flag": null,
+  "v_drugi_stai": null
  },
  {
   "v": "на 3 години има въображаем приятел",
@@ -677,7 +761,10 @@
   "otkade": "месец по месец / 36 м",
   "rezultat": "tishina",
   "karta": null,
-  "flag": null
+  "flag": null,
+  "v_drugi_stai": [
+   "Жената в мен:nia-friends"
+  ]
  },
  {
   "v": "на 3 години пита откъде идват бебетата",
@@ -685,7 +772,8 @@
   "otkade": "месец по месец / 36 м",
   "rezultat": "tishina",
   "karta": null,
-  "flag": null
+  "flag": null,
+  "v_drugi_stai": null
  },
  {
   "v": "на 3 години още се събужда по няколко пъти нощем",
@@ -693,7 +781,8 @@
   "otkade": "месец по месец / 36 м",
   "rezultat": "tishina",
   "karta": null,
-  "flag": null
+  "flag": null,
+  "v_drugi_stai": null
  },
  {
   "v": "кога се маха биберона",
@@ -701,7 +790,8 @@
   "otkade": "месец по месец / преход",
   "rezultat": "namerena",
   "karta": "zh-mahni-shishe",
-  "flag": null
+  "flag": null,
+  "v_drugi_stai": null
  },
  {
   "v": "кога се сваля решетката и се минава на голямо легло",
@@ -709,7 +799,8 @@
   "otkade": "месец по месец / преход",
   "rezultat": "tishina",
   "karta": null,
-  "flag": null
+  "flag": null,
+  "v_drugi_stai": null
  },
  {
   "v": "кога почва да се страхува от непознати",
@@ -717,7 +808,8 @@
   "otkade": "месец по месец / 8 м",
   "rezultat": "tishina",
   "karta": null,
-  "flag": null
+  "flag": null,
+  "v_drugi_stai": null
  },
  {
   "v": "на колко месеца хваща лъжицата сам",
@@ -725,7 +817,8 @@
   "otkade": "месец по месец / 10 м",
   "rezultat": "namerena",
   "karta": "zh-koga-start",
-  "flag": null
+  "flag": null,
+  "v_drugi_stai": null
  },
  {
   "v": "кога спира нощното хранене",
@@ -733,7 +826,8 @@
   "otkade": "месец по месец / преход",
   "rezultat": "namerena",
   "karta": "lb2-noshtni",
-  "flag": null
+  "flag": null,
+  "v_drugi_stai": null
  },
  {
   "v": "как да облека бебето зимата в количката",
@@ -741,7 +835,8 @@
   "otkade": "сезони и празници / зима",
   "rezultat": "namerena",
   "karta": "in-stroller",
-  "flag": null
+  "flag": null,
+  "v_drugi_stai": null
  },
  {
   "v": "колко пласта дрехи при 5 градуса навън",
@@ -749,7 +844,8 @@
   "otkade": "сезони и празници / зима",
   "rezultat": "namerena",
   "karta": "zd-temperatura",
-  "flag": null
+  "flag": null,
+  "v_drugi_stai": null
  },
  {
   "v": "може ли да го изведа при минус 5",
@@ -757,7 +853,8 @@
   "otkade": "сезони и празници / зима",
   "rezultat": "namerena",
   "karta": "zim-studeno-razhodka",
-  "flag": null
+  "flag": null,
+  "v_drugi_stai": null
  },
  {
   "v": "първи сняг може ли да го изнеса да го види",
@@ -765,7 +862,8 @@
   "otkade": "сезони и празници / зима",
   "rezultat": "tishina",
   "karta": null,
-  "flag": null
+  "flag": null,
+  "v_drugi_stai": null
  },
  {
   "v": "навън е 38 градуса как да разхладя бебето",
@@ -773,7 +871,8 @@
   "otkade": "сезони и празници / лято",
   "rezultat": "namerena",
   "karta": "zd-temperatura",
-  "flag": null
+  "flag": null,
+  "v_drugi_stai": null
  },
  {
   "v": "може ли бебе да стои под климатик",
@@ -781,7 +880,8 @@
   "otkade": "сезони и празници / лято",
   "rezultat": "namerena",
   "karta": "in2-vlazhnost",
-  "flag": null
+  "flag": null,
+  "v_drugi_stai": null
  },
  {
   "v": "може ли вентилатор в стаята на бебето",
@@ -789,7 +889,8 @@
   "otkade": "сезони и празници / лято",
   "rezultat": "tishina",
   "karta": null,
-  "flag": null
+  "flag": null,
+  "v_drugi_stai": null
  },
  {
   "v": "слънцезащитен крем от колко месеца",
@@ -797,7 +898,8 @@
   "otkade": "сезони и празници / лято",
   "rezultat": "namerena",
   "karta": "zd-slance",
-  "flag": null
+  "flag": null,
+  "v_drugi_stai": null
  },
  {
   "v": "колко вода да пие бебето в жегите",
@@ -805,7 +907,8 @@
   "otkade": "сезони и празници / лято",
   "rezultat": "namerena",
   "karta": "zh-voda",
-  "flag": null
+  "flag": null,
+  "v_drugi_stai": null
  },
  {
   "v": "коледа с бебе как да оцелея",
@@ -813,7 +916,8 @@
   "otkade": "сезони и празници / Коледа",
   "rezultat": "tishina",
   "karta": null,
-  "flag": null
+  "flag": null,
+  "v_drugi_stai": null
  },
  {
   "v": "всички искат да го гушкат по празниците а аз не искам",
@@ -821,7 +925,8 @@
   "otkade": "сезони и празници / Коледа",
   "rezultat": "namerena",
   "karta": "dn-pomosht",
-  "flag": null
+  "flag": null,
+  "v_drugi_stai": null
  },
  {
   "v": "на нова година фойерверките ще го уплашат ли",
@@ -829,7 +934,8 @@
   "otkade": "сезони и празници / Нова година",
   "rezultat": "tishina",
   "karta": null,
-  "flag": null
+  "flag": null,
+  "v_drugi_stai": null
  },
  {
   "v": "може ли бебето да хапне от баницата с късметите",
@@ -837,7 +943,8 @@
   "otkade": "сезони и празници / Нова година",
   "rezultat": "tishina",
   "karta": null,
-  "flag": null
+  "flag": null,
+  "v_drugi_stai": null
  },
  {
   "v": "мартеница на бебе къде се връзва",
@@ -845,7 +952,8 @@
   "otkade": "сезони и празници / Баба Марта",
   "rezultat": "tishina",
   "karta": null,
-  "flag": null
+  "flag": null,
+  "v_drugi_stai": null
  },
  {
   "v": "великден с боядисани яйца и дете на 1 година може ли",
@@ -853,7 +961,8 @@
   "otkade": "сезони и празници / Великден",
   "rezultat": "namerena",
   "karta": "zh-bez-meso",
-  "flag": null
+  "flag": null,
+  "v_drugi_stai": null
  },
  {
   "v": "торта на първи рожден ден може ли да яде",
@@ -861,7 +970,8 @@
   "otkade": "сезони и празници / рожден ден",
   "rezultat": "namerena",
   "karta": "zh-sladko",
-  "flag": null
+  "flag": null,
+  "v_drugi_stai": null
  },
  {
   "v": "какво да подаря за първи рожден ден",
@@ -869,7 +979,8 @@
   "otkade": "сезони и празници / рожден ден",
   "rezultat": "tishina",
   "karta": null,
-  "flag": null
+  "flag": null,
+  "v_drugi_stai": null
  },
  {
   "v": "есента постоянно е сополиво от градината",
@@ -877,7 +988,8 @@
   "otkade": "сезони и празници / есен",
   "rezultat": "namerena",
   "karta": "in-gradina",
-  "flag": null
+  "flag": null,
+  "v_drugi_stai": null
  },
  {
   "v": "грипен сезон да го водя ли на детската площадка",
@@ -885,7 +997,8 @@
   "otkade": "сезони и празници / зима",
   "rezultat": "namerena",
   "karta": "br-kakvo-nosi",
-  "flag": null
+  "flag": null,
+  "v_drugi_stai": null
  },
  {
   "v": "смяната на часа обърка съня му",
@@ -893,7 +1006,8 @@
   "otkade": "сезони и празници / смяна на часа",
   "rezultat": "namerena",
   "karta": "mb-smyana-chas",
-  "flag": null
+  "flag": null,
+  "v_drugi_stai": null
  },
  {
   "v": "как да го занеса на гости да не реве",
@@ -901,7 +1015,8 @@
   "otkade": "местата / на гости",
   "rezultat": "namerena",
   "karta": "lb-koliki",
-  "flag": null
+  "flag": null,
+  "v_drugi_stai": null
  },
  {
   "v": "на гости няма къде да го приспя",
@@ -909,7 +1024,8 @@
   "otkade": "местата / на гости",
   "rezultat": "namerena",
   "karta": "dn-pisane",
-  "flag": null
+  "flag": null,
+  "v_drugi_stai": null
  },
  {
   "v": "в магазина реве и всички ме гледат",
@@ -917,7 +1033,8 @@
   "otkade": "местата / магазин",
   "rezultat": "namerena",
   "karta": "lb-koliki",
-  "flag": null
+  "flag": null,
+  "v_drugi_stai": null
  },
  {
   "v": "къде да го преповия в мола",
@@ -925,7 +1042,8 @@
   "otkade": "местата / мол",
   "rezultat": "tishina",
   "karta": null,
-  "flag": null
+  "flag": null,
+  "v_drugi_stai": null
  },
  {
   "v": "как да пазарувам сама с бебе на ръце",
@@ -933,7 +1051,8 @@
   "otkade": "местата / магазин",
   "rezultat": "tishina",
   "karta": null,
-  "flag": null
+  "flag": null,
+  "v_drugi_stai": null
  },
  {
   "v": "в колата плаче през целия път",
@@ -941,7 +1060,8 @@
   "otkade": "местата / кола",
   "rezultat": "namerena",
   "karta": "mb-cry",
-  "flag": null
+  "flag": null,
+  "v_drugi_stai": null
  },
  {
   "v": "колко часа може да стои в столчето за кола",
@@ -949,7 +1069,8 @@
   "otkade": "местата / кола",
   "rezultat": "namerena",
   "karta": "in2-stolche-hranene",
-  "flag": null
+  "flag": null,
+  "v_drugi_stai": null
  },
  {
   "v": "кога се обръща столчето с лице напред",
@@ -957,7 +1078,8 @@
   "otkade": "местата / кола",
   "rezultat": "namerena",
   "karta": "rz-obrashtane",
-  "flag": null
+  "flag": null,
+  "v_drugi_stai": null
  },
  {
   "v": "на море с бебе от колко месеца",
@@ -965,7 +1087,8 @@
   "otkade": "местата / море",
   "rezultat": "namerena",
   "karta": "mb-more-plaj",
-  "flag": null
+  "flag": null,
+  "v_drugi_stai": null
  },
  {
   "v": "бебето изгоря от слънце на плажа",
@@ -973,7 +1096,8 @@
   "otkade": "местата / море",
   "rezultat": "namerena",
   "karta": "zd-slance",
-  "flag": "red:da"
+  "flag": "red:da",
+  "v_drugi_stai": null
  },
  {
   "v": "може ли бебе в морската вода",
@@ -981,7 +1105,8 @@
   "otkade": "местата / море",
   "rezultat": "namerena",
   "karta": "zh-voda",
-  "flag": null
+  "flag": null,
+  "v_drugi_stai": null
  },
  {
   "v": "в самолета го болят ушите при кацане",
@@ -989,7 +1114,8 @@
   "otkade": "местата / самолет",
   "rezultat": "namerena",
   "karta": "zd-ear",
-  "flag": null
+  "flag": null,
+  "v_drugi_stai": null
  },
  {
   "v": "при лекаря плаче преди изобщо да го е пипнал",
@@ -997,7 +1123,8 @@
   "otkade": "местата / лекар",
   "rezultat": "namerena",
   "karta": "dn-tajno",
-  "flag": null
+  "flag": null,
+  "v_drugi_stai": null
  },
  {
   "v": "какво да питам педиатъра на прегледа",
@@ -1005,7 +1132,8 @@
   "otkade": "местата / лекар",
   "rezultat": "tishina",
   "karta": null,
-  "flag": null
+  "flag": null,
+  "v_drugi_stai": null
  },
  {
   "v": "в парка другите деца му вземат играчките",
@@ -1013,7 +1141,8 @@
   "otkade": "местата / парк",
   "rezultat": "tishina",
   "karta": null,
-  "flag": null
+  "flag": null,
+  "v_drugi_stai": null
  },
  {
   "v": "на площадката яде пясък",
@@ -1021,7 +1150,8 @@
   "otkade": "местата / площадка",
   "rezultat": "tishina",
   "karta": null,
-  "flag": null
+  "flag": null,
+  "v_drugi_stai": null
  },
  {
   "v": "на сватба с бебе как се оцелява",
@@ -1029,7 +1159,8 @@
   "otkade": "местата / сватба",
   "rezultat": "tishina",
   "karta": null,
-  "flag": null
+  "flag": null,
+  "v_drugi_stai": null
  },
  {
   "v": "как да кърмя навън да не ме зяпат",
@@ -1037,7 +1168,8 @@
   "otkade": "местата / навън",
   "rezultat": "namerena",
   "karta": "mb-kurmene-navun",
-  "flag": null
+  "flag": null,
+  "v_drugi_stai": null
  },
  {
   "v": "в ресторант с бебе кога е удачно",
@@ -1045,7 +1177,8 @@
   "otkade": "местата / ресторант",
   "rezultat": "namerena",
   "karta": "zh-na-pat-hrana",
-  "flag": null
+  "flag": null,
+  "v_drugi_stai": null
  },
  {
   "v": "в автобуса с количка сама не се справям",
@@ -1053,7 +1186,8 @@
   "otkade": "местата / градски транспорт",
   "rezultat": "namerena",
   "karta": "bz-pomosht",
-  "flag": "mama:heavy"
+  "flag": "mama:heavy",
+  "v_drugi_stai": null
  },
  {
   "v": "на село при баба искат да му дадат от всичко да яде",
@@ -1061,7 +1195,8 @@
   "otkade": "местата / село",
   "rezultat": "tishina",
   "karta": null,
-  "flag": null
+  "flag": null,
+  "v_drugi_stai": null
  },
  {
   "v": "в чакалнята при джипито другите деца кашлят",
@@ -1069,7 +1204,8 @@
   "otkade": "местата / лекар",
   "rezultat": "tishina",
   "karta": null,
-  "flag": null
+  "flag": null,
+  "v_drugi_stai": null
  },
  {
   "v": "на детски рожден ден с много деца от колко години",
@@ -1077,7 +1213,10 @@
   "otkade": "местата / рожден ден",
   "rezultat": "tishina",
   "karta": null,
-  "flag": null
+  "flag": null,
+  "v_drugi_stai": [
+   "Бременност:br-kakvo-nosi"
+  ]
  },
  {
   "v": "при зъболекар с дете първо посещение кога",
@@ -1085,7 +1224,8 @@
   "otkade": "местата / зъболекар",
   "rezultat": "tishina",
   "karta": null,
-  "flag": null
+  "flag": null,
+  "v_drugi_stai": null
  },
  {
   "v": "как да пътувам 5 часа с кола с бебе",
@@ -1093,7 +1233,8 @@
   "otkade": "местата / път",
   "rezultat": "namerena",
   "karta": "br-pytuvane",
-  "flag": null
+  "flag": null,
+  "v_drugi_stai": null
  },
  {
   "v": "в хотела как да го приспя на непознато място",
@@ -1101,7 +1242,8 @@
   "otkade": "местата / хотел",
   "rezultat": "namerena",
   "karta": "mb-san",
-  "flag": null
+  "flag": null,
+  "v_drugi_stai": null
  },
  {
   "v": "свекърва ми казва че го глезя като го нося",
@@ -1109,7 +1251,8 @@
   "otkade": "хората / свекърва",
   "rezultat": "namerena",
   "karta": "lb3-razglezvane",
-  "flag": null
+  "flag": null,
+  "v_drugi_stai": null
  },
  {
   "v": "свекърва иска да му даде вода на 2 месеца",
@@ -1117,7 +1260,8 @@
   "otkade": "хората / свекърва",
   "rezultat": "namerena",
   "karta": "zh-voda",
-  "flag": null
+  "flag": null,
+  "v_drugi_stai": null
  },
  {
   "v": "майка ми казва че млякото ми е слабо",
@@ -1125,7 +1269,8 @@
   "otkade": "хората / майка",
   "rezultat": "namerena",
   "karta": "mb-kolko-mliako",
-  "flag": null
+  "flag": null,
+  "v_drugi_stai": null
  },
  {
   "v": "мъжът ми не става нощем и се карам с него",
@@ -1133,7 +1278,8 @@
   "otkade": "хората / съпруг",
   "rezultat": "namerena",
   "karta": "dn-partnior",
-  "flag": null
+  "flag": null,
+  "v_drugi_stai": null
  },
  {
   "v": "мъжът ми не помага изобщо с бебето",
@@ -1141,7 +1287,8 @@
   "otkade": "хората / съпруг",
   "rezultat": "namerena",
   "karta": "nia-partnior",
-  "flag": null
+  "flag": null,
+  "v_drugi_stai": null
  },
  {
   "v": "мъжът ми ревнува че съм само с бебето",
@@ -1149,7 +1296,8 @@
   "otkade": "хората / съпруг",
   "rezultat": "namerena",
   "karta": "nia-partnior",
-  "flag": null
+  "flag": null,
+  "v_drugi_stai": null
  },
  {
   "v": "приятелките ми без деца се отдръпнаха",
@@ -1157,7 +1305,8 @@
   "otkade": "хората / приятелки",
   "rezultat": "namerena",
   "karta": "nia-prijatelki",
-  "flag": null
+  "flag": null,
+  "v_drugi_stai": null
  },
  {
   "v": "нямам с кого да си говоря освен с бебето",
@@ -1165,7 +1314,8 @@
   "otkade": "хората / самота",
   "rezultat": "tishina",
   "karta": null,
-  "flag": null
+  "flag": null,
+  "v_drugi_stai": null
  },
  {
   "v": "как да кажа на шефа че ще се върна по късно на работа",
@@ -1173,7 +1323,8 @@
   "otkade": "хората / шеф",
   "rezultat": "namerena",
   "karta": "nia-rabota",
-  "flag": null
+  "flag": null,
+  "v_drugi_stai": null
  },
  {
   "v": "връщам се на работа а бебето е на 8 месеца и ме боли",
@@ -1181,7 +1332,8 @@
   "otkade": "хората / шеф",
   "rezultat": "namerena",
   "karta": "nia-rabota",
-  "flag": null
+  "flag": null,
+  "v_drugi_stai": null
  },
  {
   "v": "съседите се оплакват че бебето плаче нощем",
@@ -1189,7 +1341,8 @@
   "otkade": "хората / съседи",
   "rezultat": "namerena",
   "karta": "dn-tajno",
-  "flag": null
+  "flag": null,
+  "v_drugi_stai": null
  },
  {
   "v": "хората пипат бебето по ръцете без да питат",
@@ -1197,7 +1350,8 @@
   "otkade": "хората / непознати",
   "rezultat": "tishina",
   "karta": null,
-  "flag": null
+  "flag": null,
+  "v_drugi_stai": null
  },
  {
   "v": "как да кажа на роднините да не идват болни",
@@ -1205,7 +1359,8 @@
   "otkade": "хората / роднини",
   "rezultat": "namerena",
   "karta": "nd-rodninite-savetite",
-  "flag": null
+  "flag": null,
+  "v_drugi_stai": null
  },
  {
   "v": "лекарят ми каза нещо а аз не разбрах и ме е срам да питам пак",
@@ -1213,7 +1368,8 @@
   "otkade": "хората / лекар",
   "rezultat": "tishina",
   "karta": null,
-  "flag": null
+  "flag": null,
+  "v_drugi_stai": null
  },
  {
   "v": "всички ми дават съвети а аз не знам кого да слушам",
@@ -1221,7 +1377,8 @@
   "otkade": "хората / всички",
   "rezultat": "tishina",
   "karta": null,
-  "flag": null
+  "flag": null,
+  "v_drugi_stai": null
  },
  {
   "v": "баба му дава сладко тайно от мен",
@@ -1229,7 +1386,8 @@
   "otkade": "хората / баба",
   "rezultat": "tishina",
   "karta": null,
-  "flag": null
+  "flag": null,
+  "v_drugi_stai": null
  },
  {
   "v": "мъжът ми казва че съм се променила много",
@@ -1237,7 +1395,8 @@
   "otkade": "хората / съпруг",
   "rezultat": "namerena",
   "karta": "nia-partnior",
-  "flag": null
+  "flag": null,
+  "v_drugi_stai": null
  },
  {
   "v": "сестра ми роди по същото време и постоянно сравнява децата",
@@ -1245,7 +1404,10 @@
   "otkade": "хората / сестра",
   "rezultat": "tishina",
   "karta": null,
-  "flag": null
+  "flag": null,
+  "v_drugi_stai": [
+   "Развитие и игри:rz-sravnenie"
+  ]
  },
  {
   "v": "как да оставя бебето на някого за първи път",
@@ -1253,7 +1415,8 @@
   "otkade": "хората / раздяла",
   "rezultat": "tishina",
   "karta": null,
-  "flag": null
+  "flag": null,
+  "v_drugi_stai": null
  },
  {
   "v": "детегледачка от колко месеца е ок",
@@ -1261,7 +1424,8 @@
   "otkade": "хората / детегледачка",
   "rezultat": "tishina",
   "karta": null,
-  "flag": null
+  "flag": null,
+  "v_drugi_stai": null
  },
  {
   "v": "свекървата иска бебето да спи у тях",
@@ -1269,7 +1433,8 @@
   "otkade": "хората / свекърва",
   "rezultat": "namerena",
   "karta": "ema-babini",
-  "flag": null
+  "flag": null,
+  "v_drugi_stai": null
  },
  {
   "v": "мъжът ми не иска второ дете а аз искам",
@@ -1277,7 +1442,8 @@
   "otkade": "хората / съпруг",
   "rezultat": "namerena",
   "karta": "nia-partnior",
-  "flag": null
+  "flag": null,
+  "v_drugi_stai": null
  },
  {
   "v": "родителите ми се месят във възпитанието",
@@ -1285,7 +1451,8 @@
   "otkade": "хората / родители",
   "rezultat": "tishina",
   "karta": null,
-  "flag": null
+  "flag": null,
+  "v_drugi_stai": null
  },
  {
   "v": "хората питат кога второто а аз още не съм се съвзела",
@@ -1293,7 +1460,8 @@
   "otkade": "хората / непознати",
   "rezultat": "tishina",
   "karta": null,
-  "flag": null
+  "flag": null,
+  "v_drugi_stai": null
  },
  {
   "v": "мъжът ми хърка и ме буди а и без това не спя",
@@ -1301,7 +1469,8 @@
   "otkade": "хората / съпруг",
   "rezultat": "namerena",
   "karta": "dn-nedospivane",
-  "flag": null
+  "flag": null,
+  "v_drugi_stai": null
  },
  {
   "v": "гости идват а къщата е в хаос и ме е срам",
@@ -1309,7 +1478,8 @@
   "otkade": "хората / гости",
   "rezultat": "namerena",
   "karta": "nd-tri-neshta",
-  "flag": null
+  "flag": null,
+  "v_drugi_stai": null
  },
  {
   "v": "коремът ми е мек и виси и година след раждането",
@@ -1317,7 +1487,8 @@
   "otkade": "тялото на майката / 12 м след",
   "rezultat": "namerena",
   "karta": "nia-body2",
-  "flag": null
+  "flag": null,
+  "v_drugi_stai": null
  },
  {
   "v": "косата ми пада на кичури",
@@ -1325,7 +1496,8 @@
   "otkade": "тялото на майката / 4 м след",
   "rezultat": "namerena",
   "karta": "pp-kosopad",
-  "flag": null
+  "flag": null,
+  "v_drugi_stai": null
  },
  {
   "v": "изпускам урина като кихна",
@@ -1333,7 +1505,8 @@
   "otkade": "тялото на майката / 3 м след",
   "rezultat": "namerena",
   "karta": "nw-izpuskane-urina",
-  "flag": null
+  "flag": null,
+  "v_drugi_stai": null
  },
  {
   "v": "боли ме кръста от постоянно носене",
@@ -1341,7 +1514,8 @@
   "otkade": "тялото на майката / 6 м след",
   "rezultat": "namerena",
   "karta": "nia-glavobolie",
-  "flag": null
+  "flag": null,
+  "v_drugi_stai": null
  },
  {
   "v": "имам разстояние между коремните мускули",
@@ -1349,7 +1523,8 @@
   "otkade": "тялото на майката / 5 м след",
   "rezultat": "tishina",
   "karta": null,
-  "flag": null
+  "flag": null,
+  "v_drugi_stai": null
  },
  {
   "v": "кога мога да почна спорт след раждане",
@@ -1357,7 +1532,8 @@
   "otkade": "тялото на майката / 2 м след",
   "rezultat": "namerena",
   "karta": "br-dvizhenie",
-  "flag": null
+  "flag": null,
+  "v_drugi_stai": null
  },
  {
   "v": "кога може секс след раждането",
@@ -1365,7 +1541,8 @@
   "otkade": "тялото на майката / 2 м след",
   "rezultat": "namerena",
   "karta": "nw-seksat-sled",
-  "flag": null
+  "flag": null,
+  "v_drugi_stai": null
  },
  {
   "v": "боли ме при секс след раждането",
@@ -1373,7 +1550,8 @@
   "otkade": "тялото на майката / 4 м след",
   "rezultat": "namerena",
   "karta": "nw-seksat-sled",
-  "flag": null
+  "flag": null,
+  "v_drugi_stai": null
  },
  {
   "v": "нямам никакво желание за секс",
@@ -1381,7 +1559,8 @@
   "otkade": "тялото на майката / 6 м след",
   "rezultat": "namerena",
   "karta": "nia-libido",
-  "flag": null
+  "flag": null,
+  "v_drugi_stai": null
  },
  {
   "v": "кога идва цикълът след раждане",
@@ -1389,7 +1568,8 @@
   "otkade": "тялото на майката / 5 м след",
   "rezultat": "namerena",
   "karta": "pp-cikyl",
-  "flag": null
+  "flag": null,
+  "v_drugi_stai": null
  },
  {
   "v": "може ли да забременея докато кърмя",
@@ -1397,7 +1577,8 @@
   "otkade": "тялото на майката / 6 м след",
   "rezultat": "namerena",
   "karta": "nw-karmeneto-predpazva",
-  "flag": null
+  "flag": null,
+  "v_drugi_stai": null
  },
  {
   "v": "какви противозачатъчни при кърмене",
@@ -1405,7 +1586,8 @@
   "otkade": "тялото на майката / 3 м след",
   "rezultat": "namerena",
   "karta": "pp-kontracepcia",
-  "flag": null
+  "flag": null,
+  "v_drugi_stai": null
  },
  {
   "v": "гърдите ми се смалиха след кърменето",
@@ -1413,7 +1595,8 @@
   "otkade": "тялото на майката / след отбиване",
   "rezultat": "namerena",
   "karta": "mb-kolko-mliako",
-  "flag": null
+  "flag": null,
+  "v_drugi_stai": null
  },
  {
   "v": "имам бучка в гърдата и боли",
@@ -1421,7 +1604,8 @@
   "otkade": "тялото на майката / кърмене",
   "rezultat": "namerena",
   "karta": "lb-mastit",
-  "flag": null
+  "flag": null,
+  "v_drugi_stai": null
  },
  {
   "v": "температура 39 и червена гореща гърда",
@@ -1429,7 +1613,8 @@
   "otkade": "тялото на майката / кърмене",
   "rezultat": "namerena",
   "karta": "zd-temperatura",
-  "flag": null
+  "flag": null,
+  "v_drugi_stai": null
  },
  {
   "v": "хемороиди след раждането",
@@ -1437,7 +1622,8 @@
   "otkade": "тялото на майката / 1 м след",
   "rezultat": "namerena",
   "karta": "nia-hemoroidi",
-  "flag": null
+  "flag": null,
+  "v_drugi_stai": null
  },
  {
   "v": "зъбите ми се развалиха след бременността",
@@ -1445,7 +1631,8 @@
   "otkade": "тялото на майката / 8 м след",
   "rezultat": "tishina",
   "karta": null,
-  "flag": null
+  "flag": null,
+  "v_drugi_stai": null
  },
  {
   "v": "щитовидната след раждане проверява ли се",
@@ -1453,7 +1640,8 @@
   "otkade": "тялото на майката / 6 м след",
   "rezultat": "tishina",
   "karta": null,
-  "flag": null
+  "flag": null,
+  "v_drugi_stai": null
  },
  {
   "v": "постоянно ми е студено и съм без сили",
@@ -1461,7 +1649,8 @@
   "otkade": "тялото на майката / 5 м след",
   "rezultat": "tishina",
   "karta": null,
-  "flag": null
+  "flag": null,
+  "v_drugi_stai": null
  },
  {
   "v": "мога ли да отслабна докато кърмя",
@@ -1469,7 +1658,8 @@
   "otkade": "тялото на майката / 6 м след",
   "rezultat": "namerena",
   "karta": "nia-ogledalo",
-  "flag": null
+  "flag": null,
+  "v_drugi_stai": null
  },
  {
   "v": "стриите ще изчезнат ли някога",
@@ -1477,7 +1667,8 @@
   "otkade": "тялото на майката / 10 м след",
   "rezultat": "namerena",
   "karta": "br-strii",
-  "flag": null
+  "flag": null,
+  "v_drugi_stai": null
  },
  {
   "v": "белегът от цезаровото ме дърпа",
@@ -1485,7 +1676,8 @@
   "otkade": "тялото на майката / 3 м след",
   "rezultat": "namerena",
   "karta": "mm-sechenie",
-  "flag": null
+  "flag": null,
+  "v_drugi_stai": null
  },
  {
   "v": "боли ме китката от вдигане на бебето",
@@ -1493,7 +1685,8 @@
   "otkade": "тялото на майката / 4 м след",
   "rezultat": "namerena",
   "karta": "nia-kitka",
-  "flag": null
+  "flag": null,
+  "v_drugi_stai": null
  },
  {
   "v": "какво да ям докато кърмя",
@@ -1501,7 +1694,8 @@
   "otkade": "тялото на майката / кърмене",
   "rezultat": "namerena",
   "karta": "br-hranene",
-  "flag": null
+  "flag": null,
+  "v_drugi_stai": null
  },
  {
   "v": "може ли кафе докато кърмя",
@@ -1509,7 +1703,8 @@
   "otkade": "тялото на майката / кърмене",
   "rezultat": "namerena",
   "karta": "br-hranene",
-  "flag": null
+  "flag": null,
+  "v_drugi_stai": null
  },
  {
   "v": "може ли чаша вино докато кърмя",
@@ -1517,7 +1712,8 @@
   "otkade": "тялото на майката / кърмене",
   "rezultat": "namerena",
   "karta": "nia-vino",
-  "flag": null
+  "flag": null,
+  "v_drugi_stai": null
  },
  {
   "v": "колко са майчинските за първата година",
@@ -1525,7 +1721,8 @@
   "otkade": "пари и документи",
   "rezultat": "tishina",
   "karta": null,
-  "flag": null
+  "flag": null,
+  "v_drugi_stai": null
  },
  {
   "v": "къде се вади акт за раждане",
@@ -1533,7 +1730,8 @@
   "otkade": "пари и документи",
   "rezultat": "namerena",
   "karta": "in-dokumenti",
-  "flag": null
+  "flag": null,
+  "v_drugi_stai": null
  },
  {
   "v": "как се издава егн на бебето",
@@ -1541,7 +1739,8 @@
   "otkade": "пари и документи",
   "rezultat": "namerena",
   "karta": "in-dokumenti",
-  "flag": null
+  "flag": null,
+  "v_drugi_stai": null
  },
  {
   "v": "как се прави лична карта на бебе",
@@ -1549,7 +1748,8 @@
   "otkade": "пари и документи",
   "rezultat": "tishina",
   "karta": null,
-  "flag": null
+  "flag": null,
+  "v_drugi_stai": null
  },
  {
   "v": "паспорт на бебе за пътуване какво трябва",
@@ -1557,7 +1757,8 @@
   "otkade": "пари и документи",
   "rezultat": "namerena",
   "karta": "in-samolet",
-  "flag": null
+  "flag": null,
+  "v_drugi_stai": null
  },
  {
   "v": "детските надбавки как се кандидатства",
@@ -1565,7 +1766,8 @@
   "otkade": "пари и документи",
   "rezultat": "namerena",
   "karta": "lb-noi",
-  "flag": null
+  "flag": null,
+  "v_drugi_stai": null
  },
  {
   "v": "еднократната помощ при раждане колко е",
@@ -1573,7 +1775,8 @@
   "otkade": "пари и документи",
   "rezultat": "namerena",
   "karta": "lb-noi",
-  "flag": null
+  "flag": null,
+  "v_drugi_stai": null
  },
  {
   "v": "как се избира личен лекар на бебето",
@@ -1581,7 +1784,8 @@
   "otkade": "пари и документи",
   "rezultat": "namerena",
   "karta": "in-smyana-lekar",
-  "flag": null
+  "flag": null,
+  "v_drugi_stai": null
  },
  {
   "v": "болничен за гледане на болно дете колко дни се полагат",
@@ -1589,7 +1793,8 @@
   "otkade": "пари и документи",
   "rezultat": "namerena",
   "karta": "in-bolnichen-dete",
-  "flag": null
+  "flag": null,
+  "v_drugi_stai": null
  },
  {
   "v": "бащата има ли отпуск при раждане",
@@ -1597,7 +1802,8 @@
   "otkade": "пари и документи",
   "rezultat": "namerena",
   "karta": "in-poeme-otpuska",
-  "flag": null
+  "flag": null,
+  "v_drugi_stai": null
  },
  {
   "v": "кога може майчинството да се прехвърли на бащата",
@@ -1605,7 +1811,8 @@
   "otkade": "пари и документи",
   "rezultat": "namerena",
   "karta": "in-poeme-otpuska",
-  "flag": null
+  "flag": null,
+  "v_drugi_stai": null
  },
  {
   "v": "колко струва да отгледаш бебе първата година",
@@ -1613,7 +1820,8 @@
   "otkade": "пари и документи",
   "rezultat": "namerena",
   "karta": "in-budget",
-  "flag": null
+  "flag": null,
+  "v_drugi_stai": null
  },
  {
   "v": "какво наистина трябва да купя преди раждането",
@@ -1621,7 +1829,8 @@
   "otkade": "пари и документи",
   "rezultat": "namerena",
   "karta": "ch-spisak",
-  "flag": null
+  "flag": null,
+  "v_drugi_stai": null
  },
  {
   "v": "мога ли да работя докато съм в майчинство",
@@ -1629,7 +1838,8 @@
   "otkade": "пари и документи",
   "rezultat": "namerena",
   "karta": "br-rabota",
-  "flag": null
+  "flag": null,
+  "v_drugi_stai": null
  },
  {
   "v": "как се записва дете в детска градина по точки",
@@ -1637,7 +1847,8 @@
   "otkade": "пари и документи",
   "rezultat": "namerena",
   "karta": "in-gradina",
-  "flag": null
+  "flag": null,
+  "v_drugi_stai": null
  },
  {
   "v": "имунизационният календар безплатен ли е",
@@ -1645,7 +1856,8 @@
   "otkade": "пари и документи",
   "rezultat": "namerena",
   "karta": "zd-vaksini",
-  "flag": null
+  "flag": null,
+  "v_drugi_stai": null
  },
  {
   "v": "здравните вноски докато съм в майчинство кой ги плаща",
@@ -1653,7 +1865,8 @@
   "otkade": "пари и документи",
   "rezultat": "tishina",
   "karta": null,
-  "flag": null
+  "flag": null,
+  "v_drugi_stai": null
  },
  {
   "v": "количка втора употреба безопасна ли е",
@@ -1661,7 +1874,8 @@
   "otkade": "пари и документи",
   "rezultat": "namerena",
   "karta": "in-second",
-  "flag": null
+  "flag": null,
+  "v_drugi_stai": null
  },
  {
   "v": "столчето за кола задължително ли е по закон",
@@ -1669,7 +1883,8 @@
   "otkade": "пари и документи",
   "rezultat": "namerena",
   "karta": "in2-stolche-hranene",
-  "flag": null
+  "flag": null,
+  "v_drugi_stai": null
  },
  {
   "v": "мога ли да ползвам старите дрешки от първото дете",
@@ -1677,7 +1892,8 @@
   "otkade": "пари и документи",
   "rezultat": "namerena",
   "karta": "ch-razmeri",
-  "flag": null
+  "flag": null,
+  "v_drugi_stai": null
  },
  {
   "v": "плаче вече 4 часа и нищо не помага",
@@ -1685,7 +1901,8 @@
   "otkade": "тежките нощи",
   "rezultat": "namerena",
   "karta": "dn-tajno",
-  "flag": null
+  "flag": null,
+  "v_drugi_stai": null
  },
  {
   "v": "искам да го оставя и да изляза от къщи",
@@ -1693,7 +1910,8 @@
   "otkade": "тежките нощи",
   "rezultat": "tishina",
   "karta": null,
-  "flag": null
+  "flag": null,
+  "v_drugi_stai": null
  },
  {
   "v": "изнервих се и изкрещях на бебето",
@@ -1701,7 +1919,8 @@
   "otkade": "тежките нощи",
   "rezultat": "namerena",
   "karta": "dn-sram-sled-gniv",
-  "flag": null
+  "flag": null,
+  "v_drugi_stai": null
  },
  {
   "v": "разтърсих го от нерви и сега ме е страх",
@@ -1709,7 +1928,8 @@
   "otkade": "тежките нощи",
   "rezultat": "namerena",
   "karta": "nm-kogato-izdarzhas",
-  "flag": "red:da+mama:mother"
+  "flag": "red:da+mama:mother",
+  "v_drugi_stai": null
  },
  {
   "v": "не съм спала 3 нощи и почвам да виждам странни неща",
@@ -1717,7 +1937,8 @@
   "otkade": "тежките нощи",
   "rezultat": "tishina",
   "karta": null,
-  "flag": null
+  "flag": null,
+  "v_drugi_stai": null
  },
  {
   "v": "мисля си че не ставам за майка",
@@ -1725,7 +1946,8 @@
   "otkade": "тежките нощи",
   "rezultat": "namerena",
   "karta": "nia-maika-mi",
-  "flag": "mama:heavy"
+  "flag": "mama:heavy",
+  "v_drugi_stai": null
  },
  {
   "v": "имам лоши мисли за бебето и се плаша от себе си",
@@ -1733,7 +1955,8 @@
   "otkade": "тежките нощи",
   "rezultat": "namerena",
   "karta": "lb-natraplivi",
-  "flag": null
+  "flag": null,
+  "v_drugi_stai": null
  },
  {
   "v": "той плаче и аз плача с него",
@@ -1741,7 +1964,8 @@
   "otkade": "тежките нощи",
   "rezultat": "namerena",
   "karta": "dn-tajno",
-  "flag": null
+  "flag": null,
+  "v_drugi_stai": null
  },
  {
   "v": "какво да правя ако не издържам повече",
@@ -1749,7 +1973,8 @@
   "otkade": "тежките нощи",
   "rezultat": "namerena",
   "karta": "dn-vreme",
-  "flag": "mama:heavy"
+  "flag": "mama:heavy",
+  "v_drugi_stai": null
  },
  {
   "v": "може ли да го оставя да плаче малко в леглото",
@@ -1757,7 +1982,8 @@
   "otkade": "тежките нощи",
   "rezultat": "namerena",
   "karta": "mb-cry",
-  "flag": null
+  "flag": null,
+  "v_drugi_stai": null
  },
  {
   "v": "нощем не диша спокойно и все го гледам",
@@ -1765,7 +1991,8 @@
   "otkade": "тежките нощи",
   "rezultat": "tishina",
   "karta": null,
-  "flag": null
+  "flag": null,
+  "v_drugi_stai": null
  },
  {
   "v": "не мога да спя защото го проверявам на всеки 10 минути",
@@ -1773,7 +2000,8 @@
   "otkade": "тежките нощи",
   "rezultat": "namerena",
   "karta": "br-son-pozi",
-  "flag": null
+  "flag": null,
+  "v_drugi_stai": null
  },
  {
   "v": "температура 39 през нощта какво правя сега",
@@ -1781,7 +2009,8 @@
   "otkade": "тежките нощи",
   "rezultat": "namerena",
   "karta": "zd-temperatura",
-  "flag": null
+  "flag": null,
+  "v_drugi_stai": null
  },
  {
   "v": "кога се вика бърза помощ при бебе",
@@ -1789,7 +2018,8 @@
   "otkade": "тежките нощи",
   "rezultat": "tishina",
   "karta": null,
-  "flag": null
+  "flag": null,
+  "v_drugi_stai": null
  },
  {
   "v": "не мога да го събудя добре и е отпуснато",
@@ -1797,7 +2027,8 @@
   "otkade": "тежките нощи",
   "rezultat": "namerena",
   "karta": "mb-otpusnato",
-  "flag": "red:da"
+  "flag": "red:da",
+  "v_drugi_stai": null
  },
  {
   "v": "посиня около устата за секунда",
@@ -1805,7 +2036,8 @@
   "otkade": "тежките нощи",
   "rezultat": "samo_flag",
   "karta": null,
-  "flag": "red:da"
+  "flag": "red:da",
+  "v_drugi_stai": null
  },
  {
   "v": "падна от леглото на пода",
@@ -1813,7 +2045,8 @@
   "otkade": "тежките нощи",
   "rezultat": "samo_flag",
   "karta": null,
-  "flag": "red:da"
+  "flag": "red:da",
+  "v_drugi_stai": null
  },
  {
   "v": "задави се с мляко и се уплаших до смърт",
@@ -1821,7 +2054,8 @@
   "otkade": "тежките нощи",
   "rezultat": "namerena",
   "karta": "mb-kolko-mliako",
-  "flag": "red:da"
+  "flag": "red:da",
+  "v_drugi_stai": null
  },
  {
   "v": "глътна нещо малко и не знам какво беше",
@@ -1829,7 +2063,8 @@
   "otkade": "тежките нощи",
   "rezultat": "samo_flag",
   "karta": null,
-  "flag": "red:da"
+  "flag": "red:da",
+  "v_drugi_stai": null
  },
  {
   "v": "цяла нощ повръща и не задържа дори вода",
@@ -1837,7 +2072,8 @@
   "otkade": "тежките нощи",
   "rezultat": "namerena",
   "karta": "zd-vomit",
-  "flag": null
+  "flag": null,
+  "v_drugi_stai": null
  },
  {
   "v": "днес ми се усмихна за първи път и се разплаках",
@@ -1845,7 +2081,8 @@
   "otkade": "радостите",
   "rezultat": "tishina",
   "karta": null,
-  "flag": null
+  "flag": null,
+  "v_drugi_stai": null
  },
  {
   "v": "каза мама за първи път",
@@ -1853,7 +2090,8 @@
   "otkade": "радостите",
   "rezultat": "tishina",
   "karta": null,
-  "flag": null
+  "flag": null,
+  "v_drugi_stai": null
  },
  {
   "v": "направи първите си стъпки днес",
@@ -1861,7 +2099,8 @@
   "otkade": "радостите",
   "rezultat": "namerena",
   "karta": "rz-prohojdane",
-  "flag": null
+  "flag": null,
+  "v_drugi_stai": null
  },
  {
   "v": "как да запазя спомените от първата година",
@@ -1869,7 +2108,8 @@
   "otkade": "радостите",
   "rezultat": "namerena",
   "karta": "dn-pisane",
-  "flag": null
+  "flag": null,
+  "v_drugi_stai": null
  },
  {
   "v": "какво да пиша в дневника за него",
@@ -1877,7 +2117,8 @@
   "otkade": "радостите",
   "rezultat": "namerena",
   "karta": "dn-pisane",
-  "flag": null
+  "flag": null,
+  "v_drugi_stai": null
  },
  {
   "v": "кога да отрежа първата коса",
@@ -1885,7 +2126,8 @@
   "otkade": "радостите",
   "rezultat": "namerena",
   "karta": "pp-kosopad",
-  "flag": null
+  "flag": null,
+  "v_drugi_stai": null
  },
  {
   "v": "първото зъбче излезе какво се прави с него",
@@ -1893,7 +2135,8 @@
   "otkade": "радостите",
   "rezultat": "namerena",
   "karta": "zd-teeth",
-  "flag": null
+  "flag": null,
+  "v_drugi_stai": null
  },
  {
   "v": "как се празнува проходка с питка",
@@ -1901,7 +2144,8 @@
   "otkade": "радостите",
   "rezultat": "tishina",
   "karta": null,
-  "flag": null
+  "flag": null,
+  "v_drugi_stai": null
  },
  {
   "v": "прегърна ме сам за първи път",
@@ -1909,7 +2153,8 @@
   "otkade": "радостите",
   "rezultat": "tishina",
   "karta": null,
-  "flag": null
+  "flag": null,
+  "v_drugi_stai": null
  },
  {
   "v": "почна да се смее на глас",
@@ -1917,7 +2162,8 @@
   "otkade": "радостите",
   "rezultat": "tishina",
   "karta": null,
-  "flag": null
+  "flag": null,
+  "v_drugi_stai": null
  },
  {
   "v": "кога ме познава че съм мама",
@@ -1925,7 +2171,8 @@
   "otkade": "радостите",
   "rezultat": "tishina",
   "karta": null,
-  "flag": null
+  "flag": null,
+  "v_drugi_stai": null
  },
  {
   "v": "първата дума беше на татко и малко ми стана криво",
@@ -1933,7 +2180,8 @@
   "otkade": "радостите",
   "rezultat": "namerena",
   "karta": "rz-govor",
-  "flag": null
+  "flag": null,
+  "v_drugi_stai": null
  },
  {
   "v": "какви игри да играя с бебе на 6 месеца",
@@ -1941,7 +2189,8 @@
   "otkade": "радостите",
   "rezultat": "namerena",
   "karta": "rz-igri",
-  "flag": null
+  "flag": null,
+  "v_drugi_stai": null
  },
  {
   "v": "как да му чета книжка на 1 година като къса страниците",
@@ -1949,7 +2198,8 @@
   "otkade": "радостите",
   "rezultat": "tishina",
   "karta": null,
-  "flag": null
+  "flag": null,
+  "v_drugi_stai": null
  },
  {
   "v": "още не го обичам и ме е срам да го кажа",
@@ -1957,7 +2207,8 @@
   "otkade": "срамните въпроси",
   "rezultat": "samo_flag",
   "karta": null,
-  "flag": "mama:heavy"
+  "flag": "mama:heavy",
+  "v_drugi_stai": null
  },
  {
   "v": "понякога съжалявам че родих",
@@ -1965,7 +2216,8 @@
   "otkade": "срамните въпроси",
   "rezultat": "samo_flag",
   "karta": null,
-  "flag": "mama:heavy"
+  "flag": "mama:heavy",
+  "v_drugi_stai": null
  },
  {
   "v": "завиждам на бездетните си приятелки",
@@ -1973,7 +2225,8 @@
   "otkade": "срамните въпроси",
   "rezultat": "namerena",
   "karta": "nia-prijatelki",
-  "flag": null
+  "flag": null,
+  "v_drugi_stai": null
  },
  {
   "v": "мразя да кърмя а всички казват че е красиво",
@@ -1981,7 +2234,8 @@
   "otkade": "срамните въпроси",
   "rezultat": "namerena",
   "karta": "nm-dokoga-karmya",
-  "flag": null
+  "flag": null,
+  "v_drugi_stai": null
  },
  {
   "v": "не искам да кърмя изобщо лоша майка ли съм",
@@ -1989,7 +2243,8 @@
   "otkade": "срамните въпроси",
   "rezultat": "namerena",
   "karta": "nia-vina",
-  "flag": null
+  "flag": null,
+  "v_drugi_stai": null
  },
  {
   "v": "дадох му адаптирано и се чувствам виновна",
@@ -1997,7 +2252,8 @@
   "otkade": "срамните въпроси",
   "rezultat": "namerena",
   "karta": "nia-vina",
-  "flag": null
+  "flag": null,
+  "v_drugi_stai": null
  },
  {
   "v": "сложих го пред телевизора за да си почина",
@@ -2005,7 +2261,8 @@
   "otkade": "срамните въпроси",
   "rezultat": "namerena",
   "karta": "rz-ekran",
-  "flag": null
+  "flag": null,
+  "v_drugi_stai": null
  },
  {
   "v": "радвам се когато заспи защото мога да съм сама",
@@ -2013,7 +2270,8 @@
   "otkade": "срамните въпроси",
   "rezultat": "namerena",
   "karta": "mb-dushut",
-  "flag": null
+  "flag": null,
+  "v_drugi_stai": null
  },
  {
   "v": "не ми е сладко да си играя с него скучно ми е",
@@ -2021,7 +2279,8 @@
   "otkade": "срамните въпроси",
   "rezultat": "namerena",
   "karta": "rz-igri",
-  "flag": null
+  "flag": null,
+  "v_drugi_stai": null
  },
  {
   "v": "пикая се като се смея и не смея да го кажа на никого",
@@ -2029,7 +2288,8 @@
   "otkade": "срамните въпроси",
   "rezultat": "tishina",
   "karta": null,
-  "flag": null
+  "flag": null,
+  "v_drugi_stai": null
  },
  {
   "v": "изпускам газове след раждането и не мога да ги удържа",
@@ -2037,7 +2297,8 @@
   "otkade": "срамните въпроси",
   "rezultat": "namerena",
   "karta": "nw-izpuskane-urina",
-  "flag": null
+  "flag": null,
+  "v_drugi_stai": null
  },
  {
   "v": "гнус ми е от собственото ми тяло",
@@ -2045,7 +2306,8 @@
   "otkade": "срамните въпроси",
   "rezultat": "tishina",
   "karta": null,
-  "flag": null
+  "flag": null,
+  "v_drugi_stai": null
  },
  {
   "v": "мъжът ми ме иска а мен ме отвращава",
@@ -2053,7 +2315,8 @@
   "otkade": "срамните въпроси",
   "rezultat": "namerena",
   "karta": "nia-partnior",
-  "flag": null
+  "flag": null,
+  "v_drugi_stai": null
  },
  {
   "v": "не съм се къпала три дни",
@@ -2061,7 +2324,8 @@
   "otkade": "срамните въпроси",
   "rezultat": "namerena",
   "karta": "nia-dush",
-  "flag": null
+  "flag": null,
+  "v_drugi_stai": null
  },
  {
   "v": "оставих го да плаче за да си допия кафето",
@@ -2069,7 +2333,8 @@
   "otkade": "срамните въпроси",
   "rezultat": "namerena",
   "karta": "dn-tajno",
-  "flag": null
+  "flag": null,
+  "v_drugi_stai": null
  },
  {
   "v": "мисля за бившия си в тези тежки дни",
@@ -2077,7 +2342,8 @@
   "otkade": "срамните въпроси",
   "rezultat": "tishina",
   "karta": null,
-  "flag": null
+  "flag": null,
+  "v_drugi_stai": null
  },
  {
   "v": "не искам да имам второ дете никога",
@@ -2085,7 +2351,8 @@
   "otkade": "срамните въпроси",
   "rezultat": "namerena",
   "karta": "nia-vtoro",
-  "flag": null
+  "flag": null,
+  "v_drugi_stai": null
  },
  {
   "v": "изкрещях му и той се уплаши от мен",
@@ -2093,7 +2360,8 @@
   "otkade": "срамните въпроси",
   "rezultat": "namerena",
   "karta": "dn-sram-sled-gniv",
-  "flag": "mama:dv"
+  "flag": "mama:dv",
+  "v_drugi_stai": null
  },
  {
   "v": "мляко тече по мен и мирише а нямам време да се преоблека",
@@ -2101,7 +2369,8 @@
   "otkade": "срамните въпроси",
   "rezultat": "namerena",
   "karta": "wm-nyama-vreme",
-  "flag": null
+  "flag": null,
+  "v_drugi_stai": null
  },
  {
   "v": "родих с цезарово и ме е срам че не родих нормално",
@@ -2109,7 +2378,8 @@
   "otkade": "срамните въпроси",
   "rezultat": "namerena",
   "karta": "dn-telo-posle",
-  "flag": null
+  "flag": null,
+  "v_drugi_stai": null
  },
  {
   "v": "второто дете расте ли различно от първото",
@@ -2117,7 +2387,8 @@
   "otkade": "втори и трети път майка",
   "rezultat": "namerena",
   "karta": "zh-weight",
-  "flag": null
+  "flag": null,
+  "v_drugi_stai": null
  },
  {
   "v": "как да кърмя новороденото и да гледам тригодишното едновременно",
@@ -2125,7 +2396,8 @@
   "otkade": "втори и трети път майка",
   "rezultat": "namerena",
   "karta": "bz-hrani",
-  "flag": null
+  "flag": null,
+  "v_drugi_stai": null
  },
  {
   "v": "голямото се върна на памперси откакто дойде бебето",
@@ -2133,7 +2405,8 @@
   "otkade": "втори и трети път майка",
   "rezultat": "namerena",
   "karta": "nd-golyamoto-varna",
-  "flag": null
+  "flag": null,
+  "v_drugi_stai": null
  },
  {
   "v": "нямам същите чувства към второто",
@@ -2141,7 +2414,8 @@
   "otkade": "втори и трети път майка",
   "rezultat": "namerena",
   "karta": "dn-samota",
-  "flag": null
+  "flag": null,
+  "v_drugi_stai": null
  },
  {
   "v": "второто раждане по бързо ли е",
@@ -2149,7 +2423,8 @@
   "otkade": "втори и трети път майка",
   "rezultat": "namerena",
   "karta": "nb-trae-razhdanet",
-  "flag": null
+  "flag": null,
+  "v_drugi_stai": null
  },
  {
   "v": "с второто пак ли ще имам цезарово",
@@ -2157,7 +2432,8 @@
   "otkade": "втори и трети път майка",
   "rezultat": "namerena",
   "karta": "dn-telo-posle",
-  "flag": null
+  "flag": null,
+  "v_drugi_stai": null
  },
  {
   "v": "как да ги приспя и двете едновременно",
@@ -2165,7 +2441,8 @@
   "otkade": "втори и трети път майка",
   "rezultat": "namerena",
   "karta": "ema-dva",
-  "flag": null
+  "flag": null,
+  "v_drugi_stai": null
  },
  {
   "v": "разлика 2 години между децата тежко ли е",
@@ -2173,7 +2450,8 @@
   "otkade": "втори и трети път майка",
   "rezultat": "tishina",
   "karta": null,
-  "flag": null
+  "flag": null,
+  "v_drugi_stai": null
  },
  {
   "v": "голямото удари бебето",
@@ -2181,7 +2459,8 @@
   "otkade": "втори и трети път майка",
   "rezultat": "namerena",
   "karta": "nd-golyamoto-varna",
-  "flag": "mama:mother"
+  "flag": "mama:mother",
+  "v_drugi_stai": null
  },
  {
   "v": "нямам време за голямото и ме гризе съвестта",
@@ -2189,7 +2468,8 @@
   "otkade": "втори и трети път майка",
   "rezultat": "namerena",
   "karta": "wm-nyama-vreme",
-  "flag": null
+  "flag": null,
+  "v_drugi_stai": null
  },
  {
   "v": "трето дете на 40 години рисковано ли е",
@@ -2197,7 +2477,8 @@
   "otkade": "втори и трети път майка",
   "rezultat": "tishina",
   "karta": null,
-  "flag": null
+  "flag": null,
+  "v_drugi_stai": null
  },
  {
   "v": "как да обясня на голямото дете че идва бебе",
@@ -2205,7 +2486,10 @@
   "otkade": "втори и трети път майка",
   "rezultat": "tishina",
   "karta": null,
-  "flag": null
+  "flag": null,
+  "v_drugi_stai": [
+   "Лабораторията:ema-kak"
+  ]
  },
  {
   "v": "на 6 седмица ми е много лошо всяка сутрин",
@@ -2213,7 +2497,8 @@
   "otkade": "бременност / 1 триместър",
   "rezultat": "tishina",
   "karta": null,
-  "flag": null
+  "flag": null,
+  "v_drugi_stai": null
  },
  {
   "v": "кога се чува сърцето на бебето",
@@ -2221,7 +2506,8 @@
   "otkade": "бременност / 1 триместър",
   "rezultat": "namerena",
   "karta": "zd-sarce-osobenost",
-  "flag": null
+  "flag": null,
+  "v_drugi_stai": null
  },
  {
   "v": "кога почват да се усещат ритниците",
@@ -2229,7 +2515,8 @@
   "otkade": "бременност / 2 триместър",
   "rezultat": "namerena",
   "karta": "br-dvijenia",
-  "flag": "preg:da"
+  "flag": "preg:da",
+  "v_drugi_stai": null
  },
  {
   "v": "може ли да спя по гръб докато съм бременна",
@@ -2237,7 +2524,8 @@
   "otkade": "бременност / 2 триместър",
   "rezultat": "namerena",
   "karta": "zd-bezopasen-son",
-  "flag": null
+  "flag": null,
+  "v_drugi_stai": null
  },
  {
   "v": "боли ме кръста на 30 седмица",
@@ -2245,7 +2533,8 @@
   "otkade": "бременност / 3 триместър",
   "rezultat": "namerena",
   "karta": "br-diskomfort",
-  "flag": null
+  "flag": null,
+  "v_drugi_stai": null
  },
  {
   "v": "може ли да си боядисам косата бременна",
@@ -2253,7 +2542,8 @@
   "otkade": "бременност",
   "rezultat": "namerena",
   "karta": "br-boya-sauna-vana",
-  "flag": null
+  "flag": null,
+  "v_drugi_stai": null
  },
  {
   "v": "какво не се яде при бременност",
@@ -2261,7 +2551,8 @@
   "otkade": "бременност",
   "rezultat": "tishina",
   "karta": null,
-  "flag": null
+  "flag": null,
+  "v_drugi_stai": null
  },
  {
   "v": "може ли кафе при бременност",
@@ -2269,7 +2560,8 @@
   "otkade": "бременност",
   "rezultat": "namerena",
   "karta": "br-hranene",
-  "flag": null
+  "flag": null,
+  "v_drugi_stai": null
  },
  {
   "v": "може ли да летя със самолет на 7 месец",
@@ -2277,7 +2569,8 @@
   "otkade": "бременност / 3 триместър",
   "rezultat": "tishina",
   "karta": null,
-  "flag": null
+  "flag": null,
+  "v_drugi_stai": null
  },
  {
   "v": "какво са фалшивите контракции",
@@ -2285,7 +2578,8 @@
   "otkade": "бременност / 3 триместър",
   "rezultat": "namerena",
   "karta": "br-kontrakcii",
-  "flag": null
+  "flag": null,
+  "v_drugi_stai": null
  },
  {
   "v": "кога да тръгна за родилното",
@@ -2293,7 +2587,8 @@
   "otkade": "бременност / раждане",
   "rezultat": "namerena",
   "karta": "br-kontrakcii",
-  "flag": null
+  "flag": null,
+  "v_drugi_stai": null
  },
  {
   "v": "как да разбера че ми изтичат водите",
@@ -2301,7 +2596,8 @@
   "otkade": "бременност / раждане",
   "rezultat": "namerena",
   "karta": "br-kontrakcii",
-  "flag": null
+  "flag": null,
+  "v_drugi_stai": null
  },
  {
   "v": "страх ме е от раждането ужасно много",
@@ -2309,7 +2605,8 @@
   "otkade": "бременност / раждане",
   "rezultat": "namerena",
   "karta": "br-strah-razhdane",
-  "flag": null
+  "flag": null,
+  "v_drugi_stai": null
  },
  {
   "v": "епидурална прави ли се на всеки",
@@ -2317,7 +2614,8 @@
   "otkade": "бременност / раждане",
   "rezultat": "namerena",
   "karta": "nb-epiduraln-pravi",
-  "flag": null
+  "flag": null,
+  "v_drugi_stai": null
  },
  {
   "v": "кога е последният преглед преди раждане",
@@ -2325,7 +2623,8 @@
   "otkade": "бременност / 3 триместър",
   "rezultat": "namerena",
   "karta": "ch-spisak",
-  "flag": null
+  "flag": null,
+  "v_drugi_stai": null
  },
  {
   "v": "бебето е седалищно на 34 седмица",
@@ -2333,7 +2632,8 @@
   "otkade": "бременност / 3 триместър",
   "rezultat": "namerena",
   "karta": "br-sedalishtno",
-  "flag": null
+  "flag": null,
+  "v_drugi_stai": null
  },
  {
   "v": "може ли секс през бременността",
@@ -2341,7 +2641,8 @@
   "otkade": "бременност",
   "rezultat": "namerena",
   "karta": "br-seks-bezopasno",
-  "flag": null
+  "flag": null,
+  "v_drugi_stai": null
  },
  {
   "v": "качих 20 килограма много ли е",
@@ -2349,7 +2650,8 @@
   "otkade": "бременност",
   "rezultat": "namerena",
   "karta": "br-telo",
-  "flag": null
+  "flag": null,
+  "v_drugi_stai": null
  },
  {
   "v": "може ли да вдигам голямото дете докато съм бременна",
@@ -2357,7 +2659,8 @@
   "otkade": "бременност",
   "rezultat": "namerena",
   "karta": "lb-stolche",
-  "flag": null
+  "flag": null,
+  "v_drugi_stai": null
  },
  {
   "v": "какво да сложа в чантата за родилното",
@@ -2365,7 +2668,8 @@
   "otkade": "бременност / раждане",
   "rezultat": "namerena",
   "karta": "br-chanta",
-  "flag": null
+  "flag": null,
+  "v_drugi_stai": null
  },
  {
   "v": "къде да пиша ако нещо не работи в приложението",
@@ -2373,7 +2677,8 @@
   "otkade": "самото приложение",
   "rezultat": "tishina",
   "karta": null,
-  "flag": null
+  "flag": null,
+  "v_drugi_stai": null
  },
  {
   "v": "може ли приложението да ми напомня за ваксините",
@@ -2381,7 +2686,8 @@
   "otkade": "самото приложение",
   "rezultat": "namerena",
   "karta": "zd-vaksini",
-  "flag": null
+  "flag": null,
+  "v_drugi_stai": null
  },
  {
   "v": "искам да добавите нещо за близнаци",
@@ -2389,7 +2695,8 @@
   "otkade": "самото приложение",
   "rezultat": "namerena",
   "karta": "bz-what",
-  "flag": null
+  "flag": null,
+  "v_drugi_stai": null
  },
  {
   "v": "има ли начин да търся по дума в цялото приложение",
@@ -2397,6 +2704,7 @@
   "otkade": "самото приложение",
   "rezultat": "tishina",
   "karta": null,
-  "flag": null
+  "flag": null,
+  "v_drugi_stai": null
  }
 ]
