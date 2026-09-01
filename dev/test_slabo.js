@@ -34,7 +34,7 @@ const S = 'C:/Users/User/AppData/Local/Temp/claude/C--Users-User-Downloads-----/
 const СПИСЪК = process.argv.includes('--spisak');
 
 let zaredi;
-try { zaredi = require(S + '/pyasachnik.js').zaredi; }
+try { zaredi = require('./pyasachnik.js').zaredi; }
 catch (e) { console.log('🔴 няма пясъчник: ' + e.message); process.exit(1); }
 
 // ── 40 въпроса за „замърсяване“, из всички стаи

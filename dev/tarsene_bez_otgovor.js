@@ -29,7 +29,7 @@ process.chdir(path.resolve(__dirname, '..'));
 //    щеше да гърми или, по-лошо, да мине по резервния път и да мери друго.
 const S = __dirname;
 let W;
-try { W = require(S + '/pyasachnik.js').zaredi(null); }
+try { W = require('./pyasachnik.js').zaredi(null); }
 catch (e) { console.log('🔴 няма пясъчник: ' + e.message); process.exit(2); }
 if (typeof W.BL_MATCH !== 'function') { console.log('🔴 няма BL_MATCH'); process.exit(2); }
 

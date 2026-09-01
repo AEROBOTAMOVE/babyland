@@ -40,7 +40,7 @@ const S = 'C:/Users/User/AppData/Local/Temp/claude/C--Users-User-Downloads-----/
           'a78d0ad3-272e-4eb0-929e-dba161c5ab2a/scratchpad';
 
 let zaredi;
-try { zaredi = require(S + '/pyasachnik.js').zaredi; }
+try { zaredi = require('./pyasachnik.js').zaredi; }
 catch (e) { console.log('🔴 няма пясъчник: ' + e.message); process.exit(1); }
 const W = zaredi(null);
 if (typeof W.BL_MATCH !== 'function') { console.log('🔴 няма BL_MATCH'); process.exit(1); }
