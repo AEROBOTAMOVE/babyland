@@ -1,0 +1,30 @@
+[
+ {
+  "файл": "lib/modern-2.json",
+  "място": "lib/modern-2.json статия lib-gyr-yasla",
+  "ок": true,
+  "беди": [],
+  "tejest": "razbiraemost"
+ },
+ {
+  "файл": "lib/lab-1.json",
+  "място": "lib/lab-1.json статия lib-267c772b",
+  "ок": true,
+  "беди": [],
+  "tejest": "razbiraemost"
+ },
+ {
+  "файл": "lib/mama-1.json",
+  "място": "lib/mama-1.json статия lib-mama-hranene",
+  "ок": true,
+  "беди": [],
+  "tejest": "razbiraemost"
+ },
+ {
+  "файл": "js/kb.js",
+  "място": "js/kb.js карта dn-skrol поле tip",
+  "ок": true,
+  "беди": [],
+  "tejest": "kozmetika"
+ }
+]
