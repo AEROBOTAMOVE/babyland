@@ -15,3 +15,19 @@ index.html.*
 dev/__*
 dev/_*
 __ab_*.html
+
+# ── 02.09: снимки от последното пускане на уред, НЕ изходен код ──
+# Тези файлове се пренаписват при всяко пускане и заливаха всеки diff с
+# хиляди редове. Заради това 169 нови възрастови полета в js/kb.js минаха
+# незабелязано в едно качване. Файл, който уред ПИШЕ и никой не ЧЕТЕ, няма
+# работа в историята. Остават на диска — махат се само от индекса.
+# Проверено машинно с dev/shum_v_git.js, не по име.
+dev/bliznaci_tema.json
+dev/chisla.json
+dev/plan_sverka.json
+dev/priemi_nahodki.json
+dev/pusni_brauzarnite.json
+dev/statii_bliznaci.json
+dev/studeni.json
+dev/svatovnik.json
+dev/test_vazrast_vliyanie.json
