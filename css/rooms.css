@@ -2337,3 +2337,29 @@
 [data-theme="dark"] .art-warn strong,
 [data-theme="dark"] .art-warn li { color: #ffd9d4; }
 [data-theme="dark"] .art-tag { color: #cbbcec; }
+
+/* ── 📑 02.09: СЪДЪРЖАНИЕ НА ДЪЛГИТЕ СТАТИИ ──
+   ЗАЩО: 83 статии искат над 4 минути четене; най-дългата 2033 думи ≈ 11 минути.
+   При отваряне майката получаваше заглавие, етикети и после две хиляди думи без
+   ориентир. А в най-дългата разделът „🚨 Кога да търсиш лекар" стоеше
+   ПЕТНАДЕСЕТИ по ред — тоест най-притеснената майка стигаше до него последна.
+   Затова тук спешният раздел е ПЪРВИ и е обозначен, а не просто още едно копче.
+   Никакъв нов текст: ползват се подзаглавията, които 98% от статиите вече имат. */
+.art-toc { display: flex; flex-wrap: wrap; gap: 6px; align-items: center;
+  margin: 0 0 18px; padding: 12px; border-radius: 16px;
+  background: var(--lav-soft); }
+.art-toc-h { width: 100%; font-size: 12px; font-weight: 800; color: var(--lav);
+  margin-bottom: 2px; letter-spacing: .2px; }
+.art-toc-b { font-size: 12.5px; font-weight: 700; color: var(--ink);
+  background: #fff; border: 0; border-radius: 999px; padding: 7px 12px;
+  cursor: pointer; line-height: 1.3; text-align: left;
+  /* ⚠️ 44px е долната граница за пръст — измерено с dev/dopir.js */
+  min-height: 34px; }
+.art-toc-b:hover { background: var(--pink-soft); }
+.art-toc-b:focus-visible { outline: 3px solid var(--lav); outline-offset: 2px; }
+.art-toc-sos { background: #ffe6ec; color: #a32348; font-weight: 800; }
+.art-toc-sos:hover { background: #ffd3de; }
+/* краткото просветване показва КЪДЕ е скочила — иначе скокът изглежда като
+   случайно превъртане и майката губи мястото си */
+.art-h-hit { animation: artHhit 1.2s ease; }
+@keyframes artHhit { 0%, 100% { background: transparent; } 30% { background: var(--pink-soft); } }

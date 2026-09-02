@@ -292,3 +292,18 @@
    Отваряш статия нощем и заглавието ѝ просто го няма. */
 [data-theme="dark"] .art-head { background: linear-gradient(135deg, #2b2545, #322a4e); }
 [data-theme="dark"] .art-body h5 { color: #f291bd; }   /* потъмненото за светла тема пада на 2.8 в тъмна */
+
+/* ── 📑 02.09: СЪДЪРЖАНИЕТО НА СТАТИЯТА В ТЪМНА ТЕМА ──
+   Новото се роди днес и НЯМАШЕ тъмен вариант. Копчетата бяха с бял фон
+   (`background:#fff`), тоест в тъмна стая щяха да светят като фенер точно там,
+   където майката чете в три през нощта с бебе на ръце.
+   Спешният раздел пази розовия си цвят — той трябва да СЕ РАЗЛИЧАВА, а не да
+   се слее с останалите. */
+[data-theme="dark"] .art-toc { background: #2b2545; }
+[data-theme="dark"] .art-toc-h { color: #c3aef0; }
+[data-theme="dark"] .art-toc-b { background: #3a3358; color: #eee6ff; }
+[data-theme="dark"] .art-toc-b:hover { background: #47406a; }
+[data-theme="dark"] .art-toc-sos { background: #5a2338; color: #ffc9d8; }
+[data-theme="dark"] .art-toc-sos:hover { background: #6d2b44; }
+[data-theme="dark"] .art-h-hit { animation: artHhitD 1.2s ease; }
+@keyframes artHhitD { 0%, 100% { background: transparent; } 30% { background: #47406a; } }

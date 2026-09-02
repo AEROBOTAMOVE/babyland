@@ -256,6 +256,40 @@ window.BL_ARTICLES_DATA = [
 
   function forRoom(room) { return data.filter(a => a.room === room); }
 
+  // 📑 02.09 — СЪДЪРЖАНИЕ НА ДЪЛГИТЕ СТАТИИ.
+  //
+  // ИЗМЕРЕНО: 83 статии искат над 4 минути четене, най-дългата 2033 думи ≈ 11
+  // минути. При отваряне майката вижда заглавие, етикети, „11 мин четене" — и
+  // после две хиляди думи без ориентир. Полето `s` не помага: то е ПРИМАМКА за
+  // списъка („най-важното при банята дори не е сапунът"), не отговор.
+  //
+  // 🔑 И НАЙ-ОСТРОТО: в най-дългата статия разделът „🚨 Кога да търсиш лекар"
+  //    стои ПЕТНАДЕСЕТИ ПО РЕД. Майка, която се е притеснила достатъчно да я
+  //    отвори, минава през две хиляди думи, преди да стигне до него.
+  //
+  // Лекът не е 83 ръчно писани обобщения, а СТРУКТУРА, която вече съществува:
+  // 98% от статиите имат подзаглавия, дългите средно по 9.6. Показваме ги
+  // отгоре като списък за прескачане, а спешният раздел се вдига ПЪРВИ.
+  // Нула нов текст, нула риск да се сгреши факт.
+  const слъг = т => 'ah-' + String(т).toLowerCase()
+    .replace(/[^а-яa-z0-9]+/gi, '-').replace(/^-+|-+$/g, '').slice(0, 40);
+
+  function съдържание(body, думи) {
+    // под 450 думи няма какво да се ориентира — списъкът само би отнел място
+    if (думи < 450) return '';
+    const заглавия = (body.split('\n').map(s => s.trim()).filter(s => s.startsWith('## ')))
+      .map(s => s.slice(3).replace(/\*\*(.+?)\*\*/g, '$1').trim());
+    if (заглавия.length < 4) return '';
+    // 🚨 разделът отива ПЪРВИ, каквото и да е мястото му в текста
+    const спешни = заглавия.filter(з => з.indexOf('🚨') >= 0);
+    const другите = заглавия.filter(з => з.indexOf('🚨') < 0);
+    const редени = спешни.concat(другите);
+    const бутони = редени.map(з =>
+      `<button type="button" class="art-toc-b${з.indexOf('🚨') >= 0 ? ' art-toc-sos' : ''}" data-toc="${слъг(з)}">${з}</button>`
+    ).join('');
+    return `<nav class="art-toc" aria-label="В тази статия"><span class="art-toc-h">📑 В тази статия</span>${бутони}</nav>`;
+  }
+
   function fmt(body) {
     const lines = body.split('\n');
     let html = '', inList = false;
@@ -263,7 +297,7 @@ window.BL_ARTICLES_DATA = [
     lines.forEach(raw => {
       const l = raw.trim();
       if (!l) { if (inList) { html += '</ul>'; inList = false; } return; }
-      if (l.startsWith('## ')) { if (inList) { html += '</ul>'; inList = false; } html += `<h5>${inline(l.slice(3))}</h5>`; }
+      if (l.startsWith('## ')) { if (inList) { html += '</ul>'; inList = false; } html += `<h5 id="${слъг(l.slice(3).replace(/\*\*(.+?)\*\*/g, '$1').trim())}">${inline(l.slice(3))}</h5>`; }
       else if (l.startsWith('- ')) { if (!inList) { html += '<ul>'; inList = true; } html += `<li>${inline(l.slice(2))}</li>`; }
       // 🔴 05.08 (одит г11, №299): редовете с „> " (цитат) падаха в общото else и
       //    се показваха ЗАЕДНО с водещия знак. Точно на изречението, което мама
@@ -350,9 +384,20 @@ window.BL_ARTICLES_DATA = [
     const mins = Math.max(1, Math.round(words / 180));
     $('artBody').innerHTML = `<span class="art-emoji">${a.emoji}</span><h3 class="art-title">${a.title}</h3>` +
       `<div class="art-tagrow">${a.tags.map(t => `<span class="art-tag">#${t}</span>`).join('')}<span class="art-read">⏱️ ${mins} мин четене</span></div>` +
+      съдържание(a.body || '', words) +
       fmt(a.body) + спешноHtml + relHtml +
       `<button class="art-ask" type="button" data-room="${a.room}">💬 Питай помощничката за това</button>`;
     $('artBody').querySelectorAll('[data-rel]').forEach(b => b.addEventListener('click', () => openArticle(b.dataset.rel)));
+    // 📑 прескачане по съдържанието. Търси се ВЪТРЕ в тялото, не в document —
+    //    четецът живее в наслагване и id-та могат да се повторят другаде.
+    $('artBody').querySelectorAll('[data-toc]').forEach(b => b.addEventListener('click', () => {
+      const цел = $('artBody').querySelector('#' + CSS.escape(b.dataset.toc));
+      if (!цел) return;
+      const тяло = $('artBody');
+      тяло.scrollTop = цел.offsetTop - тяло.offsetTop - 8;
+      цел.classList.add('art-h-hit');
+      setTimeout(() => цел.classList.remove('art-h-hit'), 1200);
+    }));
     $('artDisc').textContent = 'ℹ️ ' + (a.source || 'Образователна информация — не замества лекар.');
     const ov = $('artOverlay');
     // ♿ 11.08 (клавиатура-четец): четецът се отваряше НАД стаята, но фокусът
