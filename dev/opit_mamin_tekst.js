@@ -140,8 +140,10 @@ const прим = `x.innerHTML = \`<div title="\${b.name}" data-y=\${b.note}></di
 console.log('\n═══ ОПИТ 3: враждебно име през ИСТИНСКИ шаблони ═══');
 // вземаме реалната esc от js/rooms.js (най-често срещаната форма) и я пускаме
 const кодRooms = fs.readFileSync(path.join(КОРЕН, 'js/rooms.js'), 'utf8');
-const мEsc = кодRooms.match(/const\s+esc\s*=\s*([^;]*?replace\([^;]*?);/);
-const escЖив = vm.runInContext('(' + мEsc[1] + ')', vm.createContext({ String, RegExp }));
+const нEsc = кодRooms.search(/const\s+esc\s*=\s*/);
+const тялоEsc = кодRooms.slice(кодRooms.indexOf('=', нEsc) + 1, крайНаИзраз(кодRooms, кодRooms.indexOf('=', нEsc) + 1));
+const escЖив = vm.runInContext('(' + тялоEsc + ')', vm.createContext({ String, RegExp }));
+console.log('  (жива esc, взета от js/rooms.js:' + (кодRooms.slice(0, нEsc).split(/\r?\n/).length) + ')');
 
 const ШАБЛОНИ = [
   { къде: 'js/rooms2.js:333 (име на бебе в заглавие)', f: n => `<h4>${escЖив(n) || 'Бебето'}</h4>` },
