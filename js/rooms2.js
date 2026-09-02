@@ -1170,7 +1170,7 @@
       let rows = log.slice(-5).reverse().map(x =>
         `<div class="bb-histrow"><span>${new Date(x.start).toLocaleTimeString('bg-BG', { hour: '2-digit', minute: '2-digit' })}</span><span>${x.dur}с</span><span>${x.interval ? 'през ' + x.interval + ' мин' : 'първа'}</span></div>`).join('');
       let alert = '';
-      // Б1.2: правилото 5-1-1 е за ТЕРМИНА. Преди 37-та седмица редовните
+      // Б1.2: правилото 5-1-1 е за ТЕРМИНА. Преди 37-ма седмица редовните
       // контракции са друга история — там не се чака 5-1-1, а се звъни.
       const сег = седмицаСега();
       if (сег > 0 && сег < 37 && log.length >= 3 && avgInt && avgInt <= 12) {

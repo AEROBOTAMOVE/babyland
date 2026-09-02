@@ -110,15 +110,60 @@ function прозорец() {
   }
   function taгБезопасен(t) { return t == null ? 'div' : t; }
   function синхронизирай(е) { е.className = [...е.classList._].join(' '); }
-  // само трите селектора, които тестовете наистина ползват: #id, .клас, таг
-  function намери(корен, селектор) {
-    const с = String(селектор).trim();
-    const вътре = [];
-    (function обходи(в) { for (const д of в.children) { вътре.push(д); обходи(д); } })(корен);
+  // ── селекторите, които уредите наистина ползват ──
+  // 🪤 ВТОРА ВЪЛНА: първата версия знаеше само #id, .клас и таг. Уредът за езика
+  //    (1106 реда, никога непускан) вика `script[src]`, за да разбере кои файлове
+  //    да прегледа — намираше НУЛА и се самоизключваше с честно съобщение.
+  //    Затова тук се добавят: [атрибут], [атрибут="стойност"], таг[атрибут],
+  //    списък през запетая, и „а б" (потомък). Повече не е нужно и не се прави —
+  //    подпорка, която се преструва на пълен браузър, лъже по-скъпо.
+  function единичен(вътре, с) {
+    // таг[атр] или таг[атр="ст"] или само [атр]
+    const m = с.match(/^([a-zA-Z]*)\[([a-zA-Z-]+)(?:([~^$*|]?=)"?([^"\]]*)"?)?\]$/);
+    if (m) {
+      const [, таг, атр, знак, ст] = m;
+      return вътре.filter(е => {
+        if (таг && е.tagName !== таг.toUpperCase()) return false;
+        const v = е[атр];
+        if (v === undefined || v === null || v === '') return false;
+        if (!знак) return true;
+        const s = String(v);
+        if (знак === '=') return s === ст;
+        if (знак === '^=') return s.startsWith(ст);
+        if (знак === '$=') return s.endsWith(ст);
+        if (знак === '*=') return s.indexOf(ст) >= 0;
+        return false;
+      });
+    }
     if (с.startsWith('#')) return вътре.filter(е => е.id === с.slice(1));
     if (с.startsWith('.')) return вътре.filter(е => е.classList.contains(с.slice(1)));
     if (/^[a-zA-Z]+$/.test(с)) return вътре.filter(е => е.tagName === с.toUpperCase());
+    // таг.клас
+    const mk = с.match(/^([a-zA-Z]+)\.([A-Za-z0-9_-]+)$/);
+    if (mk) return вътре.filter(е => е.tagName === mk[1].toUpperCase() && е.classList.contains(mk[2]));
     return [];
+  }
+  function намери(корен, селектор) {
+    const цял = String(селектор).trim();
+    const вътре = [];
+    (function обходи(в) { for (const д of в.children) { вътре.push(д); обходи(д); } })(корен);
+    // списък през запетая
+    if (цял.indexOf(',') >= 0) {
+      const видяни = new Set(), изход = [];
+      for (const част of цял.split(',')) for (const е of намери(корен, част)) if (!видяни.has(е)) { видяни.add(е); изход.push(е); }
+      return изход;
+    }
+    // потомък: „а б" — намираме по последната част, стига да има предшественик по първата
+    const части = цял.split(/\s+/).filter(Boolean);
+    if (части.length > 1) {
+      const родители = new Set(намери(корен, части.slice(0, -1).join(' ')));
+      return единичен(вътре, части[части.length - 1]).filter(е => {
+        let p = е.parentNode;
+        while (p) { if (родители.has(p)) return true; p = p.parentNode; }
+        return false;
+      });
+    }
+    return единичен(вътре, цял);
   }
 
   const тяло = възел('body');
@@ -300,7 +345,10 @@ async function пусниЕдин(у) {
     ['localStorage наистина ПАЗИ', T.localStorage.getItem('к') === 'стойност'],
     ['localStorage наистина ТРИЕ', (T.localStorage.removeItem('к'), T.localStorage.getItem('к') === null)],
     ['несъществуващ възел дава null', T.document.getElementById('няма-такъв') === null],
-    ['textContent се чете обратно', (п1.textContent = 'здрасти', п1.textContent === 'здрасти')]
+    ['textContent се чете обратно', (п1.textContent = 'здрасти', п1.textContent === 'здрасти')],
+    ['селектор по атрибут script[src]', (() => { const с = T.document.createElement('script'); с.setAttribute('src', 'js/проба.js'); T.document.head.appendChild(с); return T.document.querySelectorAll('script[src]').length === 1; })()],
+    ['селектор по стойност [src="js/проба.js"]', T.document.querySelectorAll('[src="js/проба.js"]').length === 1],
+    ['списък през запетая', T.document.querySelectorAll('script, div').length >= 2],
   ];
   let слаби = 0;
   for (const [и, ок] of проверки) { if (!ок) слаби++; console.log('   ' + (ок ? '✅' : '🔴') + ' подпорка: ' + и); }
