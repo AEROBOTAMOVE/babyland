@@ -40,7 +40,17 @@ const ПЪТ = аргументи.find(a => !a.startsWith('--'));
 const ПИШИ = аргументи.includes('--pishi');
 const САМО = (() => { const i = аргументи.indexOf('--samo'); return i >= 0 ? аргументи[i + 1] : null; })();
 
-if (!ПЪТ) { console.log('🔴 дай файл с находки: node dev/priemi_nahodki.js <файл.json>'); process.exit(1); }
+// 🪤 БЕЗ АРГУМЕНТ ИЗЛИЗАМЕ С НУЛА, не с единица. Този файл НЕ Е пазач — той е
+// прилагач. Излизане с 1 при липсващ аргумент караше dev/pazachi.js да го
+// брои за НАХОДКА при всяко пускане на целия набор. Набор с постоянни фалшиви
+// червени учи човека да не гледа червеното — а тогава истинското се губи.
+if (!ПЪТ) {
+  console.log('');
+  console.log('📥 ПРИЕМАНЕ НА НАХОДКИ — прилагач, не пазач.');
+  console.log('   Пускане: node dev/priemi_nahodki.js <файл.json> [--pishi] [--samo <тежест>]');
+  console.log('');
+  process.exit(0);
+}
 
 // ── четене: приема или масив, или обект с поле nahodki ──
 const сурово = JSON.parse(fs.readFileSync(ПЪТ, 'utf8'));

@@ -37,7 +37,14 @@ const KB = path.join(ROOT, 'js/kb.js');
 const аргументи = process.argv.slice(2);
 const ПЪТ = аргументи.find(a => !a.startsWith('--'));
 const ПИШИ = аргументи.includes('--pishi');
-if (!ПЪТ) { console.log('🔴 дай файл с присъди: node dev/vazrast_pole.js <файл.json>'); process.exit(1); }
+// 🪤 Виж бележката в dev/priemi_nahodki.js — същата причина: прилагач, не пазач.
+if (!ПЪТ) {
+  console.log('');
+  console.log('🎂 ВЪЗРАСТОВО ПОЛЕ — прилагач, не пазач.');
+  console.log('   Пускане: node dev/vazrast_pole.js <файл.json> [--pishi]');
+  console.log('');
+  process.exit(0);
+}
 
 const ПРИСЪДИ = JSON.parse(fs.readFileSync(ПЪТ, 'utf8'));
 
