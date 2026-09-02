@@ -13,7 +13,7 @@
   //    `catch (e) {}` изяждаше грешката МЪЛЧЕШКОМ — измерено живо: 0 записани,
   //    а на екрана светваше „↺ Върни последното“ върху несъществуващ запис и
   //    нито дума защо. Записът вече казва ДА или НЕ.
-  const save = (k, v) => { try { localStorage.setItem(k, JSON.stringify(v)); } catch (e) { return false; } return true; };
+  const save = (k, v) => { try { localStorage.setItem(k, JSON.stringify(v)); } catch (e) { if (window.BL_ZAPIS_PADNA) BL_ZAPIS_PADNA(); return false; } return true; };
   const el = (tag, cls, html) => { const n = document.createElement(tag); if (cls) n.className = cls; if (html !== undefined) n.innerHTML = html; return n; };
   const card = (titleHtml) => { const c = el('section', 'jr-card'); c.appendChild(el('h4', 'jr-title', titleHtml)); return c; };
   const hhmm = ts => { const d = new Date(ts); return String(d.getHours()).padStart(2, '0') + ':' + String(d.getMinutes()).padStart(2, '0'); };

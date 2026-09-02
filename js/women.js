@@ -14,7 +14,7 @@
   // 🔴 25.08 · ПРАЗНА УЛОВКА — виж дългата бележка в women2.js.
   //    ЖЕЛЯЗНО: поле се чисти САМО след потвърден запис.
   //    ПЪТ НАЗАД: върни `catch (e) {}` без `return false`.
-  const save = (k, v) => { try { localStorage.setItem(k, JSON.stringify(v)); return true; } catch (e) { return false; } };
+  const save = (k, v) => { try { localStorage.setItem(k, JSON.stringify(v)); return true; } catch (e) { if (window.BL_ZAPIS_PADNA) BL_ZAPIS_PADNA(); return false; } };
   const НЕ_СЕ_ПОБРА = 'Не можах да го запазя — паметта на телефона е пълна. Написаното ти Е ТУК, в полето: освободи малко място (видеа, стари снимки) и натисни пак. Не го трий.';
   const localDate = d => d.getFullYear() + '-' + String(d.getMonth() + 1).padStart(2, '0') + '-' + String(d.getDate()).padStart(2, '0');
   const today = () => localDate(new Date());
