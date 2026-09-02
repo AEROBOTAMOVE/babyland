@@ -85,7 +85,7 @@ const мери = (раздел, твърдение, беше, сега, един
   }
   return n;
 })());
-мери(17, 'карти без статия', 110, карти.filter(z => !z.lib || (Array.isArray(z.lib) && !z.lib.length)).length);
+мери(17, 'карти без статия', 111, карти.filter(z => !z.lib || (Array.isArray(z.lib) && !z.lib.length)).length);
 мери(17, 'карти без чип', 94, карти.filter(z => !(z.chips || []).length).length);
 мери(23, 'изречения над 35 думи', 63, (() => {
   let n = 0;
@@ -141,10 +141,10 @@ const редовеНа = поле => {
 мери(26, 'карти с ГОРНА граница за възраст', 196, карти.filter(z => z.до !== undefined).length);
 
 // ── и общите числа ──
-мери('шапка', 'карти', 698, карти.length);
+мери('шапка', 'карти', 699, карти.length);
 мери('шапка', 'статии', 981, статии.length);
-мери('шапка', 'ключове', 9648, карти.reduce((a, z) => a + (z.keys || []).length, 0));
-мери('шапка', 'уреди в dev/', 141, fs.readdirSync(К + 'dev').filter(f => f.endsWith('.js') && !/ARCHIVE|PREDI|BAK/.test(f)).length);
+мери('шапка', 'ключове', 11461, карти.reduce((a, z) => a + (z.keys || []).length, 0));
+мери('шапка', 'уреди в dev/', 150, fs.readdirSync(К + 'dev').filter(f => f.endsWith('.js') && !/ARCHIVE|PREDI|BAK/.test(f)).length);
 
 // ── извеждане ──
 console.log('');
