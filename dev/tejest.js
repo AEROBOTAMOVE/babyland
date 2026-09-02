@@ -1,170 +1,154 @@
-// dev/tejest.js — МЕРКА А: колко тежи приложението и КОГА се тегли кое.
-// Пуска се: node dev/tejest.js
-// Мери СУРОВ размер + gzip + brotli (реалната цена по мобилен интернет).
-const fs = require('fs'), path = require('path'), zlib = require('zlib');
-const ROOT = path.resolve(__dirname, '..');
+// dev/tejest.js — МЕРИ тежестта на приложението. Не пипа нищо, само чете.
+// Пускане: node dev/tejest.js
+//
+// Мери три различни числа, защото трите значат различни неща за майката:
+//   1) КАКВО ИМА В ПАПКАТА  — всичко на диска, вкл. резервните копия
+//   2) КАКВО СЕ КАЧВА       — файловете БЕЗ тези по .gitignore (реалният сайт)
+//   3) КАКВО СЕ ТЕГЛИ ПРИ ПЪРВО ОТВАРЯНЕ — index.html + <script>/<link> +
+//      целият списък ASSETS от sw.js (service worker-ът ги дърпа при install)
+//
+// И трите — сурово И със сгъване (gzip), защото по мрежата върви сгънатото.
 
-const MRTAV = /\.(PREDI_[^.\\/]*|BAK_[^.\\/]*|ARCHIVE|S_DEFER_APPLIED|S_DEFER_ZA_PROVERKA)(\.[a-z]+)?$/i;
-function jivFail(p){
-  const b = path.basename(p);
-  if (/\.(PREDI|BAK|ARCHIVE|S_DEFER)/i.test(b)) return false;
-  if (/\.ARCHIVE\./i.test(b)) return false;
-  return true;
-}
+const fs = require('fs');
+const path = require('path');
+const zlib = require('zlib');
 
-function razmer(rel){
-  const p = path.join(ROOT, rel);
-  if (!fs.existsSync(p)) return null;
-  const buf = fs.readFileSync(p);
-  return {
-    rel, surov: buf.length,
-    gz: zlib.gzipSync(buf, {level:9}).length,
-    br: zlib.brotliCompressSync(buf).length
-  };
-}
+const КОРЕН = path.resolve(__dirname, '..');
+const Р = p => path.join(КОРЕН, p);
 
-const html = fs.readFileSync(path.join(ROOT,'index.html'),'utf8');
-
-// ---------- 1. Какво index.html дърпа ----------
-const scripts = [];
-const reS = /<script\b([^>]*)>/gi; let m;
-while ((m = reS.exec(html))) {
-  const attrs = m[1];
-  const src = (attrs.match(/\bsrc\s*=\s*["']([^"']+)["']/i)||[])[1];
-  if (!src) continue;
-  scripts.push({
-    src: src.split('?')[0],
-    defer: /\bdefer\b/i.test(attrs),
-    async: /\basync\b/i.test(attrs),
-    red: html.slice(0, m.index).split('\n').length
-  });
-}
-const links = [];
-const reL = /<link\b([^>]*)>/gi;
-while ((m = reL.exec(html))) {
-  const attrs = m[1];
-  const href = (attrs.match(/\bhref\s*=\s*["']([^"']+)["']/i)||[])[1];
-  if (!href) continue;
-  const rel = (attrs.match(/\brel\s*=\s*["']([^"']+)["']/i)||[])[1] || '';
-  links.push({href: href.split('?')[0], rel, red: html.slice(0,m.index).split('\n').length});
-}
-const imgs = [];
-const reI = /<img\b([^>]*)>/gi;
-while ((m = reI.exec(html))) {
-  const src = (m[1].match(/\bsrc\s*=\s*["']([^"']+)["']/i)||[])[1];
-  if (src) imgs.push({src: src.split('?')[0], red: html.slice(0,m.index).split('\n').length});
-}
-
-// ---------- 2. Какво service worker-ът предкешира ----------
-let swAssets = [];
-try{
-  const sw = fs.readFileSync(path.join(ROOT,'sw.js'),'utf8');
-  const blok = sw.match(/const\s+ASSETS\s*=\s*\[([\s\S]*?)\];/);
-  if (blok) swAssets = (blok[1].match(/'([^']+)'/g)||[]).map(s=>s.slice(1,-1));
-}catch(e){}
-
-// ---------- 3. Всички ЖИВИ файлове на диска (дърво) ----------
-function obhod(dir, out){
-  for (const e of fs.readdirSync(dir, {withFileTypes:true})){
-    if (e.name === '.git' || e.name === '__pycache__' || e.name.startsWith('$')) continue;
-    const full = path.join(dir, e.name);
-    if (e.isDirectory()) obhod(full, out);
-    else out.push(path.relative(ROOT, full).replace(/\\/g,'/'));
+// ── 1. Обход на цялата папка ───────────────────────────────────────────────
+const ПРЕСКОЧИ = new Set(['.git', 'node_modules', '__pycache__']);
+const всички = [];
+(function обходи(дир) {
+  for (const име of fs.readdirSync(дир)) {
+    if (ПРЕСКОЧИ.has(име)) continue;
+    const пълен = path.join(дир, име);
+    let ст;
+    try { ст = fs.statSync(пълен); } catch (e) { continue; }
+    if (ст.isDirectory()) обходи(пълен);
+    else всички.push({ път: path.relative(КОРЕН, пълен).replace(/\\/g, '/'), байта: ст.size });
   }
-  return out;
-}
-const vsichki = obhod(ROOT, []);
+})(КОРЕН);
 
-// ---------- ИЗХОД ----------
-const kb = n => (n/1024).toFixed(1);
-function sumi(list){
-  let s=0,g=0,b=0, lipsvashti=[];
-  const redove=[];
-  for (const rel of list){
-    const r = razmer(rel);
-    if (!r) { lipsvashti.push(rel); continue; }
-    s+=r.surov; g+=r.gz; b+=r.br; redove.push(r);
-  }
-  return {s,g,b,redove,lipsvashti};
+// ── 2. Кое е резервно копие (по .gitignore правилата, буквално) ────────────
+function еРезервно(п) {
+  const име = п.split('/').pop();
+  if (/\.BAK/.test(име)) return 'BAK';
+  if (/PREDI/.test(име)) return 'PREDI';
+  if (/ARCHIVE/.test(име)) return 'ARCHIVE';
+  if (/^index\.html\./.test(име)) return 'index-копие';
+  if (п.startsWith('$Р/') || п.startsWith('$Д/')) return 'папка-$';
+  if (/\.pyc$/.test(име)) return 'pyc';
+  return null;
 }
 
-const srcSkript = scripts.map(x=>x.src);
-const srcCss = links.filter(l=>/stylesheet/i.test(l.rel)).map(l=>l.href);
-const srcPreload = links.filter(l=>/preload/i.test(l.rel)).map(l=>l.href);
+// ── 3. Сгъване ─────────────────────────────────────────────────────────────
+const кешGzip = new Map();
+function gz(п) {
+  if (кешGzip.has(п)) return кешGzip.get(п);
+  let n = 0;
+  try { n = zlib.gzipSync(fs.readFileSync(Р(п)), { level: 9 }).length; } catch (e) { n = 0; }
+  кешGzip.set(п, n);
+  return n;
+}
 
-console.log('=== А. ТЕЖЕСТТА ===\n');
-console.log('index.html сам по себе си:', JSON.stringify(razmer('index.html')));
-console.log('');
-console.log('СКРИПТОВЕ в index.html:', scripts.length, '| без defer/async (блокиращи):',
-  scripts.filter(x=>!x.defer&&!x.async).length);
-const S = sumi(srcSkript);
-console.log('  сурово', kb(S.s),'KB | gzip', kb(S.g),'KB | brotli', kb(S.b),'KB');
-if (S.lipsvashti.length) console.log('  ЛИПСВАЩИ ФАЙЛОВЕ:', S.lipsvashti);
-console.log('');
-console.log('CSS в index.html:', srcCss.length);
-const C = sumi(srcCss);
-console.log('  сурово', kb(C.s),'KB | gzip', kb(C.g),'KB | brotli', kb(C.b),'KB');
-if (C.lipsvashti.length) console.log('  ЛИПСВАЩИ:', C.lipsvashti);
-console.log('');
-console.log('PRELOAD:', srcPreload);
-const P = sumi(srcPreload);
-console.log('  сурово', kb(P.s),'KB | gzip', kb(P.g),'KB');
-console.log('');
-console.log('IMG тагове в index.html:', JSON.stringify(imgs));
-console.log('');
-const H = razmer('index.html');
-console.log('>>> ПЪРВО ОТВАРЯНЕ (html+css+js+preload):');
-console.log('    сурово', kb(H.surov+S.s+C.s+P.s),'KB');
-console.log('    gzip  ', kb(H.gz+S.g+C.g+P.g),'KB');
-console.log('    brotli', kb(H.br+S.b+C.b+P.b),'KB');
-console.log('');
+// ── 4. Какво сочи index.html ───────────────────────────────────────────────
+const html = fs.readFileSync(Р('index.html'), 'utf8');
+const отHTML = [];
+const рег = /(?:src|href)\s*=\s*["']([^"']+)["']/gi;
+let м;
+while ((м = рег.exec(html))) {
+  let u = м[1];
+  if (/^(https?:|data:|mailto:|tel:|#|javascript:)/i.test(u)) continue;
+  u = u.split('?')[0].split('#')[0];
+  if (!u) continue;
+  отHTML.push(u);
+}
+const HTMLуник = [...new Set(отHTML)];
 
-// SW
-const SW = sumi(swAssets.filter(a=>a!=='.'&&a!=='index.html'));
-console.log('SW ASSETS (предкеш след първо отваряне):', swAssets.length, 'записа');
-console.log('  сурово', kb(SW.s),'KB | gzip', kb(SW.g),'KB');
-if (SW.lipsvashti.length) console.log('  ЛИПСВАЩИ В SW СПИСЪКА (404 при install → цялата инсталация пада):', SW.lipsvashti);
-const vHtmlNeVSw = srcSkript.concat(srcCss).filter(x=>!swAssets.includes(x));
-console.log('  Дърпани от index.html, но НЕ в SW списъка (няма офлайн):', vHtmlNeVSw.length, vHtmlNeVSw);
-const vSwNeVHtml = swAssets.filter(a=>a!=='.'&&a!=='index.html'&&!srcSkript.includes(a)&&!srcCss.includes(a)&&!/\.(woff2|json|png|svg|webmanifest)$/i.test(a));
-console.log('  В SW списъка, но НЕ дърпани от index.html (изтегля се напразно):', vSwNeVHtml.length, vSwNeVHtml);
-console.log('');
+// ── 5. Какво иска service worker-ът ────────────────────────────────────────
+const sw = fs.readFileSync(Р('sw.js'), 'utf8');
+const блок = sw.slice(sw.indexOf('const ASSETS'), sw.indexOf('];', sw.indexOf('const ASSETS')));
+const SWсписък = [...блок.matchAll(/'([^']+)'/g)].map(x => x[1]).filter(x => x !== '.' && !x.startsWith('const'));
 
-// lib/*.json
-const libJivi = vsichki.filter(f=>f.startsWith('lib/') && f.endsWith('.json') && jivFail(f));
-const L = sumi(libJivi);
-console.log('lib/*.json ЖИВИ:', libJivi.length, '| сурово', kb(L.s), 'KB | gzip', kb(L.g),'KB');
-console.log('  в SW списъка:', libJivi.filter(f=>swAssets.includes(f)).length);
-console.log('');
+// ── 6. Отчет ───────────────────────────────────────────────────────────────
+const kb = b => (b / 1024).toFixed(1);
+const mb = b => (b / 1048576).toFixed(2);
 
-// ---------- НАЙ-ТЕЖКИТЕ ----------
-console.log('=== НАЙ-ТЕЖКИТЕ 25 ЖИВИ ФАЙЛА, КОИТО СЕ ТЕГЛЯТ ===');
-const teglenite = new Set([...srcSkript, ...srcCss, ...srcPreload, ...swAssets.filter(a=>a!=='.'), 'index.html']);
-const spisak = [...teglenite].map(razmer).filter(Boolean).sort((a,b)=>b.surov-a.surov);
-spisak.slice(0,25).forEach((r,i)=>console.log(
-  String(i+1).padStart(2), r.rel.padEnd(30), kb(r.surov).padStart(9),'KB сурово |',
-  kb(r.gz).padStart(8),'KB gzip |', kb(r.br).padStart(8),'KB brotli'));
-console.log('');
-const obshtoT = spisak.reduce((a,r)=>a+r.surov,0);
-const obshtoG = spisak.reduce((a,r)=>a+r.gz,0);
-console.log('ОБЩО ТЕГЛЕНО (html+css+js+шрифт+икони+lib в SW):', kb(obshtoT),'KB сурово |', kb(obshtoG),'KB gzip');
-console.log('');
+const живи = всички.filter(f => !еРезервно(f.път) && !f.път.startsWith('dev/'));
+const резервни = всички.filter(f => еРезервно(f.път));
+const девът = всички.filter(f => f.път.startsWith('dev/') && !еРезервно(f.път));
 
-// ---------- МЪРТВО ТЕГЛО НА ДИСКА ----------
-console.log('=== МЪРТВИ КОПИЯ НА ДИСКА (не се теглят, но пътуват в хранилището) ===');
-const mrtvi = vsichki.filter(f=>!jivFail(f));
-const M = sumi(mrtvi);
-console.log('брой:', mrtvi.length, '| сурово', kb(M.s),'KB =', (M.s/1048576).toFixed(2),'MB');
-M.redove.sort((a,b)=>b.surov-a.surov).slice(0,12).forEach(r=>console.log('   ', r.rel.padEnd(45), kb(r.surov).padStart(9),'KB'));
-console.log('');
+const сума = a => a.reduce((s, x) => s + x.байта, 0);
 
-// ---------- ФАЙЛОВЕ, КОИТО НИКОЙ НЕ ДЪРПА ----------
-console.log('=== ЖИВИ ФАЙЛОВЕ, КОИТО НИКОЙ НЕ ДЪРПА ===');
-const nedrupnati = vsichki.filter(f=>jivFail(f) && !teglenite.has(f)
-  && !f.startsWith('dev/') && !f.startsWith('.claude/')
-  && !/\.(md|py|gitignore)$/i.test(f) && f!=='sw.js' && f!=='manifest.webmanifest');
-const N = sumi(nedrupnati);
-console.log('брой:', nedrupnati.length, '| сурово', kb(N.s),'KB');
-N.redove.sort((a,b)=>b.surov-a.surov).forEach(r=>console.log('   ', r.rel.padEnd(45), kb(r.surov).padStart(9),'KB'));
-console.log('');
-console.log('dev/ папка (инструменти, не се дърпат):', kb(sumi(vsichki.filter(f=>f.startsWith('dev/'))).s),'KB');
+const резултат = {
+  цялаПапка: { брой: всички.length, байта: сума(всички), MB: mb(сума(всички)) },
+  живиФайлове: { брой: живи.length, байта: сума(живи), MB: mb(сума(живи)) },
+  резервниКопия: { брой: резервни.length, байта: сума(резервни), MB: mb(сума(резервни)) },
+  папкаDev: { брой: девът.length, байта: сума(девът), MB: mb(сума(девът)) },
+};
+
+// по вид
+const поВид = {};
+for (const f of живи) {
+  const е = (f.път.match(/\.([a-z0-9]+)$/i) || [0, 'без'])[1].toLowerCase();
+  поВид[е] = поВид[е] || { брой: 0, байта: 0 };
+  поВид[е].брой++; поВид[е].байта += f.байта;
+}
+
+// ПЪРВО ОТВАРЯНЕ = index.html + HTML препратки + SW ASSETS (обединено)
+const първо = new Set(['index.html', 'sw.js']);
+HTMLуник.forEach(u => първо.add(u));
+SWсписък.forEach(u => първо.add(u));
+const първоСпис = [...първо].filter(u => fs.existsSync(Р(u)));
+const липсващи = [...първо].filter(u => !fs.existsSync(Р(u)));
+
+let първоСуров = 0, първоGz = 0;
+const детайл = [];
+for (const u of първоСпис) {
+  const b = fs.statSync(Р(u)).size;
+  const g = gz(u);
+  първоСуров += b; първоGz += g;
+  детайл.push({ път: u, байта: b, gzip: g });
+}
+детайл.sort((a, b) => b.байта - a.байта);
+
+// какво НЕ е в първото отваряне, но е жив файл
+const ливиНеТеглени = живи.filter(f => !първо.has(f.път));
+
+console.log('═══ 1. КАКВО ИМА НА ДИСКА ═══');
+console.log(JSON.stringify(резултат, null, 2));
+
+console.log('\n═══ 2. ПО ВИД (само живи, без dev/ и без копия) ═══');
+Object.entries(поВид).sort((a, b) => b[1].байта - a[1].байта)
+  .forEach(([е, v]) => console.log(`  .${е.padEnd(14)} ${String(v.брой).padStart(4)} файла  ${kb(v.байта).padStart(9)} KB`));
+
+console.log('\n═══ 3. ПЪРВО ОТВАРЯНЕ (index.html + препратки + SW ASSETS) ═══');
+console.log(`  файлове: ${първоСпис.length}`);
+console.log(`  СУРОВО : ${mb(първоСуров)} MB  (${kb(първоСуров)} KB)`);
+console.log(`  GZIP   : ${mb(първоGz)} MB  (${kb(първоGz)} KB)`);
+if (липсващи.length) console.log(`  ⚠ ЛИПСВАТ на диска: ${липсващи.join(', ')}`);
+
+console.log('\n═══ 4. НАЙ-ТЕЖКИТЕ 25 ОТ ПЪРВОТО ОТВАРЯНЕ ═══');
+детайл.slice(0, 25).forEach((f, i) =>
+  console.log(`${String(i + 1).padStart(3)}. ${f.път.padEnd(42)} ${kb(f.байта).padStart(8)} KB  (gz ${kb(f.gzip).padStart(7)} KB)`));
+
+console.log('\n═══ 5. ЖИВИ ФАЙЛОВЕ, КОИТО НЕ СЕ ТЕГЛЯТ ПРИ ПЪРВО ОТВАРЯНЕ ═══');
+ливиНеТеглени.sort((a, b) => b.байта - a.байта).slice(0, 40)
+  .forEach(f => console.log(`  ${f.път.padEnd(46)} ${kb(f.байта).padStart(8)} KB`));
+console.log(`  (общо ${ливиНеТеглени.length} файла, ${kb(сума(ливиНеТеглени))} KB)`);
+
+console.log('\n═══ 6. HTML сочи, но SW НЕ кешира ═══');
+const HTMLбезSW = HTMLуник.filter(u => !SWсписък.includes(u) && fs.existsSync(Р(u)));
+HTMLбезSW.forEach(u => console.log(`  ${u.padEnd(46)} ${kb(fs.statSync(Р(u)).size).padStart(8)} KB`));
+
+console.log('\n═══ 7. SW кешира, но HTML НЕ сочи ═══');
+const SWбезHTML = SWсписък.filter(u => !HTMLуник.includes(u));
+SWбезHTML.forEach(u => console.log(`  ${u.padEnd(46)} ${fs.existsSync(Р(u)) ? kb(fs.statSync(Р(u)).size).padStart(8) + ' KB' : '❌ ЛИПСВА'}`));
+
+// запис за следващи уреди
+fs.writeFileSync(path.join(__dirname, 'tejest.json'), JSON.stringify({
+  резултат, поВид, първоСуров, първоGz, детайл, липсващи,
+  неТеглени: ливиНеТеглени, HTMLбезSW, SWбезHTML
+}, null, 1), 'utf8');
+console.log('\n→ dev/tejest.json');

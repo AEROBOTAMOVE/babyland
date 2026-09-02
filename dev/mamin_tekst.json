@@ -1,0 +1,609 @@
+{
+ "пишещи": {
+  "bl_baby2": [
+   {
+    "файл": "js/baby2.js",
+    "ред": 62,
+    "къс": "{ name: n.slice(0, 24), birth: дата.value || '', sex: избран, d: new Date().toISOString().slice(0, 10) })) { г"
+   },
+   {
+    "файл": "js/baby2.js",
+    "ред": 170,
+    "къс": "Object.assign({}, b2, { name: n.slice(0, 24), birth: дата.value || '', sex: избран }))"
+   }
+  ],
+  "bl_q30": [
+   {
+    "файл": "js/firstday.js",
+    "ред": 378,
+    "къс": "с2)) { вход.value = т"
+   }
+  ],
+  "bl_baby": [
+   {
+    "файл": "js/preg20.js",
+    "ред": 234,
+    "къс": "текущо)) { знак(вест, 'Не можах да го запазя — датата ти стои в полето. Освободи малко място и натисни пак.')"
+   }
+  ],
+  "bl_lmp": [
+   {
+    "файл": "js/preg20.js",
+    "ред": 284,
+    "къс": "п.value)) { знак(вест, 'Не можах да го запазя — датата ти стои в полето. Освободи малко място и натисни пак.')"
+   },
+   {
+    "файл": "js/rooms2.js",
+    "ред": 975,
+    "къс": "lmpI.value)"
+   }
+  ],
+  "bl_qdoc_my": [
+   {
+    "файл": "js/preg20.js",
+    "ред": 401,
+    "къс": "своя.value)"
+   },
+   {
+    "файл": "js/rooms8.js",
+    "ред": 177,
+    "къс": "своя.value)"
+   }
+  ],
+  "bl_preg_memories": [
+   {
+    "файл": "js/preg20.js",
+    "ред": 523,
+    "къс": "запазени)) { знак(вест, 'Не можах да го запазя — изречението ти стои в полето. Освободи малко място и натисни "
+   }
+  ],
+  "bl_mama": [
+   {
+    "файл": "js/profile.js",
+    "ред": 495,
+    "къс": "мама)) { греш.textContent = 'Не можах да създам профила — името ти стои в полето. Освободи малко място и натис"
+   }
+  ],
+  "bl_pump": [
+   {
+    "файл": "js/pump.js",
+    "ред": 72,
+    "къс": "log.slice(-200))) { // мл-тата НЕ се трият от полето — има ги за втори опит бел.textContent = '💛 Паметта на т"
+   }
+  ],
+  "bl_wm_diary": [
+   {
+    "файл": "js/quickadd.js",
+    "ред": 37,
+    "къс": "items)) { // редът остава в полето — има го поне още веднъж, за да не се загуби изход.textContent = '😕 Паметт"
+   },
+   {
+    "файл": "js/women3.js",
+    "ред": 481,
+    "къс": "d)) { каз(keep, НЕ_СЕ_ПОБРА, ta)"
+   }
+  ],
+  "bl_lab_timeline": [
+   {
+    "файл": "js/rooms11.js",
+    "ред": 356,
+    "къс": "st)) { каз(add, 'Не можах да го запазя — написаното ти стои в полето. Освободи малко място и натисни пак.', in"
+   }
+  ],
+  "bl_me": [
+   {
+    "файл": "js/women.js",
+    "ред": 495,
+    "къс": "{ name: nm.value.trim(), birth: dt.value })) { if (сДума) каз(out, НЕ_СЕ_ПОБРА, nm)"
+   }
+  ],
+  "bl_wm_letters": [
+   {
+    "файл": "js/women2.js",
+    "ред": 837,
+    "къс": "cur)) { каз(b, НЕ_СЕ_ПОБРА, ta)"
+   }
+  ],
+  "bl_wm_dreams": [
+   {
+    "файл": "js/women2.js",
+    "ред": 857,
+    "къс": "cur)) { if (сДума) каз(ta, НЕ_СЕ_ПОБРА)"
+   }
+  ],
+  "bl_wm_freeday": [
+   {
+    "файл": "js/women2.js",
+    "ред": 872,
+    "къс": "ta.value)) { if (сДума) каз(ta, НЕ_СЕ_ПОБРА)"
+   }
+  ],
+  "bl_wm_trip": [
+   {
+    "файл": "js/women3.js",
+    "ред": 972,
+    "къс": "d)) { if (сДума) каз(ta, НЕ_СЕ_ПОБРА)"
+   }
+  ],
+  "bl_yb_dedic": [
+   {
+    "файл": "js/yearbook2.js",
+    "ред": 144,
+    "къс": "п.value.slice(0, 400)))"
+   }
+  ]
+ },
+ "обектниПолета": [
+  {
+   "файл": "js/preg20.js",
+   "ред": 224,
+   "обект": "текущо",
+   "поле": "name",
+   "къс": "текущо.name = (nameI.value.trim() || текущо.name || '').slice(0, 24)"
+  },
+  {
+   "файл": "js/profile.js",
+   "ред": 766,
+   "обект": "мама",
+   "поле": "name",
+   "къс": "мама.name = п.value.trim().slice(0, 24) || стар"
+  },
+  {
+   "файл": "js/pump.js",
+   "ред": 44,
+   "обект": "amt",
+   "поле": "value",
+   "къс": "amt.value == null ? '' : amt.value).trim().replace(',', '.')"
+  },
+  {
+   "файл": "js/rooms.js",
+   "ред": 247,
+   "обект": "eVal",
+   "поле": "textContent",
+   "къс": "eVal.textContent = range.value + '%'"
+  },
+  {
+   "файл": "js/rooms2.js",
+   "ред": 310,
+   "обект": "cur",
+   "поле": "name",
+   "къс": "cur.name = nameI.value.trim().slice(0, 24)"
+  },
+  {
+   "файл": "js/rooms2.js",
+   "ред": 311,
+   "обект": "cur",
+   "поле": "birth",
+   "къс": "cur.birth = dateI.value"
+  },
+  {
+   "файл": "js/rooms2.js",
+   "ред": 2502,
+   "обект": "rec",
+   "поле": "onresult",
+   "къс": "rec.onresult = e => { ta.value = (ta.value ? ta.value + ' ' : '') + e.results[0][0].transc"
+  },
+  {
+   "файл": "js/rooms3.js",
+   "ред": 1626,
+   "обект": "oz",
+   "поле": "value",
+   "къс": "oz.value = ml.value ? (ml.value / 29.5735).toFixed(1) : ''"
+  },
+  {
+   "файл": "js/rooms3.js",
+   "ред": 1627,
+   "обект": "ml",
+   "поле": "value",
+   "къс": "ml.value = oz.value ? Math.round(oz.value * 29.5735) : ''"
+  },
+  {
+   "файл": "js/ui.js",
+   "ред": 102,
+   "обект": "п",
+   "поле": "value",
+   "къс": "п.value = п.value.replace(/,/g, '.')"
+  },
+  {
+   "файл": "js/women2.js",
+   "ред": 328,
+   "обект": "cur",
+   "поле": "note",
+   "къс": "cur.note = n.value"
+  },
+  {
+   "файл": "js/women2.js",
+   "ред": 330,
+   "обект": "w",
+   "поле": "note",
+   "къс": "w.note = n.value"
+  },
+  {
+   "файл": "js/women4.js",
+   "ред": 341,
+   "обект": "st",
+   "поле": "date",
+   "къс": "st.date = дата.value"
+  },
+  {
+   "файл": "js/women4.js",
+   "ред": 379,
+   "обект": "st",
+   "поле": "first",
+   "къс": "st.first = т.value.slice(0, 900)"
+  },
+  {
+   "файл": "js/women5.js",
+   "ред": 371,
+   "обект": "st",
+   "поле": "date",
+   "къс": "st.date = дата.value"
+  },
+  {
+   "файл": "js/women5.js",
+   "ред": 371,
+   "обект": "st",
+   "поле": "what",
+   "къс": "st.what = какво.value.trim().slice(0, 60)"
+  },
+  {
+   "файл": "js/women5.js",
+   "ред": 687,
+   "обект": "st",
+   "поле": "t",
+   "къс": "st.t = т.value.slice(0, 4000)"
+  }
+ ],
+ "голи": [
+  {
+   "файл": "js/articles.js",
+   "ред": 370,
+   "ключ": "(поле) .t",
+   "екранирано": false,
+   "къс": "rel.map(h => `<button class=\"art-relb\" type=\"button\" data-rel=\"${h.id}\">${h.e} ${h.t}</button>`).join('') + `</div>`;"
+  },
+  {
+   "файл": "js/baby2.js",
+   "ред": 24,
+   "ключ": "bl_baby2",
+   "екранирано": false,
+   "къс": "const второ = () => load('bl_baby2', {});"
+  },
+  {
+   "файл": "js/dev.js",
+   "ред": 16,
+   "ключ": "bl_baby",
+   "екранирано": false,
+   "къс": "const getBaby = () => load('bl_baby', { name: '', birth: '' });"
+  },
+  {
+   "файл": "js/extras.js",
+   "ред": 21,
+   "ключ": "bl_baby",
+   "екранирано": false,
+   "къс": "const getBaby = () => load('bl_baby', { name: '', sex: '', birth: '' });"
+  },
+  {
+   "файл": "js/extras.js",
+   "ред": 563,
+   "ключ": "(поле) .t",
+   "екранирано": false,
+   "къс": "d.innerHTML = `<span class=\"bg-e\">${b.e}</span><strong>${b.n}</strong><small>${b.t}${esc(кога)}</small>`;"
+  },
+  {
+   "файл": "js/extras2.js",
+   "ред": 19,
+   "ключ": "bl_baby",
+   "екранирано": false,
+   "къс": "const getBaby = () => load('bl_baby', { name: '', sex: '', birth: '' });"
+  },
+  {
+   "файл": "js/firstday.js",
+   "ред": 416,
+   "ключ": "bl_q30",
+   "екранирано": false,
+   "къс": "const с = load('bl_q30', { start: '', a: {} });"
+  },
+  {
+   "файл": "js/firstday.js",
+   "ред": 484,
+   "ключ": "bl_q30",
+   "екранирано": false,
+   "къс": "const с = load('bl_q30', { start: '', a: {} });"
+  },
+  {
+   "файл": "js/firstday.js",
+   "ред": 234,
+   "ключ": "bl_baby",
+   "екранирано": false,
+   "къс": "const б = load('bl_baby', {});"
+  },
+  {
+   "файл": "js/helper.js",
+   "ред": 2912,
+   "ключ": "(поле) .name",
+   "екранирано": false,
+   "къс": "addMsg('bot', тихо(`Това е повече по частта на ${тя.name} ${тя.badge} — тя го знае по-добре от мен.`));"
+  },
+  {
+   "файл": "js/helper.js",
+   "ред": 2919,
+   "ключ": "(поле) .name",
+   "екранирано": false,
+   "къс": "{ label: `${тя.badge} Заведи ме при ${тя.name}`, go: entry.room }"
+  },
+  {
+   "файл": "js/home.js",
+   "ред": 185,
+   "ключ": "(поле) .t",
+   "екранирано": false,
+   "къс": "<strong class=\"d24-t\">${d.t} · ${String(d.h).padStart(2, '0')}:00</strong>"
+  },
+  {
+   "файл": "js/home2.js",
+   "ред": 22,
+   "ключ": "bl_baby",
+   "екранирано": false,
+   "къс": "const getBaby = () => load('bl_baby', {}) || {};"
+  },
+  {
+   "файл": "js/home2.js",
+   "ред": 25,
+   "ключ": "bl_lmp",
+   "екранирано": false,
+   "къс": "const lmp = window.BL_EXPECT ? BL_EXPECT.lmp() : load('bl_lmp', '');"
+  },
+  {
+   "файл": "js/home2.js",
+   "ред": 153,
+   "ключ": "(поле) .t",
+   "екранирано": false,
+   "къс": "<span class=\"bn-txt\"><strong>${x.t}</strong><span class=\"bn-s\">${x.s}</span></span>"
+  },
+  {
+   "файл": "js/lab.js",
+   "ред": 28,
+   "ключ": "bl_baby",
+   "екранирано": false,
+   "къс": "const babyName = () => (load('bl_baby', {}).name || 'бебето');"
+  },
+  {
+   "файл": "js/lab.js",
+   "ред": 30,
+   "ключ": "bl_baby",
+   "екранирано": false,
+   "къс": "const месеци = () => { try { const b = load('bl_baby', {}); const a = (b && b.birth && window.BL_AGE) ? BL_AGE(b.birth) : null; return a ? a.devMonths"
+  },
+  {
+   "файл": "js/preg20.js",
+   "ред": 422,
+   "ключ": "bl_qdoc_my",
+   "екранирано": false,
+   "къс": "${(load('bl_qdoc_my', '') || '').trim() ? `<p class=\"pr-lead\">Моите въпроси:</p><p>${esc(load('bl_qdoc_my', ''))}</p>` : ''}`;"
+  },
+  {
+   "файл": "js/preg20.js",
+   "ред": 422,
+   "ключ": "bl_qdoc_my",
+   "екранирано": true,
+   "къс": "${(load('bl_qdoc_my', '') || '').trim() ? `<p class=\"pr-lead\">Моите въпроси:</p><p>${esc(load('bl_qdoc_my', ''))}</p>` : ''}`;"
+  },
+  {
+   "файл": "js/preg20.js",
+   "ред": 504,
+   "ключ": "bl_preg_memories",
+   "екранирано": false,
+   "къс": "п.value = load('bl_preg_memories', {})[ключ] || '';"
+  },
+  {
+   "файл": "js/preg20.js",
+   "ред": 514,
+   "ключ": "bl_preg_memories",
+   "екранирано": false,
+   "къс": "const запазени = load('bl_preg_memories', {});"
+  },
+  {
+   "файл": "js/profile.js",
+   "ред": 1147,
+   "ключ": "bl_mama",
+   "екранирано": false,
+   "къс": "const м = load('bl_mama', {});"
+  },
+  {
+   "файл": "js/pump.js",
+   "ред": 66,
+   "ключ": "bl_pump",
+   "екранирано": false,
+   "къс": "const log = load('bl_pump', []);"
+  },
+  {
+   "файл": "js/pump.js",
+   "ред": 108,
+   "ключ": "bl_pump",
+   "екранирано": false,
+   "къс": "const log = load('bl_pump', []);"
+  },
+  {
+   "файл": "js/river.js",
+   "ред": 59,
+   "ключ": "bl_baby",
+   "екранирано": false,
+   "къс": "const getBaby = () => load('bl_baby', { name: '', birth: '' });"
+  },
+  {
+   "файл": "js/roomhero.js",
+   "ред": 20,
+   "ключ": "bl_baby",
+   "екранирано": false,
+   "къс": "const baby = () => load('bl_baby', { name: '', birth: '' });"
+  },
+  {
+   "файл": "js/rooms11.js",
+   "ред": 308,
+   "ключ": "bl_lab_timeline",
+   "екранирано": false,
+   "къс": "const st = load('bl_lab_timeline', []).filter(x => x && x.t);"
+  },
+  {
+   "файл": "js/rooms11.js",
+   "ред": 324,
+   "ключ": "bl_lab_timeline",
+   "екранирано": false,
+   "къс": "const сега = load('bl_lab_timeline', []);"
+  },
+  {
+   "файл": "js/rooms11.js",
+   "ред": 339,
+   "ключ": "bl_lab_timeline",
+   "екранирано": false,
+   "къс": "const st = load('bl_lab_timeline', []);"
+  },
+  {
+   "файл": "js/rooms12.js",
+   "ред": 433,
+   "ключ": "(поле) .t",
+   "екранирано": false,
+   "къс": "const текст = `${x.e || '🔬'} Проверих го при моето дете, ${вечери}:\\n„${x.q || ''}“\\n→ ${x.t || ''}\\n\\n(от Помощника на мама — моят опит, не съвет)`;"
+  },
+  {
+   "файл": "js/rooms14.js",
+   "ред": 266,
+   "ключ": "bl_baby",
+   "екранирано": false,
+   "къс": "const baby = load('bl_baby', {});"
+  },
+  {
+   "файл": "js/rooms17.js",
+   "ред": 412,
+   "ключ": "bl_baby",
+   "екранирано": false,
+   "къс": "const baby = load('bl_baby', {});"
+  },
+  {
+   "файл": "js/rooms18.js",
+   "ред": 532,
+   "ключ": "bl_baby",
+   "екранирано": false,
+   "къс": "const baby = load('bl_baby', {});"
+  },
+  {
+   "файл": "js/rooms2.js",
+   "ред": 309,
+   "ключ": "bl_baby",
+   "екранирано": false,
+   "къс": "const cur = load('bl_baby', {}) || {};"
+  },
+  {
+   "файл": "js/rooms2.js",
+   "ред": 916,
+   "ключ": "bl_lmp",
+   "екранирано": false,
+   "къс": "const датата20 = () => (window.BL_EXPECT ? BL_EXPECT.lmp() : load('bl_lmp', ''));"
+  },
+  {
+   "файл": "js/rooms2.js",
+   "ред": 983,
+   "ключ": "bl_lmp",
+   "екранирано": false,
+   "къс": "const запазена = load('bl_lmp', '');"
+  },
+  {
+   "файл": "js/rooms2.js",
+   "ред": 1528,
+   "ключ": "(поле) .t",
+   "екранирано": false,
+   "къс": "actOut.innerHTML = `<div class=\"dv-actcard\"><h5>${act.t}</h5><p>${act.x}</p></div>`;"
+  },
+  {
+   "файл": "js/rooms2.js",
+   "ред": 2677,
+   "ключ": "(поле) .t",
+   "екранирано": false,
+   "къс": "row.innerHTML = `<span class=\"gl-term\">${g.t}</span><span class=\"gl-arr\">▾</span><span class=\"gl-def\">${g.d}</span>`;"
+  },
+  {
+   "файл": "js/rooms3.js",
+   "ред": 386,
+   "ключ": "bl_lmp",
+   "екранирано": false,
+   "къс": "const lmp = window.BL_EXPECT ? BL_EXPECT.lmp() : load('bl_lmp', '');"
+  },
+  {
+   "файл": "js/rooms5.js",
+   "ред": 65,
+   "ключ": "bl_baby",
+   "екранирано": false,
+   "къс": "const getBaby = () => load('bl_baby', { name: '', birth: '' });"
+  },
+  {
+   "файл": "js/rooms6.js",
+   "ред": 69,
+   "ключ": "bl_baby",
+   "екранирано": false,
+   "къс": "const getBaby = () => load('bl_baby', { name: '', sex: '', birth: '' });"
+  },
+  {
+   "файл": "js/rooms7.js",
+   "ред": 68,
+   "ключ": "bl_baby",
+   "екранирано": false,
+   "къс": "const getBaby = () => load('bl_baby', { name: '', sex: '', birth: '' });"
+  },
+  {
+   "файл": "js/rooms9.js",
+   "ред": 22,
+   "ключ": "bl_baby",
+   "екранирано": false,
+   "къс": "const getBaby = () => load('bl_baby', { name: '', sex: '', birth: '' });"
+  },
+  {
+   "файл": "js/rooms9.js",
+   "ред": 26,
+   "ключ": "bl_lmp",
+   "екранирано": false,
+   "къс": "const lmp = window.BL_EXPECT ? BL_EXPECT.lmp() : load('bl_lmp', '');"
+  },
+  {
+   "файл": "js/today8.js",
+   "ред": 54,
+   "ключ": "bl_baby",
+   "екранирано": false,
+   "къс": "const б = load('bl_baby', {});"
+  },
+  {
+   "файл": "js/women.js",
+   "ред": 473,
+   "ключ": "bl_me",
+   "екранирано": false,
+   "къс": "const m = load('bl_me', {});"
+  },
+  {
+   "файл": "js/women.js",
+   "ред": 551,
+   "ключ": "bl_me",
+   "екранирано": false,
+   "къс": "const име = (load(ГАЛЕНО, {}).n || load('bl_me', {}).name || '').trim();"
+  },
+  {
+   "файл": "js/women2.js",
+   "ред": 855,
+   "ключ": "bl_wm_dreams",
+   "екранирано": false,
+   "къс": "const cur = load('bl_wm_dreams', { then: '', now: '' });   // ПРЯСНО"
+  },
+  {
+   "файл": "js/yearbook.js",
+   "ред": 56,
+   "ключ": "bl_baby",
+   "екранирано": false,
+   "къс": "const getBaby = () => load('bl_baby', { name: '', birth: '' });"
+  },
+  {
+   "файл": "js/yearbook2.js",
+   "ред": 95,
+   "ключ": "bl_yb_dedic",
+   "екранирано": false,
+   "къс": "const текст = String(load('bl_yb_dedic', '') || '').trim();"
+  }
+ ]
+}

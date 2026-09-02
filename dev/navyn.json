@@ -1,0 +1,234 @@
+{
+ "канали": [
+  {
+   "вид": "канал",
+   "канал": "fetch(",
+   "файл": "sw.js",
+   "ред": 253,
+   "къс": "fetch(req)"
+  },
+  {
+   "вид": "канал",
+   "канал": "fetch(",
+   "файл": "sw.js",
+   "ред": 265,
+   "къс": "return fetch(req)"
+  },
+  {
+   "вид": "канал",
+   "канал": "new Image()",
+   "файл": "js/expr.js",
+   "ред": 34,
+   "къс": "const img = new Image();"
+  },
+  {
+   "вид": "канал",
+   "канал": "new Image()",
+   "файл": "js/expr.js",
+   "ред": 271,
+   "къс": "const img = new Image();"
+  },
+  {
+   "вид": "канал",
+   "канал": "new Image()",
+   "файл": "js/extras2.js",
+   "ред": 240,
+   "къс": "const img = new Image();"
+  },
+  {
+   "вид": "канал",
+   "канал": "clipboard.write",
+   "файл": "js/extras2.js",
+   "ред": 162,
+   "къс": "try { await navigator.clipboard.writeText(text); fx().cheer('Копирано! Прати го на когото искаш 📤'); знак(бележка, '✔ Копирах списъка'); return; } catch (e) {}"
+  },
+  {
+   "вид": "канал",
+   "канал": "fetch(",
+   "файл": "js/lib.js",
+   "ред": 53,
+   "къс": "bundles[f] = fetch('lib/' + f + '?v=' + LV).then(r => r.json()).catch(() => { delete bundles[f]; return {}; });"
+  },
+  {
+   "вид": "канал",
+   "канал": "fetch(",
+   "файл": "js/lib.js",
+   "ред": 60,
+   "къс": "loading = fetch('lib/index.json?v=' + LV)"
+  },
+  {
+   "вид": "канал",
+   "канал": "clipboard.write",
+   "файл": "js/polish.js",
+   "ред": 626,
+   "къс": "try { await navigator.clipboard.writeText(текст); спод.textContent = '✔ Копирано'; setTimeout(() => спод.textContent = '📤 Прати ги на екипа', 1600); } catch (e"
+  },
+  {
+   "вид": "канал",
+   "канал": "new Image()",
+   "файл": "js/profile.js",
+   "ред": 127,
+   "къс": "const img = new Image();"
+  },
+  {
+   "вид": "канал",
+   "канал": "clipboard.write",
+   "файл": "js/reader.js",
+   "ред": 162,
+   "къс": "await navigator.clipboard.writeText(текст);"
+  },
+  {
+   "вид": "канал",
+   "канал": "clipboard.write",
+   "файл": "js/river.js",
+   "ред": 422,
+   "къс": "try { await navigator.clipboard.writeText(текст); b.textContent = '✔'; setTimeout(() => b.textContent = '📤', 1500); } catch (err) {}"
+  },
+  {
+   "вид": "канал",
+   "канал": "clipboard.write",
+   "файл": "js/rooms10.js",
+   "ред": 73,
+   "къс": "if (navigator.clipboard && navigator.clipboard.writeText) {"
+  },
+  {
+   "вид": "канал",
+   "канал": "clipboard.write",
+   "файл": "js/rooms10.js",
+   "ред": 74,
+   "къс": "navigator.clipboard.writeText(txt)"
+  },
+  {
+   "вид": "канал",
+   "канал": "clipboard.write",
+   "файл": "js/rooms12.js",
+   "ред": 437,
+   "къс": "try { await navigator.clipboard.writeText(текст); out.textContent = '✔ Копирано. Пусни го, където искаш.'; }"
+  },
+  {
+   "вид": "канал",
+   "канал": "clipboard.write",
+   "файл": "js/rooms5.js",
+   "ред": 302,
+   "къс": "try { await navigator.clipboard.writeText(text); fx().cheer('Копирано — прати го на когото пазарува! 🛒'); } catch (e) {}"
+  },
+  {
+   "вид": "канал",
+   "канал": "window.open",
+   "файл": "js/rooms8.js",
+   "ред": 372,
+   "къс": "const w = window.open('', '_blank');"
+  },
+  {
+   "вид": "канал",
+   "канал": "clipboard.write",
+   "файл": "js/rooms9.js",
+   "ред": 645,
+   "къс": "// 🔴 11.08 (уловено в конзолата на живо): `navigator.clipboard.writeText`"
+  },
+  {
+   "вид": "канал",
+   "канал": "clipboard.write",
+   "файл": "js/rooms9.js",
+   "ред": 663,
+   "къс": "if (navigator.clipboard && navigator.clipboard.writeText) {"
+  },
+  {
+   "вид": "канал",
+   "канал": "clipboard.write",
+   "файл": "js/rooms9.js",
+   "ред": 664,
+   "къс": "try { await navigator.clipboard.writeText(текст); каж('Копирано! Поднеси го в чата 💜'); резерв.hidden = true; return; }"
+  },
+  {
+   "вид": "канал",
+   "канал": "clipboard.write",
+   "файл": "js/wisdom.js",
+   "ред": 469,
+   "къс": "try { await navigator.clipboard.writeText(текст); b.textContent = '✔ Копирано'; setTimeout(() => b.textContent = '📤 Сподели', 1600); } catch (e) {}"
+  },
+  {
+   "вид": "канал",
+   "канал": "clipboard.write",
+   "файл": "js/women2.js",
+   "ред": 163,
+   "къс": "if (navigator.clipboard && navigator.clipboard.writeText) {"
+  },
+  {
+   "вид": "канал",
+   "канал": "clipboard.write",
+   "файл": "js/women2.js",
+   "ред": 164,
+   "къс": "navigator.clipboard.writeText(txt)"
+  },
+  {
+   "вид": "канал",
+   "канал": "clipboard.write",
+   "файл": "js/women3.js",
+   "ред": 120,
+   "къс": "if (navigator.clipboard && navigator.clipboard.writeText) {"
+  },
+  {
+   "вид": "канал",
+   "канал": "clipboard.write",
+   "файл": "js/women3.js",
+   "ред": 121,
+   "къс": "navigator.clipboard.writeText(txt)"
+  }
+ ],
+ "адреси": [
+  {
+   "вид": "адрес",
+   "адрес": "//i.test",
+   "файл": "js/extras2.js",
+   "ред": 552,
+   "къс": "if (!/^https?:\\/\\//i.test(s)) return '';"
+  },
+  {
+   "вид": "адрес",
+   "адрес": "http://www.w3.org/2000/svg",
+   "файл": "js/home.js",
+   "ред": 589,
+   "къс": "const l = document.createElementNS('http://www.w3.org/2000/svg', 'path');"
+  },
+  {
+   "вид": "адрес",
+   "адрес": "http://www.w3.org/2000/svg",
+   "файл": "js/home.js",
+   "ред": 595,
+   "къс": "const dot = document.createElementNS('http://www.w3.org/2000/svg', 'circle');"
+  },
+  {
+   "вид": "адрес",
+   "адрес": "http://www.w3.org/2000/svg",
+   "файл": "js/home.js",
+   "ред": 602,
+   "къс": "const core = document.createElementNS('http://www.w3.org/2000/svg', 'g');"
+  },
+  {
+   "вид": "адрес",
+   "адрес": "http://www.w3.org/2000/svg",
+   "файл": "js/home.js",
+   "ред": 612,
+   "къс": "const g = document.createElementNS('http://www.w3.org/2000/svg', 'g');"
+  },
+  {
+   "вид": "адрес",
+   "адрес": "http://www.w3.org/2000/svg",
+   "файл": "js/home.js",
+   "ред": 647,
+   "къс": "const ln = document.createElementNS('http://www.w3.org/2000/svg', 'line');"
+  },
+  {
+   "вид": "адрес",
+   "адрес": "http://www.w3.org/2000/svg",
+   "файл": "js/home.js",
+   "ред": 651,
+   "къс": "const c2 = document.createElementNS('http://www.w3.org/2000/svg', 'circle');"
+  }
+ ],
+ "поХост": [
+  "i.test",
+  "www.w3.org"
+ ]
+}

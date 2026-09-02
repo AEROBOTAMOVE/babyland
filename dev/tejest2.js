@@ -1,146 +1,96 @@
-// dev/tejest2.js — МЕРКА А (бърза): точно кое се тегли, кога, и КОЛКО ПЪТИ.
-// node dev/tejest2.js
+// dev/tejest2.js — разделя ТЕГЛЕНОТО на два потока, защото майката ги усеща различно:
+//   А) КРИТИЧЕН ПЪТ — това, което браузърът трябва да свали ПРЕДИ да види екран
+//      (index.html + <link rel=stylesheet> + preload шрифтове + всички defer <script>)
+//   Б) ФОН — това, което service worker-ът дърпа СЛЕД load (lib/*.json, останалите
+//      шрифтове, иконите). Не бави първия екран, но яде мобилни мегабайти.
+// Пускане: node dev/tejest2.js
+
 const fs = require('fs'), path = require('path'), zlib = require('zlib');
-const ROOT = path.resolve(__dirname, '..');
-const kb = n => (n/1024).toFixed(1);
-const MB = n => (n/1048576).toFixed(2);
-const cache = new Map();
-function R(rel, brotli){
-  const k = rel+'|'+!!brotli;
-  if (cache.has(k)) return cache.get(k);
-  const p = path.join(ROOT, rel);
-  if (!fs.existsSync(p)) { cache.set(k,null); return null; }
-  const buf = fs.readFileSync(p);
-  const o = {rel, surov:buf.length, gz:zlib.gzipSync(buf,{level:9}).length,
-             br: brotli ? zlib.brotliCompressSync(buf).length : null};
-  cache.set(k,o); return o;
+const КОРЕН = path.resolve(__dirname, '..');
+const Р = p => path.join(КОРЕН, p);
+const kb = b => (b / 1024).toFixed(1);
+const има = p => { try { return fs.statSync(Р(p)).size; } catch (e) { return null; } };
+const gz = p => { try { return zlib.gzipSync(fs.readFileSync(Р(p)), { level: 9 }).length; } catch (e) { return 0; } };
+
+const html = fs.readFileSync(Р('index.html'), 'utf8');
+
+// ── А. Критичен път ────────────────────────────────────────────────────────
+const css = [...html.matchAll(/<link[^>]+rel=["']stylesheet["'][^>]+href=["']([^"']+)["']/gi)].map(m => m[1].split('?')[0]);
+const css2 = [...html.matchAll(/<link[^>]+href=["']([^"']+)["'][^>]+rel=["']stylesheet["']/gi)].map(m => m[1].split('?')[0]);
+const preload = [...html.matchAll(/<link[^>]+rel=["']preload["'][^>]+href=["']([^"']+)["']/gi)].map(m => m[1].split('?')[0]);
+const скриптове = [...html.matchAll(/<script[^>]+src=["']([^"']+)["']/gi)].map(m => m[1].split('?')[0]);
+const иконLink = [...html.matchAll(/<link[^>]+rel=["'][^"']*icon[^"']*["'][^>]+href=["']([^"']+)["']/gi)].map(m => m[1].split('?')[0]);
+
+const крит = [...new Set(['index.html', ...css, ...css2, ...preload, ...скриптове, ...иконLink])].filter(има);
+
+// ── Б. Фон = SW ASSETS минус критичния път ─────────────────────────────────
+const sw = fs.readFileSync(Р('sw.js'), 'utf8');
+const i0 = sw.indexOf('const ASSETS');
+const блок = sw.slice(i0, sw.indexOf('];', i0));
+const SWсписък = [...блок.matchAll(/'([^']+)'/g)].map(x => x[1]).filter(x => x !== '.');
+const фон = SWсписък.filter(u => !крит.includes(u) && има(u) !== null);
+
+function отчет(име, списък) {
+  let с = 0, g = 0;
+  const ред = списък.map(u => { const b = има(u), q = gz(u); с += b; g += q; return { u, b, q }; });
+  ред.sort((a, x) => x.b - a.b);
+  console.log(`\n═══ ${име} ═══`);
+  console.log(`  ${списък.length} файла · СУРОВО ${kb(с)} KB · GZIP ${kb(g)} KB`);
+  return { ред, с, г: g };
 }
-const html = fs.readFileSync(path.join(ROOT,'index.html'),'utf8');
 
-// URL-ите ТОЧНО както ги иска страницата (с ?v=)
-const stranicaURL = [];
-let m;
-const reS = /<script\b[^>]*\bsrc\s*=\s*["']([^"']+)["'][^>]*>/gi;
-while ((m=reS.exec(html))) stranicaURL.push({url:m[1], vid:'js'});
-const reL = /<link\b[^>]*>/gi;
-while ((m=reL.exec(html))){
-  const t=m[0];
-  const href=(t.match(/\bhref\s*=\s*["']([^"']+)["']/i)||[])[1];
-  const rel =(t.match(/\brel\s*=\s*["']([^"']+)["']/i)||[])[1]||'';
-  if(!href) continue;
-  if (/stylesheet/i.test(rel)) stranicaURL.push({url:href, vid:'css'});
-  else if (/preload/i.test(rel)) stranicaURL.push({url:href, vid:'preload'});
-  else if (/icon|manifest/i.test(rel)) stranicaURL.push({url:href, vid:rel});
+const A = отчет('А. КРИТИЧЕН ПЪТ (преди първия екран)', крит);
+console.log('  разбивка:');
+const поПапка = {};
+A.ред.forEach(r => { const p = r.u.includes('/') ? r.u.split('/')[0] : '(корен)'; poAdd(p, r); });
+function poAdd(p, r) { poПапка(p).b += r.b; poПапка(p).q += r.q; poПапка(p).n++; }
+function poПапка(p) { return поПапка[p] = поПапка[p] || { b: 0, q: 0, n: 0 }; }
+Object.entries(поПапка).sort((a, b) => b[1].b - a[1].b).forEach(([p, v]) =>
+  console.log(`    ${p.padEnd(10)} ${String(v.n).padStart(4)} файла  ${kb(v.b).padStart(9)} KB сурово  ${kb(v.q).padStart(8)} KB gzip`));
+
+const Б = отчет('Б. ФОН (service worker след load)', фон);
+Б.ред.slice(0, 20).forEach(r => console.log(`    ${r.u.padEnd(40)} ${kb(r.b).padStart(8)} KB (gz ${kb(r.q).padStart(7)})`));
+
+console.log(`\n═══ ОБЩО ПРИ ПЪРВО ПОСЕЩЕНИЕ ═══`);
+console.log(`  СУРОВО ${kb(A.с + Б.с)} KB  ·  GZIP ${kb(A.г + Б.г)} KB`);
+console.log(`  от тях преди първия екран: ${kb(A.г)} KB gzip (${(100 * A.г / (A.г + Б.г)).toFixed(0)}%)`);
+
+// ── В. МЪРТЪВ КОД: .js на диска, който index.html НЕ сочи ───────────────────
+const живиJS = fs.readdirSync(Р('js')).filter(f => /\.js$/.test(f) && !/PREDI|BAK|ARCHIVE/.test(f));
+const сочени = new Set(скриптове.map(s => s.replace(/^js\//, '')));
+const несочени = живиJS.filter(f => !сочени.has(f));
+console.log('\n═══ В. js/*.js НА ДИСКА, КОИТО index.html НЕ СОЧИ ═══');
+несочени.forEach(f => console.log(`  js/${f.padEnd(30)} ${kb(има('js/' + f)).padStart(8)} KB   ${SWсписък.includes('js/' + f) ? '⚠ но SW ГО КЕШИРА' : ''}`));
+console.log(`  (${несочени.length} броя, ${kb(несочени.reduce((s, f) => s + има('js/' + f), 0))} KB)`);
+
+// ── Г. CSS на диска, които HTML не сочи ────────────────────────────────────
+const живиCSS = fs.readdirSync(Р('css')).filter(f => /\.css$/.test(f) && !/PREDI|BAK|ARCHIVE/.test(f));
+const сочениCSS = new Set([...css, ...css2].map(s => s.replace(/^css\//, '')));
+console.log('\n═══ Г. css/*.css НА ДИСКА, КОИТО HTML НЕ СОЧИ ═══');
+живиCSS.filter(f => !сочениCSS.has(f)).forEach(f => console.log(`  css/${f.padEnd(28)} ${kb(има('css/' + f)).padStart(8)} KB`));
+
+// ── Д. Шрифтове: кои @font-face има css/fonts.css и кои файлове има ────────
+console.log('\n═══ Д. ШРИФТОВЕ ═══');
+const fcss = fs.readFileSync(Р('css/fonts.css'), 'utf8');
+const срcss = new Set([...fcss.matchAll(/url\(["']?([^"')]+)["']?\)/gi)].map(m => m[1].replace(/^\.\.\//, '').split('?')[0]));
+const файлове = fs.readdirSync(Р('fonts')).filter(f => /\.woff2$/.test(f)).map(f => 'fonts/' + f);
+let общШр = 0; файлове.forEach(f => общШр += има(f));
+console.log(`  файлове на диска: ${файлове.length} · ${kb(общШр)} KB`);
+файлове.forEach(f => console.log(`    ${f.padEnd(40)} ${kb(има(f)).padStart(7)} KB  ${срcss.has(f) ? '' : '⚠ НЕ се сочи от css/fonts.css'}`));
+console.log('  @font-face в css/fonts.css сочат:', [...срcss].length, 'адреса');
+[...срcss].filter(u => има(u) === null).forEach(u => console.log(`    ❌ ${u} — СОЧИ СЕ, НО ЛИПСВА`));
+
+// ── Е. Кои семейства/тегла реално се ползват в CSS ────────────────────────
+const всичкоCSS = живиCSS.map(f => fs.readFileSync(Р('css/' + f), 'utf8')).join('\n') + '\n' + html;
+console.log('\n  употреба на семейства в css/*.css + index.html:');
+for (const сем of ['Nunito', 'Comfortaa', 'Pacifico']) {
+  const бр = (всичкоCSS.match(new RegExp(сем, 'gi')) || []).length;
+  console.log(`    ${сем.padEnd(12)} ${бр} споменавания`);
 }
-// шрифтовете, които css/fonts.css вика (те се теглят при рисуване)
-const fcss = fs.readFileSync(path.join(ROOT,'css/fonts.css'),'utf8');
-const fontURL = [...new Set((fcss.match(/url\(\s*["']?\.\.\/([^)"']+)["']?\s*\)/g)||[])
-  .map(s=>s.replace(/url\(\s*["']?\.\.\//,'').replace(/["']?\s*\)$/,'')))];
-
-// URL-ите ТОЧНО както ги иска service worker-ът
-const sw = fs.readFileSync(path.join(ROOT,'sw.js'),'utf8');
-const blok = sw.match(/const\s+ASSETS\s*=\s*\[([\s\S]*?)\];/);
-const swURL = (blok[1].match(/'([^']+)'/g)||[]).map(s=>s.slice(1,-1));
-
-const gol = u => u.split('?')[0];
-
-console.log('=== А. ТЕЖЕСТТА — точна сметка ===\n');
-
-// 1) ПЪРВО ОТВАРЯНЕ: какво страницата тегли
-let s1=0,g1=0,b1=0;
-const H=R('index.html',true); s1+=H.surov; g1+=H.gz; b1+=H.br;
-const teg = [];
-for (const x of stranicaURL){ const r=R(gol(x.url),true); if(!r){console.log('ЛИПСВА:',x.url);continue;}
-  s1+=r.surov; g1+=r.gz; b1+=r.br; teg.push({...x, ...r}); }
-// шрифтове: preload-натите вече са горе; другите се дърпат при нужда
-const preloadGoli = new Set(stranicaURL.filter(x=>x.vid==='preload').map(x=>gol(x.url)));
-let sF=0,gF=0;
-for (const f of fontURL){ if(preloadGoli.has(f)) continue; const r=R(f); if(r){sF+=r.surov; gF+=r.gz;} }
-
-console.log('1) СТРАНИЦАТА (index.html + 100 js + 14 css + 3 preload шрифта + икони/манифест):');
-console.log('   сурово', kb(s1),'KB =', MB(s1),'MB | gzip', kb(g1),'KB | brotli', kb(b1),'KB');
-console.log('   блокиращи скриптове (без defer/async):',
-  (html.match(/<script\b[^>]*\bsrc[^>]*>/gi)||[]).filter(t=>!/\bdefer\b|\basync\b/i.test(t)).length);
-console.log('   останалите 16 шрифта (теглят се при рисуване на латиница/курсив):',
-  kb(sF),'KB сурово |', kb(gF),'KB gzip');
-console.log('');
-
-// 2) SERVICE WORKER-ЪТ веднага след това
-let s2=0,g2=0; const lipsva=[];
-for (const u of swURL){ if(u==='.'){continue;} const r=R(gol(u)); if(!r){lipsva.push(u);continue;} s2+=r.surov; g2+=r.gz; }
-console.log('2) SERVICE WORKER-ЪТ (install → caches.add по един адрес):', swURL.length,'адреса');
-console.log('   сурово', kb(s2),'KB =', MB(s2),'MB | gzip', kb(g2),'KB');
-if (lipsva.length) console.log('   ЛИПСВАЩИ ФАЙЛОВЕ (ще паднат при install):', lipsva);
-console.log('');
-
-// 3) ДВОЙНОТО ТЕГЛЕНЕ
-console.log('3) ⚠️ ДВОЙНО ТЕГЛЕНЕ — страницата иска "js/kb.js?v=161", SW иска "js/kb.js".');
-console.log('   Различен URL = различен ключ в HTTP кеша = ВТОРО изтегляне по мрежата.');
-const swSet = new Set(swURL.map(gol));
-const swTochni = new Set(swURL);
-let d_s=0,d_g=0; const dvojni=[];
-for (const x of teg){
-  const g = gol(x.url);
-  if (!swSet.has(g)) continue;              // SW изобщо не го иска
-  if (swTochni.has(x.url)) continue;        // SW го иска със СЪЩИЯ URL → един път
-  d_s+=x.surov; d_g+=x.gz; dvojni.push({url:x.url, sw:g, surov:x.surov});
-}
-console.log('   файлове, изтеглени ДВА пъти:', dvojni.length);
-console.log('   излишно изтеглени байтове: сурово', kb(d_s),'KB =', MB(d_s),'MB | gzip', kb(d_g),'KB');
-console.log('   примери:', dvojni.slice(0,4).map(d=>d.url+'  ←→  '+d.sw));
-console.log('');
-console.log('   ⇒ ПЪРВО ОТВАРЯНЕ ОБЩО (страница + SW предкеш):');
-console.log('     сурово', MB(s1+s2),'MB | gzip', MB(g1+g2),'MB');
-console.log('     от тях ИЗЛИШНИ (същият файл втори път):', MB(d_s),'MB сурово /', MB(d_g),'MB gzip');
-console.log('');
-
-// 4) НАЙ-ТЕЖКИТЕ 15
-console.log('=== НАЙ-ТЕЖКИТЕ 15 ФАЙЛА, КОИТО МАМА ТЕГЛИ ===');
-const vsichkiTeg = new Map();
-for (const x of teg) vsichkiTeg.set(gol(x.url), R(gol(x.url)));
-for (const u of swURL){ if(u==='.')continue; const r=R(gol(u)); if(r) vsichkiTeg.set(gol(u), r); }
-const red = [...vsichkiTeg.values()].sort((a,b)=>b.surov-a.surov);
-const obshto = red.reduce((a,r)=>a+r.surov,0), obshtoG = red.reduce((a,r)=>a+r.gz,0);
-red.slice(0,15).forEach((r,i)=>console.log(String(i+1).padStart(2)+'.',
-  r.rel.padEnd(24), kb(r.surov).padStart(8)+' KB сурово |', kb(r.gz).padStart(7)+' KB gzip |',
-  (r.surov/obshto*100).toFixed(1).padStart(4)+'% от всичко'));
-console.log('   ОБЩО уникални файлове:', red.length, '|', MB(obshto),'MB сурово |', MB(obshtoG),'MB gzip');
-console.log('');
-
-// 5) lib/*.json — теглят се при install, но ползват ли се?
-const lib = swURL.filter(u=>u.startsWith('lib/'));
-let ls=0,lg=0; for(const u of lib){const r=R(u); if(r){ls+=r.surov;lg+=r.gz;}}
-console.log('lib/*.json в предкеша:', lib.length, '|', MB(ls),'MB сурово |', kb(lg),'KB gzip');
-console.log('   (js/lib.js ги дърпа МЪРЗЕЛИВО с ?v= при отваряне на библиотеката —');
-console.log('    значи и те се теглят по ДВА пъти, ако мама отвори библиотеката)');
-const LV = (fs.readFileSync(path.join(ROOT,'js/lib.js'),'utf8').match(/LV\s*=\s*['"]?([^'";\s]+)/)||[])[1];
-console.log('   версията, с която lib.js ги иска: ?v=' + LV);
-console.log('');
-
-// 6) МЪРТВО НА ДИСКА
-function obhod(dir,out){ for(const e of fs.readdirSync(dir,{withFileTypes:true})){
-  if(e.name==='.git'||e.name==='__pycache__'||e.name.startsWith('$'))continue;
-  const f=path.join(dir,e.name); if(e.isDirectory())obhod(f,out); else out.push(path.relative(ROOT,f).replace(/\\/g,'/'));} return out;}
-const vs = obhod(ROOT,[]);
-const mrtvi = vs.filter(f=>/\.(PREDI_|BAK_|ARCHIVE|S_DEFER)/i.test(path.basename(f))||/\.ARCHIVE\./i.test(path.basename(f)));
-let ms=0; const mr=[]; for(const f of mrtvi){const st=fs.statSync(path.join(ROOT,f)); ms+=st.size; mr.push({f,s:st.size});}
-console.log('=== МЪРТВИ КОПИЯ НА ДИСКА (НЕ се теглят от мама; тежат при качване/клониране) ===');
-console.log('   брой:', mrtvi.length, '|', MB(ms),'MB');
-mr.sort((a,b)=>b.s-a.s).slice(0,10).forEach(x=>console.log('     ', x.f.padEnd(42), kb(x.s).padStart(9),'KB'));
-console.log('');
-let ds=0; for(const f of vs.filter(f=>f.startsWith('dev/'))) ds+=fs.statSync(path.join(ROOT,f)).size;
-console.log('   dev/ (инструменти):', MB(ds),'MB  ·  цялата папка:', MB(vs.reduce((a,f)=>a+fs.statSync(path.join(ROOT,f)).size,0)),'MB');
-
-// 7) КАРТИНКА
-const logo = R('img/logo.png');
-console.log('');
-console.log('=== КАРТИНКИ ===');
-console.log('   img/logo.png', kb(logo.surov),'KB сурово |', kb(logo.gz),'KB gzip (PNG вече е компресиран — gzip не помага)');
-const koiVika = [];
-for (const d of ['js','css']) for (const f of fs.readdirSync(path.join(ROOT,d)))
-  if (/\.(js|css)$/i.test(f) && !/\.(PREDI_|BAK_|ARCHIVE)/i.test(f)){
-    const t = fs.readFileSync(path.join(ROOT,d,f),'utf8');
-    if (/logo\.png/.test(t)) koiVika.push(d+'/'+f);
-  }
-if (/logo\.png/.test(html)) koiVika.push('index.html');
-console.log('   кой изобщо споменава logo.png:', koiVika.length? koiVika.join(', ') : 'НИКОЙ ОСВЕН sw.js');
+console.log('  тегла (font-weight) срещани в css:');
+const тегла = {};
+[...всичкоCSS.matchAll(/font-weight\s*:\s*(\d{3}|bold|normal)/gi)].forEach(m => {
+  let t = m[1].toLowerCase(); if (t === 'bold') t = '700'; if (t === 'normal') t = '400';
+  тегла[t] = (тегла[t] || 0) + 1;
+});
+console.log('   ', JSON.stringify(тегла));
