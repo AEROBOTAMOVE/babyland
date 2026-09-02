@@ -407,12 +407,12 @@
       st = load('bl_wm_inframe', {});   // пресен прочит при всяко рисуване
       const м = месец();
       слот.innerHTML = st[м]
-        ? '<img src="' + st[м] + '" alt="аз, този месец"><span>този месец ✓ · смени?</span>'
+        ? '<img src="' + (/^data:image\/(jpeg|png|webp|gif);base64,[A-Za-z0-9+/=]+$/.test(String(st[м])) ? st[м] : 'data:image/gif;base64,R0lGODlhAQABAAAAACH5BAEKAAEALAAAAAABAAEAAAICTAEAOw==') + '" alt="аз, този месец"><span>този месец ✓ · смени?</span>'
         : '<span class="wm-plus">+</span><span>Сложи снимка</span>';
       лента.innerHTML = '';
       const месеци = Object.keys(st).filter(k => k !== м).sort().reverse();
       месеци.forEach(k => {
-        const б = el('button', 'wm-thumb', '<img src="' + st[k] + '" alt="аз през ' + k + '"><small>' + k + '</small>');
+        const б = el('button', 'wm-thumb', '<img src="' + (/^data:image\/(jpeg|png|webp|gif);base64,[A-Za-z0-9+/=]+$/.test(String(st[k])) ? st[k] : 'data:image/gif;base64,R0lGODlhAQABAAAAACH5BAEKAAEALAAAAAABAAEAAAICTAEAOw==') + '" alt="аз през ' + esc(k) + '"><small>' + esc(k) + '</small>');
         б.type = 'button'; пръст(б);
         б.addEventListener('click', () => {
           const питай = window.BL_UI ? BL_UI.confirm('Да махна ли снимката от ' + k + '?', { title: 'Снимка', emoji: '📷', okText: 'Махни', cancelText: 'Остави', danger: true })

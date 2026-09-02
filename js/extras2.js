@@ -284,7 +284,7 @@
       for (let m = 0; m <= maxM; m++) {
         const cell = el('button', 'pho-cell'); cell.type = 'button';
         if (photos[m]) {
-          cell.innerHTML = `<img src="${photos[m]}" alt="${m} м."><span class="pho-m">${m === 0 ? '🐣' : m + 'м'}</span>`;
+          cell.innerHTML = `<img src="${/^data:image\/(jpeg|png|webp|gif);base64,[A-Za-z0-9+/=]+$/.test(String(photos[m])) ? photos[m] : 'data:image/gif;base64,R0lGODlhAQABAAAAACH5BAEKAAEALAAAAAABAAEAAAICTAEAOw=='}" alt="${m} м."><span class="pho-m">${m === 0 ? '🐣' : m + 'м'}</span>`;
           cell.addEventListener('click', () => view(m));
         } else {
           cell.classList.add('empty');
@@ -562,7 +562,7 @@
     const c = el('section', 'jr-card shop-bridge');
     c.innerHTML = `<p class="shop-txt">${esc(text)}</p>`;
     const a = el('a', 'jr-btn shop-btn', '🛍️ Виж в магазина');
-    a.href = url; a.target = '_blank'; a.rel = 'noopener';
+    a.href = url; a.target = '_blank'; a.rel = 'noopener noreferrer';
     c.appendChild(a);
     return c;
   }

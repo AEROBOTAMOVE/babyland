@@ -307,7 +307,7 @@
       const keys = Object.keys(photos).sort().reverse().filter(k => k !== t).slice(0, 8);
       keys.forEach(k => {
         const b = el('button', 'dp-cell'); b.type = 'button';
-        b.innerHTML = `<img src="${photos[k]}" alt=""><span>${k.slice(8)}.${k.slice(5, 7)}</span>`;
+        b.innerHTML = `<img src="${/^data:image\/(jpeg|png|webp|gif);base64,[A-Za-z0-9+/=]+$/.test(String(photos[k])) ? photos[k] : 'data:image/gif;base64,R0lGODlhAQABAAAAACH5BAEKAAEALAAAAAABAAEAAAICTAEAOw=='}" alt=""><span>${k.slice(8)}.${k.slice(5, 7)}</span>`;
         b.addEventListener('click', () => {
           (window.BL_UI ? BL_UI.confirm('Да изтрия ли снимката от ' + k + '?', { emoji: '📸', okText: 'Изтрий', cancelText: 'Остави', danger: true }) : Promise.resolve(confirm('Да изтрия ли снимката от ' + k + '?'))).then(да => { if (да) { photos = load('bl_dayphoto', {}); delete photos[k]; save('bl_dayphoto', photos); draw(); } });
         });
@@ -547,7 +547,7 @@
       for (let wk = 4; wk <= Math.min(42, w + 1); wk += 2) {
         const cell = el('button', 'pho-cell'); cell.type = 'button';
         if (photos[wk]) {
-          cell.innerHTML = `<img src="${photos[wk]}" alt=""><span class="pho-m">${wk} с.</span>`;
+          cell.innerHTML = `<img src="${/^data:image\/(jpeg|png|webp|gif);base64,[A-Za-z0-9+/=]+$/.test(String(photos[wk])) ? photos[wk] : 'data:image/gif;base64,R0lGODlhAQABAAAAACH5BAEKAAEALAAAAAABAAEAAAICTAEAOw=='}" alt=""><span class="pho-m">${wk} с.</span>`;
           cell.addEventListener('click', () => { (window.BL_UI ? BL_UI.confirm('Изтриване на седмица ' + wk + '?', { emoji: '🤰', okText: 'Изтрий', cancelText: 'Остави', danger: true }) : Promise.resolve(confirm('Изтриване на седмица ' + wk + '?'))).then(да => { if (да) { photos = load('bl_bump', {}); delete photos[wk]; save('bl_bump', photos); draw(); } }); });
         } else {
           cell.classList.add('empty');

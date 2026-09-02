@@ -27,7 +27,7 @@
     const s = String(raw || '').trim();
     if (!s) return '';
     try {
-      const u = new URL(s, location.href);
+      const u = new URL(s);
       return (u.protocol === 'http:' || u.protocol === 'https:') ? u.href : '';
     } catch (e) { return ''; }
   }
