@@ -94,7 +94,29 @@ function прозорец() {
       hasAttribute: и => и in е,
       removeAttribute(и) { delete е[и]; },
       addEventListener() {}, removeEventListener() {}, dispatchEvent: () => true,
-      focus() {}, blur() {}, click() {}, scrollIntoView() {}, closest: () => null,
+      focus() {}, blur() {}, click() {}, scrollIntoView() {},
+      // 🪤 ТРЕТА ВЪЛНА: test_telefon гърмеше на `широк.remove is not a function`.
+      //    Възелът имаше removeChild (махни ДЕТЕ), но не и remove (махни СЕБЕ СИ)
+      //    — а приложението ползва второто. Тук се добавят методите, които
+      //    истинският код наистина вика, и нищо повече.
+      remove() { if (е.parentNode) е.parentNode.removeChild(е); },
+      replaceWith(н) { if (е.parentNode) { const p = е.parentNode; const i = p.children.indexOf(е); if (i >= 0) { p.children[i] = н; p.childNodes[i] = н; н.parentNode = p; } } },
+      matches(с) { try { return намери(корен ? корен : е, с).indexOf(е) >= 0; } catch (x) { return false; } },
+      contains(д) { let p = д; while (p) { if (p === е) return true; p = p.parentNode; } return false; },
+      cloneNode() { const к = възел(е.tagName); к.id = е.id; к.className = е.className; к._текст = е._текст; к._html = е._html; return к; },
+      insertAdjacentHTML(_, h) { е._html = (е._html || '') + String(h); },
+      getElementsByClassName: с => намери(е, '.' + с),
+      getElementsByTagName: с => намери(е, с),
+      // closest върви НАГОРЕ по родителите, както в браузър — преди връщаше само null
+      closest(с) { let p = е; while (p) { try { if (p.matches && p.matches(с)) return p; } catch (x) {} p = p.parentNode; } return null; },
+      get firstChild() { return е.children[0] || null; },
+      get lastChild() { return е.children[е.children.length - 1] || null; },
+      get nextElementSibling() { const p = е.parentNode; if (!p) return null; const i = p.children.indexOf(е); return p.children[i + 1] || null; },
+      get previousElementSibling() { const p = е.parentNode; if (!p) return null; const i = p.children.indexOf(е); return p.children[i - 1] || null; },
+      get parentElement() { return е.parentNode || null; },
+      get childElementCount() { return е.children.length; },
+      get offsetWidth() { return 0; }, get offsetHeight() { return 0; },
+      get clientWidth() { return 0; }, get clientHeight() { return 0; },
       getBoundingClientRect: () => ({ top: 0, left: 0, width: 0, height: 0, bottom: 0, right: 0 }),
       querySelector: с => намери(е, с)[0] || null,
       querySelectorAll: с => намери(е, с),
@@ -183,7 +205,14 @@ function прозорец() {
     getElementsByClassName: с => намери(корен, '.' + с),
     getElementsByTagName: с => намери(корен, с),
     addEventListener() {}, removeEventListener() {}, dispatchEvent: () => true,
-    cookie: '', visibilityState: 'visible'
+    cookie: '', visibilityState: 'visible',
+    // 🪤 test_telefon гърмеше тук: чете document.styleSheets, за да мери цветове.
+    //    Дава му се ПРАЗЕН списък, за да тръгне — но точно затова визуалната му
+    //    половина мери НИЩО и всяко нейно „0 находки" е лъжа. Отбелязано долу.
+    styleSheets: [],
+    fonts: { ready: Promise.resolve(), check: () => true, add() {} },
+    elementFromPoint: () => null,
+    activeElement: null, referrer: '', characterSet: 'UTF-8'
   };
   w.addEventListener = function () {};
   w.removeEventListener = function () {};
@@ -349,6 +378,8 @@ async function пусниЕдин(у) {
     ['селектор по атрибут script[src]', (() => { const с = T.document.createElement('script'); с.setAttribute('src', 'js/проба.js'); T.document.head.appendChild(с); return T.document.querySelectorAll('script[src]').length === 1; })()],
     ['селектор по стойност [src="js/проба.js"]', T.document.querySelectorAll('[src="js/проба.js"]').length === 1],
     ['списък през запетая', T.document.querySelectorAll('script, div').length >= 2],
+    ['възел се маха САМ (remove)', (() => { const р = T.document.createElement('div'); T.document.body.appendChild(р); const бр = T.document.body.children.length; р.remove(); return T.document.body.children.length === бр - 1; })()],
+    ['closest върви НАГОРЕ по родителите', (() => { const б = T.document.createElement('div'); б.setAttribute('id', 'бащата'); const д = T.document.createElement('span'); б.appendChild(д); T.document.body.appendChild(б); return д.closest('#бащата') === б; })()],
   ];
   let слаби = 0;
   for (const [и, ок] of проверки) { if (!ок) слаби++; console.log('   ' + (ок ? '✅' : '🔴') + ' подпорка: ' + и); }
@@ -396,7 +427,15 @@ async function пусниЕдин(у) {
   console.log('        от липсващ бегач — затова стои написано тук, а не се крие.');
   console.log('      · pamet: сам обявява САМОПРОВЕРКАТА СИ ЗА СЧУПЕНА в този бегач →');
   console.log('        29-те му „паднали" не значат нищо, докато не се пусне в браузър.');
-  console.log('      · ezik: иска script[src] селектор, който подпорката няма → 0 пуснати.');
+  console.log('      · telefon: ТРЪГВА, но сам обявява САМОПРОВЕРКАТА СИ ЗА СЧУПЕНА и');
+  console.log('        вижда екран undefined×undefined вместо 360×760. Той мери ЦВЕТОВЕ,');
+  console.log('        КОНТРАСТ и РАЗМЕРИ — неща, които искат истинско рисуване. 15-те му');
+  console.log('        червени са дефекти на бегача, не на приложението.');
+  console.log("");
+  console.log('   📊 ЧЕСТНАТА СМЕТКА: 7 от 7 уреда ТРЪГВАТ · 5 от 7 дават числа, на които');
+  console.log('      може да се вярва (flagove · otgovori · biblioteka без група G ·');
+  console.log('      zaglavia · ezik). Другите два казват сами, че не могат — и точно');
+  console.log('      затова са добри уреди.');
   if (асинхронниГърмежи.length) {
     console.log('');
     console.log('   ⚠️ асинхронни гърмежи при зареждането: ' + асинхронниГърмежи.length + ' (не са скрити)');
