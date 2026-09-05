@@ -44,6 +44,12 @@ w.document = { getElementById: () => null, querySelector: () => null, addEventLi
 try {
   vm.createContext(w);
   vm.runInContext(fs.readFileSync('js/smalltalk.js', 'utf8'), w, { filename: 'smalltalk.js' });
+  // 🔴 05.09, платено с ЖИВА проверка в браузъра: пазачът зареждаше САМО
+  //   smalltalk.js и обяви „✅ ЧИСТО“, а „как си отива залъгалката“ пак
+  //   получаваше „При мен е ведро“. Отговорът идваше от js/smalltalk2.js,
+  //   който ОБВИВА BL_SMALLTALK.respond (ред 713) и се пита ПРЪВ.
+  //   Пазач, който не зарежда цялата верига, мери половин система.
+  vm.runInContext(fs.readFileSync('js/smalltalk2.js', 'utf8'), w, { filename: 'smalltalk2.js' });
 } catch (e) {
   console.log('\n  🔴 js/smalltalk.js не се зарежда: ' + e.message.slice(0, 120) + '\n');
   process.exit(2);
@@ -120,6 +126,7 @@ const истински = крадени.filter(x => !приет(x) && !мека(
 
 console.log('');
 console.log('  🎭 ПРИКАЗКАТА СРЕЩУ РЕЧНИКА · ' + речник.length + ' ключа и заглавия');
+console.log('     заредени: js/smalltalk.js + js/smalltalk2.js (обвивката)');
 console.log('');
 if (!речник.length) { console.log('  🔴 празен речник — сляп пазач\n'); process.exit(2); }
 console.log('  ⚪ в МЕКИТЕ стаи (топъл отговор е уместен): ' + меки.length);
