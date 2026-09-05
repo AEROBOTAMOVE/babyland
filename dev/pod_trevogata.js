@@ -132,8 +132,7 @@ for (const р of корпус) {
   } catch (e) {}
   if (!к || ТЯЛО_СТАИ.indexOf(к.room) < 0) continue;
   // ТОЧНО както в helper.js: темата се иска само от НЕздравните стаи
-  const същаТема = к.room === 'Здраве и SOS' ||
-    жив.общаДума(р.t, к.title + ' ' + (к.keys || []).join(' '));
+  const същаТема = жив.общаДума(р.t, к.title + ' ' + (к.keys || []).join(' '));
   const чуждоЛице = жив.заМайката(р.t) &&
     (жив.детски.indexOf(к.room) > -1 || жив.заглавиеДете.test(к.title));
   const ред = { т: р.t, id: к.id, title: к.title, room: к.room };
