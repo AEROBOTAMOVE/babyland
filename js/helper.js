@@ -2481,7 +2481,7 @@ function findEntry(text, room, exclude) {
         // 🆘 номерата (0800 18 676, 116 111, 112). Ако центърът липсва — водим при
         //    Вита, вместо чипът да се превърне във въпрос към помощничката.
         if (item.act === 'sos') { if (window.BL_SOS_CENTER) BL_SOS_CENTER.open(); else open('Здраве и SOS'); return; }
-        if (item.go) { open(item.go); return; }                                     // 🚪 води в друга стая
+        if (item.go) { open(item.go, item.вземи); return; }                         // 🚪 води в друга стая — и НОСИ въпроса
         if (item.act === 'pauseExpect') {                                           // 🤍 тихо спира броенето
           if (window.BL_EXPECT) BL_EXPECT.pause();
           // стаята под чата е нарисувана ПРЕДИ паузата — ако не я пре-рисуваме,
@@ -2917,7 +2917,7 @@ function findEntry(text, room, exclude) {
             id: x.id
           }));
           const чужда = почти.find(x => x.room !== currentRoom && PERSONAS[x.room]);
-          if (чужда) чипове.push({ label: `${PERSONAS[чужда.room].badge} Заведи ме при ${PERSONAS[чужда.room].name}`, go: чужда.room });
+          if (чужда) чипове.push({ label: `${PERSONAS[чужда.room].badge} Заведи ме при ${PERSONAS[чужда.room].name}`, go: чужда.room, вземи: text });
           setChips(чипове);
         } else {
           setChips(roomChips(currentRoom));
@@ -2985,7 +2985,7 @@ function findEntry(text, room, exclude) {
         //    отваряне на стая. Слагаме една страница между двете врати.
         const четиво = window.BL_LIB ? BL_LIB.search(text, entry.room, 1) : [];
         setTimeout(() => setChips([
-          { label: `${тя.badge} Заведи ме при ${тя.name}`, go: entry.room }
+          { label: `${тя.badge} Заведи ме при ${тя.name}`, go: entry.room, вземи: text }
         ].concat(четиво.length ? [{ label: (четиво[0].e || '📄') + ' ' + късо(четиво[0].t), art: четиво[0].id }] : [])
          .concat([{ label: '💬 Друго ще питам', act: 'dismiss' }])), 600);
         lastEntry = null;
@@ -3701,7 +3701,18 @@ function findEntry(text, room, exclude) {
 
   // ── Отваряне на стая ──
   let pinPassed = false;
-  function open(room) {
+  // 🚪 05.09 — ВРАТАТА ВЕЧЕ НОСИ ВЪПРОСА.
+  //   Досега `go` отваряше стаята ПРАЗНА и мама трябваше да напише въпроса
+  //   отново. Собственият коментар на този файл го нарича с истинското му
+  //   име: „на жена, която току-що е казала, че не спи, «напиши го отново
+  //   другаде» е отказ".
+  //   Затова досега се строеше списък от изключения (БЕЗ_ПОДАВАНЕ), който
+  //   расте с всяка находка — седем карти дотук, всяка добавена след жива
+  //   обиколка. Това е лекуване на симптом.
+  //   Свеж изпит на 120 въпроса: 25 от тях свършват с врата вместо отговор.
+  //   Вторият незадължителен параметър пренася въпроса и стаята отговаря
+  //   сама, с гласа на своята помощничка.
+  function open(room, пренесен) {
     const p = PERSONAS[room];
     if (!p) return;
     if (!pinPassed && window.BL_PIN && BL_PIN.gate(room, () => { pinPassed = true; open(room); pinPassed = false; })) return;
@@ -3750,7 +3761,11 @@ function findEntry(text, room, exclude) {
 
     $('roNote').hidden = !!feats;
     const first = buildTabs(room, p);
-    setTab(first);
+    // 🚪 05.09: ако носим въпрос, отваряме направо ЧАТА. Иначе отговорът се
+    //   изписва на скрит таб и майката попада на „🏠 Стаята" — тоест въпросът
+    //   ѝ е отговорен, а тя не го вижда. Измерено в браузър: отговорът беше в
+    //   roChat, но `offsetParent` е null, тоест невидим.
+    setTab(пренесен ? 'chat' : first);
 
     ov.hidden = false;
     document.body.style.overflow = 'hidden';
@@ -3820,6 +3835,10 @@ function findEntry(text, room, exclude) {
       // 🚪 вратата към съдържанието на стаята. При пауза (загуба) — нищо:
       //    на жена, спряла тихо броенето, не се предлагат теми за бебето.
       if (!пауза) предложиТеми(room, facts.length > 0);
+      // 🚪 и ако сме дошли с въпрос — задаваме го тук, вместо да я караме да
+      //   го пише пак. Поздравът остава: тя вижда КОЯ ѝ отговаря, и веднага
+      //   след това своя въпрос и отговора му.
+      if (пренесен) setTimeout(() => { try { ask(пренесен); } catch (e) {} }, 1100);
     }, 800);
   }
 
