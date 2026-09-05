@@ -36,6 +36,8 @@ const КОРЕН = path.resolve(__dirname, '..');
 process.chdir(КОРЕН);
 const АРГ = process.argv.slice(2);
 const ПИШИ = АРГ.includes('--pishi');
+const ПОЧИСТИ = АРГ.includes('--pochisti');
+const ПОЧИСТЕНИ = [];
 const САМО = (АРГ.find(a => a.startsWith('--samo=')) || '').split('=')[1] || '';
 
 const СТАИ = new Set(['Бременност', 'Моето бебе', 'Здраве и SOS', 'Захранване',
@@ -70,6 +72,26 @@ function ГЕЙТ(к, видени) {
   if (ОБЕЩАНИЯ.test(текст)) return 'обещание („гарантирано" / „100%")';
 
   if (!Array.isArray(к.keys)) return 'keys не е масив';
+
+  // ✂️ --pochisti: ключ, който ВЕЧЕ е на друга карта, се МАХА, вместо да
+  //    поваля цялата карта. Платено на 05.09.2026: четири готови карти
+  //    (sf-kosam-turnike, x6-koy-reshava, x6-plodove-kolko, x6-bg-kuhnya)
+  //    паднаха заради по ЕДНА дублирана дума — „таратор за дете" вече беше
+  //    на друга карта и това изхвърли цяла карта за българската кухня.
+  //    Картата е трудът; ключът е дреболия и вече си има дом.
+  //    ⚠️ ПАЗАЧЪТ ОСТАВА: ако след чистенето останат под 8 ключа, картата
+  //    пак пада. Тогава тя не е „с един сблъсък", а дубликат по същество.
+  //    БЕЗ флага поведението е СЪЩОТО както преди — гейтът пак отказва.
+  if (ПОЧИСТИ) {
+    const преди = к.keys.length;
+    const махнати = к.keys.filter(k => ЖИВИ_КЛЮЧОВЕ.has(String(k).toLowerCase()));
+    if (махнати.length) {
+      к.keys = к.keys.filter(k => !ЖИВИ_КЛЮЧОВЕ.has(String(k).toLowerCase()));
+      ПОЧИСТЕНИ.push('     ✂️ ' + к.id + ': махнати ' + махнати.length + ' вече заети — ' +
+        махнати.slice(0, 3).map(k => '„' + k + '"').join(', '));
+    }
+  }
+
   if (к.keys.length < 8) return 'само ' + к.keys.length + ' ключа (под 8)';
   const прави = к.keys.filter(k => /["']/.test(String(k)));
   if (прави.length) return прави.length + ' ключа с права кавичка';
@@ -215,6 +237,11 @@ if (откази.length) {
   console.log('');
   console.log('  \x1b[31m── ОТКАЗАНИ: ' + откази.length + ' ──\x1b[0m');
   for (const [ф, id, з] of откази) console.log('     🔴 ' + String(id).padEnd(26) + з + '\x1b[90m  [' + ф + ']\x1b[0m');
+if (ПОЧИСТЕНИ.length) {
+  console.log('');
+  console.log('  ── ✂️ махнати вече заети ключове (--pochisti) ──');
+  for (const р of ПОЧИСТЕНИ) console.log(р);
+}
 }
 console.log('');
 if (!приети.length) process.exit(откази.length ? 1 : 0);
