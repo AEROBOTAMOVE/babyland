@@ -300,8 +300,18 @@
     });
     function draw() {
       photos = load('bl_dayphoto', {});   // пресен прочит при всяко рисуване
+      // 🔴🔴 05.09 — ДОКАЗАНО С ИЗСТРЕЛ, НЕ С ПРОЧИТ. Тук стойността от
+      //    localStorage влизаше СУРОВА в src="". Шест реда по-долу СЪЩИЯТ
+      //    ключ bl_dayphoto вече минаваше през списък-разрешение — тоест
+      //    поправката е минала по лентата и е пропуснала слота „днес".
+      //    А това е единственото място, което излиза от АТРИБУТ: на него не
+      //    му трябва затварящ таг, за да проработи.
+      //    Пътят навътре е вносът на резервно копие (js/rooms2.js, js/profile.js):
+      //    той филтрира ИМЕНАТА на ключовете, но не поглежда стойността.
+      const САМО_СНИМКА = /^data:image\/(jpeg|png|webp|gif);base64,[A-Za-z0-9+/=]+$/;
+      const ПРАЗЕН_ПИКСЕЛ = 'data:image/gif;base64,R0lGODlhAQABAAAAACH5BAEKAAEALAAAAAABAAEAAAICTAEAOw==';
       slot.innerHTML = photos[t]
-        ? `<img src="${photos[t]}" alt="днес"><span>днес ✓ (смени?)</span>`
+        ? `<img src="${САМО_СНИМКА.test(String(photos[t])) ? photos[t] : ПРАЗЕН_ПИКСЕЛ}" alt="днес"><span>днес ✓ (смени?)</span>`
         : '<span class="dp-plus">+</span><span>снимката на днешния ден</span>';
       strip.innerHTML = '';
       const keys = Object.keys(photos).sort().reverse().filter(k => k !== t).slice(0, 8);
