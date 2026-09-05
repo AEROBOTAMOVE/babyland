@@ -205,7 +205,12 @@
         if (x.own) row.querySelector('.nt-del').addEventListener('click', () => {
           const текущи = load('bl_events', []);
           const махнато = текущи.filter(e2 => e2.id === x.id)[0];
-          save('bl_events', текущи.filter(e2 => e2.id !== x.id)); draw(); fx().buzz(8);
+          // 🪞 05.09: хинтът казваше „Махнах реда." дори когато записът е паднал
+          if (!save('bl_events', текущи.filter(e2 => e2.id !== x.id))) {
+            хинт.textContent = 'Не можах да го махна — паметта на телефона е пълна. Редът е още тук.';
+            return;
+          }
+          draw(); fx().buzz(8);
           хинт.textContent = '';
           if (!махнато) { хинт.textContent = 'Махнах реда.'; return; }
           хинт.textContent = 'Махнах „' + (махнато.t || 'събитието') + '“. ';
@@ -214,7 +219,12 @@
           върни.addEventListener('click', () => {
             const сега = load('bl_events', []);
             if (!сега.some(e2 => e2.id === махнато.id)) сега.push(махнато);
-            save('bl_events', сега); draw(); fx().buzz(8);
+            // 🪞 05.09: „Върнах го. 💜" се пишеше и когато връщането не е минало
+            if (!save('bl_events', сега)) {
+              хинт.textContent = 'Не можах да го върна — паметта на телефона е пълна. Освободи място и натисни пак.';
+              return;
+            }
+            draw(); fx().buzz(8);
             хинт.textContent = 'Върнах го. 💜';
           });
           хинт.appendChild(върни);

@@ -631,7 +631,12 @@
             if (!да) return;
             const cur = load('bl_birthplan_custom', []);
             const k = cur.indexOf(it); if (k > -1) cur.splice(k, 1);
-            save('bl_birthplan_custom', cur);
+            if (!save('bl_birthplan_custom', cur)) {
+              // 🪞 05.09: без тази проверка точката „изчезваше" от екрана,
+              //   но оставаше в паметта — и се връщаше при следващо отваряне.
+              if (window.BL_UI) BL_UI.note('Не можах да запазя промяната — паметта на телефона е пълна. Нищо не е загубено: освободи малко място (видеа, стари снимки) и опитай пак.', { emoji: '💾' });
+              return;
+            }
             state = load('bl_birthplan', {});   // пресен прочит ПРЕДИ записа
             delete state[it]; save('bl_birthplan', state);
             c.replaceWith(birthPlanCard());
@@ -770,12 +775,21 @@
           // 2 №16): 6-ти глас връщаше на 0 и короната скачаше тихо на друго име
           items = load('bl_names_vote', []);   // пресен прочит ПРЕДИ записа
           const мой = items.find(x => x && x.n === it.n) || it;
-          мой[b.dataset.w] = Math.min((+мой[b.dataset.w] || 0) + 1, 99); save('bl_names_vote', items); fx().buzz(8);
+          мой[b.dataset.w] = Math.min((+мой[b.dataset.w] || 0) + 1, 99);
+          // 🪞 05.09: гласът се рисуваше и вибрираше дори когато не е записан
+          if (!save('bl_names_vote', items)) {
+            if (window.BL_UI) BL_UI.note('Не можах да запазя промяната — паметта на телефона е пълна. Нищо не е загубено: освободи малко място (видеа, стари снимки) и опитай пак.', { emoji: '💾' });
+            return;
+          }
+          fx().buzz(8);
           // Б8.5: сърцето прескача един удар — после списъкът се преподрежда
           b.classList.add('nm-beat');
           setTimeout(() => draw(), 240);
         }));
-        row.querySelector('.nt-del').addEventListener('click', () => { items = load('bl_names_vote', []); const k = items.findIndex(x => x && x.n === it.n); if (k > -1) items.splice(k, 1); save('bl_names_vote', items); draw(); });
+        row.querySelector('.nt-del').addEventListener('click', () => { items = load('bl_names_vote', []); const k = items.findIndex(x => x && x.n === it.n); if (k > -1) items.splice(k, 1);
+          // 🪞 05.09: изтритото име се връщаше при следващо отваряне
+          if (!save('bl_names_vote', items)) { if (window.BL_UI) BL_UI.note('Не можах да запазя промяната — паметта на телефона е пълна. Нищо не е загубено: освободи малко място (видеа, стари снимки) и опитай пак.', { emoji: '💾' }); return; }
+          draw(); });
         list.appendChild(цели(row));
       });
     }
