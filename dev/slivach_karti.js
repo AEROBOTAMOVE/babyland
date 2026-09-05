@@ -49,6 +49,7 @@ const зареди = () => {
 };
 let W = зареди();
 const КАРТИ = new Map(W.KB.entries.map(e => [e.id, e]));
+const СТАТИИ = new Set(JSON.parse(fs.readFileSync('lib/index.json', 'utf8')).items.map(i => i.id));
 const ЖИВИ_КЛЮЧОВЕ = new Map();
 for (const e of W.KB.entries) for (const k of (e.keys || [])) ЖИВИ_КЛЮЧОВЕ.set(String(k).toLowerCase(), e.id);
 
@@ -100,6 +101,10 @@ function ГЕЙТ(к, видени) {
   //    поправя автоматично по-долу (изречението с 🚨 се вдига най-отпред).
   //    Отказът тук би изхвърлил точно картите, които НАЙ-МНОГО трябват.
   if (String(к.core).split(/\s+/).length > 190) return 'core е роман: ' + String(к.core).split(/\s+/).length + ' думи';
+  // 🔗 статия, която не съществува, води майката в нищото — и не гърми
+  for (const л of [].concat(к.lib || []).filter(Boolean)) {
+    if (!СТАТИИ.has(л)) return 'lib сочи несъществуваща статия: ' + л;
+  }
   return null;
 }
 
@@ -241,6 +246,11 @@ const блок = п => {
   р.push('      id: ' + низ(к.id) + ',' +
     (к.от != null ? ' от: ' + к.от + ',' : '') + (к.до != null ? ' до: ' + к.до + ',' : '') +
     ' room: ' + низ(к.room) + ',');
+  // 🔗 lib се изписва САМО ако картата носи статия. Карта без статия е
+  //    задънена улица — а точно нула такива постигнахме днес.
+  const библ = [].concat(к.lib || []).filter(Boolean);
+  if (библ.length === 1) р.push('      lib: ' + низ(библ[0]) + ',');
+  else if (библ.length > 1) р.push('      lib: [' + библ.map(низ).join(', ') + '],');
   р.push('      keys: [' + к.keys.map(низ).join(', ') + '],');
   р.push('      title: ' + низ(к.title) + ',');
   р.push('      core: ' + низ(к.core) + ',');
