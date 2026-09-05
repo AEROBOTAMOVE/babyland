@@ -58,7 +58,7 @@ console.log('');
 console.log('  ── пазачите ──');
 const пазачи = ['korpus350.js', 'standarti.js', 'obikolka_majka.js', 'opashki.js',
   'tayni_sinhron.js', 'pod_trevogata.js', 'podniz_smalltalk.js', 'sbogom.js',
-  'dostizhimost.js', 'ustoychivost.js'];
+  'dostizhimost.js', 'ustoychivost.js', 'karta_statiya.js'];
 let паднали = 0;
 for (const п of пазачи) {
   if (!fs.existsSync(path.join('dev', п))) continue;
