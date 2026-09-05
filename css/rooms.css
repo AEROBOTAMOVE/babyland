@@ -2354,7 +2354,15 @@
   background: #fff; border: 0; border-radius: 999px; padding: 7px 12px;
   cursor: pointer; line-height: 1.3; text-align: left;
   /* ⚠️ 44px е долната граница за пръст — измерено с dev/dopir.js */
-  min-height: 34px; }
+  /* 🔴 05.09: редът отдолу казваше 34px — тоест коментарът над него обявяваше
+     правилото, а кодът го нарушаваше с 10 пиксела. Измерено в браузър, на
+     телефонна ширина: бутоните излизаха 33px високи.
+     Най-скъпото място е статията „Не диша и не реагира: реанимация на бебе":
+     четирите ѝ червени бутона са СТЪПКИТЕ на реанимацията и се натискат с
+     една ръка, в паника. Там 33 пиксела не са козметика. */
+  /* 46, не 44: измерено в браузър, min-height:44 дава 43px заради дробното
+     закръгляне на реда. Правило, което не се СВЕРЯВА след писането, е желание. */
+  min-height: 46px; display: inline-flex; align-items: center; }
 .art-toc-b:hover { background: var(--pink-soft); }
 .art-toc-b:focus-visible { outline: 3px solid var(--lav); outline-offset: 2px; }
 .art-toc-sos { background: #ffe6ec; color: #a32348; font-weight: 800; }
