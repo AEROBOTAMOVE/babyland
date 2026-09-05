@@ -451,11 +451,31 @@
   // (значките с бройки паднаха — стаите се представят с това, което ПРАВЯТ)
 
   // ═══════════ 🔤 ЖИВОТО ЗАГЛАВИЕ — думите се сменят ═══════════
-  const FLIP_WORDS = ['бременността', 'растежа', 'захранването', 'съня', 'здравето', 'твоето спокойствие'];
+  // 🔴 05.09 (обиколка с очи, на телефонна ширина): списъкът беше ЗАКОВАН и
+  //   майка на 7-месечно бебе четеше „Всичко за БРЕМЕННОСТТА — в джоба ти".
+  //   Обратното също: бременна жена четеше „Всичко за ЗАХРАНВАНЕТО".
+  //   Приложението знае къде е тя — рождената дата е първото, което пита.
+  //   Дребно е, но е първото изречение, което вижда, и казва „това не е за теб".
+  //   ⚠️ Общите думи („твоето спокойствие", „съня", „здравето") остават и в
+  //   двата случая — те важат винаги. Реже се само неуместното.
+  const FLIP_ВСИЧКИ = ['бременността', 'растежа', 'захранването', 'съня', 'здравето', 'твоето спокойствие'];
+  function flipДуми() {
+    try {
+      const б = (window.BL_STORE && BL_STORE.get) ? BL_STORE.get('bl_baby', {}) :
+                JSON.parse(localStorage.getItem('bl_baby') || '{}');
+      if (!б || !б.birth) return FLIP_ВСИЧКИ;                  // не знаем — не режем
+      const м = window.BL_AGE ? (BL_AGE(б.birth) || {}).months : null;
+      if (typeof м !== 'number') return FLIP_ВСИЧКИ;
+      if (м < 0) return FLIP_ВСИЧКИ.filter(д => д !== 'захранването' && д !== 'растежа');
+      if (м < 4) return FLIP_ВСИЧКИ.filter(д => д !== 'бременността' && д !== 'захранването');
+      return FLIP_ВСИЧКИ.filter(д => д !== 'бременността');
+    } catch (e) { return FLIP_ВСИЧКИ; }
+  }
+  const FLIP_WORDS = flipДуми();
   function mountFlip() {
     const tagline = document.querySelector('.hero .tagline');
     if (!tagline || document.querySelector('.hero-flip')) return;
-    const line = el('p', 'hero-flip', 'Всичко за <span class="flip-word">бременността</span><br>— в джоба ти.');
+    const line = el('p', 'hero-flip', 'Всичко за <span class="flip-word">' + FLIP_WORDS[0] + '</span><br>— в джоба ти.');
     tagline.parentNode.insertBefore(line, tagline);
     const w = line.querySelector('.flip-word');
 
