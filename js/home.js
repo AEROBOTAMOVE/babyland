@@ -464,9 +464,14 @@
       const б = (window.BL_STORE && BL_STORE.get) ? BL_STORE.get('bl_baby', {}) :
                 JSON.parse(localStorage.getItem('bl_baby') || '{}');
       if (!б || !б.birth) return FLIP_ВСИЧКИ;                  // не знаем — не режем
-      const м = window.BL_AGE ? (BL_AGE(б.birth) || {}).months : null;
+      // 🪤 BL_AGE връща NULL при бъдеща дата (тоест при бременност), а не
+      //    отрицателни месеци. Първата ми версия проверяваше `м < 0` и този
+      //    клон НЕ СЕ ИЗПЪЛНЯВАШЕ НИКОГА — бременната пак виждаше
+      //    „захранването". Измерено в браузър с термин след 3 месеца.
+      const възр = window.BL_AGE ? BL_AGE(б.birth) : undefined;
+      if (възр === null) return FLIP_ВСИЧКИ.filter(д => д !== 'захранването' && д !== 'растежа');
+      const м = (възр || {}).months;
       if (typeof м !== 'number') return FLIP_ВСИЧКИ;
-      if (м < 0) return FLIP_ВСИЧКИ.filter(д => д !== 'захранването' && д !== 'растежа');
       if (м < 4) return FLIP_ВСИЧКИ.filter(д => д !== 'бременността' && д !== 'захранването');
       return FLIP_ВСИЧКИ.filter(д => д !== 'бременността');
     } catch (e) { return FLIP_ВСИЧКИ; }
