@@ -58,7 +58,10 @@ console.log('');
 console.log('  ── пазачите ──');
 const пазачи = ['korpus350.js', 'standarti.js', 'obikolka_majka.js', 'opashki.js',
   'tayni_sinhron.js', 'pod_trevogata.js', 'podniz_smalltalk.js', 'sbogom.js',
-  'dostizhimost.js', 'ustoychivost.js', 'karta_statiya.js'];
+  'dostizhimost.js', 'ustoychivost.js', 'karta_statiya.js',
+  // 07.09: двата нови от прохода по наръчника за immersive web —
+  // тежестта на приложението и здравината на моторните токени.
+  'byudzhet.js', 'tokeni.js'];
 let паднали = 0;
 for (const п of пазачи) {
   if (!fs.existsSync(path.join('dev', п))) continue;
