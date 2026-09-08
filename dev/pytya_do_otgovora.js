@@ -31,7 +31,20 @@ const { zaredi } = require('./pyasachnik.js');
 const src = fs.readFileSync(path.join(ROOT, 'js/helper.js'), 'utf8');
 const нач = src.indexOf('function respond(text, forcedId)');
 if (нач < 0) { console.log('🔴 respond() не се намира — СЛЯП'); process.exit(2); }
-const тяло = src.slice(нач, нач + 22000);
+// 🪤 08.09, ЧАС СЛЕД КАТО НАПИСАХ ТОЗИ ПАЗАЧ, той се обади — и беше ПРАВ.
+//   Добавих в respond() предварителен изчисляващ блок (БЕЗ_ТЕАТЪР: при
+//   тревога отговорът идва веднага, без забавянето „Вита пише"). Той вика
+//   същите три врати ПРЕДИ решението, само за да реши забавянето. Затова
+//   редът, четен отгоре, стана: motherLevel → pregLevel → isRedFlag →
+//   motherLevel — и пазачът отказа да мери, вместо да лъже. Точно за това
+//   съществува устройството.
+//   ЛЕКЪТ не е да се разхлаби проверката, а да се чете ИСТИНСКОТО решение:
+//   то живее СЛЕД `const delay =` и неговия setTimeout. Всичко преди това
+//   е подготовка, не отсъда.
+const _д = src.indexOf("const delay =", нач);
+const _от = _д > -1 ? src.indexOf("setTimeout(", _д) : нач;
+if (_д > -1 && _от < 0) { console.log("🔴 delay без setTimeout — СЛЯП"); process.exit(2); }
+const тяло = src.slice(_от > -1 ? _от : нач, (_от > -1 ? _от : нач) + 22000);
 const ред = [];
 const изр = /(motherLevel|pregLevel|isRedFlag|findEntry)\s*\(/g;
 let m; while ((m = изр.exec(тяло))) if (ред[ред.length - 1] !== m[1]) ред.push(m[1]);
