@@ -24,7 +24,7 @@ const path = require('path');
 // пътят е спрямо самия файл — уред, който работи само от една папка, не се пуска
 const ROOT = path.resolve(__dirname, '..');
 
-function ctx() {
+function ctx(опции) {
   const w = {};
   Object.assign(w, {
     console, setTimeout, clearTimeout, setInterval, clearInterval,
@@ -33,6 +33,88 @@ function ctx() {
     encodeURIComponent, decodeURIComponent, isNaN, isFinite, parseInt, parseFloat
   });
   w.localStorage = { getItem: () => null, setItem() {}, removeItem() {}, clear() {}, key: () => null, length: 0 };
+  // ═══════════════════════════════════════════════════════════════════
+  // 🎭 БОГАТИЯТ КУКЛЕН DOM (08.09) — за да се чете ТЕКСТЪТ, който майката
+  //    вижда, а не само коя врата е гърмяла.
+  //
+  //    ЗАЩО: всичките 14 пазача мерят ВРАТИТЕ (BL_REDFLAG и пр.). Нито един
+  //    не чете самия отговор. А на 08.09 се хвана бременна жена, която
+  //    ПОЛУЧИ отговор — но текстът беше писан за жена СЛЕД раждане. Врата
+  //    вярна, текст грешен. Уред, който гледа само вратата, вижда „успех".
+  //
+  //    ⚠️ ТОВА НЕ Е БРАУЗЪР и не се преструва на такъв. Няма подредба, няма
+  //    стилове, няма събития. Мери се САМО текстът, който влиза в мехурите.
+  //    Живата обиколка си остава задължителна — тя намери тези дефекти.
+  // ═══════════════════════════════════════════════════════════════════
+  if (опции && опции.домБогат) {
+    const възел = (таг) => {
+      const н = {
+        tagName: String(таг || "div").toUpperCase(), children: [], _текст: "", _html: "",
+        style: {}, dataset: {}, hidden: false, offsetWidth: 1,
+        className: "", id: "", value: "", checked: false, disabled: false, title: "",
+        classList: { _s: new Set(), add(...a) { a.forEach(x => this._s.add(x)); }, remove(...a) { a.forEach(x => this._s.delete(x)); }, contains(x) { return this._s.has(x); }, toggle(x) { this._s.has(x) ? this._s.delete(x) : this._s.add(x); } },
+        appendChild(c) { this.children.push(c); return c; },
+        append(...c) { c.forEach(x => this.children.push(x)); },
+        prepend(c) { this.children.unshift(c); return c; },
+        insertBefore(c) { this.children.unshift(c); return c; },
+        removeChild(c) { const i = this.children.indexOf(c); if (i > -1) this.children.splice(i, 1); return c; },
+        remove() {}, setAttribute() {}, getAttribute() { return null; }, removeAttribute() {},
+        cloneNode(дълбоко) { const к = възел(this.tagName); к._текст = this._текст; к._html = this._html; к.className = this.className; if (дълбоко) к.children = this.children.map(c => c.cloneNode ? c.cloneNode(true) : c); return к; },
+        contains() { return false; }, matches() { return false; }, replaceChildren(...c) { this.children = c; },
+        insertAdjacentHTML(къде, х) { this._html += String(х); }, insertAdjacentElement(къде, е) { this.children.push(е); return е; },
+        get firstChild() { return this.children[0] || null; }, get lastChild() { return this.children[this.children.length-1] || null; },
+        get firstElementChild() { return this.children[0] || null; }, get parentNode() { return null; }, get parentElement() { return null; },
+        get nextSibling() { return null; }, get previousSibling() { return null; }, get childNodes() { return this.children; },
+        get offsetParent() { return null; }, get scrollHeight() { return 0; }, get clientHeight() { return 0; }, scrollTop: 0,
+        hasAttribute() { return false; }, addEventListener() {}, removeEventListener() {},
+        querySelector(с) { return (this._кеш = this._кеш || {}), (this._кеш[с] = this._кеш[с] || възел("div")); }, querySelectorAll() { return []; },
+        closest() { return null; }, scrollIntoView() {}, focus() {}, blur() {}, click() {},
+        getBoundingClientRect() { return { top: 0, left: 0, width: 0, height: 0, bottom: 0, right: 0 }; },
+        get innerHTML() { return this._html; },
+        set innerHTML(v) { this._html = String(v); if (!v) this.children = []; },
+        get textContent() { return this._текст || this._html.replace(/<[^>]*>/g, ""); },
+        set textContent(v) { this._текст = String(v); },
+        // целият видим текст на този възел и децата му — това чете уредът
+        get всичкиятТекст() {
+          const мой = this._текст || this._html.replace(/<[^>]*>/g, " ");
+          return [мой].concat(this.children.map(c => c.всичкиятТекст || "")).join(" ").replace(/[ ]+/g, " ").trim();
+        }
+      };
+      return н;
+    };
+    const поId = {};
+    const поСелектор = {};
+    w.document = {
+      documentElement: възел("html"), body: возелТяло(), head: възел("head"),
+      createElement: (t) => възел(t),
+      createElementNS: (ns, t) => възел(t),
+      createTextNode: (t) => { const н = възел("#text"); н.textContent = t; return н; },
+      createDocumentFragment: () => възел("#fragment"),
+      getElementById: (id) => (поId[id] = поId[id] || възел("div")),
+      querySelector: (с) => (поСелектор[с] = поСелектор[с] || възел("div")), querySelectorAll: () => [],
+      addEventListener() {}, removeEventListener() {}, dispatchEvent() { return true; },
+      readyState: "complete", _поId: поId
+    };
+    function возелТяло() { const б = възел("body"); return б; }
+    w.CustomEvent = function (име, о) { this.type = име; this.detail = о && o_detail(o); };
+    function o_detail(o) { return o.detail; }
+    w.Event = function (име) { this.type = име; };
+    w.MutationObserver = function () { return { observe() {}, disconnect() {} }; };
+    // истински браузърни глобали, не подпорки: приложението наистина ги вика
+    w.history = { pushState() {}, replaceState() {}, back() {}, forward() {}, go() {}, state: null, length: 1 };
+    w.sessionStorage = { getItem: () => null, setItem() {}, removeItem() {}, clear() {}, key: () => null, length: 0 };
+    w.scrollTo = function () {}; w.scrollBy = function () {}; w.innerWidth = 390; w.innerHeight = 844;
+    w.devicePixelRatio = 2; w.performance = { now: () => Date.now() };
+    w.URL = URL; w.URLSearchParams = URLSearchParams; w.TextEncoder = TextEncoder; w.TextDecoder = TextDecoder;
+    w.btoa = (x) => Buffer.from(String(x), "binary").toString("base64");
+    w.atob = (x) => Buffer.from(String(x), "base64").toString("binary");
+    w.crypto = { getRandomValues: (a) => { for (let i = 0; i < a.length; i++) a[i] = (i * 2654435761) % 256; return a; }, randomUUID: () => "00000000-0000-4000-8000-000000000000" };
+    w.fetch = () => Promise.reject(new Error("пясъчникът няма мрежа — нарочно"));
+    w.speechSynthesis = { speak() {}, cancel() {}, getVoices: () => [] };
+    w.CSS = { supports: () => false };
+    w.alert = function () {}; w.confirm = () => false; w.prompt = () => null;
+    w.IntersectionObserver = function () { return { observe() {}, disconnect() {}, unobserve() {} }; };
+  } else
   w.document = {
     documentElement: {}, body: {}, head: {},
     createElement: () => ({ style: {}, classList: { add() {}, remove() {} }, appendChild() {}, setAttribute() {} }),
@@ -52,8 +134,8 @@ function ctx() {
 }
 
 // patch = функция (изходен текст на helper.js) -> нов текст
-function zaredi(patch) {
-  const W = ctx();
+function zaredi(patch, опции) {
+  const W = ctx(опции);
   const kb = fs.readFileSync(path.join(ROOT, 'js/kb.js'), 'utf8');
   let hp = fs.readFileSync(path.join(ROOT, 'js/helper.js'), 'utf8');
   if (patch) hp = patch(hp);

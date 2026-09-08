@@ -26,6 +26,11 @@ const cp = require('child_process');
 const path = require('path');
 const ROOT = path.resolve(__dirname, '..');
 const g = (cmd) => { try { return cp.execSync(cmd, { encoding: 'utf8', cwd: ROOT, stdio: ['ignore','pipe','ignore'] }).trim(); } catch (e) { return ''; } };
+const NL_ = String.fromCharCode(10);
+const QUOTE_ = String.fromCharCode(34);
+// същото като g(), но БЕЗ trim: в „git status --porcelain" водещите
+// интервали са ДАННИ, а не украса — точно този trim ме заслепи.
+const g_raw = (cmd) => { try { return cp.execSync(cmd, { encoding: 'utf8', cwd: ROOT, stdio: ['ignore','pipe','ignore'] }); } catch (e) { return ''; } };
 
 if (!g('git rev-parse --is-inside-work-tree')) { console.log('🔴 не е git хранилище — проверчикът е СЛЯП'); process.exit(2); }
 
@@ -38,7 +43,31 @@ let m; while ((m = re.exec(html))) активи.push({ файл: m[1], верс�
 //    всичко. Точно това е формата на слепия пазач, който вече ме е лъгал.
 if (активи.length < 50) { console.log('🔴 намерени само ' + активи.length + ' актива в index.html — СЛЯП'); process.exit(2); }
 
-const мръсни = new Set(g('git status --porcelain').split('\n').map(s => s.slice(3).trim()).filter(Boolean));
+// 🔴 08.09, СОБСТВЕНАТА МИ ДУПКА, хваната час след като написах пазача:
+//   помощната g() прави .trim() върху ЦЕЛИЯ изход. „git status --porcelain"
+//   започва всеки ред с два знака за състояние (" M css/anim.css"), затова
+//   trim-ът изяжда водещия интервал САМО НА ПЪРВИЯ РЕД. После рязането от
+//   трети знак реже от грешно място и първият мръсен файл излиза като
+//   „ss/anim.css" — тоест НЕ СЪВПАДА с нищо и минава за чист.
+//   Пазачът беше СЛЯП ЗА ЕДИН ФАЙЛ ВСЕКИ ПЪТ, а кой — по азбучен ред.
+//   Днес се падна css/anim.css: пипнат, невдигнат, обявен за чист.
+//   ЛЕКЪТ: разбор по РЕД (издържа и преименуване „A -> B", и цитирани
+//   пътища), плюс самопроверка, че броят пътища съвпада с броя редове.
+const _st = g_raw("git status --porcelain");
+const мръсни = new Set();
+const _редовеСт = _st.split(NL_).filter(x => x.trim());
+for (const ред of _редовеСт) {
+  let п = ред.slice(3).trim();
+  const стрелка = п.indexOf(" -> ");
+  if (стрелка > -1) п = п.slice(стрелка + 4);
+  if (п.charAt(0) === QUOTE_ && п.charAt(п.length - 1) === QUOTE_) п = п.slice(1, -1);
+  if (п) мръсни.add(п);
+}
+// 🪞 САМОПРОВЕРКА: колкото непразни реда, толкова пътища.
+if (мръсни.size !== _редовеСт.length) {
+  console.log("🔴 разборът на git status се разминава: " + мръсни.size + " пътя от " + _редовеСт.length + " реда — СЛЯП");
+  process.exit(2);
+}
 
 console.log('');
 console.log('🔢 ИЗОСТАНАЛИ ВЕРСИИ — стига ли поправката до майката');

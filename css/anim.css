@@ -206,7 +206,7 @@
    съдържание, затова тук е само .dot. */
 .ask-live .dot {
   display: inline-block;
-  animation: liveBreath 2.4s ease-in-out infinite;
+  animation: liveBreath var(--bl-dur-dish, 2.5s) ease-in-out infinite;
   transform-origin: center;
 }
 @keyframes liveBreath {
@@ -275,7 +275,7 @@
 .sc24-now {
   transform-box: fill-box;
   transform-origin: center;
-  animation: liveBreath 2.6s ease-in-out infinite;
+  animation: liveBreath var(--bl-dur-dish, 2.5s) ease-in-out infinite;
 }
 
 
