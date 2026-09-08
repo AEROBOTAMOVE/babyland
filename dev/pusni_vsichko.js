@@ -104,8 +104,20 @@ console.log('');
 console.log('  ── числата ──');
 console.log('     карти ' + K.entries.length + ' · статии ' + ix.items.length +
   ' · ключове ' + K.entries.reduce((a, e) => a + (e.keys || []).length, 0));
+// 🧹 08.09 — ЧЕСТНОТО ЧИСЛО. Измерено: списъците носят 68 дублирани флага
+//   и 15 дублирани ключа. Не вредят на работата (проверяват се два пъти),
+//   но НАДУВАТ числото, което този пояс обявява. В проект, чието първо
+//   правило е „доказателство, не увереност", обявеното число трябва да е
+//   това, което наистина покрива нещо ново.
+//   Затова тук се показват И ДВЕТЕ: общо и уникални.
+const _норм = x => String(x).toLowerCase().replace(/s+/g, ' ').trim();
+const _уник = (a) => (Array.isArray(a) ? new Set(a.map(_норм)).size : 0);
+const _ключове = K.entries.reduce((a, e) => a.concat(e.keys || []), []);
 console.log('     флагове: червени ' + K.redFlags.length + ' · майка ' +
   (K.motherFlags.length + K.heavyFlags.length) + ' · насилие ' + K.dvFlags.length);
+console.log('     уникални: червени ' + _уник(K.redFlags) + ' · майка ' +
+  (_уник(K.motherFlags) + _уник(K.heavyFlags)) + ' · насилие ' + _уник(K.dvFlags) +
+  ' · ключове ' + _уник(_ключове));
 const без = K.entries.filter(e => !e.lib || (Array.isArray(e.lib) && !e.lib.length)).length;
 const безЧип = K.entries.filter(e => !e.chips || !e.chips.length).length;
 const тънки = K.entries.filter(e => (e.keys || []).length < 5).length;
