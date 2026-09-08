@@ -37,9 +37,37 @@ document.addEventListener('visibilitychange', () => { if (!document.hidden) refr
   let stored = null;
   try { stored = localStorage.getItem('bl_theme'); } catch (e) {}
   const h = new Date().getHours();
-  const dark = stored ? stored === 'dark' : (h >= 21 || h < 7); // авто-нощ, докато мама не избере сама
+  // 🌙 08.09, ИЗМЕРЕНО В БРАУЗЪРА: телефонът беше на ТЪМНА тема
+  //   (prefers-color-scheme: dark), а приложението се отвори СВЕТЛО —
+  //   защото системната настройка не се питаше НИКЪДЕ. Нито в js, нито
+  //   в css (dark.css работи само по data-theme).
+  //
+  //   ЗАЩО Е ВАЖНО ИМЕННО ТУК: тъмният режим често не е вкус, а нужда —
+  //   светлочувствителност, мигрена, зрение. Това е сигнал, който жената
+  //   ИЗРИЧНО е дала на устройството си; приложението няма право да го
+  //   презаписва мълчаливо. А и главният час на това приложение е 3 през
+  //   нощта, с бебе на ръце.
+  //
+  //   ⚠️ РЕДЪТ НА ПРЕДИМСТВОТО остава непокътнат:
+  //     1. изборът на мама (bl_theme) бие всичко — както и досега
+  //     2. иначе: нощен час (21–07) ИЛИ системна тъмна
+  //   Тоест светлата, весела самоличност на Бейби Ленд остава по
+  //   подразбиране за всяка, която НЕ е поискала тъмно.
+  // ПЪТ НАЗАД: махни СИСТЕМНА_ТЪМНА и слушателя долу.
+  const СИСТЕМНА_ТЪМНА = (function () {
+    try { return window.matchMedia && matchMedia("(prefers-color-scheme: dark)").matches; }
+    catch (e) { return false; }
+  })();
+  const dark = stored ? stored === "dark" : ((h >= 21 || h < 7) || СИСТЕМНА_ТЪМНА);
   apply(dark, false);
   btn.addEventListener('click', () => apply(document.documentElement.getAttribute('data-theme') !== 'dark', true));
+  // следва системата НА ЖИВО, но само докато мама не е избрала сама
+  try {
+    const мq = matchMedia("(prefers-color-scheme: dark)");
+    const слуша = (e) => { let s2 = null; try { s2 = localStorage.getItem("bl_theme"); } catch (x) {} if (!s2) apply(e.matches || h >= 21 || h < 7, false); };
+    if (мq.addEventListener) мq.addEventListener("change", слуша);
+    else if (мq.addListener) мq.addListener(слуша);
+  } catch (e) {}
 })();
 
 // ── Появяване на елементите при скрол (стъпаловидно) ──
