@@ -31,3 +31,6 @@ dev/statii_bliznaci.json
 dev/studeni.json
 dev/svatovnik.json
 dev/test_vazrast_vliyanie.json
+
+# ── 08.09: пакетът за Netlify се сглобява при всяко качване, не се пази ──
+dist/
