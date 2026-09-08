@@ -133,10 +133,21 @@ function ctx(опции) {
   return w;
 }
 
-// patch = функция (изходен текст на helper.js) -> нов текст
+// patch        = функция (изходен текст на helper.js) -> нов текст
+// опции.kbPatch = функция (изходен текст на js/kb.js) -> нов текст
+//
+// 🔑 08.09 — ЗАЩО СЕ ДОБАВИ kbPatch:
+//   Досега пясъчникът позволяваше опит само върху МОЗЪКА. Всяка промяна в
+//   БАЗАТА (ключове, флагове, карти) можеше да се провери едва СЛЕД като е
+//   записана в js/kb.js — тоест наживо, без път назад и без сравнение с
+//   „както беше". А точно там живее по-голямата част от работата: законът
+//   на този проект е, че съдържанието обикновено СЪЩЕСТВУВА, а липсват
+//   ДУМИТЕ. Сега двата мозъка може да се различават и по база, и „цена
+//   срещу полза" се мери за ключова хирургия по същия начин, както за код.
 function zaredi(patch, опции) {
   const W = ctx(опции);
-  const kb = fs.readFileSync(path.join(ROOT, 'js/kb.js'), 'utf8');
+  let kb = fs.readFileSync(path.join(ROOT, 'js/kb.js'), 'utf8');
+  if (опции && typeof опции.kbPatch === 'function') kb = опции.kbPatch(kb);
   let hp = fs.readFileSync(path.join(ROOT, 'js/helper.js'), 'utf8');
   if (patch) hp = patch(hp);
   new vm.Script(kb, { filename: 'kb.js' }).runInContext(W);
