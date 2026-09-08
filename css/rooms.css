@@ -2371,3 +2371,53 @@
    случайно превъртане и майката губи мястото си */
 .art-h-hit { animation: artHhit 1.2s ease; }
 @keyframes artHhit { 0%, 100% { background: transparent; } 30% { background: var(--pink-soft); } }
+
+/* ═══ ⏳ ЧАСОВНИКЪТ „Преди колко време?" (09.09) ═══
+   Нощен режим: майката гледа това в 3 през нощта с едно око. Затова
+   контрастът е мек, а числото — най-едрото нещо в картата. */
+.ch-card { margin-top: 10px; padding: 13px 15px; border-radius: 16px;
+  background: linear-gradient(135deg, #eef4fd, #f3effc); border: 1px solid rgba(120,140,200,.18); }
+.ch-title { display: block; font-size: 13.5px; font-weight: 800; color: var(--ink); }
+.ch-sub { margin: 2px 0 10px; font-size: 11.5px; opacity: .72; }
+.ch-body { display: flex; flex-direction: column; gap: 8px; }
+.ch-row { display: grid; grid-template-columns: 1fr auto; gap: 4px 8px; align-items: center;
+  padding: 8px 10px; border-radius: 12px; background: rgba(255,255,255,.72); }
+.ch-hit { display: flex; align-items: center; gap: 8px; min-height: 44px; padding: 0 4px;
+  border: 0; background: none; cursor: pointer; font: inherit; text-align: left; }
+.ch-emo { font-size: 19px; line-height: 1; }
+.ch-ime { font-size: 13.5px; font-weight: 700; color: var(--ink); }
+.ch-right { display: flex; align-items: center; }
+.ch-kolko { min-height: 44px; min-width: 44px; padding: 4px 10px; border: 0; cursor: pointer;
+  background: none; font: inherit; font-size: 15px; font-weight: 800; color: var(--ink);
+  border-bottom: 1px dashed rgba(120,140,200,.5); border-radius: 0; white-space: nowrap; }
+.ch-kolko.ch-soon { color: #2b7a5e; }
+.ch-kolko.ch-warn { color: #b03a4a; }
+.ch-pod { grid-column: 1 / -1; margin: 0; font-size: 11.5px; opacity: .82; line-height: 1.45; }
+.ch-tih { opacity: .6; }
+.ch-red { display: inline-block; margin-top: 4px; color: #b03a4a; font-weight: 700; }
+.ch-fix, .ch-set { grid-column: 1 / -1; margin-top: 6px; padding: 8px 10px; border-radius: 10px;
+  background: rgba(120,140,200,.09); }
+.ch-fix-t, .ch-set-t { display: block; font-size: 11.5px; font-weight: 700; margin-bottom: 6px; }
+.ch-fix-row, .ch-set-row { display: flex; flex-wrap: wrap; gap: 6px; align-items: center; }
+.ch-time { padding: 8px 10px; border-radius: 10px; font: inherit; font-size: 14px;
+  border: 1px solid rgba(120,140,200,.4); background: #fff; color: var(--ink); min-height: 44px; }
+.ch-ok, .ch-cancel { min-height: 44px; padding: 0 14px; border-radius: 10px; border: 0; cursor: pointer;
+  font: inherit; font-size: 12.5px; font-weight: 700; }
+.ch-ok { background: var(--pink-deep, #e56ba4); color: #fff; }
+.ch-cancel { background: rgba(120,140,200,.16); color: var(--ink); }
+.ch-num { width: 52px; padding: 8px; border-radius: 8px; text-align: center; font: inherit;
+  font-size: 14px; border: 1px solid rgba(120,140,200,.4); background: #fff; color: var(--ink); min-height: 44px; }
+.ch-lab { font-size: 12px; opacity: .8; }
+.ch-set-warn { margin: 6px 0 0; font-size: 11px; opacity: .8; line-height: 1.4; }
+.ch-add { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 9px; }
+.ch-add-b { min-height: 44px; padding: 0 12px; border-radius: 999px; cursor: pointer; font: inherit;
+  font-size: 12px; font-weight: 700; border: 1px dashed rgba(120,140,200,.45);
+  background: rgba(255,255,255,.55); color: var(--ink); }
+.ch-legal { margin: 10px 0 0; font-size: 10.5px; opacity: .72; line-height: 1.45; }
+
+[data-theme="dark"] .ch-card { background: linear-gradient(135deg, #232a44, #2e2743); border-color: rgba(140,160,220,.22); }
+[data-theme="dark"] .ch-row { background: rgba(0,0,0,.22); }
+[data-theme="dark"] .ch-time, [data-theme="dark"] .ch-num { background: rgba(0,0,0,.3); color: #efe9ff; border-color: rgba(140,160,220,.3); }
+[data-theme="dark"] .ch-add-b { background: rgba(0,0,0,.18); color: #efe9ff; }
+[data-theme="dark"] .ch-kolko.ch-soon { color: #7ad9b0; }
+[data-theme="dark"] .ch-kolko.ch-warn { color: #ff9aa8; }
