@@ -22,9 +22,13 @@
   --bl-t-soft:   200ms;   /* микро-преход, отговор, смяна на фон */
   --bl-t-enter:  320ms;   /* влизане / изскачане */
   /* всяко меко влизане и затваряне (същата крива като cardIn/roIn/pgb) */
-  --bl-ease-soft:   cubic-bezier(.22, 1, .36, 1);
+  --bl-ease-soft:   var(--bl-ease-out);
   /* избор и успех — кратък overshoot-скок (същата крива като .set-dot) */
-  --bl-ease-spring: cubic-bezier(.34, 1.56, .64, 1);
+  /* 🔴 07.09: тук стоеше --bl-ease-spring: var(--bl-ease-spring) — САМОПРЕПРАТКА,
+     направена от dev/motion_tokeni.js, когато замени литералната крива и в самата
+     ѝ ДЕФИНИЦИЯ. Работеше само по случайност: css/tier.css се зарежда след този
+     файл и печели в каскадата. Смени ли се редът, движението изчезва наведнъж.
+     Кривите живеят на ЕДНО място — css/tier.css. Тук само се ползват. */
 }
 
 
@@ -234,7 +238,7 @@
    var() в @keyframes НЕ интерполира без @property — затова to е статична 0.
    Само stroke-dashoffset — нула layout-thrash. */
 .pg20-done {
-  animation: pg20Draw 1.3s var(--bl-ease-soft, cubic-bezier(.22,1,.36,1)) .25s forwards;
+  animation: pg20Draw 1.3s var(--bl-ease-soft, var(--bl-ease-out)) .25s forwards;
 }
 @keyframes pg20Draw { to { stroke-dashoffset: 0; } }
 /* цъфналите милестоуни изникват меко ПО пътя (само opacity — групата се
@@ -654,7 +658,7 @@
 .rmx-aurora {
   position: absolute; inset: 0; z-index: 0;
   pointer-events: none; overflow: hidden; border-radius: inherit;
-  opacity: 0; animation: rmxAuroraFade 1.2s var(--bl-ease-soft, cubic-bezier(.22,1,.36,1)) .15s forwards;
+  opacity: 0; animation: rmxAuroraFade 1.2s var(--bl-ease-soft, var(--bl-ease-out)) .15s forwards;
 }
 @keyframes rmxAuroraFade { to { opacity: 1; } }
 .rmx-blob {
@@ -746,7 +750,7 @@
    скриптовете. Тогава и този блок, и квартирантът в store.js са излишни.
    ПЪТ НАЗАД: изтрий този блок — нищо друго не зависи от него. */
 .hero-inner.reveal {
-  animation: героятВлиза 0.7s cubic-bezier(0.22, 1, 0.36, 1) both;
+  animation: героятВлиза 0.7s var(--bl-ease-out) both;
 }
 @keyframes героятВлиза {
   from { opacity: 0; transform: translateY(36px) rotate(-1.2deg); }

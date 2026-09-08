@@ -87,7 +87,7 @@
   /* проход 4: налива се отляво с transform (мъртвият width-преход не се задействаше,
      а width е layout — извън железните правила). pgbGrow е дефиниран в mega.css. */
   transform-origin: left;
-  animation: pgbGrow .6s cubic-bezier(0.22, 1, 0.36, 1);
+  animation: pgbGrow .6s var(--bl-ease-out);
 }
 @media (prefers-reduced-motion: reduce) { .prof-fill { animation: none; } }
 

@@ -69,7 +69,7 @@
   border: 2px solid var(--wm-gold);
   border-radius: 18px;
   padding: 16px 14px;
-  animation: wmFlip 0.6s cubic-bezier(0.34, 1.56, 0.64, 1);
+  animation: wmFlip 0.6s var(--bl-ease-spring);
 }
 [data-theme="dark"] .wm-tarot { background: linear-gradient(160deg, #3d2a3a, #2f2130); }
 .wm-te { font-size: 40px; display: block; line-height: 1.1; }

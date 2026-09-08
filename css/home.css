@@ -71,7 +71,7 @@ header.hero.sky-night .tagline em { color: #f7a8cb; }
   fill: none; stroke: url(#d24g); stroke-width: 10; stroke-linecap: round;
   stroke-dasharray: 604; stroke-dashoffset: 604;
   transform: rotate(-90deg); transform-origin: 110px 110px;
-  animation: d24Draw 2.4s cubic-bezier(0.22, 1, 0.36, 1) forwards;
+  animation: d24Draw 2.4s var(--bl-ease-out) forwards;
 }
 @keyframes d24Draw { to { stroke-dashoffset: 90; } }
 .d24-hand { stroke: #e56ba4; stroke-width: 3; stroke-linecap: round; }
@@ -80,7 +80,7 @@ header.hero.sky-night .tagline em { color: #f7a8cb; }
 .d24-nowg {
   transform: rotate(var(--nrot, 0deg)); transform-origin: 110px 110px;
   transition: transform 0.9s cubic-bezier(0.34, 1.4, 0.5, 1);
-  animation: d24Hand 2s cubic-bezier(0.34, 1.56, 0.64, 1) backwards;
+  animation: d24Hand 2s var(--bl-ease-spring) backwards;
 }
 @keyframes d24NowBreath { 0%, 100% { transform: scale(1); opacity: 1; } 50% { transform: scale(1.55); opacity: 0.65; } }
 .d24-tick {
@@ -100,7 +100,7 @@ header.hero.sky-night .tagline em { color: #f7a8cb; }
 @keyframes d24Pulse { 0%, 100% { opacity: 1; } 50% { opacity: 0.72; } }
 .d24-dot { cursor: pointer; animation: cardIn 0.5s ease backwards; animation-delay: var(--dl); }
 .d24-hit { fill: transparent; }
-.d24-bg { fill: #fff; stroke: rgba(195, 177, 234, 0.5); stroke-width: 1.5; transition: fill 0.3s ease, stroke 0.3s ease, transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1); }
+.d24-bg { fill: #fff; stroke: rgba(195, 177, 234, 0.5); stroke-width: 1.5; transition: fill 0.3s ease, stroke 0.3s ease, transform 0.3s var(--bl-ease-spring); }
 .d24-e { font-size: 13px; pointer-events: none; }
 .d24-dot:hover .d24-bg { stroke: #f291bd; }
 .d24-dot.on .d24-bg { fill: url(#d24g); stroke: transparent; r: 16; filter: drop-shadow(0 4px 10px rgba(229, 107, 164, 0.5)); }
@@ -188,7 +188,7 @@ header.hero.sky-night .tagline em { color: #f7a8cb; }
   border: none; background: transparent; cursor: pointer; font-family: inherit;
   display: flex; flex-direction: column; align-items: center; gap: 2px;
   padding: 6px 7px; border-radius: 16px;
-  transition: transform 0.25s cubic-bezier(0.34, 1.56, 0.64, 1), background 0.2s ease;
+  transition: transform 0.25s var(--bl-ease-spring), background 0.2s ease;
   animation: meetBob 3.6s ease-in-out infinite;
 }
 .meet-b:hover, .meet-b.on { transform: translateY(-6px) scale(1.08); background: rgba(255, 255, 255, 0.65); }
@@ -198,7 +198,7 @@ header.hero.sky-night .tagline em { color: #f7a8cb; }
 .meet-badge { position: absolute; right: -7px; bottom: 26px; font-size: 15px; }
 .meet-name { font-size: 12px; font-weight: 800; color: var(--ink); }
 .meet-say { min-height: 44px; margin-top: 12px; font-size: 14px; font-weight: 700; color: var(--pink-deep); line-height: 1.5; }
-.meet-say.pop { animation: jrIn 0.4s cubic-bezier(0.34, 1.56, 0.64, 1); }
+.meet-say.pop { animation: jrIn 0.4s var(--bl-ease-spring); }
 
 /* ── 🪁 талисманът ── */
 .mascot {
@@ -210,7 +210,7 @@ header.hero.sky-night .tagline em { color: #f7a8cb; }
 }
 .mascot svg { width: 100%; height: auto; display: block; }
 .mascot.hide { opacity: 0; pointer-events: none; }
-.mascot.boop { animation: mascotBoop 0.6s cubic-bezier(0.34, 1.56, 0.64, 1), mascotFly 9s ease-in-out infinite; }
+.mascot.boop { animation: mascotBoop 0.6s var(--bl-ease-spring), mascotFly 9s ease-in-out infinite; }
 @keyframes mascotFly {
   0%, 100% { transform: translateY(0) rotate(-4deg); }
   30% { transform: translateY(-16px) rotate(3deg); }
@@ -249,7 +249,7 @@ header.hero.sky-night .btn-sos { background: rgba(60, 40, 60, 0.6) !important; c
   transition: opacity 0.25s ease, transform 0.25s ease;
 }
 .flip-word.out { opacity: 0; transform: translateY(-10px) rotate(-2deg); }
-.flip-word.in { animation: flipIn 0.45s cubic-bezier(0.34, 1.56, 0.64, 1); }
+.flip-word.in { animation: flipIn 0.45s var(--bl-ease-spring); }
 @keyframes flipIn { from { opacity: 0; transform: translateY(12px) rotate(2deg); } to { opacity: 1; transform: none; } }
 header.hero.sky-night .hero-flip { color: #ece8f5; }
 
@@ -309,7 +309,7 @@ header.hero.sky-night .hero-flip { color: #ece8f5; }
 .net-hit { fill: transparent; }
 .net-bg {
   fill: #fff; stroke: var(--c, #c3b1ea); stroke-width: 2.5;
-  transition: transform 0.35s cubic-bezier(0.34, 1.56, 0.64, 1), opacity 0.35s ease, box-shadow 0.35s ease;
+  transition: transform 0.35s var(--bl-ease-spring), opacity 0.35s ease, box-shadow 0.35s ease;
 }
 .net-node:hover .net-bg { stroke-width: 4; }
 .net-node.on .net-bg { fill: var(--c); r: 28; filter: drop-shadow(0 0 12px var(--c)); }
@@ -326,7 +326,7 @@ header.hero.sky-night .hero-flip { color: #ece8f5; }
 /* листата-функции */
 .net-leaf-l { stroke: var(--c); stroke-width: 1.2; opacity: 0.5; animation: netLeafL 0.4s ease backwards; animation-delay: var(--d); }
 @keyframes netLeafL { from { opacity: 0; } }
-.net-leaf { animation: netLeaf 0.45s cubic-bezier(0.34, 1.56, 0.64, 1) backwards; animation-delay: var(--d); }
+.net-leaf { animation: netLeaf 0.45s var(--bl-ease-spring) backwards; animation-delay: var(--d); }
 @keyframes netLeaf { from { opacity: 0; r: 0; } }
 
 /* панелът с функциите */
@@ -460,7 +460,7 @@ header.hero.sky-night .hero-flip { color: #ece8f5; }
 .art-cat:active { transform: scale(0.94); }
 
 /* ── ⭐ любима статия + „Виж също“ ── */
-#artStar.star-pop { animation: starPop 0.5s cubic-bezier(0.34, 1.56, 0.64, 1); }
+#artStar.star-pop { animation: starPop 0.5s var(--bl-ease-spring); }
 @keyframes starPop { 45% { transform: scale(1.5) rotate(18deg); } }
 .art-rel { margin-top: 18px; background: #faf6ff; border-radius: 16px; padding: 12px 14px; }
 .art-relt { font-size: 12px; font-weight: 800; color: var(--ink-soft); margin-bottom: 8px; }
@@ -484,7 +484,7 @@ header.hero.sky-night .hero-flip { color: #ece8f5; }
   background: linear-gradient(165deg, #fdfbff, #f6effc);
   border-radius: 28px; padding: 46px 26px 22px; text-align: center;
   box-shadow: 0 40px 90px rgba(40, 30, 70, 0.5);
-  animation: roIn 0.5s cubic-bezier(0.22, 1, 0.36, 1);
+  animation: roIn 0.5s var(--bl-ease-out);
 }
 .tour-balloon { position: absolute; top: -34px; left: 50%; transform: translateX(-50%); width: 46px; animation: meetBob 3.2s ease-in-out infinite; }
 .tour-balloon svg { width: 100%; height: auto; filter: drop-shadow(0 8px 14px rgba(90, 60, 120, 0.3)); }
@@ -587,7 +587,7 @@ header.hero.sky-night .hero-flip { color: #ece8f5; }
 }
 .horo-ball {
   position: relative; width: 46px;
-  transition: scale 0.25s cubic-bezier(0.34, 1.56, 0.64, 1);
+  transition: scale 0.25s var(--bl-ease-spring);
   animation: horoDish 4.4s ease-in-out infinite;
   animation-delay: calc(var(--i) * -0.55s);              /* всяка диша в свой такт */
 }
@@ -609,7 +609,7 @@ header.hero.sky-night .hero-flip { color: #ece8f5; }
 }
 .horo-ce { font-size: 26px; }
 .horo-say { font-size: 12.5px; font-weight: 700; color: var(--pink-deep); line-height: 1.45; }
-.horo-say.pop { animation: jrIn 0.4s cubic-bezier(0.34, 1.56, 0.64, 1); }
+.horo-say.pop { animation: jrIn 0.4s var(--bl-ease-spring); }
 .horo-b:hover .horo-ball, .horo-b:focus-visible .horo-ball { scale: 1.12; }
 .horo-b:focus-visible .horo-ball svg { filter: drop-shadow(0 0 8px var(--pink-deep)); }
 .horo.спряно .horo-ring, .horo.спряно .horo-anti { animation-play-state: paused; }
@@ -643,7 +643,7 @@ header.hero.sky-night .hero-flip { color: #ece8f5; }
 .усмивка { width: 9px; height: 5px; border: 1.6px solid #b5588a; border-top: none; border-radius: 0 0 9px 9px; margin-top: -1px; transition: transform 0.25s ease; }
 /* балонът се навежда към пръста — върху svg-то, което няма друга анимация */
 .meet-balloon svg, .horo-ball svg { transform: rotate(var(--наклон, 0deg)); transition: transform 0.35s ease; }
-.лице.щастие { animation: щастлив 0.55s cubic-bezier(0.34, 1.56, 0.64, 1); }
+.лице.щастие { animation: щастлив 0.55s var(--bl-ease-spring); }
 .лице.щастие .око { animation: none; transform: scaleY(0.3); }   /* ^ ^ очички */
 .лице.щастие .усмивка { transform: scaleX(1.35); }
 @keyframes щастлив { 40% { transform: translateX(-50%) scale(1.25); } 100% { transform: translateX(-50%) scale(1); } }
@@ -663,7 +663,7 @@ header.hero.sky-night .hero-flip { color: #ece8f5; }
 .долита.тъмно { background: rgba(40, 30, 70, 0.45); backdrop-filter: blur(3px); }
 .дол-балон {
   position: fixed; display: block; will-change: transform;
-  transition: transform 0.75s cubic-bezier(0.22, 1, 0.36, 1);
+  transition: transform 0.75s var(--bl-ease-out);
   filter: drop-shadow(0 18px 30px rgba(40, 25, 70, 0.4));
 }
 .дол-балон svg { width: 100%; height: auto; display: block; }
@@ -671,7 +671,7 @@ header.hero.sky-night .hero-flip { color: #ece8f5; }
 .дол-мехур {
   position: fixed; left: 50%; top: 56%; width: min(320px, 84vw);
   transform: translateX(-50%) translateY(14px) scale(0.85); opacity: 0;
-  transition: transform 0.45s cubic-bezier(0.34, 1.56, 0.64, 1) 0.4s, opacity 0.4s ease 0.4s;
+  transition: transform 0.45s var(--bl-ease-spring) 0.4s, opacity 0.4s ease 0.4s;
   background: linear-gradient(160deg, #ffffff, #faf4fb);
   border: 1.5px solid rgba(195, 177, 234, 0.4); border-radius: 20px 20px 20px 5px;
   padding: 14px 17px; font-size: 14px; font-weight: 700; color: var(--ink);
@@ -707,7 +707,7 @@ header.hero.sky-night .hero-flip { color: #ece8f5; }
   border-radius: 12px 12px 12px 3px; padding: 4px 9px;
   font-size: 10.5px; font-weight: 800; color: var(--ink); white-space: nowrap;
   box-shadow: 0 6px 14px rgba(90, 60, 120, 0.18);
-  animation: мурПоп 2.6s cubic-bezier(0.34, 1.56, 0.64, 1) both;
+  animation: мурПоп 2.6s var(--bl-ease-spring) both;
   pointer-events: none; z-index: 3;
 }
 @keyframes мурПоп {
