@@ -4317,7 +4317,25 @@ function findEntry(text, room, exclude) {
         //   289, но между тях кара „гори лампата на терасата" да ОТГОВОРИ
         //   уверено с картата за температура. Врата е по-малкото зло от
         //   уверен грешен отговор. Затова списък, не правило.
-        'mb-otpusnato', 'zd-pypna-ranka'];
+        'mb-otpusnato', 'zd-pypna-ranka',
+        // ➕ 09.09 · 46 КАРТИ, СЪДЕНИ ОТ ПАНЕЛ ВЪРХУ 146 ЖИВИ ВРАТИ.
+        //   Мярката: 609 независими въпроса през реда на вратите → 141 от тях
+        //   (23%) получаваха „Това е повече по частта на…" вместо отговора.
+        //   Дванайсет съдии прочетоха ВЪПРОСА и ТЕКСТА на намерената карта:
+        //       ДОБЪР 64 · ЧАСТИЧЕН 40 · ГРЕШЕН 42
+        //   Тоест вратата НЕ Е излишна — тя спира 42 уверено грешни отговора.
+        //   Затова тук влизат само карти, които са ДОБЪР отговор и нямат
+        //   НИТО ЕДИН ред, в който същата карта е ГРЕШЕН отговор.
+        //   ⚠️ Шест карти са и вярна, и грешна според въпроса и НЕ влизат:
+        //   ch-spisak · in-samoto-prilozhenie · mb-dushut · nd-parvite-pati ·
+        //   nia-rabota · pp-kosopad. Пример, проверен на ръка: nia-rabota е
+        //   верен за „връщам се на работа и ме боли" и грешен за „как да кажа
+        //   на шефа". Списък по id е сляп за въпроса — затова изключение, не
+        //   правило. Истинската поправка на тези е в КЛЮЧОВЕТЕ.
+        //   ⚠️ И още: вратата ВЕЧЕ носи въпроса (helper.js:3715 → open(…, вземи)
+        //   → ask), тоест цената ѝ е едно докосване, не преписване. Затова
+        //   тук не се пипа самата врата, а само кои карти я заобикалят.
+        'bz-what', 'dn-kogo-da-slusham', 'in-cheteneto-online', 'in-samolet', 'in2-vlazhnost', 'lb-mastit', 'lb-parvi-zabi', 'lb2-aki-cvetove', 'lb2-kola-pat', 'lb2-noshtni', 'lb3-razglezvane', 'mb-head', 'mb-kurmene-navun', 'mb-navel', 'mb-otbi-kak', 'mb-parvite-40-dni', 'mb5-strah-nepoznati', 'mm-lohia', 'mst-izlizane-dve-deca', 'mst-planina-bebe', 'nd-golyamoto-varna', 'nd-razlika-decata', 'nd-tatko-ne-zhivee', 'ni-pat-bebe', 'nia-dush', 'nia-nosht-smyana', 'nia-vino', 'nia-work', 'nia-yad-adres', 'pp-cikyl', 'prz-martenica', 'pz-cherkva-zimata', 'rz-govor', 'rz-gukane', 'rz-gyrne', 'rz-smyah', 'sn-budene-za-hranene', 'sn-hranene-na-san', 'sn-navan-chas', 'z4-priyatelka-bez-deca', 'z8-hrana-kyrmachka', 'zd-teeth', 'zh-probiotik', 'zh-weight', 'zim-oblichane-sloeve', 'zim-studeno-razhodka'];
       // 🟠 11.08 (обиколка „начален екран и чат“): ПОДАВАНЕ В СТАЯ, В КОЯТО Я
       //    НЯМА. Измерено наживо при майка на 4-месечно (родена дата въведена,
       //    без активна бременност): „на 4 месеца е и още не се обръща,
