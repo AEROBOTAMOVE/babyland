@@ -4358,7 +4358,20 @@ function findEntry(text, room, exclude) {
         //   ⚠️ И още: вратата ВЕЧЕ носи въпроса (helper.js:3715 → open(…, вземи)
         //   → ask), тоест цената ѝ е едно докосване, не преписване. Затова
         //   тук не се пипа самата врата, а само кои карти я заобикалят.
-        'bz-what', 'dn-kogo-da-slusham', 'in-cheteneto-online', 'in-samolet', 'in2-vlazhnost', 'lb-mastit', 'lb-parvi-zabi', 'lb2-aki-cvetove', 'lb2-kola-pat', 'lb2-noshtni', 'lb3-razglezvane', 'mb-head', 'mb-kurmene-navun', 'mb-navel', 'mb-otbi-kak', 'mb-parvite-40-dni', 'mb5-strah-nepoznati', 'mm-lohia', 'mst-izlizane-dve-deca', 'mst-planina-bebe', 'nd-golyamoto-varna', 'nd-razlika-decata', 'nd-tatko-ne-zhivee', 'ni-pat-bebe', 'nia-dush', 'nia-nosht-smyana', 'nia-vino', 'nia-work', 'nia-yad-adres', 'pp-cikyl', 'prz-martenica', 'pz-cherkva-zimata', 'rz-govor', 'rz-gukane', 'rz-gyrne', 'rz-smyah', 'sn-budene-za-hranene', 'sn-hranene-na-san', 'sn-navan-chas', 'z4-priyatelka-bez-deca', 'z8-hrana-kyrmachka', 'zd-teeth', 'zh-probiotik', 'zh-weight', 'zim-oblichane-sloeve', 'zim-studeno-razhodka'];
+        'bz-what', 'dn-kogo-da-slusham', 'in-cheteneto-online', 'in-samolet', 'in2-vlazhnost', 'lb-mastit', 'lb-parvi-zabi', 'lb2-aki-cvetove', 'lb2-kola-pat', 'lb2-noshtni', 'lb3-razglezvane', 'mb-head', 'mb-kurmene-navun', 'mb-navel', 'mb-otbi-kak', 'mb-parvite-40-dni', 'mb5-strah-nepoznati', 'mm-lohia', 'mst-izlizane-dve-deca', 'mst-planina-bebe', 'nd-golyamoto-varna', 'nd-razlika-decata', 'nd-tatko-ne-zhivee', 'ni-pat-bebe', 'nia-dush', 'nia-nosht-smyana', 'nia-vino', 'nia-work', 'nia-yad-adres', 'pp-cikyl', 'prz-martenica', 'pz-cherkva-zimata', 'rz-govor', 'rz-gukane', 'rz-gyrne', 'rz-smyah', 'sn-budene-za-hranene', 'sn-hranene-na-san', 'sn-navan-chas', 'z4-priyatelka-bez-deca', 'z8-hrana-kyrmachka', 'zd-teeth', 'zh-probiotik', 'zh-weight', 'zim-oblichane-sloeve', 'zim-studeno-razhodka',
+        // ➕ 09.09 · ВТОРА ПОРЦИЯ · 22 карти, чийто КЛЮЧ Е САМИЯТ ВЪПРОС.
+        //   Критерият тук е по-строг от „съдия каза, че е добра": въпросът на
+        //   майката е БУКВАЛНО ключ на картата, тоест тя е верният отговор по
+        //   СТРОЕЖ. Всичките 22 бяха написани или напаснати днес точно за тези
+        //   въпроси и въпреки това майката получаваше врата, защото картата
+        //   живее в друга стая:
+        //     „гърдите ми са като камъни" (Захранване) → картата е в Моето бебе
+        //     „желязо трябва ли на кърмено бебе" (Здраве) → в Захранване
+        //     „на 9 месеца колко зъба" (Моето бебе) → в Здраве и SOS
+        //   ⚠️ nd-parvite-pati Е ИЗКЛЮЧЕН, макар да минава критерия: панелът
+        //   от 12 съдии вече го отсъди като И верен, И ГРЕШЕН според въпроса.
+        //   Списък по id е сляп за въпроса — това е цената му.
+        'z8-teglo-parvite-dni', 'z8-nagrubeli-gyrdi', 'lb-boli-kurmene', 'nm-vecher-iska', 'zd-broy-zybi-po-vazrast', 'rz-mokri-gashti-vseki-den', 'x6-restorant', 'nia-tovar-predavane', 'v3-nosht-bez-teb', 'nia-zavist-bezdetni', 'in-napomnyane-vaksini', 'sn-zaspivane-samo', 'w2-vylchi-glad-sled-bolest', 'lb-stolche', 'zah-kak-se-sterilizira', 'zh-jelezo-karmeno', 'sem-otkade-doydoh', 'ni-kogato-dnes', 'pz-krashtene', 'prz-nova-godina', 'mb-more-plaj', 'mb-prane-gladene'];
       // 🟠 11.08 (обиколка „начален екран и чат“): ПОДАВАНЕ В СТАЯ, В КОЯТО Я
       //    НЯМА. Измерено наживо при майка на 4-месечно (родена дата въведена,
       //    без активна бременност): „на 4 месеца е и още не се обръща,
