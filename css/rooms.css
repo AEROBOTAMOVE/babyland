@@ -2421,3 +2421,5 @@
 [data-theme="dark"] .ch-add-b { background: rgba(0,0,0,.18); color: #efe9ff; }
 [data-theme="dark"] .ch-kolko.ch-soon { color: #7ad9b0; }
 [data-theme="dark"] .ch-kolko.ch-warn { color: #ff9aa8; }
+/* ⏳ вдигната горе (нощ или жива доза) — леко подчертана, но без тревога */
+.ch-card.ch-gore { border-color: rgba(120,140,200,.4); box-shadow: 0 2px 14px rgba(90,110,180,.13); }
