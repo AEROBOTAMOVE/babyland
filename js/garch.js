@@ -149,12 +149,24 @@
     const котва = п.querySelector('.sos-tips');
     if (котва) п.insertBefore(б, котва); else п.appendChild(б);
   }
-  // SOS панелът се рисува наново при всяко отваряне; закачаме се на клик,
-  // защото няма кука. Наблюдателят е евтин: гледа само децата на body.
+  // ⚠️ SOS панелът се РИСУВА НАНОВО с `ov.innerHTML = html` при всяко
+  //   отваряне и при всяко „✏️ Настрой" — тоест бутонът ми се трие. Затова
+  //   не стига наблюдател върху body: смяната става ВЪТРЕ в наслоя.
+  //   Наблюдаваме самия наслой, щом се появи, и се закачаме отново.
+  //   Плюс клик-предпазител, ако наблюдателят не е поддържан.
   try {
-    const наб = new MutationObserver(() => { закачиВСOS(); });
-    наб.observe(document.body, { childList: true, subtree: false });
-    document.addEventListener('click', () => setTimeout(закачиВСOS, 60), true);
+    let наблюдаван = null;
+    const хвани = () => {
+      const ов = document.getElementById('sosOverlay');
+      if (ов && ов !== наблюдаван) {
+        наблюдаван = ов;
+        try { new MutationObserver(() => закачиВСOS()).observe(ов, { childList: true, subtree: true }); } catch (e) {}
+      }
+      закачиВСOS();
+    };
+    new MutationObserver(хвани).observe(document.body, { childList: true });
+    document.addEventListener('click', () => setTimeout(хвани, 60), true);
+    хвани();
   } catch (e) {}
 
   window.BL_GARCH = { отвори: отвори, затвори: затвори, часовник: часовник, думите: думите, ПРАГ: ПРАГ };
