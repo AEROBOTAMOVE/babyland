@@ -11,6 +11,7 @@ for (const ред of fs.readFileSync(ДНЕВНИК, 'utf8').split('\n')) {
   if (o.type !== 'result') continue;
   const r = (typeof o.result === 'string') ? (() => { try { return JSON.parse(o.result); } catch (e) { return null; } })() : o.result;
   if (r && r.karta && r.body) статии.push(r);
+  else if (r && Array.isArray(r.statii)) статии.push(...r.statii.filter(x => x && x.karta && x.body));
 }
 const виждан = new Set();
 const уник = статии.filter(s => { if (виждан.has(s.karta)) return false; виждан.add(s.karta); return true; });
