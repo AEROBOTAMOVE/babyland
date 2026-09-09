@@ -208,7 +208,13 @@
       закачиВСOS();
       закачиВСцената();
     };
-    new MutationObserver(хвани).observe(document.body, { childList: true });
+    // 🔴 09.09 (ПРОВЕРЕНО ЖИВО, не по код): бутонът НЕ се появяваше в
+    //   спешната сцена. Причината: js/rooms6.js закача #faOverlay на
+    //   `document.documentElement`, а не на `body` — наблюдател върху body
+    //   не вижда нищо. Гледат се и двете.
+    const наб = new MutationObserver(хвани);
+    наб.observe(document.body, { childList: true });
+    try { наб.observe(document.documentElement, { childList: true }); } catch (e) {}
     document.addEventListener('click', () => setTimeout(хвани, 60), true);
     хвани();
   } catch (e) {}
