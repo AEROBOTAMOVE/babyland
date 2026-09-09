@@ -2459,3 +2459,9 @@
 [data-theme="dark"] .gr-after { background: rgba(255,255,255,.07); }
 [data-theme="dark"] .gr-box.gr-alarm { background: #3a1f24; }
 [data-theme="dark"] .gr-open { background: rgba(0,0,0,.2); color: #ff9aa8; border-color: #ff9aa8; }
+/* ⏪ „започнало е преди да пуснеш" — малки, но с пръстов размер */
+.gr-back { display: flex; flex-wrap: wrap; align-items: center; gap: 6px; margin-top: 10px; }
+.gr-back span { font-size: 12px; opacity: .78; width: 100%; }
+.gr-back button { min-height: 44px; padding: 0 14px; border-radius: 10px; cursor: pointer; font: inherit;
+  font-size: 13px; font-weight: 700; border: 1px solid rgba(120,140,200,.4); background: #fff; color: var(--ink); }
+[data-theme="dark"] .gr-back button { background: rgba(0,0,0,.25); color: #efe9ff; border-color: rgba(140,160,220,.3); }

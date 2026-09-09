@@ -88,6 +88,16 @@
       + '  <p class="gr-rule">Над <b>5 минути</b> или затруднено дишане → <b>112 веднага</b>.</p>'
       + '  <div class="gr-time" aria-live="off">0:00</div>'
       + '  <button class="gr-go" type="button">Започна сега — брой</button>'
+      // ⏪ ПОЧТИ НИКОГА НЕ СЕ ПУСКА В СЕКУНДА НУЛА. Майката първо гледа
+      //   детето, после се сеща за телефона. Ако броячът тръгне от 0, тя ще
+      //   каже на лекаря по-малко число от истинското — а точно това число
+      //   решава дали е бил под или над пет минути. Затова се мести НАЗАД.
+      + '  <div class="gr-back" hidden>'
+      + '    <span>Започнало е преди да пуснеш?</span>'
+      + '    <button type="button" data-back="60">−1 мин</button>'
+      + '    <button type="button" data-back="180">−3 мин</button>'
+      + '    <button type="button" data-back="300">−5 мин</button>'
+      + '  </div>'
       + '  <ul class="gr-do">'
       + '    <li>Настрани на пода. Махни твърдото около главата.</li>'
       + '    <li>Нищо в устата — езикът не се гълта, лъжицата чупи зъбки.</li>'
@@ -113,6 +123,8 @@
         рисувайВреме();
         тик = setInterval(рисувайВреме, 1000);
         document.addEventListener('visibilitychange', приВръщане);
+        const назад = слой.querySelector('.gr-back');
+        if (назад) назад.hidden = false;
         return;
       }
       // ── спиране ──
@@ -130,6 +142,17 @@
         + (пръв ? '<br><b>След първия гърч в живота — винаги преглед.</b>' : '')
         + (сек >= ПРАГ ? '<br><b class="gr-red">Беше над 5 минути — 112.</b>' : '');
       начало = 0;
+      const назад2 = слой.querySelector('.gr-back');
+      if (назад2) назад2.hidden = true;
+    });
+
+    // ⏪ преместване на началото назад — само докато брои
+    слой.querySelectorAll('.gr-back button').forEach(б => {
+      б.addEventListener('click', () => {
+        if (!начало) return;
+        начало -= parseInt(б.dataset.back, 10) * 1000;
+        рисувайВреме();
+      });
     });
   }
 
