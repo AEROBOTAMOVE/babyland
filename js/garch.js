@@ -149,6 +149,26 @@
     const котва = п.querySelector('.sos-tips');
     if (котва) п.insertBefore(б, котва); else п.appendChild(б);
   }
+  // ── втората врата: САМАТА спешна сцена „⚡ Гърч" ──────────────────────
+  //   Там е майката, чието дете се гърчи В МОМЕНТА — не в SOS панела с
+  //   телефоните. Третата стъпка на сцената (js/rooms6.js) буквално пише
+  //   „Погледни часовника — колко трае. Това ще питат."
+  //   Затова часовникът се слага ТОЧНО ТАМ, между стъпките и 112.
+  //   ⚠️ Не се пипа rooms6.js: закачаме се отвън, по заглавието на сцената.
+  function закачиВСцената() {
+    const ов = document.getElementById('faOverlay');
+    if (!ов || ов.hidden) return;
+    const загл = ов.querySelector('.fa-title');
+    if (!загл || загл.textContent.indexOf('Гърч') < 0) return;
+    const крак = ов.querySelector('.fa-foot');
+    if (!крак || ов.querySelector('.gr-open')) return;
+    const б = document.createElement('button');
+    б.type = 'button'; б.className = 'gr-open';
+    б.textContent = '⚡ Пусни брояча — колко трае';
+    б.addEventListener('click', () => { ов.hidden = true; отвори(); });
+    крак.parentNode.insertBefore(б, крак);
+  }
+
   // ⚠️ SOS панелът се РИСУВА НАНОВО с `ov.innerHTML = html` при всяко
   //   отваряне и при всяко „✏️ Настрой" — тоест бутонът ми се трие. Затова
   //   не стига наблюдател върху body: смяната става ВЪТРЕ в наслоя.
@@ -163,6 +183,7 @@
         try { new MutationObserver(() => закачиВСOS()).observe(ов, { childList: true, subtree: true }); } catch (e) {}
       }
       закачиВСOS();
+      закачиВСцената();
     };
     new MutationObserver(хвани).observe(document.body, { childList: true });
     document.addEventListener('click', () => setTimeout(хвани, 60), true);

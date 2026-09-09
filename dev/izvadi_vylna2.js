@@ -4,6 +4,7 @@
 // Нищо не се записва в живите файлове тук — само се подрежда за гейта.
 const fs = require('fs');
 const ДНЕВНИК = process.argv[2];
+const ИМЕ = process.argv[3] || 'v2';   // 09.09: беше заковано на v2
 if (!ДНЕВНИК || !fs.existsSync(ДНЕВНИК)) { console.log('🔴 подай journal.jsonl'); process.exit(2); }
 
 const редове = [];
@@ -55,8 +56,8 @@ for (const r of уник) {
 for (const ц of Object.keys(ключове)) ключове[ц] = [...new Set(ключове[ц])];
 
 fs.mkdirSync('dev/nahodki', { recursive: true });
-fs.writeFileSync('dev/nahodki/klyuchove_v2.json', JSON.stringify(ключове, null, 1));
-fs.writeFileSync('dev/nahodki/karti_v2.json', JSON.stringify(карти, null, 1));
+fs.writeFileSync('dev/nahodki/klyuchove_' + ИМЕ + '.json', JSON.stringify(ключове, null, 1));
+fs.writeFileSync('dev/nahodki/karti_' + ИМЕ + '.json', JSON.stringify(карти, null, 1));
 console.log('');
 console.log('🔑 ключове: ' + общоКлючове + ' върху ' + Object.keys(ключове).length + ' карти  (махнати вече заети: ' + махнатиЗаети + ')');
 console.log('🃏 нови карти: ' + карти.length + '  → ' + карти.map(k => k.id).join(', '));
