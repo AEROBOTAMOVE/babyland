@@ -36,8 +36,18 @@ function опери(src) {
   for (const [id, кл] of Object.entries(НАБОР)) {
     const i = L.findIndex(x => x.indexOf("id: '" + id + "'") > -1);
     if (i < 0) throw new Error('няма карта ' + id);
+    // 🔴 09.09: прозорецът беше 16 реда и уредът обяви „няма keys за
+    //   nia-gyrbat" — а keys ги ИМА. Между id и keys стоеше 40-редов
+    //   коментар (защо голият ключ „гърб" е оборен с мярка). Тоест
+    //   картите с най-скъпо платено обяснение бяха НЕДОСТИЖИМИ за
+    //   уреда — точно обратното на нужното.
+    //   Сега прозорецът е широк, но СПИРА на следващата карта: няма как
+    //   да закачим чужди keys, колкото и дълъг да е коментарът.
     let k = -1;
-    for (let j = i; j < i + 16 && j < L.length; j++) if (L[j].indexOf('keys: [') > -1) { k = j; break; }
+    for (let j = i + 1; j < L.length; j++) {
+      if (L[j].indexOf("id: '") > -1) break;              // започна следващата карта
+      if (L[j].indexOf('keys: [') > -1) { k = j; break; }
+    }
     if (k < 0) throw new Error('няма keys за ' + id);
     const нови = кл.filter(x => x && L[k].indexOf("'" + x + "'") < 0 && x.indexOf("'") < 0);
     L[k] = L[k].replace('keys: [', 'keys: [' + нови.map(x => "'" + x + "', ").join(''));

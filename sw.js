@@ -1,5 +1,5 @@
 // Baby Land — service worker: кешира приложението за офлайн работа
-const CACHE = 'babyland-v674';
+const CACHE = 'babyland-v676';
 const ASSETS = [
   '.',
   'index.html',
@@ -66,6 +66,7 @@ const ASSETS = [
   'js/daily.js',
   'js/quickadd.js',
   'js/chasovnik.js',
+  'js/garch.js',
   'js/calm.js',
   'js/games2.js',
   'js/expr.js',
