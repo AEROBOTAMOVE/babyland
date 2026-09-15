@@ -38,3 +38,4 @@ dist/
 # ── 15.09: пакетът за Джъмп.бг — сглобява се с node build.js --dzhamp, не се пази ──
 dist-dzhamp/
 babyland-dzhamp.zip
+babyland-netlify.zip

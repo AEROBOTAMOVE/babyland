@@ -120,6 +120,9 @@ async function събитие(с, вид) {
   await p; await пауза();
 }
 const страница = име => u => отговор(име, 'text/html; charset=utf-8', { url: u });
+const СТРАНИЦА_С_ВЕРСИИ = u => отговор('<link rel="stylesheet" href="css/style.css?v=55">' +
+  '<script src="js/kb.js?v=247" defer></script><script src="js/lib.js?v=103" defer></script>',
+  'text/html; charset=utf-8', { url: u });
 
 const СЛУЧАИ = [
   ['онлайн навигацията връща мрежата', async с => {
@@ -174,6 +177,39 @@ const СЛУЧАИ = [
     с.мрежа.офлайн = true;
     const т = await тяло(await заявка(с, '', 'navigate'));
     return !копие && (т === 'ПОСЛЕДНАТА' || т === 'СВЕЖА');
+  }],
+  // 🔢 15.09 (ЗАДАЧИ.md т.14): инсталацията пази адресите, които страницата
+  //   наистина иска — с ?v= от свежия index.html и ?v=LV от js/lib.js.
+  ['4 · инсталацията пази ТОЧНИТЕ адреси от страницата, без безверсийни копия', async с => {
+    с.мрежа.карта['index.html'] = СТРАНИЦА_С_ВЕРСИИ;
+    с.мрежа.карта['js/lib.js'] = u => отговор("const LV = '108';", 'text/javascript', { url: u });
+    await събитие(с, 'install');
+    const c = await с.ctx.caches.open(с.CACHE);
+    const има = async u => !!(await c.match(u));
+    return await има('js/kb.js?v=247') && await има('css/style.css?v=55') && await има('lib/index.json?v=108')
+      && await има('fonts/nunito-400-cyrillic.woff2') && !(await има('js/kb.js')) && !(await има('lib/index.json'));
+  }],
+  ['4 · офлайн веднага след първата инсталация: точният адрес е в кеша', async с => {
+    с.мрежа.карта['index.html'] = СТРАНИЦА_С_ВЕРСИИ;
+    await събитие(с, 'install');
+    с.мрежа.офлайн = true;
+    return (await тяло(await заявка(с, 'js/kb.js?v=247', 'cors'))) === 'ок js/kb.js?v=247';
+  }],
+  ['4 · страницата не се чете (503) → безверсийните адреси, както преди', async с => {
+    с.мрежа.карта['index.html'] = u => отговор('508 Resource Limit Is Reached', 'text/html', { статус: 503, url: u });
+    await събитие(с, 'install');
+    const c = await с.ctx.caches.open(с.CACHE);
+    return !!(await c.match('js/kb.js')) && !(await c.match('js/kb.js?v=247'));
+  }],
+  ['4 · безверсийното копие от старата инсталация не пътува напред, шрифтът — да', async с => {
+    const стар = await с.ctx.caches.open('babyland-v1');
+    await стар.put('js/kb.js', отговор('ЗАМРАЗЕНО', 'text/javascript', { url: БАЗА + 'js/kb.js' }));
+    await стар.put('fonts/nunito-400-cyrillic.woff2', отговор('ШРИФТ', 'application/octet-stream', { url: БАЗА + 'fonts/nunito-400-cyrillic.woff2' }));
+    с.мрежа.карта['index.html'] = СТРАНИЦА_С_ВЕРСИИ;
+    await събитие(с, 'install');
+    await събитие(с, 'activate');
+    const c = await с.ctx.caches.open(с.CACHE);
+    return !(await c.match('js/kb.js')) && (await тяло(await c.match('fonts/nunito-400-cyrillic.woff2'))) === 'ШРИФТ';
   }],
 ];
 
