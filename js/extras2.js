@@ -99,7 +99,12 @@
         r.innerHTML = `<span class="jr-check">${it.done ? '✔' : ''}</span> <span class="rg-t">${esc(it.t)}</span><span class="nt-del" role="button" aria-label="Махни от списъка" style="min-width:44px">🗑</span>`;
         r.addEventListener('click', (e) => {
           if (e.target.classList.contains('nt-del')) {
-            върнато = { it: items[i], i };
+            // 🔴 15.09 (финален одит, обход на всички бутони): беше `items[i]` —
+            //   елемент ПО НОМЕР от общия масив, докато самото триене е по
+            //   ТЕКСТ. Сменеше ли се масивът преди натискането, `items[i]` беше
+            //   undefined: редът се триеше, а „Махнах…" и „Върни" не излизаха
+            //   (TypeError на реда със знак()). `it` е точно този ред.
+            върнато = { it, i };
             items = load('bl_registry', []);   // пресен прочит ПРЕДИ записа
             const k = items.findIndex(x => x && x.t === it.t);   // по ТЕКСТ, не по номер
             if (k > -1) { върнато.i = k; items.splice(k, 1); }
