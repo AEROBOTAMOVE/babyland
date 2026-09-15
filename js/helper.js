@@ -4371,7 +4371,14 @@ function findEntry(text, room, exclude) {
         //   ⚠️ nd-parvite-pati Е ИЗКЛЮЧЕН, макар да минава критерия: панелът
         //   от 12 съдии вече го отсъди като И верен, И ГРЕШЕН според въпроса.
         //   Списък по id е сляп за въпроса — това е цената му.
-        'z8-teglo-parvite-dni', 'z8-nagrubeli-gyrdi', 'lb-boli-kurmene', 'nm-vecher-iska', 'zd-broy-zybi-po-vazrast', 'rz-mokri-gashti-vseki-den', 'x6-restorant', 'nia-tovar-predavane', 'v3-nosht-bez-teb', 'nia-zavist-bezdetni', 'in-napomnyane-vaksini', 'sn-zaspivane-samo', 'w2-vylchi-glad-sled-bolest', 'lb-stolche', 'zah-kak-se-sterilizira', 'zh-jelezo-karmeno', 'sem-otkade-doydoh', 'ni-kogato-dnes', 'pz-krashtene', 'prz-nova-godina', 'mb-more-plaj', 'mb-prane-gladene'];
+        'z8-teglo-parvite-dni', 'z8-nagrubeli-gyrdi', 'lb-boli-kurmene', 'nm-vecher-iska', 'zd-broy-zybi-po-vazrast', 'rz-mokri-gashti-vseki-den', 'x6-restorant', 'nia-tovar-predavane', 'v3-nosht-bez-teb', 'nia-zavist-bezdetni', 'in-napomnyane-vaksini', 'sn-zaspivane-samo', 'w2-vylchi-glad-sled-bolest', 'lb-stolche', 'zah-kak-se-sterilizira', 'zh-jelezo-karmeno', 'sem-otkade-doydoh', 'ni-kogato-dnes', 'pz-krashtene', 'prz-nova-godina', 'mb-more-plaj', 'mb-prane-gladene',
+        // ➕ 15.09 · ТРЕТА ПОРЦИЯ · 7 карти, прочетени ОТ ЧОВЕК за точно тези въпроси.
+        //   Остатъкът от 10-те врати: печели правилната карта, силно, но в друга стая.
+        //     „косата ми пада на кичури“ (Жената в мен) → pp-kosopad е в Здраве и SOS
+        //     „кога да си взема душ…“ (Дневник на мама) → mb-dushut е в Моето бебе
+        //     „колко пъти на ден ака на 2 месеца“ (Моето бебе) → Здраве и SOS
+        //   ⚠️ nd-parvite-pati остава ИЗКЛЮЧЕН (панелът от 09.09).
+        'mb-dushut', 'nia-rabota', 'pp-kosopad', 'ch-spisak', 'in-samoto-prilozhenie', 'zd-kolko-pati-aki', 'pt-karame-se-poveche'];
       // 🟠 11.08 (обиколка „начален екран и чат“): ПОДАВАНЕ В СТАЯ, В КОЯТО Я
       //    НЯМА. Измерено наживо при майка на 4-месечно (родена дата въведена,
       //    без активна бременност): „на 4 месеца е и още не се обръща,
