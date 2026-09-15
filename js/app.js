@@ -329,7 +329,11 @@ if ('serviceWorker' in navigator && location.protocol.startsWith('http')) {
     else location.reload();
   });
   navigator.serviceWorker.register('sw.js').then(reg => {
-    if (reg.update) { try { reg.update(); } catch (e) {} }   // провери за нова версия още сега
+    // провери за нова версия още сега
+    // 🔴 15.09 (снимки в истински Chrome): update() връща promise — try/catch не
+    //   хваща отказа му и „InvalidStateError: Failed to update a ServiceWorker"
+    //   излизаше необработен в конзолата при първото отваряне. Сега се хваща.
+    if (reg.update) { try { const п = reg.update(); if (п && п.catch) п.catch(() => {}); } catch (e) {} }
   }).catch(() => {});
 }
 
