@@ -79,12 +79,21 @@ const fetchБлок = (swТекст.split(/addEventListener\('fetch'/)[1] || '')
 const навБлок = (fetchБлок.match(/if\s*\(\s*навигация\s*\)\s*\{([\s\S]*?)\n\s{2}\}/) || [, ''])[1];
 const статБлок = fetchБлок.slice(fetchБлок.indexOf(навБлок) + навБлок.length);
 
-const навигацияИма = /ignoreSearch:\s*true/.test(навБлок);
-const навигацияРезервHTML = /caches\.match\(\s*['"]index\.html['"]\s*\)/.test(навБлок);
+// 🧭 15.09: навигацията вече пази страницата под ЕДИН ключ („.") и я връща
+//   през страницаОтКеша() — тя е ИЗВЪН навигационния блок, затова тялото ѝ
+//   се чете отделно. Старата форма (ignoreSearch в блока) също се приема.
+//   Поведението се МЕРИ от dev/test_sw_navigacia.js; тук е само четене.
+const тялоСтраница = (swТекст.match(/function\s+страницаОтКеша\s*\([^)]*\)\s*\{([\s\S]*?)\n\}/) || [, ''])[1];
+const единКлюч = /страницаОтКеша\(\)/.test(навБлок) && /caches\.match\(\s*['"]\.['"]\s*\)/.test(тялоСтраница);
+const навигацияИма = /ignoreSearch:\s*true/.test(навБлок) || единКлюч;
+const навигацияРезервHTML = /caches\.match\(\s*['"]index\.html['"]\s*\)/.test(навБлок)
+  || (единКлюч && /caches\.match\(\s*['"]index\.html['"]\s*\)/.test(тялоСтраница));
 // в статичния клон: първият match е ГОЛ (без ignoreSearch) → точен кеш-мис при ?v=
 const статиченГол = /caches\.match\(req\)\.then\(hit/.test(статБлок);
 const статиченРезерв = /catch\([^)]*\)\s*=>\s*caches\.match\(req,\s*\{\s*ignoreSearch:\s*true\s*\}\)/.test(статБлок)
-  || /\.catch\(\(\)\s*=>\s*caches\.match\(req,\s*\{\s*ignoreSearch:\s*true\s*\}\)\)/.test(статБлок);
+  || /\.catch\(\(\)\s*=>\s*caches\.match\(req,\s*\{\s*ignoreSearch:\s*true\s*\}\)\)/.test(статБлок)
+  // 🧭 15.09: новата форма — всички запазени версии, най-високата печели
+  || /\.catch\(\(\)\s*=>\s*caches\.open\(CACHE\)[\s\S]{0,80}matchAll\(req,\s*\{\s*ignoreSearch:\s*true\s*\}\)/.test(статБлок);
 if (!навБлок) ЖЪЛТО.push('не намерих навигационния клон в sw.js — проверката на навигацията е СЛЯПА');
 const addAllВсичкоИлиНищо = /\.addAll\(/.test(swТекст);
 const поединично = /addAll/.test(swТекст) === false && /cache\.add\(|c\.add\(/.test(swТекст);
@@ -212,10 +221,10 @@ l('     · статичен клон, 1-ви опит: ' + (статиченГо
   : 'НЕ разпознах формата — виж ръчно'));
 l('     · при мис → fetch(req); офлайн fetch пада → catch');
 l('     · catch: ' + (статиченРезерв
-  ? 'caches.match(req, {ignoreSearch:true}) → НАМИРА кешираното без версия ✅'
+  ? 'резерв с ignoreSearch → НАМИРА запазено копие ✅'
   : '❌ НЯМА ignoreSearch резерв → всеки ?v= е ЧЕРНА ДУПКА офлайн'));
 l('     · навигация (index.html): ' + (навигацияИма
-  ? 'мрежа-първо, офлайн → ignoreSearch ✅'
+  ? 'мрежа-първо, офлайн → страницата от кеша ✅'
   : '❌ БЕЗ ignoreSearch в навигационния клон — „/?go=feed" няма да се намери')
   + (навигацияРезервHTML ? ' + краен резерв index.html ✅' : ' · ❌ без краен резерв index.html'));
 l('   ИЗВОД: ' + (статиченРезерв && навигацияИма

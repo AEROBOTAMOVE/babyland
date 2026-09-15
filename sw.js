@@ -1,5 +1,5 @@
 // Baby Land — service worker: кешира приложението за офлайн работа
-const CACHE = 'babyland-v690';
+const CACHE = 'babyland-v691';
 const ASSETS = [
   '.',
   'index.html',
@@ -283,6 +283,10 @@ async function пренеси(нов) {
       const стар = await caches.open(име);
       for (const req of await стар.keys()) {
         if (req.url.indexOf(ДОКЛАД) > -1) continue;   // докладът се пише наново
+        // 🧭 15.09: копия на страницата с ?go= / ?fbclid= не пътуват напред —
+        //   страницата вече живее под ЕДИН ключ („."). В ASSETS няма безверсиен
+        //   адрес с „?" (проверено: 161 адреса, 0 с въпросителна).
+        if (req.url.indexOf('?') > -1 && номерНаВерсията(req.url) < 0) { изхвърлени++; continue; }
         let път;
         try { път = new URL(req.url).pathname; } catch (e) { път = req.url; }
         const в = номерНаВерсията(req.url);
@@ -375,18 +379,41 @@ function пазиУспешни(req, res) {
   }
   return res;
 }
+
+// 🧭 15.09 — страницата: ЕДИН ключ („."), и само за корена на приложението.
+//   Чужда страница в обхвата (напр. /cgi-sys/suspendedpage.cgi при спрян
+//   акаунт) НЕ става „приложението" офлайн.
+function пазиСтраницата(req, res) {
+  let път = '', корен = '/';
+  try { път = new URL(req.url).pathname; корен = new URL(self.registration.scope).pathname; } catch (e) { return; }
+  if (път !== корен && път !== корен + 'index.html') return;
+  const copy = res.clone();
+  caches.open(CACHE).then(c => c.put('.', copy)).catch(() => {});
+}
+function страницаОтКеша() {
+  return caches.match('.').then(r => r || caches.match('index.html'));
+}
 self.addEventListener('fetch', (e) => {
   const req = e.request;
   if (req.method !== 'GET') return;
   const навигация = req.mode === 'navigate' || req.destination === 'document';
 
   if (навигация) {
-    // мрежа-първо: онлайн → свежо, офлайн → кеш (index.html като краен резерв)
+    // мрежа-първо: онлайн → свежо, офлайн → кеш.
+    // 🧭 15.09 (dev/test_sw_navigacia.js — възпроизведено, преди да се поправи):
+    //   1) страницата се пази под ЕДИН ключ („."), не под всеки адрес. Иначе
+    //      прекият път ./?go=feed и линкът с ?fbclid= оставяха свои копия, а
+    //      офлайн резервът с ignoreSearch връщаше ПЪРВОТО — най-старото;
+    //   2) HTTP грешка на хостинга (404/500/503/508) не е мрежова грешка —
+    //      fetch не се проваля. Тогава майката получава приложението от кеша,
+    //      а не страницата за грешка. Пренасочване минава непокътнато — иначе
+    //      смяна на домейн би я заключила на стария адрес.
     e.respondWith(
-      fetch(req)
-        .then(res => пазиУспешни(req, res))
-        .catch(() => caches.match(req, { ignoreSearch: true })
-          .then(r => r || caches.match('index.html')))
+      fetch(req).then(res => {
+        if (res.ok) { пазиСтраницата(req, res); return res; }
+        if (res.type === 'opaqueredirect') return res;
+        return страницаОтКеша().then(r => r || res);
+      }).catch(() => страницаОтКеша().then(r => r || Response.error()))
     );
     return;
   }
@@ -397,7 +424,11 @@ self.addEventListener('fetch', (e) => {
       if (hit) return hit;
       return fetch(req)
         .then(res => пазиУспешни(req, res))
-        .catch(() => caches.match(req, { ignoreSearch: true }));
+        // 🧭 15.09: офлайн резервът — НАЙ-ВИСОКАТА запазена ?v=, не първата
+        //   записана (първата е безверсийното копие от първата инсталация).
+        .catch(() => caches.open(CACHE)
+          .then(c => c.matchAll(req, { ignoreSearch: true }))
+          .then(вс => вс.sort((а, б) => номерНаВерсията(б.url) - номерНаВерсията(а.url))[0]));
     })
   );
 });
