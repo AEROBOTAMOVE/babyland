@@ -77,6 +77,24 @@
     return save(КЛЮЧ_Н, вс);
   }
 
+  // 🍼 15.09 (E2E „родила“, RODILA-3): „Преди колко време? · Хранене — Още нищо“, а в
+  //   същия екран картата „Днес“ казваше „Хранене преди 4ч 49м“. Храненето се пише и от
+  //   стаята (бързият запис → bl_feed + bl_feedlog, таймерът за кърмене → bl_nursing), а
+  //   часовникът четеше само своя bl_chas. За реда „hrana“ се взима най-новото от всички.
+  function вънХранене() {
+    const ts = [];
+    const f = load('bl_feed', null); if (f && f.t) ts.push(+f.t);
+    const н = load('bl_nursing', []); if (Array.isArray(н)) н.forEach(x => { if (x && x.ts) ts.push(+x.ts); });
+    const л = load('bl_feedlog', []); if (Array.isArray(л)) л.forEach(x => { if (x) ts.push(+x); });
+    const ok = ts.filter(x => x > 0 && x <= Date.now() + 60000);
+    return ok.length ? Math.max.apply(null, ok) : 0;
+  }
+  function запис(вс, id) {
+    const з = Object.assign({}, (вс[id] && typeof вс[id] === 'object') ? вс[id] : {});
+    if (id === 'hrana') { const в = вънХранене(); if (в > (з.t || 0)) з.t = в; }
+    return з;
+  }
+
   // ── записът ────────────────────────────────────────────────────────────
   function отбележи(id, кога) {
     const вс = load(КЛЮЧ, {});
@@ -138,7 +156,7 @@
 
     // ── опресняване (СМЯТА, не помни) ──
     function опресни() {
-      const вс = load(КЛЮЧ, {}); const з = вс[р.id] || {}; const сега = Date.now();
+      const вс = load(КЛЮЧ, {}); const з = запис(вс, р.id); const сега = Date.now();
       if (!з.t) {
         кога.textContent = '—';
         кога.classList.remove('ch-warn', 'ch-soon');
@@ -321,7 +339,7 @@
     if (/(може ли|трябва ли|как да|защо|колко пъти на ден|на колко часа може)/i.test(t)) return null;
 
     const р = наИме[цел.id];
-    const вс = load(КЛЮЧ, {}); const з = вс[цел.id];
+    const вс = load(КЛЮЧ, {}); const з = запис(вс, цел.id);
     if (!з || !з.t) {
       return 'Не знам — още не си отбелязвала „' + esc(р.ime) + '". '
         + 'На екрана „Днес" има карта <b>⏳ Преди колко време?</b> — едно докосване, щом стане, '

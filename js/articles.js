@@ -342,6 +342,7 @@ window.BL_ARTICLES_DATA = [
       star.textContent = f[a.id] ? '⭐' : '☆';
       star.classList.remove('star-pop'); void star.offsetWidth; star.classList.add('star-pop');
       if (window.BL_FX) BL_FX.buzz(10);
+      try { document.dispatchEvent(new CustomEvent('bl:artfavs')); } catch (e) {}
     };
     // 🔊 четене на глас (за мама с бебе на ръце)
     let spk = $('artSpeak');
@@ -545,6 +546,12 @@ window.BL_ARTICLES_DATA = [
         grid.appendChild(c);
       });
     }
+    // ⭐ 15.09 (E2E „бременна“, B11): ⭐ в отворената статия не пре-рисуваше списъка под нея —
+    //   любимата изплуваше чак при следващо отваряне на стаята. Звездата пуска „bl:artfavs“;
+    //   списъкът, който е още на екрана, се пре-рисува. Един слушател на контейнер — не се трупат.
+    if (container._blFavH) document.removeEventListener('bl:artfavs', container._blFavH);
+    container._blFavH = () => { if (grid.isConnected) draw(search.value); };
+    document.addEventListener('bl:artfavs', container._blFavH);
     // дросел: при 745 статии пресмятане на всяка буква дърпа на слаб телефон
     let тик = null;
     search.addEventListener('input', () => {

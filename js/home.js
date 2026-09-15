@@ -846,8 +846,24 @@
         else close(true);
       });
       ov.querySelector('.tour-skip').addEventListener('click', () => close(false));
+      if (ov.isConnected) фокус();   // innerHTML смени бутоните — фокусът се връща на „Напред“
     }
+    // ⌨️ 15.09 (E2E „трудни случаи“, T2): само с клавиатура турът беше недостижим — 200 натискания
+    //   на Tab и фокусът нито веднъж не влезе в него; обикаляше страницата ПОД пелената, а Enter
+    //   отваряше стая под тура. Сега: фокус на „Напред“, Tab/Shift+Tab въртят само бутоните на
+    //   тура, Escape го прескача. Слушателят се маха заедно с тура.
+    function фокус() { const b = ov.querySelector('.tour-next'); if (b) b.focus(); }
+    const капан = e => {
+      if (!ov.isConnected) { document.removeEventListener('keydown', капан, true); return; }
+      if (e.key === 'Escape') { e.preventDefault(); close(false); return; }
+      if (e.key !== 'Tab') return;
+      const бут = [...ov.querySelectorAll('button')]; if (!бут.length) return;
+      e.preventDefault();
+      const i = бут.indexOf(document.activeElement);
+      бут[i < 0 ? 0 : (i + (e.shiftKey ? -1 : 1) + бут.length) % бут.length].focus();
+    };
     function close(party) {
+      document.removeEventListener('keydown', капан, true);
       try { localStorage.setItem('bl_tour_done', '1'); } catch (e) {}
       ov.remove(); document.body.style.overflow = '';
       if (party && window.BL_FX) { BL_FX.confetti(); BL_FX.cheer('Добре дошла у дома! 💜'); }
@@ -860,8 +876,11 @@
       } catch (e) {}
     }
     draw();
+    ov.setAttribute('role', 'dialog'); ov.setAttribute('aria-modal', 'true'); ov.setAttribute('aria-label', 'Добре дошла — кратка обиколка');
     document.body.appendChild(ov);
     document.body.style.overflow = 'hidden';
+    document.addEventListener('keydown', капан, true);
+    фокус();
   }
 
   // ═══════════ 📱 theme-color по небето — лентата на браузъра живее ═══════════

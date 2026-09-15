@@ -899,6 +899,10 @@
   50%      { transform: translateY(-7px) rotate(2deg); }
 }
 .ro-panel[data-tab="chat"] .ro-fab { display: none; } /* в чата няма нужда */
+/* 15.09 (E2E „бременна“, B6): балончето стои 86–160 px над дъното на панела, а стаята имаше
+   14 px празно отдолу — последните бутони в картите („НЕ“, „+10 с.“) оставаха под него и
+   докосването отиваше в балончето. Празното отдолу позволява да ги изкараш над него. */
+.ro-panel:not([data-tab="chat"]) .ro-room { padding-bottom: 150px; }
 
 /* скелетон-проблясък при отваряне */
 .ro-room { position: relative; }
@@ -1579,6 +1583,11 @@
   opacity: .5; padding: 4px 6px; color: inherit; }
 
 [data-theme="dark"] .bo-bar { background: #2c2338; }
+/* 15.09 (E2E „трудни случаи“, T5): при пълна памет лентата стоеше долу ВЪРХУ „По-късно“ (а вече
+   и върху залепналото „Готово“) — точно изхода, който самото съобщение обещава. Докато
+   запознаването е отворено, лентата слиза отгоре. Браузър без :has() — както преди. */
+body:has(#onbOverlay:not([hidden])) .bo-bar { top: 12px; bottom: auto; transform: translateY(-140%); }
+body:has(#onbOverlay:not([hidden])) .bo-bar.on { transform: none; }
 
 /* ── 12.9: реката — търсене, рафтове, лента, разказ ── */
 .rv-tools { padding: 8px 14px 2px; }
@@ -1609,6 +1618,10 @@
   background: rgba(255,255,255,.86); color: #4a3c60; box-shadow: 0 2px 10px rgba(0,0,0,.14);
   backdrop-filter: blur(3px); max-width: 78%; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
 .ro-head.shrunk .ro-datapill { display: none; }
+/* 15.09 (E2E „бременна“, B5): хапчето вече е ред след главата (iface.js), не върху банера. */
+#roDatapill { position: static; display: block; width: fit-content; max-width: calc(100% - 28px);
+  margin: 6px 14px 0; z-index: auto; flex: none; }
+.ro-head.shrunk + #roDatapill { display: none; }
 .ro-tab { position: relative; }
 .ro-tab-dot { position: absolute; top: 2px; right: 4px; min-width: 16px; height: 16px;
   border-radius: 999px; padding: 0 4px; font-size: 9.5px; font-weight: 800; line-height: 16px;

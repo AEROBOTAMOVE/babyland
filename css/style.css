@@ -1038,6 +1038,18 @@ h1, h2, h3 { font-family: 'Comfortaa', 'Comfortaa-fallback', 'Nunito', sans-seri
   transition: background 0.25s ease, color 0.25s ease, transform 0.25s ease;
 }
 .bn-item span { font-size: 20px; }
+/* 15.09 (E2E „трудни случаи“, T3): на 320 px лентата беше 370 px (от −25 до 345) — „Начало“ и
+   „Профил“ отрязани, а overflow-x:clip скриваше беля от обичайната проверка. На тесен екран
+   лентата стои между двата ръба и петте бутона се делят поравно. */
+@media (max-width: 380px) {
+  .bottom-nav { left: 8px; right: 8px; transform: none; justify-content: space-between; gap: 0; padding: 6px 6px; }
+  .bn-item { flex: 1 1 0; min-width: 0; padding: 6px 2px; font-size: 10px; }
+  .bn-item span { font-size: 18px; }
+}
+/* T4: полето в чата не можеше да се свие под вградения си размер → панелът ставаше 338 px и ➤
+   излизаше наполовина извън екран от 320 px. */
+.ro-panel { min-width: 0; }
+.ro-inputbar input { min-width: 0; }
 .bn-item:hover { transform: translateY(-3px); }
 .bn-item.bn-active, .bn-item:hover {
   background: var(--pink-soft);
@@ -1436,6 +1448,10 @@ h1, h2, h3 { font-family: 'Comfortaa', 'Comfortaa-fallback', 'Nunito', sans-seri
 
 /* робустност: onboarding скролва на ниски екрани */
 .onb-card { max-height: 92vh; overflow-y: auto; }
+/* 15.09 (E2E „бременна“, B10): на 390×844 „Готово 💜“ беше на y 820 — под ръба, без да се
+   вижда, че има какво да се натисне. Бутонът стои залепнал долу в превъртащата се карта. */
+.onb-card .onb-save { position: sticky; bottom: 0; z-index: 1; box-shadow: 0 -10px 18px rgba(253, 243, 249, 0.95); }
+[data-theme="dark"] .onb-card .onb-save { box-shadow: 0 -10px 18px rgba(42, 38, 64, 0.95); }
 
 
 /* ═══════════════ СЕСИЯ 3: конфети, празници ═══════════════ */

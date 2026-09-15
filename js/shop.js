@@ -83,7 +83,11 @@
   function сложи(root, стая) {
     if (!включено() || ЗАБРАНЕНИ.has(стая)) return;
     // 12.1.3: ако в чата току-що е имало тревога — нищо не се показва
-    if (window.__blAlarm && Date.now() - window.__blAlarm < 10 * 60000) return;
+    // 15.09 (E2E „дете 2 г.“, dete2g-01): тревогата се помнеше само в паметта на страницата —
+    //   след презареждане мостчето се връщаше по-малко от минута след червен флаг. Сега и в склада.
+    let _тревога = window.__blAlarm || 0;
+    try { _тревога = Math.max(_тревога, +(localStorage.getItem('bl_alarm_at') || 0)); } catch (e) {}
+    if (_тревога && Date.now() - _тревога < 10 * 60000) return;
     if (root.querySelector('.shop-bridge')) return;              // 12.1.6: едно на екран
     const п = ПОВОДИ.find(x => x.стая === стая && root.querySelector(x.след));
     if (!п) return;                                              // няма повод → няма мостче
@@ -96,7 +100,10 @@
 
   // ── тревогата спира търговията (12.1.3) ──
   // helper.js вдига флаг; тук само го помним. 10 минути тишина след него.
-  document.addEventListener('bl:alarm', () => { window.__blAlarm = Date.now(); });
+  document.addEventListener('bl:alarm', () => {
+    window.__blAlarm = Date.now();
+    try { localStorage.setItem('bl_alarm_at', String(window.__blAlarm)); } catch (e) {}
+  });
 
   // ── превключвателят в Настройките (12.1.5) ──
   const prevSettings = window.BL_SETTINGS_CARD;

@@ -846,6 +846,16 @@
   })();
 
   let pinOkThisSession = false;
+  // 🔒 15.09 (E2E „родила“, RODILA-2, възпроизведено): „Заключено! Ще пита за ПИН при всяко
+  //   влизане“ — а Дневникът оставаше отключен до рестарт (pinOkThisSession живееше цялата
+  //   сесия). На телефон приложението почти не се рестартира. Сега ключалката пада обратно,
+  //   щом стаята се затвори или приложението отиде във фона — точно както обещава текстът.
+  try {
+    const ov = document.getElementById('roomOverlay');
+    if (ov && window.MutationObserver) new MutationObserver(() => { if (ov.hidden) pinOkThisSession = false; })
+      .observe(ov, { attributes: true, attributeFilter: ['hidden'] });
+    document.addEventListener('visibilitychange', () => { if (document.hidden) pinOkThisSession = false; });
+  } catch (e) {}
   // 3.1: общият питач — и Дневникът, и Тайните минават през ЕДНА ключалка
   function pinAsk(title, onOk) {
     if (!hasPin() || pinOkThisSession) { onOk(); return false; }

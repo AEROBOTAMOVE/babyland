@@ -315,6 +315,7 @@
       //    „Мигове за спомен", а приложението пускаше конфети и го обявяваше.
       //    `save` вече вика BL_ZAPIS_PADNA (dev.js:11) — тук остава да не лъжем.
       if (!save('bl_notes_dev', notes)) return;
+      try { document.dispatchEvent(new CustomEvent('bl:notes', { detail: { key: 'bl_notes_dev' } })); } catch (e) {}   // 15.09 dete2g-08
       fx().confetti(keep, 14); fx().cheer('Приказката е в „Мигове за спомен“ 💜');
     });
     sc.appendChild(keep);

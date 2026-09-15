@@ -40,14 +40,22 @@
     return ['Моето бебе', '🍼', 'Бебето'];
   }
 
-  function пренастройБутона() {
-    const б = document.querySelector('.bn-item[data-room="Моето бебе"]');
-    if (!б || б.dataset.n2) return;
-    б.dataset.n2 = '1';
+  // 15.09 (E2E „дете 2 г.“, dete2g-07): стаята се смяташе ВЕДНЪЖ, 300 мс след зареждане. Майка на
+  //   26-месечно минава запознаването → бутонът още води към „Моето бебе“ до презареждане.
+  //   Опресняването е отделно и се вика и от запознаването (onboard.js close()).
+  function обновиБутона() {
+    const б = document.querySelector('.bn-item[data-n2="1"]');
+    if (!б) return;
     const [стая, е, име] = стаятаЗаСега();
     б.dataset.room = стая;
     б.innerHTML = `<span>${е}</span>${име}`;
     б.setAttribute('aria-label', стая + ' — задръж за всички стаи');
+  }
+  function пренастройБутона() {
+    const б = document.querySelector('.bn-item[data-room="Моето бебе"]');
+    if (!б || б.dataset.n2) return;
+    б.dataset.n2 = '1';
+    обновиБутона();
     // app.js вече е закачил click с ПЪРВОНАЧАЛНАТА стая в closure-а —
     // затова прихващам в capture фаза и отварям правилната.
     б.addEventListener('click', ev => {
@@ -101,5 +109,5 @@
     закачиЗадържане();
   }, 300));
 
-  window.BL_NAV2 = { отвориИзбирача, стаятаЗаСега };
+  window.BL_NAV2 = { отвориИзбирача, стаятаЗаСега, обновиБутона };
 })();

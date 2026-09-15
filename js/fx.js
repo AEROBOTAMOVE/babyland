@@ -61,7 +61,10 @@
   // (тиха, но осезаема) или пълна тишина. По подразбиране е включена.
   const vibrateOn = () => { try { return localStorage.getItem('bl_vibrate') !== '0'; } catch (e) { return true; } };
   function buzz(ms) {
-    try { if (vibrateOn() && navigator.vibrate) navigator.vibrate(ms || 12); } catch (e) {}
+    // 15.09 (E2E „бременна“, B13): медал след презареждане викаше vibrate преди първото
+    //   докосване — Chrome го блокира и пише грешка в конзолата. Без докосване — без вибрация.
+    const пипала = !navigator.userActivation || navigator.userActivation.hasBeenActive;
+    try { if (vibrateOn() && navigator.vibrate && пипала) navigator.vibrate(ms || 12); } catch (e) {}
     pop();
   }
 

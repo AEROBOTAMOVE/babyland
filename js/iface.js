@@ -84,9 +84,16 @@
   function облечиБанер(стая) {
     const бан = document.getElementById('roBanner');
     if (!бан) return;
+    // 15.09 (E2E „бременна“, B5 + снимка 010_sled_gotovo.png): хапчето стоеше absolute в
+    //   банера и на 390 px лягаше върху подзаглавието („за бременността“) и балончето-аватар.
+    //   Сега е отделен ред точно след главата — нищо не покрива и нищо не го покрива.
     бан.querySelector('.ro-datapill')?.remove();
+    document.getElementById('roDatapill')?.remove();
     const т = хапчеЗа(стая);
-    if (т) бан.appendChild(el('span', 'ro-datapill', esc(т)));
+    if (!т) return;
+    const хап = el('span', 'ro-datapill', esc(т)); хап.id = 'roDatapill';
+    const глава = бан.closest('.ro-head') || document.querySelector('#roomOverlay .ro-head');
+    if (глава) глава.insertAdjacentElement('afterend', хап); else бан.appendChild(хап);
   }
 
   // ═══════════ 🔴 12.7.2 ЗНАЧКАТА НА ТАБА ═══════════

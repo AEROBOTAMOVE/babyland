@@ -43,7 +43,9 @@
   'use strict';
 
   // ключове, които НЕ са написаното от майката — те не заслужават тревога
-  const БЕЗ_ТРЕВОГА = /^bl_(theme|tema|room_visited|room_asked|seen|surfaced|folds|folddefaults|fskeep|sounds|tone_off|night|last|demo_keys|play_favs)/;
+  // 15.09 (E2E „трудни случаи“, T6): само отворена стая в другия таб пишеше bl_room_visits и
+  //   вдигаше „там току-що се записа нещо ново“ — брояч на посещения, не нейни думи.
+  const БЕЗ_ТРЕВОГА = /^bl_(theme|tema|room_visited|room_visits|room_asked|seen|surfaced|folds|folddefaults|fskeep|sounds|tone_off|night|last|demo_keys|play_favs)/;
 
   let казано = false;
   let чака = false;
