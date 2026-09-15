@@ -215,9 +215,21 @@
     // 10.3.3 + 10.3.4: заглавието СГЪВА — значи е бутон, а не украса.
     // Досега само пръст можеше да го отвори: клавиатурата минаваше покрай
     // него, а четецът не казваше отворено ли е.
-    title.setAttribute('role', 'button');
-    title.setAttribute('tabindex', '0');
-    const обяви = () => title.setAttribute('aria-expanded', card.classList.contains('folded') ? 'false' : 'true');
+    // 🔴 15.09 (WCAG одит с axe в истински Chrome, 390×844): заглавието беше
+    //   role=button с 📍 бутон ВЪТРЕ в себе си — „вложени контроли" на 62 места.
+    //   Четецът сплесква съдържанието на бутон, тоест 📍 изчезваше за незрящата
+    //   майка. Сега стрелката ▾ е истински бутон до 📍, а заглавието е обикновено
+    //   заглавие. Докосването на заглавието пак сгъва — за пръста нищо не се мени.
+    //   ПЪТ НАЗАД: git revert (и `.jr-title.foldable::after` в css/mega.css).
+    const имеНаКарта = [...title.childNodes].filter(n => n.nodeType === 3)
+      .map(n => n.textContent).join('').trim() || card.getAttribute('aria-label') || '';
+    const сгъни = el('button', 'fold-btn', '▾'); сгъни.type = 'button';
+    title.appendChild(сгъни);
+    const обяви = () => {
+      const сгъната = card.classList.contains('folded');
+      сгъни.setAttribute('aria-expanded', сгъната ? 'false' : 'true');
+      сгъни.setAttribute('aria-label', (сгъната ? 'Разгъни' : 'Сгъни') + (имеНаКарта ? ' „' + имеНаКарта + '“' : ''));
+    };
     обяви();
     const превключи = () => {
       card.classList.toggle('folded');
@@ -233,13 +245,11 @@
       save('bl_folds', f);
       обяви();
     };
+    // ▾ е роден бутон: Enter/Space дават click, който стига до заглавието —
+    //   затова отделен keydown вече няма (иначе сгъването би станало два пъти).
     title.addEventListener('click', (e) => {
       if (e.target.closest('.pin-btn')) return;
       превключи();
-    });
-    title.addEventListener('keydown', (e) => {
-      if (e.target.closest('.pin-btn')) return;
-      if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); превключи(); }
     });
   }
 

@@ -244,7 +244,8 @@
     if (labHonest) labHonest.addEventListener('click', () => {
       if (window.BL_FX) BL_FX.buzz(8);
       const пусни = () => { if (window.BL_ARTICLES && BL_ARTICLES.open) BL_ARTICLES.open('lib-a467c35f'); };
-      if (window.BL_LIB && BL_LIB.init) BL_LIB.init().then(пусни); else пусни();
+      // 15.09: грешка вътре в пусни() излизаше като необработен promise — сега се казва с адрес
+      if (window.BL_LIB && BL_LIB.init) BL_LIB.init().then(пусни).catch(e => console.error('[Бейби Ленд] статията за честния опит не се отвори', e)); else пусни();
     });
 
     // toc-картата „Какво има в тази стая — N кътчета“ е стена от десетки

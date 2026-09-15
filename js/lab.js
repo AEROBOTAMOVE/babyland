@@ -479,7 +479,9 @@
       if (window.BL_ARTICLES && BL_ARTICLES.open && има()) { BL_ARTICLES.open(id); return; }
       if (наизвестие) наизвестие();
     };
-    if (window.BL_LIB && BL_LIB.init) BL_LIB.init().then(пусни, пусни); else пусни();
+    // 15.09: вторият пусни хваща само провал на init(), не грешка ВЪТРЕ в пусни —
+    //   тя излизаше като необработен promise. Сега се казва с адрес.
+    if (window.BL_LIB && BL_LIB.init) BL_LIB.init().then(пусни, пусни).catch(e => console.error('[Бейби Ленд] статията в Лабораторията не се отвори', e)); else пусни();
   }
   function чипСтатия(id, надпис) {
     const b = el('button', 'jr-chip jr-chip-soft', '📖 ' + надпис); b.type = 'button';

@@ -1355,7 +1355,7 @@ h1, h2, h3 { font-family: 'Comfortaa', 'Comfortaa-fallback', 'Nunito', sans-seri
 .td-age { font-size: 17px; font-weight: 700; color: var(--ink); }
 .td-tip {
   background: #fff8e8; border-radius: 16px; padding: 13px 16px;
-  font-size: 14px; font-weight: 700; color: #8a6f3f; line-height: 1.5; margin-bottom: 12px;
+  font-size: 14px; font-weight: 700; color: #7a6036; line-height: 1.5; margin-bottom: 12px;   /* 15.09 axe: #8a6f3f беше 4.48:1 върху #fff8e8 */
 }
 .td-chips { display: flex; flex-wrap: wrap; gap: 8px; }
 .td-chip {

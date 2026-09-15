@@ -110,7 +110,9 @@
     if (!body) return;
     const стар = body.querySelector('.art-nav'); if (стар) стар.remove();
     if (!съседи.prev && !съседи.next) return;
-    const кратко = t => t.slice(0, 22) + (t.length > 22 ? '…' : '');
+    // 15.09 (обход на 9-те стаи: необработен promise „reading 'slice'" в Лабораторията):
+    //   съсед без заглавие-низ спираше стрелките — сега е празен низ, не грешка.
+    const кратко = t => { const s = String(t == null ? '' : t); return s.slice(0, 22) + (s.length > 22 ? '…' : ''); };
     const ред = el('div', 'art-nav');
     if (съседи.prev) {
       const b = el('button', 'art-navb', '‹ ' + съседи.prev.emoji + ' ' + кратко(съседи.prev.title));

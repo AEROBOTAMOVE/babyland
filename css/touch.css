@@ -82,6 +82,9 @@
   padding: 0 10px;
 }
 .fb-row { display: flex; gap: 8px; margin: 2px 0 10px 46px; }
+/* 15.09 (WCAG одит в истински Chrome, 390×844): категориите в „Статии" бяха 32px
+   високи, въпросите-чипове в чата 42px — под прага за пръст. */
+.art-cat, .ask-chip { min-height: 44px; display: inline-flex; align-items: center; }
 /* тези са inline-flex, за да центрират текста във вече по-високата кутия */
 .jr-chip, .toc-b, .sec-chip, .ask-chip, .tk-b, .cl-b, .rv-f {
   display: inline-flex;

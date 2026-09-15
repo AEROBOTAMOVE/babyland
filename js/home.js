@@ -598,7 +598,7 @@
         </svg>
         <div class="net-panel">
           <div class="net-head"><span class="net-pe">🎈</span><div><strong class="net-pt">Помощникът на мама</strong><span class="net-ps">докосни възел от мрежата</span></div></div>
-          <div class="net-list"></div>
+          <div class="net-list" tabindex="0" role="region" aria-label="Темите на избрания възел"></div>
         </div>
       </div>`;
     rooms.parentNode.insertBefore(sec, rooms.nextSibling);

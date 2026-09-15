@@ -1764,8 +1764,9 @@
 .shop-url { font-size: 10.5px; opacity: .65; margin: 6px 0 0; }
 [data-theme="dark"] .np-box { background: #2c2338; color: #f0e9f7; }
 
-/* ── 10.3.4: сгъваемото заглавие вече е бутон — да си личи при табване ── */
-.jr-title.foldable:focus-visible { outline: 3px solid var(--pink-deep, #e56ba4);
+/* ── 10.3.4: сгъването се вижда при табване. 15.09: бутонът вече е ▾ (.fold-btn),
+   а 📍 до него също получава видима рамка. ── */
+.fold-btn:focus-visible, .pin-btn:focus-visible { outline: 3px solid var(--pink-deep, #e56ba4);
   outline-offset: 3px; border-radius: 8px; }
 
 /* ── 15.3.6: паролата за копието ── */

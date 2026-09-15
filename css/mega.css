@@ -483,7 +483,7 @@
 .qz-res.no { background: #fdeef6; color: #b0446e; }
 .td-trick {
   margin-top: 12px; background: #fff8e8; border-radius: 14px; padding: 10px 13px;
-  font-size: 12.5px; font-weight: 700; color: #8a6f3f; line-height: 1.5;
+  font-size: 12.5px; font-weight: 700; color: #7a6036; line-height: 1.5;   /* 15.09 axe: #8a6f3f беше 4.48:1 */
 }
 .td-trick span { font-size: 15px; }
 [data-theme="dark"] .qz-res.ok { background: #23402f; color: #8fd0aa; }
@@ -618,16 +618,28 @@
 [data-theme="dark"] .sec-n { background: #3a3355; }
 
 /* Ш1: сгъване + закачане */
-.jr-title.foldable { cursor: pointer; user-select: none; position: relative; padding-right: 46px; }
-.jr-title.foldable::after {
-  content: '▾'; position: absolute; right: 26px; top: 2px;
-  color: var(--lav); font-size: 13px; transition: transform 0.25s ease;
+.jr-title.foldable { cursor: pointer; user-select: none; position: relative; padding-right: 54px; }
+/* 15.09: стрелката е истински бутон (.fold-btn, js/polish.js), не ::after —
+   иначе заглавието трябваше да е бутон с 📍 вътре (axe: вложени контроли).
+   Стои на същото място; 📍 е отгоре (z-index), за да печели при допир, както преди. */
+/* 15.09 (проба с elementFromPoint в истински Chrome): двете невидими зони по 44px
+   се застъпваха и в центъра на ▾ печелеше 📍 — „сгъни" закачаше картата. Затова
+   ▾ е с 8px по-наляво, а зоните са 36 широки × 44 високи: всеки печели своя център. */
+.fold-btn {
+  position: absolute; right: 30px; top: -2px; z-index: 1;
+  width: 20px; height: 22px; padding: 0; border: none; background: transparent;
+  cursor: pointer; color: var(--lav); font: inherit; font-size: 13px; line-height: 1;
+  transition: transform 0.25s ease;
 }
-.jr-card.folded .jr-title.foldable::after { transform: rotate(-90deg); }
+.fold-btn::after {
+  content: ''; position: absolute; left: 50%; top: 50%;
+  width: 36px; height: 44px; transform: translate(-50%, -50%);
+}
+.jr-card.folded .fold-btn { transform: rotate(-90deg); }
 .jr-card.folded > *:not(.jr-title) { display: none; }
 .jr-card.folded { padding-bottom: 12px; }
 .pin-btn {
-  position: absolute; right: 0; top: -2px;
+  position: absolute; right: 0; top: -2px; z-index: 2;
   border: none; background: transparent; cursor: pointer; font-size: 14px;
   opacity: 0.45; transition: opacity 0.2s ease, transform 0.2s ease;
 }
@@ -638,7 +650,7 @@
    (Само ::after — нула промяна в потока, нула прерисуване.) */
 .pin-btn::after {
   content: ''; position: absolute; left: 50%; top: 50%;
-  width: 44px; height: 44px; transform: translate(-50%, -50%);
+  width: 36px; height: 44px; transform: translate(-50%, -50%);   /* 15.09: 36 широко — виж .fold-btn */
 }
 .pin-btn.on { opacity: 1; transform: rotate(-14deg) scale(1.15); }
 .jr-title { position: relative; }
