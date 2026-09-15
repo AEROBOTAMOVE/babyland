@@ -885,7 +885,12 @@
         const опит = cur;
         cur = '';                                  // веднага, за да не се трупа
         // проверката вече е асинхронна (150 000 обиколки ≈ една мигновение)
-        if (await checkPin(опит)) { pinOkThisSession = true; ov.hidden = true; if (съобщ) съобщ.textContent = ''; onOk(); }
+        // 🔒 15.09: crypto.subtle съществува САМО на защитен адрес (https://).
+        //   Без него проверката гърмеше, точките се изчистваха и нищо не се
+        //   случваше — майката не знаеше защо дневникът не се отваря.
+        const вярно = await checkPin(опит).catch(() => null);
+        if (вярно === null) { drawDots(); if (съобщ) съобщ.textContent = 'Не мога да проверя ПИН-а на този адрес — отвори приложението на адрес с катинарче (https://).'; return; }
+        if (вярно) { pinOkThisSession = true; ov.hidden = true; if (съобщ) съобщ.textContent = ''; onOk(); }
         else {
           drawDots();
           const box = ov.querySelector('.pin-box');
@@ -975,7 +980,15 @@
       }
       if (!/^\d{4}$/.test(v)) { st.textContent = 'Точно 4 цифри, миличка. 😊'; inp.focus(); inp.select(); return; }
       b.disabled = true;
-      await setPin(v);
+      // 🔒 15.09: без защитен адрес (https://) setPin гърмеше, редът
+      //   b.disabled = false не се изпълняваше и бутонът оставаше сив
+      //   ЗАВИНАГИ — без дума, а ПИН не беше записан.
+      try { await setPin(v); }
+      catch (e) {
+        b.disabled = false;
+        st.textContent = 'Ключалката не можа да се сложи — отвори приложението на адрес с катинарче (https://). Записаното ти е на място. 💜';
+        return;
+      }
       b.disabled = false;
       pinOkThisSession = true;
       st.textContent = 'Заключено! Ще пита за ПИН при всяко влизане. ✔';

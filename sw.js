@@ -1,5 +1,5 @@
 // Baby Land — service worker: кешира приложението за офлайн работа
-const CACHE = 'babyland-v687';
+const CACHE = 'babyland-v688';
 const ASSETS = [
   '.',
   'index.html',
@@ -186,10 +186,37 @@ const ASSETS = [
 //         браузър, и от проверчик. Логът в конзолата изчезва; записът остава.
 const ДОКЛАД = 'bl-oflayn-doklad';
 
+// ═══════════════════════════════════════════════════════════════════════
+// ☠️ 15.09 — ОТРОВАТА ОТ ХОСТИНГА
+//   Спрян cPanel/LiteSpeed акаунт (например неплатен хостинг) пренасочва
+//   адресите към /cgi-sys/suspendedpage.cgi — HTML страница (форумът на
+//   LiteSpeed, нишка 9744). fetch следва пренасочването и ако страницата е
+//   със статус 200, res.ok е true. c.add() и старото пазиУспешни гледаха
+//   само това — тоест скрипт, изтеглен в този прозорец, влизаше в кеша като
+//   HTML. А кешът е „кеш-първо по точен URL" и пренеси() го носи напред:
+//   хостингът се плаща, всичко изглежда оправено, а у майката приложението
+//   остава счупено, докато файлът не смени ?v=.
+//   ПРАВИЛОТО: статичен файл, дошъл след пренасочване или като HTML, не се
+//   пази. Навигацията е изключение — тя Е страница.
+//   МЕРИ СЕ: dev/test_sw_otrova.js — и срещу стария sw.js, който трябва да
+//   падне. ПЪТ НАЗАД: sw.js.PREDI_OTROVA · git revert
+// ═══════════════════════════════════════════════════════════════════════
+function отровен(req, res) {
+  if (!res) return true;
+  if (req.mode === 'navigate' || req.destination === 'document') return false;
+  if (res.redirected) return true;
+  const път = String(req.url || req).split(/[?#]/)[0];
+  const тип = (res.headers && res.headers.get('content-type')) || '';
+  return /\.(js|css|json|webmanifest|woff2?|png|svg)$/i.test(път) && /text\/html/i.test(тип);
+}
+
 async function кеширайПоединично(c, адреси) {
   const паднали = [];
   await Promise.all(адреси.map(a =>
-    c.add(a).catch(() => { паднали.push(a); })
+    fetch(a).then(res => {
+      if (!res.ok || отровен({ url: a }, res)) throw new Error('не се пази: ' + a);
+      return c.put(a, res);
+    }).catch(() => { паднали.push(a); })
   ));
   return паднали;
 }
@@ -270,6 +297,7 @@ async function пренеси(нов) {
         const стар = await caches.open(запис.име);
         const res = await стар.match(запис.req);
         if (!res) continue;
+        if (отровен(запис.req, res)) { изхвърлени++; continue; }   // ☠️ 15.09: отровата не пътува напред
         await нов.put(запис.req, res.clone());
         пренесени++;
       } catch (e) { пропуснати++; }
@@ -336,7 +364,7 @@ self.addEventListener('activate', (e) => {
 //    КЕШ-ПЪРВО → мигновен старт без чакане на мрежата (3 през нощта, слаб сигнал 👶).
 //    Нов ?v = точен кеш-мис → мрежа+кеширай; офлайн+некеширан още → ignoreSearch fallback.
 function пазиУспешни(req, res) {
-  if (res && res.ok) {
+  if (res && res.ok && !отровен(req, res)) {   // ☠️ 15.09: виж отровен() горе
     const copy = res.clone();
     caches.open(CACHE).then(c => c.put(req, copy)).catch(() => {});
   }
