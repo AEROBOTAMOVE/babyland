@@ -346,7 +346,8 @@ html body #roomOverlay .ro-disc.ro-disc {
   color: #4a4660 !important; font-size: 11.5px !important;
 }
 html[data-theme="dark"] body #roomOverlay .ro-disc.ro-disc { background-color: rgba(27, 37, 84, .96) !important; border-top-color: rgba(255, 255, 255, .12) !important; color: #d6d8ee !important; }
-html body #roomOverlay .ask-chip.ask-chip { min-height: 46px !important; }   /* мерено 43.9px — на косъм под 44 */
+html body #roomOverlay .ask-chip.ask-chip { min-height: 46px !important; }
+html body #roomOverlay .ask-mic.ask-mic, html body #roomOverlay .ask-send.ask-send { width: 48px !important; height: 48px !important; min-width: 48px !important; min-height: 48px !important; flex: none; }   /* агентът мери 42–43px */   /* мерено 43.9px — на косъм под 44 */
 html body .bl-lamp .bl-lamp-hint { font-family: Nunito, Nunito-fallback, system-ui, sans-serif !important; }
 
 /* ═══ 13 · ВЪТРЕШНОСТТА НА КАРТИТЕ (мерено в 9-те стаи, dom_vatre.js) ═══
@@ -375,6 +376,9 @@ html body .fs-tab.fs-tab { opacity: 1 !important; background-color: var(--ui-cre
 html body .fs-tab.fs-tab.is-on { background-color: var(--ui-pick) !important; border-color: var(--ui-pick-edge) !important; color: var(--ui-pick-ink) !important; box-shadow: inset 0 0 0 3px var(--ui-pick), inset 0 0 0 4.5px rgba(217, 90, 142, .35), 0 2px 0 #e7a0bd !important; }
 html[data-theme="dark"] body .fs-tab.fs-tab { background-color: #2b3872 !important; border-color: rgba(255, 255, 255, .16) !important; color: #f1f2fb !important; box-shadow: 0 2px 0 #18214a !important; }
 html[data-theme="dark"] body .fs-tab.fs-tab.is-on { background-color: #5a2c55 !important; border-color: rgba(245, 156, 187, .6) !important; color: #ffe1ec !important; }
+
+/* нощем долната лента: неактивните надписи бяха 4.47:1 (мерено) — на косъм под 4.5 */
+html[data-theme="dark"] body .bottom-nav .bn-item:not(.bn-active) { color: #d9dcf2 !important; }
 
 /* ═══ НОЩ — същите предмети в нощно синьо ═══ */
 html[data-theme="dark"] body .jr-chip.jr-chip, html[data-theme="dark"] body #roChips .ro-chip.ro-chip, html[data-theme="dark"] body #roomOverlay .ask-chip.ask-chip,

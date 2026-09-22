@@ -918,11 +918,24 @@ html body #roomOverlay .ro-panel #roTabs .st-map { width: 44px !important; heigh
 html body #roomOverlay .ro-panel #roTabs .st-map::before { width: 18px; height: 18px; }
 html body #roomOverlay .ro-panel #roTabs .st-dot { transform: scale(.8); transform-origin: top right; }
 /* банерът става „сцена“: без картинка и без карта — само заглавието върху стаята */
-.pl-rhero { height: 196px !important; min-height: 196px !important; background: transparent !important; border: 0 !important; box-shadow: none !important; border-radius: 0 !important; overflow: visible !important; }
+.pl-rhero { height: 236px !important; min-height: 236px !important; background: transparent !important; border: 0 !important; box-shadow: none !important; border-radius: 0 !important; overflow: visible !important; }
 .pl-rhero img, .pl-rhero::after { display: none !important; }
-.pl-rhero-t { left: 6px !important; right: 46% !important; top: 8px !important; bottom: auto !important; }
-.pl-rhero-t b { font-size: 28px !important; line-height: 1.04 !important; text-shadow: 0 1px 0 #fff, 0 0 16px rgba(255, 250, 244, .95), 0 0 30px rgba(255, 250, 244, .8); }
-.pl-rhero-t span { text-shadow: 0 0 10px rgba(255, 250, 244, .95), 0 0 20px rgba(255, 250, 244, .9); font-size: 14.5px !important; }
+/* реф. 15: заглавието е в кремава плочка от филц с шев, долу вляво — не върху лицето на героя
+   (агентът за Здраве го хвана: текстът застъпваше бебето) */
+.pl-rhero-t {
+  left: 0 !important; right: auto !important; top: auto !important; bottom: 4px !important; max-width: 82%;
+  padding: 16px 20px 13px !important; gap: 5px !important; border-radius: 30px 30px 30px 12px;
+  background-color: rgba(255, 250, 243, .96); background-image: url(../img/art/felt.webp); background-size: 160px 160px; background-blend-mode: multiply;
+  border: 1px solid rgba(214, 186, 158, .65);
+  box-shadow: 0 12px 26px rgba(110, 76, 52, .20), inset 0 2px 0 rgba(255, 255, 255, .9);
+  outline: 1.5px dashed rgba(196, 160, 124, .55); outline-offset: -7px;
+}
+/* визитките на екраните (pl-bebe, pl-igri) се качваха с −30px върху банера — сега долу на банера е плочката */
+#roRoom .pl-rhero + .pl-bb > .pl-bb-id, #roRoom .pl-rhero + .pl-ig { margin-top: 12px !important; }
+.pl-rhero-t::before { content: '♥'; position: absolute; top: -13px; left: 26px; font-size: 22px; line-height: 1; color: #e56d99; text-shadow: 0 2px 0 #c8457a, 0 4px 8px rgba(200, 69, 122, .3); }
+.pl-rhero-t b { font-size: 27px !important; line-height: 1.05 !important; text-shadow: none; }
+.pl-rhero-t span { text-shadow: none; font-size: 14px !important; }
+html[data-theme="dark"] .pl-rhero-t { background-color: rgba(38, 51, 107, .95); border-color: rgba(255, 255, 255, .14); outline-color: rgba(255, 255, 255, .22); box-shadow: 0 12px 26px rgba(0, 0, 0, .35); }
 
 /* ── нощем: същата сцена под нощно синьо було ── */
 html[data-theme="dark"] #plScene::after { content: ''; position: absolute; inset: 0; background: linear-gradient(180deg, rgba(14, 22, 58, .62) 0, rgba(14, 22, 58, .78) 100%); }
