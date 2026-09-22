@@ -9,9 +9,26 @@
 (function () {
   'use strict';
   if (window.BL_PL_KRAI) return;
+  // ── редът към скритото: въпросите и „добави ме на телефона“ (premium.css: html.pl-landing) ──
+  function повече(н) {
+    if (н.querySelector(':scope > .pl-more')) return;
+    const р = document.createElement('div');
+    р.className = 'pl-more';
+    р.innerHTML = '<button type="button" data-plm="faq">Питат ни често</button>' +
+      '<button type="button" data-plm="install">Добави ме на телефона</button>';
+    р.addEventListener('click', e => {
+      const б = e.target.closest('[data-plm]'); if (!б) return;
+      document.documentElement.classList.add('pl-landing');
+      const ц = document.querySelector(б.dataset.plm === 'faq' ? '.faq' : '.install');
+      if (ц) setTimeout(() => ц.scrollIntoView({ behavior: 'smooth', block: 'start' }), 60);
+    });
+    н.appendChild(р);
+  }
   function сложи() {
     const н = document.getElementById('plHome');
-    if (!н || н.querySelector(':scope > .pl-krai')) return !!н;
+    if (!н) return false;
+    повече(н);
+    if (н.querySelector(':scope > .pl-krai')) return true;
     const ф = document.createElement('figure');
     ф.className = 'pl-krai'; ф.setAttribute('aria-hidden', 'true');
     ф.innerHTML = '<img src="img/art/doma.webp" alt="" loading="lazy" decoding="async" width="720" height="555">' +

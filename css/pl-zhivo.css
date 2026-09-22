@@ -24,6 +24,9 @@ html[data-theme="dark"] .pl-zh-bg::after { background: linear-gradient(180deg, r
 /* ── СВЕТЛИНКИТЕ: сърчица (h), точици-боке (d), искри (s) — плуват нагоре бавно ── */
 .pl-zh-pp { position: absolute; inset: 0; overflow: hidden; pointer-events: none; }
 #plScene .pl-zh-pp { bottom: 45%; }        /* на началото — само над героя, не под картите */
+/* 🪤 22.09 (проверителят на „Инструменти“): в стая с прозрачни панели светлинките се виждаха ПРЕЗ тях
+   и изглеждаха като петна върху заглавията. Сега плуват само в горната трета — там, където е сцената. */
+.pl-zh .pl-zh-pp { bottom: 62%; }
 .pl-zh-p {
   position: absolute; bottom: -24px; width: var(--s); height: var(--s); display: block;
   animation: plZhUp var(--t) linear var(--d) infinite; will-change: transform, opacity; opacity: 0;
