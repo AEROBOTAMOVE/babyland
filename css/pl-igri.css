@@ -1,0 +1,449 @@
+/* ═══════════════════════════════════════════════════════════════════════════════
+   🧸 PREMIUM „РАЗВИТИЕ И ИГРИ“ (js/pl-igri.js) · референции 1 и 12 на собственика
+   Под банера: хапче „Нашият етап“, ДЪРВЕН шкаф — отгоре три отделения Игри / Умения / Спомени,
+   в средата прозорец с „играта за днес“ (зайчето под одеялцето), отдолу две пастелни чекмеджета
+   със златни дръжки. Листът на играта (реф. 12) е цяла страница върху сцената на стаята:
+   заглавието вляво над бебето, тефтер от филц със златни халки, таймер, „Запази идеята“.
+   МАТЕРИАЛИТЕ са общите (css/pl-ui.css): главно действие .pl-gel, второстепенно .pl-soft,
+   панел .pl-felt. Тук е само формата им + дървото, чекмеджетата и сцената на листа.
+   КОНТРАСТ (изчислен по WCAG 2.1): гелът под текста е #d95a8e…#c8457a → бяло 3.6–4.6:1;
+   затова надписите на гела са 19px/800 = „голям текст“ (праг 3:1), не 16px (праг 4.5:1).
+   ЦИФРИТЕ — Nunito (.pl-ig-n и таймерът): Georgia има старинни цифри, „05:00“ се четеше „o5:oo“.
+   🪤 url() в този файл е спрямо css/ → пиши ../img/…; в JS е img/….
+   ПЪТ НАЗАД: махни <link href="css/pl-igri.css"> и <script src="js/pl-igri.js">;
+   предишната версия: scratchpad/ag2_igri_backup_pl-igri.css.
+   ═══════════════════════════════════════════════════════════════════════════════ */
+
+.pl-ig, .pl-ig-veil {
+  --ig-rose-ink: #b43a6b;      /* розов текст върху крем: 5.4:1 */
+  --ig-wood-hi: #f7e8d2;
+  --ig-wood-a: #f3dfc2;
+  --ig-wood-b: #e9cfa8;
+  --ig-wood-c: #debf93;
+  --ig-plank-a: #f0d8b5;
+  --ig-plank-b: #d7b181;
+  --ig-edge: rgba(170, 120, 68, .38);
+  --ig-gold-a: #f8e3a4;
+  --ig-gold-b: #cf9f45;
+  --ig-gold-c: #a97a26;
+  --ig-sans: Nunito, Nunito-fallback, system-ui, sans-serif;
+}
+.pl-ig-n { font-family: var(--ig-sans); font-weight: 800; font-variant-numeric: lining-nums; letter-spacing: 0; }
+
+/* ═══ БЛОКЪТ ═══ */
+/* 🪤 #roRoom е flex контейнер с фиксирана височина — без flex:none блокът се свива. */
+.pl-ig {
+  flex: none; position: relative; z-index: 1;
+  display: flex; flex-direction: column; gap: 14px;
+  margin: 12px 0 8px;
+  font-family: var(--ig-sans);
+  color: var(--pl-ink, #3b3f5c);
+}
+/* хапчето стъпва върху долния ръб на банера, както в реф. 1 (само когато е точно под него) */
+.pl-rhero + .pl-ig { margin-top: -30px; }
+
+.pl-ig button { font-family: inherit; cursor: pointer; -webkit-tap-highlight-color: transparent; }
+.pl-ig button:focus-visible, .pl-ig-veil button:focus-visible, .pl-ig-veil a:focus-visible {
+  outline: 3px solid #d0508a; outline-offset: 3px;
+}
+
+/* плюшените иконки: спрайт 4×4 с бял фон; multiply ги „разтапя“ в подложката */
+.pl-ig-i {
+  display: block; flex: none;
+  background-repeat: no-repeat; background-size: 400% 400%;
+  mix-blend-mode: multiply;
+}
+
+/* ── 📍 Нашият етап (материал: .pl-soft) ── */
+.pl-ig-stage {
+  align-self: flex-start; max-width: calc(100% - 20px);
+  display: flex; align-items: center; gap: 11px;
+  min-height: 64px; margin: 0 0 0 10px; padding: 6px 16px 6px 6px;
+  border-radius: 24px;
+  text-align: left;
+}
+.pl-ig-av {
+  width: 52px; height: 52px; border-radius: 50%;
+  background-color: #fde6ef; background-blend-mode: multiply; mix-blend-mode: normal;
+  box-shadow: inset 0 0 0 3px #fff, 0 2px 6px rgba(170, 118, 118, .2);
+}
+.pl-ig-stage-t { display: flex; flex-direction: column; min-width: 0; }
+.pl-ig-stage-t small { font-family: var(--pl-serif, Georgia, serif); font-size: 14.5px; font-weight: 400; line-height: 1.2; color: var(--pl-navy, #1d2a5c); }
+.pl-ig-stage-t b { font-family: var(--pl-serif, Georgia, serif); font-size: 19px; font-weight: 700; line-height: 1.2; color: var(--pl-navy, #1d2a5c); }
+.pl-ig-stage-t em { font-style: normal; font-size: 12px; font-weight: 700; color: #5d596f; }
+.pl-ig-chev { margin-left: 6px; font-size: 26px; line-height: 1; color: var(--pl-navy, #1d2a5c); }
+
+/* ── 🪵 шкафът: светло дърво с фаска, горна рамка със златни звездички, цокъл ── */
+.pl-ig-cab {
+  position: relative;
+  padding: 22px 12px 14px;
+  border-radius: 32px 32px 20px 20px;
+  background:
+    repeating-linear-gradient(90deg, rgba(160, 110, 60, .05) 0 1px, transparent 1px 8px, rgba(255, 255, 255, .08) 8px 10px, transparent 10px 19px),
+    linear-gradient(180deg, var(--ig-wood-a) 0, var(--ig-wood-b) 60%, var(--ig-wood-c) 100%);
+  box-shadow:
+    inset 0 2px 0 rgba(255, 255, 255, .8),
+    inset 0 0 0 1.5px var(--ig-edge),
+    inset 0 0 0 5px rgba(255, 246, 232, .35),
+    inset 0 -6px 0 rgba(150, 100, 50, .14),
+    0 5px 0 #cfa97b,
+    0 20px 32px rgba(110, 76, 52, .30), 0 3px 8px rgba(110, 76, 52, .14);
+}
+.pl-ig-cab::before, .pl-ig-cab::after {         /* златните звездички в горните ъгли (реф. 1) */
+  content: ''; position: absolute; top: 5px; width: 14px; height: 14px; pointer-events: none;
+  background: linear-gradient(160deg, var(--ig-gold-a) 0, var(--ig-gold-b) 60%, var(--ig-gold-c) 100%);
+  -webkit-clip-path: polygon(50% 0, 62% 34%, 98% 35%, 69% 57%, 79% 92%, 50% 71%, 21% 92%, 31% 57%, 2% 35%, 38% 34%);
+  clip-path: polygon(50% 0, 62% 34%, 98% 35%, 69% 57%, 79% 92%, 50% 71%, 21% 92%, 31% 57%, 2% 35%, 38% 34%);
+}
+.pl-ig-cab::before { left: 22px; }
+.pl-ig-cab::after { right: 22px; }
+
+/* горният рафт: три отделения (.pl-soft; избраното .on = розов филц) и лавица под тях */
+.pl-ig-tabs {
+  position: relative;
+  display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 8px;
+  padding-bottom: 16px; margin-bottom: 14px;
+}
+.pl-ig-tabs::after, .pl-ig-drawers::before {    /* лавицата: дъска през целия шкаф */
+  content: ''; position: absolute; left: -12px; right: -12px; height: 10px; border-radius: 2px; pointer-events: none;
+  background: linear-gradient(180deg, var(--ig-plank-a) 0, var(--ig-plank-b) 100%);
+  box-shadow: inset 0 1.5px 0 rgba(255, 255, 255, .6), inset 0 -1px 0 rgba(140, 95, 50, .25), 0 3px 5px rgba(110, 76, 52, .22);
+}
+.pl-ig-tabs::after { bottom: 0; }
+.pl-ig-tab {
+  display: flex; flex-direction: column; align-items: center; justify-content: flex-end; gap: 3px;
+  min-height: 102px; padding: 8px 4px 11px; min-width: 0;
+  border-radius: 22px 22px 12px 12px;
+}
+.pl-ig-tab i { width: 60px; height: 60px; margin: -4px 0 -2px; }
+.pl-ig-tab span { font-family: var(--pl-serif, Georgia, serif); font-size: 16.5px; font-weight: 700; line-height: 1.1; }
+
+/* ── 🎲 прозорецът с играта за днес: вграден в дървото (светла рамка + вътрешна сянка) ── */
+.pl-ig-game {
+  position: relative; overflow: hidden;
+  min-height: 214px; margin: 6px 6px 0;
+  border-radius: 20px;
+  background: linear-gradient(90deg, #fffaf2 0, #fdf4e8 50%, #f8eee2 100%);
+  box-shadow: 0 0 0 5px var(--ig-wood-hi), 0 0 0 6.5px var(--ig-edge), 0 8px 14px rgba(110, 76, 52, .2);
+}
+.pl-ig-game::after {           /* ръбът на прозореца — над картинката */
+  content: ''; position: absolute; inset: 0; z-index: 3; border-radius: inherit; pointer-events: none;
+  box-shadow: inset 0 3px 8px rgba(110, 76, 52, .22), inset 0 0 0 1.5px rgba(255, 255, 255, .75);
+}
+/* 🪤 мерено 22.09 по пиксели (ag2_igri_blok, всичките 35 заглавия): вторият ред на дълго заглавие
+   лягаше върху тъмния пръстен на пирамидката (45,51,38) → 1.05:1. По-дълъг преход в маската +
+   по-тясно заглавие: там, където свършва текстът, картинката е едва 20–30% видима. */
+.pl-ig-art {
+  position: absolute; right: 0; top: 0; bottom: 0; width: 56%; height: 100%;
+  object-fit: cover; object-position: 100% 60%;
+  -webkit-mask-image: linear-gradient(90deg, transparent 0, rgba(0, 0, 0, .3) 26%, #000 56%);
+  mask-image: linear-gradient(90deg, transparent 0, rgba(0, 0, 0, .3) 26%, #000 56%);
+}
+.pl-ig-age {                   /* златното хапче горе вдясно (реф. 1 „ДЕМО“) */
+  position: absolute; z-index: 2; top: 10px; right: 10px;
+  padding: 4px 11px; border-radius: 999px;
+  background: linear-gradient(180deg, #fffaf0 0, #fff1d2 100%); border: 1.5px solid #e2bd65;
+  box-shadow: 0 2px 6px rgba(160, 120, 40, .18), inset 0 1px 0 #fff;
+  font-family: var(--ig-sans); font-size: 13px; font-weight: 800; color: #6e5010; font-variant-numeric: lining-nums;
+}
+.pl-ig-game-t {
+  position: relative; z-index: 1;
+  display: flex; flex-direction: column; align-items: flex-start; gap: 5px;
+  padding: 16px 12px 16px 16px;
+}
+.pl-ig-eyebrow, .pl-ig-meta { max-width: 64%; }
+.pl-ig-title { max-width: 58%; }
+.pl-ig-eyebrow { font-size: 12px; font-weight: 800; letter-spacing: .6px; text-transform: uppercase; color: var(--ig-rose-ink); }
+.pl-ig-title {
+  margin: 0; font-family: var(--pl-serif, Georgia, serif); font-size: 26px; font-weight: 700; line-height: 1.08;
+  color: var(--pl-navy, #1d2a5c); letter-spacing: -.3px; hyphens: none; overflow-wrap: break-word;
+  text-shadow: 0 0 10px rgba(255, 252, 247, .95), 0 0 2px rgba(255, 252, 247, .9);
+}
+/* 🪤 мерено 22.09: краят на реда стъпва върху пирамидката на картинката (1.69:1) → кремаво хапче отдолу */
+.pl-ig-meta {
+  margin: 0 0 8px -8px; padding: 3px 8px; border-radius: 14px;
+  background: rgba(255, 250, 242, .9);
+  font-size: 14.5px; font-weight: 700; color: var(--pl-ink, #3b3f5c);
+}
+
+/* главните бутони (материал: .pl-gel) — само формата; 19px/800 = голям текст */
+.pl-ig-play, .pl-ig-go {
+  display: inline-flex; align-items: center; justify-content: center; gap: 10px;
+  min-height: 54px; padding: 0 18px 0 20px;
+  border-radius: 999px;
+  font-family: var(--ig-sans); font-size: 19px; font-weight: 800; line-height: 1; white-space: nowrap;
+}
+.pl-ig-svg { flex: none; width: 17px; height: 19px; fill: #fff; filter: drop-shadow(0 1px 0 rgba(120, 20, 60, .35)); }
+.pl-ig-play em { font-style: normal; font-size: 26px; line-height: .8; margin-left: 2px; }
+.pl-ig-go .i-pause, .pl-ig-go.is-run .i-play { display: none; }
+.pl-ig-go.is-run .i-pause { display: block; }
+
+/* ── 🗄️ чекмеджетата: лакирани пастелни фронтове с вдигнат панел и златна дъговидна дръжка ── */
+.pl-ig-drawers {
+  position: relative;
+  display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 10px;
+  margin-top: 18px; padding-top: 18px;
+}
+.pl-ig-drawers::before { top: 0; }
+.pl-ig-drawers::after {        /* дървената колона между двете чекмеджета */
+  content: ''; position: absolute; top: 10px; bottom: -4px; left: 50%; width: 10px; margin-left: -5px; pointer-events: none;
+  background: linear-gradient(90deg, #dcbb8e 0, var(--ig-plank-a) 50%, #dcbb8e 100%);
+}
+.pl-ig-drawer {
+  position: relative;
+  display: flex; align-items: center; gap: 6px;
+  min-height: 76px; padding: 16px 10px 10px 9px; min-width: 0;
+  border: 0; border-radius: 14px;
+  box-shadow:
+    inset 0 2px 0 rgba(255, 255, 255, .85), inset 0 -3px 0 rgba(60, 60, 90, .07),
+    0 0 0 1.5px var(--ig-edge), 0 3px 6px rgba(110, 76, 52, .18);
+  color: var(--pl-navy, #1d2a5c); text-align: left;
+  transition: transform .14s ease, box-shadow .14s ease;
+}
+.pl-ig-drawer:active { transform: translateY(2px); box-shadow: inset 0 2px 0 rgba(255, 255, 255, .85), 0 0 0 1.5px var(--ig-edge), 0 1px 3px rgba(110, 76, 52, .16); }
+.pl-ig-drawer::after {         /* вдигнатият вътрешен панел на фронта */
+  content: ''; position: absolute; inset: 6px; border-radius: 10px; pointer-events: none;
+  border: 1.5px solid rgba(255, 255, 255, .75);
+  box-shadow: 0 1px 0 rgba(60, 60, 90, .06), inset 0 1px 0 rgba(60, 60, 90, .05);
+}
+.pl-ig-drawer::before {        /* дръжката: златна дъга */
+  content: ''; position: absolute; top: 3px; left: 50%; width: 44px; height: 9px; margin-left: -22px; pointer-events: none;
+  border: 3.5px solid var(--ig-gold-b); border-bottom: 0; border-radius: 10px 10px 0 0;
+  box-shadow: inset 0 1.5px 0 var(--ig-gold-a), 0 -1px 0 rgba(255, 240, 200, .9), 0 2px 2px rgba(110, 80, 20, .28);
+}
+.pl-ig-drawer.d-first { background: linear-gradient(180deg, #e6f3e7 0, #cfe5d4 100%); }
+.pl-ig-drawer.d-box { background: linear-gradient(180deg, #e5edf9 0, #cddcf1 100%); }
+.pl-ig-drawer i { width: 42px; height: 42px; }
+.pl-ig-drawer span { flex: 1; min-width: 0; font-family: var(--pl-serif, Georgia, serif); font-size: 15px; font-weight: 700; line-height: 1.15; }
+.pl-ig-drawer em { font-style: normal; font-size: 24px; line-height: 1; }
+
+/* ═══ 📒 ЛИСТЪТ НА ИГРАТА (реф. 12) — цяла страница върху сцената ═══ */
+.pl-ig-veil {
+  position: fixed; inset: 0; z-index: 900;
+  display: flex; align-items: stretch; justify-content: center;
+  background: rgba(29, 42, 92, .4);
+  font-family: var(--ig-sans);
+}
+.pl-ig-veil[hidden] { display: none; }
+.pl-ig-sheet {
+  position: relative;
+  width: 100%; max-width: 480px; height: 100%;
+  overflow-y: auto; overflow-x: hidden; overscroll-behavior: contain;
+  padding-bottom: calc(22px + env(safe-area-inset-bottom, 0px));
+  /* сцената на стаята; local = плъзга се със съдържанието, заглавието остава над бебето.
+     Сцената е висока 116% × 1260/720 = 2.03 × ширината; под нея — цветът на килима, а горният
+     слой разтапя долните ~12% в него (иначе на 791px имаше рязък ръб — видяно на снимка).
+     🪤 мерено по пиксел (320px, y=649.5): последният ред на сцената е тъмна черта (184,163,153) —
+     затова преходът е плътен ОЩЕ от 96% и слоят е с 4px по-висок от сцената. */
+  background:
+    linear-gradient(180deg, rgba(236, 226, 218, 0) 0, rgba(236, 226, 218, 0) 88%, #ece2da 96%) 0 0 / 100% calc(min(100vw, 480px) * 2.03 + 4px) no-repeat local,
+    #ece2da url(../img/scene/igri.webp) 62% 0 / 116% auto no-repeat local;
+  box-shadow: 0 0 40px rgba(60, 40, 80, .26);
+  color: var(--pl-ink, #3b3f5c);
+  transition: transform .28s ease, opacity .28s ease;
+}
+.pl-ig-sheet:focus { outline: none; }
+/* 🪤 преход, НЕ анимация: touch.css:708 спира animation-play-state извън #roomOverlay и листът замръзваше невидим */
+.pl-ig-sheet.is-from { transform: translateY(40px); opacity: 0; transition: none; }
+
+.pl-ig-bar {
+  position: sticky; top: 0; z-index: 4;
+  display: flex; flex-direction: row-reverse; justify-content: space-between; align-items: center;
+  padding: calc(env(safe-area-inset-top, 0px) + 10px) 12px 10px; margin-bottom: -64px; pointer-events: none;
+}
+.pl-ig-bar > * { pointer-events: auto; }
+.pl-ig-x {
+  display: grid; place-items: center; width: 46px; height: 46px; padding: 0;
+  border: 1px solid rgba(255, 255, 255, .95); border-radius: 50%;
+  background: rgba(255, 252, 247, .9); color: var(--pl-navy, #1d2a5c);
+  -webkit-backdrop-filter: blur(8px); backdrop-filter: blur(8px);
+  box-shadow: 0 4px 12px rgba(120, 80, 90, .2);
+  font: 700 18px/1 system-ui, sans-serif; cursor: pointer;
+}
+.pl-ig-112 {
+  display: inline-flex; align-items: center; min-height: 46px; padding: 0 16px;
+  border-radius: 999px; background: #fdecef; border: 1.5px solid #f2b8c3;
+  box-shadow: 0 4px 12px rgba(120, 80, 90, .16);
+  color: #b3261e; font-weight: 800; font-size: 14.5px; text-decoration: none; letter-spacing: .2px;
+}
+
+/* героят: заглавието вляво върху сцената (бебето е вдясно на самия фон на листа) */
+/* в потока (не absolute): дълго заглавие на 3 реда бута тефтера надолу, вместо да легне върху него */
+.pl-ig-hero { position: relative; box-sizing: border-box; min-height: 282px; padding: calc(env(safe-area-inset-top, 0px) + 78px) 16px 20px; }
+.pl-ig-hero-t {
+  position: relative; z-index: 1; max-width: 60%; width: fit-content;
+  display: flex; flex-direction: column; align-items: flex-start; gap: 10px;
+}
+.pl-ig-hero-t::before {        /* кремаво сияние зад текста — сцената отзад е шарена */
+  content: ''; position: absolute; z-index: -1; inset: -34px -46px -30px -40px; pointer-events: none;
+  background: radial-gradient(closest-side, rgba(255, 250, 244, .94) 0, rgba(255, 250, 244, .78) 55%, rgba(255, 250, 244, 0) 100%);
+}
+.pl-ig-hero-t h2 {
+  margin: 0; font-family: var(--pl-serif, Georgia, serif); font-size: 34px; font-weight: 700; line-height: 1.04;
+  color: var(--pl-navy, #1d2a5c); letter-spacing: -.5px; hyphens: none; overflow-wrap: break-word;
+  text-shadow: 0 1px 0 #fff, 0 0 16px rgba(255, 250, 244, .95);
+}
+.pl-ig-tag {
+  display: inline-block; padding: 6px 14px; border-radius: 999px;
+  background: var(--ig-rose-ink); color: #fff; font-size: 13.5px; font-weight: 800; font-variant-numeric: lining-nums;
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, .3), 0 4px 10px rgba(180, 58, 107, .28);
+}
+.pl-ig-hero-t p {
+  margin: 0; padding: 6px 10px; border-radius: 12px;
+  background: rgba(255, 250, 244, .9);
+  font-size: 13.5px; font-weight: 700; line-height: 1.35; color: var(--pl-ink, #3b3f5c);
+}
+.pl-ig-hero-t p i { font-style: normal; color: var(--ig-rose-ink); }
+
+/* тефтерът със стъпките (материал: .pl-felt) + златните халки на спиралата отляво */
+.pl-ig-book { margin: 0 12px; padding: 16px 14px 14px 36px; }
+.pl-ig-book::before {
+  content: ''; position: absolute; z-index: 1; left: -8px; top: 22px; bottom: 22px; width: 24px; pointer-events: none;
+  background: radial-gradient(ellipse 10px 6px at 50% 50%, transparent 0 55%, var(--ig-gold-b) 60% 80%, var(--ig-gold-c) 84% 94%, transparent 100%) center top / 24px 28px;
+  background-repeat: no-repeat space;
+  filter: drop-shadow(0 1px 1px rgba(110, 80, 20, .35));
+}
+.pl-ig-book h3 {
+  margin: 0 0 6px; text-align: center;
+  font-family: var(--pl-serif, Georgia, serif); font-size: 21px; font-weight: 700; line-height: 1.15; color: var(--pl-navy, #1d2a5c);
+}
+.pl-ig-book h3 i { font-style: normal; font-weight: 400; color: var(--ig-rose-ink); }
+.pl-ig-need {
+  display: block; width: fit-content; max-width: 100%; margin: 0 auto 4px; padding: 5px 13px; border-radius: 999px;
+  background: rgba(255, 255, 255, .8); border: 1px dashed #d8bfa5;
+  font-size: 13.5px; font-weight: 800; color: #5d4a3a; text-align: center;
+}
+.pl-ig-need[hidden] { display: none; }
+.pl-ig-steps { list-style: none; margin: 0; padding: 0; }
+.pl-ig-steps li {
+  display: grid; grid-template-columns: 42px minmax(0, 1fr); gap: 12px; align-items: center;
+  margin-top: 8px; padding: 10px 12px 10px 10px; border-radius: 18px;
+  background: rgba(255, 255, 255, .66);
+  box-shadow: inset 0 0 0 1px rgba(214, 186, 158, .6), 0 2px 0 rgba(214, 186, 158, .4);
+}
+.pl-ig-steps li b {
+  display: grid; place-items: center; width: 40px; height: 40px; border-radius: 50%;
+  font-family: var(--ig-sans); font-size: 19px; font-weight: 800; color: #fff; font-variant-numeric: lining-nums;
+  box-shadow: inset 0 2px 0 rgba(255, 255, 255, .3), inset 0 -3px 0 rgba(0, 0, 0, .14), 0 0 0 3px #fff, 0 3px 8px rgba(80, 60, 90, .22);
+}
+.pl-ig-steps li.st-1 b { background: #b43a6b; }
+.pl-ig-steps li.st-2 b { background: #2f5fa8; }
+.pl-ig-steps li.st-3 b { background: #2e7d57; }
+.pl-ig-steps li span { font-size: 15px; font-weight: 700; line-height: 1.4; color: var(--pl-ink, #3b3f5c); }
+
+/* таймерът (материал: .pl-felt): будилник · 05:00 · розов гел */
+/* 🪤 мерено 22.09: с колони auto/auto/1fr гелът (213px) лягаше върху „Примерно време“ —
+   сега бутонът е auto (колкото му трябва), а часът взима остатъка и надписът се пречупва */
+.pl-ig-timer {
+  display: grid; grid-template-columns: auto minmax(0, 1fr) auto; align-items: center; gap: 8px;
+  margin: 14px 12px 0; padding: 12px 11px 12px 10px;
+}
+.pl-ig-clock { width: 42px; height: 42px; }
+.pl-ig-time { display: flex; flex-direction: column; min-width: 0; }
+.pl-ig-time b { font-family: var(--ig-sans); font-size: 27px; font-weight: 800; line-height: 1; color: var(--pl-navy, #1d2a5c); font-variant-numeric: tabular-nums lining-nums; letter-spacing: -.4px; }
+.pl-ig-time small { margin-top: 3px; font-size: 12px; font-weight: 700; line-height: 1.15; color: #5d596f; overflow-wrap: break-word; }
+.pl-ig-go { justify-self: end; position: relative; z-index: 1; padding: 0 16px; gap: 8px; }
+
+.pl-ig-row2 { display: flex; justify-content: center; gap: 10px; margin: 12px 14px 0; }
+.pl-ig-row2:not(:has(button:not([hidden]))) { display: none; }
+.pl-ig-reset, .pl-ig-done {
+  min-height: 46px; padding: 0 18px; border-radius: 999px;
+  font: 800 15px/1 var(--ig-sans);
+}
+.pl-ig-reset[hidden], .pl-ig-done[hidden] { display: none; }
+
+/* „Запази идеята“ (материал: .pl-soft; aria-pressed → розов филц) */
+.pl-ig-fav {
+  display: flex; align-items: center; justify-content: center; gap: 10px;
+  width: calc(100% - 48px); min-height: 58px; margin: 14px auto 0;
+  border-radius: 999px;
+  font: 800 17.5px/1.1 var(--ig-sans);
+}
+.pl-ig-heart { flex: none; width: 26px; height: 26px; fill: none; stroke: #c8457a; stroke-width: 2.2; stroke-linejoin: round; }
+.pl-ig-fav[aria-pressed="true"] .pl-ig-heart { fill: #c8457a; }
+.pl-ig-note {
+  margin: 14px 20px 0; padding: 8px 12px; border-radius: 14px;
+  background: rgba(255, 250, 244, .92);
+  font-size: 12.5px; font-weight: 700; line-height: 1.45; text-align: center; color: #5d596f;
+}
+.pl-ig-sr { position: absolute; width: 1px; height: 1px; margin: -1px; padding: 0; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; border: 0; }
+
+/* ═══ 🌙 НОЩ — нощно синьо дърво и сцената под синьо було (като стаите в premium.css) ═══ */
+html[data-theme="dark"] .pl-ig { color: #e8e9f5; }
+html[data-theme="dark"] .pl-ig-i { mix-blend-mode: normal; border-radius: 50%; background-color: #fff; }
+html[data-theme="dark"] .pl-ig-av { background-color: #fde6ef; }
+html[data-theme="dark"] .pl-ig-stage-t small, html[data-theme="dark"] .pl-ig-stage-t em { color: #d6d8ee; }
+html[data-theme="dark"] .pl-ig-stage-t b, html[data-theme="dark"] .pl-ig-chev { color: #fff; }
+html[data-theme="dark"] .pl-ig-cab {
+  background:
+    repeating-linear-gradient(90deg, rgba(255, 255, 255, .025) 0 1px, transparent 1px 8px, rgba(255, 255, 255, .03) 8px 10px, transparent 10px 19px),
+    linear-gradient(180deg, #2d3b79 0, #243167 60%, #1e2a5a 100%);
+  box-shadow: inset 0 2px 0 rgba(255, 255, 255, .12), inset 0 0 0 1.5px rgba(255, 255, 255, .12), inset 0 -6px 0 rgba(0, 0, 0, .18),
+    0 5px 0 #151d44, 0 20px 32px rgba(0, 0, 0, .38);
+}
+html[data-theme="dark"] .pl-ig-tabs::after, html[data-theme="dark"] .pl-ig-drawers::before {
+  background: linear-gradient(180deg, #3d4a8a 0, #2d3a74 100%); box-shadow: inset 0 1px 0 rgba(255, 255, 255, .14), 0 3px 4px rgba(0, 0, 0, .3);
+}
+html[data-theme="dark"] .pl-ig-drawers::after { background: linear-gradient(90deg, #243167 0, #34427f 50%, #243167 100%); }
+html[data-theme="dark"] .pl-ig-tab i { width: 50px; height: 50px; margin: 0 0 3px; }
+html[data-theme="dark"] .pl-ig-game {
+  background: linear-gradient(90deg, #26336b 0, #22306a 100%);
+  box-shadow: 0 0 0 5px #34427f, 0 0 0 6.5px rgba(255, 255, 255, .12), 0 8px 14px rgba(0, 0, 0, .3);
+}
+html[data-theme="dark"] .pl-ig-game::after { box-shadow: inset 0 3px 8px rgba(0, 0, 0, .35), inset 0 0 0 1.5px rgba(255, 255, 255, .1); }
+/* нощем кремавата лява половина на картинката става кафеникава → по-дълъг преход, без шев */
+html[data-theme="dark"] .pl-ig-art {
+  filter: brightness(.55) saturate(.85);
+  -webkit-mask-image: linear-gradient(90deg, transparent 0, rgba(0, 0, 0, .45) 40%, #000 78%);
+  mask-image: linear-gradient(90deg, transparent 0, rgba(0, 0, 0, .45) 40%, #000 78%);
+}
+html[data-theme="dark"] .pl-ig-title { color: #fff; text-shadow: 0 1px 10px rgba(22, 32, 74, .9); }
+html[data-theme="dark"] .pl-ig-meta { color: #e3e5f5; background: rgba(27, 37, 84, .88); }
+html[data-theme="dark"] .pl-ig-eyebrow { color: #ffc2d8; }
+html[data-theme="dark"] .pl-ig-age { background: #1b2554; border-color: rgba(240, 210, 137, .6); color: #f6dfa4; box-shadow: none; }
+html[data-theme="dark"] .pl-ig-drawer { color: #fff; box-shadow: inset 0 1px 0 rgba(255, 255, 255, .12), 0 0 0 1.5px rgba(255, 255, 255, .12), 0 3px 6px rgba(0, 0, 0, .3); }
+html[data-theme="dark"] .pl-ig-drawer::after { border-color: rgba(255, 255, 255, .16); box-shadow: none; }
+html[data-theme="dark"] .pl-ig-drawer.d-first { background: linear-gradient(180deg, #2c5a5a 0, #244b50 100%); }
+html[data-theme="dark"] .pl-ig-drawer.d-box { background: linear-gradient(180deg, #34508f 0, #2b437c 100%); }
+html[data-theme="dark"] .pl-ig-drawer i { width: 40px; height: 40px; }
+
+html[data-theme="dark"] .pl-ig-veil { background: rgba(8, 12, 32, .6); }
+/* нощем: сцената × нощно синьо (multiply), а преходът отдолу е в САМОТО синьо (normal) — без шев */
+html[data-theme="dark"] .pl-ig-sheet {
+  background-color: #3a4580;
+  background-image: linear-gradient(180deg, rgba(58, 69, 128, 0) 0, rgba(58, 69, 128, 0) 88%, #3a4580 96%), url(../img/scene/igri.webp);
+  background-blend-mode: normal, multiply;
+  color: #e8e9f5; box-shadow: 0 0 40px rgba(0, 0, 0, .45);
+}
+html[data-theme="dark"] .pl-ig-x { background: rgba(27, 37, 84, .9); border-color: rgba(255, 255, 255, .2); color: #fff; }
+html[data-theme="dark"] .pl-ig-112 { background: #1b2554; border-color: rgba(255, 170, 180, .55); color: #ffc9d0; }
+html[data-theme="dark"] .pl-ig-hero-t::before { background: radial-gradient(closest-side, rgba(18, 26, 64, .82) 0, rgba(18, 26, 64, .55) 60%, rgba(18, 26, 64, 0) 100%); }
+html[data-theme="dark"] .pl-ig-hero-t h2 { color: #fff; text-shadow: 0 0 14px rgba(10, 16, 44, .95), 0 0 28px rgba(10, 16, 44, .8); }
+html[data-theme="dark"] .pl-ig-hero-t p { background: rgba(22, 32, 74, .88); color: #e3e5f5; }
+html[data-theme="dark"] .pl-ig-hero-t p i, html[data-theme="dark"] .pl-ig-book h3 i { color: #ffb3cf; }
+html[data-theme="dark"] .pl-ig-book h3, html[data-theme="dark"] .pl-ig-time b { color: #fff; }
+html[data-theme="dark"] .pl-ig-need { background: rgba(255, 255, 255, .08); border-color: rgba(255, 255, 255, .25); color: #e8e9f5; }
+html[data-theme="dark"] .pl-ig-steps li { background: rgba(255, 255, 255, .07); box-shadow: inset 0 0 0 1px rgba(255, 255, 255, .12); }
+html[data-theme="dark"] .pl-ig-steps li span { color: #eceefa; }
+html[data-theme="dark"] .pl-ig-steps li b { box-shadow: inset 0 2px 0 rgba(255, 255, 255, .25), 0 0 0 3px rgba(255, 255, 255, .85), 0 3px 8px rgba(0, 0, 0, .3); }
+html[data-theme="dark"] .pl-ig-time small { color: #d6d8ee; }
+html[data-theme="dark"] .pl-ig-heart { stroke: #ff9cc2; }
+html[data-theme="dark"] .pl-ig-fav[aria-pressed="true"] .pl-ig-heart { fill: #ff9cc2; }
+html[data-theme="dark"] .pl-ig-note { background: rgba(22, 32, 74, .9); color: #d6d8ee; }
+
+@media (prefers-reduced-motion: reduce) {
+  .pl-ig-sheet, .pl-ig-drawer { transition: none; }
+}
+/* тесни екрани (320–360px): рафтът и таймерът да не се чупят */
+@media (max-width: 360px) {
+  .pl-ig-tab span { font-size: 15px; }
+  .pl-ig-title { font-size: 22px; }
+  /* 🪤 видяно на снимка при 320px: „спомени“ излизаше вдясно от чекмеджето (за текста оставаха 46px) */
+  .pl-ig-drawer { gap: 4px; padding: 16px 7px 10px 7px; }
+  .pl-ig-drawer i { width: 30px; height: 30px; }
+  .pl-ig-drawer span { font-size: 13.5px; }
+  .pl-ig-drawer em { font-size: 20px; }
+  .pl-ig-timer { grid-template-columns: auto minmax(0, 1fr); }
+  .pl-ig-go { grid-column: 1 / -1; justify-self: stretch; }
+  .pl-ig-hero-t h2 { font-size: 30px; }
+}
