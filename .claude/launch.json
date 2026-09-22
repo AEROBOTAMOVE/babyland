@@ -21,12 +21,12 @@
     },
     {
       "name": "babyland-node",
-      "runtimeExecutable": "C:/Users/User/AppData/Local/OpenAI/Codex/bin/5b9024f90663758b/node.exe",
+      "runtimeExecutable": "C:/Users/User/.cache/codex-runtimes/codex-primary-runtime/dependencies/node/bin/node.exe",
       "runtimeArgs": [
-        "dev/statichttp.js",
-        "8911"
+        "C:/Users/User/Downloads/ЛОЦО/АПЛИКАЦИЯ ЗА БЕЙБИ ЛЕНД/babyland/dev/statichttp.js"
       ],
-      "port": 8911
+      "port": 8912,
+      "autoPort": true
     }
   ]
 }
