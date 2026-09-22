@@ -40,6 +40,17 @@
     // само childList: `textContent = …` сменя възела (childList); characterData би будил всяка секунда от таймерите
     new MutationObserver(отложено).observe(document.body, { childList: true, subtree: true });
   }
+  // 🐣 подскокът на плюшената иконка при докосване — едно делегирано слушане за целия документ;
+  //   класът се маха на animationend, за да може следващото докосване да подскочи пак.
+  const ИКОНА = '.pl-ti, .pl-art, .pl-fi, .pl-em, .pl-arch img, .pl-tt-i i';
+  const ДОКОСВАЕМО = '.sec-chip[data-pl], .pl-day-it, .pl-room, .dv-firstrow, .jr-chip, .jr-btn, .pl-soft, .pl-gel, .sos-big, button';
+  document.addEventListener('pointerdown', e => {
+    const б = e.target.closest && e.target.closest(ДОКОСВАЕМО); if (!б) return;
+    const и = б.querySelector(ИКОНА); if (!и) return;
+    и.classList.remove('pl-hop'); void и.offsetWidth; и.classList.add('pl-hop');
+  }, { passive: true });
+  document.addEventListener('animationend', e => { if (e.animationName === 'plHop' && e.target.classList) e.target.classList.remove('pl-hop'); }, true);
+
   if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', върви); else върви();
   window.BL_PL_UI = { мини };
 })();

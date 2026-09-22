@@ -433,8 +433,20 @@ html[data-theme="dark"] body .bb-dipbtn.bb-dipbtn, html[data-theme="dark"] body 
 html[data-theme="dark"] body .bb-dipnum { color: #fff !important; }
 html[data-theme="dark"] .pl-em { background: rgba(255, 255, 255, .12); box-shadow: inset 0 0 0 1.5px rgba(255, 255, 255, .18); }
 
+/* ═══ 15 · ЖИВОТЪТ — леки, ЕДНОКРАТНИ движения (само transform/opacity — композиторът ги движи
+   без прерисуване; нито една безкрайна: безкрайните ядат батерията, мерено на babylandeu 22.09).
+   · плюшената иконка подскача при докосване (pl-ui.js слага .pl-hop, маха го на animationend);
+   · плочката със заглавието на стаята изплува, сърчицето над нея тупва два пъти. ═══ */
+@keyframes plHop { 0% { transform: none; } 30% { transform: translateY(-5px) rotate(-7deg) scale(1.08); } 60% { transform: translateY(1px) rotate(5deg) scale(.98); } 100% { transform: none; } }
+.pl-hop { animation: plHop .46s cubic-bezier(.3, 1.4, .5, 1) both; }
+@keyframes plRise { from { opacity: 0; transform: translateY(14px); } to { opacity: 1; transform: none; } }
+@keyframes plBeat { 0%, 100% { transform: scale(1); } 40% { transform: scale(1.28); } 70% { transform: scale(.94); } }
+.pl-rhero .pl-rhero-t { animation: plRise .5s cubic-bezier(.2, .9, .3, 1) .08s both; }
+.pl-rhero .pl-rhero-t::before { animation: plBeat .9s ease .6s 2; transform-origin: 50% 70%; display: inline-block; }
+
 /* движението е по избор — при „по-малко движение“ натисканията не подскачат */
 @media (prefers-reduced-motion: reduce) {
+  .pl-hop, .pl-rhero .pl-rhero-t, .pl-rhero .pl-rhero-t::before { animation: none !important; }
   html body .jr-btn.jr-btn.running { animation: none; }
   html body .jr-btn.jr-btn, html body .jr-chip.jr-chip, html body .gl-row.gl-row { transition: none; }
 }
