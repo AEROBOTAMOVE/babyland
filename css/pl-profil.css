@@ -1,0 +1,548 @@
+/* ═══════════════════════════════════════════════════════════════════════════════
+   ✨ PREMIUM ПРОФИЛ · СЦЕНАТА + ТЕФТЕРЪТ (22.09.2026, втори кръг — „точно като референциите“)
+   Реф. 18 „Да се запознаем“: цялата 3D сцена отзад (бебето с плетеното сърце —
+   img/scene/profil.webp), заглавието в сериф ВЪРХУ сцената горе вляво, а долу върху килима —
+   тефтер със синя платнена подвързия, кремав филц, пунктирен шев и златно закопчаване.
+   В тефтера: полета-капсули с плюшена иконка в кръг, розов избор, розов гел бутон.
+   Реф. 15: бели редове — плюшена иконка в кръг, сериф, подред, „›“; 112 в червена рамка долу.
+   Облича екрана на js/profile.js (.prof-overlay > .prof-box). js/pl-profil.js премества
+   всичко след герба в <div class="pl-tefter pl-felt"> и слага класовете на материалите
+   (.pl-gel / .pl-soft / .pl-felt от css/pl-ui.css — тук НЯМА свой гел или филц).
+   Нощ (html[data-theme="dark"], app.js 21:00–7:00): сцената под нощно синьо було, тефтерът
+   е тъмносин филц — същото като въведението (premium.css, блок 📒).
+   Правила: докосване ≥ 44px, контраст ≥ 4.5:1 (изчислен: scratchpad/ag2_profil_kontrast.js),
+   390px без хоризонтален скрол, цифрите НЕ на Georgia (старинни цифри) — Nunito.
+   ПЪТ НАЗАД: махни <link href="css/pl-profil.css"> и <script src="js/pl-profil.js"> от
+   index.html — profile.css остава непокътнат и старият вид се връща сам.
+   🪤 url() тук е спрямо ФАЙЛА (css/) → ../img/…
+   ═══════════════════════════════════════════════════════════════════════════════ */
+
+/* ═══ 1 · НАСЛАГВАНЕТО = СЦЕНАТА ═══
+   Фонът е на самото превъртащо се наслагване: с подразбиращото се background-attachment
+   (scroll) той НЕ се мести със съдържанието — сцената стои, тефтерът се плъзга над нея
+   (както стаите). Размазването отпада: сцената е плътна, а backdrop-filter струва батерия. */
+html .prof-overlay {
+  background: #f6ede3 url(../img/scene/profil.webp) 50% 0 / cover no-repeat;
+  -webkit-backdrop-filter: none; backdrop-filter: none;
+  padding: calc(env(safe-area-inset-top, 0px) + 8px) 12px 120px;
+  overflow-x: hidden;
+}
+/* широк/легнал екран: цялата височина на сцената, по средата, кремаво отстрани (иначе бебето е 3× по-голямо) */
+@media (min-aspect-ratio: 3/4) {
+  html .prof-overlay { background-size: auto 100%; }
+}
+html .prof-overlay .prof-box {
+  max-width: 480px; padding: 0; margin: 0 auto;
+  background: transparent; border-radius: 0; box-shadow: none;
+  color: var(--pl-ink, #3b3f5c);
+  font-family: Nunito, 'Nunito-fallback', system-ui, sans-serif;
+}
+
+/* ✕ — горе вляво, където в референцията е „‹“ (и където стаите имат ←). Материалът е .pl-soft.
+   Закрепен (fixed): тефтерът е ~4700 px и затварянето трябва да е под пръста навсякъде, както ← в стаите. */
+html .prof-overlay .prof-close {
+  position: fixed; top: calc(env(safe-area-inset-top, 0px) + 12px); left: max(12px, calc(50% - 240px)); right: auto; z-index: 7;
+  width: 46px; height: 46px; min-width: 46px; min-height: 46px; padding: 0;
+  border-radius: 50%; font-size: 17px; font-weight: 800; line-height: 1;
+}
+/* ✚ 112 — горе вдясно, закрепено: ВИНАГИ видимо (правило 5), като SOS в главата на стаите.
+   #b3261e върху бяло = 6.5:1; цифрите — Nunito. Редът „Спешна помощ · 112“ остава и най-долу (реф. 15). */
+html .prof-overlay .pl-p112-mini {
+  position: fixed; z-index: 7;
+  top: calc(env(safe-area-inset-top, 0px) + 12px); right: max(14px, calc(50% - 240px));
+  display: inline-flex; align-items: center; gap: 6px;
+  min-width: 46px; min-height: 46px; padding: 0 14px 0 11px; border-radius: 999px;
+  background: #fff; border: 2px solid #d9535f; color: #b3261e; text-decoration: none;
+  font: 800 16px/1 Nunito, 'Nunito-fallback', system-ui, sans-serif; letter-spacing: .2px;
+  box-shadow: 0 2px 0 #eab0b6, 0 8px 18px rgba(200, 60, 60, .20);
+  transition: transform .14s ease;
+}
+html .prof-overlay .pl-p112-mini > span { color: #d0312d; font-size: 17px; }
+html .prof-overlay .pl-p112-mini:active { transform: translateY(2px); box-shadow: 0 0 0 #eab0b6, 0 4px 10px rgba(200, 60, 60, .18); }
+
+/* ═══ 2 · ГЕРБЪТ ВЪРХУ СЦЕНАТА (лицето, името в сериф, подредът) ═══
+   Текстът е вляво (до 60%), бебето на сцената е вдясно (x 242–359 px при 390). Тефтерът
+   тръгва под рафта с бебето (min-height), а при дълго име просто слиза по-надолу. */
+html .prof-overlay .prof-hero {
+  position: relative; isolation: isolate; overflow: visible;
+  margin: 0; padding: 4px 0 20px 4px;
+  min-height: 258px; border-radius: 0;
+  display: flex; flex-direction: column; align-items: flex-start; justify-content: flex-start; gap: 0;
+  text-align: left; background: none;
+}
+html .prof-overlay .prof-hero::before { content: none; display: none; }
+/* мек светъл ореол зад текста — четимост върху прозореца и завесите на сцената */
+html .prof-overlay .prof-hero::after {
+  content: ''; position: absolute; z-index: -1; pointer-events: none;
+  left: -12px; top: -8px; width: 74%; height: 100%;
+  background: radial-gradient(75% 62% at 32% 52%, rgba(255, 250, 244, .86) 0, rgba(255, 250, 244, .55) 52%, rgba(255, 250, 244, 0) 78%);
+}
+/* лицето на мама — бял кръг с розов пръстен, вдясно от ✕ (като логото в реф. 18) */
+html .prof-overlay .prof-avbtn {
+  width: 72px; height: 72px; flex: none; padding: 0; margin: 0 0 0 58px;
+  display: grid; place-items: center; overflow: hidden;
+  border: 0; border-radius: 50%;
+  background: #fdeef4 radial-gradient(circle at 35% 30%, #fff 0, #fdeef4 72%);
+  box-shadow: 0 0 0 3px #fff, 0 0 0 5px #f6c2d6, 0 8px 18px rgba(170, 118, 118, .26);
+  font-size: 38px; line-height: 1;
+}
+html .prof-overlay .prof-avbtn:hover { transform: none; }
+html .prof-overlay .prof-avbtn:active { transform: scale(.95); }
+html .prof-overlay .prof-avbtn .prof-big { font-size: 40px; }
+html .prof-overlay .prof-avbtn .prof-photo { width: 72px; height: 72px; border: 0; border-radius: 50%; }
+html .prof-overlay .prof-hero .prof-name {
+  display: flex; align-items: center; flex-wrap: wrap; gap: 2px 8px;
+  max-width: 64%; margin: 16px 0 0;
+  font-family: var(--pl-serif, Georgia, 'Noto Serif', serif); font-weight: 700;
+  font-size: clamp(32px, 10vw, 40px); line-height: 1.04; letter-spacing: -.6px; color: var(--pl-navy, #1d2a5c);
+  text-shadow: 0 1px 0 #fff, 0 0 16px rgba(255, 250, 244, .95), 0 0 30px rgba(255, 250, 244, .8);
+  overflow-wrap: anywhere;
+}
+html .prof-overlay .prof-hero .prof-name::after {
+  content: '♡'; order: 1; font-weight: 400; font-size: .78em; color: #d95a8e; text-shadow: none;
+}
+/* ✏️ — малко филцово копче до името (.pl-soft) */
+html .prof-overlay .prof-edit {
+  order: 2; width: 44px; height: 44px; min-width: 44px; min-height: 44px; padding: 0;
+  border-radius: 50%; opacity: 1; font-size: 16px; text-shadow: none;
+}
+html .prof-overlay .prof-hero .prof-sub {
+  max-width: 60%; margin: 8px 0 0; text-wrap: balance;
+  font-size: 14.5px; font-weight: 700; line-height: 1.4; color: var(--pl-navy, #1d2a5c);
+  text-shadow: 0 0 10px rgba(255, 250, 244, .95), 0 0 20px rgba(255, 250, 244, .9);
+}
+html .prof-overlay .prof-hero .prof-sub strong { color: var(--pl-navy, #1d2a5c); font-family: Nunito, 'Nunito-fallback', sans-serif; }
+/* редакторът на името (✏️ → поле + „✓ Готово“, profile.js:768); материалът на .jr-word е от pl-ui */
+html .prof-overlay .prof-hero .prof-name .jr-word {
+  flex: 1 1 150px; min-width: 0; min-height: 50px; padding: 0 18px; border-radius: 999px;
+  font: 700 18px/1.2 Nunito, 'Nunito-fallback', sans-serif; text-shadow: none;
+}
+html .prof-overlay .prof-hero .prof-name .jr-chip { min-height: 48px; font: 800 14px/1 Nunito, 'Nunito-fallback', sans-serif; text-shadow: none; }
+
+/* ── гостът: „Здравей! Още не се познаваме. ♡“ като „Да се запознаем ♡“ ── */
+html .prof-overlay .prof-hero-guest { padding-top: 60px; min-height: 270px; }
+html .prof-overlay .prof-hero-guest .prof-big { display: none; }   /* сцената вече има герой */
+html .prof-overlay .prof-hero-guest h3 {
+  max-width: 58%; margin: 0;
+  font-family: var(--pl-serif, Georgia, 'Noto Serif', serif); font-weight: 700;
+  font-size: 31px; line-height: 1.05; letter-spacing: -.5px; color: var(--pl-navy, #1d2a5c);
+  text-shadow: 0 1px 0 #fff, 0 0 16px rgba(255, 250, 244, .95), 0 0 30px rgba(255, 250, 244, .8);
+}
+html .prof-overlay .prof-hero-guest h3::after { content: '\00a0♡'; font-weight: 400; color: #d95a8e; text-shadow: none; }   /* неразделим интервал: сърцето не остава само на ред */
+html .prof-overlay .prof-hero-guest p {
+  max-width: 57%; margin: 12px 0 0;
+  font-size: 14px; font-weight: 700; line-height: 1.45; color: var(--pl-navy, #1d2a5c);
+  text-shadow: 0 0 10px rgba(255, 250, 244, .95), 0 0 20px rgba(255, 250, 244, .9);
+}
+html .prof-overlay .prof-hero-guest p strong { color: var(--pl-navy, #1d2a5c); }
+
+/* ═══ 3 · ТЕФТЕРЪТ (реф. 18): синя платнена подвързия + кремав филц (.pl-felt) + шев + закопчаване ═══
+   🪤 .pl-felt в pl-ui.css е (0,2,2) с !important → тук (0,3,2) с !important. */
+html body .prof-overlay .pl-tefter.pl-felt {
+  position: relative; z-index: 1;
+  margin: 0; padding: 20px 16px 22px;
+  border: 10px solid #b9cdee !important; border-radius: 34px !important;
+  box-shadow: 0 0 0 1.5px #9fb6df, inset 0 0 0 1.5px #e3d2c0, 0 22px 50px rgba(80, 60, 70, .30) !important;
+}
+/* златното закопчаване с сърце отдясно — стърчи над подвързията, в полето на наслагването */
+html body .prof-overlay .pl-tefter.pl-felt::before {
+  content: '♡'; position: absolute; right: -20px; top: 138px; z-index: 4;
+  width: 24px; height: 58px; border-radius: 12px;
+  display: grid; place-items: center;
+  background: linear-gradient(90deg, #f7e2a8 0, #e0b865 45%, #c1913e 100%);
+  box-shadow: 0 4px 10px rgba(150, 105, 40, .35), inset 0 1px 0 rgba(255, 255, 255, .7), inset -2px 0 0 rgba(120, 80, 20, .18);
+  color: #fff8e8; font-size: 13px; font-weight: 800; pointer-events: none;
+}
+
+/* ── страниците: разделите лежат направо върху филца, делени с пунктирен шев (като тефтер) ── */
+html .prof-overlay .pl-tefter .prof-card {
+  margin: 0; padding: 18px 2px;
+  background: none; border: 0; border-radius: 0; box-shadow: none;
+  border-top: 1.5px dashed rgba(196, 160, 124, .55);
+}
+html .prof-overlay .pl-tefter > .prof-card:first-child { border-top: 0; padding-top: 4px; }
+html .prof-overlay .pl-tefter > .prof-card:last-of-type { padding-bottom: 8px; }
+html .prof-overlay .prof-h {
+  margin: 0 0 12px;
+  font-family: var(--pl-serif, Georgia, 'Noto Serif', serif); font-weight: 700;
+  font-size: 20px; line-height: 1.2; letter-spacing: -.2px; color: var(--pl-navy, #1d2a5c);
+}
+/* заглавие с плюшена иконка в кръг (js слага .pl-hi) */
+html .prof-overlay .prof-h[data-pl] { display: grid; grid-template-columns: 48px 1fr; column-gap: 12px; align-items: center; }
+html .prof-overlay .pl-hi {
+  width: 48px; height: 48px; border-radius: 50%;
+  display: grid; place-items: center; font-size: 22px; font-family: system-ui, sans-serif;
+  background-color: var(--pl-tint, #fde6ef);
+  box-shadow: inset 0 0 0 3px #fff, 0 3px 8px rgba(110, 76, 52, .14);
+}
+html .prof-overlay .prof-h[data-pl]:has(> .prof-hsub) .pl-hi { grid-row: 1 / span 2; }
+html .prof-overlay .pl-hi.has-art, html .prof-overlay .pl-ri.has-art, html .prof-overlay .pl-fi.has-art, html .prof-overlay .pl-pv-av {
+  background-repeat: no-repeat; background-size: 400% 400%; background-blend-mode: multiply;
+}
+html .prof-overlay .prof-h[data-pl] .prof-hsub {
+  grid-column: 2; margin: 2px 0 0;
+  font-family: Nunito, 'Nunito-fallback', sans-serif; font-size: 13px; font-weight: 700; letter-spacing: 0;
+  color: #5d596f;
+}
+/* второстепенният текст върху филца: #5d596f (6.4:1 върху кремаво; филцът го смъква до ~5.6 — мерено) */
+html .prof-overlay .prof-hsub { color: #5d596f; }
+html .prof-overlay .prof-note { font-size: 13.5px; font-weight: 600; line-height: 1.5; color: #5d596f; }
+html .prof-overlay .jr-privacy { margin: 10px 4px 2px; padding: 0; text-align: left; font-size: 12.5px; font-weight: 600; line-height: 1.5; color: #5d596f; opacity: 1; }
+html .prof-overlay .prof-legal { margin: 16px 6px 0; font-size: 12.5px; font-weight: 600; line-height: 1.5; color: #5d596f; text-align: center; }
+html .prof-overlay .prof-err { color: #b3261e; font-weight: 800; }
+html .prof-overlay .prof-warn {
+  margin: 10px 0 4px; padding: 10px 12px; border-radius: 16px;
+  background: #fff0d4; border: 1px solid #f3d9a4; color: #6b4308; font-size: 12.5px; line-height: 1.5;
+}
+
+/* ── изборът на лице (отваря се от лицето) — бяла страничка, залепена в тефтера ── */
+html .prof-overlay .prof-avwrap {
+  margin: 0 0 14px; padding: 14px 12px; border-radius: 22px;
+  background: rgba(255, 255, 255, .8); border: 1px solid rgba(214, 186, 158, .55);
+  box-shadow: 0 2px 0 rgba(203, 176, 150, .45), 0 8px 18px rgba(110, 76, 52, .08);
+}
+html .prof-overlay .prof-avtabs { gap: 8px; justify-content: flex-start; margin-bottom: 10px; flex-wrap: wrap; }
+/* табовете и лицата: материалът е .pl-soft (избраното = .on → розов филц) */
+html .prof-overlay .prof-avtab { min-height: 44px; padding: 8px 16px; border-radius: 999px; font-size: 14px; font-weight: 800; }
+html .prof-overlay .prof-avgrid { gap: 8px; }
+html .prof-overlay .prof-av { width: 48px; height: 48px; font-size: 24px; border-radius: 50%; }
+html .prof-overlay .prof-av.on { transform: none; }
+html .prof-overlay .prof-avpick label.prof-cta.pl-soft { display: flex; align-items: center; justify-content: center; min-height: 48px; border-radius: 999px; font-size: 15px; font-weight: 800; }
+
+/* ═══ 4 · ВИЗИТКАТА НА БЕБЕТО — първият ред в тефтера (като главата на панела в реф. 15) ═══ */
+html .prof-overlay .pl-pv {
+  position: relative; z-index: 2;
+  display: flex; align-items: center; gap: 12px;
+  width: 100%; min-height: 76px; margin: 0 0 14px;
+  padding: 10px 12px 10px 10px;
+  border: 1px solid rgba(214, 186, 158, .6); border-radius: 22px;
+  background: #fff;
+  box-shadow: 0 2px 0 rgba(203, 176, 150, .5), 0 8px 18px rgba(110, 76, 52, .09);
+  color: var(--pl-navy, #1d2a5c); text-align: left; cursor: pointer; font: inherit;
+  transition: transform .14s ease, box-shadow .14s ease;
+}
+html .prof-overlay .pl-pv:active { transform: translateY(2px); box-shadow: 0 0 0 rgba(203, 176, 150, .5), 0 3px 8px rgba(110, 76, 52, .08); }
+html .prof-overlay .pl-pv-av {
+  width: 56px; height: 56px; flex: none; border-radius: 50%;
+  background-color: var(--pl-tint, #fde6ef);
+  box-shadow: inset 0 0 0 3px #fff, 0 2px 6px rgba(110, 76, 52, .12);
+}
+html .prof-overlay .pl-pv-t { flex: 1 1 auto; min-width: 0; }
+html .prof-overlay .pl-pv b { display: block; font-family: var(--pl-serif, Georgia, serif); font-size: 19px; font-weight: 700; line-height: 1.2; }
+html .prof-overlay .pl-pv b .pl-num { font-family: Nunito, 'Nunito-fallback', sans-serif; font-weight: 800; font-size: 17px; }
+html .prof-overlay .pl-pv small { display: block; margin-top: 3px; font-family: Nunito, 'Nunito-fallback', sans-serif; font-size: 13px; font-weight: 700; color: #5d596f; }
+html .prof-overlay .pl-pv-go { flex: none; width: 22px; text-align: center; font-size: 28px; line-height: 1; color: var(--pl-navy, #1d2a5c); }
+
+/* ═══ 5 · СЪДЪРЖАНИЕТО НА СТРАНИЦИТЕ ═══ */
+/* ── 🌞 Днес: розовият кръг и капсулите ── */
+html .prof-overlay .prof-ringbg { stroke: #f3dde6; }
+html .prof-overlay .prof-ringfill { stroke: #d95a8e; }
+/* 🪤 числата НЕ са в сериф: Georgia има само „старинни“ цифри и 0/6 се чете като „o/6“ (видяно на снимка) */
+html .prof-overlay .prof-ringtxt { fill: var(--pl-navy, #1d2a5c); font-family: Nunito, 'Nunito-fallback', sans-serif; font-weight: 800; font-size: 17px; }
+html .prof-overlay .prof-tditem {
+  opacity: 1; padding: 6px 11px; border-radius: 999px;
+  background: rgba(255, 255, 255, .7); border: 1px dashed #dcc3ab; color: #5d596f; font-size: 12.5px; font-weight: 700;
+}
+html .prof-overlay .prof-tditem.on { background: var(--pl-mint, #dff2e7); border: 1px solid #bfe3cc; color: #1f5a3f; }
+html .prof-overlay .prof-daycnt { color: var(--pl-navy, #1d2a5c); font-weight: 700; }
+
+/* ── 🔥 серията ── */
+html .prof-overlay .prof-strow { gap: 10px; }
+html .prof-overlay .prof-stbox { padding: 14px 6px; border-radius: 20px; background: var(--pl-butter, #fff0d4); box-shadow: inset 0 0 0 1px #f0dcb2, 0 2px 0 #ecd3a2; }
+html .prof-overlay .prof-stbox + .prof-stbox { background: var(--pl-peach, #fde5d8); box-shadow: inset 0 0 0 1px #f1cdb9, 0 2px 0 #eac0a9; }
+html .prof-overlay .prof-stn { font-family: Nunito, 'Nunito-fallback', sans-serif; font-weight: 800; font-size: 26px; color: var(--pl-navy, #1d2a5c); }
+html .prof-overlay .prof-stl { opacity: 1; font-size: 12.5px; font-weight: 700; color: #5d596f; }
+
+/* ── 📅 седмицата: розова скала ── */
+html .prof-overlay .prof-wdot { width: 30px; height: 30px; background: #efe4d9; }
+html .prof-overlay .prof-wdot.w1 { background: #fbd3e1; }
+html .prof-overlay .prof-wdot.w2 { background: var(--pl-pink-2, #f59cbb); }
+html .prof-overlay .prof-wdot.w3 { background: #d95a8e; }
+html .prof-overlay .prof-wdot.wt { outline: 2px solid #d95a8e; outline-offset: 2px; }
+html .prof-overlay .prof-wlbl { font-size: 12px; font-weight: 700; color: #5d596f; }
+
+/* ── ⭐ нивото ── */
+html .prof-overlay .prof-lvle {
+  width: 58px; height: 58px; flex: none; border-radius: 50%;
+  display: grid; place-items: center; font-size: 30px;
+  background: var(--pl-butter, #fff0d4); box-shadow: inset 0 0 0 3px #fff, 0 3px 8px rgba(110, 76, 52, .14);
+}
+/* „Ниво 2 · …“ — в Nunito: числото идва в текста от profile.js:799 и не може да се отдели */
+html .prof-overlay .prof-lvln { font-family: Nunito, 'Nunito-fallback', sans-serif; font-weight: 800; font-size: 16px; color: var(--pl-navy, #1d2a5c); }
+html .prof-overlay .prof-lvlxp { font-size: 13px; font-weight: 700; color: #5d596f; }
+html .prof-overlay .prof-lvlxp [data-cnt] { font-family: Nunito, 'Nunito-fallback', sans-serif; }
+html .prof-overlay .prof-bar { height: 12px; background: #efe2d6; box-shadow: inset 0 1px 2px rgba(110, 76, 52, .12); }
+html .prof-overlay .prof-fill { background: linear-gradient(90deg, var(--pl-pink-2, #f59cbb), #d95a8e); }
+
+/* ── 🎯 целите: бели редове + филцови плочки за избор (.pl-soft) ── */
+html .prof-overlay .prof-goal {
+  gap: 10px; margin: 8px 0; padding: 8px 6px 8px 10px;
+  background: #fff; border: 1px solid rgba(214, 186, 158, .6); border-radius: 20px;
+  box-shadow: 0 2px 0 rgba(203, 176, 150, .45);
+}
+html .prof-overlay .prof-goal.done { opacity: 1; background: #f3faf5; border-color: #cfe9d8; }
+html .prof-overlay .prof-ge { width: 42px; height: 42px; flex: none; border-radius: 50%; display: grid; place-items: center; font-size: 21px; background: var(--pl-lilac, #ece4f8); }
+html .prof-overlay .prof-gn { font-size: 14px; font-weight: 800; color: var(--pl-navy, #1d2a5c); }
+html .prof-overlay .prof-gp { font-family: Nunito, 'Nunito-fallback', sans-serif; font-size: 13px; font-weight: 800; color: var(--pl-navy, #1d2a5c); }
+html .prof-overlay .prof-gx { width: 44px; height: 44px; min-width: 44px; min-height: 44px; border-radius: 50%; opacity: 1; font-size: 20px; color: #5d596f; }
+/* 17 цели по една на ред = 1400px скрол (видяно на снимка) → две колони плочки */
+html .prof-overlay .prof-gmenu { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
+html .prof-overlay .prof-gmenu .prof-gadd {
+  min-height: 50px; padding: 8px 10px; border-radius: 18px;
+  justify-content: flex-start; text-align: left;
+  font-size: 12.5px; font-weight: 800; line-height: 1.25;
+}
+
+/* ── 🏆 наградите и 🏅 медальончетата ── */
+html .prof-overlay .prof-st { border-radius: 14px; }
+/* 40 медальона: лента от два реда, която се плъзга настрани САМО вътре в тефтера,
+   спечелените излизат първи (снимки 22.09: по 3/4 на ред = 1400px скрол или срязани думи) */
+html .prof-overlay .prof-shelf {
+  display: grid; grid-auto-flow: column; grid-template-rows: repeat(2, auto); grid-template-columns: none;
+  grid-auto-columns: 94px; gap: 8px;
+  overflow-x: auto; overscroll-behavior-x: contain; scroll-snap-type: x proximity; -webkit-overflow-scrolling: touch;
+  margin: 0 -16px; padding: 2px 16px 10px; scroll-padding: 0 16px;
+  scrollbar-width: thin; scrollbar-color: #e7bccd transparent;
+}
+html .prof-overlay .prof-shelf > .prof-medal { scroll-snap-align: start; }
+html .prof-overlay .prof-shelf > .prof-medal.got { order: -1; }
+html .prof-overlay .prof-me { width: 40px; height: 40px; margin: 0 auto; display: grid; place-items: center; font-size: 24px; line-height: 1; }
+html .prof-overlay .prof-medal { padding: 8px 3px; border-radius: 18px; background: rgba(255, 255, 255, .78); border: 1px solid rgba(214, 186, 158, .55); }
+html .prof-overlay .prof-medal.got { background: linear-gradient(180deg, #fffaf0 0, #fff2d6 100%); border-color: #f0d289; box-shadow: 0 2px 0 #ecd3a2, 0 4px 12px rgba(214, 170, 70, .16); }
+html .prof-overlay .prof-medal:not(.got) { opacity: 1; filter: none; }
+html .prof-overlay .prof-medal:not(.got) .prof-me { filter: grayscale(1); opacity: .7; }
+html .prof-overlay .prof-mn { margin-top: 4px; font-size: 11px; line-height: 1.2; font-weight: 800; color: var(--pl-navy, #1d2a5c); }
+html .prof-overlay .prof-medal:not(.got) .prof-mn { color: #5d596f; }
+
+/* ── 👨‍👩‍👧 семейството: бели редове като в реф. 15 ── */
+html .prof-overlay .prof-fam {
+  gap: 12px; margin: 8px 0; padding: 8px;
+  background: #fff; border: 1px solid rgba(214, 186, 158, .6); border-radius: 20px;
+  box-shadow: 0 2px 0 rgba(203, 176, 150, .45);
+}
+html .prof-overlay .prof-fame { width: 48px; height: 48px; flex: none; border-radius: 50%; display: grid; place-items: center; font-size: 25px; background: var(--pl-sky, #dfeafb); }
+html .prof-overlay .prof-fam:nth-child(3n+1) .prof-fame { background: var(--pl-pink-soft, #fde6ef); }
+html .prof-overlay .prof-fam:nth-child(3n+3) .prof-fame { background: var(--pl-mint, #dff2e7); }
+html .prof-overlay .prof-fammid strong { font-family: var(--pl-serif, Georgia, serif); line-height: 1.2; font-size: 17px; font-weight: 700; color: var(--pl-navy, #1d2a5c); }
+html .prof-overlay .prof-fammid small { display: block; margin-top: 2px; line-height: 1.35; font-size: 12.5px; font-weight: 700; color: #5d596f; }
+html .prof-overlay .prof-fam .jr-chip {
+  width: 44px; height: 44px; min-width: 44px; min-height: 44px; padding: 0 !important; flex: none;
+  display: grid; place-items: center; border-radius: 50% !important; font-size: 17px;
+}
+
+/* ── 📊 в числа: пастелни плочки ── */
+html .prof-overlay .prof-stats { gap: 8px; }
+html .prof-overlay .prof-stat { padding: 12px 4px; border-radius: 18px; background: var(--pl-pink-soft, #fde6ef); box-shadow: 0 2px 0 rgba(203, 176, 150, .4); }
+html .prof-overlay .prof-stat:nth-child(4n+2) { background: var(--pl-sky, #dfeafb); }
+html .prof-overlay .prof-stat:nth-child(4n+3) { background: var(--pl-mint, #dff2e7); }
+html .prof-overlay .prof-stat:nth-child(4n+4) { background: var(--pl-lilac, #ece4f8); }
+html .prof-overlay .prof-sn { font-family: Nunito, 'Nunito-fallback', sans-serif; font-weight: 800; font-size: 22px; color: var(--pl-navy, #1d2a5c); }
+html .prof-overlay .prof-stats > .prof-note { grid-column: 1 / -1; margin: 0; }
+html .prof-overlay .prof-sl { opacity: 1; font-size: 11px; font-weight: 700; color: #4d4a66; }
+
+/* ═══ 6 · БУТОНИТЕ ═══ */
+/* необлечените .prof-cta (ако JS не е минал): кремава капсула с розов ръб — да не остане старото лилаво */
+html .prof-overlay .prof-cta {
+  min-height: 50px; padding: 12px 18px; border-radius: 999px;
+  background: #fff; border: 1.5px solid #f3c6d6; color: #a8365f;
+  font-size: 15px; font-weight: 800; box-shadow: 0 2px 0 #eab4c8;
+}
+html .prof-overlay .prof-cta:hover { filter: none; }
+/* главният (реф. 18 „Към нашия свят ›“) — „Създай профила ми“. Материалът е .pl-gel; тук само формата. */
+html .prof-overlay .prof-cta.pl-gel {
+  display: flex; align-items: center; justify-content: center; gap: 10px;
+  min-height: 60px; margin-top: 20px; border-radius: 999px;
+  font-size: 19px; font-weight: 800; letter-spacing: .2px;
+}
+html .prof-overlay .prof-cta.pl-gel:not(.pl-row)::after { content: '›'; font-size: 28px; line-height: 1; margin-top: -3px; }
+/* „Разбрах — презареди“ и подобните второстепенни — .pl-soft */
+html .prof-overlay .prof-cta.pl-soft:not(.pl-row) { display: flex; align-items: center; justify-content: center; border-radius: 999px; }
+
+/* ── редовете-списък (реф. 15): бял ред · плюшена иконка в кръг · сериф · подред · › ── */
+html .prof-overlay .prof-quick:has(.pl-row) { display: flex; flex-direction: column; gap: 10px; }
+html .prof-overlay button.pl-row, html .prof-overlay label.pl-row {
+  display: flex; align-items: center; gap: 12px;
+  width: 100%; min-height: 68px; margin: 10px 0 0; padding: 9px 12px 9px 9px;
+  background: #fff; border: 1px solid rgba(214, 186, 158, .6); border-radius: 22px;
+  box-shadow: 0 2px 0 rgba(203, 176, 150, .5), 0 8px 18px rgba(110, 76, 52, .08);
+  color: var(--pl-navy, #1d2a5c); text-align: left; cursor: pointer;
+  font: inherit; font-weight: 400; letter-spacing: 0;
+  transition: transform .14s ease, box-shadow .14s ease;
+}
+html .prof-overlay .prof-quick > .pl-row { margin: 0; }
+html .prof-overlay .pl-row:hover { filter: none; }
+html .prof-overlay .pl-row:not(.pl-gel):active { transform: translateY(2px); box-shadow: 0 0 0 rgba(203, 176, 150, .5), 0 3px 8px rgba(110, 76, 52, .08); }
+html .prof-overlay .pl-ri {
+  width: 50px; height: 50px; flex: none; border-radius: 50%;
+  background-color: var(--pl-tint, #fde6ef);
+  box-shadow: inset 0 0 0 3px #fff, 0 2px 6px rgba(110, 76, 52, .12);
+}
+html .prof-overlay .pl-rt { flex: 1 1 auto; min-width: 0; }
+html .prof-overlay .pl-rt b {
+  display: block; font-family: var(--pl-serif, Georgia, 'Noto Serif', serif);
+  font-size: 17px; font-weight: 700; line-height: 1.2; color: var(--pl-navy, #1d2a5c);
+}
+html .prof-overlay .pl-rt small { display: block; margin-top: 3px; font-family: Nunito, 'Nunito-fallback', sans-serif; font-size: 13px; font-weight: 700; line-height: 1.3; color: #5d596f; }
+html .prof-overlay .pl-rgo { flex: none; width: 22px; text-align: center; font-size: 30px; font-weight: 400; line-height: 1; color: var(--pl-navy, #1d2a5c); }
+/* главният ред („Свали резервно копие“) = розов гел (.pl-gel) с бял кръг за иконката — като „Нов здравен запис ›“ в реф. 15.
+   Заглавието е 19px удебелено (голям текст по WCAG, прагът е 3:1); под него гелът е ≥ #d95a8e = 3.6:1, подредът е долу върху #c8457a = 4.6:1. */
+html .prof-overlay .pl-row.pl-gel { min-height: 72px; border-radius: 24px; gap: 10px; padding-right: 10px; }
+html .prof-overlay .pl-row.pl-gel .pl-rt b { color: #fff; font-size: 18.7px; letter-spacing: -.3px; }
+html .prof-overlay .pl-row.pl-gel .pl-rt small { color: #fff; font-weight: 800; }
+html .prof-overlay .pl-row.pl-gel .pl-ri { background-color: #fff; box-shadow: 0 2px 0 rgba(120, 20, 60, .25); }
+html .prof-overlay .pl-row.pl-gel .pl-rgo { color: #fff; }
+html .prof-overlay .prof-inline .pl-row { margin-top: 0; }
+html .prof-overlay .prof-inline { margin-top: 10px; }
+
+/* ═══ 7 · РЕГИСТРАЦИЯТА КАТО РЕФ. 18: иконка в кръг вляво · серифен етикет · капсула ═══ */
+html .prof-overlay .pl-fld { display: grid; grid-template-columns: 54px 1fr; column-gap: 12px; align-items: start; margin: 16px 0 0; }
+html .prof-overlay .pl-fi { width: 54px; height: 54px; border-radius: 50%; margin-top: 2px; background-color: var(--pl-tint, #dfeafb); box-shadow: inset 0 0 0 3px #fff, 0 3px 10px rgba(110, 76, 52, .16); }
+html .prof-overlay .pl-fld-b { min-width: 0; }
+html .prof-overlay .pl-fld-l, html .prof-overlay .pl-fld-b > .prof-note.pl-fld-l {
+  display: block; margin: 2px 0 8px;
+  font-family: var(--pl-serif, Georgia, 'Noto Serif', serif); font-size: 17px; font-weight: 700; line-height: 1.25; color: var(--pl-navy, #1d2a5c);
+}
+/* полето — вдлъбната капсула (същото облекло като .jr-word в pl-ui.css, раздел 4) */
+html .prof-overlay .prof-inp {
+  min-height: 54px; padding: 0 20px; border-radius: 999px;
+  background: #fffdf9; border: 1.5px solid #e9d6c3; color: var(--pl-navy, #1d2a5c);
+  font-size: 17px; font-weight: 700;
+  box-shadow: inset 0 2px 4px rgba(110, 76, 52, .10), inset 0 -1px 0 #fff;
+}
+html .prof-overlay .prof-inp::placeholder { color: #7a6f80; font-weight: 600; }   /* 4.7:1 върху #fffdf9 (pl-ui.css:119) */
+html .prof-overlay .prof-inp:focus { outline: none; border-color: #d95a8e; box-shadow: 0 0 0 4px rgba(217, 90, 142, .28), inset 0 2px 4px rgba(110, 76, 52, .08); }
+html .prof-overlay .pl-fld .prof-avpick { margin-top: 0; min-width: 0; }
+/* 28 лица по 4 на ред = 7 реда (видяно на снимка) → лента от два реда, плъзга се настрани */
+html .prof-overlay .pl-fld .prof-avgrid {
+  display: grid; grid-auto-flow: column; grid-template-rows: repeat(2, 48px); grid-auto-columns: 48px; gap: 8px;
+  overflow-x: auto; overscroll-behavior-x: contain; margin: 0 -4px; padding: 4px 4px 10px;
+  scrollbar-width: thin; scrollbar-color: #e7bccd transparent;
+}
+
+/* ═══ 8 · 112 (реф. 15 „Спешна помощ · 112 ›“) — последният ред на тефтера, винаги ═══ */
+html .prof-overlay .pl-p112 {
+  display: flex; align-items: center; gap: 12px;
+  min-height: 62px; margin: 18px 0 0; padding: 8px 14px 8px 8px;
+  border: 2px solid #d9535f; border-radius: 999px; background: #fff;
+  color: #b3261e; text-decoration: none; box-shadow: 0 2px 0 #eab0b6, 0 8px 18px rgba(200, 60, 60, .12);
+  transition: transform .14s ease;
+}
+html .prof-overlay .pl-p112 > span:nth-child(2) { flex: 1 1 auto; min-width: 0; }
+html .prof-overlay .pl-p112 b { display: block; font-family: var(--pl-serif, Georgia, serif); font-size: 17.5px; font-weight: 700; line-height: 1.2; }
+html .prof-overlay .pl-p112 b .pl-num { font-family: Nunito, 'Nunito-fallback', sans-serif; font-weight: 800; white-space: nowrap; }   /* „· 112“ не се къса от заглавието */
+html .prof-overlay .pl-p112 small { display: block; font-size: 12.5px; font-weight: 700; color: #7c3a3a; }
+html .prof-overlay .pl-p112-kr {
+  width: 46px; height: 46px; flex: none; border-radius: 50%;
+  display: grid; place-items: center; background: #fdecee; box-shadow: inset 0 0 0 2px #f5c4ca;
+  color: #d0312d; font-size: 24px; font-weight: 800;
+}
+html .prof-overlay .pl-p112 .pl-rgo { color: #b3261e; }
+html .prof-overlay .pl-p112:active { transform: translateY(2px); }
+
+/* ═══════════════════════════════════════════════════════════════════════════
+   🌙 НОЩ — сцената под нощно синьо було (като стаите: multiply с #3a4580),
+   тефтерът е тъмносин филц с подвързия #3a4a8a (като въведението)
+   ═══════════════════════════════════════════════════════════════════════════ */
+html[data-theme="dark"] .prof-overlay { background-color: #3a4580; background-blend-mode: multiply; }
+html[data-theme="dark"] .prof-overlay .prof-box { background: transparent; color: #fff; }
+html[data-theme="dark"] .prof-overlay .prof-hero::after { background: radial-gradient(75% 62% at 32% 52%, rgba(14, 22, 58, .72) 0, rgba(14, 22, 58, .4) 52%, rgba(14, 22, 58, 0) 78%); }
+html[data-theme="dark"] .prof-overlay .prof-avbtn { background: #f3eaf8 radial-gradient(circle at 35% 30%, #fff 0, #f3eaf8 72%); box-shadow: 0 0 0 3px rgba(255, 255, 255, .9), 0 0 0 5px rgba(245, 156, 187, .6), 0 8px 18px rgba(0, 0, 0, .3); }
+html[data-theme="dark"] .prof-overlay .prof-hero .prof-name,
+html[data-theme="dark"] .prof-overlay .prof-hero-guest h3 { color: #fff; text-shadow: 0 0 14px rgba(10, 16, 44, .95), 0 0 28px rgba(10, 16, 44, .8); }
+html[data-theme="dark"] .prof-overlay .prof-hero .prof-name::after,
+html[data-theme="dark"] .prof-overlay .prof-hero-guest h3::after { color: #f59cbb; }
+html[data-theme="dark"] .prof-overlay .prof-hero .prof-sub,
+html[data-theme="dark"] .prof-overlay .prof-hero-guest p { color: #eef0fb; text-shadow: 0 0 10px rgba(10, 16, 44, .95), 0 0 20px rgba(10, 16, 44, .85); }
+html[data-theme="dark"] .prof-overlay .prof-hero .prof-sub strong,
+html[data-theme="dark"] .prof-overlay .prof-hero-guest p strong { color: #fff; }
+
+html[data-theme="dark"] body .prof-overlay .pl-tefter.pl-felt {
+  background-color: #26336b !important; border-color: #3a4a8a !important;
+  box-shadow: 0 0 0 1.5px #52629e, 0 22px 50px rgba(0, 0, 0, .45) !important;
+}
+html[data-theme="dark"] body .prof-overlay .pl-tefter.pl-felt::before { background: linear-gradient(90deg, #dcc07e 0, #b8914a 55%, #93702f 100%); color: #2a2238; }
+html[data-theme="dark"] .prof-overlay .pl-tefter .prof-card { border-top-color: rgba(255, 255, 255, .22); }
+html[data-theme="dark"] .prof-overlay .prof-h { color: #fff; }
+html[data-theme="dark"] .prof-overlay .pl-hi { box-shadow: 0 0 0 2px rgba(255, 255, 255, .25); }
+/* плюшените иконки нощем: без multiply (би ги стопил в синьото) — бял кръг под тях */
+html[data-theme="dark"] .prof-overlay .pl-pv-av,
+html[data-theme="dark"] .prof-overlay .pl-hi.has-art,
+html[data-theme="dark"] .prof-overlay .pl-ri.has-art,
+html[data-theme="dark"] .prof-overlay .pl-fi.has-art {
+  background-color: #fff; background-blend-mode: normal; box-shadow: 0 0 0 2px rgba(255, 255, 255, .25);
+}
+html[data-theme="dark"] .prof-overlay .pl-hi:not(.has-art) { background-color: rgba(255, 255, 255, .12); }
+html[data-theme="dark"] .prof-overlay .prof-hsub,
+html[data-theme="dark"] .prof-overlay .prof-h[data-pl] .prof-hsub,
+html[data-theme="dark"] .prof-overlay .prof-note,
+html[data-theme="dark"] .prof-overlay .jr-privacy,
+html[data-theme="dark"] .prof-overlay .prof-legal { color: #d6d8ee; }
+html[data-theme="dark"] .prof-overlay .prof-err { color: #ffb4ab; }
+html[data-theme="dark"] .prof-overlay .prof-warn { background: rgba(246, 181, 107, .12); border-color: rgba(246, 181, 107, .35); color: #ffe2b8; }
+
+html[data-theme="dark"] .prof-overlay .prof-avwrap { background: rgba(255, 255, 255, .06); border-color: rgba(255, 255, 255, .14); box-shadow: 0 2px 0 #18214a; }
+html[data-theme="dark"] .prof-overlay .pl-pv,
+html[data-theme="dark"] .prof-overlay button.pl-row:not(.pl-gel),
+html[data-theme="dark"] .prof-overlay label.pl-row:not(.pl-gel),
+html[data-theme="dark"] .prof-overlay .prof-goal,
+html[data-theme="dark"] .prof-overlay .prof-fam { background: #2e3c7a; border-color: rgba(255, 255, 255, .16); box-shadow: 0 2px 0 #18214a, 0 8px 18px rgba(0, 0, 0, .22); color: #fff; }
+html[data-theme="dark"] .prof-overlay .prof-goal.done { background: rgba(110, 200, 160, .16); border-color: rgba(110, 200, 160, .4); }
+html[data-theme="dark"] .prof-overlay .pl-pv b,
+html[data-theme="dark"] .prof-overlay .pl-pv-go,
+html[data-theme="dark"] .prof-overlay .pl-rt b,
+html[data-theme="dark"] .prof-overlay .pl-rgo,
+html[data-theme="dark"] .prof-overlay .prof-stn,
+html[data-theme="dark"] .prof-overlay .prof-lvln,
+html[data-theme="dark"] .prof-overlay .prof-gn,
+html[data-theme="dark"] .prof-overlay .prof-gp,
+html[data-theme="dark"] .prof-overlay .prof-sn,
+html[data-theme="dark"] .prof-overlay .prof-mn,
+html[data-theme="dark"] .prof-overlay .prof-fammid strong,
+html[data-theme="dark"] .prof-overlay .prof-daycnt,
+html[data-theme="dark"] .prof-overlay .pl-fld-l,
+html[data-theme="dark"] .prof-overlay .pl-fld-b > .prof-note.pl-fld-l { color: #fff; }
+html[data-theme="dark"] .prof-overlay .pl-pv small,
+html[data-theme="dark"] .prof-overlay .pl-rt small,
+html[data-theme="dark"] .prof-overlay .prof-stl,
+html[data-theme="dark"] .prof-overlay .prof-wlbl,
+html[data-theme="dark"] .prof-overlay .prof-lvlxp,
+html[data-theme="dark"] .prof-overlay .prof-sl,
+html[data-theme="dark"] .prof-overlay .prof-fammid small,
+html[data-theme="dark"] .prof-overlay .prof-medal:not(.got) .prof-mn,
+html[data-theme="dark"] .prof-overlay .prof-gx { color: #d6d8ee; }
+
+html[data-theme="dark"] .prof-overlay .prof-ringbg { stroke: rgba(255, 255, 255, .14); }
+html[data-theme="dark"] .prof-overlay .prof-ringfill { stroke: #f59cbb; }
+html[data-theme="dark"] .prof-overlay .prof-ringtxt { fill: #fff; }
+html[data-theme="dark"] .prof-overlay .prof-tditem { background: rgba(255, 255, 255, .07); border-color: rgba(255, 255, 255, .22); color: #d6d8ee; }
+html[data-theme="dark"] .prof-overlay .prof-tditem.on { background: rgba(110, 200, 160, .22); border-color: rgba(110, 200, 160, .5); color: #d8f5e6; }
+html[data-theme="dark"] .prof-overlay .prof-stbox { background: rgba(255, 214, 140, .14); box-shadow: inset 0 0 0 1px rgba(255, 214, 140, .26); }
+html[data-theme="dark"] .prof-overlay .prof-stbox + .prof-stbox { background: rgba(245, 170, 140, .14); box-shadow: inset 0 0 0 1px rgba(245, 170, 140, .26); }
+html[data-theme="dark"] .prof-overlay .prof-wdot { background: rgba(255, 255, 255, .12); }
+html[data-theme="dark"] .prof-overlay .prof-wdot.w1 { background: rgba(245, 156, 187, .4); }
+html[data-theme="dark"] .prof-overlay .prof-wdot.wt { outline-color: #f59cbb; }
+html[data-theme="dark"] .prof-overlay .prof-lvle { background: rgba(255, 214, 140, .16); box-shadow: inset 0 0 0 2px rgba(255, 255, 255, .12); }
+html[data-theme="dark"] .prof-overlay .prof-bar { background: rgba(255, 255, 255, .12); box-shadow: none; }
+html[data-theme="dark"] .prof-overlay .prof-ge { background: rgba(236, 228, 248, .16); }
+html[data-theme="dark"] .prof-overlay .prof-fame,
+html[data-theme="dark"] .prof-overlay .prof-fam:nth-child(3n+1) .prof-fame,
+html[data-theme="dark"] .prof-overlay .prof-fam:nth-child(3n+3) .prof-fame { background: rgba(255, 255, 255, .12); }
+html[data-theme="dark"] .prof-overlay .prof-medal { background: rgba(255, 255, 255, .06); border-color: rgba(255, 255, 255, .12); }
+html[data-theme="dark"] .prof-overlay .prof-medal.got { background: rgba(240, 210, 137, .14); border-color: rgba(240, 210, 137, .45); box-shadow: none; }
+html[data-theme="dark"] .prof-overlay .prof-stat,
+html[data-theme="dark"] .prof-overlay .prof-stat:nth-child(n) { background: rgba(255, 255, 255, .08); box-shadow: none; }
+
+html[data-theme="dark"] .prof-overlay .prof-cta:not(.pl-gel):not(.pl-soft):not(.pl-row) { background: rgba(255, 255, 255, .08); border-color: rgba(245, 156, 187, .55); color: #ffd6e5; box-shadow: none; }
+html[data-theme="dark"] .prof-overlay .prof-inp { background: #1b2554; border-color: rgba(255, 255, 255, .18); color: #f1f2fb; box-shadow: inset 0 2px 5px rgba(0, 0, 0, .35); }
+html[data-theme="dark"] .prof-overlay .prof-inp::placeholder { color: #aeb2d4; }
+html[data-theme="dark"] .prof-overlay .pl-p112 { background: #2e3c7a; border-color: rgba(255, 140, 150, .7); color: #ffc9cd; box-shadow: 0 2px 0 #18214a; }
+html[data-theme="dark"] .prof-overlay .pl-p112 small { color: #f1d3d6; }
+html[data-theme="dark"] .prof-overlay .pl-p112 .pl-rgo { color: #ffc9cd; }
+html[data-theme="dark"] .prof-overlay .pl-p112-kr { background: #fff; box-shadow: none; }
+html[data-theme="dark"] .prof-overlay .pl-p112-mini { background: #2e3c7a; border-color: rgba(255, 140, 150, .75); color: #ffc9cd; box-shadow: 0 2px 0 #18214a, 0 8px 18px rgba(0, 0, 0, .3); }
+html[data-theme="dark"] .prof-overlay .pl-p112-mini > span { color: #ff9ea6; }
+
+/* ═══ по-малко движение ═══ */
+@media (prefers-reduced-motion: reduce) {
+  html .prof-overlay .pl-pv, html .prof-overlay .pl-row, html .prof-overlay .pl-p112, html .prof-overlay .pl-p112-mini { transition: none; }
+}
