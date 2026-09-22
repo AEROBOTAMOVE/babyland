@@ -155,7 +155,7 @@
   const РАФТ = [
     { кът: 'Играем заедно', надпис: 'Игри', ик: ['ico-d', 0, 3] },      // мече
     { кът: 'Расте и учи', надпис: 'Умения', ик: ['ico-b', 2, 0] },      // кубчета
-    { кът: 'Творби и спомени', надпис: 'Спомени', ик: ['ico-g', 2, 0] }, // сърце
+    { кът: 'Творби и спомени', надпис: 'Спомени', ик: ['ico-b', 0, 1] }, // сърце
   ];
 
   // кое отделение на рафта е „отворено“ (розово) — само в паметта; по подразбиране „Игри“, като в реф. 1
@@ -192,7 +192,7 @@
           '</div>' +
         '</div>' : '') +
         '<div class="pl-ig-drawers">' +
-          '<button type="button" class="pl-ig-drawer d-first" data-kat="Първите пъти"><i class="pl-ig-i" aria-hidden="true" style="' + ико('ico-g', 1, 3) + '"></i><span>Първите пъти</span><em aria-hidden="true">›</em></button>' +
+          '<button type="button" class="pl-ig-drawer d-first" data-kat="Първите пъти"><i class="pl-ig-i" aria-hidden="true" style="' + ико('ico-d', 1, 2) + '"></i><span>Първите пъти</span><em aria-hidden="true">›</em></button>' +
           '<button type="button" class="pl-ig-drawer d-box" data-karta="Мигове за спомен" data-kat="Творби и спомени" aria-label="Кутия за спомени — към „Мигове за спомен“"><i class="pl-ig-i" aria-hidden="true" style="' + ико('ico-b', 1, 1) + '"></i><span>Кутия за спомени</span><em aria-hidden="true">›</em></button>' +
         '</div>' +
       '</div>';
