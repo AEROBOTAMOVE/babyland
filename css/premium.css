@@ -233,7 +233,8 @@ html.pl-on .mascot { position: absolute !important; top: 168px; right: 22px; wid
 .pl-mira em {
   margin-left: auto; flex: none;
   padding: 10px 16px; border-radius: 999px;
-  background: var(--pl-pink); color: #fff; font-style: normal; font-weight: 800; font-size: 14px;
+  background: #c8457a linear-gradient(180deg, #f39bbb 0%, #d95a8e 32%, #c8457a 62%, #b93a6e 100%); color: #fff; font-style: normal; font-weight: 800; font-size: 14px;   /* гел; беше --pl-pink = 3.0:1 (одит) */
+  box-shadow: inset 0 1.5px 0 rgba(255, 255, 255, .5), 0 3px 0 #a83566;
 }
 
 /* ═══ ДОЛНАТА ЛЕНТА — светла, мека, с розов активен бутон ═══ */
