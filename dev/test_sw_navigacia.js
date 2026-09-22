@@ -201,6 +201,31 @@ const СЛУЧАИ = [
     const c = await с.ctx.caches.open(с.CACHE);
     return !!(await c.match('js/kb.js')) && !(await c.match('js/kb.js?v=247'));
   }],
+  // ⏱️ 22.09: навигацията има таван (НАВ_ТАЙМАУТ в sw.js) — слаб сигнал не бави старта без край
+  ['5 · бавна мрежа (4 с) → запазената страница след ~3 с, не след 4', async с => {
+    с.мрежа.карта[''] = страница('СТАРА');
+    await заявка(с, '', 'navigate');
+    с.мрежа.карта[''] = u => new Promise(r => setTimeout(() => r(отговор('НОВА', 'text/html; charset=utf-8', { url: u })), 4000));
+    const t0 = Date.now();
+    const т = await тяло(await заявка(с, '', 'navigate'));
+    const мс = Date.now() - t0;
+    return т === 'СТАРА' && мс >= 2900 && мс < 3700;
+  }],
+  ['5 · …а мрежата опреснява кеша във фона — следващото отваряне е новото', async с => {
+    с.мрежа.карта[''] = страница('СТАРА');
+    await заявка(с, '', 'navigate');
+    с.мрежа.карта[''] = u => new Promise(r => setTimeout(() => r(отговор('НОВА', 'text/html; charset=utf-8', { url: u })), 4000));
+    await заявка(с, '', 'navigate');
+    await new Promise(r => setTimeout(r, 1400));
+    const c = await с.ctx.caches.open(с.CACHE);
+    return (await тяло(await c.match('.'))) === 'НОВА';
+  }],
+  ['5 · първо отваряне без запазена страница и бавна мрежа → чака мрежата, не грешка', async с => {
+    с.мрежа.карта[''] = u => new Promise(r => setTimeout(() => r(отговор('ПЪРВА', 'text/html; charset=utf-8', { url: u })), 4000));
+    const t0 = Date.now();
+    const т = await тяло(await заявка(с, '', 'navigate'));
+    return т === 'ПЪРВА' && Date.now() - t0 >= 3900;
+  }],
   ['4 · безверсийното копие от старата инсталация не пътува напред, шрифтът — да', async с => {
     const стар = await с.ctx.caches.open('babyland-v1');
     await стар.put('js/kb.js', отговор('ЗАМРАЗЕНО', 'text/javascript', { url: БАЗА + 'js/kb.js' }));
