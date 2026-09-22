@@ -1,0 +1,26 @@
+/* ═══════════════════════════════════════════════════════════════════════════════
+   🩹 ПОПРАВКИ НА СТАРИ КАПАНИ (не са от премиум слоя) · 22.09.2026
+   ═══════════════════════════════════════════════════════════════════════════════
+
+   1 · ЧЕТЕЦЪТ НА СТАТИИ, ОТВОРЕН ОТ СТАЯТА, ОСТАВАШЕ НЕВИДИМ.
+   css/touch.css:708 спира ВСИЧКИ анимации извън #roomOverlay, докато стаята е отворена
+   (за да не работи скрита анимация под панела — разумно). Но панелът на четеца (#artOverlay .art-panel,
+   rooms.css:592) влиза с анимация artIn от opacity 0 → щом е спряна, той ЗАМРЪЗВА на 0.
+   МЕРЕНО в истински Chrome (не в пясъчник): стая „Моето бебе“ → таб „Статии“ → първата статия →
+   { панел: true, прозрачност: "0", анимация: "artIn/paused" } — тоест майката вижда размазан екран
+   и нищо за четене. Същото важи за всяко наслагване над стаята: търсенето, СОС центърът, профилът,
+   изборът на стаи, медальончето и лентите-съобщения.
+   ПОПРАВКАТА: тези наслагвания и техните деца пак се движат (id/клас бие селектора в touch.css).
+   ПЪТ НАЗАД: махни <link> на pl-popravki от index.html — връща се точно старото поведение. */
+@media (max-width: 599px) {
+  html.ro-otvorena body > #artOverlay, html.ro-otvorena body > #artOverlay *,
+  html.ro-otvorena body > #artOverlay *::before, html.ro-otvorena body > #artOverlay *::after,
+  html.ro-otvorena body > #searchOverlay, html.ro-otvorena body > #searchOverlay *,
+  html.ro-otvorena body > #sosOverlay, html.ro-otvorena body > #sosOverlay *,
+  html.ro-otvorena body > .prof-overlay, html.ro-otvorena body > .prof-overlay *,
+  html.ro-otvorena body > .np-veil, html.ro-otvorena body > .np-veil *,
+  html.ro-otvorena body > .md-veil, html.ro-otvorena body > .md-veil *,
+  html.ro-otvorena body > .fx-cheer, html.ro-otvorena body > .bo-bar, html.ro-otvorena body > #blNewVer {
+    animation-play-state: running !important;
+  }
+}

@@ -64,3 +64,8 @@ html[data-theme="dark"] body .md-veil .md-name { color: #fff; }
 html[data-theme="dark"] body .md-veil .md-why, html[data-theme="dark"] body .md-veil .md-keep { color: #d7daf2; }
 html[data-theme="dark"] body .md-veil .md-kicker { color: #ffc2d6; }
 @media (prefers-reduced-motion: reduce) { html body .md-veil .md-box::before { animation: none; } }
+
+/* ── 5 · SVG надписите (кръговият часовник „Денят на един кръг“, rooms2.js) — последните три в Comfortaa ── */
+html body .bb-clock text, html body svg.bb-clock text, html body .bb-clockbox text {
+  font-family: Nunito, 'Nunito-fallback', system-ui, sans-serif !important; font-variant-numeric: tabular-nums;
+}
