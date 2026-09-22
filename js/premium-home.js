@@ -38,7 +38,7 @@
     const име = (б.name || '').trim();
     if (!б.birth) {
       const бр = чети('bl_preg', null);
-      return { име: име || 'Нашето бебе', ред: бр ? 'очакваме те с любов' : 'разкажи ми за бебето', знак: бр ? '🤰' : '👶' };
+      return { име: име || 'Нашето бебе', ред: бр ? 'очакваме те с любов' : 'разкажи ми за бебето', знак: бр ? '🤰' : '👶', бр: !!бр };
     }
     const р = new Date(б.birth), д = new Date();
     let м = (д.getFullYear() - р.getFullYear()) * 12 + (д.getMonth() - р.getMonth());
@@ -59,6 +59,7 @@
   //   · пелени = bl_diapers[днес].wet + dirty.
   //   Нула без запис не е „нула“ — тогава стои поканата „+ запиши“, не „0“.
   const локалнаДата = д => д.getFullYear() + '-' + String(д.getMonth() + 1).padStart(2, '0') + '-' + String(д.getDate()).padStart(2, '0');
+  const чм = тс => { const д = new Date(тс); return String(д.getHours()).padStart(2, '0') + ':' + String(д.getMinutes()).padStart(2, '0'); };
   const чч = мин => (мин >= 60 ? Math.floor(мин / 60) + 'ч ' : '') + (мин % 60) + 'м';
   function денят() {
     const д = локалнаДата(new Date()), сега = Date.now();
@@ -78,19 +79,33 @@
       сън: с && с.open && спи ? 'спи от ' + чч(спи) : сънМин ? чч(сънМин) + ' днес' : '+ запиши',
       пелени: пелени ? пелени + ' днес' : '+ запиши',
       има: { храна: !!днешни.length, сън: !!сънМин, пелени: !!пелени },
+      // компактният ред по референция 20: голямо (час / време / брой) + малък надпис
+      кратко: {
+        храна: днешни.length ? { г: чм(днешни[днешни.length - 1]), п: 'Хранене · ' + днешни.length + '×' } : { г: '+', п: 'Хранене' },
+        сън: с && с.open && спи ? { г: чч(спи), п: 'спи сега' } : сънМин ? { г: чч(сънМин), п: 'Сън днес' } : { г: '+', п: 'Сън' },
+        пелени: пелени ? { г: String(пелени), п: 'Пелени днес' } : { г: '+', п: 'Пелени' },
+      },
     };
   }
   function броячи() {
     const д = денят();
     [['plDayFeed', 'храна'], ['plDaySleep', 'сън'], ['plDayDiaper', 'пелени']].forEach(([id, к]) => {
       const е = document.getElementById(id); if (!е) return;
-      if (е.textContent !== д[к]) е.textContent = д[к];
-      е.classList.toggle('on', д.има[к]);
+      const м = е.parentElement && е.parentElement.querySelector('small');
+      const { г, п } = д.кратко[к];
+      if (е.textContent !== г) е.textContent = г;           // само при разлика — текстът е мутация
+      if (м && м.textContent !== п) м.textContent = п;
+      const б = е.closest('.pl-day-it');
+      if (б && б.classList.contains('on') !== д.има[к]) б.classList.toggle('on', д.има[к]);
+      const ар = п + (д.има[к] ? ': ' + г : ' — запиши');
+      if (б && б.getAttribute('aria-label') !== ар) б.setAttribute('aria-label', ар);
     });
   }
 
   function отвори(стая) { try { if (window.MamaHelper && MamaHelper.open) MamaHelper.open(стая); } catch (e) {} }
-  function добави() { const б = document.getElementById('plus-btn'); if (б) б.click(); }
+  // 🪤 22.09: беше getElementById('plus-btn') — а бутонът е <button class="plus-btn"> в #blPlus (polish.js:314),
+  //   без id. „Добави момент“ не правеше НИЩО от етап 1 насам; хванато при сверката с референцията.
+  function добави() { const б = document.querySelector('#blPlus .plus-btn') || document.querySelector('.plus-btn'); if (б) б.click(); }
 
   function рисувай() {
     const б = бебето();
@@ -105,17 +120,17 @@
           '<p>Малки стъпки. Голям свят.</p>' +
         '</div>' +
         '<button type="button" class="pl-baby" id="plBaby" aria-label="Отвори стаята на бебето">' +
-          '<span class="pl-baby-av" aria-hidden="true">' + б.знак + '</span>' +
+          '<span class="pl-baby-av pl-art-av" aria-hidden="true" style="background-image:url(img/art/' + (б.бр ? 'ico-a.webp);background-position:0% 0%' : 'ico-d.webp);background-position:0% 33.333%') + '">' + б.знак + '</span>' +
           '<span><b>' + esc(б.име) + ' · ' + esc(б.ред) + '</b><small id="plToday">' + esc(днес()) + '</small></span>' +
           '<span class="pl-baby-go" aria-hidden="true">›</span>' +
         '</button>' +
       '</div>' +
       '<div class="pl-card">' +
-        '<div class="pl-card-h"><span aria-hidden="true">☀️</span> Нашият ден</div>' +
+        '<div class="pl-card-h"><i class="pl-art pl-sun" aria-hidden="true" style="background-image:url(img/art/ico-d.webp);background-position:0% 0%"></i> Нашият ден<button type="button" class="pl-all" data-room="Моето бебе">Виж всички ›</button></div>' +
         '<div class="pl-day">' +
-          '<button type="button" class="pl-day-it t-feed" data-pl="add"><i class="pl-art" aria-hidden="true" style="background-image:url(img/art/ico-a.webp);background-position:0% 33.333%"></i>Хранене<span id="plDayFeed" aria-live="polite">+ запиши</span></button>' +
-          '<button type="button" class="pl-day-it t-sleep" data-pl="add"><i class="pl-art" aria-hidden="true" style="background-image:url(img/art/ico-a.webp);background-position:33.333% 33.333%"></i>Сън<span id="plDaySleep" aria-live="polite">+ запиши</span></button>' +
-          '<button type="button" class="pl-day-it t-diaper" data-pl="add"><i class="pl-art" aria-hidden="true" style="background-image:url(img/art/ico-b.webp);background-position:100% 100%"></i>Пелени<span id="plDayDiaper" aria-live="polite">+ запиши</span></button>' +
+          '<button type="button" class="pl-day-it t-feed" data-room="Моето бебе"><i class="pl-art" aria-hidden="true" style="background-image:url(img/art/ico-a.webp);background-position:0% 33.333%"></i><span class="pl-day-t"><b id="plDayFeed" aria-live="polite">+</b><small>Хранене</small></span></button>' +
+          '<button type="button" class="pl-day-it t-sleep" data-room="Моето бебе"><i class="pl-art" aria-hidden="true" style="background-image:url(img/art/ico-a.webp);background-position:33.333% 33.333%"></i><span class="pl-day-t"><b id="plDaySleep" aria-live="polite">+</b><small>Сън</small></span></button>' +
+          '<button type="button" class="pl-day-it t-diaper" data-room="Моето бебе"><i class="pl-art" aria-hidden="true" style="background-image:url(img/art/ico-b.webp);background-position:100% 100%"></i><span class="pl-day-t"><b id="plDayDiaper" aria-live="polite">+</b><small>Пелени</small></span></button>' +
         '</div>' +
       '</div>' +
       '<button type="button" class="pl-cta" data-pl="add"><b aria-hidden="true">+</b>Добави момент</button>' +
@@ -126,7 +141,7 @@
           '<span>' + esc(р.надпис) + '</span></button>').join('') +
       '</div></div>' +
       '<button type="button" class="pl-mira" data-room="Моето бебе">' +
-        '<i aria-hidden="true">🎈</i>' +
+        '<i class="pl-art pl-mira-av" aria-hidden="true" style="background-image:url(img/art/ico-e.webp);background-position:33.333% 66.667%"></i>' +
         '<span><b>Мира е до теб</b><small>Отговори, подкрепа и полезни съвети.</small></span>' +
         '<em>Попитай ›</em>' +
       '</button>';
@@ -147,6 +162,9 @@
     document.documentElement.classList.add('pl-on');
     тема();
     броячи();
+    // „+“ долу вляво застъпваше „Влез в своята стая“ — докато „Добави момент“ се вижда, той е излишен
+    const cta = document.querySelector('#plHome .pl-cta');
+    if (cta && 'IntersectionObserver' in window) new IntersectionObserver(в => { document.documentElement.classList.toggle('pl-cta-vis', в[0].isIntersecting); }).observe(cta);
     // броячите се опресняват, когато мама се върне от стаята (там записва), при връщане в
     // приложението, при запис от друг раздел и на всеки 30 с ("преди 2ч 10м" да не застива)
     const ов = document.getElementById('roomOverlay');

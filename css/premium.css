@@ -45,7 +45,7 @@ html.pl-on .sky.bl-vun { opacity: .35; }
 }
 .pl-hero {
   position: relative;
-  min-height: 412px;
+  min-height: 340px;   /* реф. 20: рафтът със стаите почти влиза в първия екран (беше 412) */
   overflow: hidden;
   border-radius: 0 0 34px 34px;
   isolation: isolate;
@@ -130,6 +130,29 @@ html[data-theme="dark"] .pl-day-it i.pl-art { mix-blend-mode: normal; border-rad
 .pl-day-it.t-sleep { background: var(--pl-sky); }
 .pl-day-it.t-diaper { background: var(--pl-mint); }
 
+
+/* ═══ НАШИЯТ ДЕН — компактен ред по референция 20: иконка + голямо (час/време/брой) + надпис ═══ */
+.pl-card-h .pl-sun { flex: none; width: 30px; height: 30px; border-radius: 50%; background-color: #fff6dd; background-size: 400% 400%; background-repeat: no-repeat; background-blend-mode: multiply; }
+.pl-card-h .pl-all {
+  margin-left: auto; min-height: 44px; padding: 0 2px 0 8px; border: 0; background: none; cursor: pointer;
+  font: 800 13px/1 Nunito, Nunito-fallback, sans-serif; color: var(--pl-ink-soft);
+}
+.pl-day { gap: 8px; }
+.pl-day-it {
+  display: grid !important; grid-template-columns: 34px 1fr; grid-template-rows: auto auto; column-gap: 6px; row-gap: 5px;
+  align-items: center; justify-items: start; min-height: 72px; padding: 10px 9px; text-align: left; border-radius: 16px;
+}
+.pl-day-it i.pl-art { grid-row: 1; grid-column: 1; width: 34px; height: 34px; }
+.pl-day-t { display: contents; }
+.pl-day-t b { grid-row: 1; grid-column: 2; font-weight: 800; font-size: 16.5px; line-height: 1.05; color: var(--pl-navy); white-space: nowrap; }
+.pl-day-it:not(.on) .pl-day-t b { color: var(--pl-pink); font-size: 22px; }
+.pl-day-t small { grid-row: 2; grid-column: 1 / -1; max-width: 100%; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; font-size: 11.5px; font-weight: 700; color: var(--pl-ink-soft); }
+/* плюшеният аватар на бебето (пълзящо бебе; при бременност — цветето) */
+.pl-baby-av.pl-art-av { font-size: 0; background-color: var(--pl-pink-soft); background-size: 400% 400%; background-repeat: no-repeat; background-blend-mode: multiply; }
+
+/* 🪁 балончето-талисман (home.js) беше закачено за екрана вдясно на 44% височина и закриваше
+   „Виж всички ›“ и краищата на картите. В новото начало живее над рисунката на героя и си отива с нея. */
+html.pl-on .mascot { position: absolute !important; top: 168px; right: 22px; width: 38px; }
 /* ── главният розов бутон ── */
 .pl-cta {
   display: flex; align-items: center; justify-content: center; gap: 10px;
@@ -204,6 +227,7 @@ html[data-theme="dark"] .pl-day-it i.pl-art { mix-blend-mode: normal; border-rad
   font: inherit; text-align: left; color: var(--pl-navy);
 }
 .pl-mira > i { font-style: normal; font-size: 34px; }
+.pl-mira > i.pl-mira-av { flex: none; width: 54px; height: 54px; border-radius: 50%; background-color: var(--pl-sky); background-size: 400% 400%; background-repeat: no-repeat; background-blend-mode: multiply; }
 .pl-mira b { display: block; font-family: var(--pl-serif); font-size: 18px; }
 .pl-mira small { display: block; font-size: 13px; font-weight: 600; color: var(--pl-ink-soft); }
 .pl-mira em {
@@ -256,6 +280,9 @@ html:not([data-theme="dark"]) .bottom-nav .bn-item.bn-active::after {
 html:not([data-theme="dark"]) .bottom-nav .bn-item[data-room="Здраве и SOS"] { color: #d9536a !important; }
 
 /* ── „+“ — в палитрата, не лилаво (и денем, и нощем) ── */
+/* „+“ се скрива, докато „Добави момент“ е на екрана (premium-home.js пази html.pl-cta-vis) — застъпваше заглавието */
+html.pl-cta-vis #blPlus .plus-btn:not(.open) { opacity: 0 !important; transform: scale(.6) !important; pointer-events: none !important; }
+#blPlus .plus-btn { transition: opacity .2s ease, transform .2s ease; }
 .plus-btn {
   background: linear-gradient(180deg, var(--pl-pink-2), var(--pl-pink)) !important;
   box-shadow: 0 8px 20px rgba(229, 109, 153, .38), inset 0 0 0 3px rgba(255, 255, 255, .55) !important;
@@ -674,6 +701,10 @@ html[data-theme="dark"] .pl-baby, html[data-theme="dark"] .pl-card, html[data-th
 }
 html[data-theme="dark"] .pl-baby small, html[data-theme="dark"] .pl-mira small, html[data-theme="dark"] .pl-day-it span { color: #c9cbe3; }
 html[data-theme="dark"] .pl-day-it, html[data-theme="dark"] .pl-mira b, html[data-theme="dark"] .pl-day-it span.on { color: #fff; }
+html[data-theme="dark"] .pl-day-t b { color: #fff; }
+html[data-theme="dark"] .pl-day-it:not(.on) .pl-day-t b { color: var(--pl-pink-2); }
+html[data-theme="dark"] .pl-day-t small, html[data-theme="dark"] .pl-card-h .pl-all { color: #c9cbe3; }
+html[data-theme="dark"] .pl-art-av, html[data-theme="dark"] .pl-mira > i.pl-mira-av, html[data-theme="dark"] .pl-card-h .pl-sun { background-color: #fff; background-blend-mode: normal; }
 html[data-theme="dark"] .pl-day-it.t-feed { background: rgba(229, 109, 153, .22); }
 html[data-theme="dark"] .pl-day-it.t-sleep { background: rgba(120, 160, 240, .22); }
 html[data-theme="dark"] .pl-day-it.t-diaper { background: rgba(110, 200, 160, .2); }
