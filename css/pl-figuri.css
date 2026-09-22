@@ -1,0 +1,58 @@
+/* ═══════════════════════════════════════════════════════════════════════════════
+   🧸 3D ФИГУРИТЕ НА МЯСТО (img/art/fig-a.webp, 4×2: мама с бебе · бебе на луна · бебе в столче ·
+   мече-доктор / мама със сърце · бебе с книжка · бебе с кубчета · зайче с балонче) — 22.09.2026
+   Само CSS: нищо в логиката не се пипа.
+   · „Мира е до теб“ на началото — зайчето с балончето вместо малката иконка;
+   · SOS: мечето-доктор при съветите долу („Говори бавно…“) — спокойствие, без да пречи (екранът е спешен:
+     нищо не мърда, 112 остава първото и най-голямото);
+   · „Деветте стаи“ (задържане на бутона в долната лента) — филцов рафт с арките от началото,
+     вместо емоджита на бяло.
+   ПЪТ НАЗАД: махни <link> на pl-figuri от index.html.
+   ═══════════════════════════════════════════════════════════════════════════════ */
+
+/* клетка от листа: x = колона·33.333%, y = ред·100% */
+.pl-mira > i.pl-mira-av.pl-mira-av {
+  background-image: url(../img/art/fig-a.webp) !important; background-size: 400% 200% !important; background-position: 100% 100% !important;
+  background-color: #fff !important; background-blend-mode: normal !important;
+  width: 62px; height: 62px; box-shadow: 0 0 0 3px #fff, 0 6px 14px rgba(110, 76, 52, .2);
+}
+
+/* ── SOS ── */
+/* горе остава компактно (112 е първото); мечето стои долу при „Говори бавно · кажи АДРЕСА първо…“ */
+html body .sos-ov .sos-tips { display: flex; align-items: center; gap: 12px; text-align: left; margin-top: 22px !important; }
+html body .sos-ov .sos-tips::before {
+  content: ''; flex: none; width: 58px; height: 58px; border-radius: 50%;
+  background: #fff url(../img/art/fig-a.webp) 100% 0 / 400% 200% no-repeat;
+  box-shadow: 0 0 0 3px #fde3e7, 0 4px 10px rgba(155, 35, 53, .18);
+}
+
+/* ── ДЕВЕТТЕ СТАИ ── */
+html body .np-box.np-box {
+  background-color: #fffaf3; background-image: url(../img/art/felt.webp); background-size: 160px 160px; background-blend-mode: multiply;
+  border: 1px solid rgba(214, 186, 158, .65); border-radius: 30px;
+  box-shadow: 0 -10px 40px rgba(60, 40, 30, .28), inset 0 2px 0 rgba(255, 255, 255, .9);
+  outline: 1.5px dashed rgba(196, 160, 124, .55); outline-offset: -8px; padding: 18px 14px 20px;
+}
+html body .np-box .np-h { font-family: Georgia, 'Noto Serif', serif; font-size: 21px; color: #2b3163; }
+html body .np-box .np-grid { gap: 10px 8px; }
+html body .np-box .np-b {
+  border: 0; border-radius: 18px; padding: 6px 2px 8px; gap: 6px; min-height: 104px;
+  font-family: Georgia, 'Noto Serif', serif; font-size: 12.5px; font-weight: 700; color: #2b3163; background: transparent;
+}
+html body .np-box .np-b span {
+  width: 74px; height: 64px; border-radius: 40px 40px 12px 12px; font-size: 0; color: transparent;
+  background: #fde6ef center / cover no-repeat; box-shadow: inset 0 0 0 3px #fff, 0 5px 12px rgba(110, 76, 52, .2);
+}
+html body .np-box .np-b:active span { transform: translateY(2px) scale(.97); }
+html body .np-box .np-b:focus-visible { outline: 3px solid #c8457a; outline-offset: 2px; background: rgba(200, 69, 122, .08); }
+.np-b[data-r="Бременност"] span      { background-image: url(../img/art/room-preg.webp) !important; }
+.np-b[data-r="Моето бебе"] span      { background-image: url(../img/art/room-baby.webp) !important; }
+.np-b[data-r="Захранване"] span      { background-image: url(../img/art/room-feed.webp) !important; }
+.np-b[data-r="Здраве и SOS"] span    { background-image: url(../img/art/room-health.webp) !important; }
+.np-b[data-r="Развитие и игри"] span { background-image: url(../img/art/room-play.webp) !important; }
+.np-b[data-r="Инструменти"] span     { background-image: url(../img/art/room-tools.webp) !important; }
+.np-b[data-r="Дневник на мама"] span { background-image: url(../img/art/room-diary.webp) !important; }
+.np-b[data-r="Жената в мен"] span    { background-image: url(../img/art/room-mom.webp) !important; }
+.np-b[data-r="Лабораторията"] span   { background-image: url(../img/art/room-lab.webp) !important; }
+html[data-theme="dark"] body .np-box.np-box { background-color: #26336b; background-blend-mode: normal; background-image: none; border-color: rgba(255, 255, 255, .16); outline-color: rgba(255, 255, 255, .22); }
+html[data-theme="dark"] body .np-box .np-h, html[data-theme="dark"] body .np-box .np-b { color: #f3f0ff; }
