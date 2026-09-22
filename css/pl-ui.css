@@ -349,6 +349,33 @@ html[data-theme="dark"] body #roomOverlay .ro-disc.ro-disc { background-color: r
 html body #roomOverlay .ask-chip.ask-chip { min-height: 46px !important; }   /* мерено 43.9px — на косъм под 44 */
 html body .bl-lamp .bl-lamp-hint { font-family: Nunito, Nunito-fallback, system-ui, sans-serif !important; }
 
+/* ═══ 13 · ВЪТРЕШНОСТТА НА КАРТИТЕ (мерено в 9-те стаи, dom_vatre.js) ═══
+   · 53 гел бутона + имената на храните, датите на ваксините, часовниците и броячите бяха на стария
+     Comfortaa → шрифтът на приложението (Nunito), цифрите — равни (tabular-nums);
+   · ~150 реда в картите бяха в старата лилава палитра (#faf6fb, #f7f4fc, #fbeef5, #faf8ff) → кремаво с
+     топъл кант. Цветните ПО СМИСЪЛ (сол/захар, да/не, предупреждение, „направи“) остават техни.
+     Само денем — нощните им правила са отделни и не се пипат. */
+html body .jr-btn.jr-btn, html body .fd-name, html body .vx-when, html body .jr-card strong, html body .pg20-week, html body .nr-disp,
+html body .jr-clock, html body .bt-clock, html body .br-word, html body .sos-btn {
+  font-family: Nunito, Nunito-fallback, system-ui, sans-serif !important; font-variant-numeric: tabular-nums;
+}
+html body .jr-btn.jr-btn { font-weight: 800 !important; letter-spacing: .1px; }
+html:not([data-theme="dark"]) body #roomOverlay .jr-card :is(.cm-row:not(.ob-row), .tk-row, .ld-row, div.jr-win, .rp-card, .wd-cell, .wm-ritrow, .sg-row, .ev-row, .pt-row, .rgz-row, .th-row, .hr-row, .wd-row, .bk-row, .cs-row, .sz-row, .bb-dipbox, .bb-empty, .cv-tbl) {
+  background-color: #fffdf9 !important; box-shadow: inset 0 0 0 1px #f1e4d9 !important;
+}
+/* бутоните-редове (мерено: jr-win 63, gl-row 60, pho-cell 17, al-row, vx-row, mn-cell…) — само НЕизбраното състояние;
+   отметнатото/днешното пази цвета си, защото той носи смисъл */
+html:not([data-theme="dark"]) body #roomOverlay .jr-card :is(button.jr-win, .gl-row, .pho-cell.empty, .al-row, .vx-row, .mn-cell, .dv-msrow, .wm-slot, .g5-box, .we-box, .cl-box):not(.on):not(.done):not(.sel):not(.today):not([aria-pressed="true"]):not([aria-checked="true"]) {
+  background-color: #fffdf9 !important; border-color: #efdccf !important;
+}
+
+/* табовете в картите (напр. „Напъване / Задавяне“, style.css:1551) — бяха бледи с opacity .62;
+   сега филцови хапчета, избраното — розово */
+html body .fs-tab.fs-tab { opacity: 1 !important; background-color: var(--ui-cream) !important; background-image: var(--ui-felt) !important; background-size: 160px 160px !important; background-blend-mode: multiply !important; border: 1.5px solid var(--ui-edge) !important; color: var(--ui-ink) !important; box-shadow: 0 2px 0 var(--ui-edge-2) !important; transform: none !important; }
+html body .fs-tab.fs-tab.is-on { background-color: var(--ui-pick) !important; border-color: var(--ui-pick-edge) !important; color: var(--ui-pick-ink) !important; box-shadow: inset 0 0 0 3px var(--ui-pick), inset 0 0 0 4.5px rgba(217, 90, 142, .35), 0 2px 0 #e7a0bd !important; }
+html[data-theme="dark"] body .fs-tab.fs-tab { background-color: #2b3872 !important; border-color: rgba(255, 255, 255, .16) !important; color: #f1f2fb !important; box-shadow: 0 2px 0 #18214a !important; }
+html[data-theme="dark"] body .fs-tab.fs-tab.is-on { background-color: #5a2c55 !important; border-color: rgba(245, 156, 187, .6) !important; color: #ffe1ec !important; }
+
 /* ═══ НОЩ — същите предмети в нощно синьо ═══ */
 html[data-theme="dark"] body .jr-chip.jr-chip, html[data-theme="dark"] body #roChips .ro-chip.ro-chip, html[data-theme="dark"] body #roomOverlay .ask-chip.ask-chip,
 html[data-theme="dark"] body .wt-o.wt-o, html[data-theme="dark"] body .ct-b.ct-b, html[data-theme="dark"] body .cl-b.cl-b, html[data-theme="dark"] body .hs-chip.hs-chip,
