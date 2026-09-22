@@ -159,6 +159,8 @@
     const main = document.querySelector('main');
     if (!main || document.getElementById('plHome')) return;
     main.parentNode.insertBefore(рисувай(), main);
+    // 🎬 сцената по референция 20 — неподвижна зад цялата страница (css #plScene)
+    if (!document.getElementById('plScene')) { const сц = document.createElement('div'); сц.id = 'plScene'; сц.setAttribute('aria-hidden', 'true'); document.body.insertBefore(сц, document.body.firstChild); }
     document.documentElement.classList.add('pl-on');
     тема();
     броячи();

@@ -789,3 +789,117 @@ html[data-theme="dark"] #roomOverlay .ask-send, html[data-theme="dark"] #roForm 
 @media (prefers-reduced-motion: reduce) {
   .pl-baby, .pl-day-it, .pl-cta, .pl-room { transition: none; }
 }
+
+/* ═══════════════════════════════════════════════════════════════════════════════
+   🎬 СЦЕНИТЕ — „точно като референциите“ (собственикът, 22.09: „това е плоско; каквото е
+   на референцията, това трябва да стане“). Всеки екран на референциите е ЦЯЛА 3D сцена —
+   бебето-герой, стаята, играчките, килимът — а панелите лежат ОТГОРЕ. Сцените тук са
+   самите референции без интерфейса (Gemini 2.5 Flash „махни панелите, остави сцената“),
+   img/scene/<екран>.webp, ~60–100 КБ. Сцената е неподвижна, съдържанието се плъзга над нея.
+   Панелите стават филц с пунктирен шев, стаите — шкаф с рафтове.
+   ═══════════════════════════════════════════════════════════════════════════════ */
+
+/* ── началото: сцената зад цялата страница ── */
+html.pl-on { background: #f6ede3; }
+html.pl-on body, html.pl-on:not([data-theme="dark"]) body { background: transparent !important; }
+#plScene {
+  position: fixed; inset: 0; z-index: -1; pointer-events: none;
+  background: #f6ede3 url(../img/scene/nachalo.webp) 50% 0 / cover no-repeat;
+}
+html.pl-on .sky { display: none !important; }            /* старото небе с петна — сцената го замества */
+html.pl-on #plHome { background: transparent; }
+html.pl-on .pl-hero { min-height: 312px; border-radius: 0; overflow: visible; }
+html.pl-on .pl-hero-art { display: none; }                /* героят вече е сцената */
+html.pl-on .pl-hero::after { background: radial-gradient(70% 60% at 18% 30%, rgba(255, 250, 244, .82) 0, rgba(255, 250, 244, .35) 55%, transparent 75%); }
+html.pl-on .pl-hero-txt { padding-top: calc(env(safe-area-inset-top, 0px) + 44px); max-width: 76%; }
+html.pl-on .pl-hero h1 { font-size: clamp(34px, 9.6vw, 40px); }
+html.pl-on .mascot { display: none !important; }   /* сцената вече има балон; талисманът застъпваше бебето */
+html.pl-on .pl-hero h1 { text-shadow: 0 1px 0 #fff, 0 0 18px rgba(255, 250, 244, .9); }
+html.pl-on .pl-hero p { text-shadow: 0 0 12px rgba(255, 250, 244, .95); }
+html.pl-on .pl-baby { bottom: 6px; }
+
+/* ── филцът с шева: панелите на референциите ── */
+html.pl-on .pl-card, html.pl-on .pl-mira,
+html body #roomOverlay .ro-panel .jr-card, html body #roomOverlay .ro-panel .ask-card {
+  position: relative;
+  background: linear-gradient(180deg, rgba(255, 251, 245, .97) 0, rgba(253, 245, 236, .97) 100%) !important;
+  border: 1px solid rgba(214, 186, 158, .55) !important;
+  border-radius: 26px !important;
+  box-shadow: 0 16px 34px rgba(110, 76, 52, .20), 0 3px 8px rgba(110, 76, 52, .10), inset 0 2px 0 rgba(255, 255, 255, .9) !important;
+}
+html.pl-on .pl-card::after, html.pl-on .pl-mira::after,
+html body #roomOverlay .ro-panel .jr-card::after, html body #roomOverlay .ro-panel .ask-card::after {
+  content: ''; position: absolute; inset: 6px; width: auto; height: auto; border-radius: 21px; pointer-events: none;
+  border: 1.5px dashed rgba(196, 160, 124, .55); background: none;
+  opacity: 1 !important; animation: none !important; transform: none !important;   /* anim.css ползва ::after за проблясък с opacity 0 */
+}
+
+/* ── „Влез в своята стая“: шкаф с рафтове (реф. 20) ── */
+html.pl-on .pl-h2 { margin: 22px 16px -8px; position: relative; z-index: 2; }
+html.pl-on .pl-h2 { justify-self: center; }
+html.pl-on .pl-shelf {
+  position: relative; margin: 0 12px; padding: 26px 12px 16px;
+  border-radius: 30px 30px 22px 22px;
+  background: linear-gradient(180deg, #fbf3e8 0, #f4e6d4 100%);
+  border: 1px solid rgba(206, 172, 136, .6);
+  box-shadow: 0 18px 36px rgba(110, 76, 52, .22), inset 0 0 0 5px #fffaf3, inset 0 0 0 7px rgba(214, 186, 158, .55);
+}
+html.pl-on .pl-rooms { gap: 22px 8px; position: relative; z-index: 0; }   /* свой слой — лавиците (z −1) да са над фона на шкафа */
+html.pl-on .pl-room { min-height: 124px; }
+html.pl-on .pl-room::after {                                 /* дървената лавица под всеки ред */
+  content: ''; position: absolute; left: -8px; right: -8px; bottom: -12px; height: 9px; z-index: -1;
+  border-radius: 3px; background: linear-gradient(180deg, #f1dcc0 0, #dfc2a0 100%);
+  box-shadow: 0 3px 5px rgba(110, 76, 52, .22);
+}
+html.pl-on .pl-arch { height: 100px; box-shadow: inset 0 0 0 4px rgba(255, 255, 255, .95), inset 0 -10px 18px rgba(110, 76, 52, .10), 0 4px 10px rgba(110, 76, 52, .14); }
+html.pl-on .pl-room > span:not(.pl-arch) { background: #fffaf3; box-shadow: 0 3px 8px rgba(110, 76, 52, .18), inset 0 0 0 1.5px #ecd7bd; font-family: var(--pl-serif); font-weight: 700; font-size: 13px; }
+
+/* ── стаите: сцената зад цялата стая ── */
+/* 🪤 22.09: без втория клас губеше от старото `html:not([data-theme]) #roomOverlay .ro-panel { background: … !important }` (1,2,1) —
+   размерът падаше на auto и сцената излизаше в естествен размер 720×1260 (бебето огромно). */
+html body #roomOverlay .ro-panel.ro-panel { background-color: #f6ede3 !important; background-position: 50% 0 !important; background-size: cover !important; background-repeat: no-repeat !important; }
+html body #roomOverlay .ro-panel.ro-green  { background-image: url(../img/scene/zdrave.webp) !important; }
+html body #roomOverlay .ro-panel.ro-sky    { background-image: url(../img/scene/bebe.webp) !important; }
+html body #roomOverlay .ro-panel.ro-peach  { background-image: url(../img/scene/bremennost.webp) !important; }
+html body #roomOverlay .ro-panel.ro-carrot { background-image: url(../img/scene/hranene.webp) !important; }
+html body #roomOverlay .ro-panel.ro-sun    { background-image: url(../img/scene/igri.webp) !important; }
+html body #roomOverlay .ro-panel.ro-mint   { background-image: url(../img/scene/instrumenti.webp) !important; }
+html body #roomOverlay .ro-panel.ro-rose   { background-image: url(../img/scene/zamama.webp) !important; }
+html body #roomOverlay .ro-panel.ro-lav    { background-image: url(../img/scene/dnevnik.webp) !important; }
+html body #roomOverlay .ro-panel.ro-cork   { background-image: url(../img/scene/lab.webp) !important; }
+html body #roomOverlay .ro-panel .ro-head { background: transparent !important; border-bottom: 0 !important; box-shadow: none !important; }
+html body #roomOverlay .ro-panel .ro-head #roAvatar, html body #roomOverlay .ro-panel .ro-head .ro-who { visibility: hidden; }
+html body #roomOverlay .ro-panel .ro-head .ro-nav { background: rgba(255, 252, 247, .86) !important; -webkit-backdrop-filter: blur(8px); backdrop-filter: blur(8px); }
+html body #roomOverlay .ro-panel #roTabs { background: rgba(255, 250, 244, .84) !important; -webkit-backdrop-filter: blur(10px); backdrop-filter: blur(10px); }
+html body #roomOverlay .ro-panel #roRoom, html body #roomOverlay .ro-panel #roArticles, html body #roomOverlay .ro-panel #roChatWrap { background: transparent !important; }
+/* табовете се качват в реда на главата (между ← и SOS) — иначе главата + табовете заемаха горните
+   200 px и закриваха лицето на героя; в референциите горе има само малки бутони */
+html body #roomOverlay .ro-panel #roTabs {
+  position: absolute !important; z-index: 6; top: calc(env(safe-area-inset-top, 0px) + 20px); left: 62px; right: 128px;
+  margin: 0 !important; padding: 3px !important; min-height: 0 !important; height: 52px; border-radius: 999px !important;
+  display: flex; align-items: center; gap: 2px; box-shadow: 0 6px 16px rgba(110, 76, 52, .18) !important;
+}
+html body #roomOverlay .ro-panel #roTabs .st-segs { flex: 1 1 auto; gap: 2px; min-width: 0; }
+html body #roomOverlay .ro-panel #roTabs .st-seg { min-height: 46px !important; padding: 3px 2px !important; min-width: 0; }
+html body #roomOverlay .ro-panel #roTabs .st-n { font-size: 10.5px !important; }
+html body #roomOverlay .ro-panel #roTabs .st-e { width: 18px !important; height: 18px !important; margin-bottom: 1px !important; }
+html body #roomOverlay .ro-panel #roTabs .st-map { width: 44px !important; height: 44px !important; min-width: 44px !important; flex: none; }
+html body #roomOverlay .ro-panel #roTabs .st-map::before { width: 18px; height: 18px; }
+html body #roomOverlay .ro-panel #roTabs .st-dot { transform: scale(.8); transform-origin: top right; }
+/* банерът става „сцена“: без картинка и без карта — само заглавието върху стаята */
+.pl-rhero { height: 196px !important; min-height: 196px !important; background: transparent !important; border: 0 !important; box-shadow: none !important; border-radius: 0 !important; overflow: visible !important; }
+.pl-rhero img, .pl-rhero::after { display: none !important; }
+.pl-rhero-t { left: 6px !important; right: 46% !important; top: 8px !important; bottom: auto !important; }
+.pl-rhero-t b { font-size: 28px !important; line-height: 1.04 !important; text-shadow: 0 1px 0 #fff, 0 0 16px rgba(255, 250, 244, .95), 0 0 30px rgba(255, 250, 244, .8); }
+.pl-rhero-t span { text-shadow: 0 0 10px rgba(255, 250, 244, .95), 0 0 20px rgba(255, 250, 244, .9); font-size: 14.5px !important; }
+
+/* ── нощем: същата сцена под нощно синьо було ── */
+html[data-theme="dark"] #plScene::after { content: ''; position: absolute; inset: 0; background: linear-gradient(180deg, rgba(14, 22, 58, .62) 0, rgba(14, 22, 58, .78) 100%); }
+html[data-theme="dark"] body #roomOverlay .ro-panel { background-blend-mode: multiply; background-color: #3a4580 !important; }
+html[data-theme="dark"] .pl-rhero-t b, html[data-theme="dark"] .pl-rhero-t span, html[data-theme="dark"].pl-on .pl-hero h1, html[data-theme="dark"].pl-on .pl-hero p { text-shadow: 0 0 14px rgba(10, 16, 44, .95), 0 0 28px rgba(10, 16, 44, .8); }
+html[data-theme="dark"].pl-on .pl-hero::after { background: radial-gradient(70% 60% at 18% 30%, rgba(14, 22, 58, .7) 0, transparent 75%); }
+html[data-theme="dark"] .pl-card, html[data-theme="dark"] .pl-mira, html[data-theme="dark"] body #roomOverlay .ro-panel .jr-card, html[data-theme="dark"] body #roomOverlay .ro-panel .ask-card { background: rgba(31, 43, 92, .95) !important; border-color: rgba(255, 255, 255, .14) !important; }
+html[data-theme="dark"] .pl-card::after, html[data-theme="dark"] .pl-mira::after, html[data-theme="dark"] body #roomOverlay .ro-panel .jr-card::after, html[data-theme="dark"] body #roomOverlay .ro-panel .ask-card::after { border-color: rgba(255, 255, 255, .22); }
+html[data-theme="dark"].pl-on .pl-shelf { background: linear-gradient(180deg, #26336b, #1d2856); border-color: rgba(255, 255, 255, .14); box-shadow: 0 18px 36px rgba(0, 0, 0, .35), inset 0 0 0 5px rgba(255, 255, 255, .05); }
+html[data-theme="dark"].pl-on .pl-room::after { background: linear-gradient(180deg, #3a4680, #2c3770); }
+html[data-theme="dark"].pl-on .pl-room > span:not(.pl-arch) { background: #2a376f; color: #fff; box-shadow: 0 3px 8px rgba(0, 0, 0, .3), inset 0 0 0 1.5px rgba(255, 255, 255, .16); }   /* нощем надписите бяха бели върху бяло */
