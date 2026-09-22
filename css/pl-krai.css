@@ -1,6 +1,6 @@
 /* ☁️ КРАЯТ НА НАЧАЛОТО (js/pl-krai.js) — сцената от реф. 7 плава; краищата се стопяват в сцената на началото.
    ПЪТ НАЗАД: махни <link>/<script> на pl-krai от index.html. */
-.pl-krai { position: relative; margin: 8px 0 calc(96px + env(safe-area-inset-bottom, 0px)); padding: 0; pointer-events: none; }
+.pl-krai { position: relative; margin: 8px 0 10px; padding: 0; pointer-events: none; }   /* долу следва подписът на приложението */
 .pl-krai img {
   display: block; width: 100%; height: auto;
   -webkit-mask-image: radial-gradient(75% 70% at 55% 50%, #000 55%, transparent 100%);

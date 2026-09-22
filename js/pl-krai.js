@@ -25,10 +25,12 @@
     н.appendChild(р);
   }
   function сложи() {
-    const н = document.getElementById('plHome');
-    if (!н) return false;
+    // 🪤 22.09: краят стоеше в #plHome, но СЛЕД него идва старата секция „Днес“ (#todaySection) и
+    //   къщичката оставаше по средата на страницата. Сега е последното нещо в <main>.
+    const н = document.querySelector('main');
+    if (!н || !document.getElementById('plHome')) return false;
     повече(н);
-    if (н.querySelector(':scope > .pl-krai')) return true;
+    if (н.querySelector(':scope > .pl-krai')) { н.appendChild(н.querySelector(':scope > .pl-more')); н.appendChild(н.querySelector(':scope > .pl-krai')); return true; }
     const ф = document.createElement('figure');
     ф.className = 'pl-krai'; ф.setAttribute('aria-hidden', 'true');
     ф.innerHTML = '<img src="img/art/doma.webp" alt="" loading="lazy" decoding="async" width="720" height="555">' +
