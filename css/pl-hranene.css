@@ -1,0 +1,345 @@
+/* ═══════════════════════════════════════════════════════════════════════════════
+   🥄 „ПЪРВИТЕ ЛЪЖИЧКИ · НАШЕТО МЕНЮ“ · стаята „Захранване“ (референция 10, 22.09.2026)
+   Вид на блока от js/pl-hranene.js — ПРЕДМЕТИ върху сцената img/scene/hranene.webp (тя е
+   фонът на панела, premium.css „🎬 СЦЕНИТЕ“): отворена книга с кожена подвързия, шев и
+   ръб от страници; вътре филцов лист (.pl-felt) със заглавие „Нашето меню ♡“, седем кръгли
+   дни (днешният — розов гел .pl-gel, другите — кремав филц .pl-soft), хартиено листче с
+   „снимка“ (купичка върху карирана кърпа) и гел бутон; вдясно от прегъвката три плочки
+   (.pl-soft). Отдолу — рафт с три пастелни арки с кремав ръб, табелки с месингови халки, и
+   розовият гел „+ Добави хранене“.
+   🪤 7 дни × 44px (докосване ≥ 44) не се побират в лявата страница на 390px (мерено: ~170px) —
+   затова заглавието и дните са горе, през целия разгърнат лист; прегъвката е под тях.
+   МАТЕРИАЛИТЕ са общите от css/pl-ui.css. Тук е само формата, кожата и дървото.
+   Числата — Nunito (Georgia: старинни цифри, 0 = „о“). Контраст ≥ 4.5:1 (изчислен, dom_a11y.js).
+   Нощта (21:00–7:00): нощно синьо, кожата — тъмносиня със златен шев, иконките на бял кръг.
+   ПЪТ НАЗАД: махни <link href="css/pl-hranene.css">.
+   ═══════════════════════════════════════════════════════════════════════════════ */
+
+/* 🪤 #roRoom е flex контейнер с фиксирана височина — без flex:none блокът се свива */
+.pl-hr {
+  flex: none; position: relative;
+  margin: 12px 0 10px;
+  color: #3b3f5c;
+  font-family: Nunito, 'Nunito-fallback', system-ui, sans-serif;
+  --hr-navy: var(--pl-navy, #1d2a5c);
+  --hr-soft: #5d596f;
+  --hr-serif: var(--pl-serif, Georgia, 'Noto Serif', serif);
+  /* дървото на рафта (без url — градиентите в променлива нямат капана с относителния път) */
+  --hr-wood: repeating-linear-gradient(94deg, rgba(150, 98, 48, .07) 0 1.5px, transparent 1.5px 9px),
+             linear-gradient(180deg, #fbeedb 0, #f2dab8 32%, #e1bc8c 36%, #d5ab76 100%);
+}
+:where(.pl-hr) button { font: inherit; -webkit-tap-highlight-color: transparent; }
+.pl-hr :focus-visible { outline: 3px solid #e56d99; outline-offset: 3px; }
+.pl-hr-dg { font-family: Nunito, 'Nunito-fallback', system-ui, sans-serif; font-weight: 800; font-variant-numeric: lining-nums; }
+
+/* ══ книгата: кожена подвързия с шев, ръб от страници отдолу ══ */
+.pl-hr-book {
+  position: relative; z-index: 0;
+  padding: 7px 7px 15px;
+  border-radius: 30px 30px 26px 26px;
+  background:
+    radial-gradient(120% 60% at 50% 0, rgba(255, 255, 255, .28) 0, rgba(255, 255, 255, 0) 60%),
+    repeating-linear-gradient(38deg, rgba(120, 72, 30, .035) 0 2px, transparent 2px 6px),
+    linear-gradient(180deg, #e9cda8 0, #dbb88e 100%);
+  box-shadow: inset 0 0 0 1.5px #c3915d, inset 0 2px 0 rgba(255, 255, 255, .55), inset 0 -3px 0 rgba(140, 90, 45, .22),
+              0 18px 34px rgba(110, 76, 52, .28), 0 4px 10px rgba(110, 76, 52, .14);
+}
+.pl-hr-book::before {          /* шевът по кожата */
+  content: ''; position: absolute; inset: 3px; border-radius: 27px 27px 23px 23px; pointer-events: none;
+  border: 1.5px dashed rgba(255, 246, 230, .75);
+}
+.pl-hr-book::after {           /* ръбът на страниците под листа */
+  content: ''; position: absolute; z-index: 0; left: 14px; right: 14px; bottom: 6px; height: 10px;
+  border-radius: 0 0 14px 14px;
+  background: repeating-linear-gradient(180deg, #fffaf1 0 1.6px, #e3cdb0 1.6px 3.2px);
+  box-shadow: 0 1px 0 rgba(150, 105, 60, .35);
+}
+/* листът — общият филц; тук само по-плитка сянка, защото лежи в подвързията */
+html body .pl-hr .pl-hr-sheet.pl-felt {
+  position: relative; z-index: 1;
+  padding: 12px 11px 12px;
+  border-radius: 24px !important;
+  box-shadow: 0 3px 0 #efe0cb, 0 6px 14px rgba(110, 76, 52, .18), inset 0 2px 0 rgba(255, 255, 255, .9) !important;
+}
+html body .pl-hr .pl-hr-sheet.pl-felt::after { border-radius: 19px; }
+
+/* украсата в горния ляв ъгъл (реф. 10: цвете с листенца).
+   🪤 (снимка ag2_hranene_l2): извън листа „multiply“ няма върху какво да се смеси — листът е
+   своя група (z-index) — и спрайтът стоеше като бял наклонен квадрат. Затова е ВЪТРЕ в листа, и
+   БЕЗ z-index на обвивката (снимка ag2_hranene_l3: z-index:0 пак я правеше отделна група → бяло). */
+.pl-hr-deco { position: absolute; left: 8px; top: 6px; width: 62px; height: 46px; pointer-events: none; }
+.pl-hr-fl, .pl-hr-lf { position: absolute; display: block; background-repeat: no-repeat; background-size: 400% 400%; mix-blend-mode: multiply; }
+.pl-hr-fl { left: 0; top: 0; width: 42px; height: 42px; transform: rotate(-12deg); }
+.pl-hr-lf { left: 24px; top: 14px; width: 30px; height: 30px; transform: rotate(38deg); }
+
+.pl-hr-h {
+  display: flex; align-items: center; justify-content: center; gap: 6px;
+  margin: 2px 0 0; padding: 0 22px;
+  font-family: var(--hr-serif); font-weight: 700; font-size: 23px; line-height: 1.1; letter-spacing: -.3px;
+  color: var(--hr-navy); white-space: nowrap;
+}
+.pl-hr-hs { flex: none; width: 24px; height: 24px; fill: none; stroke: #e56d99; stroke-width: 2.1; stroke-linejoin: round; transform: rotate(8deg) translateY(-2px); }
+
+/* ══ седемте дни ══ */
+.pl-hr-days { display: grid; grid-template-columns: repeat(7, minmax(0, 44px)); justify-content: space-between; margin: 10px 0 0; }
+html body .pl-hr .pl-hr-d {
+  position: relative; display: grid; place-items: center;
+  width: 44px; height: 44px; padding: 0; border-radius: 50% !important; cursor: pointer;
+  font-family: var(--hr-serif); font-weight: 700; font-size: 16px; line-height: 1;
+}
+.pl-hr-d > i { position: absolute; left: 50%; bottom: 5px; width: 5px; height: 5px; margin-left: -2.5px; border-radius: 50%; background: #c8457a; opacity: 0; }
+.pl-hr-d.has-food > i { opacity: 1; }
+.pl-hr-d.is-today > i { background: #fff; }
+.pl-hr-d[aria-pressed="true"]::after {   /* избраният — розов пръстен около кръга */
+  content: ''; position: absolute; inset: -4px; border-radius: 50%; pointer-events: none;
+  border: 2px solid #d95a8e;
+}
+
+/* ══ разгърнатото тяло: листче вляво, прегъвка, плочки вдясно ══ */
+.pl-hr-body {
+  position: relative;
+  display: grid; grid-template-columns: minmax(0, 1.1fr) minmax(0, 1fr); gap: 14px;
+  margin: 12px 0 0;
+}
+.pl-hr-body::before {          /* прегъвката на книгата */
+  content: ''; position: absolute; z-index: 0; top: -6px; bottom: -8px; width: 16px;
+  left: calc((100% - 14px) * 1.1 / 2.1 + 7px); margin-left: -8px; pointer-events: none;
+  background: linear-gradient(90deg, rgba(160, 118, 76, 0) 0, rgba(160, 118, 76, .16) 42%, rgba(120, 84, 50, .30) 50%, rgba(160, 118, 76, .16) 58%, rgba(160, 118, 76, 0) 100%);
+}
+
+.pl-hr-dish {
+  position: relative; z-index: 1;
+  display: flex; flex-direction: column;
+  min-width: 0; padding: 8px 8px 9px;
+  border-radius: 18px;
+  background: #fffdf9;
+  box-shadow: inset 0 0 0 1.5px #f0e0cc, 0 2px 0 #ead7bf, 0 6px 12px rgba(110, 76, 52, .09);
+}
+.pl-hr-dish::after { content: ''; position: absolute; inset: 4px; border-radius: 14px; pointer-events: none; border: 1.3px dashed rgba(196, 160, 124, .45); }
+/* „снимката“: купичка върху бяла чиния на карирана кърпа */
+.pl-hr-photo {
+  position: relative; height: 86px; overflow: hidden;
+  border-radius: 12px;
+  background:
+    repeating-linear-gradient(0deg, rgba(233, 138, 170, .30) 0 7px, transparent 7px 14px),
+    repeating-linear-gradient(90deg, rgba(233, 138, 170, .30) 0 7px, transparent 7px 14px),
+    #fff6f8;
+  box-shadow: 0 0 0 3px #fff, 0 0 0 4.5px #f0e0cc, 0 3px 8px rgba(110, 76, 52, .18);
+}
+.pl-hr-plate {
+  position: absolute; left: 50%; bottom: 6px; width: 112px; height: 54px; margin-left: -60px; border-radius: 50%;
+  background: radial-gradient(closest-side, #fff 0, #fff 72%, #f3ebe2 88%, #e9ddcf 100%);
+  box-shadow: 0 3px 6px rgba(110, 76, 52, .18);
+}
+.pl-hr-bowl, .pl-hr-veg { position: absolute; z-index: 1; display: block; background-repeat: no-repeat; background-size: 400% 400%; mix-blend-mode: multiply; }
+.pl-hr-bowl { left: 50%; bottom: 4px; width: 80px; height: 80px; margin-left: -48px; }
+.pl-hr-veg { right: 4px; bottom: 0; width: 44px; height: 44px; transform: rotate(-8deg); }
+.pl-hr-photo.is-empty .pl-hr-bowl { opacity: .55; filter: grayscale(.3); }
+/* пюрето в купичката (реф. 10: оранжево) — само когато денят има храна; ПОД купичката (z 0 < 1),
+   за да го „оцвети“ multiply-ят на спрайта и лъжичката да остане отгоре */
+.pl-hr-photo:not(.is-empty)::after {
+  content: ''; position: absolute; z-index: 0; left: 50%; bottom: 46px; width: 44px; height: 12px; margin-left: -30px; border-radius: 50%;
+  background: radial-gradient(60% 70% at 45% 35%, #ffc37a 0, #f39a3e 55%, #e07f24 100%);
+  box-shadow: inset 0 -1.5px 2px rgba(150, 70, 10, .25);
+}
+.pl-hr-plus {                  /* поканата: бяло копче с розов „+“ върху празната купичка */
+  position: absolute; right: 10px; top: 10px; width: 30px; height: 30px; border-radius: 50%;
+  background: radial-gradient(circle at 40% 30%, #fff 0, #fff8fb 55%, #fbe4ed 100%);
+  box-shadow: inset 0 0 0 2px #ef9fbf, 0 2px 0 #e7a0bd, 0 4px 8px rgba(201, 70, 122, .22);
+}
+.pl-hr-plus::before, .pl-hr-plus::after { content: ''; position: absolute; left: 50%; top: 50%; width: 13px; height: 3px; border-radius: 2px; background: #c8457a; transform: translate(-50%, -50%); }
+.pl-hr-plus::after { transform: translate(-50%, -50%) rotate(90deg); }
+html body .pl-hr .pl-hr-edit {  /* ✎ промени — кремаво филцово кръгче в ъгъла на снимката */
+  position: absolute; z-index: 2; right: 2px; top: 2px;
+  display: grid; place-items: center; width: 44px; height: 44px; padding: 0; border-radius: 50% !important; cursor: pointer;
+}
+.pl-hr-edit svg { width: 18px; height: 18px; }
+.pl-hr-dt {
+  margin: 9px 2px 0;
+  font-family: var(--hr-serif); font-weight: 700; font-size: 16.5px; line-height: 1.15; letter-spacing: -.2px;
+  color: var(--hr-navy); overflow-wrap: anywhere;
+  display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden;
+}
+.pl-hr-ds { margin: 3px 2px 0; font-size: 12.5px; font-weight: 700; line-height: 1.25; color: var(--hr-soft); }
+html body .pl-hr .pl-hr-go {
+  display: flex; align-items: center; justify-content: center; gap: 6px;
+  width: 100%; min-height: 46px; margin-top: auto; padding: 0 10px; border-radius: 999px; cursor: pointer;
+  font-family: var(--hr-serif); font-weight: 700; font-size: 15px; letter-spacing: .1px; white-space: nowrap;
+}
+/* 🪤 ИЗМЕРЕНО (ag2_hranene_piksel.js — пикселите под текста, не background-color): белият текст върху
+   общия гел е 4.14:1 средно, 3.66 най-ниско — под дребния текст (буквата 16px, бутонът 15px) пада
+   светлата част на градиента (#d95a8e = 3.6:1). Същият материал и същите цветове (--ui-gel-*), но
+   преходът стига --ui-gel на 28% — там свършва и бликът; под текста остава #c8457a…#b93a6e (4.6–5.3:1).
+   Големият „Добави хранене“ (21px получер, праг 3:1) е с общия гел. */
+html body .pl-hr .pl-hr-d.pl-gel.pl-gel, html body .pl-hr .pl-hr-go.pl-gel.pl-gel {
+  background-image:
+    radial-gradient(120% 70% at 50% -10%, rgba(255, 255, 255, .62) 0, rgba(255, 255, 255, .18) 38%, rgba(255, 255, 255, 0) 55%),
+    linear-gradient(180deg, var(--ui-gel-top) 0%, var(--ui-gel-mid) 14%, var(--ui-gel) 28%, var(--ui-gel-bot) 100%) !important;
+}
+.pl-hr-go span { font-family: Nunito, 'Nunito-fallback', system-ui, sans-serif; font-size: 20px; line-height: 1; transform: translateY(-1px); }
+.pl-hr-ds + .pl-hr-go { margin-top: 10px; }
+
+/* ══ трите плочки на дясната страница (материалът е .pl-soft) ══ */
+.pl-hr-tiles { position: relative; z-index: 1; display: flex; flex-direction: column; gap: 9px; min-width: 0; }
+html body .pl-hr .pl-hr-t {
+  flex: 1 1 0;
+  display: grid; grid-template-columns: 36px minmax(0, 1fr) 8px; align-items: center; gap: 6px;
+  min-height: 66px; padding: 6px 8px 6px 6px;
+  border-radius: 18px !important; cursor: pointer; text-align: left;
+}
+.pl-hr-ti {   /* 36px: поканата „+ отбележи“ стоеше на косъм от „›“ (снимка ag2_hranene_e2) */
+  width: 36px; height: 36px; border-radius: 50%;
+  background-repeat: no-repeat; background-size: 400% 400%; background-blend-mode: multiply;
+  box-shadow: inset 0 0 0 2.5px #fff, 0 2px 5px rgba(150, 105, 60, .2);
+}
+.pl-hr-t.t-опитани .pl-hr-ti { background-color: #fde3ee; }
+.pl-hr-t.t-любими .pl-hr-ti { background-color: #fde6ef; }
+.pl-hr-t.t-бележки .pl-hr-ti { background-color: #e6e6fb; }
+.pl-hr-tt { min-width: 0; }
+.pl-hr-tt > b { display: block; font-family: var(--hr-serif); font-weight: 700; font-size: 14px; line-height: 1.15; color: var(--hr-navy); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.pl-hr-tn { display: block; margin-top: 2px; }
+.pl-hr-n { display: block; font-family: Nunito, 'Nunito-fallback', system-ui, sans-serif; font-weight: 900; font-size: 23px; line-height: 1; color: var(--hr-navy); font-variant-numeric: lining-nums tabular-nums; }
+.pl-hr-x { display: block; margin-top: 1px; font-size: 11.5px; font-weight: 800; line-height: 1.15; color: #9e2f5f; white-space: nowrap; font-variant-numeric: lining-nums; }
+/* поканата (нула без запис): голям розов „+“ на мястото на числото и дума до него — на един ред
+   (снимка ag2_hranene_e1: „+ / отбележи“ се чупеше на два реда в тясната колона) */
+.pl-hr-inv { display: flex; align-items: center; gap: 3px; font-size: 12.5px; font-weight: 800; line-height: 1.2; color: #a8386a; white-space: nowrap; }
+.pl-hr-inv b { font-family: Nunito, 'Nunito-fallback', system-ui, sans-serif; font-size: 22px; font-weight: 900; line-height: 1; transform: translateY(-1px); }
+.pl-hr-t > em { font-style: normal; font-size: 20px; line-height: 1; color: var(--hr-navy); }
+
+.pl-hr-note { position: relative; z-index: 1; margin: 10px 4px 0; font-size: 12px; font-weight: 700; line-height: 1.3; text-align: center; color: var(--hr-soft); }
+.pl-hr-note[hidden] { display: none; }
+
+/* ══ рафтът с трите арки ══ */
+.pl-hr-shelf {
+  position: relative; z-index: 0;
+  display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 0 12px;
+  margin: 18px 0 0; padding: 0 12px;
+}
+.pl-hr-shelf::after {          /* дъската: горна плоскост + преден ръб */
+  content: ''; position: absolute; z-index: -1; left: 0; right: 0; bottom: 4px; height: 24px;
+  border-radius: 9px 9px 7px 7px;
+  background: var(--hr-wood);
+  box-shadow: 0 9px 14px rgba(150, 105, 60, .26), inset 0 1.5px 0 rgba(255, 255, 255, .75), inset 0 -2px 0 rgba(150, 98, 48, .28);
+}
+.pl-hr-ring {                  /* месингови халки в краищата на дъската */
+  position: absolute; z-index: 0; bottom: 10px; width: 15px; height: 15px; border-radius: 50%;
+  background: radial-gradient(circle, transparent 0 3.4px, #8a6320 3.9px, #f2cd72 5px, #b3862f 6.6px, rgba(120, 80, 20, 0) 7.2px);
+  filter: drop-shadow(0 1.5px 1px rgba(110, 76, 52, .3));
+}
+.pl-hr-ring.r1 { left: 2px; }
+.pl-hr-ring.r2 { right: 2px; }
+.pl-hr-a {
+  position: relative; z-index: 1;
+  display: flex; flex-direction: column; align-items: center;
+  min-width: 0; padding: 0 0 12px; border: 0; background: none; cursor: pointer;
+  transition: transform .2s ease;
+}
+.pl-hr-a:active { transform: scale(.96); }
+.pl-hr-dome {                  /* пастелната арка: дебел кремав ръб с кант, вдлъбнатина, блик */
+  position: relative; display: grid; place-items: center;
+  width: 100%; height: 116px;
+  border-radius: 999px 999px 12px 12px;
+  box-shadow:
+    inset 0 0 0 7px #fbf3e6, inset 0 0 0 8.5px rgba(214, 178, 140, .75),
+    inset 0 18px 20px rgba(255, 255, 255, .45), inset 0 -14px 18px rgba(110, 76, 52, .10),
+    0 0 0 1.5px rgba(206, 168, 128, .6), 0 8px 16px rgba(150, 105, 60, .22);
+}
+.pl-hr-dome::before {          /* гел-бликът */
+  content: ''; position: absolute; left: 20%; top: 11%; width: 30%; height: 16%; border-radius: 50%;
+  background: radial-gradient(closest-side, rgba(255, 255, 255, .9), rgba(255, 255, 255, 0));
+  transform: rotate(-26deg); pointer-events: none;
+}
+.pl-hr-a.t-храни .pl-hr-dome { background: radial-gradient(120% 90% at 50% 18%, #fff2f6 0, #f9d3e1 52%, #f1b6cc 100%); }
+.pl-hr-a.t-рецепти .pl-hr-dome { background: radial-gradient(120% 90% at 50% 18%, #fffaf2 0, #f8e9d6 52%, #efd7ba 100%); }
+.pl-hr-a.t-дневник .pl-hr-dome { background: radial-gradient(120% 90% at 50% 18%, #f2f8ef 0, #d6e8d2 52%, #b9d6b6 100%); }
+.pl-hr-ai { position: relative; display: block; width: 78px; height: 78px; margin-top: -10px; background-repeat: no-repeat; background-size: 400% 400%; mix-blend-mode: multiply; }
+.pl-hr-al {                    /* табелката с месингови халки */
+  position: relative; z-index: 1; margin-top: -22px;
+  min-width: 94%; padding: 8px 6px 7px;
+  border-radius: 999px;
+  background: linear-gradient(180deg, #fffdf8 0, #f8ecdb 100%);
+  box-shadow: inset 0 0 0 1.5px #ead3b4, inset 0 1.5px 0 #fff, 0 3px 6px rgba(150, 105, 60, .22);
+  font-family: var(--hr-serif); font-weight: 700; font-size: 15.5px; line-height: 1.1; text-align: center;
+  color: var(--hr-navy); white-space: nowrap;
+}
+.pl-hr-al::before, .pl-hr-al::after {
+  content: ''; position: absolute; top: 50%; width: 10px; height: 10px; margin-top: -5px; border-radius: 50%;
+  background: radial-gradient(circle, transparent 0 2px, #9a6d22 2.4px, #f2cd72 3.3px, #a8791f 4.5px, transparent 5px);
+}
+.pl-hr-al::before { left: -3px; }
+.pl-hr-al::after { right: -3px; }
+
+/* ══ „+ Добави хранене“ (материалът е .pl-gel) и изборът под него ══ */
+html body .pl-hr .pl-hr-cta {
+  display: flex; align-items: center; justify-content: center; gap: 14px;
+  width: fit-content; min-width: 72%; max-width: 100%; min-height: 60px;
+  margin: 16px auto 0; padding: 0 32px 0 12px;
+  border-radius: 999px; cursor: pointer;
+  font-family: var(--hr-serif); font-size: 21px; font-weight: 700; letter-spacing: .1px;
+}
+.pl-hr-cta b { position: relative; flex: none; width: 38px; height: 38px; border-radius: 50%; background: radial-gradient(circle at 40% 30%, #fff 0, #fff5f9 60%, #fbe0ea 100%); box-shadow: 0 2px 0 rgba(120, 20, 60, .28), inset 0 -1.5px 0 rgba(200, 69, 122, .18); }
+.pl-hr-cta b::before, .pl-hr-cta b::after { content: ''; position: absolute; left: 50%; top: 50%; width: 16px; height: 3.5px; border-radius: 2px; background: #c8457a; transform: translate(-50%, -50%); transition: transform .25s ease; }
+.pl-hr-cta b::after { transform: translate(-50%, -50%) rotate(90deg); }
+.pl-hr-cta[aria-expanded="true"] b::before { transform: translate(-50%, -50%) rotate(45deg); }
+.pl-hr-cta[aria-expanded="true"] b::after { transform: translate(-50%, -50%) rotate(135deg); }
+.pl-hr-menu { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 8px; margin: 14px 0 0; }
+.pl-hr-menu[hidden] { display: none; }
+html body .pl-hr .pl-hr-mi {   /* материалът е .pl-soft */
+  display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 4px;
+  min-height: 88px; padding: 8px 4px; cursor: pointer; border-radius: 18px !important;
+  font-size: 13px; font-weight: 800; text-align: center;
+}
+.pl-hr-mico { display: block; width: 50px; height: 50px; border-radius: 50%; background-color: #fde6ef; background-repeat: no-repeat; background-size: 400% 400%; background-blend-mode: multiply; box-shadow: inset 0 0 0 2.5px #fff; }
+.pl-hr-mi:nth-child(3n+2) .pl-hr-mico { background-color: #e3f3e8; }
+.pl-hr-mi:nth-child(3n) .pl-hr-mico { background-color: #e3edfc; }
+
+/* ── осветяването на ИСТИНСКИЯ бутон/карта, до която скочихме (атрибутът се маха след 2.6 с) ── */
+#roRoom [data-pl-hr-spot] {
+  outline: 3px solid #e56d99 !important; outline-offset: 4px;
+  border-radius: 16px;
+  animation: plHrSpot 1.2s ease-in-out 2;
+}
+@keyframes plHrSpot { 50% { outline-color: rgba(229, 109, 153, .25); } }
+
+/* ═══ НОЩ (21:00–7:00): нощно синьо, кожата — тъмносиня със златен шев, иконките на бял кръг ═══ */
+html[data-theme="dark"] .pl-hr {
+  color: #e3e5f5;
+  --hr-navy: #fff;
+  --hr-soft: #c9cbe3;
+  --hr-wood: linear-gradient(180deg, #45539a 0, #3a4786 32%, #2f3b76 36%, #27316a 100%);
+}
+html[data-theme="dark"] .pl-hr-book {
+  background: linear-gradient(180deg, #34427f 0, #28346b 100%);
+  box-shadow: inset 0 0 0 1.5px rgba(240, 210, 137, .5), 0 18px 34px rgba(0, 0, 0, .38);
+}
+html[data-theme="dark"] .pl-hr-book::before { border-color: rgba(240, 210, 137, .45); }
+html[data-theme="dark"] .pl-hr-book::after { background: repeating-linear-gradient(180deg, #3d4a8a 0 1.6px, #222c5e 1.6px 3.2px); box-shadow: none; }
+html[data-theme="dark"] body .pl-hr .pl-hr-sheet.pl-felt { box-shadow: 0 3px 0 #18214a, 0 6px 14px rgba(0, 0, 0, .3) !important; }
+html[data-theme="dark"] .pl-hr-fl, html[data-theme="dark"] .pl-hr-lf { mix-blend-mode: normal; border-radius: 50%; background-color: #fff; box-shadow: 0 2px 6px rgba(0, 0, 0, .3); }
+html[data-theme="dark"] .pl-hr-lf { display: none; }
+html[data-theme="dark"] .pl-hr-hs { stroke: #f59cbb; }
+html[data-theme="dark"] .pl-hr-d > i { background: #ffb8d2; }
+html[data-theme="dark"] .pl-hr-d.is-today > i { background: #fff; }
+html[data-theme="dark"] .pl-hr-d[aria-pressed="true"]::after { border-color: #f59cbb; }
+html[data-theme="dark"] .pl-hr-body::before { background: linear-gradient(90deg, rgba(0, 0, 0, 0) 0, rgba(0, 0, 0, .18) 42%, rgba(0, 0, 0, .34) 50%, rgba(0, 0, 0, .18) 58%, rgba(0, 0, 0, 0) 100%); }
+html[data-theme="dark"] .pl-hr-dish { background: rgba(255, 255, 255, .07); box-shadow: inset 0 0 0 1.5px rgba(255, 255, 255, .14), 0 2px 0 #18214a; }
+html[data-theme="dark"] .pl-hr-dish::after { border-color: rgba(255, 255, 255, .2); }
+html[data-theme="dark"] .pl-hr-photo { filter: brightness(.9); box-shadow: 0 0 0 3px rgba(255, 255, 255, .85), 0 3px 8px rgba(0, 0, 0, .3); }
+html[data-theme="dark"] .pl-hr-ti, html[data-theme="dark"] .pl-hr-mico,
+html[data-theme="dark"] .pl-hr-t.t-опитани .pl-hr-ti, html[data-theme="dark"] .pl-hr-t.t-любими .pl-hr-ti, html[data-theme="dark"] .pl-hr-t.t-бележки .pl-hr-ti,
+html[data-theme="dark"] .pl-hr-mi .pl-hr-mico { background-color: #fff; box-shadow: 0 2px 6px rgba(0, 0, 0, .3); }
+html[data-theme="dark"] .pl-hr-x, html[data-theme="dark"] .pl-hr-inv { color: #ffb8d2; }
+html[data-theme="dark"] .pl-hr-dome { box-shadow: inset 0 0 0 5px rgba(255, 255, 255, .14), inset 0 0 0 6.5px rgba(240, 210, 137, .32), 0 8px 16px rgba(0, 0, 0, .3); }
+html[data-theme="dark"] .pl-hr-dome::before { opacity: .35; }
+html[data-theme="dark"] .pl-hr-a.t-храни .pl-hr-dome { background: linear-gradient(180deg, rgba(229, 109, 153, .38), rgba(229, 109, 153, .18)); }
+html[data-theme="dark"] .pl-hr-a.t-рецепти .pl-hr-dome { background: linear-gradient(180deg, rgba(240, 200, 150, .32), rgba(240, 200, 150, .14)); }
+html[data-theme="dark"] .pl-hr-a.t-дневник .pl-hr-dome { background: linear-gradient(180deg, rgba(110, 200, 160, .34), rgba(110, 200, 160, .15)); }
+html[data-theme="dark"] .pl-hr-ai { width: 66px; height: 66px; margin-top: -14px; mix-blend-mode: normal; border-radius: 50%; background-color: #fff; box-shadow: 0 4px 12px rgba(0, 0, 0, .25); }
+html[data-theme="dark"] .pl-hr-al { background: #2a376f; box-shadow: inset 0 0 0 1.5px rgba(240, 210, 137, .4), 0 3px 6px rgba(0, 0, 0, .3); }
+html[data-theme="dark"] .pl-hr-shelf::after { box-shadow: 0 9px 14px rgba(0, 0, 0, .32), inset 0 1.5px 0 rgba(240, 210, 137, .4); }
+html[data-theme="dark"] #roRoom [data-pl-hr-spot] { outline-color: #f59cbb !important; }
+
+@media (prefers-reduced-motion: reduce) {
+  .pl-hr-a, .pl-hr-cta b::before, .pl-hr-cta b::after { transition: none; }
+  #roRoom [data-pl-hr-spot] { animation: none; }
+}

@@ -1,0 +1,357 @@
+/* ═══════════════════════════════════════════════════════════════════════════════
+   🤰 PREMIUM „С ВСЯКА СЕДМИЦА ПО-БЛИЗО“ · стаята „Бременност“ (референция 4) · 22.09.2026
+   Видът на блока от js/pl-bremennost.js: лента със седмиците, карта на седмицата,
+   „Предстоящи записи“ и три плочки — върху СЦЕНАТА (img/scene/bremennost.webp, premium.css).
+   МАТЕРИАЛИТЕ са общите от css/pl-ui.css — тук НЯМА свой гел или филц:
+     .pl-felt — картите и плочките (филц с пунктирен шев);
+     .pl-gel  — „Добави запис“, „Въведи датата“, избраното мънисто, избраното хапче;
+     .pl-soft — мънистата, ‹ ›, редовете на записите, „↩ Към моята седмица“.
+   Цифрите са на Nunito (Georgia пише „старинни“ цифри — 0 се чете „о“).
+   Контраст: изчислен в пробата (ag2_bremennost_kontrast.js), не на око.
+   ПЪТ НАЗАД: махни <link href="css/pl-bremennost.css"> и <script src="js/pl-bremennost.js">;
+   предишната версия е в scratchpad/ag2_bremennost_predi.css.bak.
+   ═══════════════════════════════════════════════════════════════════════════════ */
+
+/* 🪤 #roRoom е flex контейнер с фиксирана височина — без flex:none блокът се свива. */
+#roRoom > .pl-br {
+  flex: none;
+  display: flex; flex-direction: column; gap: 12px;
+  margin: 12px 0 4px;
+  font-family: Nunito, 'Nunito-fallback', system-ui, sans-serif;
+  color: var(--pl-ink, #3b3f5c);
+}
+/* старата „Тази седмица“ показва СЪЩОТО (същите данни) — крие се само докато блокът е пълен.
+   Тя остава построена и жива; махнеш ли този файл, се връща. */
+#roRoom > .pl-br[data-s="седмица"] ~ .jr-card.pg20-hero:not(.rh-hero) { display: none !important; }
+
+/* картите: материалът е .pl-felt (pl-ui.css); тук — само вътрешният въздух */
+.pl-br-card { padding: 17px 12px 16px; }
+.pl-br-h {
+  position: relative; z-index: 1;
+  margin: 0 0 10px; text-align: center;
+  font-family: var(--pl-serif); font-weight: 700; font-size: 17.5px; line-height: 1.2; letter-spacing: -.2px;
+  color: var(--pl-navy, #1d2a5c);
+}
+
+/* ═══ ЛЕНТАТА СЪС СЕДМИЦИТЕ — ‹ (22 23 [24] 25 26) › ═══
+   Бутонът е 44×44 (докосване); видимото мънисто е вътре (38 px, избраното 52 px) — така между
+   тях остава място за шева с розовата точица, както в референцията. Разстоянието се смята
+   от ширината на хапчето (container query), за да се виждат ТОЧНО 5 цели мъниста. */
+.pl-br-strip { display: grid; grid-template-columns: 44px minmax(0, 1fr) 44px; align-items: center; gap: 3px; margin: 0 -4px; }
+.pl-br-arr {
+  width: 44px; height: 44px; padding: 0; border: 0; border-radius: 50%;
+  display: grid; place-items: center; cursor: pointer;
+  background: transparent; color: var(--pl-navy, #1d2a5c);
+  -webkit-tap-highlight-color: transparent;
+}
+.pl-br-arr > span { width: 38px; height: 38px; border-radius: 50%; display: grid; place-items: center; }
+.pl-br-arr svg { width: 20px; height: 20px; display: block; }
+.pl-br-arr:disabled { opacity: .38; cursor: default; }
+.pl-br-track { position: relative; min-width: 0; height: 60px; container-type: inline-size; }
+.pl-br-track::before {                                  /* кремавото хапче — по-ниско от голямото мънисто */
+  content: ''; position: absolute; left: 0; right: 0; top: 7px; bottom: 7px; border-radius: 999px;
+  background: #f3e6da; box-shadow: inset 0 1px 3px rgba(110, 76, 52, .16), inset 0 -1px 0 rgba(255, 255, 255, .8);
+}
+.pl-br-rail {
+  --g: 5px;
+  position: relative;                                   /* offsetLeft на кръгчетата е спрямо релсата (центриране от JS) */
+  height: 100%;
+  display: flex; align-items: center; gap: var(--g);
+  padding: 0 3px;
+  overflow-x: auto; overflow-y: hidden; overscroll-behavior-x: contain;
+  scrollbar-width: none;
+  -webkit-mask-image: linear-gradient(90deg, transparent 0, #000 6px, #000 calc(100% - 6px), transparent 100%);
+          mask-image: linear-gradient(90deg, transparent 0, #000 6px, #000 calc(100% - 6px), transparent 100%);
+}
+@supports (width: 1cqw) {
+  /* 4 × 44 + 56 (избраното) + 6 (полетата) = 238 → остатъкът се дели на 4 пролуки */
+  .pl-br-rail { --g: clamp(2px, calc((100cqw - 238px) / 4), 16px); }
+}
+.pl-br-rail::-webkit-scrollbar { display: none; }
+.pl-br-wk {
+  position: relative; flex: none;
+  width: 44px; height: 44px; padding: 0; border: 0; border-radius: 50%; cursor: pointer;
+  display: grid; place-items: center;
+  background: transparent;
+  -webkit-tap-highlight-color: transparent;
+}
+.pl-br-wk.on { width: 56px; height: 56px; }
+.pl-br-bead {
+  width: 38px; height: 38px; border-radius: 50%;
+  display: grid; place-items: center;
+  font: 800 15.5px/1 Nunito, 'Nunito-fallback', system-ui, sans-serif;
+  font-variant-numeric: lining-nums tabular-nums;
+}
+.pl-br-wk.on .pl-br-bead { width: 52px; height: 52px; font-size: 24px; letter-spacing: -.5px; }
+/* шевът между мънистата: пунктир + розова точица, в средата на пролуката */
+.pl-br-wk:not(:last-child)::after {
+  content: ''; position: absolute; top: 50%; left: calc(100% + var(--g) / 2); pointer-events: none;
+  width: calc(var(--g) + 8px); height: 5px; transform: translate(-50%, -50%);
+  background: radial-gradient(circle, #e98bb0 1.7px, transparent 2.2px) center / 5px 5px no-repeat,
+              linear-gradient(90deg, #efc6d6, #efc6d6) center / 100% 1.5px no-repeat;
+}
+/* твоята седмица, докато гледаш друга — розов пръстен (по-силно от .pl-soft, който е с !important) */
+html body .pl-br-wk.is-now:not(.on) > .pl-br-bead.pl-soft {
+  border-color: #efa3c1 !important; color: #9e2f5f !important;
+  box-shadow: 0 0 0 3px #fde6ef, 0 0 0 4.5px rgba(217, 90, 142, .45), 0 2px 0 #e7a0bd !important;
+}
+
+/* ═══ СЕДМИЦАТА: златната рамка с утробата + заглавието ═══ */
+.pl-br-week { display: grid; grid-template-columns: 110px minmax(0, 1fr); gap: 14px; align-items: center; margin-top: 12px; }
+.pl-br-art {
+  position: relative; justify-self: center;
+  width: 104px; height: 134px; margin: 2px 0 12px; padding: 5px;
+  border-radius: 50%;
+  background: linear-gradient(155deg, #fbe9b4 0, #e2b95c 30%, #f6dc93 55%, #c79535 82%, #e8c877 100%);
+  box-shadow: 0 12px 22px rgba(110, 76, 52, .26), 0 2px 4px rgba(110, 76, 52, .18);
+}
+.pl-br-womb {
+  position: relative; display: block; width: 100%; height: 100%;
+  border-radius: 50%; overflow: hidden; isolation: isolate;
+  background: radial-gradient(75% 62% at 46% 40%, #fff3f6 0, #fbd3df 48%, #f2a9c1 88%, #e98fb0 100%);
+  box-shadow: inset 0 0 0 3px #fff8f0, inset 0 -12px 20px rgba(200, 69, 122, .30), inset 0 10px 16px rgba(255, 255, 255, .55);
+}
+/* плюшеното бебе по коремче (ico-d [0,1]) — спрайт с бял фон; multiply го слива с утробата */
+/* в клетката бебето е с център (54 %, 55 %) и широко 61 % → при 132 px е ~80 px: главичката не опира в овала (мерено на снимка ag2_brem_l5 — при 146 px опираше) */
+.pl-br-womb i {
+  position: absolute; left: 50%; top: 50%; width: 132px; height: 132px; margin: -70px 0 0 -71px;
+  background-repeat: no-repeat; background-size: 400% 400%; mix-blend-mode: multiply;
+}
+.pl-br-womb::after {                                    /* розовото сърчице в утробата (реф. 4) */
+  content: ''; position: absolute; right: 13px; top: 30px; width: 15px; height: 14px; pointer-events: none;
+  background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 22'%3E%3Cpath d='M12 21S1.5 14.6 1.5 7.6C1.5 4.2 4 1.8 7 1.8c2.1 0 3.8 1.1 5 2.9 1.2-1.8 2.9-2.9 5-2.9 3 0 5.5 2.4 5.5 5.8C22.5 14.6 12 21 12 21z' fill='%23f07fa6' stroke='%23fff' stroke-width='1.4'/%3E%3C/svg%3E") center / contain no-repeat;
+}
+.pl-br-art::after {                                     /* златното сърце-медальон отдолу */
+  content: ''; position: absolute; left: 50%; bottom: -12px; width: 28px; height: 26px; transform: translateX(-50%); pointer-events: none;
+  background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 22'%3E%3Cdefs%3E%3ClinearGradient id='g' x1='0' y1='0' x2='.3' y2='1'%3E%3Cstop offset='0' stop-color='%23fdeeb8'/%3E%3Cstop offset='.5' stop-color='%23dcac4a'/%3E%3Cstop offset='1' stop-color='%23a97a26'/%3E%3C/linearGradient%3E%3C/defs%3E%3Cpath d='M12 21S1.5 14.6 1.5 7.6C1.5 4.2 4 1.8 7 1.8c2.1 0 3.8 1.1 5 2.9 1.2-1.8 2.9-2.9 5-2.9 3 0 5.5 2.4 5.5 5.8C22.5 14.6 12 21 12 21z' fill='url(%23g)' stroke='%23fff6dc' stroke-width='1.3'/%3E%3C/svg%3E") center / contain no-repeat;
+  filter: drop-shadow(0 2px 2px rgba(110, 76, 52, .3));
+}
+/* плодът на седмицата — стикер долу вдясно на рамката */
+.pl-br-fruit {
+  position: absolute; right: -12px; bottom: 6px;
+  width: 34px; height: 34px; border-radius: 50%;
+  display: grid; place-items: center;
+  background: #fff; box-shadow: 0 0 0 2px #e2b95c, 0 4px 10px rgba(110, 76, 52, .22);
+  font-style: normal; font-size: 18px; line-height: 1; color: #1d2a5c;   /* емоджито не ползва цвета, но четецът на контраст — да (нощем беше 1.25:1 върху белия кръг) */
+}
+.pl-br-fruit:empty { display: none; }
+.pl-br-wt { min-width: 0; }
+.pl-br-num {
+  margin: 0; color: var(--pl-navy, #1d2a5c);
+  font-family: var(--pl-serif); font-weight: 700; font-size: 22px; line-height: 1.05; letter-spacing: -.4px;
+}
+.pl-br-num b { font-family: Nunito, 'Nunito-fallback', system-ui, sans-serif; font-weight: 800; font-size: 36px; letter-spacing: -1.2px; font-variant-numeric: lining-nums; }
+.pl-br-tri { margin: 4px 0 7px; font-family: var(--pl-serif); font-weight: 700; font-size: 16px; line-height: 1.2; color: var(--pl-navy, #1d2a5c); }
+.pl-br-txt { margin: 0; font-size: 14px; font-weight: 600; line-height: 1.45; color: var(--pl-ink, #3b3f5c); min-height: 4.35em; }
+
+/* ── „За бебето / За мен“: кремава писта, избраното е гел (.pl-gel) ── */
+.pl-br-seg {
+  display: grid; grid-template-columns: 1fr 1fr; gap: 4px;
+  width: min(100%, 322px); margin: 12px auto 0; padding: 4px 4px 6px;
+  border-radius: 999px; background: #f3e6da;
+  box-shadow: inset 0 1px 3px rgba(110, 76, 52, .16), inset 0 -1px 0 rgba(255, 255, 255, .8);
+}
+.pl-br-seg[hidden] { display: none; }
+/* 🧮 бял надпис върху гела: гелът е прелив #f39bbb→#b93a6e; в средата на хапчето (където са буквите)
+   е ~#cf4d82 = 4.2:1 — под 4.5 за дребен текст. Затова надписът е ЕДЪР (18.7px bold → прагът е 3:1),
+   а на екран под 360 px (където не се събира) — 16px върху фоновия цвят #c8457a = 4.6:1. */
+.pl-br-pill {
+  display: flex; align-items: center; justify-content: center; gap: 6px;
+  min-width: 0; min-height: 46px; padding: 0 6px; border: 0; border-radius: 999px; cursor: pointer;
+  background: transparent; color: var(--pl-ink, #3b3f5c);
+  font: 800 18.7px/1 Nunito, 'Nunito-fallback', system-ui, sans-serif; white-space: nowrap;
+  -webkit-tap-highlight-color: transparent;
+}
+@media (max-width: 359px) { .pl-br-pill { font-size: 16px; } }
+.pl-br-pill[hidden] { display: none; }
+.pl-br-pill i { width: 26px; height: 26px; flex: none; display: grid; place-items: center; border-radius: 50%; color: var(--pl-ink-soft, #6a6682); }
+.pl-br-pill i svg { width: 20px; height: 20px; display: block; }
+.pl-br-pill.pl-gel i { background: #fff; color: #c8457a; box-shadow: 0 1px 0 rgba(120, 20, 60, .25); }
+
+.pl-br-size {
+  margin: 14px 0 0; padding: 8px 12px;
+  border: 1.5px dashed rgba(196, 160, 124, .6); border-radius: 14px; background: rgba(255, 255, 255, .6);
+  text-align: center; font-size: 13.5px; font-weight: 700; line-height: 1.35; color: var(--pl-ink, #3b3f5c);
+}
+.pl-br-size b { color: var(--pl-navy, #1d2a5c); }
+.pl-br-size small { font-size: 12px; font-weight: 700; color: var(--pl-ink-soft, #6a6682); }
+.pl-br-size[hidden], .pl-br-tip[hidden] { display: none; }
+.pl-br-tip { margin: 9px 4px 0; font-size: 13.5px; font-weight: 600; line-height: 1.45; color: var(--pl-ink, #3b3f5c); }
+.pl-br-tip::before { content: '✨ '; }
+.pl-br-tip b { color: var(--pl-navy, #1d2a5c); font-weight: 800; }
+.pl-br-you { display: flex; align-items: center; justify-content: space-between; gap: 8px; margin: 10px 2px 0; }
+.pl-br-you[hidden] { display: none; }
+.pl-br-you span { font-size: 12.5px; font-weight: 700; color: var(--pl-ink-soft, #6a6682); }
+.pl-br-back { flex: none; min-height: 44px; padding: 0 14px; border-radius: 999px; cursor: pointer; font: 800 13.5px/1 Nunito, 'Nunito-fallback', system-ui, sans-serif; }
+
+/* ═══ „ПРЕДСТОЯЩИ ЗАПИСИ“ — два реда един до друг ═══ */
+.pl-br-rec { padding: 16px 12px 14px; }
+.pl-br-rh { position: relative; z-index: 1; display: flex; align-items: center; gap: 10px; padding: 0 4px; }
+.pl-br-rh h3 { margin: 0; font-family: var(--pl-serif); font-weight: 700; font-size: 18px; color: var(--pl-navy, #1d2a5c); letter-spacing: -.2px; }
+.pl-br-rico { width: 32px; height: 32px; flex: none; display: grid; place-items: center; border-radius: 10px; background: #f6e8dc; color: #7c5038; }
+.pl-br-rico svg { width: 21px; height: 21px; display: block; }
+.pl-br-list { position: relative; z-index: 1; display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 8px; margin: 12px 0 14px; }
+.pl-br-list > :only-child, .pl-br-empty { grid-column: 1 / -1; }
+.pl-br-row {
+  position: relative;
+  display: grid; grid-template-columns: 40px minmax(0, 1fr); column-gap: 8px; align-items: center;
+  width: 100%; min-height: 78px; padding: 10px 18px 10px 8px; border-radius: 18px; cursor: pointer;
+  text-align: left; font: inherit;
+  -webkit-tap-highlight-color: transparent;
+}
+.pl-br-ri {
+  width: 40px; height: 40px; border-radius: 50%; align-self: start; margin-top: 2px;
+  background-color: var(--pl-pink-soft, #fde6ef); background-repeat: no-repeat; background-size: 400% 400%; background-blend-mode: multiply;
+  box-shadow: inset 0 0 0 1.5px rgba(255, 255, 255, .8);
+}
+.pl-br-row.t-sky .pl-br-ri { background-color: var(--pl-sky, #dfeafb); }
+.pl-br-row.t-butter .pl-br-ri { background-color: #fff0d4; }
+.pl-br-rt { min-width: 0; }
+.pl-br-rt b {
+  display: block; font-size: 15px; font-weight: 800; line-height: 1.15; color: var(--pl-navy, #1d2a5c);
+  font-variant-numeric: lining-nums tabular-nums; white-space: nowrap;
+}
+.pl-br-rt strong {
+  display: -webkit-box; -webkit-box-orient: vertical; -webkit-line-clamp: 3; overflow: hidden;
+  margin-top: 2px; font-size: 13px; font-weight: 800; line-height: 1.22; color: var(--pl-navy, #1d2a5c);
+  overflow-wrap: anywhere; hyphens: auto;
+}
+.pl-br-rt small { display: block; margin-top: 3px; font-size: 12px; font-weight: 700; line-height: 1.25; color: var(--pl-ink-soft, #6a6682); }
+.pl-br-tag {
+  display: inline-block; padding: 1px 7px; border-radius: 999px;
+  background: #fff1d1; color: #7a5410; font-style: normal; font-size: 11.5px; font-weight: 800;
+}
+.pl-br-chev { display: grid; place-items: center; color: var(--pl-ink-soft, #6a6682); }
+.pl-br-chev svg { width: 16px; height: 16px; display: block; }
+.pl-br-row .pl-br-chev { position: absolute; right: 4px; top: 50%; transform: translateY(-50%); color: var(--pl-navy, #1d2a5c); }
+.pl-br-empty {
+  margin: 0; padding: 12px 14px; border-radius: 16px; border: 1.5px dashed rgba(196, 160, 124, .6); background: rgba(255, 255, 255, .6);
+  font-size: 13.5px; font-weight: 600; line-height: 1.4; color: var(--pl-ink, #3b3f5c);
+}
+/* главното действие — гелът е от pl-ui.css; надписът е ЕДЪР (19px bold) */
+.pl-br-add {
+  position: relative; z-index: 1;
+  display: flex; align-items: center; justify-content: center; gap: 10px;
+  width: min(100%, 290px); min-height: 52px; margin: 0 auto; padding: 0 22px;
+  border-radius: 999px; cursor: pointer;
+  font: 800 19px/1 Nunito, 'Nunito-fallback', system-ui, sans-serif; letter-spacing: .1px;
+}
+.pl-br-add b { width: 28px; height: 28px; display: grid; place-items: center; border-radius: 50%; background: #fff; color: #c8457a; font-size: 22px; line-height: 1; text-shadow: none; box-shadow: 0 1px 0 rgba(120, 20, 60, .25); }
+.pl-br-foot { position: relative; z-index: 1; display: flex; align-items: center; justify-content: space-between; gap: 10px; margin: 12px 4px 0; font-size: 12.5px; font-weight: 700; color: var(--pl-ink-soft, #6a6682); }
+.pl-br-112 {
+  flex: none; display: inline-flex; align-items: center; justify-content: center;
+  min-height: 44px; min-width: 76px; padding: 0 14px; border-radius: 999px;
+  border: 1.5px solid #f0b9c3; background: #fdecef; color: #b3263f;
+  box-shadow: 0 2px 0 #eab0bb;
+  font-size: 14.5px; font-weight: 800; text-decoration: none;
+}
+
+/* ═══ ПОКАНАТА (няма дата) ═══ */
+.pl-br-ghost { position: relative; z-index: 1; display: flex; align-items: center; justify-content: center; gap: 12px; min-height: 60px; padding: 0 12px; border-radius: 999px; background: #f3e6da; box-shadow: inset 0 1px 3px rgba(110, 76, 52, .16); }
+.pl-br-ghost span { width: 36px; height: 36px; border-radius: 50%; border: 1.5px dashed #dcc3ab; background: rgba(255, 255, 255, .7); }
+.pl-br-ghost span.on {
+  width: 50px; height: 50px; display: grid; place-items: center;
+  border: 2px dashed var(--pl-pink-2, #f59cbb); background: var(--pl-pink-soft, #fde6ef);
+  font-family: var(--pl-serif); font-weight: 700; font-size: 22px; color: #9e2f5f;
+}
+.pl-br-invt { position: relative; z-index: 1; margin: 14px 4px 14px; text-align: center; font-size: 14.5px; font-weight: 600; line-height: 1.45; color: var(--pl-ink, #3b3f5c); }
+.pl-br-invt b { color: var(--pl-navy, #1d2a5c); }
+
+/* ═══ ТРИТЕ ПЛОЧКИ — филц със шев, отгоре малка сцена от плюшени предмети ═══ */
+.pl-br-tiles { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 8px; }
+.pl-br-tile {
+  position: relative; display: flex; flex-direction: column; align-items: stretch;
+  min-height: 178px; padding: 0 0 12px; cursor: pointer;
+  text-align: left; font: inherit; color: var(--pl-navy, #1d2a5c);
+  -webkit-tap-highlight-color: transparent;
+  transition: transform .14s ease;
+}
+.pl-br-tile:active { transform: translateY(2px) scale(.98); }
+.pl-br-ta {
+  position: relative; display: block; height: 90px; margin: 9px 9px 0; overflow: hidden;
+  border-radius: 18px 18px 12px 12px;
+  background: radial-gradient(95% 85% at 50% 22%, #fff 0, #fde6ef 58%, #f6cfdd 100%);
+  box-shadow: inset 0 0 0 1px rgba(255, 255, 255, .7);
+}
+.pl-br-tile.t-butter .pl-br-ta { background: radial-gradient(95% 85% at 50% 22%, #fff 0, #fff0d4 58%, #f8dfb3 100%); }
+.pl-br-tile.t-sky .pl-br-ta { background: radial-gradient(95% 85% at 50% 22%, #fff 0, #dfeafb 58%, #c9daf4 100%); }
+.pl-br-ta::before {                                     /* мека сянка-под на „пода“ */
+  content: ''; position: absolute; left: 12%; right: 12%; bottom: 6px; height: 14px; border-radius: 50%;
+  background: radial-gradient(closest-side, rgba(110, 76, 52, .20), transparent);
+}
+.pl-br-ta i { position: absolute; background-repeat: no-repeat; background-size: 400% 400%; mix-blend-mode: multiply; }
+.pl-br-ta i.g { width: 86px; height: 86px; left: 50%; top: 50%; margin: -46px 0 0 -43px; }
+.pl-br-ta i.m { width: 52px; height: 52px; right: -6px; bottom: -8px; transform: rotate(-14deg); }
+.pl-br-ta i.l { width: 50px; height: 50px; left: -4px; bottom: -8px; }
+.pl-br-ta i.r { width: 46px; height: 46px; right: -4px; bottom: -6px; }
+.pl-br-tile[data-go="kal"] .pl-br-ta i.g { margin-left: -50px; }
+.pl-br-tile[data-go="bag"] .pl-br-ta i.g { margin-top: -52px; }
+.pl-br-tile[data-go="q"] .pl-br-ta i.l { width: 64px; height: 64px; left: -8px; bottom: -12px; }
+.pl-br-tile[data-go="q"] .pl-br-ta i.g { width: 70px; height: 70px; left: auto; right: -8px; top: -2px; margin: 0; }
+.pl-br-qm {                                             /* въпросителната на балончето */
+  position: absolute; right: 8px; top: 6px; width: 24px; height: 24px; border-radius: 50%;
+  display: grid; place-items: center;
+  background: linear-gradient(180deg, #8ebcf0 0, #4f86cf 100%); color: #fff;
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, .6), 0 2px 0 #3b6db0;
+  font: 700 16px/1 var(--pl-serif);
+}
+/* заглавието взима цялата ширина; стрелката е долу вдясно, до последния ред на подзаглавието */
+.pl-br-tl { position: relative; z-index: 1; display: block; flex: 1; padding: 9px 11px 0 12px; }
+.pl-br-tl b { display: block; font-family: var(--pl-serif); font-size: 14px; font-weight: 700; line-height: 1.15; letter-spacing: -.2px; color: var(--pl-navy, #1d2a5c); hyphens: none; }
+.pl-br-tl small { display: block; margin-top: 4px; padding-right: 14px; font-size: 12px; font-weight: 700; line-height: 1.28; color: var(--pl-ink-soft, #6a6682); }
+.pl-br-tile .pl-br-chev { position: absolute; z-index: 1; right: 9px; bottom: 12px; width: 18px; height: 18px; color: var(--pl-navy, #1d2a5c); }
+.pl-br-tile .pl-br-chev svg { width: 16px; height: 16px; }
+
+/* ── след първия скок от блока картите в тази стая се рисуват истински — иначе content-visibility:auto
+   (mega.css:336) люлее стаята и целта бяга (мерено: ag2_bremennost_diag3). JS маха атрибута, щом
+   стаята се нарисува наново или е друга. ── */
+#roRoom[data-pl-br-go] .jr-card { content-visibility: visible !important; }
+
+/* ── мек розов контур върху картата, до която скочихме (outline — box-shadow на .jr-card е !important) ── */
+.jr-card.pl-br-flash { animation: plBrFlash 1.6s ease-out; }
+@keyframes plBrFlash {
+  0%, 35% { outline: 3px solid rgba(229, 109, 153, .6); outline-offset: 3px; }
+  100% { outline: 3px solid rgba(229, 109, 153, 0); outline-offset: 3px; }
+}
+
+/* ═══ НОЩ — нощно синьо (приложението минава само 21:00–7:00); филцът/гелът нощем са от pl-ui.css ═══ */
+html[data-theme="dark"] #roRoom > .pl-br { color: #e3e5f5; }
+html[data-theme="dark"] .pl-br-h, html[data-theme="dark"] .pl-br-num, html[data-theme="dark"] .pl-br-tri,
+html[data-theme="dark"] .pl-br-rh h3, html[data-theme="dark"] .pl-br-tl b, html[data-theme="dark"] .pl-br-rt b, html[data-theme="dark"] .pl-br-rt strong,
+html[data-theme="dark"] .pl-br-size b, html[data-theme="dark"] .pl-br-tip b, html[data-theme="dark"] .pl-br-invt b { color: #fff; }
+html[data-theme="dark"] .pl-br-txt, html[data-theme="dark"] .pl-br-tip, html[data-theme="dark"] .pl-br-size,
+html[data-theme="dark"] .pl-br-invt, html[data-theme="dark"] .pl-br-empty { color: #e3e5f5; }
+html[data-theme="dark"] .pl-br-rt small, html[data-theme="dark"] .pl-br-tl small, html[data-theme="dark"] .pl-br-size small,
+html[data-theme="dark"] .pl-br-you span, html[data-theme="dark"] .pl-br-foot, html[data-theme="dark"] .pl-br-chev { color: #d0d3ea; }
+html[data-theme="dark"] .pl-br-arr { color: #fff; }
+html[data-theme="dark"] .pl-br-track::before, html[data-theme="dark"] .pl-br-seg, html[data-theme="dark"] .pl-br-ghost { background: rgba(255, 255, 255, .07); box-shadow: inset 0 1px 3px rgba(0, 0, 0, .3); }
+html[data-theme="dark"] .pl-br-wk:not(:last-child)::after {
+  background: radial-gradient(circle, #f59cbb 1.7px, transparent 2.2px) center / 5px 5px no-repeat,
+              linear-gradient(90deg, rgba(245, 156, 187, .45), rgba(245, 156, 187, .45)) center / 100% 1.5px no-repeat;
+}
+html[data-theme="dark"] body .pl-br-wk.is-now:not(.on) > .pl-br-bead.pl-soft {
+  color: #ffd6e5 !important; border-color: rgba(245, 156, 187, .8) !important;
+  box-shadow: 0 0 0 3px rgba(245, 156, 187, .22), 0 2px 0 #18214a !important;
+}
+/* рамката и утробата остават светли — „стикер“ върху нощното синьо, както пастелните кръгове в premium.css */
+html[data-theme="dark"] .pl-br-art { box-shadow: 0 12px 22px rgba(0, 0, 0, .4); }
+html[data-theme="dark"] .pl-br-pill { color: #e3e5f5; }
+html[data-theme="dark"] .pl-br-pill i { color: #d0d3ea; }
+html[data-theme="dark"] .pl-br-pill.pl-gel i { color: #c8457a; }
+html[data-theme="dark"] .pl-br-size, html[data-theme="dark"] .pl-br-empty { background: rgba(255, 255, 255, .06); border-color: rgba(255, 255, 255, .22); }
+html[data-theme="dark"] .pl-br-rico { background: rgba(255, 255, 255, .1); color: #ffe2c9; }
+/* в тъмно — бял кръг под иконката (спрайтът е с бял фон) */
+html[data-theme="dark"] .pl-br-ri, html[data-theme="dark"] .pl-br-row.t-sky .pl-br-ri, html[data-theme="dark"] .pl-br-row.t-butter .pl-br-ri { background-color: #fff; }
+html[data-theme="dark"] .pl-br-row .pl-br-chev { color: #fff; }
+html[data-theme="dark"] .pl-br-tag { background: rgba(240, 210, 137, .2); color: #f6dc97; }
+html[data-theme="dark"] .pl-br-112 { background: rgba(217, 83, 106, .2); border-color: rgba(255, 160, 175, .5); color: #ffd0d8; box-shadow: none; }
+html[data-theme="dark"] .pl-br-ghost span { background: rgba(255, 255, 255, .05); border-color: rgba(255, 255, 255, .25); }
+html[data-theme="dark"] .pl-br-ghost span.on { background: rgba(229, 109, 153, .2); border-color: var(--pl-pink-2, #f59cbb); color: #ffd6e5; }
+/* плочките: картинката остава като осветена рамка, леко приглушена */
+html[data-theme="dark"] .pl-br-ta { filter: brightness(.9) saturate(.92); box-shadow: inset 0 0 0 1px rgba(255, 255, 255, .25); }
+html[data-theme="dark"] .pl-br-tile .pl-br-chev { color: #fff; }
+
+@media (prefers-reduced-motion: reduce) {
+  .pl-br-tile { transition: none; }
+  .jr-card.pl-br-flash { animation: none; outline: 3px solid rgba(229, 109, 153, .6); outline-offset: 3px; }
+}

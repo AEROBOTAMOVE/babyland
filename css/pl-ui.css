@@ -370,6 +370,11 @@ html:not([data-theme="dark"]) body #roomOverlay .jr-card :is(button.jr-win, .gl-
   background-color: #fffdf9 !important; border-color: #efdccf !important;
 }
 
+/* редовете-отметки (div.jr-win > button.jr-winbtn, напр. „План за раждане“): рамката е на реда,
+   копчето вътре е прозрачно — иначе се виждаше двойна рамка (снимка 22.09) */
+html body .jr-win .jr-winbtn.jr-winbtn { background: transparent !important; background-image: none !important; border: 0 !important; box-shadow: none !important; }
+html body .jr-win .jr-winbtn.jr-winbtn:active { transform: none; }
+
 /* табовете в картите (напр. „Напъване / Задавяне“, style.css:1551) — бяха бледи с opacity .62;
    сега филцови хапчета, избраното — розово */
 html body .fs-tab.fs-tab { opacity: 1 !important; background-color: var(--ui-cream) !important; background-image: var(--ui-felt) !important; background-size: 160px 160px !important; background-blend-mode: multiply !important; border: 1.5px solid var(--ui-edge) !important; color: var(--ui-ink) !important; box-shadow: 0 2px 0 var(--ui-edge-2) !important; transform: none !important; }

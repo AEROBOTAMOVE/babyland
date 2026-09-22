@@ -130,7 +130,7 @@
         '<div class="pl-day">' +
           '<button type="button" class="pl-day-it t-feed" data-room="Моето бебе"><i class="pl-art" aria-hidden="true" style="background-image:url(img/art/ico-a.webp);background-position:0% 33.333%"></i><span class="pl-day-t"><b id="plDayFeed" aria-live="polite">+</b><small>Хранене</small></span></button>' +
           '<button type="button" class="pl-day-it t-sleep" data-room="Моето бебе"><i class="pl-art" aria-hidden="true" style="background-image:url(img/art/ico-a.webp);background-position:33.333% 33.333%"></i><span class="pl-day-t"><b id="plDaySleep" aria-live="polite">+</b><small>Сън</small></span></button>' +
-          '<button type="button" class="pl-day-it t-diaper" data-room="Моето бебе"><i class="pl-art" aria-hidden="true" style="background-image:url(img/art/ico-b.webp);background-position:100% 100%"></i><span class="pl-day-t"><b id="plDayDiaper" aria-live="polite">+</b><small>Пелени</small></span></button>' +
+          '<button type="button" class="pl-day-it t-diaper" data-room="Моето бебе"><i class="pl-art" aria-hidden="true" style="background-image:url(img/art/ico-f.webp);background-position:0% 0%"></i><span class="pl-day-t"><b id="plDayDiaper" aria-live="polite">+</b><small>Пелени</small></span></button>' +
         '</div>' +
       '</div>' +
       '<button type="button" class="pl-cta" data-pl="add"><b aria-hidden="true">+</b>Добави момент</button>' +

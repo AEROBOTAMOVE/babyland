@@ -120,12 +120,15 @@ for (const m of html.matchAll(/url\((["']?)([^"')]+)\1\)/g)) запиши(m[2], 
 const cssФайлове = [...искани.keys()].filter(f => f.endsWith('.css'));
 for (const c of cssФайлове) {
   if (!има(c)) continue;
-  const т = преглед(c);
+  // 🪤 22.09: вградена SVG картинка (url("data:image/svg+xml,…")) носи ВЪТРЕ свои препратки към
+  //    градиент — fill='url(%23g)'. Старият израз я четеше като файл „css/%23g“ → фалшива „черна
+  //    дупка“ (pl-bremennost.css). Първо махаме цялата data: картинка, после търсим файлове.
+  const т = преглед(c).replace(/url\((["'])data:[\s\S]*?\1\)/g, 'url()');
   const база = path.posix.dirname(c);
   for (const m of т.matchAll(/url\((["']?)([^"')]+)\1\)/g)) {
     const r = m[2];
     прегледани.адреси++;
-    if (/^(#|data:|https?:|\/\/)/.test(r)) continue;
+    if (/^(#|%23|data:|https?:|\/\/)/.test(r)) continue;
     const абс = path.posix.normalize(path.posix.join(база, r));
     if (!искани.has(абс)) искани.set(абс, { пълен: абс, откъде: new Set() });
     искани.get(абс).откъде.add(c);
