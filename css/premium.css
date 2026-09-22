@@ -1016,3 +1016,28 @@ html[data-theme="dark"] body #onbOverlay .onb-card .onb-title, html[data-theme="
 html[data-theme="dark"] body #onbOverlay .onb-card .onb-text, html[data-theme="dark"] body #onbOverlay .onb-card .onb-lbl-soft { color: #d6d8ee !important; }
 html[data-theme="dark"] body #onbOverlay .onb-card .onb-sexbtn.onb-sexbtn { background-color: #2b3872 !important; border-color: rgba(255, 255, 255, .16) !important; color: #f1f2fb !important; box-shadow: 0 2px 0 #18214a !important; }
 html[data-theme="dark"] body #onbOverlay .onb-card .onb-sexbtn.onb-sexbtn.on { background-color: #5a2c55 !important; border-color: rgba(245, 156, 187, .6) !important; color: #ffe1ec !important; }
+
+/* ═══ 📅 ЛЕНТАТА НА ДЕНЯ (реф. 20) — часовете на днешните записи, свързани с пунктир ═══
+   js/premium-home.js:лентата(). Рисува се само когато ИМА записи; иначе остават трите „+“.
+   Цифрите са Nunito (Georgia пише старинни цифри — „0“ се чете „о“). */
+#plHome .pl-line { display: flex; align-items: center; gap: 4px; margin: 2px 0 12px; }
+#plHome .pl-line[hidden] { display: none; }
+#plHome .pl-li {
+  flex: 1 1 0; min-width: 0; display: flex; align-items: center; gap: 6px; padding: 7px 7px;
+  background: #fffdf9; border: 1px solid #f1e4d9; border-radius: 18px;
+  box-shadow: inset 0 1px 0 #fff, 0 3px 8px rgba(110, 76, 52, .10);
+}
+#plHome .pl-li .pl-art {
+  flex: none; width: 28px; height: 28px; border-radius: 50%; background-size: 400% 400%; background-repeat: no-repeat;
+  background-color: var(--pl-pink-soft, #fde6ef); background-blend-mode: multiply;
+}
+#plHome .pl-li.t-sleep .pl-art { background-color: var(--pl-sky, #dfeafb); }
+#plHome .pl-li-t { min-width: 0; display: flex; flex-direction: column; line-height: 1.15; }
+#plHome .pl-li b { display: block; font-family: Nunito, system-ui, sans-serif; font-weight: 800; font-size: 14px; color: var(--pl-navy, #1d2a5c); font-variant-numeric: tabular-nums; letter-spacing: -.2px; }
+#plHome .pl-li small { display: block; font-size: 10.5px; letter-spacing: -.1px; font-weight: 700; color: var(--pl-ink-soft, #6a6682); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+#plHome .pl-li-d { flex: none; width: 6px; height: 6px; border-radius: 50%; background: var(--pl-pink-2, #f59cbb); box-shadow: 0 0 0 3px rgba(245, 156, 187, .25); }
+html[data-theme="dark"] #plHome .pl-li { background: rgba(31, 43, 92, .95); border-color: rgba(255, 255, 255, .14); box-shadow: none; }
+html[data-theme="dark"] #plHome .pl-li b { color: #fff; }
+html[data-theme="dark"] #plHome .pl-li small { color: #c9cbe3; }
+html[data-theme="dark"] #plHome .pl-li .pl-art { background-color: #fff; background-blend-mode: normal; }
+@media (max-width: 360px) { #plHome .pl-li { padding: 7px 8px; gap: 6px; } #plHome .pl-li .pl-art { width: 28px; height: 28px; } #plHome .pl-li b { font-size: 14px; } }

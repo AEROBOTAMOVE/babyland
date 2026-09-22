@@ -79,6 +79,15 @@
       сън: с && с.open && спи ? 'спи от ' + чч(спи) : сънМин ? чч(сънМин) + ' днес' : '+ запиши',
       пелени: пелени ? пелени + ' днес' : '+ запиши',
       има: { храна: !!днешни.length, сън: !!сънМин, пелени: !!пелени },
+      // ЛЕНТАТА НА ДЕНЯ (реф. 20: „08:30 Хранене · 10:00 Сън · 12:00 Разходка“) — последните ТРИ записа
+      //   с час. Пелените нямат часове в склада (bl_diapers пази само броя за деня), затова в лентата
+      //   влизат храненията и съня; пелените остават в бързото „+“ отдолу.
+      лента: (() => {
+        const сб = днешни.map(t => ({ t, вид: 'храна', име: 'Хранене' }));
+        if (с && с.d === д && Array.isArray(с.segs)) с.segs.forEach(x => { if (x && typeof x.s === 'number') сб.push({ t: x.s, вид: 'сън', име: 'Сън' }); });
+        if (с && с.open && сега - с.open > 0 && сега - с.open <= 14 * 3600000) сб.push({ t: с.open, вид: 'сън', име: 'Спи сега' });
+        return сб.sort((a, b) => a.t - b.t).slice(-3).map(x => ({ ч: чм(x.t), вид: x.вид, име: x.име }));
+      })(),
       // компактният ред по референция 20: голямо (час / време / брой) + малък надпис
       кратко: {
         храна: днешни.length ? { г: чм(днешни[днешни.length - 1]), п: 'Хранене · ' + днешни.length + '×' } : { г: '+', п: 'Хранене' },
@@ -89,6 +98,7 @@
   }
   function броячи() {
     const д = денят();
+    лентата(д);
     [['plDayFeed', 'храна'], ['plDaySleep', 'сън'], ['plDayDiaper', 'пелени']].forEach(([id, к]) => {
       const е = document.getElementById(id); if (!е) return;
       const м = е.parentElement && е.parentElement.querySelector('small');
@@ -102,6 +112,20 @@
     });
   }
 
+  const ЛЕНТА_ИК = { храна: '0% 33.333%', 'сън': '33.333% 33.333%' };
+  function лентата(д) {
+    const е = document.getElementById('plLine'); if (!е) return;
+    const подпис = д.лента.map(x => x.ч + x.вид + x.име).join('|');
+    if (е.dataset.pl === подпис) return;                       // няма разлика → нищо не пипаме
+    е.dataset.pl = подпис;
+    if (!д.лента.length) { if (!е.hidden) е.hidden = true; е.innerHTML = ''; return; }
+    if (е.hidden) е.hidden = false;
+    е.innerHTML = д.лента.map(x =>
+      '<span class="pl-li t-' + (x.вид === 'храна' ? 'feed' : 'sleep') + '">' +
+        '<i class="pl-art" aria-hidden="true" style="background-image:url(img/art/ico-a.webp);background-position:' + ЛЕНТА_ИК[x.вид] + '"></i>' +
+        '<span class="pl-li-t"><b>' + esc(x.ч) + '</b><small>' + esc(x.име) + '</small></span>' +
+      '</span>').join('<i class="pl-li-d" aria-hidden="true"></i>');
+  }
   function отвори(стая) { try { if (window.MamaHelper && MamaHelper.open) MamaHelper.open(стая); } catch (e) {} }
   // 🪤 22.09: беше getElementById('plus-btn') — а бутонът е <button class="plus-btn"> в #blPlus (polish.js:314),
   //   без id. „Добави момент“ не правеше НИЩО от етап 1 насам; хванато при сверката с референцията.
@@ -127,6 +151,7 @@
       '</div>' +
       '<div class="pl-card">' +
         '<div class="pl-card-h"><i class="pl-art pl-sun" aria-hidden="true" style="background-image:url(img/art/ico-d.webp);background-position:0% 0%"></i> Нашият ден<button type="button" class="pl-all" data-room="Моето бебе">Виж всички ›</button></div>' +
+        '<div class="pl-line" id="plLine" hidden></div>' +
         '<div class="pl-day">' +
           '<button type="button" class="pl-day-it t-feed" data-room="Моето бебе"><i class="pl-art" aria-hidden="true" style="background-image:url(img/art/ico-a.webp);background-position:0% 33.333%"></i><span class="pl-day-t"><b id="plDayFeed" aria-live="polite">+</b><small>Хранене</small></span></button>' +
           '<button type="button" class="pl-day-it t-sleep" data-room="Моето бебе"><i class="pl-art" aria-hidden="true" style="background-image:url(img/art/ico-a.webp);background-position:33.333% 33.333%"></i><span class="pl-day-t"><b id="plDaySleep" aria-live="polite">+</b><small>Сън</small></span></button>' +
