@@ -122,6 +122,10 @@ html.pl-on .sky.bl-vun { opacity: .35; }
 .pl-day-it:active { transform: scale(.95); }
 .pl-day-it i { font-style: normal; font-size: 28px; line-height: 1; }
 .pl-day-it span { font-size: 12px; font-weight: 700; color: var(--pl-ink-soft); }
+/* плюшените иконки от листа (бял фон) — multiply ги слива с пастелната плочка */
+.pl-day-it i.pl-art { display: block; width: 46px; height: 46px; background-repeat: no-repeat; background-size: 400% 400%; mix-blend-mode: multiply; }
+html[data-theme="dark"] .pl-day-it i.pl-art { mix-blend-mode: normal; border-radius: 50%; background-color: #fff; }
+.pl-day-it span.on { color: var(--pl-navy); font-weight: 800; }   /* записано днес — числото, не поканата */
 .pl-day-it.t-feed { background: var(--pl-pink-soft); }
 .pl-day-it.t-sleep { background: var(--pl-sky); }
 .pl-day-it.t-diaper { background: var(--pl-mint); }
@@ -269,23 +273,23 @@ html:not([data-theme="dark"]) #roomOverlay .ro-name {
   font-family: var(--pl-serif) !important; font-weight: 700 !important; color: var(--pl-navy) !important; letter-spacing: -.2px;
 }
 /* аватарът: рисунката на стаята в кръг вместо балончето */
-html:not([data-theme="dark"]) #roAvatar > svg, html:not([data-theme="dark"]) #roAvatar .ro-badge { display: none !important; }
-html:not([data-theme="dark"]) #roAvatar {
+#roomOverlay #roAvatar > svg, #roomOverlay #roAvatar .ro-badge { display: none !important; }
+#roomOverlay #roAvatar {
   width: 58px !important; height: 58px !important; flex: none;
   border-radius: 50% !important;
   background: #fff center / cover no-repeat;
   box-shadow: 0 0 0 3px #fff, 0 6px 16px rgba(170, 118, 118, .22) !important;
   animation: none !important;
 }
-html:not([data-theme="dark"]) .ro-panel.ro-peach #roAvatar { background-image: url(../img/art/room-preg.webp); }
-html:not([data-theme="dark"]) .ro-panel.ro-sky #roAvatar { background-image: url(../img/art/room-baby.webp); }
-html:not([data-theme="dark"]) .ro-panel.ro-carrot #roAvatar { background-image: url(../img/art/room-feed.webp); }
-html:not([data-theme="dark"]) .ro-panel.ro-green #roAvatar { background-image: url(../img/art/room-health.webp); }
-html:not([data-theme="dark"]) .ro-panel.ro-lav #roAvatar { background-image: url(../img/art/room-diary.webp); }
-html:not([data-theme="dark"]) .ro-panel.ro-sun #roAvatar { background-image: url(../img/art/room-play.webp); }
-html:not([data-theme="dark"]) .ro-panel.ro-mint #roAvatar { background-image: url(../img/art/room-tools.webp); }
-html:not([data-theme="dark"]) .ro-panel.ro-rose #roAvatar { background-image: url(../img/art/room-mom.webp); }
-html:not([data-theme="dark"]) .ro-panel.ro-cork #roAvatar { background-image: url(../img/art/room-lab.webp); }
+#roomOverlay .ro-panel.ro-peach #roAvatar { background-image: url(../img/art/room-preg.webp); }
+#roomOverlay .ro-panel.ro-sky #roAvatar { background-image: url(../img/art/room-baby.webp); }
+#roomOverlay .ro-panel.ro-carrot #roAvatar { background-image: url(../img/art/room-feed.webp); }
+#roomOverlay .ro-panel.ro-green #roAvatar { background-image: url(../img/art/room-health.webp); }
+#roomOverlay .ro-panel.ro-lav #roAvatar { background-image: url(../img/art/room-diary.webp); }
+#roomOverlay .ro-panel.ro-sun #roAvatar { background-image: url(../img/art/room-play.webp); }
+#roomOverlay .ro-panel.ro-mint #roAvatar { background-image: url(../img/art/room-tools.webp); }
+#roomOverlay .ro-panel.ro-rose #roAvatar { background-image: url(../img/art/room-mom.webp); }
+#roomOverlay .ro-panel.ro-cork #roAvatar { background-image: url(../img/art/room-lab.webp); }
 
 /* картата „Попитай“ */
 html:not([data-theme="dark"]) #roomOverlay .ask-card {
@@ -329,9 +333,126 @@ html:not([data-theme="dark"]) #roTabs {
   background: #fffaf6 !important; border: 1px solid var(--pl-line) !important; border-radius: 999px !important;
   box-shadow: var(--pl-shadow-sm) !important;
 }
-html:not([data-theme="dark"]) #roTabs .st-sky, html:not([data-theme="dark"]) #roTabs .st-balloon, html:not([data-theme="dark"]) #roTabs .st-spark { display: none !important; }
+#roTabs .st-sky, #roTabs .st-balloon, #roTabs .st-spark { display: none !important; }
 html:not([data-theme="dark"]) #roTabs .st-seg { color: var(--pl-ink-soft) !important; font-weight: 800 !important; border-radius: 999px !important; min-height: 44px; }
 html:not([data-theme="dark"]) #roTabs .st-seg.on { background: var(--pl-pink-soft) !important; color: #c24d7b !important; box-shadow: inset 0 0 0 1.5px #f6c2d6 !important; }
+
+/* ── главата: без старата рисувана сцена зад нея (зелени тръби, щитове — пречеха на
+      името), подзаглавието е на ЕДИН ред вместо на четири ── */
+#roomOverlay #roBanner { display: none !important; }
+#roomOverlay .ro-who { min-width: 0; flex: 1 1 auto; }
+html:not([data-theme="dark"]) #roomOverlay .ro-name { font-size: 25px !important; line-height: 1.1 !important; }
+#roomOverlay .ro-sub {
+  display: block; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+  font-size: 12.5px !important; color: var(--pl-ink-soft) !important; margin-top: 2px;
+}
+#roomOverlay .ro-head.shrunk .ro-sub { display: none; }
+#roomOverlay .ro-sub[data-short] {
+  font-size: 0 !important; white-space: normal; line-height: 1.25;
+  display: -webkit-box; -webkit-line-clamp: 3; -webkit-box-orient: vertical; overflow: hidden;   /* многоточието не хваща ::after — до 3 реда вместо рязане по средата на думата */
+}
+#roomOverlay .ro-sub[data-short]::after { content: attr(data-short); font-size: 12px; }
+html:not([data-theme="dark"]) #roomOverlay .ro-head .ro-nav {
+  background: #fff !important; border: 1px solid var(--pl-line) !important; color: var(--pl-navy) !important;
+  box-shadow: 0 3px 10px rgba(170, 118, 118, .12) !important;
+}
+html:not([data-theme="dark"]) #roomOverlay .ro-head .ro-sosbtn { background: #fdecef !important; border-color: #f6c9d2 !important; }
+
+/* ── разделите: линейни иконки вместо емоджи, шрифтът на приложението (не закръгления) ── */
+#roTabs .st-n {
+  font-family: Nunito, Nunito-fallback, system-ui, sans-serif !important; font-size: 13.5px !important; font-weight: 800 !important; letter-spacing: 0 !important;
+}
+#roTabs .st-e {
+  font-size: 0 !important; width: 22px; height: 22px; display: block; margin: 0 auto 2px;
+  transform: none !important; background: currentColor;
+  -webkit-mask: var(--pl-ico) center / contain no-repeat; mask: var(--pl-ico) center / contain no-repeat;
+}
+#roTabs .st-seg[data-tab="room"] { --pl-ico: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='1.9' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M3 11.2 12 4l9 7.2V20a1 1 0 0 1-1 1h-5v-6H9v6H4a1 1 0 0 1-1-1z'/%3E%3C/svg%3E"); }
+#roTabs .st-seg[data-tab="articles"] { --pl-ico: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='1.9' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M12 6.6C10 5 6.8 4.6 3.5 5v13.4c3.3-.4 6.5 0 8.5 1.6 2-1.6 5.2-2 8.5-1.6V5C17.2 4.6 14 5 12 6.6zM12 6.6V20'/%3E%3C/svg%3E"); }
+#roTabs .st-seg[data-tab="chat"] { --pl-ico: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='1.9' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M6.5 4h11A2.5 2.5 0 0 1 20 6.5v7a2.5 2.5 0 0 1-2.5 2.5H11l-4.6 3.6V16h0A2.4 2.4 0 0 1 4 13.5v-7A2.5 2.5 0 0 1 6.5 4z'/%3E%3Cpath d='M8.5 10h.01M12 10h.01M15.5 10h.01' stroke-width='2.6'/%3E%3C/svg%3E"); }
+#roTabs .st-map {
+  font-size: 0 !important; background: #fff !important; border: 1px solid var(--pl-line) !important; color: var(--pl-navy);
+  display: grid; place-items: center; box-shadow: 0 3px 10px rgba(170, 118, 118, .12) !important; animation: none !important;
+}
+#roTabs .st-map::before {
+  content: ''; width: 22px; height: 22px; background: currentColor;
+  -webkit-mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='1.9' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M9 4 3.5 6.3v13.4L9 17.4l6 2.6 5.5-2.3V4.3L15 6.6z'/%3E%3Cpath d='M9 4v13.4M15 6.6V20'/%3E%3C/svg%3E") center / contain no-repeat;
+  mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='1.9' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M9 4 3.5 6.3v13.4L9 17.4l6 2.6 5.5-2.3V4.3L15 6.6z'/%3E%3Cpath d='M9 4v13.4M15 6.6V20'/%3E%3C/svg%3E") center / contain no-repeat;
+}
+#roTabs .ro-tabfly { display: none !important; }
+html:not([data-theme="dark"]) #roTabs .st-dot { background: var(--pl-pink) !important; color: #fff !important; box-shadow: 0 0 0 2px #fff !important; }
+
+/* ═══════════════════════════════════════════════════════════════════════════
+   🧸 КЪТЧЕТАТА НА СТАЯТА — референцията „Малки помощници“: вместо лента с дребни
+   хапчета — решетка от кремави плочки с плюшена иконка в пастелен кръг. Плочките са
+   СЪЩИТЕ бутони от polish.js (кликът им скача до раздела); premium-rooms.js само
+   разделя емоджито от надписа. Последният ред се разтяга, за да няма дупки.
+   ═══════════════════════════════════════════════════════════════════════════ */
+#roRoom .sec-nav {
+  display: flex !important; flex-wrap: wrap !important; gap: 10px !important;
+  position: static !important; background: transparent !important; border: 0 !important; box-shadow: none !important;
+  padding: 2px 0 6px !important; margin: 4px 0 8px !important; overflow: visible !important;
+}
+#roRoom .sec-nav .sec-find {
+  flex: 1 1 100% !important; order: 99; min-height: 46px; margin: 2px 0 0 !important;
+  background: #fff !important; border: 1.5px solid #efdccf !important; border-radius: 999px !important;
+  padding: 0 18px !important; font-size: 15px !important; color: var(--pl-navy) !important; box-shadow: none !important;
+}
+#roRoom .sec-nav .sec-find:focus { border-color: var(--pl-pink-2) !important; box-shadow: 0 0 0 4px rgba(229, 109, 153, .14) !important; outline: none; }
+#roRoom .sec-nav .sec-chip[data-pl] {
+  flex: 1 1 calc(33.333% - 7px) !important; min-width: 0; max-width: none !important;
+  display: flex !important; flex-direction: column; align-items: center; justify-content: flex-start; gap: 7px;
+  min-height: 112px; padding: 12px 6px 11px !important; margin: 0 !important;
+  background: var(--pl-card) !important; border: 1px solid var(--pl-line) !important; border-radius: 20px !important;
+  box-shadow: 0 6px 16px rgba(170, 118, 118, .10) !important;
+  color: var(--pl-navy) !important; font: 800 12.5px/1.2 Nunito, Nunito-fallback, system-ui, sans-serif !important;
+  text-align: center; white-space: normal !important; letter-spacing: 0;
+}
+#roRoom .sec-nav .sec-chip[data-pl].on {
+  border-color: #f6c2d6 !important; box-shadow: 0 0 0 2px var(--pl-pink-soft), 0 6px 16px rgba(229, 109, 153, .16) !important;
+  transform: none !important;   /* anim.css уголемява активното хапче — в решетката чупи реда */
+}
+/* самотна плочка на последния ред (7 кътчета = 3+3+1): хоризонтална, не празна широка кутия */
+#roRoom .sec-nav .sec-chip[data-pl]:nth-child(3n+2):last-child {
+  flex-direction: row; justify-content: center; gap: 14px; min-height: 78px; padding: 10px 16px !important; font-size: 14px !important;
+}
+#roRoom .sec-nav .sec-chip[data-pl]:nth-child(3n+2):last-child .pl-ti { width: 52px; height: 52px; }
+#roRoom .sec-chip .pl-ti {
+  flex: none; width: 58px; height: 58px; border-radius: 50%;
+  display: grid; place-items: center; font-size: 27px; line-height: 1;
+  background: var(--pl-tint, var(--pl-pink-soft));
+}
+/* плюшената иконка: спрайт 4×4 с бял фон; multiply го „разтапя“ в пастелния кръг */
+#roRoom .sec-chip .pl-ti.has-art {
+  font-size: 0; color: transparent;
+  background-color: var(--pl-tint, var(--pl-pink-soft));
+  background-repeat: no-repeat; background-size: 400% 400%; background-blend-mode: multiply;
+}
+#roRoom .sec-chip .pl-tl { display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; hyphens: none; }
+#roRoom .sec-nav .sec-chip[data-pl]:nth-child(6n+2) { --pl-tint: #fde6ef; }
+#roRoom .sec-nav .sec-chip[data-pl]:nth-child(6n+3) { --pl-tint: #dfeafb; }
+#roRoom .sec-nav .sec-chip[data-pl]:nth-child(6n+4) { --pl-tint: #dff2e7; }
+#roRoom .sec-nav .sec-chip[data-pl]:nth-child(6n+5) { --pl-tint: #ece4f8; }
+#roRoom .sec-nav .sec-chip[data-pl]:nth-child(6n)   { --pl-tint: #fdeedd; }
+#roRoom .sec-nav .sec-chip[data-pl]:nth-child(6n+1) { --pl-tint: #fbf1d6; }
+/* нощем плочките остават плочки: тъмносини, пастелните кръгове светят като стикери */
+html[data-theme="dark"] #roRoom .sec-nav .sec-chip[data-pl] {
+  background: rgba(35, 47, 99, .92) !important; border-color: rgba(255, 255, 255, .12) !important; color: #fff !important;
+  box-shadow: 0 6px 16px rgba(0, 0, 0, .28) !important;
+}
+html[data-theme="dark"] #roRoom .sec-nav .sec-chip[data-pl].on { border-color: rgba(245, 156, 187, .55) !important; box-shadow: 0 0 0 2px rgba(245, 156, 187, .18) !important; }
+html[data-theme="dark"] #roRoom .sec-nav .sec-find { background: rgba(35, 47, 99, .92) !important; border-color: rgba(255, 255, 255, .14) !important; color: #efeaf8 !important; }/* заглавията на разделите по-долу — серифни, като в референциите */
+html:not([data-theme="dark"]) #roRoom .sec-head {
+  font-family: var(--pl-serif) !important; font-size: 20px !important; font-weight: 700 !important;
+  color: var(--pl-navy) !important; letter-spacing: -.2px; margin-top: 18px !important;
+}
+html:not([data-theme="dark"]) #roRoom .sec-head .sec-n {
+  font-family: Nunito, Nunito-fallback, sans-serif; font-size: 12px; background: var(--pl-pink-soft) !important; color: #c24d7b !important;
+}
+/* бутоните 📍 и ▾ в картите: кръгли и меки, не квадратни кутийки */
+html:not([data-theme="dark"]) .jr-card .pin-btn, html:not([data-theme="dark"]) .jr-card .fold-btn { border-radius: 50% !important; }
+/* плаващото балонче — по-дискретно, да не закрива картите */
+html:not([data-theme="dark"]) #roomOverlay #roFab { opacity: .92; transform: scale(.86); transform-origin: bottom right; }
 
 /* долното поле за писане */
 html:not([data-theme="dark"]) #roForm.ro-inputbar {
@@ -552,13 +673,88 @@ html[data-theme="dark"] .pl-baby, html[data-theme="dark"] .pl-card, html[data-th
   background: rgba(35, 47, 99, .9); border-color: rgba(255, 255, 255, .12); color: #fff;
 }
 html[data-theme="dark"] .pl-baby small, html[data-theme="dark"] .pl-mira small, html[data-theme="dark"] .pl-day-it span { color: #c9cbe3; }
-html[data-theme="dark"] .pl-day-it, html[data-theme="dark"] .pl-mira b { color: #fff; }
+html[data-theme="dark"] .pl-day-it, html[data-theme="dark"] .pl-mira b, html[data-theme="dark"] .pl-day-it span.on { color: #fff; }
 html[data-theme="dark"] .pl-day-it.t-feed { background: rgba(229, 109, 153, .22); }
 html[data-theme="dark"] .pl-day-it.t-sleep { background: rgba(120, 160, 240, .22); }
 html[data-theme="dark"] .pl-day-it.t-diaper { background: rgba(110, 200, 160, .2); }
 html[data-theme="dark"] .pl-shelf { background: linear-gradient(180deg, #232f63, #1b2654); box-shadow: inset 0 0 0 2px rgba(255, 255, 255, .08); }
 html[data-theme="dark"] .pl-room span { background: #2a376f; color: #fff; box-shadow: inset 0 0 0 1px rgba(255, 255, 255, .14); }
 
+/* ═══════════════════════════════════════════════════════════════════════════
+   🌙 ТАЙМЕРЪТ ЗА СЪН — референцията със съня: голям мек кръг над бутона в „Сънят днес“
+   (premium-rooms.js го слага; данните са същите като на картата). Лилаво = спи, топло = будно.
+   ═══════════════════════════════════════════════════════════════════════════ */
+.pl-sleepring { position: relative; width: 172px; height: 172px; margin: 8px auto 14px; }
+.pl-sleepring svg { width: 100%; height: 100%; transform: rotate(-90deg); display: block; }
+.pl-sr-bg { fill: none; stroke: #efe7f8; stroke-width: 9; }
+.pl-sr-fg { fill: none; stroke: #b9a7e6; stroke-width: 9; stroke-linecap: round; stroke-dasharray: 0 100; transition: stroke-dasharray .6s ease; }
+.pl-sleepring[data-s="спи"] .pl-sr-fg { stroke: #8f7ae0; }
+.pl-sleepring[data-s="будно"] .pl-sr-fg { stroke: #f3a95f; }
+.pl-sr-in {
+  position: absolute; inset: 16px; border-radius: 50%;
+  display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 3px;
+  background: radial-gradient(circle at 50% 30%, #fff 0, #f7f2ff 100%); box-shadow: inset 0 0 0 1px #ece3f7, 0 6px 16px rgba(143, 122, 224, .12);
+}
+.pl-sr-in i { width: 46px; height: 46px; background: url(../img/art/ico-a.webp) 33.333% 33.333% / 400% 400% no-repeat; mix-blend-mode: multiply; }
+.pl-sleepring[data-s="будно"] .pl-sr-in i { background-image: url(../img/art/ico-b.webp); background-position: 33.333% 66.667%; }
+.pl-sr-in b { font-family: var(--pl-serif); font-weight: 700; font-size: 30px; line-height: 1; color: var(--pl-navy); }
+.pl-sr-in span { max-width: 112px; font-size: 12.5px; font-weight: 800; line-height: 1.2; text-align: center; color: var(--pl-ink-soft); }
+.pl-sleepring ~ .jr-btn { display: flex; align-items: center; justify-content: center; width: 100%; min-height: 56px; font-size: 18px !important; }
+.pl-sleepring ~ .jr-btn:not(.running) { background: linear-gradient(180deg, #a497e8, #7a6cd3) !important; box-shadow: 0 8px 18px rgba(122, 108, 211, .32), inset 0 1px 0 rgba(255, 255, 255, .35) !important; }
+html[data-theme="dark"] .pl-sr-bg { stroke: rgba(255, 255, 255, .12); }
+html[data-theme="dark"] .pl-sr-in { background: radial-gradient(circle at 50% 30%, rgba(255, 255, 255, .10), rgba(255, 255, 255, .04)); box-shadow: inset 0 0 0 1px rgba(255, 255, 255, .12); }
+html[data-theme="dark"] .pl-sr-in i { mix-blend-mode: normal; border-radius: 50%; background-color: #fff; }
+html[data-theme="dark"] .pl-sr-in b { color: #fff; }
+html[data-theme="dark"] .pl-sr-in span { color: #c9cbe3; }
+/* ═══════════════════════════════════════════════════════════════════════════
+   🌟 ПЪРВИТЕ ПЪТИ — референцията „Първите пъти остават“: 7-те реда стават плочки с плюшена
+   рисунка; с дата плочката става златна. Полето за дата е старото (проверките са в rooms2.js).
+   ═══════════════════════════════════════════════════════════════════════════ */
+.dv-firsts[data-pl] { display: grid !important; grid-template-columns: 1fr 1fr; gap: 10px; }
+.dv-firsts[data-pl] .dv-firstrow {
+  display: flex !important; flex-direction: column; align-items: center; justify-content: flex-start; gap: 7px;
+  margin: 0 !important; padding: 14px 8px 12px !important; border-radius: 20px !important; text-align: center;
+  background: #fffaf6 !important; border: 1.5px dashed #ecd9cb !important; box-shadow: none !important;
+}
+.dv-firsts[data-pl] .dv-firstrow:last-child:nth-child(odd) { grid-column: 1 / -1; }
+.pl-fi {
+  flex: none; width: 66px; height: 66px; border-radius: 50%; display: grid; place-items: center; font-size: 30px;
+  background-color: var(--pl-lilac); background-repeat: no-repeat; background-size: 400% 400%; background-blend-mode: multiply;
+}
+.dv-firsts[data-pl] .dv-firstlbl { font-size: 14px !important; font-weight: 800 !important; color: var(--pl-navy) !important; line-height: 1.2; }
+.dv-firsts[data-pl] input.jr-word {
+  width: 100% !important; max-width: 158px; min-height: 40px !important; margin: 0 !important; padding: 0 10px !important;
+  border-radius: 999px !important; font-size: 13px !important; text-align: center; color: var(--pl-ink-soft) !important;
+}
+.dv-firsts[data-pl] .dv-firstrow.pl-done {
+  background: linear-gradient(180deg, #fffaf0 0, #fff2d6 100%) !important; border: 1.5px solid #f0d289 !important;
+  box-shadow: 0 6px 16px rgba(214, 170, 70, .18) !important;
+}
+.dv-firstrow.pl-done .pl-fi { background-color: #ffeec4; box-shadow: 0 0 0 3px #f6dc97; }
+.dv-firsts[data-pl] .dv-firstrow.pl-done input.jr-word { color: #8a5d0c !important; border-color: #f0d289 !important; font-weight: 800 !important; background: #fffdf6 !important; }
+html[data-theme="dark"] .dv-firsts[data-pl] .dv-firstrow { background: rgba(255, 255, 255, .05) !important; border-color: rgba(255, 255, 255, .16) !important; }
+html[data-theme="dark"] .dv-firsts[data-pl] .dv-firstlbl { color: #fff !important; }
+html[data-theme="dark"] .pl-fi { background-color: #efe8fb; }
+html[data-theme="dark"] .dv-firsts[data-pl] .dv-firstrow.pl-done { background: rgba(240, 210, 137, .14) !important; border-color: rgba(240, 210, 137, .55) !important; }
+/* ═══ НОЩ В СТАЯТА — същото нощно синьо като началото (21:00–7:00 приложението минава само)
+   Досега стаите нощем бяха със старата сива глава и сцена зад нея — мерено на снимка. ═══ */
+html[data-theme="dark"] #roomOverlay .ro-panel { background: linear-gradient(180deg, #1a2452 0, #16204a 45%, #131b40 100%) !important; }
+html[data-theme="dark"] #roomOverlay .ro-head {
+  background: linear-gradient(180deg, #1e2a5c, #19234f) !important; border-bottom: 1px solid rgba(255, 255, 255, .08) !important;
+}
+html[data-theme="dark"] #roomOverlay .ro-name { font-family: var(--pl-serif) !important; font-weight: 700 !important; font-size: 25px !important; color: #fff !important; }
+html[data-theme="dark"] #roomOverlay .ro-sub { font-size: 12.5px !important; color: #c9cbe3 !important; margin-top: 2px; }
+html[data-theme="dark"] #roomOverlay .ro-head .ro-nav { background: rgba(255, 255, 255, .08) !important; border: 1px solid rgba(255, 255, 255, .14) !important; color: #fff !important; box-shadow: none !important; }
+html[data-theme="dark"] #roomOverlay #roAvatar { box-shadow: 0 0 0 3px rgba(255, 255, 255, .85), 0 6px 16px rgba(0, 0, 0, .3) !important; }
+html[data-theme="dark"] #roTabs { background: rgba(35, 47, 99, .92) !important; border: 1px solid rgba(255, 255, 255, .1) !important; border-radius: 999px !important; box-shadow: 0 6px 18px rgba(0, 0, 0, .25) !important; }
+html[data-theme="dark"] #roTabs .st-seg { color: #c9cbe3 !important; font-weight: 800 !important; border-radius: 999px !important; min-height: 44px; background: transparent !important; }
+html[data-theme="dark"] #roTabs .st-seg.on { background: rgba(229, 109, 153, .24) !important; color: #ffd6e5 !important; box-shadow: inset 0 0 0 1.5px rgba(245, 156, 187, .45) !important; }
+html[data-theme="dark"] #roTabs .st-map { background: rgba(255, 255, 255, .08) !important; border: 1px solid rgba(255, 255, 255, .14) !important; color: #fff; }
+html[data-theme="dark"] #roRoom .sec-head { font-family: var(--pl-serif) !important; font-size: 20px !important; font-weight: 700 !important; color: #fff !important; margin-top: 18px !important; }
+html[data-theme="dark"] #roomOverlay .jr-card { background: rgba(35, 47, 99, .92) !important; border: 1px solid rgba(255, 255, 255, .10) !important; border-radius: var(--pl-radius) !important; box-shadow: 0 8px 22px rgba(0, 0, 0, .25) !important; }
+html[data-theme="dark"] #roomOverlay .jr-card::before { background: none !important; box-shadow: none !important; }
+html[data-theme="dark"] #roomOverlay .jr-card .jr-title { font-family: var(--pl-serif) !important; font-weight: 700 !important; color: #fff !important; }
+html[data-theme="dark"] #roomOverlay .ask-send, html[data-theme="dark"] #roForm button:last-child:not(#roMic) { background: linear-gradient(180deg, var(--pl-pink-2), var(--pl-pink)) !important; color: #fff !important; border: 0 !important; }
 @media (prefers-reduced-motion: reduce) {
   .pl-baby, .pl-day-it, .pl-cta, .pl-room { transition: none; }
 }

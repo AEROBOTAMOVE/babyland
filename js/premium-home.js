@@ -51,6 +51,44 @@
   }
   function днес() { const д = new Date(); return 'Днес, ' + д.getDate() + ' ' + МЕСЕЦИ[д.getMonth()]; }
 
+  // 📊 „Нашият ден“ (референцията с броячите): чете СЪЩИТЕ складове, в които пишат картите
+  //   в стаята „Моето бебе“ — нищо не записва само. Правилата са взети оттам, не измислени:
+  //   · хранения = bl_nursing (таймерът) + bl_feedlog (бързите чипове) + bl_feed, с дедуп на
+  //     близнаци под 60 с (rooms6.js „Спрямо вчера“, rooms2.js прогнозата);
+  //   · сън = bl_sleep само ако е ДНЕШЕН; отворен брояч над 14 ч е забравяне, не сън (rooms2.js ТАВАН_СЪН);
+  //   · пелени = bl_diapers[днес].wet + dirty.
+  //   Нула без запис не е „нула“ — тогава стои поканата „+ запиши“, не „0“.
+  const локалнаДата = д => д.getFullYear() + '-' + String(д.getMonth() + 1).padStart(2, '0') + '-' + String(д.getDate()).padStart(2, '0');
+  const чч = мин => (мин >= 60 ? Math.floor(мин / 60) + 'ч ' : '') + (мин % 60) + 'м';
+  function денят() {
+    const д = локалнаДата(new Date()), сега = Date.now();
+    const тс = [...(чети('bl_nursing', []) || []).map(x => x && x.ts), ...(чети('bl_feedlog', []) || []), (чети('bl_feed', null) || {}).t]
+      .filter(x => typeof x === 'number' && isFinite(x)).sort((a, b) => a - b)
+      .filter((x, i, а) => i === 0 || x - а[i - 1] > 60000);
+    const днешни = тс.filter(x => локалнаДата(new Date(x)) === д);
+    const последно = тс.length ? тс[тс.length - 1] : null;
+    const с = чети('bl_sleep', null);
+    let сънМин = 0, спи = 0;
+    if (с && с.d === д && Array.isArray(с.segs)) сънМин = Math.floor(с.segs.reduce((а, x) => а + Math.max(0, (x.e || 0) - (x.s || 0)), 0) / 60000);
+    if (с && с.open && сега - с.open > 0 && сега - с.open <= 14 * 3600000) { спи = Math.floor((сега - с.open) / 60000); сънМин += спи; }
+    const п = (чети('bl_diapers', {}) || {})[д];
+    const пелени = п ? (+п.wet || 0) + (+п.dirty || 0) : 0;
+    return {
+      храна: днешни.length ? днешни.length + '× · преди ' + чч(Math.max(0, Math.floor((сега - последно) / 60000))) : '+ запиши',
+      сън: с && с.open && спи ? 'спи от ' + чч(спи) : сънМин ? чч(сънМин) + ' днес' : '+ запиши',
+      пелени: пелени ? пелени + ' днес' : '+ запиши',
+      има: { храна: !!днешни.length, сън: !!сънМин, пелени: !!пелени },
+    };
+  }
+  function броячи() {
+    const д = денят();
+    [['plDayFeed', 'храна'], ['plDaySleep', 'сън'], ['plDayDiaper', 'пелени']].forEach(([id, к]) => {
+      const е = document.getElementById(id); if (!е) return;
+      if (е.textContent !== д[к]) е.textContent = д[к];
+      е.classList.toggle('on', д.има[к]);
+    });
+  }
+
   function отвори(стая) { try { if (window.MamaHelper && MamaHelper.open) MamaHelper.open(стая); } catch (e) {} }
   function добави() { const б = document.getElementById('plus-btn'); if (б) б.click(); }
 
@@ -75,9 +113,9 @@
       '<div class="pl-card">' +
         '<div class="pl-card-h"><span aria-hidden="true">☀️</span> Нашият ден</div>' +
         '<div class="pl-day">' +
-          '<button type="button" class="pl-day-it t-feed" data-pl="add"><i aria-hidden="true">🍼</i>Хранене<span>+ запиши</span></button>' +
-          '<button type="button" class="pl-day-it t-sleep" data-pl="add"><i aria-hidden="true">🌙</i>Сън<span>+ запиши</span></button>' +
-          '<button type="button" class="pl-day-it t-diaper" data-pl="add"><i aria-hidden="true">🧷</i>Пелени<span>+ запиши</span></button>' +
+          '<button type="button" class="pl-day-it t-feed" data-pl="add"><i class="pl-art" aria-hidden="true" style="background-image:url(img/art/ico-a.webp);background-position:0% 33.333%"></i>Хранене<span id="plDayFeed" aria-live="polite">+ запиши</span></button>' +
+          '<button type="button" class="pl-day-it t-sleep" data-pl="add"><i class="pl-art" aria-hidden="true" style="background-image:url(img/art/ico-a.webp);background-position:33.333% 33.333%"></i>Сън<span id="plDaySleep" aria-live="polite">+ запиши</span></button>' +
+          '<button type="button" class="pl-day-it t-diaper" data-pl="add"><i class="pl-art" aria-hidden="true" style="background-image:url(img/art/ico-b.webp);background-position:100% 100%"></i>Пелени<span id="plDayDiaper" aria-live="polite">+ запиши</span></button>' +
         '</div>' +
       '</div>' +
       '<button type="button" class="pl-cta" data-pl="add"><b aria-hidden="true">+</b>Добави момент</button>' +
@@ -108,10 +146,18 @@
     main.parentNode.insertBefore(рисувай(), main);
     document.documentElement.classList.add('pl-on');
     тема();
+    броячи();
+    // броячите се опресняват, когато мама се върне от стаята (там записва), при връщане в
+    // приложението, при запис от друг раздел и на всеки 30 с ("преди 2ч 10м" да не застива)
+    const ов = document.getElementById('roomOverlay');
+    if (ов) new MutationObserver(() => { clearTimeout(сложи.т); сложи.т = setTimeout(броячи, 300); }).observe(ов, { attributes: true, attributeFilter: ['class', 'hidden'] });
+    window.addEventListener('storage', e => { if (e.key && /^bl_(nursing|feed|feedlog|sleep|diapers)$/.test(e.key)) броячи(); });
+    setInterval(() => { if (!document.hidden) броячи(); }, 30000);
   }
   function опресни() {
     const п = document.getElementById('plGreet'); if (п) п.textContent = поздрав();
     const д = document.getElementById('plToday'); if (д) д.textContent = днес();
+    броячи();
   }
   // 🌙 нощта има своя рисунка — приложението само минава в тъмно 21:00-7:00 (app.js)
   function тема() {
@@ -127,5 +173,5 @@
 
   if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', сложи); else сложи();
   document.addEventListener('visibilitychange', () => { if (!document.hidden) опресни(); });
-  window.BL_PREMIUM_HOME = { опресни };
+  window.BL_PREMIUM_HOME = { опресни, денят };
 })();
