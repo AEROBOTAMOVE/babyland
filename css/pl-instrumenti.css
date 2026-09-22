@@ -1,0 +1,341 @@
+/* ═══════════════════════════════════════════════════════════════════════════════
+   🧰 „МАЛКИ ПОМОЩНИЦИ“ · стаята „Инструменти“ (референция 14 на собственика, 22.09.2026)
+   Бяло хапче за търсене върху корниза · ДЪРВЕН шкаф с 6 плюшени пастелни арки в дървени
+   отделения (лавица, месингови стълбчета, табелка в месингова рамка) · „Последно използвани“
+   на филцов панел (.pl-felt от pl-ui.css), застъпил цокъла на шкафа — като в картината.
+   Елементите ги слага js/pl-instrumenti.js (блокът .pl-in веднага под банера .pl-rhero).
+   ДЪРВОТО е само CSS (преливки + „влакна“ от повтарящи се тънки ивици) — нито една нова картинка.
+   ПЪТ НАЗАД: махни <link href="css/pl-instrumenti.css"> и <script src="js/pl-instrumenti.js">.
+   Предишната версия (кремав рафт без дърво): scratchpad/ag2_instrumenti_predi.css.bak
+   ═══════════════════════════════════════════════════════════════════════════════ */
+
+#roRoom > .pl-in {
+  /* дървото — светъл бряст/бреза от референцията (мерено по пиксели: #f0dcc0 лице, #e1b186 рамка, #b17a51 ръб) */
+  --w-face: #f0d8b6; --w-mid: #e5c398;
+  --w-grain-v: repeating-linear-gradient(90deg, rgba(150, 100, 55, .08) 0 1px, transparent 1px 6px),
+               repeating-linear-gradient(91deg, rgba(255, 255, 255, .16) 0 2px, transparent 2px 13px),
+               repeating-linear-gradient(89deg, rgba(150, 100, 55, .06) 0 3px, transparent 3px 29px);
+  --w-grain-h: repeating-linear-gradient(0deg, rgba(150, 100, 55, .08) 0 1px, transparent 1px 4px),
+               repeating-linear-gradient(1deg, rgba(255, 255, 255, .18) 0 1px, transparent 1px 7px);
+  --brass: linear-gradient(180deg, #fbeab8 0, #e2b965 38%, #b3802f 62%, #eccb85 100%);
+  /* 🪤 #roRoom е flex контейнер с фиксирана височина — без flex:none блокът се свива */
+  flex: none;
+  margin: 10px 0 6px;
+  color: var(--pl-ink, #3b3f5c);
+  font-family: Nunito, Nunito-fallback, system-ui, sans-serif;
+}
+
+/* старото поле на polish.js се крие САМО когато новото хапче е до него (то му препраща всичко) */
+#roRoom > .pl-in ~ .sec-nav .sec-find { display: none !important; }
+
+/* ── 🔍 хапчето „Намери инструмент“ — бяло, с кремав кант, легнало върху корниза на шкафа ── */
+.pl-in-find {
+  position: relative; z-index: 3;
+  display: flex; align-items: center; gap: 12px;
+  min-height: 56px; margin: 0 10px -28px; padding: 0 8px 0 20px;
+  border: 1.5px solid #e8d4bd; border-radius: 999px;
+  background: #fffefb linear-gradient(180deg, #ffffff 0, #fffaf4 100%);
+  box-shadow: 0 0 0 4px rgba(255, 250, 243, .92), 0 0 0 5.5px rgba(206, 170, 128, .55),
+              inset 0 2px 5px rgba(170, 118, 118, .07), 0 10px 22px rgba(110, 76, 52, .22);
+  cursor: text;
+  transition: border-color .2s ease, box-shadow .2s ease;
+}
+.pl-in-find:focus-within { border-color: var(--pl-pink-2, #f59cbb); box-shadow: 0 0 0 4px rgba(229, 109, 153, .2), 0 10px 22px rgba(110, 76, 52, .22); }
+.pl-in-find svg { flex: none; width: 26px; height: 26px; fill: none; stroke: var(--pl-navy, #1d2a5c); stroke-width: 2.2; stroke-linecap: round; }
+/* полето е САМО текстът в хапчето; капсулата е хапчето — затова без рамка/сянка */
+.pl-in-find input {
+  flex: 1 1 auto; min-width: 0; min-height: 52px;
+  border: 0; outline: none; background: transparent; box-shadow: none;
+  font: 600 17px/1.2 Nunito, Nunito-fallback, system-ui, sans-serif;   /* ≥16px — iOS не мащабира */
+  color: var(--pl-navy, #1d2a5c);
+  -webkit-appearance: none; appearance: none;
+}
+.pl-in-find input::placeholder { color: #5a5670; opacity: 1; }
+.pl-in-find input::-webkit-search-cancel-button { cursor: pointer; }
+.pl-in-none { position: relative; z-index: 2; margin: 10px 6px 0; padding: 12px 14px; border-radius: 18px; background: rgba(255, 250, 243, .96); box-shadow: 0 6px 16px rgba(110, 76, 52, .14); font-size: 14.5px; font-weight: 700; line-height: 1.4; color: var(--pl-ink, #3b3f5c); }
+.pl-in-none:empty { display: none; }
+
+/* докато се търси — шкафът и „последните“ се прибират, резултатите идват веднага под хапчето */
+.pl-in.pl-in-q .pl-in-shelf, .pl-in.pl-in-q .pl-in-last { display: none; }
+.pl-in.pl-in-q .pl-in-find { margin-bottom: 0; }
+
+/* ── 🪵 шкафът: корниз (под хапчето) · страници · вертикална дъска между колоните · цокъл ── */
+.pl-in-shelf {
+  position: relative; z-index: 1;
+  padding: 42px 10px 16px;
+  border-radius: 26px 26px 14px 14px;
+  background-color: var(--w-mid);
+  background-image: var(--w-grain-v),
+    linear-gradient(90deg, #d6ae7e 0, var(--w-face) 7%, #ecd2ae 50%, var(--w-face) 93%, #d6ae7e 100%);
+  box-shadow: inset 0 2px 0 rgba(255, 255, 255, .65), inset 0 -4px 0 rgba(150, 105, 60, .35),
+              inset 0 0 0 1px rgba(160, 112, 64, .35), 0 18px 34px rgba(110, 76, 52, .28), 0 4px 10px rgba(110, 76, 52, .14);
+}
+/* корнизът — по-светла дъска с кант, върху която ляга хапчето */
+.pl-in-shelf::before {
+  content: ''; position: absolute; left: 0; right: 0; top: 0; height: 30px; border-radius: 26px 26px 6px 6px; pointer-events: none;
+  background-image: var(--w-grain-h), linear-gradient(180deg, #fbf0de 0, var(--w-face) 45%, #e6c79d 100%);
+  box-shadow: 0 3px 4px rgba(110, 76, 52, .22), inset 0 1.5px 0 #fff;
+}
+.pl-in-shelf[hidden] { display: none; }
+.pl-in-grid { position: relative; display: grid; grid-template-columns: 1fr 1fr; gap: 0 10px; }
+/* самотна последна арка (нечетен брой) — в средата, не залепена вляво */
+.pl-in-grid > .pl-in-arch:last-child:nth-child(odd) { grid-column: 1 / -1; width: calc(50% - 5px); justify-self: center; }
+
+/* ── едно отделение: вдлъбнат гръб · плюшена арка · табелка · лавица отдолу ── */
+.pl-in-arch {
+  --a-in: #fdecef; --a-in2: #eeb5c0; --a-fr: #f0b2c4;
+  position: relative;
+  display: flex; flex-direction: column; align-items: stretch;
+  min-height: 140px; padding: 6px 5px 11px;         /* 11px = дебелината на лавицата */
+  border: 0; border-radius: 8px 8px 0 0; cursor: pointer;
+  background-color: #ecd3b0;
+  background-image: linear-gradient(180deg, #e3c59c 0, #efdbbe 26%, #f3e3ca 100%);
+  box-shadow: inset 0 11px 10px -7px rgba(110, 72, 36, .42), inset 8px 0 9px -7px rgba(110, 72, 36, .30), inset -8px 0 9px -7px rgba(110, 72, 36, .30);
+  font: inherit; color: var(--pl-navy, #1d2a5c);
+  -webkit-tap-highlight-color: transparent;
+}
+.pl-in-arch::after {       /* лавицата: светъл горен кант, лице с хоризонтални влакна, сянка отдолу */
+  content: ''; position: absolute; left: -6px; right: -6px; bottom: 0; height: 11px; z-index: 0; pointer-events: none;
+  background-image: var(--w-grain-h), linear-gradient(180deg, #fdf3e2 0, #fdf3e2 2px, #efd6b2 3px, #e2c193 70%, #c99d6c 100%);
+  box-shadow: 0 3px 4px rgba(110, 76, 52, .28);
+}
+.pl-in-arch:focus-visible { outline: 3px solid var(--pl-pink, #e56d99); outline-offset: -3px; }
+
+/* арката — плюшена пастелна рамка с блик отгоре (само горе и отстрани; долу стъпва на лавицата) */
+.pl-in-a {
+  position: relative; z-index: 1;
+  display: block; height: 124px; padding: 8px 8px 0;
+  border-radius: 36% 36% 6px 6px / 42% 42% 6px 6px;
+  background-color: var(--a-fr);
+  background-image: linear-gradient(180deg, rgba(255, 255, 255, .55) 0, rgba(255, 255, 255, .16) 16%, rgba(255, 255, 255, 0) 38%, rgba(90, 40, 40, .07) 100%),
+                    url(../img/art/felt.webp);
+  background-size: 100% 100%, 120px 120px; background-blend-mode: normal, multiply;
+  box-shadow: inset 0 2px 0 rgba(255, 255, 255, .8), inset 0 -1px 0 rgba(0, 0, 0, .05), 0 4px 7px rgba(110, 72, 36, .30);
+  transition: transform .14s ease;
+}
+/* гърбът на арката — по-тъмен пастел с „осветен“ център, в който стоят фигурите */
+.pl-in-in {
+  position: relative; display: block; height: 100%;
+  border-radius: 33% 33% 3px 3px / 40% 40% 3px 3px;
+  /* два „светли петна“ точно зад двете фигури — стените остават наситени като в картината,
+     а бялото на фигурите (листът, метърът) не потъва в пастела при multiply */
+  background: linear-gradient(180deg, rgba(80, 40, 50, .10) 0, rgba(80, 40, 50, 0) 42%),
+              radial-gradient(40% 44% at 70% 56%, var(--a-in) 0, var(--a-in) 48%, rgba(255, 255, 255, 0) 100%),
+              radial-gradient(26% 30% at 20% 64%, var(--a-in) 0, var(--a-in) 40%, rgba(255, 255, 255, 0) 100%);
+  background-color: var(--a-in2);
+  box-shadow: inset 0 8px 12px -4px rgba(90, 50, 40, .30), inset 0 0 0 1px rgba(0, 0, 0, .05), 0 0 0 1.5px rgba(255, 255, 255, .35);
+  overflow: hidden;
+}
+/* малката лавичка в арката, на която стъпват фигурите */
+.pl-in-in::after {
+  content: ''; position: absolute; left: 5%; right: 5%; bottom: 34px; height: 7px; border-radius: 3px;
+  background-image: var(--w-grain-h), linear-gradient(180deg, #fbefdc 0, #ead0a9 45%, #cfa676 100%);
+  box-shadow: 0 2px 3px rgba(90, 50, 40, .25);
+}
+/* месинговите стълбчета отстрани — с топче отгоре (референцията: табелката е „в парапет“) */
+.pl-in-a::before, .pl-in-a::after {
+  content: ''; position: absolute; z-index: 2; bottom: 16px; width: 10px; height: 50%; pointer-events: none;
+  background:
+    radial-gradient(circle at 50% 5px, #fff6d6 0 1.2px, #e8c070 2.2px, #a8762b 4.6px, transparent 5.2px) 0 0 / 10px 10px no-repeat,
+    linear-gradient(90deg, #9c6c26 0, #f6dc98 45%, #d4a24b 70%, #9c6c26 100%) 3px 8px / 4px calc(100% - 8px) no-repeat;
+  filter: drop-shadow(0 1px 1px rgba(90, 50, 20, .35));
+}
+.pl-in-a::before { left: 5px; }
+.pl-in-a::after { right: 5px; }
+
+/* плюшените фигури: спрайт 4×4 с бял фон — multiply го „разтапя“ в пастела */
+.pl-in-ico, .pl-in-ico2 {
+  position: absolute; z-index: 1; display: block;
+  background-repeat: no-repeat; background-size: 400% 400%;
+  mix-blend-mode: multiply;
+}
+.pl-in-ico  { width: 90px; height: 90px; right: 0; bottom: 30px; }
+.pl-in-ico2 { width: 56px; height: 56px; left: 0; bottom: 35px; }
+
+/* табелката — кремава плочка в месингова рамка, стъпила на лавицата */
+.pl-in-l {
+  position: relative; z-index: 3;
+  display: flex; align-items: center; justify-content: center;
+  min-height: 38px; margin: -40px 1px 2px; padding: 0 24px 0 12px;
+  border: 2.5px solid transparent; border-radius: 14px;
+  background-color: #fdf5e8;                             /* за четците/одита — същият като плочката */
+  background-image: linear-gradient(180deg, #fffcf5 0, #fbf0df 100%), var(--brass);
+  background-origin: padding-box, border-box; background-clip: padding-box, border-box;
+  box-shadow: inset 0 1.5px 0 #fff, 0 3px 6px rgba(90, 58, 26, .32);
+  font-family: var(--pl-serif, Georgia, 'Noto Serif', serif); font-weight: 700; font-size: 17px; line-height: 1.1;
+  color: var(--pl-navy, #1d2a5c); white-space: nowrap;
+  transition: transform .14s ease;
+}
+.pl-in-l em {
+  position: absolute; right: 9px; top: 50%; transform: translateY(-54%);
+  font: 800 20px/1 Nunito, Nunito-fallback, system-ui, sans-serif; font-style: normal; color: var(--pl-navy, #1d2a5c);
+}
+/* натискане: арката и табелката потъват с 2px, лавицата и шкафът не мърдат */
+.pl-in-arch:active .pl-in-a, .pl-in-arch:active .pl-in-l { transform: translateY(2px); }
+.pl-in-arch:active .pl-in-l { box-shadow: inset 0 1.5px 0 #fff, 0 1px 2px rgba(90, 58, 26, .3); }
+
+/* пастелите — по СМИСЪЛ, както в картината: таймер розово · календар синьо · списъци мента ·
+   мерки корал · имена люляк · чанта синьо (резервните — праскова/розово/мента) */
+.pl-in-arch[data-k="Таймер"]    { --a-in: #fdecef; --a-in2: #e4a2b0; --a-fr: #efacbf; }
+.pl-in-arch[data-k="Календар"]  { --a-in: #eef4fd; --a-in2: #abc6ec; --a-fr: #a0bfeb; }
+.pl-in-arch[data-k="Списъци"]   { --a-in: #eaf7f2; --a-in2: #9fd3c4; --a-fr: #8ccbba; }
+.pl-in-arch[data-k="Мерки"]     { --a-in: #fdeeed; --a-in2: #eaa9b0; --a-fr: #eca3ad; }
+.pl-in-arch[data-k="Имена"]     { --a-in: #f4effc; --a-in2: #c7b6ec; --a-fr: #bca8e5; }
+.pl-in-arch[data-k="Чанта"]     { --a-in: #ecf4fc; --a-in2: #a8c7e9; --a-fr: #99bce3; }
+.pl-in-arch[data-k="Лампа"]     { --a-in: #fff6e6; --a-in2: #efc98c; --a-fr: #efc27d; }
+.pl-in-arch[data-k="Подаръци"]  { --a-in: #fdecef; --a-in2: #e4a2b0; --a-fr: #efacbf; }
+.pl-in-arch[data-k="Документи"] { --a-in: #eaf7f2; --a-in2: #9fd3c4; --a-fr: #8ccbba; }
+
+/* ── 🕘 „Последно използвани“ — филцов панел (.pl-felt), застъпил цокъла на шкафа ── */
+html body .pl-in-last.pl-in-last {
+  z-index: 2;
+  margin: -8px 4px 0;
+  padding: 16px 14px 14px;
+}
+.pl-in-lh {
+  position: relative; z-index: 1;
+  display: flex; align-items: center; gap: 10px;
+  margin: 0 2px 6px;
+  font-family: var(--pl-serif, Georgia, 'Noto Serif', serif); font-weight: 700; font-size: 19px; line-height: 1.2;
+  color: var(--pl-navy, #1d2a5c);
+}
+/* златните линии от двете страни, с точка в края — като в картината */
+.pl-in-lh::before { content: ''; flex: 0 0 16px; height: 2px; border-radius: 2px; background: linear-gradient(90deg, rgba(200, 160, 100, 0), #c8a064); }
+.pl-in-lh::after {
+  content: ''; flex: 1 1 auto; height: 6px; min-width: 16px;
+  background: radial-gradient(circle at calc(100% - 3px) 50%, #c8a064 0 2.6px, transparent 3px),
+              linear-gradient(90deg, #c8a064, #c8a064) 0 50% / calc(100% - 6px) 2px no-repeat;
+}
+.pl-in-lt { white-space: nowrap; }
+.pl-in-clock {
+  flex: none; display: grid; place-items: center; width: 34px; height: 34px;
+  border-radius: 50%; box-shadow: inset 0 0 0 2px #c8a064;
+}
+.pl-in-clock svg { width: 22px; height: 22px; fill: none; stroke: #8a6534; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }
+.pl-in-rows { position: relative; z-index: 1; }
+.pl-in-row {
+  display: flex; align-items: center; gap: 12px;
+  width: 100%; min-height: 68px; margin: 8px 0 0; padding: 8px 12px 8px 8px;
+  border: 0; border-radius: 18px; cursor: pointer;
+  background: #fdf6ee; box-shadow: inset 0 0 0 1px #efdfcf, 0 1.5px 0 rgba(203, 176, 150, .55);
+  font: inherit; text-align: left; color: var(--pl-navy, #1d2a5c);
+  -webkit-tap-highlight-color: transparent;
+  transition: transform .14s ease;
+}
+.pl-in-row:active { transform: translateY(1.5px); }
+.pl-in-row:focus-visible { outline: 3px solid var(--pl-pink, #e56d99); outline-offset: 2px; }
+.pl-in-ri {
+  flex: none; display: grid; place-items: center;
+  width: 52px; height: 52px; border-radius: 50%;
+  background-color: #fbdbe6;
+  box-shadow: inset 0 0 0 1.5px rgba(229, 109, 153, .18);
+  font-size: 26px; line-height: 1;
+}
+.pl-in-ri.has-art { background-repeat: no-repeat; background-size: 400% 400%; background-blend-mode: multiply; }
+.pl-in-rt { flex: 1 1 auto; min-width: 0; display: flex; flex-direction: column; gap: 2px; }
+.pl-in-rt b {   /* дълго име → на два реда, не „Чанта за разход…“ (видяно на снимка) */
+  font-size: 15.5px; font-weight: 800; line-height: 1.2; color: var(--pl-navy, #1d2a5c);
+  overflow: hidden; display: -webkit-box; -webkit-box-orient: vertical; -webkit-line-clamp: 2; overflow-wrap: anywhere;
+}
+.pl-in-rt small { font-size: 13px; font-weight: 700; color: #5d596f; }
+/* чипът „8 от 12“ — розово хапче с тъмносини цифри на Nunito (не Georgia: там 0 се чете „о“) */
+.pl-in-chip {
+  flex: none; padding: 7px 13px; border-radius: 999px;
+  background: #fbdbe6; color: var(--pl-navy, #1d2a5c);
+  font: 800 13.5px/1 Nunito, Nunito-fallback, system-ui, sans-serif; font-variant-numeric: tabular-nums; white-space: nowrap;
+}
+.pl-in-row > em { flex: none; font: 800 22px/1 Nunito, Nunito-fallback, system-ui, sans-serif; font-style: normal; color: var(--pl-navy, #1d2a5c); }
+.pl-in-empty {
+  display: flex; align-items: center; gap: 12px;
+  margin: 8px 0 0; padding: 8px 12px 8px 8px; border-radius: 18px;
+  background: #fdf6ee; box-shadow: inset 0 0 0 1px #efdfcf;
+  font-size: 14px; font-weight: 700; line-height: 1.4; color: #5d596f;
+}
+
+/* ═══ 🌙 НОЩ — същият шкаф в нощна стая: тъмно орехово дърво, арките приглушени,
+   фигурите върху бял кръг (multiply върху тъмно ги изгася) ═══ */
+html[data-theme="dark"] #roRoom > .pl-in { color: #e8e9f5; }
+html[data-theme="dark"] .pl-in-find {
+  background: #232f63; border-color: rgba(255, 255, 255, .18);
+  box-shadow: 0 0 0 4px rgba(35, 47, 99, .6), 0 0 0 5.5px rgba(210, 170, 120, .35), 0 10px 22px rgba(0, 0, 0, .35);
+}
+html[data-theme="dark"] .pl-in-find:focus-within { border-color: rgba(245, 156, 187, .7); box-shadow: 0 0 0 4px rgba(245, 156, 187, .22), 0 10px 22px rgba(0, 0, 0, .35); }
+html[data-theme="dark"] .pl-in-find svg { stroke: #e3e5f5; }
+html[data-theme="dark"] .pl-in-find input { color: #fff; }
+html[data-theme="dark"] .pl-in-find input::placeholder { color: #c9cbe3; }
+html[data-theme="dark"] .pl-in-none { background: #232f63; color: #e3e5f5; box-shadow: 0 6px 16px rgba(0, 0, 0, .3); }
+html[data-theme="dark"] .pl-in-shelf {
+  background-color: #4f3f3a;
+  background-image: repeating-linear-gradient(90deg, rgba(0, 0, 0, .12) 0 1px, transparent 1px 6px),
+                    repeating-linear-gradient(91deg, rgba(255, 255, 255, .05) 0 2px, transparent 2px 13px),
+                    linear-gradient(90deg, #45352f 0, #5e4a42 7%, #574540 50%, #5e4a42 93%, #45352f 100%);
+  box-shadow: inset 0 2px 0 rgba(255, 255, 255, .12), inset 0 -4px 0 rgba(0, 0, 0, .3), inset 0 0 0 1px rgba(0, 0, 0, .3), 0 18px 34px rgba(0, 0, 0, .45);
+}
+html[data-theme="dark"] .pl-in-shelf::before {
+  background-image: repeating-linear-gradient(0deg, rgba(0, 0, 0, .12) 0 1px, transparent 1px 4px), linear-gradient(180deg, #7a6356 0, #624e45 45%, #4c3c36 100%);
+  box-shadow: 0 3px 4px rgba(0, 0, 0, .35), inset 0 1.5px 0 rgba(255, 255, 255, .18);
+}
+html[data-theme="dark"] .pl-in-arch {
+  background-color: #33294a;
+  background-image: linear-gradient(180deg, #2b2340 0, #3a2f52 30%, #41355a 100%);
+  box-shadow: inset 0 11px 10px -7px rgba(0, 0, 0, .55), inset 8px 0 9px -7px rgba(0, 0, 0, .4), inset -8px 0 9px -7px rgba(0, 0, 0, .4);
+  color: #fff;
+}
+html[data-theme="dark"] .pl-in-arch::after {
+  background-image: repeating-linear-gradient(0deg, rgba(0, 0, 0, .12) 0 1px, transparent 1px 4px), linear-gradient(180deg, #8c7263 0, #8c7263 2px, #6d5749 3px, #5a463b 70%, #45352e 100%);
+  box-shadow: 0 3px 4px rgba(0, 0, 0, .4);
+}
+html[data-theme="dark"] .pl-in-a {
+  background-color: #5a5f8f;                                         /* резерва без color-mix (стар WebView) */
+  background-color: color-mix(in srgb, var(--a-fr) 52%, #28305f);
+  background-image: linear-gradient(180deg, rgba(255, 255, 255, .28) 0, rgba(255, 255, 255, .06) 16%, rgba(255, 255, 255, 0) 38%, rgba(0, 0, 0, .12) 100%), url(../img/art/felt.webp);
+  box-shadow: inset 0 2px 0 rgba(255, 255, 255, .3), 0 4px 7px rgba(0, 0, 0, .4);
+}
+html[data-theme="dark"] .pl-in-in {
+  background: #353d70;
+  background: radial-gradient(85% 78% at 56% 44%, color-mix(in srgb, var(--a-in2) 40%, #2f3868) 0, color-mix(in srgb, var(--a-in2) 20%, #1f2752) 100%);
+  box-shadow: inset 0 8px 12px -4px rgba(0, 0, 0, .45);
+}
+html[data-theme="dark"] .pl-in-in::after {
+  background-image: repeating-linear-gradient(0deg, rgba(0, 0, 0, .12) 0 1px, transparent 1px 4px), linear-gradient(180deg, #8c7263 0, #6d5749 45%, #4f3d33 100%);
+}
+/* нощем фигурите стоят върху бял кръг (правилото на плюшените иконки) */
+html[data-theme="dark"] .pl-in-ico, html[data-theme="dark"] .pl-in-ico2 {
+  mix-blend-mode: normal; background-color: #fff; border-radius: 50%;
+  box-shadow: 0 0 0 3px rgba(255, 255, 255, .16), 0 3px 6px rgba(0, 0, 0, .35);
+}
+html[data-theme="dark"] .pl-in-ico  { width: 70px; height: 70px; right: 4px; bottom: 40px; }
+html[data-theme="dark"] .pl-in-ico2 { width: 44px; height: 44px; left: 4px; bottom: 42px; }
+html[data-theme="dark"] .pl-in-l {
+  background-color: #26336b;
+  background-image: linear-gradient(180deg, #2e3b78 0, #26336b 100%), linear-gradient(180deg, #d9bb7a 0, #a78443 50%, #7c5f2b 60%, #c9a865 100%);
+  box-shadow: inset 0 1.5px 0 rgba(255, 255, 255, .12), 0 3px 6px rgba(0, 0, 0, .45);
+  color: #fff;
+}
+html[data-theme="dark"] .pl-in-l em { color: #fff; }
+html[data-theme="dark"] .pl-in-lh { color: #fff; }
+html[data-theme="dark"] .pl-in-lh::before { background: linear-gradient(90deg, rgba(240, 210, 160, 0), rgba(240, 210, 160, .7)); }
+html[data-theme="dark"] .pl-in-lh::after {
+  background: radial-gradient(circle at calc(100% - 3px) 50%, rgba(240, 210, 160, .8) 0 2.6px, transparent 3px),
+              linear-gradient(90deg, rgba(240, 210, 160, .7), rgba(240, 210, 160, .7)) 0 50% / calc(100% - 6px) 2px no-repeat;
+}
+html[data-theme="dark"] .pl-in-clock { box-shadow: inset 0 0 0 2px rgba(240, 210, 160, .7); }
+html[data-theme="dark"] .pl-in-clock svg { stroke: #f0d2a0; }
+html[data-theme="dark"] .pl-in-row, html[data-theme="dark"] .pl-in-empty { background: #2e3b78; box-shadow: inset 0 0 0 1px rgba(255, 255, 255, .12), 0 1.5px 0 #18214a; color: #fff; }
+html[data-theme="dark"] .pl-in-ri { background-color: #fff; }
+html[data-theme="dark"] .pl-in-ri.has-art { background-blend-mode: normal; }
+html[data-theme="dark"] .pl-in-rt b, html[data-theme="dark"] .pl-in-row > em { color: #fff; }
+html[data-theme="dark"] .pl-in-rt small, html[data-theme="dark"] .pl-in-empty { color: #d6d8ee; }
+html[data-theme="dark"] .pl-in-chip { background: #5a2c55; color: #ffe1ec; }
+
+@media (prefers-reduced-motion: reduce) {
+  .pl-in-a, .pl-in-l, .pl-in-row, .pl-in-find { transition: none; }
+}
+
+/* тесен телефон (320–360px): табелката не бива да излиза от арката */
+@media (max-width: 360px) {
+  .pl-in-l { font-size: 15px; padding: 0 20px 0 8px; }
+  .pl-in-l em { right: 7px; font-size: 18px; }
+  .pl-in-ico { width: 78px; height: 78px; }
+  .pl-in-ico2 { width: 48px; height: 48px; }
+}
