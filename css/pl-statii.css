@@ -1,0 +1,547 @@
+/* ═══════════════════════════════════════════════════════════════════════════════
+   📚 СТАТИИТЕ · рафт върху сцената и четец „тефтер на облак“ (референция 11, 22.09.2026)
+   РАФТЪТ (#roArticles) е прозрачен — отзад е сцената на стаята (premium.css „🎬 СЦЕНИТЕ“).
+   Горе: прозорец към сцената с филцова табелка „Рафтът с книжки“ (.pl-felt) и бебето с
+   книжката (img/art/fig-a.webp [1,1]). Търсачката — вдлъбната капсула (като полетата в
+   pl-ui.css §4). Рафтовете — .pl-soft (кремав филц; избраният .on — розов филц). Картите —
+   .pl-felt с малка арка (рафт или стая) и емоджи-стикер, сериф заглавие, 2 реда резюме,
+   „Рафт · N мин четене“, „✓ Прочетено“. Празното — филцова карта с лупа + .pl-gel.
+   ЧЕТЕЦЪТ (#artOverlay): ленена корица отгоре (главата, филц в бежово с шев), лилава сатенена
+   панделка, кремава хартия; над заглавието — розов вълнен облак, медальонът на рафта и бебето
+   на луната (реф. 11). Заглавие сериф 27px, тяло 17px/1.65, ред ≤ 60 знака; 🚨 и ⚠️ ОСТАВАТ
+   ярки, 112 е ЧЕРВЕН гел (бяло върху #c02c3c…#cc3643 = 5.1–5.7:1).
+   ЦИФРИТЕ: Georgia пише „старинни“ цифри (30 → „зо“). Шрифтът „PL Sa Cifri“ по-долу е Nunito
+   САМО за 0–9 (unicode-range) — буквите остават сериф, цифрите са равни. Файловете са в sw.js.
+   Нощ (html[data-theme="dark"]): нощно синьо, текст #e8e9f5, иконките на бял кръг.
+   Контраст ≥ 4.5:1 — изчислен (scratchpad/ag2_statii_kontrast.js + dom_a11y.js), докосване ≥ 44px.
+   ПЪТ НАЗАД: махни <link href="css/pl-statii.css"> (и js/pl-statii.js) от index.html.
+   ═══════════════════════════════════════════════════════════════════════════════ */
+
+@font-face { font-family: 'PL Sa Cifri'; font-style: normal; font-weight: 400; font-display: swap; src: url(../fonts/nunito-400-latin.woff2) format('woff2'); unicode-range: U+0030-0039; }
+@font-face { font-family: 'PL Sa Cifri'; font-style: italic; font-weight: 400; font-display: swap; src: url(../fonts/nunito-400i-latin.woff2) format('woff2'); unicode-range: U+0030-0039; }
+@font-face { font-family: 'PL Sa Cifri'; font-style: normal; font-weight: 700; font-display: swap; src: url(../fonts/nunito-700-latin.woff2) format('woff2'); unicode-range: U+0030-0039; }
+@font-face { font-family: 'PL Sa Cifri'; font-style: normal; font-weight: 800; font-display: swap; src: url(../fonts/nunito-800-latin.woff2) format('woff2'); unicode-range: U+0030-0039; }
+
+#roArticles, #artOverlay { --sa-serif: 'PL Sa Cifri', Georgia, 'Noto Serif', 'Droid Serif', 'Times New Roman', serif; }
+
+/* ═══ РАФТЪТ ═══ */
+/* 🪤 падингът е ИЗРИЧЕН и по id: rooms.css:745 го сменя на широк екран (18/20px), а
+   лентата с рафтовете излиза до ръба с margin −16px — различен падинг = хоризонтален скрол. */
+#roArticles { padding: 14px 16px 28px; }
+
+/* 🎬 прозорецът към сцената (js: .pl-sa-hero) — табелката долу вляво, лицето на героя остава открито */
+#roArticles .pl-sa-hero { position: relative; flex: none; height: 168px; margin: 0 0 14px; }
+#roArticles .pl-sa-plq {
+  position: absolute; left: 0; bottom: 0; max-width: 88%;
+  display: grid; grid-template-columns: minmax(0, 1fr) 66px; column-gap: 6px; align-items: center;
+  padding: 16px 12px 14px 20px;
+  animation: plRise .5s cubic-bezier(.2, .9, .3, 1) .08s both;       /* ключовите кадри са в pl-ui.css §15 */
+}
+#roArticles .pl-sa-plq::before {                                     /* сърчицето над табелката, като на таба „Стаята“ */
+  content: '♥'; position: absolute; top: -13px; left: 26px;
+  font-size: 22px; line-height: 1; color: #e56d99; text-shadow: 0 2px 0 #c8457a, 0 4px 8px rgba(200, 69, 122, .3);
+}
+#roArticles .pl-sa-ht {
+  grid-column: 1; font-family: var(--sa-serif); font-size: 24px; font-weight: 700; line-height: 1.08;
+  letter-spacing: -.3px; color: var(--pl-navy, #1d2a5c);
+}
+#roArticles .pl-sa-hs {
+  grid-column: 1; margin: 6px 0 0; font-size: 13.5px; font-weight: 700; line-height: 1.3; color: #4a4660;
+  font-variant-numeric: tabular-nums;
+}
+#roArticles .pl-sa-hs:empty { display: none; }
+#roArticles .pl-sa-fig {
+  grid-column: 2; grid-row: 1 / 3; width: 66px; height: 66px; align-self: center;
+  background: url(../img/art/fig-a.webp) 33.333% 100% / 400% 200% no-repeat;   /* бебето с книжката */
+  mix-blend-mode: multiply;                                          /* белият фон на фигурата става филцът */
+}
+
+/* търсачката — вдлъбната капсула (същото облекло като полетата в pl-ui.css §4) */
+html body #roArticles .art-search {
+  display: block; width: 100%; min-height: 50px; margin: 0 0 12px; padding: 12px 20px;
+  border: 1.5px solid var(--ui-edge, #e9d6c3); border-radius: 999px;
+  background: #fffdf9; color: var(--pl-navy, #1d2a5c);
+  font-family: inherit; font-size: 16px; font-weight: 600;          /* 16px: iOS не приближава при фокус */
+  box-shadow: inset 0 2px 4px rgba(110, 76, 52, .10), inset 0 -1px 0 #fff, 0 6px 16px rgba(110, 76, 52, .12);
+}
+html body #roArticles .art-search:focus { outline: none; border-color: #d95a8e; box-shadow: var(--ui-ring, 0 0 0 4px rgba(217, 90, 142, .28)), inset 0 2px 4px rgba(110, 76, 52, .08); }
+
+/* рафтовете: хапчета в лента до ръба, с мек край вместо рязане; облеклото е .pl-soft */
+#roArticles .art-cats {
+  gap: 8px; margin: 0 -16px 4px; padding: 2px 16px 12px; scroll-padding-inline: 16px;
+  -webkit-mask-image: linear-gradient(90deg, transparent 0, #000 14px, #000 calc(100% - 22px), transparent 100%);
+          mask-image: linear-gradient(90deg, transparent 0, #000 14px, #000 calc(100% - 22px), transparent 100%);
+}
+#roArticles .art-cat {
+  display: inline-flex; align-items: center; flex: none;
+  min-height: 44px; padding: 0 16px; border-radius: 999px;
+  font-family: inherit; font-size: 14px; font-weight: 800; white-space: nowrap;
+}
+#roArticles .art-cat .pl-em { width: 1.65em; height: 1.65em; margin: 0 .35em 0 -.45em; }   /* стикерът; интервалът след него е в текста */
+#roArticles .art-cat:focus-visible, #roArticles .art-card:focus-visible, #roArticles .pl-sa-clear:focus-visible {
+  outline: 3px solid #d95a8e; outline-offset: 3px;
+}
+
+/* ── картата (.pl-felt: кремав филц, шевът е ::after) ── */
+#roArticles .art-grid { gap: 14px; }
+#roArticles .art-card[data-pl] {
+  display: grid;
+  grid-template-columns: 58px minmax(0, 1fr);
+  grid-template-rows: auto auto auto;
+  column-gap: 15px; row-gap: 3px; align-items: start;
+  min-height: 104px; padding: 17px 18px 16px 17px;
+  text-align: left; opacity: 1;              /* rooms.css:1477 гасеше прочетените до .62 — контрастът падаше */
+  content-visibility: auto; contain-intrinsic-size: auto 136px;     /* 197–239 карти в стая: извън екрана не се рисуват */
+}
+/* 🪤 rooms.css дава на картата `jrIn … both` — запълването „both“ държи крайния transform завинаги
+   и натискането не личеше. backwards пази само началото; краят е същият (translateY(0)). */
+#roArticles .art-card[data-pl] { animation-fill-mode: backwards; }
+#roArticles .art-card[data-pl]:active { transform: translateY(2px) scale(.99); }
+/* малката арка — ::before на самия бутон (без нов възел; 197–239 карти в стая).
+   Формата е арката от рафта на началото (.pl-arch: 999px 999px 14px 14px). */
+#roArticles .art-card[data-pl]::before {
+  content: ''; grid-column: 1; grid-row: 1 / 4; align-self: center;
+  width: 58px; height: 70px; border-radius: 999px 999px 13px 13px;
+  background-color: var(--pl-sa-tone, #fde6ef);
+  background-repeat: no-repeat;
+  box-shadow: inset 0 0 0 3px #fff, 0 2px 0 rgba(214, 186, 158, .65), 0 6px 12px rgba(110, 76, 52, .14);
+}
+#roArticles .art-card.pl-sa-i::before {
+  background-size: 400% 400%; background-position: var(--pl-sa-pos, 0 0);
+  background-blend-mode: multiply;           /* белият фон на листа става пастелът */
+}
+#roArticles .art-card.pl-sa-x::before { background-size: 400% 200%; }            /* фигурите: 4×2 */
+#roArticles .art-card.pl-sa-r::before { background-size: cover; background-position: 50% 62%; }
+
+/* 🪤 url-ите са ТУК (спрямо css/ → ../img/art/…), не в променлива от JS */
+#roArticles .art-card.pl-sa-a::before, .pl-sa-medal.pl-sa-a { background-image: url(../img/art/ico-a.webp); }
+#roArticles .art-card.pl-sa-b::before, .pl-sa-medal.pl-sa-b { background-image: url(../img/art/ico-b.webp); }
+#roArticles .art-card.pl-sa-c::before, .pl-sa-medal.pl-sa-c { background-image: url(../img/art/ico-c.webp); }
+#roArticles .art-card.pl-sa-d::before, .pl-sa-medal.pl-sa-d { background-image: url(../img/art/ico-d.webp); }
+#roArticles .art-card.pl-sa-e::before, .pl-sa-medal.pl-sa-e { background-image: url(../img/art/ico-e.webp); }
+#roArticles .art-card.pl-sa-f::before, .pl-sa-medal.pl-sa-f { background-image: url(../img/art/ico-f.webp); }
+#roArticles .art-card.pl-sa-g::before, .pl-sa-medal.pl-sa-g { background-image: url(../img/art/ico-g.webp); }
+#roArticles .art-card.pl-sa-x::before, .pl-sa-medal.pl-sa-x { background-image: url(../img/art/fig-a.webp); }
+#roArticles .art-card.pl-sa-r-preg::before,   .pl-sa-medal.pl-sa-r-preg   { background-image: url(../img/art/room-preg.webp); }
+#roArticles .art-card.pl-sa-r-baby::before,   .pl-sa-medal.pl-sa-r-baby   { background-image: url(../img/art/room-baby.webp); }
+#roArticles .art-card.pl-sa-r-feed::before,   .pl-sa-medal.pl-sa-r-feed   { background-image: url(../img/art/room-feed.webp); }
+#roArticles .art-card.pl-sa-r-health::before, .pl-sa-medal.pl-sa-r-health { background-image: url(../img/art/room-health.webp); }
+#roArticles .art-card.pl-sa-r-diary::before,  .pl-sa-medal.pl-sa-r-diary  { background-image: url(../img/art/room-diary.webp); }
+#roArticles .art-card.pl-sa-r-play::before,   .pl-sa-medal.pl-sa-r-play   { background-image: url(../img/art/room-play.webp); }
+#roArticles .art-card.pl-sa-r-tools::before,  .pl-sa-medal.pl-sa-r-tools  { background-image: url(../img/art/room-tools.webp); }
+#roArticles .art-card.pl-sa-r-mom::before,    .pl-sa-medal.pl-sa-r-mom    { background-image: url(../img/art/room-mom.webp); }
+#roArticles .art-card.pl-sa-r-lab::before,    .pl-sa-medal.pl-sa-r-lab    { background-image: url(../img/art/room-lab.webp); }
+
+/* емоджито на статията (⭐ за любимите — articles.js:544) — стикер в долния десен ъгъл на арката */
+#roArticles .art-card[data-pl] .art-cemoji {
+  grid-column: 1; grid-row: 1 / 4; align-self: center; justify-self: end;
+  position: relative; z-index: 1; transform: translate(9px, 27px);
+  display: grid; place-items: center;
+  width: 28px; height: 28px; border-radius: 50%;
+  background: #fff; box-shadow: inset 0 0 0 1.5px var(--ui-edge, #e9d6c3), 0 2px 0 var(--ui-edge-2, #dcc3ab), 0 3px 8px rgba(110, 76, 52, .18);
+  font-size: 15px; line-height: 1; text-align: center;
+}
+#roArticles .art-card[data-pl] .art-cemoji::after { content: none !important; }   /* старото ✔ — вече е хапче „Прочетено“ */
+#roArticles .art-card[data-pl] .art-ctitle {
+  grid-column: 2; grid-row: 1;
+  font-family: var(--sa-serif); font-size: 17px; font-weight: 700;
+  line-height: 1.25; letter-spacing: -.1px; color: var(--pl-navy, #1d2a5c);
+  text-wrap: pretty;
+}
+#roArticles .art-card[data-pl] .art-csum {
+  grid-column: 2; grid-row: 2;
+  font-size: 14px; font-weight: 600; line-height: 1.42; color: #5d596f;          /* 6.5:1 на филца, 5.4:1 в най-тъмното влакно */
+  display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden;
+}
+#roArticles .pl-sa-meta {
+  grid-column: 2; grid-row: 3;
+  display: flex; flex-wrap: wrap; align-items: center; gap: 4px 8px;
+  margin-top: 6px; font-size: 12.5px; font-weight: 800; line-height: 1.3; color: #5d596f;
+}
+#roArticles .art-card:not(.pl-read):not(.art-done) .pl-sa-meta:empty { display: none; }
+/* „✓ Прочетено“ — прочетеното според reader.js (bl_art_read); .art-done е неговият клас */
+#roArticles .art-card.pl-read .pl-sa-meta::after,
+#roArticles .art-card.art-done .pl-sa-meta::after {
+  content: '✓ Прочетено';
+  padding: 3px 10px; border-radius: 999px;
+  background: #dff2e7; color: #2f6b48;      /* 5.4:1 */
+  box-shadow: inset 0 0 0 1px #bfe0cc;
+  font-size: 12px; font-weight: 800;
+}
+
+/* ── празното и близкото ── */
+#roArticles .jr-privacy.pl-sa-none,
+#roArticles > .jr-privacy.pl-sa-empty {
+  display: flex; flex-direction: column; align-items: center; gap: 12px;
+  margin: 6px 0 0; padding: 26px 22px 24px;
+  font-family: var(--sa-serif); font-size: 17px; font-weight: 700; line-height: 1.4;
+  color: var(--pl-navy, #1d2a5c); text-align: center; opacity: 1;
+}
+#roArticles .jr-privacy.pl-sa-none::before,
+#roArticles > .jr-privacy.pl-sa-empty::before {
+  content: ''; width: 88px; height: 88px; border-radius: 50%;
+  background: #fde6ef url(../img/art/ico-c.webp) no-repeat 33.333% 100% / 400% 400%;   /* лупата */
+  background-blend-mode: multiply;
+  box-shadow: inset 0 0 0 4px #fff, 0 3px 0 rgba(214, 186, 158, .6), 0 6px 14px rgba(110, 76, 52, .14);
+}
+/* рафтът не се е отворил — бебето с книжката */
+#roArticles > .jr-privacy.pl-sa-empty::before { background-color: #ece4f8; background-image: url(../img/art/fig-a.webp); background-size: 400% 200%; background-position: 33.333% 100%; }
+/* четири реда сериф удебелено тежаха като плакат — дългото изречение е по-леко */
+#roArticles > .jr-privacy.pl-sa-empty { font-size: 16px; line-height: 1.5; }
+#roArticles .jr-privacy.pl-sa-near {
+  margin: 0 0 2px; padding: 11px 16px; border-radius: 16px;
+  background: #fdeef3; color: #7a3553; opacity: 1;                               /* 7.6:1 */
+  box-shadow: inset 0 0 0 1.5px #f6c9d8;
+  font-size: 14px; font-weight: 700; text-align: left;
+}
+/* „Изчисти търсенето“ — облеклото е .pl-gel; тук само размерът */
+#roArticles .pl-sa-clear {
+  position: relative; z-index: 1;            /* над шева на картата (::after) */
+  min-height: 48px; padding: 0 24px; border-radius: 999px; cursor: pointer;
+  font-family: Nunito, 'Nunito-fallback', system-ui, sans-serif; font-size: 15px; font-weight: 800;
+}
+
+/* ═══ ЧЕТЕЦЪТ · кремава хартия в ленена корица ═══ */
+#artOverlay { background: rgba(58, 42, 72, .42); }
+/* position:relative на панела, НЕ на #artBody: articles.js скача по съдържанието с
+   цел.offsetTop − тяло.offsetTop — позициониран #artBody би сменил offsetParent на h5 и скокът лъже */
+#artOverlay .art-panel {
+  position: relative;
+  background: #fff8f0 linear-gradient(180deg, #fffcf7 0, #fff8f0 55%, #fdf2e7 100%) !important;   /* цветът отдолу: и резерва, и мярката на dom_a11y */
+  color: var(--pl-ink, #3b3f5c);
+}
+/* главата = ленената корица на тефтера (реф. 11): бежов филц + шев отдолу */
+#artOverlay .art-head {
+  position: relative; z-index: 2;
+  gap: 6px; min-height: 68px; padding: 10px 12px 13px;
+  background-color: #efe3d0; background-image: var(--ui-felt, none); background-size: 160px 160px; background-blend-mode: multiply;
+  border-bottom: 1px solid #d9c1a4;
+  box-shadow: 0 6px 16px rgba(110, 76, 52, .12);
+}
+#artOverlay .art-head::before {
+  content: ''; position: absolute; left: 10px; right: 10px; bottom: 5px; height: 0;
+  border-top: 1.5px dashed rgba(150, 112, 78, .55); pointer-events: none;
+}
+/* 🎀 лилавата сатенена панделка (реф. 11) — виси от корицата, стои докато се чете.
+   Лежи в десния падинг (22px) — не закрива нито един ред. */
+#artOverlay .art-head::after {
+  content: ''; position: absolute; top: 100%; right: 4px; width: 14px; height: 54px;
+  background: linear-gradient(90deg, #b9a0e6 0, #cdb9f1 38%, #e3d8f8 50%, #c3adee 62%, #ad93df 100%);
+  -webkit-clip-path: polygon(0 0, 100% 0, 100% 100%, 50% 80%, 0 100%);
+          clip-path: polygon(0 0, 100% 0, 100% 100%, 50% 80%, 0 100%);
+  filter: drop-shadow(0 2px 2px rgba(90, 60, 130, .25));
+  pointer-events: none;
+}
+/* бутоните в главата — облеклото е .pl-soft (js); тук формата */
+/* 🪤 мерено 43×43 (рамката 1.5px на филца вътре в 44) — изрично 44 */
+#artOverlay .art-head .ro-nav { flex: none; width: 44px; height: 44px; min-width: 44px; min-height: 44px; padding: 0; border-radius: 50%; font-size: 18px; }
+#artOverlay .art-htitle {
+  font-family: var(--sa-serif); font-size: 15px; font-weight: 700; color: var(--pl-navy, #1d2a5c);
+}
+/* 390px: ← ☆ 🔊 A A A 📤 = 308px + междини → заглавието оставаше ~20px (многоточие без дума).
+   Голямото заглавие е най-горе в хартията — в главата го няма, а копчетата отиват вдясно. */
+@media (max-width: 480px) {
+  #artOverlay .art-htitle { display: none; }
+  #artOverlay #artStar { margin-left: auto; }
+  #artOverlay .art-fs { margin-left: 0; }
+}
+#artOverlay .art-fs { gap: 0; padding: 0 2px; border-radius: 999px; }
+#artOverlay .art-fsb { color: var(--pl-navy, #1d2a5c); font-family: var(--sa-serif); font-weight: 700; background: transparent; }
+#artOverlay .art-fsb.on { background: var(--ui-pick, #fde6ef); border-color: var(--ui-pick-edge, #efa3c1); color: var(--ui-pick-ink, #9e2f5f); }
+#artOverlay .art-prog { height: 4px; background: #f3e4d6; }
+#artOverlay .art-progfill { background: linear-gradient(90deg, #f59cbb, #c9b3ec); border-radius: 0 4px 4px 0; }
+
+/* хартията: мека розова светлина горе (скролва с текста — background-attachment: local),
+   ред ≤ 60 знака на широк екран (падинг расте, текстът не) */
+#artBody {
+  padding: 18px max(22px, calc((100% - 32em) / 2)) 18px;
+  background: radial-gradient(90% 240px at 50% 0, rgba(253, 230, 239, .95) 0, rgba(253, 230, 239, 0) 100%) no-repeat local;
+  color: var(--pl-ink, #3b3f5c);
+}
+
+/* ☁️ сцената над заглавието (js: .pl-sa-stage) — розов вълнен облак, медальонът лежи в него,
+   бебето на луната вляво, плюшена звезда вдясно (реф. 11) */
+/* 🪤 22.09 (снимка ag2_statii_chetec_l): БЕЗ анимация тук — анимация с fill „both“ прави сцената
+   отделен слой за смесване и multiply на луната/звездата се смесваше с ПРОЗРАЧНО → бели квадрати. */
+#artBody .pl-sa-stage {
+  position: relative; display: block; width: 100%; max-width: 330px; height: 138px; margin: 0 auto 12px;
+}
+#artBody .pl-sa-stage::before {                                      /* облакът: вълна в розово, формата е маска от кръгове */
+  content: ''; position: absolute; left: 50%; bottom: 0; width: 290px; height: 76px; margin-left: -145px;
+  background-color: #f6c8d6;
+  background-image: var(--ui-felt, none), radial-gradient(120% 110% at 45% 15%, #fde7ee 0, #f8cfdc 55%, #eeb4c6 100%);
+  background-size: 120px 120px, 100% 100%; background-blend-mode: multiply, normal;
+  -webkit-mask:
+    radial-gradient(circle at 40px 50px, #000 25px, transparent 26px),
+    radial-gradient(circle at 84px 36px, #000 32px, transparent 33px),
+    radial-gradient(circle at 145px 30px, #000 36px, transparent 37px),
+    radial-gradient(circle at 206px 36px, #000 32px, transparent 33px),
+    radial-gradient(circle at 250px 50px, #000 25px, transparent 26px),
+    radial-gradient(50% 34% at 50% 62%, #000 97%, transparent 100%);
+          mask:
+    radial-gradient(circle at 40px 50px, #000 25px, transparent 26px),
+    radial-gradient(circle at 84px 36px, #000 32px, transparent 33px),
+    radial-gradient(circle at 145px 30px, #000 36px, transparent 37px),
+    radial-gradient(circle at 206px 36px, #000 32px, transparent 33px),
+    radial-gradient(circle at 250px 50px, #000 25px, transparent 26px),
+    radial-gradient(50% 34% at 50% 62%, #000 97%, transparent 100%);
+}
+#artBody .pl-sa-stage::after {                                       /* плюшената звезда (ico-b [2,1]) */
+  content: ''; position: absolute; right: 22px; top: 22px; width: 40px; height: 40px;
+  background: url(../img/art/ico-b.webp) 33.333% 66.667% / 400% 400% no-repeat;
+  mix-blend-mode: multiply; transform: rotate(12deg);
+}
+/* медальонът (js): рисунката на рафта, емоджито — значка; лежи в облака */
+#artBody .pl-sa-medal {
+  position: relative; display: block; width: 104px; height: 104px; margin: 4px auto 0;
+  border-radius: 50%;
+  background-color: var(--pl-sa-tone, #fde6ef); background-repeat: no-repeat;
+  box-shadow: inset 0 0 0 5px #fff, 0 3px 0 rgba(214, 186, 158, .55), 0 12px 24px rgba(200, 110, 140, .22);
+}
+#artBody .pl-sa-medal.pl-sa-i { background-size: 400% 400%; background-position: var(--pl-sa-pos, 0 0); background-blend-mode: multiply; }
+#artBody .pl-sa-medal.pl-sa-x { background-size: 400% 200%; }
+#artBody .pl-sa-medal.pl-sa-r { background-size: cover; background-position: 50% 62%; }
+#artBody .pl-sa-medal::before {                                      /* бебето на луната (fig-a [0,1]) — вляво в облака */
+  content: ''; position: absolute; right: calc(100% - 8px); bottom: -24px; width: 96px; height: 96px;
+  background: url(../img/art/fig-a.webp) 33.333% 0 / 400% 200% no-repeat;
+  mix-blend-mode: multiply;
+}
+#artBody .pl-sa-medal .art-emoji {
+  position: absolute; right: -6px; bottom: -2px; margin: 0; z-index: 1;
+  display: grid; place-items: center; width: 40px; height: 40px; border-radius: 50%;
+  background: #fff; box-shadow: inset 0 0 0 1.5px var(--ui-edge, #e9d6c3), 0 2px 0 var(--ui-edge-2, #dcc3ab), 0 4px 10px rgba(110, 76, 52, .2);
+  font-size: 21px; line-height: 1;
+}
+/* без js: самото емоджи в розов кръг */
+#artBody > .art-emoji {
+  display: grid; place-items: center; width: 84px; height: 84px; margin: 0 auto 14px;
+  border-radius: 50%; font-size: 42px; line-height: 1;
+  background: radial-gradient(circle at 35% 30%, #fff 0, #fde6ef 72%);
+  box-shadow: inset 0 0 0 4px #fff, 0 10px 22px rgba(229, 109, 153, .18);
+}
+#artBody .art-title {
+  margin: 0 auto 12px;
+  font-family: var(--sa-serif); font-size: 27px; font-weight: 700;
+  line-height: 1.18; letter-spacing: -.3px; color: var(--pl-navy, #1d2a5c);
+  text-align: center; text-wrap: balance;
+}
+#artBody .art-tagrow { justify-content: center; gap: 6px 8px; margin: 0 auto 18px; }
+#artBody .art-tag {
+  padding: 5px 12px; border-radius: 999px; background: #ece4f8; color: #5b4a8a;   /* 6.1:1 */
+  font-size: 12.5px; font-weight: 800;
+}
+#artBody .art-tag.pl-sa-cat { background: #fffaf3; color: var(--pl-navy, #1d2a5c); box-shadow: inset 0 0 0 1.5px var(--ui-edge, #e9d6c3), 0 1.5px 0 var(--ui-edge-2, #dcc3ab); }
+#artBody .art-read {
+  margin-left: 0; padding: 5px 12px; border-radius: 999px;
+  background: var(--pl-pink-soft, #fde6ef); color: #a83a64;                          /* 5.1:1 */
+  font-size: 12.5px; font-weight: 800;
+}
+/* орнаментът под етикетите — златни чертички, звездички и сърце (реф. 11: златните звезди) */
+#artBody .art-tagrow::after {
+  content: '✦ ♡ ✦'; flex-basis: 100%; margin-top: 12px; letter-spacing: 6px;
+  font-family: var(--sa-serif); font-size: 15px; line-height: 1; text-align: center; color: #d7a64f;
+  background:
+    linear-gradient(#e2c6a6, #e2c6a6) calc(50% - 64px) 50% / 40px 1.5px no-repeat,
+    linear-gradient(#e2c6a6, #e2c6a6) calc(50% + 64px) 50% / 40px 1.5px no-repeat;
+}
+
+/* съдържанието на дългите статии — .pl-felt (js); 🚨 разделът остава червен и първи */
+#artBody .art-toc { gap: 8px; margin: 0 auto 22px; padding: 18px 16px 16px; }
+#artBody .art-toc > * { position: relative; z-index: 1; }            /* над шева (::after на .pl-felt) */
+#artBody .art-toc-h {
+  font-family: var(--sa-serif); font-size: 16px; font-weight: 700; color: var(--pl-navy, #1d2a5c);
+  letter-spacing: 0; margin-bottom: 4px;
+}
+#artBody .art-toc-b {
+  min-height: 44px; padding: 8px 15px; border-radius: 999px;
+  font-size: 14px; font-weight: 700;
+}
+#artBody .art-toc-sos {
+  background: #fdecec; border: 1.5px solid #f0b3b3; color: #a3202e; font-weight: 800;   /* 6.6:1 */
+  box-shadow: 0 2px 0 #f0c4c4;
+}
+#artBody .art-toc-sos:hover { background: #fbdcdc; }
+
+/* текстът: 17px (размер „малък“ на reader.js 15.5 + 1.5) / 1.65 — и A A A вече го мести:
+   rooms.css:604 държеше абзаците на твърди 15px и бутоните за размер не пипаха текста */
+#artBody p, #artBody li {
+  font-size: calc(1em + 1.5px); line-height: 1.65; font-weight: 400; color: var(--pl-ink, #3b3f5c);
+}
+#artBody p { margin-bottom: 14px; }
+#artBody strong { color: var(--pl-navy, #1d2a5c); font-weight: 800; }
+#artBody h5 {
+  margin: 30px auto 10px;
+  font-family: var(--sa-serif); font-size: calc(1.15em + 2px); font-weight: 700;
+  line-height: 1.25; color: var(--pl-navy, #1d2a5c);
+}
+#artBody h5::after {
+  content: ''; display: block; width: 34px; height: 3px; margin-top: 8px; border-radius: 3px;
+  background: linear-gradient(90deg, #f59cbb, #e2c6a6);
+}
+#artBody h5.pl-sa-sos { color: #a3202e; }                                          /* 7.2:1 на хартията */
+#artBody h5.pl-sa-sos::after { width: 46px; background: #d8343f; }
+#artBody ul { gap: 10px; margin: 2px auto 16px; }
+#artBody li { padding-left: 24px; }
+#artBody li::before {
+  content: ''; left: 5px; top: .66em; width: 8px; height: 8px; border-radius: 50%; font-size: 0;
+  background: #e56d99; box-shadow: 0 0 0 3px #fde6ef;
+}
+/* точката е самото емоджи (✅ ⛔ ⚠️) — висящ отстъп, без розова точка отгоре */
+#artBody li.pl-sa-emo { padding-left: 1.55em; text-indent: -1.55em; }
+#artBody li.pl-sa-emo::before { display: none; }
+#artBody li.pl-sa-sos { color: #a3202e; font-weight: 700; }
+
+/* цитатът (articles.js „> “) и ✅ важните редове — мека розова кутия */
+#artBody .art-quote, #artBody p.pl-sa-key {
+  padding: 14px 16px; border-radius: 16px;
+  background: #fdeef3; border: 1px solid #f8d3e0; color: #45324d;
+}
+#artBody .art-quote {
+  border-left: 4px solid #f59cbb;
+  font-family: var(--sa-serif); font-style: italic; font-size: calc(1em + 2.5px);
+}
+/* ⚠️ / ⛔ — предупреждение: кехлибар, удебелено, ПО-видимо от обикновения ред */
+#artBody p.pl-sa-caution {
+  padding: 14px 16px; border-radius: 14px;
+  background: #fff3da; border: 1px solid #f3d38c; border-left: 5px solid #e0a100;
+  color: #5c3a00; font-weight: 700;                                                  /* 9.3:1 */
+}
+/* 🚨 спешният ред — ЧЕРВЕН и ярък; rooms.css:669 го държи на !important — затова и тук */
+#artBody p.art-warn {
+  padding: 14px 16px !important; border-radius: 14px;
+  background: #fdecec !important; border: 1.5px solid #f0b3b3; border-left: 5px solid #d8343f;
+  color: #a3202e !important; font-size: calc(1em + 1.5px) !important; font-weight: 700 !important; line-height: 1.55;
+}
+/* 📞 112 — ЧЕРВЕН гел (като 112 в СОС центъра, pl-ui.css §9), набираем с палец (articles.js:382).
+   🪤 на един ред „🚨 Спешно сега? Звънни 112 натисни тук“ е 326px в 310 — затова два реда:
+   горе призивът с номера, долу „натисни тук“. Бялото е върху #cc3643…#c02c3c = 5.1–5.7:1
+   (без бялия блик на розовия гел — той минава зад буквите и сваля контраста). */
+#artBody .art-112 {
+  flex-wrap: wrap; justify-content: center; align-items: baseline; column-gap: 6px; row-gap: 0;
+  min-height: 62px; margin: 24px auto 12px; padding: 10px 20px;
+  border: 0; border-radius: 999px;
+  background: #c02c3c linear-gradient(180deg, #cc3643 0%, #c02c3c 48%, #a8233a 100%);
+  color: #fff; font-size: 15px; font-weight: 800; line-height: 1.3; text-align: center;
+  text-shadow: 0 1px 0 rgba(90, 10, 25, .35);
+  box-shadow: inset 0 1.5px 0 rgba(255, 255, 255, .45), inset 0 -3px 0 rgba(90, 10, 25, .22), 0 4px 0 #86192d, 0 12px 22px rgba(170, 30, 50, .30);
+  transition: transform .12s ease, box-shadow .12s ease;
+}
+#artBody .art-112 strong { color: #fff; font-size: 21px; font-weight: 800; }        /* не тъмносиньо като другите <strong> */
+#artBody .art-112 span {
+  flex-basis: 100%; margin-left: 0; opacity: 1;                                      /* беше .72 */
+  color: #fff; font-size: 12.5px; font-weight: 700; text-align: center;
+}
+#artBody .art-112:active { transform: translateY(3px); box-shadow: inset 0 1.5px 0 rgba(255, 255, 255, .4), 0 1px 0 #86192d, 0 5px 12px rgba(170, 30, 50, .3); }
+
+/* „Виж също“ (.pl-felt), стрелките и редовете (.pl-soft), „Питай помощничката“ (.pl-gel) — облеклото е от pl-ui.css */
+#artBody .art-rel { margin: 26px auto 8px; padding: 18px 16px 16px; }
+#artBody .art-rel > * { position: relative; z-index: 1; }            /* над шева */
+#artBody .art-relt {
+  margin: 0 0 10px; font-family: var(--sa-serif); font-size: 17px; font-weight: 700;
+  color: var(--pl-navy, #1d2a5c);
+}
+#artBody .art-relb {
+  display: flex; align-items: center; width: 100%; min-height: 48px; margin: 0 0 9px; padding: 11px 16px;
+  border-radius: 18px; font-size: 14.5px; font-weight: 700; line-height: 1.35; text-align: left;
+}
+#artBody .art-relb:last-child { margin-bottom: 0; }
+#artBody .art-nav { gap: 10px; margin: 20px auto 6px; }
+#artBody .art-navb { min-height: 48px; padding: 10px 16px; border-radius: 999px; font-size: 13.5px; font-weight: 800; }
+#artBody .art-ask {
+  display: flex; align-items: center; justify-content: center;
+  width: 100%; max-width: 380px; min-height: 56px; margin: 24px auto 12px; padding: 12px 22px;
+  border-radius: 999px;
+  font-family: Nunito, 'Nunito-fallback', system-ui, sans-serif; font-size: 16px; font-weight: 800;
+}
+#artBody :focus-visible { outline: 3px solid #d95a8e; outline-offset: 3px; }
+
+/* „не замества лекар“ — остава видимо, на хартията */
+#artOverlay .art-disc {
+  padding: 10px 18px 12px; background: #fff6ee; border-top: 1px solid var(--pl-line, #f1e4d9);
+  color: #5d596f; font-size: 12.5px; font-weight: 700;                               /* 6.3:1 */
+}
+
+/* ═══ НОЩ · нощно синьо, по-малко яркост ═══ */
+html[data-theme="dark"] #roArticles .pl-sa-ht { color: #fff; }
+html[data-theme="dark"] #roArticles .pl-sa-hs { color: #d6d8ee; }
+/* иконката/фигурата — на бял кръг (multiply върху тъмно я прави черна) */
+html[data-theme="dark"] #roArticles .pl-sa-fig { mix-blend-mode: normal; background-color: #fff; border-radius: 50%; box-shadow: 0 0 0 3px rgba(255, 255, 255, .18); }
+html[data-theme="dark"] body #roArticles .art-search {
+  background: #1b2554 !important; border-color: rgba(255, 255, 255, .18); color: #f1f2fb;
+  box-shadow: inset 0 2px 5px rgba(0, 0, 0, .35), 0 6px 16px rgba(0, 0, 0, .25);
+}
+html[data-theme="dark"] body #roArticles .art-search::placeholder { color: #aeb2d4; }
+html[data-theme="dark"] #roArticles .art-card[data-pl]::before { box-shadow: inset 0 0 0 3px rgba(255, 255, 255, .9), 0 4px 10px rgba(0, 0, 0, .3); }
+html[data-theme="dark"] #roArticles .art-card.pl-sa-i::before { background-color: #fff; background-blend-mode: normal; }
+html[data-theme="dark"] #roArticles .art-card.pl-sa-r::before { filter: brightness(.9); }
+html[data-theme="dark"] #roArticles .art-card[data-pl] .art-cemoji { color: #fff; background: #2a376f; box-shadow: 0 2px 6px rgba(0, 0, 0, .35), inset 0 0 0 1.5px rgba(255, 255, 255, .18); }
+html[data-theme="dark"] #roArticles .art-card[data-pl] .art-ctitle { color: #fff; }
+html[data-theme="dark"] #roArticles .art-card[data-pl] .art-csum,
+html[data-theme="dark"] #roArticles .pl-sa-meta { color: #d6d8ee; }
+html[data-theme="dark"] #roArticles .art-card.pl-read .pl-sa-meta::after,
+html[data-theme="dark"] #roArticles .art-card.art-done .pl-sa-meta::after { background: rgba(110, 200, 160, .18); color: #a6e3c4; box-shadow: none; }
+html[data-theme="dark"] #roArticles .jr-privacy.pl-sa-none,
+html[data-theme="dark"] #roArticles > .jr-privacy.pl-sa-empty { color: #fff; }
+html[data-theme="dark"] #roArticles .jr-privacy.pl-sa-none::before,
+html[data-theme="dark"] #roArticles > .jr-privacy.pl-sa-empty::before { background-color: #fff; background-blend-mode: normal; }
+html[data-theme="dark"] #roArticles .jr-privacy.pl-sa-near { background: #3a2a55; color: #ffd3e2; box-shadow: inset 0 0 0 1.5px rgba(245, 156, 187, .35); }
+
+html[data-theme="dark"] #artOverlay { background: rgba(6, 10, 30, .6); }
+html[data-theme="dark"] #artOverlay .art-panel { background: #1a2452 linear-gradient(180deg, #1a2452 0, #16204a 100%) !important; color: #e8e9f5; }
+html[data-theme="dark"] #artOverlay .art-head {
+  filter: none;                               /* dark.css:132 гасеше главата до .62 */
+  background-color: #2a366e; border-bottom-color: rgba(255, 255, 255, .12); box-shadow: 0 6px 16px rgba(0, 0, 0, .3);
+}
+html[data-theme="dark"] #artOverlay .art-head::before { border-top-color: rgba(255, 255, 255, .22); }
+html[data-theme="dark"] #artOverlay .art-head::after { background: linear-gradient(90deg, #8f78cc 0, #a58fdc 40%, #b9a6e6 50%, #9e87d6 62%, #836bc0 100%); }
+html[data-theme="dark"] #artOverlay .art-htitle { color: #fff; }
+html[data-theme="dark"] #artOverlay .art-fsb { color: #f1f2fb; }
+html[data-theme="dark"] #artOverlay .art-fsb.on { background: #5a2c55; border-color: rgba(245, 156, 187, .6); color: #ffe1ec; }
+html[data-theme="dark"] #artOverlay .art-prog { background: rgba(255, 255, 255, .10); }
+html[data-theme="dark"] #artBody { background: radial-gradient(90% 240px at 50% 0, rgba(120, 100, 200, .22) 0, rgba(120, 100, 200, 0) 100%) no-repeat local; color: #e8e9f5; }
+/* облакът нощем — сумрачна лавандула; фигурите на бял кръг */
+html[data-theme="dark"] #artBody .pl-sa-stage::before { background-color: #454b8e; background-image: var(--ui-felt, none), radial-gradient(120% 110% at 45% 15%, #6a6fb0 0, #4d5397 55%, #3a3f7e 100%); }
+html[data-theme="dark"] #artBody .pl-sa-stage::after { mix-blend-mode: normal; background-color: #fff; border-radius: 50%; box-shadow: 0 0 0 2px rgba(255, 255, 255, .2); }
+html[data-theme="dark"] #artBody .pl-sa-medal { box-shadow: inset 0 0 0 5px rgba(255, 255, 255, .92), 0 12px 26px rgba(0, 0, 0, .35); }
+html[data-theme="dark"] #artBody .pl-sa-medal.pl-sa-i { background-color: #fff; background-blend-mode: normal; }
+html[data-theme="dark"] #artBody .pl-sa-medal.pl-sa-r { filter: brightness(.92); }
+html[data-theme="dark"] #artBody .pl-sa-medal::before { mix-blend-mode: normal; background-color: #fff; border-radius: 50%; width: 84px; height: 84px; bottom: -14px; box-shadow: 0 0 0 3px rgba(255, 255, 255, .18); }
+html[data-theme="dark"] #artBody .pl-sa-medal .art-emoji { background: #2a376f; box-shadow: 0 3px 9px rgba(0, 0, 0, .4), inset 0 0 0 1.5px rgba(255, 255, 255, .18); }
+html[data-theme="dark"] #artBody > .art-emoji { background: radial-gradient(circle at 35% 30%, #3a4786 0, #2a376f 72%); box-shadow: inset 0 0 0 3px rgba(255, 255, 255, .14); }
+html[data-theme="dark"] #artBody .art-title { color: #fff; }
+html[data-theme="dark"] #artBody .art-tag { background: rgba(236, 228, 248, .14); color: #ddd2f7; }
+html[data-theme="dark"] #artBody .art-tag.pl-sa-cat { background: #232f63; color: #fff; box-shadow: inset 0 0 0 1.5px rgba(255, 255, 255, .16); }
+html[data-theme="dark"] #artBody .art-read { background: rgba(245, 156, 187, .16); color: #ffc2d8; }
+html[data-theme="dark"] #artBody .art-tagrow::after {
+  color: #e8c77f;
+  background:
+    linear-gradient(#8a7cae, #8a7cae) calc(50% - 64px) 50% / 40px 1.5px no-repeat,
+    linear-gradient(#8a7cae, #8a7cae) calc(50% + 64px) 50% / 40px 1.5px no-repeat;
+}
+html[data-theme="dark"] #artBody .art-toc-h { color: #fff; }
+html[data-theme="dark"] #artBody .art-toc-sos { background: #5a2338; border-color: #93405a; color: #ffd0da; box-shadow: none; }
+html[data-theme="dark"] #artBody p, html[data-theme="dark"] #artBody li { color: #e8e9f5; }
+html[data-theme="dark"] #artBody strong { color: #fff; }
+html[data-theme="dark"] #artBody h5 { color: #fff; }
+html[data-theme="dark"] #artBody h5::after { background: linear-gradient(90deg, #f59cbb, #8a7cae); }
+html[data-theme="dark"] #artBody h5.pl-sa-sos { color: #ffb4b4; }
+html[data-theme="dark"] #artBody h5.pl-sa-sos::after { background: #ff6b6b; }
+html[data-theme="dark"] #artBody li::before { background: #f59cbb; box-shadow: 0 0 0 3px rgba(245, 156, 187, .2); }
+html[data-theme="dark"] #artBody li.pl-sa-sos { color: #ffc4c4; }
+html[data-theme="dark"] #artBody .art-quote, html[data-theme="dark"] #artBody p.pl-sa-key {
+  background: rgba(245, 156, 187, .12); border-color: rgba(245, 156, 187, .30); color: #f3e6ee;
+}
+html[data-theme="dark"] #artBody .art-quote { border-left-color: #f59cbb; }
+html[data-theme="dark"] #artBody p.pl-sa-caution { background: #3d3216; border-color: rgba(224, 161, 0, .45); border-left-color: #e0a100; color: #ffe2a8; }
+html[data-theme="dark"] #artBody p.art-warn {
+  background: #4a1d27 !important; border-color: rgba(255, 107, 107, .45); border-left-color: #ff6b6b; color: #ffd0d0 !important;   /* 10:1 */
+}
+/* 112 нощем — същият червен гел (бялото 5.1–6.2:1), само сянката е по-тъмна */
+html[data-theme="dark"] #artBody .art-112 { box-shadow: inset 0 1.5px 0 rgba(255, 255, 255, .35), 0 4px 0 #5e1020, 0 10px 20px rgba(0, 0, 0, .4); }
+html[data-theme="dark"] #artBody .art-relt { color: #fff; }
+html[data-theme="dark"] #artOverlay .art-disc { background: #16204a; border-top-color: rgba(255, 255, 255, .10); color: #c9cbe3; }
+
+@media (prefers-reduced-motion: reduce) {
+  #roArticles .pl-sa-plq { animation: none; }
+  #roArticles .art-card[data-pl]:active, #artBody .art-112:active { transform: none; }
+}

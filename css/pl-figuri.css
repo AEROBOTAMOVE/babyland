@@ -79,3 +79,29 @@ html body #roomOverlay .ro-panel.ro-rose   .pl-rhero-t::after { background-posit
 html body #roomOverlay .ro-panel.ro-cork   .pl-rhero-t::after { background-position: 100% 100%; }
 html[data-theme="dark"] body #roomOverlay .ro-panel .pl-rhero-t::after { box-shadow: 0 0 0 3px #fff, 0 0 0 5px rgba(255, 194, 214, .4), 0 8px 16px rgba(0, 0, 0, .35); }
 @media (prefers-reduced-motion: reduce) { html body #roomOverlay .ro-panel .pl-rhero-t::after { animation: none; } }
+
+/* 📚 новите листове за рафтовете на статиите (js/pl-statii.js: „t“ и „h“) — url-ът трябва да е в CSS файл */
+#roArticles .art-card.pl-sa-t::before, .pl-sa-medal.pl-sa-t { background-image: url(../img/art/statii-t.webp); }
+#roArticles .art-card.pl-sa-h::before, .pl-sa-medal.pl-sa-h { background-image: url(../img/art/ico-h.webp); }
+
+/* ═══ 🌬️ ЖИВИЯТ РАФТ И ДОЛНАТА ЛЕНТА ═══
+   Арките на началото се полюляват една след друга — като играчки на въртележка над креватчето.
+   Само transform, безкрайно → мениджърът izvan_ekrana.js ги спира извън екрана, plavno.js — при
+   плъзгане с пръст; при „по-малко движение“ не мърдат. Долната лента подскача при докосване. */
+html.pl-on .pl-shelf .pl-room .pl-arch { animation: plArchBob 4.6s ease-in-out infinite; transform-origin: 50% 100%; }
+html.pl-on .pl-shelf .pl-room:nth-child(2) .pl-arch { animation-delay: -.6s; }
+html.pl-on .pl-shelf .pl-room:nth-child(3) .pl-arch { animation-delay: -1.2s; }
+html.pl-on .pl-shelf .pl-room:nth-child(4) .pl-arch { animation-delay: -1.8s; }
+html.pl-on .pl-shelf .pl-room:nth-child(5) .pl-arch { animation-delay: -2.4s; }
+html.pl-on .pl-shelf .pl-room:nth-child(6) .pl-arch { animation-delay: -3s; }
+html.pl-on .pl-shelf .pl-room:nth-child(7) .pl-arch { animation-delay: -3.6s; }
+html.pl-on .pl-shelf .pl-room:nth-child(8) .pl-arch { animation-delay: -4.2s; }
+html.pl-on .pl-shelf .pl-room:nth-child(9) .pl-arch { animation-delay: -.3s; }
+@keyframes plArchBob { 0%, 100% { transform: translateY(0) rotate(-.6deg); } 50% { transform: translateY(-4px) rotate(.6deg); } }
+html.pl-on .pl-shelf .pl-room:active .pl-arch { animation: none; transform: translateY(2px) scale(.97); }
+
+html body .bn-item:active span, html body .bn-item:active svg { animation: plNavPop .34s cubic-bezier(.3, 1.5, .5, 1); }
+@keyframes plNavPop { 0% { transform: none; } 45% { transform: translateY(-4px) scale(1.14); } 100% { transform: none; } }
+@media (prefers-reduced-motion: reduce) {
+  html.pl-on .pl-shelf .pl-room .pl-arch, html body .bn-item:active span, html body .bn-item:active svg { animation: none !important; }
+}
