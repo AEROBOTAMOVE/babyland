@@ -377,6 +377,30 @@ html body .fs-tab.fs-tab.is-on { background-color: var(--ui-pick) !important; bo
 html[data-theme="dark"] body .fs-tab.fs-tab { background-color: #2b3872 !important; border-color: rgba(255, 255, 255, .16) !important; color: #f1f2fb !important; box-shadow: 0 2px 0 #18214a !important; }
 html[data-theme="dark"] body .fs-tab.fs-tab.is-on { background-color: #5a2c55 !important; border-color: rgba(245, 156, 187, .6) !important; color: #ffe1ec !important; }
 
+/* ═══ 14 · СЪОБЩЕНИЯТА (BL_FX.cheer → .fx-cheer, style.css:1464) и прозорците .modal ═══
+   Тостът беше розов градиент на Comfortaa с бял текст (#f7a8cb→#e56ba4 ≈ 2.6–3.0:1) → кремаво
+   филцово хапче с тъмносин текст и розов кант; анимацията (fxCheer) е старата. .modal → филц със шев. */
+html body .fx-cheer.fx-cheer {
+  background-color: #fffaf3 !important; background-image: var(--ui-felt) !important; background-size: 160px 160px !important; background-blend-mode: multiply !important;
+  color: #1d2a5c !important; font-family: Nunito, Nunito-fallback, system-ui, sans-serif !important; font-weight: 800 !important;
+  border: 2px solid #efa3c1; box-shadow: 0 3px 0 #e7a0bd, 0 14px 30px rgba(200, 69, 122, .28) !important;
+  /* 🪤 мерено: „Записах го! 💜 Малките мигове са големите.“ = 407px на 390px екран (white-space: nowrap
+     в style.css) — излизаше извън екрана от двете страни. Сега се пренася. */
+  white-space: normal !important; width: max-content; max-width: calc(100vw - 32px); text-align: center; line-height: 1.35;
+}
+html body .modal-backdrop .modal.modal {
+  position: relative;
+  background-color: #fffaf3 !important; background-image: var(--ui-felt) !important; background-size: 160px 160px !important; background-blend-mode: multiply !important;
+  border: 1px solid rgba(214, 186, 158, .6); box-shadow: 0 30px 70px rgba(80, 60, 70, .32) !important;
+  outline: 1.5px dashed rgba(196, 160, 124, .55); outline-offset: -9px;
+}
+html body .modal-backdrop .modal h3 { font-family: Georgia, 'Noto Serif', serif !important; color: #1d2a5c !important; }
+html body .modal-backdrop .modal p { color: #4a4660 !important; }
+html[data-theme="dark"] body .fx-cheer.fx-cheer { background-color: #2b3872 !important; color: #fff !important; border-color: rgba(245, 156, 187, .6); box-shadow: 0 3px 0 #18214a, 0 14px 30px rgba(0, 0, 0, .35) !important; }
+html[data-theme="dark"] body .modal-backdrop .modal.modal { background-color: #26336b !important; border-color: rgba(255, 255, 255, .14); outline-color: rgba(255, 255, 255, .22); }
+html[data-theme="dark"] body .modal-backdrop .modal h3 { color: #fff !important; }
+html[data-theme="dark"] body .modal-backdrop .modal p { color: #d6d8ee !important; }
+
 /* нощем долната лента: неактивните надписи бяха 4.47:1 (мерено) — на косъм под 4.5 */
 html[data-theme="dark"] body .bottom-nav .bn-item:not(.bn-active) { color: #d9dcf2 !important; }
 
