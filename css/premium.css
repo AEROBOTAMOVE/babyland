@@ -1,0 +1,564 @@
+/* ═══════════════════════════════════════════════════════════════════════════════
+   ✨ PREMIUM · светлият плюшен свят от референциите на собственика (22.09.2026)
+   Слой ОТГОРЕ на всичко — не пипа старите файлове. ПЪТ НАЗАД: махни този <link>
+   и <script src="js/premium-home.js"> от index.html (старото начало се връща само).
+   Правила от уменията (alinaqi/ui-mobile): докосване ≥ 44px, контраст ≥ 4.5:1,
+   решетка 4/8/16/24, анимации 200–300 мс, видимо натискане на всеки бутон.
+   Шрифтът за заглавията е СИСТЕМЕН сериф (Georgia / Noto Serif на Android /
+   Times на iOS) — 0 КБ за изтегляне, работи офлайн и има кирилица навсякъде.
+   ═══════════════════════════════════════════════════════════════════════════════ */
+
+:root {
+  --pl-cream: #fff8f2;
+  --pl-cream-2: #fdf1e8;
+  --pl-card: #fffdfb;
+  --pl-line: #f1e4d9;
+  --pl-navy: #1d2a5c;
+  --pl-ink: #3b3f5c;
+  --pl-ink-soft: #6a6682;
+  --pl-pink: #e56d99;
+  --pl-pink-2: #f59cbb;
+  --pl-pink-soft: #fde6ef;
+  --pl-sky: #dfeafb;
+  --pl-mint: #dff2e7;
+  --pl-lilac: #ece4f8;
+  --pl-butter: #fff0d4;
+  --pl-peach: #fde5d8;
+  --pl-sage: #e3efe0;
+  --pl-shadow: 0 10px 28px rgba(170, 118, 118, .14), 0 2px 6px rgba(170, 118, 118, .08);
+  --pl-shadow-sm: 0 4px 14px rgba(170, 118, 118, .12);
+  --pl-radius: 22px;
+  --pl-serif: Georgia, 'Noto Serif', 'Droid Serif', 'Times New Roman', serif;
+}
+
+/* ── старото начало се крие, когато новото е вътре ── */
+html.pl-on header.hero#начало { display: none !important; }
+html.pl-on .sky.bl-vun { opacity: .35; }
+
+/* ═══ НАЧАЛОТО ═══ */
+#plHome {
+  position: relative;
+  padding: 0 0 8px;
+  background: linear-gradient(180deg, transparent 0, var(--pl-cream) 58%);
+  color: var(--pl-ink);
+  font-family: 'Nunito', 'Nunito-fallback', sans-serif;
+}
+.pl-hero {
+  position: relative;
+  min-height: 412px;
+  overflow: hidden;
+  border-radius: 0 0 34px 34px;
+  isolation: isolate;
+}
+/* 🪤 22.09: първата версия беше с z-index −2/−1 и рисунката падаше ПОД фона на собствения си
+   контейнер — зареждаше се (720×1280), но не се виждаше. Обикновени слоеве: 0 · 1 · 2. */
+.pl-hero-art {
+  position: absolute; inset: 0; z-index: 0;
+  width: 100%; height: 100%;
+  object-fit: cover; object-position: 50% 58%;
+}
+.pl-hero::after {           /* мека светлина само зад заглавието — за контраст на текста */
+  content: ''; position: absolute; inset: 0; z-index: 1; pointer-events: none;
+  background:
+    radial-gradient(90% 55% at 0% 0%, rgba(255, 250, 244, .9) 0, rgba(255, 250, 244, .5) 45%, transparent 70%),
+    linear-gradient(180deg, transparent 82%, rgba(255, 248, 242, .9) 100%);
+}
+.pl-hero-txt, .pl-baby { z-index: 2; }
+.pl-hero-txt { position: relative; padding: calc(env(safe-area-inset-top, 0px) + 58px) 22px 0; max-width: 78%; }
+.pl-hero h1 {
+  margin: 0;
+  font-family: var(--pl-serif);
+  font-weight: 700;
+  font-size: clamp(34px, 9.4vw, 42px);
+  line-height: 1.04;
+  letter-spacing: -.5px;
+  color: var(--pl-navy);
+}
+.pl-heart { color: var(--pl-pink); font-family: var(--pl-serif); font-weight: 400; }
+.pl-hero p { margin: 8px 0 0; font-size: 16px; font-weight: 700; color: var(--pl-ink); }
+
+.pl-baby {
+  position: absolute; left: 16px; bottom: 18px;
+  display: flex; align-items: center; gap: 12px;
+  min-height: 64px; padding: 8px 18px 8px 8px;
+  border: 1px solid rgba(255, 255, 255, .9); border-radius: 20px;
+  background: rgba(255, 253, 251, .9);
+  -webkit-backdrop-filter: blur(10px); backdrop-filter: blur(10px);
+  box-shadow: var(--pl-shadow-sm);
+  color: var(--pl-navy); text-align: left; cursor: pointer;
+  font: inherit;
+  transition: transform .2s ease;
+}
+.pl-baby:active { transform: scale(.97); }
+.pl-baby-av {
+  width: 48px; height: 48px; flex: none;
+  display: grid; place-items: center;
+  border-radius: 50%; font-size: 26px;
+  background: radial-gradient(circle at 35% 30%, #fff 0, var(--pl-pink-soft) 70%);
+  box-shadow: inset 0 0 0 3px #fff;
+}
+.pl-baby b { display: block; font-size: 17px; font-weight: 800; }
+.pl-baby small { display: block; font-size: 13px; color: var(--pl-ink-soft); font-weight: 600; }
+.pl-baby-go { margin-left: 4px; font-size: 22px; color: var(--pl-ink-soft); }
+
+/* ── карта „Нашият ден“ ── */
+.pl-card {
+  margin: 16px 16px 0;
+  padding: 16px;
+  border: 1px solid var(--pl-line);
+  border-radius: var(--pl-radius);
+  background: var(--pl-card);
+  box-shadow: var(--pl-shadow);
+}
+.pl-card-h { display: flex; align-items: center; gap: 8px; margin: 0 0 12px; font-family: var(--pl-serif); font-weight: 700; font-size: 19px; color: var(--pl-navy); }
+.pl-day { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; }
+.pl-day-it {
+  display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 6px;
+  min-height: 92px; padding: 10px 6px;
+  border: 0; border-radius: 18px; cursor: pointer;
+  font: inherit; font-weight: 800; font-size: 14px; color: var(--pl-navy);
+  transition: transform .2s ease;
+}
+.pl-day-it:active { transform: scale(.95); }
+.pl-day-it i { font-style: normal; font-size: 28px; line-height: 1; }
+.pl-day-it span { font-size: 12px; font-weight: 700; color: var(--pl-ink-soft); }
+.pl-day-it.t-feed { background: var(--pl-pink-soft); }
+.pl-day-it.t-sleep { background: var(--pl-sky); }
+.pl-day-it.t-diaper { background: var(--pl-mint); }
+
+/* ── главният розов бутон ── */
+.pl-cta {
+  display: flex; align-items: center; justify-content: center; gap: 10px;
+  width: calc(100% - 64px); min-height: 56px; margin: 18px auto 0;
+  border: 0; border-radius: 999px; cursor: pointer;
+  background: linear-gradient(180deg, var(--pl-pink-2) 0, var(--pl-pink) 100%);
+  box-shadow: 0 10px 22px rgba(229, 109, 153, .34), inset 0 1px 0 rgba(255, 255, 255, .45);
+  color: #fff; font: inherit; font-size: 18px; font-weight: 800; letter-spacing: .2px;
+  transition: transform .2s ease, box-shadow .2s ease;
+}
+.pl-cta:active { transform: translateY(1px) scale(.98); box-shadow: 0 6px 14px rgba(229, 109, 153, .3); }
+.pl-cta b { display: grid; place-items: center; width: 28px; height: 28px; border-radius: 50%; background: #fff; color: var(--pl-pink); font-size: 20px; }
+
+/* ── „Влез в своята стая“ — рафт с арки ── */
+.pl-h2 {
+  display: flex; align-items: center; justify-content: center; gap: 12px;
+  margin: 26px 16px 12px;
+  font-family: var(--pl-serif); font-weight: 700; font-size: 21px; color: var(--pl-navy);
+}
+.pl-h2::before, .pl-h2::after { content: ''; width: 28px; height: 2px; border-radius: 2px; background: #d9b98f; }
+.pl-shelf {
+  margin: 0 12px;
+  padding: 14px 10px 10px;
+  border-radius: 26px;
+  background: linear-gradient(180deg, #fbf3ea 0, #f6e9dc 100%);
+  box-shadow: inset 0 0 0 2px #fff, var(--pl-shadow);
+}
+.pl-rooms { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px 8px; }
+.pl-room {
+  position: relative;
+  display: flex; flex-direction: column; align-items: center; justify-content: flex-end;
+  min-height: 118px; padding: 0 0 8px;
+  border: 0; cursor: pointer; background: none; font: inherit;
+  transition: transform .2s ease;
+}
+.pl-room:active { transform: scale(.95); }
+.pl-arch {
+  width: 100%; height: 92px;
+  display: grid; place-items: center;
+  border-radius: 999px 999px 14px 14px;
+  font-size: 40px; line-height: 1;
+  box-shadow: inset 0 0 0 3px rgba(255, 255, 255, .85), 0 4px 10px rgba(170, 118, 118, .12);
+  overflow: hidden;
+}
+.pl-arch img { width: 100%; height: 100%; object-fit: cover; }
+/* 🪤 22.09: беше `.pl-room span` — хващаше И арката (и тя е span) и я правеше на хапче с 12.5px иконка. */
+.pl-room > span:not(.pl-arch) {
+  position: relative; margin-top: -14px;
+  padding: 5px 10px; min-width: 76%;
+  border-radius: 999px;
+  background: #fffaf3; box-shadow: 0 2px 6px rgba(170, 118, 118, .16), inset 0 0 0 1px #f0dcc4;
+  font-weight: 800; font-size: 12.5px; color: var(--pl-navy); text-align: center; white-space: nowrap;
+}
+.pl-room.c-preg .pl-arch { background: linear-gradient(180deg, #fde6ef, #f8cfdf); }
+.pl-room.c-baby .pl-arch { background: linear-gradient(180deg, #e3edfc, #c8dbf6); }
+.pl-room.c-feed .pl-arch { background: linear-gradient(180deg, #e3f3e8, #cde8d6); }
+.pl-room.c-health .pl-arch { background: linear-gradient(180deg, #dff3ee, #c3e6dc); }
+.pl-room.c-diary .pl-arch { background: linear-gradient(180deg, #fdeee0, #f6dcc4); }
+.pl-room.c-play .pl-arch { background: linear-gradient(180deg, #fde7ea, #f6ccd4); }
+.pl-room.c-tools .pl-arch { background: linear-gradient(180deg, #ece4f8, #d9ccf0); }
+.pl-room.c-mom .pl-arch { background: linear-gradient(180deg, #fdebe4, #f7d4c8); }
+.pl-room.c-lab .pl-arch { background: linear-gradient(180deg, #e2eefb, #cfdff4); }
+
+/* ── „Мира е до теб“ ── */
+.pl-mira {
+  display: flex; align-items: center; gap: 12px;
+  width: calc(100% - 32px); min-height: 72px; margin: 18px 16px 8px;
+  padding: 12px 12px 12px 14px;
+  border: 1px solid var(--pl-line); border-radius: 22px; cursor: pointer;
+  background: linear-gradient(90deg, #fffdfb 0, #fdf0f5 100%);
+  box-shadow: var(--pl-shadow-sm);
+  font: inherit; text-align: left; color: var(--pl-navy);
+}
+.pl-mira > i { font-style: normal; font-size: 34px; }
+.pl-mira b { display: block; font-family: var(--pl-serif); font-size: 18px; }
+.pl-mira small { display: block; font-size: 13px; font-weight: 600; color: var(--pl-ink-soft); }
+.pl-mira em {
+  margin-left: auto; flex: none;
+  padding: 10px 16px; border-radius: 999px;
+  background: var(--pl-pink); color: #fff; font-style: normal; font-weight: 800; font-size: 14px;
+}
+
+/* ═══ ДОЛНАТА ЛЕНТА — светла, мека, с розов активен бутон ═══ */
+html:not([data-theme="dark"]) .bottom-nav {
+  background: rgba(255, 253, 250, .94) !important;
+  -webkit-backdrop-filter: blur(14px); backdrop-filter: blur(14px);
+  border: 1px solid #f1e4d9 !important;
+  box-shadow: 0 -2px 20px rgba(170, 118, 118, .12), 0 8px 24px rgba(170, 118, 118, .10) !important;
+}
+html:not([data-theme="dark"]) .bottom-nav .bn-item { color: #7a6f78 !important; font-weight: 700; }
+html:not([data-theme="dark"]) .bottom-nav .bn-item.bn-active {
+  color: var(--pl-pink) !important;
+  background: transparent !important;
+}
+html:not([data-theme="dark"]) .bottom-nav .bn-item.bn-active::after {
+  content: ''; display: block; width: 26px; height: 3px; margin: 3px auto 0; border-radius: 3px; background: var(--pl-pink);
+}
+
+/* ── линейни иконки вместо емоджи (референцията) · вързани към data-room, защото nav2.js
+      сменя втората кнопка по възрастта: Бебето 🍼 → Лъжички 🥄 → Игрите 🧸 ── */
+.bottom-nav .bn-item > span:first-child { display: none; }
+/* 🪤 22.09: старият стил има `.bn-item::before { position: absolute }` (хапчето на активната) —
+   иконката лягаше върху надписа. Тук е изрично статична. Лентата беше 49px с надписи 10px. */
+.bottom-nav { padding-top: 6px !important; padding-bottom: calc(6px + env(safe-area-inset-bottom, 0px)) !important; }
+.bottom-nav .bn-item {
+  min-height: 56px !important; justify-content: center !important; gap: 2px;
+  font-size: 11.5px !important; line-height: 1.1;
+}
+.bottom-nav .bn-item::before {
+  content: ''; display: block; width: 26px; height: 26px; margin: 0 auto 3px;
+  position: static !important; inset: auto !important; transform: none !important;
+  border-radius: 0 !important; box-shadow: none !important; opacity: 1 !important;
+  background: currentColor;
+  -webkit-mask: var(--pl-ico) center / contain no-repeat; mask: var(--pl-ico) center / contain no-repeat;
+}
+.bottom-nav .bn-item[href="#начало"] { --pl-ico: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='1.8' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M3 11.2 12 4l9 7.2V20a1 1 0 0 1-1 1h-5v-6H9v6H4a1 1 0 0 1-1-1z'/%3E%3C/svg%3E"); }
+.bottom-nav .bn-item[data-room="Моето бебе"] { --pl-ico: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='1.8' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M9.5 2.5h5M10.5 2.5v3m3-3v3M9 8.2a2 2 0 0 1 2-2.7h2a2 2 0 0 1 2 2.7V19a2.5 2.5 0 0 1-2.5 2.5h-1A2.5 2.5 0 0 1 9 19zM9 12h6M9 15.5h6'/%3E%3C/svg%3E"); }
+.bottom-nav .bn-item[data-room="Захранване"] { --pl-ico: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='1.8' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M3 12h18a9 8 0 0 1-18 0zM15.5 3.5l-3 8.5M8 21h8'/%3E%3C/svg%3E"); }
+.bottom-nav .bn-item[data-room="Развитие и игри"] { --pl-ico: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='1.8' stroke-linecap='round' stroke-linejoin='round'%3E%3Crect x='3' y='13' width='8' height='8' rx='1.6'/%3E%3Crect x='13' y='13' width='8' height='8' rx='1.6'/%3E%3Crect x='8' y='3.5' width='8' height='8' rx='1.6'/%3E%3C/svg%3E"); }
+.bottom-nav .bn-item[data-room="Дневник на мама"] { --pl-ico: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='1.8' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M5 4.5A1.5 1.5 0 0 1 6.5 3H19v15H6.5A1.5 1.5 0 0 0 5 19.5zM5 19.5A1.5 1.5 0 0 0 6.5 21H19M9 7.5h6M9 11h4'/%3E%3C/svg%3E"); }
+.bottom-nav .bn-item[data-room="Здраве и SOS"] { --pl-ico: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='1.8' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M12 20.5s-7.2-4.4-9.1-8.6C1.5 8.6 3.5 4.6 7.2 4.6c2 0 3.4 1.1 4.8 2.9 1.4-1.8 2.8-2.9 4.8-2.9 3.7 0 5.7 4 4.3 7.3-1.9 4.2-9.1 8.6-9.1 8.6z'/%3E%3Cpath d='M12 9.5v5M9.5 12h5'/%3E%3C/svg%3E"); }
+.bottom-nav #bnProfile { --pl-ico: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='1.8' stroke-linecap='round' stroke-linejoin='round'%3E%3Ccircle cx='12' cy='8' r='4'/%3E%3Cpath d='M4.5 21a7.5 7.5 0 0 1 15 0'/%3E%3C/svg%3E"); }
+/* спешното остава разпознаваемо: червеникаво, не розово като останалите */
+html:not([data-theme="dark"]) .bottom-nav .bn-item[data-room="Здраве и SOS"] { color: #d9536a !important; }
+
+/* ── „+“ — в палитрата, не лилаво (и денем, и нощем) ── */
+.plus-btn {
+  background: linear-gradient(180deg, var(--pl-pink-2), var(--pl-pink)) !important;
+  box-shadow: 0 8px 20px rgba(229, 109, 153, .38), inset 0 0 0 3px rgba(255, 255, 255, .55) !important;
+}
+
+/* ═══════════════════════════════════════════════════════════════════════════
+   🏠 СТАЯТА С ЧАТА — референцията „Мира е до теб“: кремаво, серифно заглавие,
+   аватарът е плюшената рисунка на стаята, розово „изпрати“, бели балончета на
+   помощничката и светлосини на майката. Само за светлата тема.
+   ═══════════════════════════════════════════════════════════════════════════ */
+html:not([data-theme="dark"]) #roomOverlay .ro-panel {
+  background: linear-gradient(180deg, #fff9f4 0, var(--pl-cream) 40%, #fdf1ea 100%) !important;
+}
+html:not([data-theme="dark"]) #roomOverlay .ro-name {
+  font-family: var(--pl-serif) !important; font-weight: 700 !important; color: var(--pl-navy) !important; letter-spacing: -.2px;
+}
+/* аватарът: рисунката на стаята в кръг вместо балончето */
+html:not([data-theme="dark"]) #roAvatar > svg, html:not([data-theme="dark"]) #roAvatar .ro-badge { display: none !important; }
+html:not([data-theme="dark"]) #roAvatar {
+  width: 58px !important; height: 58px !important; flex: none;
+  border-radius: 50% !important;
+  background: #fff center / cover no-repeat;
+  box-shadow: 0 0 0 3px #fff, 0 6px 16px rgba(170, 118, 118, .22) !important;
+  animation: none !important;
+}
+html:not([data-theme="dark"]) .ro-panel.ro-peach #roAvatar { background-image: url(../img/art/room-preg.webp); }
+html:not([data-theme="dark"]) .ro-panel.ro-sky #roAvatar { background-image: url(../img/art/room-baby.webp); }
+html:not([data-theme="dark"]) .ro-panel.ro-carrot #roAvatar { background-image: url(../img/art/room-feed.webp); }
+html:not([data-theme="dark"]) .ro-panel.ro-green #roAvatar { background-image: url(../img/art/room-health.webp); }
+html:not([data-theme="dark"]) .ro-panel.ro-lav #roAvatar { background-image: url(../img/art/room-diary.webp); }
+html:not([data-theme="dark"]) .ro-panel.ro-sun #roAvatar { background-image: url(../img/art/room-play.webp); }
+html:not([data-theme="dark"]) .ro-panel.ro-mint #roAvatar { background-image: url(../img/art/room-tools.webp); }
+html:not([data-theme="dark"]) .ro-panel.ro-rose #roAvatar { background-image: url(../img/art/room-mom.webp); }
+html:not([data-theme="dark"]) .ro-panel.ro-cork #roAvatar { background-image: url(../img/art/room-lab.webp); }
+
+/* картата „Попитай“ */
+html:not([data-theme="dark"]) #roomOverlay .ask-card {
+  background: var(--pl-card) !important;
+  border: 1px solid var(--pl-line) !important;
+  border-radius: var(--pl-radius) !important;
+  box-shadow: var(--pl-shadow) !important;
+}
+html:not([data-theme="dark"]) #roomOverlay .ask-name { font-family: var(--pl-serif) !important; color: var(--pl-navy) !important; }
+html:not([data-theme="dark"]) #roomOverlay .ask-line { color: var(--pl-ink-soft) !important; }
+html:not([data-theme="dark"]) #roomOverlay .ask-inp {
+  min-height: 48px; background: #fffaf6 !important; border: 1.5px solid #efdccf !important; border-radius: 999px !important;
+  color: var(--pl-navy) !important; font-size: 16px !important;
+}
+html:not([data-theme="dark"]) #roomOverlay .ask-inp:focus { border-color: var(--pl-pink-2) !important; box-shadow: 0 0 0 4px rgba(229, 109, 153, .14) !important; outline: none; }
+html:not([data-theme="dark"]) #roomOverlay .ask-send {
+  width: 48px !important; height: 48px !important; border-radius: 50% !important;
+  background: linear-gradient(180deg, var(--pl-pink-2), var(--pl-pink)) !important; color: #fff !important;
+  box-shadow: 0 6px 14px rgba(229, 109, 153, .35) !important; border: 0 !important;
+}
+html:not([data-theme="dark"]) #roomOverlay .ask-mic {
+  width: 48px !important; height: 48px !important; border-radius: 50% !important;
+  background: #fff !important; border: 1.5px solid #efdccf !important; color: var(--pl-navy) !important; box-shadow: none !important;
+}
+html:not([data-theme="dark"]) #roomOverlay .ask-chip,
+html:not([data-theme="dark"]) #roChips .ro-chip {
+  min-height: 44px; padding: 10px 16px !important;
+  background: #fffaf6 !important; border: 1.5px solid #efdccf !important; border-radius: 999px !important;
+  color: var(--pl-navy) !important; font-weight: 700 !important; box-shadow: 0 2px 6px rgba(170, 118, 118, .08) !important;
+}
+html:not([data-theme="dark"]) #roChips .ro-chip-go { border-color: var(--pl-pink-2) !important; color: #c24d7b !important; background: var(--pl-pink-soft) !important; }
+html:not([data-theme="dark"]) #roChips .ro-chip-lib { background: var(--pl-lilac) !important; border-color: #ddd0f1 !important; }
+
+/* главата на стаята: кремава, не в цвета на персонажа (той вече е в аватара) */
+html:not([data-theme="dark"]) #roomOverlay .ro-head {
+  background: linear-gradient(180deg, #fffaf6, #fff4ec) !important;
+  border-bottom: 1px solid var(--pl-line) !important;
+}
+/* разделите: кремава капсула, активният — розов */
+html:not([data-theme="dark"]) #roTabs {
+  background: #fffaf6 !important; border: 1px solid var(--pl-line) !important; border-radius: 999px !important;
+  box-shadow: var(--pl-shadow-sm) !important;
+}
+html:not([data-theme="dark"]) #roTabs .st-sky, html:not([data-theme="dark"]) #roTabs .st-balloon, html:not([data-theme="dark"]) #roTabs .st-spark { display: none !important; }
+html:not([data-theme="dark"]) #roTabs .st-seg { color: var(--pl-ink-soft) !important; font-weight: 800 !important; border-radius: 999px !important; min-height: 44px; }
+html:not([data-theme="dark"]) #roTabs .st-seg.on { background: var(--pl-pink-soft) !important; color: #c24d7b !important; box-shadow: inset 0 0 0 1.5px #f6c2d6 !important; }
+
+/* долното поле за писане */
+html:not([data-theme="dark"]) #roForm.ro-inputbar {
+  background: rgba(255, 252, 249, .96) !important; border-top: 1px solid var(--pl-line) !important;
+  -webkit-backdrop-filter: blur(10px); backdrop-filter: blur(10px);
+}
+html:not([data-theme="dark"]) #roInput {
+  min-height: 48px; background: #fff !important; border: 1.5px solid #efdccf !important; border-radius: 999px !important;
+  color: var(--pl-navy) !important; font-size: 16px !important; box-shadow: none !important;
+}
+html:not([data-theme="dark"]) #roInput:focus { border-color: var(--pl-pink-2) !important; box-shadow: 0 0 0 4px rgba(229, 109, 153, .14) !important; outline: none; }
+html:not([data-theme="dark"]) #roMic {
+  width: 48px !important; height: 48px !important; border-radius: 50% !important;
+  background: #fff !important; border: 1.5px solid #efdccf !important; color: var(--pl-navy) !important; box-shadow: none !important;
+}
+html:not([data-theme="dark"]) #roForm button:last-child:not(#roMic) {
+  width: 48px !important; height: 48px !important; border-radius: 50% !important; border: 0 !important;
+  background: linear-gradient(180deg, var(--pl-pink-2), var(--pl-pink)) !important; color: #fff !important;
+  box-shadow: 0 6px 14px rgba(229, 109, 153, .35) !important;
+}
+
+/* балончетата */
+html:not([data-theme="dark"]) #roChat .msg.bot {
+  background: #fff !important; color: var(--pl-navy) !important;
+  border: 1px solid #f3e7de !important; border-radius: 20px 20px 20px 6px !important;
+  box-shadow: 0 4px 14px rgba(170, 118, 118, .10) !important;
+}
+html:not([data-theme="dark"]) #roChat .msg.user {
+  background: var(--pl-sky) !important; color: var(--pl-navy) !important;
+  border: 0 !important; border-radius: 20px 20px 6px 20px !important;
+  box-shadow: 0 4px 12px rgba(90, 130, 200, .14) !important;
+}
+
+/* ═══════════════════════════════════════════════════════════════════════════
+   👋 ВЪВЕДЕНИЕТО — референцията „Да се запознаем“: кремава карта, серифно
+   заглавие, кремави полета-капсули, розов избор и розов главен бутон.
+   ═══════════════════════════════════════════════════════════════════════════ */
+html:not([data-theme="dark"]) #onbOverlay .onb-card {
+  background: linear-gradient(180deg, #fffaf5 0, #fff4ec 100%) !important;
+  border: 1px solid var(--pl-line) !important; border-radius: 30px !important;
+  box-shadow: 0 24px 60px rgba(120, 80, 90, .22), inset 0 0 0 3px rgba(255, 255, 255, .8) !important;
+}
+html:not([data-theme="dark"]) #onbOverlay .onb-title {
+  font-family: var(--pl-serif) !important; font-weight: 700 !important; font-size: 28px !important;
+  color: var(--pl-navy) !important; letter-spacing: -.3px;
+}
+html:not([data-theme="dark"]) #onbOverlay .onb-text { color: var(--pl-ink) !important; }
+html:not([data-theme="dark"]) #onbOverlay .onb-lbl { color: var(--pl-navy) !important; font-weight: 800 !important; }
+html:not([data-theme="dark"]) #onbOverlay .onb-lbl-soft { color: var(--pl-ink-soft) !important; font-weight: 600 !important; }
+html:not([data-theme="dark"]) #onbOverlay .jr-word {
+  min-height: 50px !important; background: #fff !important; border: 1.5px solid #efdccf !important;
+  border-radius: 16px !important; color: var(--pl-navy) !important; font-size: 16px !important; box-shadow: none !important;
+}
+html:not([data-theme="dark"]) #onbOverlay .jr-word:focus { border-color: var(--pl-pink-2) !important; box-shadow: 0 0 0 4px rgba(229, 109, 153, .14) !important; outline: none; }
+html:not([data-theme="dark"]) #onbOverlay .onb-sexbtn {
+  min-height: 56px !important; background: #fff !important; border: 1.5px solid #efdccf !important;
+  border-radius: 18px !important; color: var(--pl-navy) !important; font-weight: 800 !important; box-shadow: none !important;
+}
+html:not([data-theme="dark"]) #onbOverlay .onb-sexbtn.on {
+  background: var(--pl-pink-soft) !important; border-color: var(--pl-pink-2) !important; color: #b8416f !important;
+  box-shadow: 0 6px 14px rgba(229, 109, 153, .2) !important;
+}
+html:not([data-theme="dark"]) #onbOverlay #onbSave {
+  min-height: 56px !important; border-radius: 999px !important; border: 0 !important;
+  background: linear-gradient(180deg, var(--pl-pink-2), var(--pl-pink)) !important;
+  box-shadow: 0 10px 22px rgba(229, 109, 153, .34), inset 0 1px 0 rgba(255, 255, 255, .45) !important;
+  color: #fff !important; font-size: 18px !important; font-weight: 800 !important;
+}
+html:not([data-theme="dark"]) #onbOverlay #onbSave .btn-shine { display: none !important; }   /* косата бяла ивица изглеждаше счупена */
+html:not([data-theme="dark"]) #onbOverlay #onbSkip { color: var(--pl-navy) !important; text-decoration: underline; text-underline-offset: 3px; font-weight: 700 !important; }
+
+/* ═══════════════════════════════════════════════════════════════════════════
+   🧱 ОБЩИТЕ КАРТИ — `jr-card` е една и съща система в раздела „Стаята“ на всичките
+   9 стаи (мерено: 33 карти само при Мира). Преоблечена веднъж, сменя всичко.
+   ═══════════════════════════════════════════════════════════════════════════ */
+html:not([data-theme="dark"]) .jr-card {
+  background: var(--pl-card) !important;
+  border: 1px solid var(--pl-line) !important;
+  border-radius: var(--pl-radius) !important;
+  box-shadow: var(--pl-shadow) !important;
+}
+html:not([data-theme="dark"]) .jr-card::before { background: none !important; box-shadow: none !important; }   /* цветната черта отгоре */
+html:not([data-theme="dark"]) .jr-card .jr-paper { background: transparent !important; box-shadow: none !important; }
+html:not([data-theme="dark"]) .jr-card .jr-title {
+  font-family: var(--pl-serif) !important; font-weight: 700 !important; color: var(--pl-navy) !important; letter-spacing: -.2px;
+}
+html:not([data-theme="dark"]) .jr-card .jr-sub { color: var(--pl-ink-soft) !important; }
+html:not([data-theme="dark"]) .jr-chip {
+  min-height: 44px; background: #fffaf6 !important; border: 1.5px solid #efdccf !important; border-radius: 999px !important;
+  color: var(--pl-navy) !important; font-weight: 700 !important; box-shadow: 0 2px 6px rgba(170, 118, 118, .08) !important;
+}
+html:not([data-theme="dark"]) .jr-chip.on, html:not([data-theme="dark"]) .jr-chip[aria-pressed="true"] {
+  background: var(--pl-pink-soft) !important; border-color: var(--pl-pink-2) !important; color: #b8416f !important;
+}
+html:not([data-theme="dark"]) .jr-btn, html:not([data-theme="dark"]) .btn.btn-pink {
+  min-height: 48px; border: 0 !important; border-radius: 999px !important;
+  background: linear-gradient(180deg, var(--pl-pink-2), var(--pl-pink)) !important; color: #fff !important;
+  box-shadow: 0 8px 18px rgba(229, 109, 153, .3), inset 0 1px 0 rgba(255, 255, 255, .4) !important; font-weight: 800 !important;
+}
+html:not([data-theme="dark"]) .btn.btn-pink .btn-shine { display: none !important; }
+html:not([data-theme="dark"]) .jr-card .pin-btn, html:not([data-theme="dark"]) .jr-card .fold-btn {
+  background: #fff !important; border: 1.5px solid #efdccf !important; color: var(--pl-ink-soft) !important; box-shadow: none !important;
+}
+html:not([data-theme="dark"]) .jr-card input.lx-inp, html:not([data-theme="dark"]) .jr-card .jr-word {
+  background: #fff !important; border: 1.5px solid #efdccf !important; border-radius: 14px !important; color: var(--pl-navy) !important;
+}
+
+/* ═══════════════════════════════════════════════════════════════════════════
+   ☀️ СЕКЦИЯТА „ДНЕС“ под началото — същият език: кремави карти, серифни заглавия.
+   ═══════════════════════════════════════════════════════════════════════════ */
+html.pl-on:not([data-theme="dark"]) body { background: var(--pl-cream) !important; }
+html.pl-on:not([data-theme="dark"]) #todaySection { background: transparent !important; }
+html:not([data-theme="dark"]) #todaySection .big-now,
+html:not([data-theme="dark"]) #todaySection .brief-card,
+html:not([data-theme="dark"]) #todaySection .wk-card,
+html:not([data-theme="dark"]) #todaySection .qa-card,
+html:not([data-theme="dark"]) #todaySection .ch-card,
+html:not([data-theme="dark"]) #todaySection .td-tip,
+html:not([data-theme="dark"]) #todaySection .td-trick {
+  background: var(--pl-card) !important;
+  border: 1px solid var(--pl-line) !important;
+  border-radius: var(--pl-radius) !important;
+  box-shadow: var(--pl-shadow) !important;
+  color: var(--pl-ink) !important;
+}
+html:not([data-theme="dark"]) #todaySection h2, html:not([data-theme="dark"]) #todaySection h3,
+html:not([data-theme="dark"]) #todaySection .big-now b, html:not([data-theme="dark"]) #todaySection .big-now strong {
+  font-family: var(--pl-serif) !important; color: var(--pl-navy) !important; font-weight: 700 !important;
+}
+html:not([data-theme="dark"]) #todaySection .td-chips button, html:not([data-theme="dark"]) #todaySection .td-chips a {
+  min-height: 44px; background: #fffaf6 !important; border: 1.5px solid #efdccf !important; border-radius: 999px !important;
+  color: var(--pl-navy) !important; font-weight: 700 !important; box-shadow: 0 2px 6px rgba(170, 118, 118, .08) !important;
+}
+
+/* ═══════════════════════════════════════════════════════════════════════════
+   🎈 ПЪРВОТО ОТВАРЯНЕ — референцията „Твоят малък голям свят“: цял екран с
+   рисунката (бебе в балон над облаците), стъклена карта отдолу, сериф, розово.
+   Стъпките и текстовете са на home.js — тук се сменя само видът.
+   ═══════════════════════════════════════════════════════════════════════════ */
+.tour-ov {
+  background: #fdf3ec url(../img/art/welcome.webp) center top / cover no-repeat !important;
+  display: flex !important; align-items: flex-end !important; justify-content: center !important;
+  padding: 0 14px calc(18px + env(safe-area-inset-bottom, 0px)) !important;
+}
+.tour-ov::before {         /* мека светлина отдолу, за да се чете текстът */
+  content: ''; position: absolute; inset: 0; pointer-events: none;
+  background: linear-gradient(180deg, transparent 38%, rgba(255, 248, 242, .55) 58%, rgba(255, 248, 242, .92) 100%);
+}
+.tour-ov .tour-card {
+  position: relative; width: 100% !important; max-width: 420px !important;
+  background: rgba(255, 252, 249, .86) !important;
+  -webkit-backdrop-filter: blur(14px); backdrop-filter: blur(14px);
+  border: 1px solid rgba(255, 255, 255, .95) !important; border-radius: 30px !important;
+  box-shadow: 0 18px 44px rgba(150, 100, 110, .22) !important;
+  padding: 22px 20px 16px !important; text-align: center;
+}
+.tour-ov .tour-balloon { display: none !important; }    /* балонът вече е в рисунката */
+.tour-ov .tour-card h3 {
+  font-family: var(--pl-serif) !important; font-weight: 700 !important; font-size: 28px !important;
+  line-height: 1.12 !important; color: var(--pl-navy) !important; letter-spacing: -.3px; margin: 4px 0 8px !important;
+}
+.tour-ov .tour-card p { color: var(--pl-ink) !important; font-size: 15.5px !important; line-height: 1.5 !important; }
+.tour-ov .tour-e { font-size: 30px !important; }
+.tour-ov .tour-next {
+  min-height: 56px !important; border: 0 !important; border-radius: 999px !important;
+  background: linear-gradient(180deg, var(--pl-pink-2), var(--pl-pink)) !important; color: #fff !important;
+  box-shadow: 0 10px 22px rgba(229, 109, 153, .34), inset 0 1px 0 rgba(255, 255, 255, .45) !important;
+  font-size: 18px !important; font-weight: 800 !important;
+}
+.tour-ov .tour-skip {
+  background: none !important; border: 0 !important; box-shadow: none !important;
+  color: var(--pl-navy) !important; font-weight: 700 !important; text-decoration: underline; text-underline-offset: 3px;
+}
+
+/* ═══════════════════════════════════════════════════════════════════════════
+   🖼️ БАНЕРЪТ НА СТАЯТА (js/premium-rooms.js) — рисунка отдясно, серифно заглавие
+   отляво върху мека светлина, като в референциите („Светът е за откриване“…).
+   ═══════════════════════════════════════════════════════════════════════════ */
+/* 🪤 22.09: #roRoom е flex контейнер с фиксирана височина — без flex:none банерът се свиваше до 2px. */
+.pl-rhero {
+  position: relative; flex: none; height: 178px; min-height: 178px; margin: 2px 0 0;
+  border-radius: 24px; overflow: hidden;
+  border: 1px solid var(--pl-line); box-shadow: var(--pl-shadow);
+  background: var(--pl-cream-2);
+}
+.pl-rhero img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; object-position: 72% 50%; }
+.pl-rhero::after {
+  content: ''; position: absolute; inset: 0; pointer-events: none;
+  /* по-плътна до средата: две от рисунките имат мек шев точно на 50% (мерено на снимка) */
+  background: linear-gradient(90deg, rgba(255, 250, 244, .95) 0, rgba(255, 250, 244, .86) 44%, rgba(255, 250, 244, .45) 58%, rgba(255, 250, 244, 0) 74%);
+}
+.pl-rhero-t {
+  position: absolute; z-index: 1; left: 18px; top: 0; bottom: 0; right: 40%;
+  display: flex; flex-direction: column; justify-content: center; gap: 7px;
+}
+.pl-rhero-t b { font-family: var(--pl-serif); font-weight: 700; font-size: 24px; line-height: 1.08; color: var(--pl-navy); letter-spacing: -.3px; hyphens: none; }
+.pl-rhero-t b i { font-style: normal; font-weight: 400; color: var(--pl-pink); }
+.pl-rhero-t span { font-size: 13.5px; font-weight: 700; line-height: 1.3; color: var(--pl-ink); }
+html[data-theme="dark"] .pl-rhero { border-color: rgba(255, 255, 255, .1); }
+html[data-theme="dark"] .pl-rhero img { filter: brightness(.62) saturate(.9); }
+html[data-theme="dark"] .pl-rhero::after { background: linear-gradient(90deg, rgba(22, 32, 74, .92) 0, rgba(22, 32, 74, .6) 42%, rgba(22, 32, 74, 0) 68%); }
+html[data-theme="dark"] .pl-rhero-t b { color: #fff; }
+html[data-theme="dark"] .pl-rhero-t span { color: #e3e5f5; }
+
+/* ═══ НОЩЕН РЕЖИМ — същият свят, нощно синьо (референцията за съня) ═══ */
+html[data-theme="dark"] #plHome { background: linear-gradient(180deg, transparent 0, #16204a 58%); color: #e8e9f5; }
+/* 🌙 нощта има СВОЯ рисунка (синьо небе, луна, креватче) — не затъмнена дневна.
+   Скриптът сменя src според темата; филтърът остава само ако нощната още не е заредена. */
+html[data-theme="dark"] .pl-hero-art:not(.is-night) { filter: brightness(.5) saturate(.8) hue-rotate(200deg); }
+html[data-theme="dark"] .pl-hero::after {
+  background:
+    radial-gradient(120% 70% at 0% 0%, rgba(22, 32, 74, .85) 0, rgba(22, 32, 74, .45) 40%, transparent 64%),
+    linear-gradient(180deg, transparent 70%, rgba(22, 32, 74, .96) 100%);
+}
+html[data-theme="dark"] .pl-hero h1, html[data-theme="dark"] .pl-card-h, html[data-theme="dark"] .pl-h2 { color: #fff; }
+html[data-theme="dark"] .pl-hero p { color: #e4e6f5; }
+html[data-theme="dark"] .pl-baby, html[data-theme="dark"] .pl-card, html[data-theme="dark"] .pl-mira {
+  background: rgba(35, 47, 99, .9); border-color: rgba(255, 255, 255, .12); color: #fff;
+}
+html[data-theme="dark"] .pl-baby small, html[data-theme="dark"] .pl-mira small, html[data-theme="dark"] .pl-day-it span { color: #c9cbe3; }
+html[data-theme="dark"] .pl-day-it, html[data-theme="dark"] .pl-mira b { color: #fff; }
+html[data-theme="dark"] .pl-day-it.t-feed { background: rgba(229, 109, 153, .22); }
+html[data-theme="dark"] .pl-day-it.t-sleep { background: rgba(120, 160, 240, .22); }
+html[data-theme="dark"] .pl-day-it.t-diaper { background: rgba(110, 200, 160, .2); }
+html[data-theme="dark"] .pl-shelf { background: linear-gradient(180deg, #232f63, #1b2654); box-shadow: inset 0 0 0 2px rgba(255, 255, 255, .08); }
+html[data-theme="dark"] .pl-room span { background: #2a376f; color: #fff; box-shadow: inset 0 0 0 1px rgba(255, 255, 255, .14); }
+
+@media (prefers-reduced-motion: reduce) {
+  .pl-baby, .pl-day-it, .pl-cta, .pl-room { transition: none; }
+}
