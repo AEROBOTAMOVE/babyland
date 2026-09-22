@@ -193,6 +193,63 @@ html[data-theme="dark"] body .pl-felt.pl-felt::after { border-color: rgba(255, 2
 html[data-theme="dark"] body .pl-soft.pl-soft { background-color: #2b3872 !important; border-color: rgba(255, 255, 255, .16) !important; color: #f1f2fb !important; box-shadow: inset 0 1px 0 rgba(255, 255, 255, .10), 0 2px 0 #18214a !important; }
 html[data-theme="dark"] body .pl-soft.pl-soft.on, html[data-theme="dark"] body .pl-soft.pl-soft[aria-pressed="true"], html[data-theme="dark"] body .pl-soft.pl-soft[aria-selected="true"] { background-color: #5a2c55 !important; border-color: rgba(245, 156, 187, .6) !important; color: #ffe1ec !important; }
 
+/* ═══ 9 · СОС ЦЕНТЪРЪТ (BL_SOS_CENTER, mega.css:403) — екранът с треперещите ръце ═══
+   Пазя старите решения: пулсът на 112 е transform/opacity на ::after (12.08 — батерията!),
+   контрастът от 05.08. 112 = ЧЕРВЕН гел (бяло върху #c5303f = 5.4:1, изчислено), останалите
+   номера = филц с тъмносин текст (#1d2a5c; подредът #5d596f = 6.4:1). Цифрите — Nunito, не сериф. */
+html body .sos-ov .sos-panel.sos-panel {
+  background-color: #fffaf3 !important; background-image: var(--ui-felt) !important; background-size: 160px 160px !important; background-blend-mode: multiply !important;
+  border: 1px solid rgba(214, 186, 158, .6) !important; border-radius: 30px !important; position: relative;
+}
+html body .sos-ov .sos-panel.sos-panel::before { content: ''; position: absolute; inset: 7px; border-radius: 24px; pointer-events: none; border: 1.5px dashed rgba(196, 160, 124, .5); }
+html body .sos-ov .sos-head h3 { font-family: Georgia, 'Noto Serif', serif !important; font-weight: 700 !important; font-size: 24px !important; color: #9b2335 !important; letter-spacing: -.3px; }
+html body .sos-ov .sos-big.sos-big {
+  font-family: Nunito, Nunito-fallback, system-ui, sans-serif !important; font-weight: 800 !important; text-align: left !important;
+  border-radius: 22px !important; padding: 14px 16px !important;
+  transition: transform .12s ease, box-shadow .12s ease;
+}
+html body .sos-ov .sos-big.sos-big.sos-112 {
+  background-color: #c5303f !important;
+  background-image: radial-gradient(120% 70% at 50% -10%, rgba(255, 255, 255, .5) 0, rgba(255, 255, 255, .12) 40%, rgba(255, 255, 255, 0) 56%), linear-gradient(180deg, #ef6a5f 0%, #d23c46 30%, #c5303f 60%, #a8233a 100%) !important;
+  box-shadow: inset 0 1.5px 0 rgba(255, 255, 255, .5), inset 0 -3px 0 rgba(90, 10, 25, .25), 0 4px 0 #86192d, 0 12px 24px rgba(170, 30, 50, .35) !important;
+  color: #fff !important; font-size: 23px !important; text-shadow: 0 1px 0 rgba(90, 10, 25, .35);
+}
+html body .sos-ov .sos-big.sos-big.sos-112:active { transform: translateY(3px); box-shadow: inset 0 1.5px 0 rgba(255, 255, 255, .4), 0 1px 0 #86192d, 0 5px 12px rgba(170, 30, 50, .3) !important; }
+html body .sos-ov .sos-big.sos-big.sos-fast {
+  background-color: #b8521c !important; background-image: linear-gradient(180deg, #f39a55 0%, #d0692b 40%, #b8521c 100%) !important;
+  box-shadow: inset 0 1.5px 0 rgba(255, 255, 255, .45), 0 4px 0 #8a3b12, 0 10px 20px rgba(184, 82, 28, .3) !important; color: #fff !important;
+}
+html body .sos-ov .sos-big.sos-big:not(.sos-112):not(.sos-fast) {
+  background-color: #fffaf3 !important; background-image: var(--ui-felt) !important; background-size: 160px 160px !important; background-blend-mode: multiply !important;
+  border: 1.5px solid var(--ui-edge) !important; color: #1d2a5c !important; font-size: 16px !important;
+  box-shadow: inset 0 1px 0 #fff, 0 3px 0 var(--ui-edge-2), 0 8px 16px rgba(110, 76, 52, .12) !important;
+}
+html body .sos-ov .sos-big.sos-big:not(.sos-112):not(.sos-fast):active { transform: translateY(2px); box-shadow: inset 0 1px 0 #fff, 0 1px 0 var(--ui-edge-2) !important; }
+html body .sos-ov .sos-big.sos-big:not(.sos-112):not(.sos-fast) span { color: #5d596f !important; opacity: 1 !important; }
+html body .sos-ov .sos-big.sos-big span { font-size: 12.5px !important; margin-top: 4px !important; }
+/* 🪤 mega.css:430 `.sos-big span { display:block; font-size:11.5px }` хващаше и кръга (и той е span) —
+   кръгът падаше на свой ред над заглавието, мъничък (видяно на снимка) */
+html body .sos-ov .sos-big .pl-em.pl-em { display: inline-grid !important; width: 44px; height: 44px; font-size: 21px !important; margin: 0 !important; opacity: 1 !important; grid-row: 1 / span 2; align-self: center; }
+/* решетка: кръгът вляво на два реда, заглавието (гол текст = анонимна клетка) и подредът вдясно —
+   иначе номерът се пречупваше по средата („02 / 9154 233“, „112“ сам на ред) */
+html body .sos-ov .sos-big.sos-big[data-plem] { display: grid !important; grid-template-columns: 44px 1fr; column-gap: 12px; align-items: center; text-wrap: balance; }
+html body .sos-ov .sos-big.sos-big[data-plem] > span:not(.pl-em) { grid-column: 2; }
+html body .sos-ov .sos-big.sos-big.sos-112 { font-size: 21px !important; }
+html body .sos-ov .sos-row.sos-row, html body .sos-ov .gr-open.gr-open {
+  background-color: #fffaf3 !important; background-image: var(--ui-felt) !important; background-size: 160px 160px !important; background-blend-mode: multiply !important;
+  border-radius: 20px !important;
+}
+html body .sos-ov .gr-open.gr-open { border: 2px solid #c5303f !important; color: #9b2335 !important; font-weight: 800 !important; box-shadow: 0 3px 0 #e8b4bc !important; min-height: 52px; }
+html body .sos-ov .sos-edit.sos-edit, html body .sos-ov .sos-x.sos-x { min-width: 44px; min-height: 44px; background: #fff !important; border: 1.5px solid #efcfd4 !important; color: #9b2335 !important; }
+html body .sos-ov .sos-roomlink { color: #9b2335 !important; }
+html[data-theme="dark"] body .sos-ov .sos-panel.sos-panel { background-color: #2a2144 !important; border-color: rgba(255, 255, 255, .14) !important; }
+html[data-theme="dark"] body .sos-ov .sos-head h3, html[data-theme="dark"] body .sos-ov .sos-roomlink, html[data-theme="dark"] body .sos-ov .gr-open.gr-open { color: #ffc2cb !important; }
+html[data-theme="dark"] body .sos-ov .sos-big.sos-big:not(.sos-112):not(.sos-fast), html[data-theme="dark"] body .sos-ov .sos-row.sos-row, html[data-theme="dark"] body .sos-ov .gr-open.gr-open {
+  background-color: #2b3872 !important; border-color: rgba(255, 255, 255, .16) !important; color: #fff !important; box-shadow: 0 3px 0 #18214a !important;
+}
+html[data-theme="dark"] body .sos-ov .sos-big.sos-big:not(.sos-112):not(.sos-fast) span { color: #d6d8ee !important; }
+html[data-theme="dark"] body .sos-ov .sos-edit.sos-edit, html[data-theme="dark"] body .sos-ov .sos-x.sos-x { background: rgba(255, 255, 255, .08) !important; border-color: rgba(255, 255, 255, .18) !important; color: #ffc2cb !important; }
+
 /* ═══ НОЩ — същите предмети в нощно синьо ═══ */
 html[data-theme="dark"] body .jr-chip.jr-chip, html[data-theme="dark"] body #roChips .ro-chip.ro-chip, html[data-theme="dark"] body #roomOverlay .ask-chip.ask-chip,
 html[data-theme="dark"] body .wt-o.wt-o, html[data-theme="dark"] body .ct-b.ct-b, html[data-theme="dark"] body .cl-b.cl-b, html[data-theme="dark"] body .hs-chip.hs-chip,

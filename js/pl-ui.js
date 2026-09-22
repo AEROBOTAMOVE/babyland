@@ -13,7 +13,7 @@
 (function () {
   'use strict';
   if (window.BL_PL_UI) return;
-  const КЛАСОВЕ = '.jr-chip, .jr-btn, .ro-chip, .wt-o, .set-tgl, .plus-item, .shm-btn, .fa-chip, .hs-chip, .toc-b, .jr-winbtn, .onb-sexbtn, .bb-sexbtn';
+  const КЛАСОВЕ = '.jr-chip, .jr-btn, .ro-chip, .wt-o, .set-tgl, .plus-item, .shm-btn, .fa-chip, .hs-chip, .toc-b, .jr-winbtn, .onb-sexbtn, .bb-sexbtn, .sos-big, .gr-open';
   const ЕМ = /^(\s*)(\p{Extended_Pictographic}(?:️|‍\p{Extended_Pictographic}|\p{Emoji_Modifier}|️⃣)*)/u;
   // 🪤 textContent трябва да остане БАЙТ В БАЙТ същият („🌱 8с“, не „🌱8с“) — код сравнява
   //   текста на бутони. Затова интервалите остават в текстовите възли, пипа се само емоджито.
