@@ -47,6 +47,8 @@
     '🐤': ['x', 1, 2, 'b'], '🐰': ['g', 2, 2, 'p'], '🐻': ['x', 0, 3, 'c'], '🦒': ['d', 2, 2, 'b'], '🦆': ['d', 2, 0, 'b'],
     '🚑': ['a', 3, 0, 'c'], '🤒': ['a', 3, 1, 's'], '🤧': ['a', 3, 1, 's'], '😷': ['a', 3, 1, 's'],
     '💧': ['c', 2, 3, 's'], '📊': ['b', 3, 1, 's'], '📈': ['b', 3, 1, 's'], '🕐': ['h', 3, 1, 'p'], '🏆': ['c', 2, 2, 'b'], '🥇': ['c', 2, 2, 'b'],
+    '🌷': ['a', 0, 0, 'p'], '🌹': ['a', 0, 0, 'p'], '🌻': ['f', 2, 1, 'b'], '🌱': ['f', 0, 2, 'm'], '🪴': ['f', 0, 2, 'm'], '🔥': ['c', 1, 1, 'c'],
+    '🧺': ['a', 0, 2, 'c'], '🍫': ['d', 1, 3, 'c'], '🎂': ['d', 1, 3, 'p'], '🧁': ['d', 1, 3, 'p'], '🛏️': ['t', 0, 0, 's'], '🚼': ['t', 1, 3, 'm'],
     '🌈': ['b', 1, 3, 'm'], '☁️': ['b', 0, 2, 's'], '🌬️': ['b', 0, 2, 's'], '🫧': ['b', 0, 2, 's'],
   };
   const ЛИСТ = { a: 'ico-a', b: 'ico-b', c: 'ico-c', d: 'ico-d', e: 'ico-e', f: 'ico-f', g: 'ico-g', h: 'ico-h', x: 'fig-a', t: 'statii-t' };
@@ -77,7 +79,10 @@
   //   Дребните служебни бутони (карфица, сгъване, микрофон, телефон, плаващото балонче) НЕ се пипат —
   //   при тях емоджито е самата иконка и има своя рисунка/размер.
   const ОБВИЙ = '#roRoom .jr-sub, #roRoom .sec-head, #roRoom .zd-row, #roRoom .jr-note, #roRoom .bb-feed, #roRoom .rh-t, #roomOverlay .ro-lead, ' +
-    '#roRoom button:not(.pin-btn):not(.fold-btn):not(.ask-mic):not(.sos-call):not(.ro-fab):not(.jr-winbtn), #roRoom .fa-e, #roRoom .lb-q, #roRoom .tl-nn';
+    '#roRoom button:not(.pin-btn):not(.fold-btn):not(.ask-mic):not(.sos-call):not(.ro-fab):not(.jr-winbtn), #roRoom .fa-e, #roRoom .lb-q, #roRoom .tl-nn, ' +
+    // извън стаята: профилът, търсенето, листът „Добави“, изборът на стаи, СОС центърът
+    '.prof-overlay button:not(.prof-close), .prof-overlay .pr-row, .prof-overlay .prof-tditem, .prof-overlay .prof-row, ' +
+    '#searchOverlay .search-res, .np-b, #plDv button, .sos-ov .sos-row';
   function обвий(б) {
     if (б.dataset.plW) return;
     б.dataset.plW = '1';
@@ -94,7 +99,7 @@
     плюш(с);
   }
   // ── 3 · едрата самотна емоджи-рисунка (цял елемент = едно емоджи, ≥20px) ──
-  const ЕДРИ = '#roRoom span, #roRoom i, #roRoom em, #roRoom strong, #plHome span';
+  const ЕДРИ = '#roRoom span, #roRoom i, #roRoom em, #roRoom strong, #plHome span, .prof-overlay span, .prof-overlay i, #searchOverlay span, #plDv span';
   const БЕЗ = '#roChat, #artBody, .msg, .ask-badge, input, textarea, .pl-em';
   function едро(е) {
     if (е.dataset.plPl || е.children.length) return;
