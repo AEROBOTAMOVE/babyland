@@ -1076,3 +1076,23 @@ html.pl-on.pl-landing .faq, html.pl-on.pl-landing .install {
   outline: 1.5px dashed rgba(196, 160, 124, .45); outline-offset: -8px;
 }
 html[data-theme="dark"].pl-on.pl-landing .faq, html[data-theme="dark"].pl-on.pl-landing .install { background-color: rgba(31, 43, 92, .95); background-image: none; border-color: rgba(255, 255, 255, .14); outline-color: rgba(255, 255, 255, .2); }
+
+/* ═══ 🧸 ЛЕНТАТА „ПОМОЩНИЧКИТЕ“ на началото (js/premium-home.js) ═══
+   Деветте лица от img/art/persony.webp — 3 в ред, всяко отваря своята стая. */
+#plHome .pl-pers { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; margin: 0 16px 18px; }
+#plHome .pl-per {
+  display: grid; justify-items: center; gap: 4px; padding: 10px 4px 8px; border: 0; cursor: pointer;
+  border-radius: 22px; background-color: #fffdfb; box-shadow: inset 0 1px 0 #fff, 0 4px 10px rgba(110, 76, 52, .12);
+  border: 1px solid rgba(241, 228, 217, .9);
+}
+#plHome .pl-per i {
+  width: 62px; height: 62px; border-radius: 50%;
+  background-image: url(../img/art/persony.webp); background-size: 300% 300%; background-repeat: no-repeat; background-color: #fff;
+  box-shadow: 0 0 0 3px #fff, 0 0 0 5px rgba(229, 109, 153, .22), 0 5px 12px rgba(110, 76, 52, .18);
+}
+#plHome .pl-per b { font-family: var(--pl-serif, Georgia, serif); font-size: 14.5px; color: var(--pl-navy, #1d2a5c); }
+#plHome .pl-per small { font-size: 11px; font-weight: 700; color: var(--pl-ink-soft, #6a6682); }
+#plHome .pl-per:active { transform: translateY(2px); }
+html[data-theme="dark"] #plHome .pl-per { background-color: rgba(31, 43, 92, .95); border-color: rgba(255, 255, 255, .14); box-shadow: none; }
+html[data-theme="dark"] #plHome .pl-per b { color: #fff; }
+html[data-theme="dark"] #plHome .pl-per small { color: #c9cbe3; }
