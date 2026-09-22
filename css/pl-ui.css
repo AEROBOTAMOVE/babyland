@@ -144,6 +144,9 @@ html body .ask-mic.ask-mic, html body #roMic, html body .ro-mic.ro-mic, html bod
   border: 1.5px solid var(--ui-edge) !important; box-shadow: inset 0 1px 0 #fff, 0 2px 0 var(--ui-edge-2) !important;
   display: grid !important; place-items: center;
 }
+/* 🪤 22.09: бележниковият микрофон (rooms2.js:2515) нямаше свой радиус — филцът го правеше квадратна кутийка
+   („Свободна страница“ — видяно на снимка); сега е кръгъл като другите, 48 px */
+html body .nt-mic.nt-mic { border-radius: 50% !important; width: 48px !important; height: 48px !important; min-width: 48px !important; padding: 0 !important; }
 html body .ask-mic.ask-mic::before, html body #roMic::before, html body .ro-mic.ro-mic::before, html body .nt-mic.nt-mic::before {
   content: ''; width: 20px; height: 20px; background: currentColor;
   -webkit-mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Crect x='9' y='3' width='6' height='11' rx='3'/%3E%3Cpath d='M5.5 11a6.5 6.5 0 0 0 13 0M12 17.5V21M8.5 21h7'/%3E%3C/svg%3E") center / contain no-repeat;

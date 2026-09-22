@@ -2,7 +2,7 @@
    🧸 3D ФИГУРИТЕ НА МЯСТО (img/art/fig-a.webp, 4×2: мама с бебе · бебе на луна · бебе в столче ·
    мече-доктор / мама със сърце · бебе с книжка · бебе с кубчета · зайче с балонче) — 22.09.2026
    Само CSS: нищо в логиката не се пипа.
-   · „Мира е до теб“ на началото — зайчето с балончето вместо малката иконка;
+   · „Мира е до теб“ на началото — самата Мира (зайчето с метъра, persony.webp) вместо малката иконка;
    · SOS: мечето-доктор при съветите долу („Говори бавно…“) — спокойствие, без да пречи (екранът е спешен:
      нищо не мърда, 112 остава първото и най-голямото);
    · „Деветте стаи“ (задържане на бутона в долната лента) — филцов рафт с арките от началото,
@@ -12,7 +12,7 @@
 
 /* клетка от листа: x = колона·33.333%, y = ред·100% */
 .pl-mira > i.pl-mira-av.pl-mira-av {
-  background-image: url(../img/art/fig-a.webp) !important; background-size: 400% 200% !important; background-position: 100% 100% !important;
+  background-image: url(../img/art/persony.webp) !important; background-size: 300% 300% !important; background-position: 50% 0 !important;   /* Мира — зайчето с метъра */
   background-color: #fff !important; background-blend-mode: normal !important;
   width: 62px; height: 62px; box-shadow: 0 0 0 3px #fff, 0 6px 14px rgba(110, 76, 52, .2);
 }
@@ -56,3 +56,26 @@ html body .np-box .np-b:focus-visible { outline: 3px solid #c8457a; outline-offs
 .np-b[data-r="Лабораторията"] span   { background-image: url(../img/art/room-lab.webp) !important; }
 html[data-theme="dark"] body .np-box.np-box { background-color: #26336b; background-blend-mode: normal; background-image: none; border-color: rgba(255, 255, 255, .16); outline-color: rgba(255, 255, 255, .22); }
 html[data-theme="dark"] body .np-box .np-h, html[data-theme="dark"] body .np-box .np-b { color: #f3f0ff; }
+
+/* ═══ 🧸 ГЕРОИНИТЕ НА СТАИТЕ (img/art/persony.webp, 3×3, Soul 2) — всяка стая има лице ═══
+   Мила (облаче) · Мира (зайче с метър) · Малина (малинка-готвачка) / Вита (мече-сестра) · Луна · Искра (звезда) /
+   Дара (бухалче с ключ) · Ния (коте с чаша) · Ема (лисиче-детектив). Клетка: x = колона·50%, y = ред·50%.
+   Медальонът стои на горния десен ъгъл на заглавната плочка (.pl-rhero-t) — само украса (aria няма нужда: псевдоелемент). */
+html body #roomOverlay .ro-panel .pl-rhero-t::after {
+  content: ''; position: absolute; right: -18px; top: -26px; width: 64px; height: 64px; border-radius: 50%;
+  background: #fff url(../img/art/persony.webp) 0 0 / 300% 300% no-repeat;
+  box-shadow: 0 0 0 3px #fff, 0 0 0 5px rgba(229, 109, 153, .35), 0 8px 16px rgba(110, 76, 52, .22);
+  animation: plPersIn .7s cubic-bezier(.3, 1.4, .5, 1) .35s both;
+}
+@keyframes plPersIn { from { opacity: 0; transform: translateY(12px) scale(.5) rotate(-12deg); } to { opacity: 1; transform: none; } }
+html body #roomOverlay .ro-panel.ro-peach  .pl-rhero-t::after { background-position: 0 0; }
+html body #roomOverlay .ro-panel.ro-sky    .pl-rhero-t::after { background-position: 50% 0; }
+html body #roomOverlay .ro-panel.ro-carrot .pl-rhero-t::after { background-position: 100% 0; }
+html body #roomOverlay .ro-panel.ro-green  .pl-rhero-t::after { background-position: 0 50%; }
+html body #roomOverlay .ro-panel.ro-lav    .pl-rhero-t::after { background-position: 50% 50%; }
+html body #roomOverlay .ro-panel.ro-sun    .pl-rhero-t::after { background-position: 100% 50%; }
+html body #roomOverlay .ro-panel.ro-mint   .pl-rhero-t::after { background-position: 0 100%; }
+html body #roomOverlay .ro-panel.ro-rose   .pl-rhero-t::after { background-position: 50% 100%; }
+html body #roomOverlay .ro-panel.ro-cork   .pl-rhero-t::after { background-position: 100% 100%; }
+html[data-theme="dark"] body #roomOverlay .ro-panel .pl-rhero-t::after { box-shadow: 0 0 0 3px #fff, 0 0 0 5px rgba(255, 194, 214, .4), 0 8px 16px rgba(0, 0, 0, .35); }
+@media (prefers-reduced-motion: reduce) { html body #roomOverlay .ro-panel .pl-rhero-t::after { animation: none; } }
