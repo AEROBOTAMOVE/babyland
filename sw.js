@@ -197,6 +197,8 @@ const ASSETS = [
   'img/scene/zamama.webp',
   'img/scene/dnevnik.webp',
   'img/scene/lab.webp',
+  'img/scene/profil.webp',
+  'img/scene/tarsene.webp',
   'img/art/hero-night.webp',
   'img/art/room-preg.webp',
   'img/art/room-baby.webp',

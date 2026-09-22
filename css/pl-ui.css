@@ -31,7 +31,7 @@
 }
 
 /* ═══ 1 · ГЛАВНОТО ДЕЙСТВИЕ — розов гел с блик, дъно и натискане ═══ */
-html body .jr-btn.jr-btn, html body .btn.btn-pink, html body .pl-cta.pl-cta,
+html body .jr-btn.jr-btn, html body .btn.btn-pink, html body .pl-cta.pl-cta, html body .pl-gel.pl-gel,
 html body #roomOverlay .ask-send.ask-send, html body #roForm button:last-child:not(#roMic),
 html body #onbOverlay #onbSave, html body .tour-next.tour-next {
   position: relative; isolation: isolate;
@@ -48,7 +48,7 @@ html body #onbOverlay #onbSave, html body .tour-next.tour-next {
     0 10px 20px rgba(200, 69, 122, .32) !important;
   transition: transform .14s ease, box-shadow .14s ease, filter .2s ease;
 }
-html body .jr-btn.jr-btn:active, html body .btn.btn-pink:active, html body .pl-cta.pl-cta:active,
+html body .jr-btn.jr-btn:active, html body .btn.btn-pink:active, html body .pl-cta.pl-cta:active, html body .pl-gel.pl-gel:active,
 html body #roomOverlay .ask-send.ask-send:active, html body #roForm button:last-child:not(#roMic):active,
 html body #onbOverlay #onbSave:active, html body .tour-next.tour-next:active {
   transform: translateY(3px) !important;
@@ -61,7 +61,7 @@ html body .jr-btn.jr-btn.running { animation: uiGlow 2.4s ease-in-out infinite; 
 @keyframes uiGlow { 50% { box-shadow: inset 0 1.5px 0 rgba(255,255,255,.55), inset 0 -3px 0 rgba(120,20,60,.22), 0 3px 0 #a83566, 0 0 0 7px rgba(217, 90, 142, .18), 0 10px 20px rgba(200,69,122,.32); } }
 
 /* ═══ 2 · ВТОРОСТЕПЕННОТО — кремав филц: чипове, хапчета, отговори ═══ */
-html body .jr-chip.jr-chip, html body #roChips .ro-chip.ro-chip, html body #roomOverlay .ask-chip.ask-chip,
+html body .jr-chip.jr-chip, html body #roChips .ro-chip.ro-chip, html body #roomOverlay .ask-chip.ask-chip, html body .pl-soft.pl-soft,
 html body .wt-o.wt-o, html body .ct-b.ct-b, html body .cl-b.cl-b, html body .hs-chip.hs-chip, html body .fa-chip.fa-chip,
 html body .tk-b.tk-b, html body .set-tgl.set-tgl, html body .plus-item.plus-item, html body .horo-b.horo-b, html body .shm-btn.shm-btn,
 html body .onb-sexbtn.onb-sexbtn, html body .bb-sexbtn.bb-sexbtn, html body .toc-b.toc-b, html body .jr-winbtn.jr-winbtn {
@@ -72,14 +72,14 @@ html body .onb-sexbtn.onb-sexbtn, html body .bb-sexbtn.bb-sexbtn, html body .toc
   box-shadow: inset 0 1px 0 #fff, 0 2px 0 var(--ui-edge-2), 0 5px 12px rgba(110, 76, 52, .10) !important;
   transition: transform .12s ease, box-shadow .12s ease, background-color .2s ease, border-color .2s ease;
 }
-html body .jr-chip.jr-chip:active, html body #roChips .ro-chip.ro-chip:active, html body #roomOverlay .ask-chip.ask-chip:active,
+html body .jr-chip.jr-chip:active, html body #roChips .ro-chip.ro-chip:active, html body #roomOverlay .ask-chip.ask-chip:active, html body .pl-soft.pl-soft:active,
 html body .wt-o.wt-o:active, html body .ct-b.ct-b:active, html body .cl-b.cl-b:active, html body .hs-chip.hs-chip:active, html body .fa-chip.fa-chip:active,
 html body .tk-b.tk-b:active, html body .set-tgl.set-tgl:active, html body .plus-item.plus-item:active, html body .horo-b.horo-b:active,
 html body .shm-btn.shm-btn:active, html body .onb-sexbtn.onb-sexbtn:active, html body .bb-sexbtn.bb-sexbtn:active, html body .toc-b.toc-b:active, html body .jr-winbtn.jr-winbtn:active {
   transform: translateY(2px); box-shadow: inset 0 1px 0 #fff, 0 0 0 var(--ui-edge-2), 0 2px 6px rgba(110, 76, 52, .10) !important;
 }
 /* избраното — розов филц със шев отвътре; текстът #9e2f5f върху #fde6ef = 5.9:1 */
-html body .jr-chip.jr-chip.on, html body .jr-chip.jr-chip[aria-pressed="true"], html body .wt-o.wt-o.on, html body .ct-b.ct-b.on,
+html body .jr-chip.jr-chip.on, html body .jr-chip.jr-chip[aria-pressed="true"], html body .pl-soft.pl-soft.on, html body .pl-soft.pl-soft[aria-pressed="true"], html body .pl-soft.pl-soft[aria-selected="true"], html body .wt-o.wt-o.on, html body .ct-b.ct-b.on,
 html body .cl-b.cl-b.on, html body .tk-b.tk-b.on, html body .set-tgl.set-tgl.on, html body .set-tgl.set-tgl[aria-pressed="true"],
 html body .onb-sexbtn.onb-sexbtn.on, html body .bb-sexbtn.bb-sexbtn.on, html body .hs-chip.hs-chip.on, html body .fa-chip.fa-chip.on {
   background-color: var(--ui-pick) !important; border-color: var(--ui-pick-edge) !important; color: var(--ui-pick-ink) !important;
@@ -177,6 +177,21 @@ html body .bb-dipnum { font-family: Nunito, Nunito-fallback, system-ui, sans-ser
 }
 .jr-btn .pl-em { background: rgba(255, 255, 255, .92); box-shadow: 0 1px 0 rgba(120, 20, 60, .25); text-shadow: none; }
 .on > .pl-em, [aria-pressed="true"] > .pl-em { box-shadow: inset 0 0 0 1.5px var(--ui-pick-edge), 0 1px 0 #e7a0bd; }
+
+/* ═══ 8 · ОБЩИТЕ КЛАСОВЕ ЗА НОВИТЕ ЕКРАНИ — за да не прави всеки свой вариант ═══
+   .pl-gel  — главно действие (розов гел)       .pl-soft — второстепенно (кремав филц; .on/aria-pressed/aria-selected = избрано)
+   .pl-felt — панел от филц с пунктирен шев (като картите на сцената)                               */
+html body .pl-felt.pl-felt {
+  position: relative;
+  background-color: #fffaf3 !important; background-image: var(--ui-felt) !important; background-size: 160px 160px !important; background-blend-mode: multiply !important;
+  border: 1px solid rgba(214, 186, 158, .6) !important; border-radius: 26px !important;
+  box-shadow: 0 16px 34px rgba(110, 76, 52, .20), 0 3px 8px rgba(110, 76, 52, .10), inset 0 2px 0 rgba(255, 255, 255, .9) !important;
+}
+html body .pl-felt.pl-felt::after { content: ''; position: absolute; inset: 6px; border-radius: 21px; pointer-events: none; border: 1.5px dashed rgba(196, 160, 124, .55); }
+html[data-theme="dark"] body .pl-felt.pl-felt { background-color: #26336b !important; border-color: rgba(255, 255, 255, .14) !important; box-shadow: 0 16px 34px rgba(0, 0, 0, .35) !important; }
+html[data-theme="dark"] body .pl-felt.pl-felt::after { border-color: rgba(255, 255, 255, .22); }
+html[data-theme="dark"] body .pl-soft.pl-soft { background-color: #2b3872 !important; border-color: rgba(255, 255, 255, .16) !important; color: #f1f2fb !important; box-shadow: inset 0 1px 0 rgba(255, 255, 255, .10), 0 2px 0 #18214a !important; }
+html[data-theme="dark"] body .pl-soft.pl-soft.on, html[data-theme="dark"] body .pl-soft.pl-soft[aria-pressed="true"], html[data-theme="dark"] body .pl-soft.pl-soft[aria-selected="true"] { background-color: #5a2c55 !important; border-color: rgba(245, 156, 187, .6) !important; color: #ffe1ec !important; }
 
 /* ═══ НОЩ — същите предмети в нощно синьо ═══ */
 html[data-theme="dark"] body .jr-chip.jr-chip, html[data-theme="dark"] body #roChips .ro-chip.ro-chip, html[data-theme="dark"] body #roomOverlay .ask-chip.ask-chip,

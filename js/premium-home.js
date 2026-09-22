@@ -191,6 +191,28 @@
   }
   new MutationObserver(тема).observe(document.documentElement, { attributes: true, attributeFilter: ['data-theme'] });
 
+  // 🎈 Първата стъпка на обиколката (home.js:834) = референция 5: три плюшени плочки под заглавието.
+  //   Декоративни (aria-hidden) — текстът и бутоните остават на home.js. Слагат се само докато
+  //   е активна ПЪРВАТА точка; при следващата стъпка се махат. Пише се само при разлика.
+  const ПЛОЧКИ = [['За бебето', 'ico-d', 0, 3], ['За мама', 'ico-c', 2, 1], ['Всеки ден', 'ico-d', 0, 0]];
+  function обиколка() {
+    const ов = document.querySelector('.tour-ov');
+    // обиколката е веднъж в живота: минала ли е и я няма — наблюдателят спира (иначе буди при всяка промяна)
+    if (!ов) { let минала = null; try { минала = localStorage.getItem('bl_tour_done'); } catch (e) {} if (минала && набТур) { набТур.disconnect(); набТур = null; } return; }
+    const т = ов.querySelector('.tour-dots > span'); const първа = !!(т && т.classList.contains('on'));
+    if (ов.classList.contains('pl-tour-1') !== първа) ов.classList.toggle('pl-tour-1', първа);
+    const к = ов.querySelector('.tour-card'); if (!к) return;
+    const има = к.querySelector('.pl-tt');
+    if (първа && !има) {
+      const р = document.createElement('div'); р.className = 'pl-tt'; р.setAttribute('aria-hidden', 'true');
+      р.innerHTML = ПЛОЧКИ.map(([н, л, ред, кол]) => '<span class="pl-tt-i"><i style="background-image:url(img/art/' + л + '.webp);background-position:' + (кол * 100 / 3) + '% ' + (ред * 100 / 3) + '%"></i><b>' + н + '</b></span>').join('');
+      const точки = к.querySelector('.tour-dots'); к.insertBefore(р, точки || null);
+    } else if (!първа && има) има.remove();
+  }
+  let чакаТ = false;
+  let набТур = new MutationObserver(() => { if (чакаТ) return; чакаТ = true; setTimeout(() => { чакаТ = false; обиколка(); }, 40); });
+  набТур.observe(document.documentElement, { childList: true, subtree: true });
+
   if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', сложи); else сложи();
   document.addEventListener('visibilitychange', () => { if (!document.hidden) опресни(); });
   window.BL_PREMIUM_HOME = { опресни, денят };
