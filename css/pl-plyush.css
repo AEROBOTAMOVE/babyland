@@ -1,0 +1,22 @@
+/* ═══════════════════════════════════════════════════════════════════════════════
+   🧸 ПЛЮШЕНИТЕ ВМЕСТО ЕМОДЖИТАТА (js/pl-plyush.js) — медальонът на картата и стикерите по бутоните.
+   Емоджито остава в текста (за екранния четец и за кода, който сравнява заглавия), но е прозрачно;
+   отгоре ляга клетката от листа, умножена върху пастелен кръг — както са иконките в референциите.
+   ПЪТ НАЗАД: махни <link>/<script> на pl-plyush от index.html.
+   ═══════════════════════════════════════════════════════════════════════════════ */
+.pl-pl {
+  color: transparent !important; text-shadow: none !important; -webkit-text-fill-color: transparent;
+  background-repeat: no-repeat !important; background-color: var(--pl-plt, #fde6ef) !important;
+  background-blend-mode: multiply; border-radius: 50%;
+  box-shadow: inset 0 0 0 1.5px rgba(255, 255, 255, .9), 0 2px 5px rgba(110, 76, 52, .14);
+}
+/* медальонът на картата (polish.js: span.jr-medal, 30px в заглавието) */
+.jr-medal.pl-pl { display: inline-block; width: 34px !important; height: 34px !important; flex: none; vertical-align: -9px; }
+/* стикерът по бутоните и чиповете (js/pl-ui.js: span.pl-em) — картината е inline от JS */
+html body .pl-em.pl-pl { width: 1.55em; height: 1.55em; display: inline-grid; vertical-align: -.42em; }
+html body .jr-btn .pl-em.pl-pl, html body .pl-gel .pl-em.pl-pl { background-color: #fff !important; }
+/* в тъмна тема плюшът иска бял кръг, иначе умножението го изяжда */
+html[data-theme="dark"] .pl-pl { background-color: #fff !important; background-blend-mode: normal; box-shadow: inset 0 0 0 1.5px rgba(255, 255, 255, .9), 0 2px 6px rgba(0, 0, 0, .35); }
+
+/* едрата рисунка в картата на възрастта */
+.pg20-fruit.pl-pl, .bb-big.pl-pl, .td-big.pl-pl { display: inline-block; width: 64px !important; height: 64px !important; }

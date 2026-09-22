@@ -105,3 +105,20 @@ html body .bn-item:active span, html body .bn-item:active svg { animation: plNav
 @media (prefers-reduced-motion: reduce) {
   html.pl-on .pl-shelf .pl-room .pl-arch, html body .bn-item:active span, html body .bn-item:active svg { animation: none !important; }
 }
+
+/* ═══ лицето на помощничката в картата за разговор (.ask-badge) — героинята на стаята ═══ */
+html body #roomOverlay .ro-panel .ask-badge {
+  color: transparent !important; -webkit-text-fill-color: transparent; text-shadow: none !important;
+  display: inline-block !important; width: 46px !important; height: 46px !important; border-radius: 50%;
+  background: #fff url(../img/art/persony.webp) 0 0 / 300% 300% no-repeat !important;
+  box-shadow: 0 0 0 3px #fff, 0 0 0 5px rgba(229, 109, 153, .3), 0 4px 10px rgba(110, 76, 52, .2);
+}
+html body #roomOverlay .ro-panel.ro-peach .ask-badge { background-position: 0 0 !important; }
+html body #roomOverlay .ro-panel.ro-sky .ask-badge { background-position: 50% 0 !important; }
+html body #roomOverlay .ro-panel.ro-carrot .ask-badge { background-position: 100% 0 !important; }
+html body #roomOverlay .ro-panel.ro-green .ask-badge { background-position: 0 50% !important; }
+html body #roomOverlay .ro-panel.ro-lav .ask-badge { background-position: 50% 50% !important; }
+html body #roomOverlay .ro-panel.ro-sun .ask-badge { background-position: 100% 50% !important; }
+html body #roomOverlay .ro-panel.ro-mint .ask-badge { background-position: 0 100% !important; }
+html body #roomOverlay .ro-panel.ro-rose .ask-badge { background-position: 50% 100% !important; }
+html body #roomOverlay .ro-panel.ro-cork .ask-badge { background-position: 100% 100% !important; }
