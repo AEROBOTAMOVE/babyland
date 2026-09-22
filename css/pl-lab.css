@@ -1,0 +1,314 @@
+/* ═══════════════════════════════════════════════════════════════════════════════
+   🔬 PREMIUM „ЛАБОРАТОРИЯТА“ (js/pl-lab.js) · референции 14, 1, 15 и 20 на собственика
+   Под банера: филцова карта „Моят опит сега“ (плюшеното бебе на луната — вечерите, мъниста за
+   вечерите, розов гел), ДЪРВЕН рафт с три пастелни плюшени арки и табелки в месингова рамка
+   („Опит за 7 вечери“ · „Бабин мит“ · „Какво се смени“), три филцови плочки-броячи и ред
+   „Опитите не заменят преглед.“ на кремаво хапче (като реф. 15).
+   МАТЕРИАЛИТЕ са общите (css/pl-ui.css, раздел 8): .pl-felt (картата), .pl-gel (главното действие),
+   .pl-soft (плочките, „Втори опит“, „Как се прави честен опит“). Тук е само формата им + дървото и арките.
+   ЦИФРИТЕ — Nunito (.pl-lb-n, броячите): Georgia има старинни цифри, 0 се чете „о“.
+   ГЕЛЪТ: бяло върху #d95a8e…#c8457a = 3.6–4.6:1 → надписът е 19px/800 = „голям текст“ (праг 3:1).
+   🪤 url() в този файл е спрямо css/ → ../img/…; в JS е img/….
+   🪤 #roRoom е flex контейнер с фиксирана височина → блокът иска flex:none.
+   ПЪТ НАЗАД: махни <link href="css/pl-lab.css"> и <script src="js/pl-lab.js"> от index.html.
+   ═══════════════════════════════════════════════════════════════════════════════ */
+
+.pl-lb {
+  --lb-rose-ink: #b43a6b;       /* розов текст върху филца: 5.1:1 (мерено по пиксели, ag_lab_piksel.js) */
+  --lb-navy: var(--pl-navy, #1d2a5c);
+  --lb-muted: #5d596f;          /* върху #fffaf3 × филц: 6.1:1 (мерено, ag_lab_piksel.js) */
+  --lb-sans: Nunito, Nunito-fallback, system-ui, sans-serif;
+  --lb-serif: var(--pl-serif, Georgia, 'Noto Serif', serif);
+  --lb-wood-a: #f3dfc2; --lb-wood-b: #e9cfa8; --lb-wood-c: #debf93;
+  --lb-plank-a: #f0d8b5; --lb-plank-b: #d7b181;
+  --lb-edge: rgba(170, 120, 68, .38);
+  --lb-brass: linear-gradient(180deg, #fbeab8 0, #e2b965 38%, #b3802f 62%, #eccb85 100%);
+  flex: none; position: relative; z-index: 1;
+  display: flex; flex-direction: column; gap: 14px;
+  margin: 12px 0 10px;
+  font-family: var(--lb-sans);
+  color: var(--pl-ink, #3b3f5c);
+}
+/* героят „Твоят опит сега“ (roomhero.js:213) повтаря заглавието на картата → крие се само докато блокът е тук;
+   бутонът му „Виж как се прави честен опит“ се натиска от „Как се прави честен опит“ в картата */
+.ro-panel.ro-cork #roRoom > .pl-lb ~ .rh-hero { display: none !important; }
+
+.pl-lb button { font-family: inherit; cursor: pointer; -webkit-tap-highlight-color: transparent; }
+.pl-lb button:focus-visible { outline: 3px solid #d0508a; outline-offset: 3px; }
+.pl-lb-n { font-family: var(--lb-sans); font-weight: 800; font-variant-numeric: lining-nums tabular-nums; letter-spacing: 0; }
+.pl-lb-chev { font-style: normal; font-weight: 800; font-size: 26px; line-height: .8; }
+
+/* плюшените иконки: спрайт 4×4 с бял фон; multiply ги „разтапя“ в подложката */
+.pl-lb-i { display: block; flex: none; background-repeat: no-repeat; background-size: 400% 400%; mix-blend-mode: multiply; }
+
+/* ═══ 1 · „Моят опит сега“ — филцова карта (материал .pl-felt) ═══ */
+html body .pl-lb-now.pl-lb-now { padding: 18px 16px 16px; }
+/* плюшеното бебе на луната (fig-a.webp, 4×2, клетка [0,1]) — вечерите на опита */
+.pl-lb-fig {
+  position: absolute; z-index: 0; top: 10px; right: 8px;
+  width: 108px; height: 108px;
+  background: url(../img/art/fig-a.webp) 33.333% 0 / 400% 200% no-repeat;
+  mix-blend-mode: multiply;
+  pointer-events: none;
+}
+.pl-lb-head { position: relative; z-index: 1; min-height: 96px; padding-right: 104px; }
+.pl-lb-eyebrow { margin: 0 0 5px; font-size: 12px; font-weight: 800; letter-spacing: .6px; text-transform: uppercase; color: var(--lb-rose-ink); }
+.pl-lb-q {
+  margin: 0; font-family: var(--lb-serif); font-size: 21px; font-weight: 700; line-height: 1.15;
+  color: var(--lb-navy); letter-spacing: -.2px; hyphens: none; overflow-wrap: break-word;
+}
+.pl-lb-lead { position: relative; z-index: 1; margin: 8px 0 0; font-size: 15px; font-weight: 700; line-height: 1.45; color: var(--pl-ink, #3b3f5c); }
+.pl-lb-lead b { color: var(--lb-navy); font-weight: 800; }
+
+/* мънистата на вечерите — нанизани на пунктирен конец; отметнатите розови, днешната голяма */
+.pl-lb-beads {
+  position: relative; z-index: 1;
+  display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 6px 4px;
+  margin: 12px 2px 8px; min-height: 40px;
+}
+.pl-lb-beads::before {
+  content: ''; position: absolute; z-index: -1; left: 8px; right: 8px; top: 50%; height: 2px; margin-top: -1px; pointer-events: none;
+  background: repeating-linear-gradient(90deg, #cfae8c 0 5px, transparent 5px 9px);
+}
+.pl-lb-beads.is-long::before { display: none; }
+.pl-lb-beads i {
+  position: relative; flex: none; width: 24px; height: 24px; border-radius: 50%;
+  background: radial-gradient(circle at 35% 30%, #fff 0, #fbf1e6 55%, #efdcc8 100%);
+  box-shadow: inset 0 0 0 1.5px #dcc0a2, 0 1.5px 0 rgba(170, 120, 68, .28);
+}
+.pl-lb-beads i.on {
+  background: radial-gradient(circle at 35% 28%, #ffe6f0 0, #f39bbb 34%, #d95a8e 74%, #b93a6e 100%);
+  box-shadow: inset 0 -2px 0 rgba(120, 20, 60, .2), 0 2px 0 rgba(168, 53, 102, .45), 0 3px 6px rgba(200, 69, 122, .28);
+}
+.pl-lb-beads i.now { width: 38px; height: 38px; }
+.pl-lb-beads i.now:not(.on) {           /* днешната, още неотметната: бяла перла в розов пръстен с пунктир */
+  background: radial-gradient(circle at 35% 30%, #fff 0, #fff 50%, #fdeef4 100%);
+  box-shadow: 0 0 0 3px #fff, 0 0 0 5px #efa3c1, 0 3px 8px rgba(200, 69, 122, .25);
+}
+.pl-lb-beads i.now:not(.on)::after {
+  content: ''; position: absolute; inset: 7px; border-radius: 50%; border: 2px dashed #d95a8e;
+}
+.pl-lb-beads i.now.on { box-shadow: 0 0 0 3px #fff, 0 0 0 5px #efa3c1, 0 3px 8px rgba(200, 69, 122, .3); }
+.pl-lb-beads.is-long i { width: 18px; height: 18px; }
+.pl-lb-beads.is-long i.now { width: 28px; height: 28px; }
+
+.pl-lb-day {
+  position: relative; z-index: 1;
+  display: flex; flex-wrap: wrap; align-items: baseline; gap: 2px 10px;
+  margin: 0 2px;
+}
+.pl-lb-day b { font-size: 17px; font-weight: 800; color: var(--lb-navy); white-space: nowrap; }
+.pl-lb-day > span { font-size: 14px; font-weight: 700; line-height: 1.35; color: var(--lb-muted); }
+
+/* главното действие (материал .pl-gel) — само формата; 19px/800 = голям текст */
+.pl-lb-go {
+  position: relative; z-index: 1;
+  display: flex; align-items: center; justify-content: center; gap: 10px;
+  width: 100%; min-height: 54px; margin-top: 14px; padding: 0 20px;
+  border-radius: 999px;
+  font-size: 19px; font-weight: 800; line-height: 1.1; text-align: center;
+}
+/* 🪤 мерено (ag_lab_piksel.js): бялата › върху горния, светъл край на гела = 2.93:1 (под 3) →
+   стрелката е в бяло кръгче, розова (#b43a6b върху #fff = 5.6:1, изчислено) — като „+“ в реф. 20 */
+.pl-lb-go .pl-lb-chev {
+  display: grid; place-items: center; flex: none; width: 30px; height: 30px; margin-right: -6px;
+  border-radius: 50%; background: #fff; color: var(--lb-rose-ink);
+  font-size: 22px; line-height: 1; text-shadow: none; padding-bottom: 2px; box-sizing: border-box;
+  box-shadow: 0 1px 0 rgba(120, 20, 60, .25);
+}
+
+/* вторият опит (материал .pl-soft): ред под гела */
+.pl-lb-two {
+  position: relative; z-index: 1;
+  display: flex; align-items: center; gap: 10px;
+  width: 100%; min-height: 58px; margin-top: 10px; padding: 8px 14px;
+  border-radius: 18px; text-align: left;
+}
+.pl-lb-two-t { flex: 1 1 auto; min-width: 0; display: flex; flex-direction: column; gap: 2px; }
+.pl-lb-two-t small { font-size: 12.5px; font-weight: 800; color: var(--lb-muted); }
+.pl-lb-two-t b { font-size: 15px; font-weight: 800; line-height: 1.25; color: var(--lb-navy); overflow-wrap: break-word; }
+
+/* „Как се прави честен опит“ (материал .pl-soft) — малко хапче в дъното на картата */
+.pl-lb-how {
+  position: relative; z-index: 1;
+  display: flex; align-items: center; gap: 8px;
+  width: fit-content; max-width: 100%; min-height: 46px; margin: 12px auto 0; padding: 0 16px 0 7px;
+  border-radius: 999px;
+  font-size: 14.5px; font-weight: 800; line-height: 1.15;
+}
+.pl-lb-how .pl-lb-i { width: 32px; height: 32px; border-radius: 50%; background-color: #fde6ef; background-blend-mode: multiply; mix-blend-mode: normal; }
+
+/* ═══ 2 · РАФТЪТ — светло дърво, три плюшени арки върху обща лавица (реф. 14 и 20) ═══ */
+.pl-lb-shelf {
+  position: relative;
+  display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 8px;
+  padding: 16px 10px 20px;
+  border-radius: 28px 28px 18px 18px;
+  background:
+    repeating-linear-gradient(90deg, rgba(160, 110, 60, .05) 0 1px, transparent 1px 8px, rgba(255, 255, 255, .08) 8px 10px, transparent 10px 19px),
+    linear-gradient(180deg, var(--lb-wood-a) 0, var(--lb-wood-b) 60%, var(--lb-wood-c) 100%);
+  box-shadow:
+    inset 0 2px 0 rgba(255, 255, 255, .8),
+    inset 0 0 0 1.5px var(--lb-edge),
+    inset 0 0 0 5px rgba(255, 246, 232, .35),
+    inset 0 -6px 0 rgba(150, 100, 50, .14),
+    0 5px 0 #cfa97b,
+    0 18px 30px rgba(110, 76, 52, .28), 0 3px 8px rgba(110, 76, 52, .14);
+}
+.pl-lb-shelf::after {        /* лавицата, на която стъпват трите арки */
+  content: ''; position: absolute; left: 0; right: 0; bottom: 10px; height: 12px; pointer-events: none;
+  background: linear-gradient(180deg, #fdf3e2 0, #fdf3e2 2px, var(--lb-plank-a) 3px, var(--lb-plank-b) 100%);
+  box-shadow: inset 0 -1px 0 rgba(140, 95, 50, .25), 0 3px 5px rgba(110, 76, 52, .22);
+}
+.pl-lb-arch {
+  --a-in: #eef4fd; --a-in2: #abc6ec; --a-fr: #a0bfeb;
+  position: relative; z-index: 1;
+  display: flex; flex-direction: column; align-items: stretch;
+  min-width: 0; padding: 0; margin: 0;
+  border: 0; background: none;
+  color: var(--lb-navy);
+}
+.pl-lb-arch.a-mit   { --a-in: #fdecef; --a-in2: #e4a2b0; --a-fr: #efacbf; }
+.pl-lb-arch.a-smena { --a-in: #eaf7f2; --a-in2: #9fd3c4; --a-fr: #8ccbba; }
+/* арката — плюшена пастелна рамка с блик отгоре (филцът е multiply върху цвета) */
+.pl-lb-a {
+  position: relative; display: block; height: 118px; padding: 6px 6px 0;
+  border-radius: 999px 999px 10px 10px;
+  background-color: var(--a-fr);
+  background-image: linear-gradient(180deg, rgba(255, 255, 255, .55) 0, rgba(255, 255, 255, .16) 16%, rgba(255, 255, 255, 0) 38%, rgba(90, 40, 40, .07) 100%),
+                    url(../img/art/felt.webp);
+  background-size: 100% 100%, 120px 120px; background-blend-mode: normal, multiply;
+  box-shadow: inset 0 2px 0 rgba(255, 255, 255, .8), inset 0 -1px 0 rgba(0, 0, 0, .05), 0 4px 7px rgba(110, 72, 36, .30);
+  transition: transform .14s ease;
+}
+.pl-lb-in {
+  position: relative; display: block; height: 100%; overflow: hidden;
+  border-radius: 999px 999px 6px 6px;
+  background: linear-gradient(180deg, rgba(80, 40, 50, .10) 0, rgba(80, 40, 50, 0) 40%),
+              radial-gradient(52% 46% at 60% 60%, var(--a-in) 0, var(--a-in) 46%, rgba(255, 255, 255, 0) 100%);
+  background-color: var(--a-in2);
+  box-shadow: inset 0 8px 12px -4px rgba(90, 50, 40, .30), inset 0 0 0 1px rgba(0, 0, 0, .05);
+}
+.pl-lb-in::after {           /* малката лавичка вътре, на която стоят фигурите */
+  content: ''; position: absolute; left: 6%; right: 6%; bottom: 22px; height: 6px; border-radius: 3px;
+  background: linear-gradient(180deg, #fbefdc 0, #ead0a9 45%, #cfa676 100%);
+  box-shadow: 0 2px 3px rgba(90, 50, 40, .25);
+}
+.pl-lb-ico, .pl-lb-ico2 {
+  position: absolute; z-index: 1; display: block;
+  background-repeat: no-repeat; background-size: 400% 400%;
+  mix-blend-mode: multiply;
+}
+.pl-lb-ico  { width: 66px; height: 66px; right: 2px; bottom: 24px; }
+.pl-lb-ico2 { width: 42px; height: 42px; left: 2px; bottom: 26px; }
+/* табелката — кремава плочка в месингова рамка, застъпила долния край на арката */
+.pl-lb-l {
+  position: relative; z-index: 2;
+  display: flex; align-items: center; justify-content: center;
+  min-height: 46px; margin: -22px 1px 0; padding: 4px 6px;
+  border: 2.5px solid transparent; border-radius: 14px;
+  background-color: #fdf5e8;
+  background-image: linear-gradient(180deg, #fffcf5 0, #fbf0df 100%), var(--lb-brass);
+  background-origin: padding-box, border-box; background-clip: padding-box, border-box;
+  box-shadow: inset 0 1.5px 0 #fff, 0 3px 6px rgba(90, 58, 26, .32);
+  font-family: var(--lb-serif); font-weight: 700; font-size: 14.5px; line-height: 1.12;
+  color: var(--lb-navy); text-align: center; text-wrap: balance; hyphens: none;
+  transition: transform .14s ease;
+}
+.pl-lb-arch:active .pl-lb-a, .pl-lb-arch:active .pl-lb-l { transform: translateY(2px); }
+.pl-lb-arch:active .pl-lb-l { box-shadow: inset 0 1.5px 0 #fff, 0 1px 2px rgba(90, 58, 26, .3); }
+
+/* ═══ 3 · ПЛОЧКИТЕ-БРОЯЧИ (материал .pl-soft) ═══ */
+.pl-lb-tiles { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 8px; }
+.pl-lb-tile {
+  display: flex; flex-direction: column; align-items: center; justify-content: flex-start; gap: 3px;
+  min-width: 0; min-height: 112px; padding: 10px 4px 11px;
+  border-radius: 22px; text-align: center;
+}
+.pl-lb-tile .pl-lb-i { width: 42px; height: 42px; border-radius: 50%; background-color: #fdf1e6; background-blend-mode: multiply; mix-blend-mode: normal; box-shadow: inset 0 0 0 1.5px #efdfcf; }
+.pl-lb-num {
+  display: flex; align-items: center; justify-content: center; min-height: 30px;
+  font-family: var(--lb-sans); font-size: 27px; font-weight: 800; line-height: 1;
+  color: var(--lb-navy); font-variant-numeric: lining-nums tabular-nums;
+}
+.pl-lb-num.is-zero { font-size: 14px; color: var(--lb-rose-ink); }
+.pl-lb-tile > span { font-size: 12.5px; font-weight: 800; line-height: 1.2; color: var(--lb-muted); overflow-wrap: break-word; max-width: 100%; }
+
+/* ═══ 4 · „Опитите не заменят преглед.“ — кремаво хапче (реф. 15) ═══ */
+.pl-lb-note {
+  align-self: center;
+  display: inline-flex; align-items: center; gap: 8px;
+  margin: 0; padding: 7px 14px 7px 8px; border-radius: 999px;
+  background-color: rgba(255, 250, 243, .96);
+  box-shadow: inset 0 0 0 1px rgba(214, 186, 158, .6), 0 4px 10px rgba(110, 76, 52, .12);
+  font-size: 13px; font-weight: 700; line-height: 1.3; color: #4a4660;
+}
+.pl-lb-note i {
+  flex: none; display: grid; place-items: center; width: 20px; height: 20px; border-radius: 50%;
+  border: 1.5px solid #6a6682; font: italic 700 12px/1 var(--lb-serif); color: #4a4660;
+}
+
+/* ═══ 🌙 НОЩ — филцът и гелът идват от pl-ui.css; тук текстът, мънистата, рафтът и арките ═══ */
+html[data-theme="dark"] .pl-lb { color: #e8e9f5; --lb-muted: #c9cbe3; }
+html[data-theme="dark"] .pl-lb-fig { mix-blend-mode: normal; background-color: #fff; border-radius: 50%; width: 96px; height: 96px; top: 14px; right: 12px; box-shadow: 0 0 0 4px rgba(255, 255, 255, .14), 0 4px 10px rgba(0, 0, 0, .3); }
+html[data-theme="dark"] .pl-lb-eyebrow { color: #ffc2d8; }
+html[data-theme="dark"] .pl-lb-q, html[data-theme="dark"] .pl-lb-day b, html[data-theme="dark"] .pl-lb-lead b { color: #fff; }
+html[data-theme="dark"] .pl-lb-lead { color: #e3e5f5; }
+html[data-theme="dark"] .pl-lb-beads::before { background: repeating-linear-gradient(90deg, rgba(255, 255, 255, .28) 0 5px, transparent 5px 9px); }
+html[data-theme="dark"] .pl-lb-beads i:not(.on) { background: radial-gradient(circle at 35% 30%, #56629c 0, #3a4680 60%, #2e3a74 100%); box-shadow: inset 0 0 0 1.5px rgba(255, 255, 255, .28); }
+html[data-theme="dark"] .pl-lb-beads i.now:not(.on) { background: radial-gradient(circle at 35% 30%, #fff 0, #fff 50%, #fdeef4 100%); box-shadow: 0 0 0 3px #26336b, 0 0 0 5px #f59cbb; }
+html[data-theme="dark"] .pl-lb-beads i.now.on { box-shadow: 0 0 0 3px #26336b, 0 0 0 5px #f59cbb; }
+html[data-theme="dark"] .pl-lb-two-t b { color: #fff; }
+html[data-theme="dark"] .pl-lb-how .pl-lb-i, html[data-theme="dark"] .pl-lb-tile .pl-lb-i { background-color: #fff; background-blend-mode: normal; box-shadow: 0 0 0 2px rgba(255, 255, 255, .16); }
+html[data-theme="dark"] .pl-lb-num { color: #fff; }
+html[data-theme="dark"] .pl-lb-num.is-zero { color: #ffc2d8; }
+html[data-theme="dark"] .pl-lb-shelf {
+  background:
+    repeating-linear-gradient(90deg, rgba(255, 255, 255, .025) 0 1px, transparent 1px 8px, rgba(255, 255, 255, .03) 8px 10px, transparent 10px 19px),
+    linear-gradient(180deg, #2d3b79 0, #243167 60%, #1e2a5a 100%);
+  box-shadow: inset 0 2px 0 rgba(255, 255, 255, .12), inset 0 0 0 1.5px rgba(255, 255, 255, .12), inset 0 -6px 0 rgba(0, 0, 0, .18),
+    0 5px 0 #151d44, 0 18px 30px rgba(0, 0, 0, .38);
+}
+html[data-theme="dark"] .pl-lb-shelf::after { background: linear-gradient(180deg, #4a5796 0, #3d4a8a 3px, #2d3a74 100%); box-shadow: 0 3px 4px rgba(0, 0, 0, .3); }
+html[data-theme="dark"] .pl-lb-a {
+  background-color: #5a5f8f;                                         /* резерва без color-mix (стар WebView) */
+  background-color: color-mix(in srgb, var(--a-fr) 52%, #28305f);
+  background-image: linear-gradient(180deg, rgba(255, 255, 255, .28) 0, rgba(255, 255, 255, .06) 16%, rgba(255, 255, 255, 0) 38%, rgba(0, 0, 0, .12) 100%), url(../img/art/felt.webp);
+  box-shadow: inset 0 2px 0 rgba(255, 255, 255, .3), 0 4px 7px rgba(0, 0, 0, .4);
+}
+html[data-theme="dark"] .pl-lb-in {
+  background: #353d70;
+  background: radial-gradient(85% 78% at 56% 44%, color-mix(in srgb, var(--a-in2) 40%, #2f3868) 0, color-mix(in srgb, var(--a-in2) 20%, #1f2752) 100%);
+  box-shadow: inset 0 8px 12px -4px rgba(0, 0, 0, .45);
+}
+html[data-theme="dark"] .pl-lb-in::after { background: linear-gradient(180deg, #8c7263 0, #6d5749 45%, #4f3d33 100%); }
+/* нощем фигурите стоят върху бял кръг (multiply върху тъмно ги изгася) */
+html[data-theme="dark"] .pl-lb-ico, html[data-theme="dark"] .pl-lb-ico2 {
+  mix-blend-mode: normal; background-color: #fff; border-radius: 50%;
+  box-shadow: 0 0 0 3px rgba(255, 255, 255, .16), 0 3px 6px rgba(0, 0, 0, .35);
+}
+html[data-theme="dark"] .pl-lb-ico  { width: 52px; height: 52px; right: 5px; bottom: 30px; }
+html[data-theme="dark"] .pl-lb-ico2 { width: 34px; height: 34px; left: 3px; bottom: 32px; }
+html[data-theme="dark"] .pl-lb-l {
+  background-color: #26336b;
+  background-image: linear-gradient(180deg, #2e3b78 0, #26336b 100%), linear-gradient(180deg, #d9bb7a 0, #a78443 50%, #7c5f2b 60%, #c9a865 100%);
+  box-shadow: inset 0 1.5px 0 rgba(255, 255, 255, .12), 0 3px 6px rgba(0, 0, 0, .45);
+  color: #fff;
+}
+html[data-theme="dark"] .pl-lb-note { background-color: rgba(27, 37, 84, .94); box-shadow: inset 0 0 0 1px rgba(255, 255, 255, .14), 0 4px 10px rgba(0, 0, 0, .3); color: #d6d8ee; }
+html[data-theme="dark"] .pl-lb-note i { border-color: #d6d8ee; color: #d6d8ee; }
+
+@media (prefers-reduced-motion: reduce) {
+  .pl-lb-a, .pl-lb-l { transition: none; }
+}
+/* тесен телефон (320–360px): табелките и плочките да не излизат от мястото си */
+@media (max-width: 360px) {
+  .pl-lb-head { padding-right: 88px; }
+  .pl-lb-fig { width: 90px; height: 90px; }
+  .pl-lb-q { font-size: 19px; }
+  .pl-lb-l { font-size: 13px; padding: 3px 4px; }
+  .pl-lb-ico { width: 56px; height: 56px; }
+  .pl-lb-ico2 { width: 36px; height: 36px; }
+  .pl-lb-tile > span { font-size: 11.5px; }
+  .pl-lb-go { font-size: 18.66px; }
+}

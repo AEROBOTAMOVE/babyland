@@ -1,5 +1,5 @@
 // Baby Land — service worker: кешира приложението за офлайн работа
-const CACHE = 'babyland-v729';
+const CACHE = 'babyland-v731';
 const ASSETS = [
   '.',
   'index.html',
@@ -53,6 +53,10 @@ const ASSETS = [
   'js/nav2.js',
   'js/premium-home.js',
   'js/premium-rooms.js',
+  'css/pl-lab.css',
+  'js/pl-lab.js',
+  'css/pl-krai.css',
+  'js/pl-krai.js',
   'css/pl-shrift.css',
   'css/pl-zamama.css',
   'js/pl-zamama.js',
@@ -218,6 +222,8 @@ const ASSETS = [
   'img/art/ico-g.webp',
   'img/art/fig-a.webp',
   'img/art/persony.webp',
+  'img/art/ico-h.webp',
+  'img/art/doma.webp',
   'img/art/felt.webp',
   'img/art/rb-profile.webp',
   'img/art/rb-search.webp',
@@ -245,8 +251,8 @@ const ASSETS = [
   'img/art/room-lab.webp',
   'icons/icon-192.png',
   'icons/icon-512.png',
-  'icons/icon-maskable.svg',
-  'icons/icon.svg'
+  'icons/icon-maskable-512.png',
+  'icons/apple-touch-icon.png'
 ];
 
 // ── ИНСТАЛАЦИЯ ────────────────────────────────────────────────────────────
