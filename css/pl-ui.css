@@ -335,6 +335,20 @@ html[data-theme="dark"] body .rm-veil .rm-e.rm-e { background: rgba(255, 255, 25
 html[data-theme="dark"] body .rm-veil .rm-x { background: rgba(255, 255, 255, .08) !important; border-color: rgba(255, 255, 255, .18) !important; color: #fff !important; }
 html[data-theme="dark"] body .rm-veil .rm-check { color: #8fd0aa !important; }
 
+/* ═══ 12 · ДРЕБНИТЕ ЛЕНТИ ═══
+   · предупреждението в дъното на стаята (p.ro-disc) — беше бяла лента с лилава черта върху сцената;
+     сега кремав филц без черта, същият текст (не се пипа — медицинско предупреждение);
+   · нощната лампа (#blLamp) нарочно е тъмночервена (светлина, която не буди) — НЕ се украсява;
+     само подсказката падаше на системния сериф (Times) — на шрифта на приложението. */
+html body #roomOverlay .ro-disc.ro-disc {
+  background-color: rgba(255, 250, 243, .96) !important; background-image: var(--ui-felt) !important; background-size: 160px 160px !important; background-blend-mode: multiply !important;
+  border-top: 1px solid rgba(214, 186, 158, .7) !important; box-shadow: 0 -6px 16px rgba(110, 76, 52, .10) !important;
+  color: #4a4660 !important; font-size: 11.5px !important;
+}
+html[data-theme="dark"] body #roomOverlay .ro-disc.ro-disc { background-color: rgba(27, 37, 84, .96) !important; border-top-color: rgba(255, 255, 255, .12) !important; color: #d6d8ee !important; }
+html body #roomOverlay .ask-chip.ask-chip { min-height: 46px !important; }   /* мерено 43.9px — на косъм под 44 */
+html body .bl-lamp .bl-lamp-hint { font-family: Nunito, Nunito-fallback, system-ui, sans-serif !important; }
+
 /* ═══ НОЩ — същите предмети в нощно синьо ═══ */
 html[data-theme="dark"] body .jr-chip.jr-chip, html[data-theme="dark"] body #roChips .ro-chip.ro-chip, html[data-theme="dark"] body #roomOverlay .ask-chip.ask-chip,
 html[data-theme="dark"] body .wt-o.wt-o, html[data-theme="dark"] body .ct-b.ct-b, html[data-theme="dark"] body .cl-b.cl-b, html[data-theme="dark"] body .hs-chip.hs-chip,
