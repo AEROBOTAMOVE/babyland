@@ -1,0 +1,214 @@
+/* ═══════════════════════════════════════════════════════════════════════════════
+   🧵 МАТЕРИАЛИТЕ · всичко, което се пипа, става предмет (22.09.2026)
+   Собственикът: „напудрихме всичко с генерирани неща — време е и кутиите, бутончетата и
+   всичко интерактивно да станат на мега ниво“. Референциите: бутоните са лъскав розов гел с
+   дълбочина, картите и чиповете — филц с шев, полетата — вдлъбнати капсули, иконките — в кръг.
+   МЕРЕНО преди писане (dom_inventar.js, 9-те стаи + началото): 2182 интерактивни елемента в 187
+   вида; първите 25 вида са над 85%. Системата облича ВИДОВЕТЕ по класа им — нищо в логиката.
+   ЙЕРАРХИЯ (иначе всичко блести и нищо не се вижда): 1) ГЛАВНО действие — розов гел;
+   2) второстепенно — кремав филц; 3) дребно — кръгче. Спешното (112, SOS) остава червено.
+   КОНТРАСТ (изчислен по WCAG 2.1, не на око): бял текст върху досегашното #e56d99 = 3.0:1 —
+   под 4.5. Гелът е по-наситен: под текста е #c8457a = 4.6:1; фонов цвят е същият, за четците.
+   ФИЛЦЪТ: img/art/felt.webp — 3 КБ, безшевна (огледална) неутрална плочка от КиберНинджа
+   (Seedream Lite, 2 кр.): бяло с фини влакна → background-blend-mode: multiply = филц в ВСЕКИ цвят.
+   ПЪТ НАЗАД: махни <link> и <script> на pl-ui от index.html.
+   ═══════════════════════════════════════════════════════════════════════════════ */
+
+:root {
+  --ui-felt: url(../img/art/felt.webp);
+  --ui-cream: #fffaf3;
+  --ui-edge: #e9d6c3;
+  --ui-edge-2: #dcc3ab;
+  --ui-ink: #1d2a5c;
+  --ui-gel-top: #f39bbb;
+  --ui-gel-mid: #d95a8e;
+  --ui-gel: #c8457a;
+  --ui-gel-bot: #b93a6e;
+  --ui-pick: #fde6ef;
+  --ui-pick-edge: #efa3c1;
+  --ui-pick-ink: #9e2f5f;
+  --ui-ring: 0 0 0 4px rgba(217, 90, 142, .28);
+}
+
+/* ═══ 1 · ГЛАВНОТО ДЕЙСТВИЕ — розов гел с блик, дъно и натискане ═══ */
+html body .jr-btn.jr-btn, html body .btn.btn-pink, html body .pl-cta.pl-cta,
+html body #roomOverlay .ask-send.ask-send, html body #roForm button:last-child:not(#roMic),
+html body #onbOverlay #onbSave, html body .tour-next.tour-next {
+  position: relative; isolation: isolate;
+  background-color: var(--ui-gel) !important;
+  background-image:
+    radial-gradient(120% 70% at 50% -10%, rgba(255, 255, 255, .62) 0, rgba(255, 255, 255, .18) 38%, rgba(255, 255, 255, 0) 55%),
+    linear-gradient(180deg, var(--ui-gel-top) 0%, var(--ui-gel-mid) 32%, var(--ui-gel) 62%, var(--ui-gel-bot) 100%) !important;
+  color: #fff !important; border: 0 !important;
+  text-shadow: 0 1px 0 rgba(120, 20, 60, .35);
+  box-shadow:
+    inset 0 1.5px 0 rgba(255, 255, 255, .55),
+    inset 0 -3px 0 rgba(120, 20, 60, .22),
+    0 3px 0 #a83566,
+    0 10px 20px rgba(200, 69, 122, .32) !important;
+  transition: transform .14s ease, box-shadow .14s ease, filter .2s ease;
+}
+html body .jr-btn.jr-btn:active, html body .btn.btn-pink:active, html body .pl-cta.pl-cta:active,
+html body #roomOverlay .ask-send.ask-send:active, html body #roForm button:last-child:not(#roMic):active,
+html body #onbOverlay #onbSave:active, html body .tour-next.tour-next:active {
+  transform: translateY(3px) !important;
+  box-shadow: inset 0 1.5px 0 rgba(255, 255, 255, .45), inset 0 -2px 0 rgba(120, 20, 60, .2), 0 0 0 #a83566, 0 4px 10px rgba(200, 69, 122, .28) !important;
+}
+html body .jr-btn.jr-btn:focus-visible, html body .pl-cta.pl-cta:focus-visible { outline: none; box-shadow: var(--ui-ring), 0 3px 0 #a83566 !important; }
+html body .jr-btn.jr-btn:disabled, html body .jr-btn.jr-btn[aria-disabled="true"] { filter: grayscale(.55) opacity(.7); transform: none !important; }
+/* работещото (напр. таймерът „Събуди се“) — пулсиращо сияние, не мигане */
+html body .jr-btn.jr-btn.running { animation: uiGlow 2.4s ease-in-out infinite; }
+@keyframes uiGlow { 50% { box-shadow: inset 0 1.5px 0 rgba(255,255,255,.55), inset 0 -3px 0 rgba(120,20,60,.22), 0 3px 0 #a83566, 0 0 0 7px rgba(217, 90, 142, .18), 0 10px 20px rgba(200,69,122,.32); } }
+
+/* ═══ 2 · ВТОРОСТЕПЕННОТО — кремав филц: чипове, хапчета, отговори ═══ */
+html body .jr-chip.jr-chip, html body #roChips .ro-chip.ro-chip, html body #roomOverlay .ask-chip.ask-chip,
+html body .wt-o.wt-o, html body .ct-b.ct-b, html body .cl-b.cl-b, html body .hs-chip.hs-chip, html body .fa-chip.fa-chip,
+html body .tk-b.tk-b, html body .set-tgl.set-tgl, html body .plus-item.plus-item, html body .horo-b.horo-b, html body .shm-btn.shm-btn,
+html body .onb-sexbtn.onb-sexbtn, html body .bb-sexbtn.bb-sexbtn, html body .toc-b.toc-b, html body .jr-winbtn.jr-winbtn {
+  background-color: var(--ui-cream) !important;
+  background-image: var(--ui-felt) !important; background-size: 160px 160px !important; background-blend-mode: multiply !important;
+  border: 1.5px solid var(--ui-edge) !important;
+  color: var(--ui-ink) !important;
+  box-shadow: inset 0 1px 0 #fff, 0 2px 0 var(--ui-edge-2), 0 5px 12px rgba(110, 76, 52, .10) !important;
+  transition: transform .12s ease, box-shadow .12s ease, background-color .2s ease, border-color .2s ease;
+}
+html body .jr-chip.jr-chip:active, html body #roChips .ro-chip.ro-chip:active, html body #roomOverlay .ask-chip.ask-chip:active,
+html body .wt-o.wt-o:active, html body .ct-b.ct-b:active, html body .cl-b.cl-b:active, html body .hs-chip.hs-chip:active, html body .fa-chip.fa-chip:active,
+html body .tk-b.tk-b:active, html body .set-tgl.set-tgl:active, html body .plus-item.plus-item:active, html body .horo-b.horo-b:active,
+html body .shm-btn.shm-btn:active, html body .onb-sexbtn.onb-sexbtn:active, html body .bb-sexbtn.bb-sexbtn:active, html body .toc-b.toc-b:active, html body .jr-winbtn.jr-winbtn:active {
+  transform: translateY(2px); box-shadow: inset 0 1px 0 #fff, 0 0 0 var(--ui-edge-2), 0 2px 6px rgba(110, 76, 52, .10) !important;
+}
+/* избраното — розов филц със шев отвътре; текстът #9e2f5f върху #fde6ef = 5.9:1 */
+html body .jr-chip.jr-chip.on, html body .jr-chip.jr-chip[aria-pressed="true"], html body .wt-o.wt-o.on, html body .ct-b.ct-b.on,
+html body .cl-b.cl-b.on, html body .tk-b.tk-b.on, html body .set-tgl.set-tgl.on, html body .set-tgl.set-tgl[aria-pressed="true"],
+html body .onb-sexbtn.onb-sexbtn.on, html body .bb-sexbtn.bb-sexbtn.on, html body .hs-chip.hs-chip.on, html body .fa-chip.fa-chip.on {
+  background-color: var(--ui-pick) !important; border-color: var(--ui-pick-edge) !important; color: var(--ui-pick-ink) !important;
+  box-shadow: inset 0 0 0 3px var(--ui-pick), inset 0 0 0 4.5px rgba(217, 90, 142, .35), 0 2px 0 #e7a0bd, 0 5px 12px rgba(217, 90, 142, .18) !important;
+}
+html body .jr-chip.jr-chip:focus-visible, html body #roChips .ro-chip.ro-chip:focus-visible, html body .ask-chip.ask-chip:focus-visible { outline: none; box-shadow: var(--ui-ring), 0 2px 0 var(--ui-edge-2) !important; }
+/* „мекият“ чип (↩ Върни…) — по-тих, без сянка */
+html body .jr-chip.jr-chip.jr-chip-soft { background-color: transparent !important; background-image: none !important; box-shadow: none !important; border-style: dashed !important; }
+
+/* ═══ 3 · РЕДОВЕТЕ-БУТОНИ (списъци в картите) — повдигнати с меко дъно; фонът им остава техен ═══ */
+html body .gl-row.gl-row, html body .qd-row.qd-row, html body .nl-idea.nl-idea, html body .wm-cvrow.wm-cvrow, html body .wm-lrow.wm-lrow,
+html body .pb-item.pb-item, html body .al-row.al-row, html body .fs-row.fs-row, html body .vx-row.vx-row, html body .faq-q.faq-q,
+html body .fd-card.fd-card, html body .lb-card.lb-card, html body .jr-win.jr-win, html body .pg20-calrow.pg20-calrow, html body .ld-house.ld-house {
+  border-radius: 16px !important;
+  box-shadow: 0 1.5px 0 rgba(203, 176, 150, .55), 0 5px 12px rgba(110, 76, 52, .07) !important;
+  transition: transform .12s ease, box-shadow .12s ease;
+}
+html body .gl-row.gl-row:active, html body .qd-row.qd-row:active, html body .nl-idea.nl-idea:active, html body .wm-cvrow.wm-cvrow:active,
+html body .wm-lrow.wm-lrow:active, html body .pb-item.pb-item:active, html body .al-row.al-row:active, html body .fs-row.fs-row:active,
+html body .vx-row.vx-row:active, html body .faq-q.faq-q:active, html body .fd-card.fd-card:active, html body .lb-card.lb-card:active,
+html body .jr-win.jr-win:active, html body .pg20-calrow.pg20-calrow:active, html body .ld-house.ld-house:active {
+  transform: translateY(1.5px); box-shadow: 0 0 0 rgba(203, 176, 150, .55), 0 2px 5px rgba(110, 76, 52, .07) !important;
+}
+
+/* ═══ 4 · ПОЛЕТАТА — вдлъбнати капсули (реф. 18), розов пръстен при писане ═══ */
+html body .jr-word.jr-word, html body textarea.jr-paper, html body .lx-inp.lx-inp, html body textarea.jr-note,
+html body #roomOverlay .ask-inp.ask-inp, html body #roInput, html body .ch-num.ch-num, html body #onbOverlay .jr-word {
+  background-color: #fffdf9 !important; border: 1.5px solid var(--ui-edge) !important; color: var(--ui-ink) !important;
+  box-shadow: inset 0 2px 4px rgba(110, 76, 52, .10), inset 0 -1px 0 #fff !important;
+  transition: border-color .2s ease, box-shadow .2s ease;
+}
+html body textarea.jr-paper, html body textarea.jr-note, html body .lx-inp.lx-inp { border-radius: 18px !important; }
+html body .jr-word.jr-word:focus, html body textarea.jr-paper:focus, html body .lx-inp.lx-inp:focus, html body textarea.jr-note:focus,
+html body #roomOverlay .ask-inp.ask-inp:focus, html body #roInput:focus, html body .ch-num.ch-num:focus {
+  outline: none; border-color: #d95a8e !important; box-shadow: var(--ui-ring), inset 0 2px 4px rgba(110, 76, 52, .08) !important;
+}
+html body input::placeholder, html body textarea::placeholder { color: #7a6f80; opacity: 1; }   /* #7a6f80 върху #fffdf9 = 4.7:1 (изчислено) */
+/* отметки, радио, плъзгачи — в розово на приложението */
+html body input[type="checkbox"], html body input[type="radio"], html body input[type="range"], html body progress { accent-color: #d95a8e; }
+html body input[type="checkbox"], html body input[type="radio"] { width: 22px; height: 22px; }
+
+/* ═══ 5 · КРЪГЧЕТАТА — 📍 и ▾ на всяка карта (251 + 251), микрофоните ═══ */
+/* 📍 → линеен кабърчек; закаченото е розово и леко наклонено (както беше) */
+html body .jr-card .pin-btn { font-size: 0 !important; opacity: 1 !important; color: #8d7f7a; }
+html body .jr-card .pin-btn::before {
+  content: ''; display: block; width: 16px; height: 16px; margin: auto; background: currentColor;
+  -webkit-mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='2.1' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M9 3.5h6l-1 5 3.5 3.5v1.5h-11V12L10 8.5z'/%3E%3Cpath d='M12 13.5V21'/%3E%3C/svg%3E") center / contain no-repeat;
+  mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='2.1' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M9 3.5h6l-1 5 3.5 3.5v1.5h-11V12L10 8.5z'/%3E%3Cpath d='M12 13.5V21'/%3E%3C/svg%3E") center / contain no-repeat;
+}
+html body .jr-card .pin-btn.on { color: #d95a8e; }
+/* ▾ → мека стрелка */
+html body .jr-card .fold-btn { font-size: 0 !important; color: #8d7f7a; }
+html body .jr-card .fold-btn::before {
+  content: ''; display: block; width: 14px; height: 14px; margin: auto; background: currentColor;
+  -webkit-mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='2.6' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M6 9l6 6 6-6'/%3E%3C/svg%3E") center / contain no-repeat;
+  mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='2.6' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M6 9l6 6 6-6'/%3E%3C/svg%3E") center / contain no-repeat;
+}
+/* 🎤 → линеен микрофон в бял филцов кръг */
+html body .ask-mic.ask-mic, html body #roMic, html body .ro-mic.ro-mic, html body .nt-mic.nt-mic {
+  font-size: 0 !important; color: var(--ui-ink) !important;
+  background-color: #fff !important; background-image: var(--ui-felt) !important; background-size: 160px 160px !important; background-blend-mode: multiply !important;
+  border: 1.5px solid var(--ui-edge) !important; box-shadow: inset 0 1px 0 #fff, 0 2px 0 var(--ui-edge-2) !important;
+  display: grid !important; place-items: center;
+}
+html body .ask-mic.ask-mic::before, html body #roMic::before, html body .ro-mic.ro-mic::before, html body .nt-mic.nt-mic::before {
+  content: ''; width: 20px; height: 20px; background: currentColor;
+  -webkit-mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Crect x='9' y='3' width='6' height='11' rx='3'/%3E%3Cpath d='M5.5 11a6.5 6.5 0 0 0 13 0M12 17.5V21M8.5 21h7'/%3E%3C/svg%3E") center / contain no-repeat;
+  mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Crect x='9' y='3' width='6' height='11' rx='3'/%3E%3Cpath d='M5.5 11a6.5 6.5 0 0 0 13 0M12 17.5V21M8.5 21h7'/%3E%3C/svg%3E") center / contain no-repeat;
+}
+html body .ask-mic.ask-mic.on, html body #roMic.on, html body .ro-mic.ro-mic.on, html body .ask-mic.ask-mic.rec, html body #roMic.rec { color: #d95a8e !important; border-color: var(--ui-pick-edge) !important; }
+/* ➤ изпрати → линейна хартиена стрелка (гелът е от раздел 1) */
+html body #roomOverlay .ask-send.ask-send { font-size: 0 !important; display: grid !important; place-items: center; }
+html body #roomOverlay .ask-send.ask-send::before {
+  content: ''; width: 20px; height: 20px; background: #fff;
+  -webkit-mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='2.2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M21 3 10 14M21 3l-7 18-4-7-7-4z'/%3E%3C/svg%3E") center / contain no-repeat;
+  mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='2.2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M21 3 10 14M21 3l-7 18-4-7-7-4z'/%3E%3C/svg%3E") center / contain no-repeat;
+}
+
+/* ═══ 6 · БРОЯЧИТЕ −/+ (пелени и др.) — кръгли ушити копчета ═══ */
+html body .bb-dipbtn.bb-dipbtn, html body .rg-mark.rg-mark {
+  border-radius: 50% !important; background-color: #fff !important; color: #c8457a !important; font-weight: 800 !important;
+  border: 2px solid #efb9cd !important; box-shadow: inset 0 0 0 3px #fff, inset 0 0 0 4.5px rgba(217, 90, 142, .28), 0 2px 0 #e7a0bd !important;
+  transition: transform .12s ease;
+}
+html body .bb-dipbtn.bb-dipbtn:active, html body .rg-mark.rg-mark:active { transform: translateY(2px) scale(.96); }
+/* 🪤 НЕ сериф: цифрите на Georgia са „старинни“ — 0 се чете като „о“ (видяно на снимка: „о Мокри“) */
+html body .bb-dipnum { font-family: Nunito, Nunito-fallback, system-ui, sans-serif !important; font-weight: 800 !important; font-size: 26px !important; color: var(--ui-ink) !important; font-variant-numeric: tabular-nums; }
+
+/* ═══ 7 · ЕМОДЖИТО В БУТОНА — „стикер“ в кремав кръг (js/pl-ui.js го обвива) ═══ */
+.pl-em {
+  display: inline-grid; place-items: center; flex: none;
+  width: 1.75em; height: 1.75em; margin: -.3em .12em -.3em -.35em; vertical-align: middle;   /* интервалът след него остава в текста */
+  border-radius: 50%; font-size: 1em; line-height: 1;
+  background: #fff; box-shadow: inset 0 0 0 1.5px var(--ui-edge), 0 1px 0 var(--ui-edge-2);
+}
+.jr-btn .pl-em { background: rgba(255, 255, 255, .92); box-shadow: 0 1px 0 rgba(120, 20, 60, .25); text-shadow: none; }
+.on > .pl-em, [aria-pressed="true"] > .pl-em { box-shadow: inset 0 0 0 1.5px var(--ui-pick-edge), 0 1px 0 #e7a0bd; }
+
+/* ═══ НОЩ — същите предмети в нощно синьо ═══ */
+html[data-theme="dark"] body .jr-chip.jr-chip, html[data-theme="dark"] body #roChips .ro-chip.ro-chip, html[data-theme="dark"] body #roomOverlay .ask-chip.ask-chip,
+html[data-theme="dark"] body .wt-o.wt-o, html[data-theme="dark"] body .ct-b.ct-b, html[data-theme="dark"] body .cl-b.cl-b, html[data-theme="dark"] body .hs-chip.hs-chip,
+html[data-theme="dark"] body .fa-chip.fa-chip, html[data-theme="dark"] body .tk-b.tk-b, html[data-theme="dark"] body .set-tgl.set-tgl, html[data-theme="dark"] body .plus-item.plus-item,
+html[data-theme="dark"] body .horo-b.horo-b, html[data-theme="dark"] body .shm-btn.shm-btn, html[data-theme="dark"] body .onb-sexbtn.onb-sexbtn, html[data-theme="dark"] body .bb-sexbtn.bb-sexbtn,
+html[data-theme="dark"] body .toc-b.toc-b, html[data-theme="dark"] body .jr-winbtn.jr-winbtn {
+  background-color: #2b3872 !important; border-color: rgba(255, 255, 255, .16) !important; color: #f1f2fb !important;
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, .10), 0 2px 0 #18214a, 0 5px 12px rgba(0, 0, 0, .25) !important;
+}
+html[data-theme="dark"] body .jr-chip.jr-chip.on, html[data-theme="dark"] body .jr-chip.jr-chip[aria-pressed="true"], html[data-theme="dark"] body .wt-o.wt-o.on,
+html[data-theme="dark"] body .set-tgl.set-tgl.on, html[data-theme="dark"] body .onb-sexbtn.onb-sexbtn.on, html[data-theme="dark"] body .bb-sexbtn.bb-sexbtn.on {
+  background-color: #5a2c55 !important; border-color: rgba(245, 156, 187, .6) !important; color: #ffe1ec !important;
+  box-shadow: inset 0 0 0 3px #5a2c55, inset 0 0 0 4.5px rgba(245, 156, 187, .45), 0 2px 0 #2c1530 !important;
+}
+html[data-theme="dark"] body .jr-word.jr-word, html[data-theme="dark"] body textarea.jr-paper, html[data-theme="dark"] body .lx-inp.lx-inp, html[data-theme="dark"] body textarea.jr-note,
+html[data-theme="dark"] body #roomOverlay .ask-inp.ask-inp, html[data-theme="dark"] body #roInput, html[data-theme="dark"] body .ch-num.ch-num {
+  background-color: #1b2554 !important; border-color: rgba(255, 255, 255, .18) !important; color: #f1f2fb !important;
+  box-shadow: inset 0 2px 5px rgba(0, 0, 0, .35) !important;
+}
+html[data-theme="dark"] body input::placeholder, html[data-theme="dark"] body textarea::placeholder { color: #aeb2d4; }
+html[data-theme="dark"] body .ask-mic.ask-mic, html[data-theme="dark"] body #roMic, html[data-theme="dark"] body .ro-mic.ro-mic, html[data-theme="dark"] body .nt-mic.nt-mic {
+  background-color: #2b3872 !important; color: #fff !important; border-color: rgba(255, 255, 255, .16) !important; box-shadow: 0 2px 0 #18214a !important;
+}
+html[data-theme="dark"] body .jr-card .pin-btn, html[data-theme="dark"] body .jr-card .fold-btn { color: #c9cbe3; background: transparent !important; border: 0 !important; }
+html[data-theme="dark"] body .jr-card .pin-btn.on { color: #f59cbb; }
+html[data-theme="dark"] body .bb-dipbtn.bb-dipbtn, html[data-theme="dark"] body .rg-mark.rg-mark { background-color: #2b3872 !important; color: #ffd6e5 !important; border-color: rgba(245, 156, 187, .5) !important; box-shadow: 0 2px 0 #18214a !important; }
+html[data-theme="dark"] body .bb-dipnum { color: #fff !important; }
+html[data-theme="dark"] .pl-em { background: rgba(255, 255, 255, .12); box-shadow: inset 0 0 0 1.5px rgba(255, 255, 255, .18); }
+
+/* движението е по избор — при „по-малко движение“ натисканията не подскачат */
+@media (prefers-reduced-motion: reduce) {
+  html body .jr-btn.jr-btn.running { animation: none; }
+  html body .jr-btn.jr-btn, html body .jr-chip.jr-chip, html body .gl-row.gl-row { transition: none; }
+}

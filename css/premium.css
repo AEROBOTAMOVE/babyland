@@ -245,11 +245,11 @@ html:not([data-theme="dark"]) .bottom-nav {
 }
 html:not([data-theme="dark"]) .bottom-nav .bn-item { color: #7a6f78 !important; font-weight: 700; }
 html:not([data-theme="dark"]) .bottom-nav .bn-item.bn-active {
-  color: var(--pl-pink) !important;
+  color: #c2417a !important;   /* беше --pl-pink #e56d99 = 2.94:1 (мерено, WCAG); #c2417a ≈ 4.9:1 */
   background: transparent !important;
 }
 html:not([data-theme="dark"]) .bottom-nav .bn-item.bn-active::after {
-  content: ''; display: block; width: 26px; height: 3px; margin: 3px auto 0; border-radius: 3px; background: var(--pl-pink);
+  content: ''; display: block; width: 26px; height: 3px; margin: 3px auto 0; border-radius: 3px; background: #c2417a;
 }
 
 /* ── линейни иконки вместо емоджи (референцията) · вързани към data-room, защото nav2.js
@@ -277,7 +277,7 @@ html:not([data-theme="dark"]) .bottom-nav .bn-item.bn-active::after {
 .bottom-nav .bn-item[data-room="Здраве и SOS"] { --pl-ico: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='1.8' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M12 20.5s-7.2-4.4-9.1-8.6C1.5 8.6 3.5 4.6 7.2 4.6c2 0 3.4 1.1 4.8 2.9 1.4-1.8 2.8-2.9 4.8-2.9 3.7 0 5.7 4 4.3 7.3-1.9 4.2-9.1 8.6-9.1 8.6z'/%3E%3Cpath d='M12 9.5v5M9.5 12h5'/%3E%3C/svg%3E"); }
 .bottom-nav #bnProfile { --pl-ico: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='1.8' stroke-linecap='round' stroke-linejoin='round'%3E%3Ccircle cx='12' cy='8' r='4'/%3E%3Cpath d='M4.5 21a7.5 7.5 0 0 1 15 0'/%3E%3C/svg%3E"); }
 /* спешното остава разпознаваемо: червеникаво, не розово като останалите */
-html:not([data-theme="dark"]) .bottom-nav .bn-item[data-room="Здраве и SOS"] { color: #d9536a !important; }
+html:not([data-theme="dark"]) .bottom-nav .bn-item[data-room="Здраве и SOS"], html:not([data-theme="dark"]) .bottom-nav .bn-item.bn-sos { color: #b3263f !important; }   /* беше #d9536a = 3.8:1 */
 
 /* ── „+“ — в палитрата, не лилаво (и денем, и нощем) ── */
 /* „+“ се скрива, докато „Добави момент“ е на екрана (premium-home.js пази html.pl-cta-vis) — застъпваше заглавието */
@@ -362,7 +362,7 @@ html:not([data-theme="dark"]) #roTabs {
 }
 #roTabs .st-sky, #roTabs .st-balloon, #roTabs .st-spark { display: none !important; }
 html:not([data-theme="dark"]) #roTabs .st-seg { color: var(--pl-ink-soft) !important; font-weight: 800 !important; border-radius: 999px !important; min-height: 44px; }
-html:not([data-theme="dark"]) #roTabs .st-seg.on { background: var(--pl-pink-soft) !important; color: #c24d7b !important; box-shadow: inset 0 0 0 1.5px #f6c2d6 !important; }
+html:not([data-theme="dark"]) #roTabs .st-seg.on { background: var(--pl-pink-soft) !important; color: #9e2f5f !important;   /* беше #c24d7b = 3.8:1; сега 5.9:1 */ box-shadow: inset 0 0 0 1.5px #f6c2d6 !important; }
 
 /* ── главата: без старата рисувана сцена зад нея (зелени тръби, щитове — пречеха на
       името), подзаглавието е на ЕДИН ред вместо на четири ── */
@@ -407,7 +407,7 @@ html:not([data-theme="dark"]) #roomOverlay .ro-head .ro-sosbtn { background: #fd
   mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='1.9' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M9 4 3.5 6.3v13.4L9 17.4l6 2.6 5.5-2.3V4.3L15 6.6z'/%3E%3Cpath d='M9 4v13.4M15 6.6V20'/%3E%3C/svg%3E") center / contain no-repeat;
 }
 #roTabs .ro-tabfly { display: none !important; }
-html:not([data-theme="dark"]) #roTabs .st-dot { background: var(--pl-pink) !important; color: #fff !important; box-shadow: 0 0 0 2px #fff !important; }
+html:not([data-theme="dark"]) #roTabs .st-dot { background: #c8457a !important;   /* бял текст: 4.6:1 (беше 3.0) */ color: #fff !important; box-shadow: 0 0 0 2px #fff !important; }
 
 /* ═══════════════════════════════════════════════════════════════════════════
    🧸 КЪТЧЕТАТА НА СТАЯТА — референцията „Малки помощници“: вместо лента с дребни
@@ -728,7 +728,7 @@ html[data-theme="dark"] .pl-room span { background: #2a376f; color: #fff; box-sh
 }
 .pl-sr-in i { width: 46px; height: 46px; background: url(../img/art/ico-a.webp) 33.333% 33.333% / 400% 400% no-repeat; mix-blend-mode: multiply; }
 .pl-sleepring[data-s="будно"] .pl-sr-in i { background-image: url(../img/art/ico-b.webp); background-position: 33.333% 66.667%; }
-.pl-sr-in b { font-family: var(--pl-serif); font-weight: 700; font-size: 30px; line-height: 1; color: var(--pl-navy); }
+.pl-sr-in b { font-family: Nunito, Nunito-fallback, system-ui, sans-serif; font-variant-numeric: tabular-nums; font-weight: 800; font-size: 30px;   /* не Georgia: 0 се чете като „о“ */ line-height: 1; color: var(--pl-navy); }
 .pl-sr-in span { max-width: 112px; font-size: 12.5px; font-weight: 800; line-height: 1.2; text-align: center; color: var(--pl-ink-soft); }
 .pl-sleepring ~ .jr-btn { display: flex; align-items: center; justify-content: center; width: 100%; min-height: 56px; font-size: 18px !important; }
 .pl-sleepring ~ .jr-btn:not(.running) { background: linear-gradient(180deg, #a497e8, #7a6cd3) !important; box-shadow: 0 8px 18px rgba(122, 108, 211, .32), inset 0 1px 0 rgba(255, 255, 255, .35) !important; }
@@ -903,3 +903,10 @@ html[data-theme="dark"] .pl-card::after, html[data-theme="dark"] .pl-mira::after
 html[data-theme="dark"].pl-on .pl-shelf { background: linear-gradient(180deg, #26336b, #1d2856); border-color: rgba(255, 255, 255, .14); box-shadow: 0 18px 36px rgba(0, 0, 0, .35), inset 0 0 0 5px rgba(255, 255, 255, .05); }
 html[data-theme="dark"].pl-on .pl-room::after { background: linear-gradient(180deg, #3a4680, #2c3770); }
 html[data-theme="dark"].pl-on .pl-room > span:not(.pl-arch) { background: #2a376f; color: #fff; box-shadow: 0 3px 8px rgba(0, 0, 0, .3), inset 0 0 0 1.5px rgba(255, 255, 255, .16); }   /* нощем надписите бяха бели върху бяло */
+/* 🌙 НОЩЕМ главата на сцената: дневното `html body #roomOverlay .ro-panel #roTabs` (светло хапче) биеше
+   нощното правило — снимка 22.09: светли табове и бутони с бял текст, нечетими. Същата специфичност + тема. */
+html[data-theme="dark"] body #roomOverlay .ro-panel #roTabs { background: rgba(27, 37, 84, .9) !important; border-color: rgba(255, 255, 255, .16) !important; box-shadow: 0 6px 16px rgba(0, 0, 0, .35) !important; }
+html[data-theme="dark"] body #roomOverlay .ro-panel #roTabs .st-seg { color: #d6d8ee !important; }
+html[data-theme="dark"] body #roomOverlay .ro-panel #roTabs .st-seg.on { background: rgba(229, 109, 153, .28) !important; color: #ffe1ec !important; }
+html[data-theme="dark"] body #roomOverlay .ro-panel #roTabs .st-map { background: rgba(255, 255, 255, .10) !important; color: #fff; }
+html[data-theme="dark"] body #roomOverlay .ro-panel .ro-head .ro-nav { background: rgba(27, 37, 84, .88) !important; border-color: rgba(255, 255, 255, .18) !important; color: #fff !important; }

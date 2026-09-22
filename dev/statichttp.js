@@ -30,7 +30,8 @@ const http = require('http');
 const fs = require('fs');
 const path = require('path');
 
-const ПОРТ = Number(process.argv[2]) || 8791;
+// портът: аргумент → PORT от средата (прегледът на Claude го дава при autoPort) → 8791
+const ПОРТ = Number(process.argv[2]) || Number(process.env.PORT) || 8791;
 const КОРЕН = path.resolve(__dirname, '..');
 
 const ТИПОВЕ = {
