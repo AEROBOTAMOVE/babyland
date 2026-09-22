@@ -49,11 +49,23 @@
       if (!тихо) { слой.classList.remove('pl-zh-in'); void слой.offsetWidth; слой.classList.add('pl-zh-in'); }
     }
   }
+  // 🎈 плаващото балонче на стаята (#roFab) ляга върху десния край на редовете и изяжда клика там —
+  //   четирима независими проверители го хванаха (Растеж, Дневник, Инструменти, Захранване). Докато
+  //   мама превърта, то се отдръпва; 700 ms след спирането се връща. Класът е на <html> (css/pl-zhivo.css).
+  let тихТаймер = 0;
+  function балонътНастрана() {
+    const к = document.documentElement.classList;
+    if (!к.contains('pl-fab-away')) к.add('pl-fab-away');
+    clearTimeout(тихТаймер);
+    тихТаймер = setTimeout(() => document.documentElement.classList.remove('pl-fab-away'), 700);
+  }
   // дълбочина: сцената изостава 12% от превъртането, до 110px
   let чакаП = false, последен = null;
   function превъртане(e) {
+    if (!слой) { const ц0 = e.target; if (ц0 && ц0.closest && ц0.closest('#roomOverlay')) балонътНастрана(); }
     if (тихо || !слой) return;
     const ц = e.target; if (!ц || ц.nodeType !== 1 || !ц.closest || !ц.closest('#roomOverlay')) return;
+    балонътНастрана();
     последен = ц;
     if (чакаП) return; чакаП = true;
     requestAnimationFrame(() => { чакаП = false; const y = Math.min(110, (последен.scrollTop || 0) * 0.12); слой.style.setProperty('--zh-y', (-y).toFixed(1) + 'px'); });

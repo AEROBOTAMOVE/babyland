@@ -68,3 +68,10 @@ html[data-theme="dark"] .pl-zh-d { background: radial-gradient(circle, rgba(255,
   .pl-zh.pl-zh-in .pl-zh-bg { animation: none !important; }
   .pl-zh-bg, #plScene { transform: none !important; }
 }
+
+/* 🎈 балончето се отдръпва, докато мама превърта стаята (js/pl-zhivo.js: балонътНастрана) */
+/* 🪤 балончето си има собствена анимация (fabBob) — тя бие opacity/transform от CSS правило.
+   Затова отдръпването е през filter, който анимацията не пипа (мерено: opacity остава 0.92). */
+html .ro-fab, html #roFab { transition: filter .22s ease; }
+html.pl-fab-away .ro-fab, html.pl-fab-away #roFab { filter: opacity(.22) saturate(.85); pointer-events: none; }
+@media (prefers-reduced-motion: reduce) { html .ro-fab, html #roFab { transition: none; } }
