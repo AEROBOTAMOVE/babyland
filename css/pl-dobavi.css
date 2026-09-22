@@ -1,0 +1,331 @@
+/* ═══════════════════════════════════════════════════════════════════════════════
+   ✨ PREMIUM „+ ДОБАВИ МОМЕНТ“ · долен лист по референция 8 (22.09.2026)
+   Розовият „+“ (polish.js:310–333) отваря старото меню от 5 бели хапчета в колона.
+   Тук то става долен лист от КРЕМАВ ФИЛЦ с пунктирен шев (.pl-felt от css/pl-ui.css), с дръжка,
+   серифно „Какво се случи? ♡“ и — както „Днес“ в референция 8 — ДЪРВЕН ШКАФ с табелка отгоре,
+   три лъскави пастелни купола с плюшени иконки (Хранене · Сън · Пелени), дървена лавица и
+   розово-бяло „+“, което виси под нея. Отдолу плочки 3×N от кремав филц (.pl-soft) с плюшени
+   иконки в пастелни кръгове. Логиката е в js/pl-dobavi.js; тук е само видът.
+   22.09 (ag2): облечено в ОБЩИТЕ материали — филцът и шевът идват от pl-ui.css (тук само формата
+   на листа: закръглен горе, шевът без долна линия), не свой филц.
+   Старото меню се скрива САМО когато листът е закачен (#blPlus[data-pl-dv]) —
+   падне ли js-ът, старите хапчета си стоят.
+   🪤 url() в този файл е спрямо css/ → ../img/art/…; иконките на плочките са в
+      style="" от js-а (там пътят е img/art/…, спрямо страницата).
+   🪤 Никакви БЕЗКРАЙНИ анимации: izvan_ekrana.js спира безкрайните извън кадър,
+      а plavno.js спира всичко за 180 мс при пръст — входът тук е кратък.
+   🪤 Специфичност: pl-ui.css облича с `html body .pl-felt.pl-felt` / `.pl-soft.pl-soft` (0,2,2) и
+      !important — формата тук е с (0,3,2)+ и !important само там, където и те са с !important.
+   ПЪТ НАЗАД: махни <link href="css/pl-dobavi.css"> и <script src="js/pl-dobavi.js">.
+   ═══════════════════════════════════════════════════════════════════════════════ */
+
+/* старото меню стои в DOM (плочките натискат НЕГОВИТЕ бутони), но не се вижда */
+#blPlus[data-pl-dv] .plus-menu { display: none !important; }
+/* „+“ отваря диалог — ✕-ът на завъртяния бутон се крие под пердето, листът има свой */
+#blPlus[data-pl-dv] .plus-btn { width: 56px; height: 56px; font-size: 30px; }
+#blPlus[data-pl-dv] .plus-btn:focus-visible { outline: 3px solid #1d2a5c; outline-offset: 3px; }
+
+/* докато листът е отворен, страницата отдолу не се скролва (класът е на <html>, не
+   body.style.overflow — стаята и лампата си пишат там и не бива да ги развалим) */
+html.pl-dv-lock { overflow: hidden !important; }
+
+.pl-dv[hidden] { display: none !important; }
+.pl-dv {
+  position: fixed; inset: 0; z-index: 210;   /* 🪤 над .theme-toggle (dark.css:8, z 200) — иначе стоеше ВЪРХУ ✕ на листа (снимка ag_dobavi_svetlo) */
+  font-family: 'Nunito', 'Nunito-fallback', system-ui, sans-serif;
+  color: #1d2a5c;
+  -webkit-tap-highlight-color: transparent;
+}
+.pl-dv-veil {
+  position: absolute; inset: 0;
+  background: rgba(58, 40, 62, .30);
+  -webkit-backdrop-filter: blur(2px); backdrop-filter: blur(2px);
+  opacity: 0; transition: opacity .26s ease;
+  touch-action: none;
+}
+.pl-dv.is-open .pl-dv-veil { opacity: 1; }
+
+/* ── ЛИСТЪТ: филцът е от .pl-felt; тук само формата (долен лист, закръглен горе) ── */
+html body .pl-dv > .pl-dv-sheet.pl-felt {
+  position: absolute; left: 0; right: 0; bottom: 0;
+  margin: 0 auto; max-width: 560px;
+  max-height: calc(100% - 20px);
+  display: flex; flex-direction: column;
+  border-radius: 30px 30px 0 0 !important;
+  border-bottom: 0 !important;
+  box-shadow: 0 -16px 44px rgba(90, 60, 70, .28), 0 -2px 8px rgba(110, 76, 52, .10), inset 0 2px 0 rgba(255, 255, 255, .9) !important;
+  padding-bottom: env(safe-area-inset-bottom, 0px);
+  transform: translateY(104%);
+  transition: transform .32s cubic-bezier(.2, .8, .2, 1);
+  outline: none;
+}
+/* шевът на .pl-felt е рамка отвсякъде (inset 6px, 21px) — на долния лист върви по горния ръб и страните */
+html body .pl-dv > .pl-dv-sheet.pl-felt::after { inset: 7px 7px 0; border-radius: 24px 24px 0 0; border-bottom-width: 0; }
+/* 🪤 ИЗМЕРЕНО (ag2_dobavi_svetlo): с `.pl-dv.is-open .pl-dv-sheet` (0,3,0) листът оставаше на top 876 —
+   формата горе е (0,3,2) и нейното translateY(104%) биеше отварянето. Отварянето е по-силно: */
+html body .pl-dv.is-open > .pl-dv-sheet.pl-felt { transform: none; }
+.pl-dv-sheet.is-drag { transition: none !important; }
+
+/* ── горе: дръжка + заглавие (и двете теглят листа надолу) ── */
+.pl-dv-top { position: relative; z-index: 1; touch-action: none; cursor: grab; flex: none; }
+.pl-dv-grip { display: grid; place-items: center; height: 26px; }
+.pl-dv-grip i { display: block; width: 48px; height: 6px; border-radius: 3px; background: #dcc3ab; box-shadow: inset 0 1px 1px rgba(110, 76, 52, .25), 0 1px 0 #fff; }
+.pl-dv-head { display: flex; align-items: flex-start; gap: 12px; padding: 0 16px 2px 22px; }
+.pl-dv-head > div { flex: 1 1 auto; min-width: 0; }
+.pl-dv-head h2 {
+  margin: 2px 0 0;
+  font-family: var(--pl-serif, Georgia, 'Noto Serif', serif);
+  font-weight: 700; font-size: 27px; line-height: 1.1; letter-spacing: -.3px;
+  color: #1d2a5c;
+}
+.pl-dv-head h2 span { color: #e56d99; font-weight: 400; }
+.pl-dv-head p { margin: 5px 0 0; font-size: 14px; font-weight: 700; color: #5d596f; }   /* #5d596f върху #fffaf3 = 6.4:1 (изчислено) */
+html body .pl-dv .pl-dv-x.pl-soft {
+  flex: none; width: 46px; height: 46px; margin-top: 2px; padding: 0;
+  display: grid; place-items: center;
+  border-radius: 50%; cursor: pointer;
+}
+.pl-dv-x i {
+  display: block; width: 18px; height: 18px; background: currentColor;
+  -webkit-mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='2.8' stroke-linecap='round'%3E%3Cpath d='M6 6l12 12M18 6 6 18'/%3E%3C/svg%3E") center / contain no-repeat;
+  mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='2.8' stroke-linecap='round'%3E%3Cpath d='M6 6l12 12M18 6 6 18'/%3E%3C/svg%3E") center / contain no-repeat;
+}
+
+/* ── съдържанието ── */
+.pl-dv-body {
+  position: relative; z-index: 1;
+  flex: 1 1 auto; min-height: 0;
+  overflow-y: auto; overflow-x: hidden; overscroll-behavior: contain; -webkit-overflow-scrolling: touch;
+  padding: 4px 16px 10px;
+}
+.pl-dv-g + .pl-dv-g { margin-top: 6px; }
+/* заглавията на групите — тъмносин сериф с тънка златиста черта (като „Днешни записи“ в реф. 8) */
+.pl-dv-gh {
+  display: flex; align-items: center; gap: 10px;
+  margin: 8px 4px 7px;
+  font-family: var(--pl-serif, Georgia, 'Noto Serif', serif);
+  font-size: 18px; font-weight: 700; letter-spacing: -.2px; line-height: 1.2;
+  color: #1d2a5c;
+}
+.pl-dv-gh::after { content: ''; flex: 1; height: 2px; border-radius: 2px; background: linear-gradient(90deg, #dcc3ab, rgba(220, 195, 171, 0)); }
+
+/* ═══ ШКАФЪТ С ТРИТЕ КУПОЛА (реф. 8, „Днес“): табелка, лъскави прозорци, лавица, висящо „+“ ═══ */
+.pl-dv-shelf {
+  position: relative;
+  margin: 18px 0 2px;
+  padding: 26px 10px 8px;
+  border-radius: 36px 36px 24px 24px;
+  background: linear-gradient(180deg, #fbf3e8 0, #f4e6d4 100%);
+  border: 1px solid rgba(206, 172, 136, .6);
+  box-shadow: 0 12px 24px rgba(110, 76, 52, .16), inset 0 0 0 4px #fffaf3, inset 0 0 0 5.5px rgba(214, 186, 158, .55);
+}
+/* табелката отгоре — кремав филц, сериф, златни звездички от двете страни */
+.pl-dv-plaque {
+  position: absolute; z-index: 2; top: -15px; left: 50%; transform: translateX(-50%);
+  margin: 0; padding: 5px 16px 6px;
+  display: flex; align-items: center; gap: 7px; white-space: nowrap;
+  border-radius: 999px;
+  background-color: #fffaf3; background-image: var(--ui-felt, none); background-size: 160px 160px; background-blend-mode: multiply;
+  border: 1.5px solid #e9d6c3;
+  box-shadow: 0 3px 0 #dcc3ab, 0 7px 14px rgba(110, 76, 52, .16), inset 0 1px 0 #fff;
+  font-family: var(--pl-serif, Georgia, 'Noto Serif', serif);
+  font-size: 16px; font-weight: 700; line-height: 1.2; color: #1d2a5c;
+}
+.pl-dv-plaque::before, .pl-dv-plaque::after { content: '★'; font-size: 12px; line-height: 1; color: #d9a441; text-shadow: 0 1px 0 #b98a2e; }
+
+.pl-dv-arches {
+  position: relative;
+  display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px;
+}
+/* дървената лавица — купола стоят върху нея (линията е точно под куполите: 100px) */
+.pl-dv-arches::after {
+  content: ''; position: absolute; z-index: 0; left: -6px; right: -6px; top: 97px; height: 15px;
+  border-radius: 5px;
+  background:
+    radial-gradient(circle at 9px 50%, #f3d58e 0, #d9a441 3.2px, #b98a2e 4.2px, rgba(185, 138, 46, 0) 4.8px),
+    radial-gradient(circle at calc(100% - 9px) 50%, #f3d58e 0, #d9a441 3.2px, #b98a2e 4.2px, rgba(185, 138, 46, 0) 4.8px),
+    linear-gradient(180deg, #f6e6cf 0, #e8cea9 45%, #d6b48a 100%);
+  box-shadow: 0 5px 8px rgba(110, 76, 52, .24), inset 0 1.5px 0 rgba(255, 255, 255, .7), inset 0 -2px 0 rgba(150, 105, 60, .25);
+}
+.pl-dv-a {
+  position: relative; z-index: 1;
+  display: flex; flex-direction: column; align-items: center;
+  min-width: 0; padding: 0 0 2px; margin: 0;
+  border: 0; background: none; cursor: pointer;
+  font: inherit; color: #1d2a5c;
+  transition: transform .2s ease;
+}
+.pl-dv-a:active { transform: scale(.95); }
+/* куполът — лъскав пастел с блик, дебела кремава рамка и мека сянка отдолу */
+.pl-dv-arch {
+  position: relative;
+  width: 100%; height: 100px;
+  display: block;
+  border-radius: 999px 999px 14px 14px;
+  background:
+    radial-gradient(85% 55% at 32% 10%, rgba(255, 255, 255, .72) 0, rgba(255, 255, 255, .18) 45%, rgba(255, 255, 255, 0) 62%),
+    linear-gradient(180deg, var(--t1) 0, var(--t2) 100%);
+  box-shadow:
+    inset 0 0 0 5px #fffaf3, inset 0 0 0 6.5px rgba(214, 186, 158, .6),
+    inset 0 -14px 18px rgba(110, 76, 52, .10),
+    0 5px 10px rgba(110, 76, 52, .16);
+}
+.pl-dv-arch .pl-dv-i {
+  position: absolute; left: 50%; top: 11px; margin-left: -29px;
+  width: 58px; height: 58px;
+  background-color: transparent;
+  mix-blend-mode: multiply;           /* белият фон на спрайта се „разтапя“ в купола */
+}
+/* надписът — кремаво хапче в долната част на купола (серифът е като „Хранене“ в реф. 8) */
+.pl-dv-a > .pl-dv-l {
+  position: absolute; z-index: 2; left: 5px; right: 5px; top: 70px;
+  padding: 4px 4px 5px;
+  border-radius: 999px;
+  background: #fffaf3;
+  box-shadow: 0 2px 5px rgba(110, 76, 52, .18), inset 0 0 0 1.5px #ecd7bd;
+  font-family: var(--pl-serif, Georgia, 'Noto Serif', serif);
+  font-weight: 700; font-size: 15px; line-height: 1.2; text-align: center; color: #1d2a5c;
+  white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+}
+/* висящото „+“ — бяло копче с розов кант (както трите под „Днес“ в реф. 8); кръстът е от два ленти */
+.pl-dv-plus {
+  position: relative; display: block; flex: none;
+  width: 34px; height: 34px; margin-top: 7px; border-radius: 50%;
+  background:
+    linear-gradient(#d95a8e, #d95a8e) center / 14px 3px no-repeat,
+    linear-gradient(#d95a8e, #d95a8e) center / 3px 14px no-repeat,
+    radial-gradient(circle at 50% 30%, #fff 0, #fff5f8 100%);
+  box-shadow: 0 0 0 2.5px #f3b3cb, 0 3px 0 #e7a0bd, 0 6px 10px rgba(200, 69, 122, .22);
+}
+.pl-dv-s {
+  display: block; max-width: 100%; min-height: 16px; margin-top: 5px;
+  font-size: 11.5px; font-weight: 800; line-height: 16px; text-align: center;
+  color: #5d596f;                     /* върху шкафа (#f4e6d4) = 5.4:1 (изчислено) */
+  font-variant-numeric: tabular-nums;
+  white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+}
+.pl-dv-s:empty { display: none; }
+
+/* ═══ ПЛОЧКИТЕ 3×N — кремав филц (.pl-soft) с шев отвътре; последният непълен ред се центрира ═══ */
+.pl-dv-grid { display: flex; flex-wrap: wrap; justify-content: center; gap: 10px; }
+html body .pl-dv .pl-dv-t.pl-soft {
+  position: relative;
+  flex: 0 0 calc((100% - 20px) / 3); min-width: 0;
+  display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 6px;
+  min-height: 96px; padding: 9px 5px 9px; margin: 0;
+  border-radius: 22px;
+  font: 800 13px/1.15 'Nunito', 'Nunito-fallback', system-ui, sans-serif;
+  text-align: center; cursor: pointer;
+}
+.pl-dv-t::after { content: ''; position: absolute; inset: 4px; border-radius: 18px; pointer-events: none; border: 1.5px dashed rgba(196, 160, 124, .5); }
+.pl-dv-t .pl-dv-i {
+  width: 52px; height: 52px; border-radius: 50%;
+  background-color: var(--t, #fde6ef);
+  background-blend-mode: multiply;    /* като кръговете на кътчетата (premium.css .pl-ti.has-art) */
+  box-shadow: inset 0 0 0 2px rgba(255, 255, 255, .85), 0 2px 4px rgba(110, 76, 52, .14);
+}
+.pl-dv-t .pl-dv-l { display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; max-width: 100%; }
+.pl-dv-i { display: block; flex: none; background-repeat: no-repeat; background-size: 400% 400%; }
+
+.pl-dv-a:focus-visible, html body .pl-dv .pl-dv-t.pl-soft:focus-visible, html body .pl-dv .pl-dv-x.pl-soft:focus-visible, .pl-dv-112:focus-visible {
+  outline: 3px solid #1d2a5c; outline-offset: 2px;
+}
+.pl-dv-a:focus-visible { border-radius: 20px; }
+/* поисканата плочка (BL_PL_DOBAVI.открий('сън')) — мек розов пулс, два пъти */
+.pl-dv [data-pl-dv-hi] .pl-dv-arch { animation: plDvHi 1s ease-in-out 2; }
+@keyframes plDvHi {
+  0%, 100% { box-shadow: inset 0 0 0 5px #fffaf3, inset 0 0 0 6.5px rgba(214, 186, 158, .6), 0 5px 10px rgba(110, 76, 52, .16), 0 0 0 0 rgba(229, 109, 153, 0); }
+  50% { box-shadow: inset 0 0 0 5px #fffaf3, inset 0 0 0 6.5px rgba(214, 186, 158, .6), 0 5px 10px rgba(110, 76, 52, .16), 0 0 0 7px rgba(229, 109, 153, .30); }
+}
+@keyframes plDvHiT { 50% { outline: 4px solid rgba(229, 109, 153, .45); outline-offset: 3px; } }
+
+/* ── долу: 112 винаги подръка (листът покрива долната лента със SOS) ── */
+.pl-dv-foot {
+  position: relative; z-index: 1;
+  flex: none;
+  display: flex; align-items: center; gap: 10px; flex-wrap: wrap;
+  margin: 0 12px; padding: 10px 6px 14px;
+  border-top: 1.5px dashed rgba(196, 160, 124, .6);
+}
+.pl-dv-112 {
+  display: inline-flex; align-items: center; gap: 8px;
+  min-height: 44px; padding: 0 16px 0 7px;
+  border-radius: 999px; text-decoration: none;
+  background: #fde6ef; box-shadow: inset 0 0 0 1.5px #f3b3cb, 0 2px 0 #e7a0bd;
+  color: #a3243c; font-weight: 800; font-size: 14px;
+}
+.pl-dv-112 i {
+  width: 32px; height: 32px; border-radius: 50%; flex: none;
+  background: #fff url(../img/art/ico-a.webp) 0% 100% / 400% 400% no-repeat;
+  box-shadow: 0 0 0 1.5px #f3b3cb;
+}
+.pl-dv-112 b { font-size: 16px; font-variant-numeric: tabular-nums; }
+.pl-dv-foot small { flex: 1 1 140px; font-size: 12px; font-weight: 700; line-height: 1.35; color: #5d596f; }
+
+/* ── вход: плочките излизат една след друга.
+   🪤 fill `backwards`, не `both`: със `both` крайният кадър (transform: none) остава завинаги и бие
+      натискането (:active translateY/scale) — плочката не „потъваше“ под пръста. ── */
+.pl-dv.is-open .pl-dv-a, .pl-dv.is-open .pl-dv-t { animation: plDvIn .34s cubic-bezier(.2, .8, .2, 1) backwards; animation-delay: calc(var(--i, 0) * 26ms + 70ms); }
+.pl-dv.is-open .pl-dv-t[data-pl-dv-hi] { animation: plDvIn .34s cubic-bezier(.2, .8, .2, 1) backwards, plDvHiT 1s ease-in-out .4s 2; }
+.pl-dv.is-open .pl-dv-plaque { animation: plDvPlaque .42s cubic-bezier(.3, 1.3, .5, 1) .05s backwards; }
+@keyframes plDvIn { from { opacity: 0; transform: translateY(12px) scale(.97); } to { opacity: 1; transform: none; } }
+@keyframes plDvPlaque { from { opacity: 0; transform: translateX(-50%) translateY(8px) scale(.9); } to { opacity: 1; transform: translateX(-50%); } }
+
+@media (prefers-reduced-motion: reduce) {
+  .pl-dv-veil, html body .pl-dv > .pl-dv-sheet.pl-felt { transition: none; }
+  .pl-dv.is-open .pl-dv-a, .pl-dv.is-open .pl-dv-t, .pl-dv.is-open .pl-dv-plaque, .pl-dv [data-pl-dv-hi] .pl-dv-arch, .pl-dv.is-open .pl-dv-t[data-pl-dv-hi] { animation: none; }
+}
+
+/* ── след скок до карта и ДОКАТО СТАЯТА Е ОТВОРЕНА картите се рисуват истински: mega.css:336 ги
+      държи по 220px „на ужким“ (content-visibility:auto) и целта бягаше (ag_dobavi_diag, diag2/3).
+      Атрибутът се маха от js-а при затваряне/смяна на стаята. ── */
+#roRoom[data-pl-dv-go] section.jr-card { content-visibility: visible !important; }
+
+/* ── целевата карта в стаята: мека розова рамка за 2.6 с, докато мама я намери ── */
+html section.jr-card[data-pl-dv-spot] {
+  scroll-margin-top: 12px;
+  box-shadow: 0 0 0 3px #f59cbb, 0 0 0 9px rgba(229, 109, 153, .16), 0 10px 28px rgba(170, 118, 118, .14) !important;
+  transition: box-shadow .3s ease;
+}
+
+/* ═══ НОЩ (html[data-theme="dark"], 21:00–7:00): нощно синьо; пастелите светят като стикери ═══
+   Филцът и .pl-soft нощем са от pl-ui.css (#26336b / #2b3872) — тук само шкафа, табелката, текста. */
+html[data-theme="dark"] .pl-dv { color: #f1f2fb; }
+html[data-theme="dark"] .pl-dv-veil { background: rgba(6, 10, 30, .58); }
+html[data-theme="dark"] body .pl-dv > .pl-dv-sheet.pl-felt { box-shadow: 0 -16px 44px rgba(0, 0, 0, .5), inset 0 1px 0 rgba(255, 255, 255, .10) !important; }
+html[data-theme="dark"] .pl-dv-grip i { background: rgba(255, 255, 255, .30); box-shadow: none; }
+html[data-theme="dark"] .pl-dv-head h2, html[data-theme="dark"] .pl-dv-gh { color: #fff; }
+html[data-theme="dark"] .pl-dv-head h2 span { color: #f59cbb; }
+html[data-theme="dark"] .pl-dv-head p, html[data-theme="dark"] .pl-dv-foot small { color: #d6d8ee; }
+html[data-theme="dark"] .pl-dv-gh::after { background: linear-gradient(90deg, rgba(255, 255, 255, .22), rgba(255, 255, 255, 0)); }
+html[data-theme="dark"] .pl-dv-shelf {
+  background: linear-gradient(180deg, #2e3c7c 0, #243068 100%);
+  border-color: rgba(255, 255, 255, .14);
+  box-shadow: 0 12px 24px rgba(0, 0, 0, .32), inset 0 0 0 4px rgba(255, 255, 255, .05), inset 0 0 0 5.5px rgba(255, 255, 255, .12);
+}
+html[data-theme="dark"] .pl-dv-plaque { background-color: #2b3872; background-image: none; border-color: rgba(255, 255, 255, .18); color: #fff; box-shadow: 0 3px 0 #18214a, 0 7px 14px rgba(0, 0, 0, .3); }
+html[data-theme="dark"] .pl-dv-plaque::before, html[data-theme="dark"] .pl-dv-plaque::after { color: #f3d58e; text-shadow: none; }
+html[data-theme="dark"] .pl-dv-arches::after {
+  background:
+    radial-gradient(circle at 9px 50%, #f3d58e 0, #d9a441 3.2px, rgba(185, 138, 46, 0) 4.6px),
+    radial-gradient(circle at calc(100% - 9px) 50%, #f3d58e 0, #d9a441 3.2px, rgba(185, 138, 46, 0) 4.6px),
+    linear-gradient(180deg, #45518f 0, #36427e 50%, #2a346c 100%);
+  box-shadow: 0 5px 8px rgba(0, 0, 0, .35), inset 0 1px 0 rgba(255, 255, 255, .16);
+}
+html[data-theme="dark"] .pl-dv-arch { box-shadow: inset 0 0 0 5px rgba(255, 255, 255, .55), inset 0 -14px 18px rgba(20, 30, 70, .14), 0 5px 12px rgba(0, 0, 0, .32); }
+html[data-theme="dark"] .pl-dv-a > .pl-dv-l { background: #2a376f; color: #fff; box-shadow: 0 2px 6px rgba(0, 0, 0, .3), inset 0 0 0 1.5px rgba(255, 255, 255, .18); }
+html[data-theme="dark"] .pl-dv-plus {
+  background:
+    linear-gradient(#f59cbb, #f59cbb) center / 14px 3px no-repeat,
+    linear-gradient(#f59cbb, #f59cbb) center / 3px 14px no-repeat,
+    #2b3872;
+  box-shadow: 0 0 0 2.5px rgba(245, 156, 187, .6), 0 3px 0 #18214a, 0 6px 10px rgba(0, 0, 0, .3);
+}
+html[data-theme="dark"] .pl-dv-s { color: #d6d8ee; }
+html[data-theme="dark"] .pl-dv-t::after { border-color: rgba(255, 255, 255, .20); }
+html[data-theme="dark"] .pl-dv-t .pl-dv-i { box-shadow: inset 0 0 0 2px rgba(255, 255, 255, .7), 0 2px 5px rgba(0, 0, 0, .3); }
+html[data-theme="dark"] .pl-dv-a:focus-visible, html[data-theme="dark"] body .pl-dv .pl-dv-t.pl-soft:focus-visible,
+html[data-theme="dark"] body .pl-dv .pl-dv-x.pl-soft:focus-visible, html[data-theme="dark"] .pl-dv-112:focus-visible { outline-color: #f59cbb; }
+html[data-theme="dark"] .pl-dv-foot { border-top-color: rgba(255, 255, 255, .22); }
+html[data-theme="dark"] .pl-dv-112 { background: rgba(255, 120, 150, .16); box-shadow: inset 0 0 0 1.5px rgba(255, 150, 175, .45); color: #ffd6df; }
+html[data-theme="dark"] section.jr-card[data-pl-dv-spot] { box-shadow: 0 0 0 3px #f59cbb, 0 0 0 9px rgba(245, 156, 187, .18) !important; }

@@ -1,0 +1,66 @@
+/* ═══════════════════════════════════════════════════════════════════════════════
+   🔤 ЕДИН ГЛАС НА ШРИФТА по референциите · 22.09.2026
+   Старият вид пише ~70 правила с Comfortaa (кирилското „т“ в него се чете като „m“) — заглавия,
+   бутони, дори часовници и броячи. Референциите имат три гласа: ЗАГЛАВИЯ = плътен тъмносин сериф,
+   БУТОНИ/ЕТИКЕТИ = закръглен Nunito, ЧИСЛА = Nunito (Georgia пише старинни цифри — „0“ се чете „о“).
+   Тук е насочено, не глобално: изброени са точно селекторите, които старите файлове пишат с Comfortaa
+   (css/style.css, rooms.css, mega.css, home.css, extras.css, lab.css, women.css, hero.css). Цветовете
+   НЕ се пипат (нощта си остава своя). Екранните pl-*.css идват след този файл и печелят.
+   + прозорецът „Ново медальонче“ (js/badges2.js:52) — филц с шев, златна монета, 3D зайчето наднича.
+   ПЪТ НАЗАД: махни <link> на pl-shrift от index.html.
+   ═══════════════════════════════════════════════════════════════════════════════ */
+
+/* ── 1 · ЗАГЛАВИЯ → сериф ── */
+html body h1, html body h2, html body h3,
+html body .onb-title, html body .tour-card h3, html body .rv-head h3, html body .pr-sheet h2,
+html body .yb-cover h1, html body .yb-page h2, html body .dv-actcard h5, html body .pw-h, html body .rm-h,
+html body .pin-title, html body .lb-q, html body .art-ctitle, html body .art-htitle, html body .art-title,
+html body .art-body h5, html body .ro-name, html body .td-hello, html body .td-whello, html body .md-name,
+html body .fd-name, html body .wm-tarot strong, html body .bg-badge strong {
+  font-family: var(--pl-serif, Georgia, 'Noto Serif', serif); font-weight: 700; letter-spacing: 0;
+}
+
+/* ── 2 · ЧИСЛА → Nunito (часовници, броячи, седмици) ── */
+html body .nr-disp, html body .ml-big strong, html body .jr-clock, html body .bt-clock, html body .bb-dipnum,
+html body .sc24-tot, html body .wm-nbig, html body .wm-num strong, html body .wm-moon strong, html body .d24-mid,
+html body .d24-t, html body .pg-week, html body .pg20-week, html body .tl-nn, html body .pg-kick, html body .br-circle span,
+html body .vx-when, html body .lb-verdict strong {
+  font-family: Nunito, 'Nunito-fallback', system-ui, sans-serif; font-weight: 800; font-variant-numeric: tabular-nums lining-nums;
+}
+
+/* ── 3 · БУТОНИ И ЕТИКЕТИ → Nunito ── */
+html body .btn, html body .pt-btn, html body .cta-main, html body .sos-btn, html body .ro-tab, html body .st-seg,
+html body .pin-pad button, html body .art-ask, html body .ro-fab-hint, html body .net-ct, html body .net-pt,
+html body .hero-flip, html body .bub-done p, html body .fx-cheer, html body .pr-logo {
+  font-family: Nunito, 'Nunito-fallback', system-ui, sans-serif;
+}
+
+/* ── 4 · „НОВО МЕДАЛЬОНЧЕ“ ── */
+html body .md-veil .md-box {
+  position: relative; overflow: visible; padding-top: 34px;
+  background-color: #fffaf3; background-image: url(../img/art/felt.webp); background-size: 160px 160px; background-blend-mode: multiply;
+  border: 1px solid rgba(214, 186, 158, .65); border-radius: 32px;
+  box-shadow: 0 18px 44px rgba(60, 40, 30, .30), inset 0 2px 0 rgba(255, 255, 255, .9);
+  outline: 1.5px dashed rgba(196, 160, 124, .55); outline-offset: -9px;
+}
+/* зайчето с балончето наднича над картата */
+html body .md-veil .md-box::before {
+  content: ''; position: absolute; left: 50%; top: -62px; width: 92px; height: 92px; margin-left: -46px; border-radius: 50%;
+  background: #fff url(../img/art/fig-a.webp) 100% 100% / 400% 200% no-repeat;
+  box-shadow: 0 0 0 4px #fde6ef, 0 8px 18px rgba(110, 76, 52, .22);
+  animation: plMdPeek .7s cubic-bezier(.3, 1.4, .5, 1) .15s both;
+}
+@keyframes plMdPeek { from { transform: translateY(26px) scale(.6); opacity: 0; } to { transform: none; opacity: 1; } }
+html body .md-veil .md-kicker { color: #9e2f5f; letter-spacing: .12em; }
+html body .md-veil .md-coin {
+  background: radial-gradient(circle at 38% 30%, #fff6d6 0, #f7d77f 45%, #e2ae45 100%) !important;
+  box-shadow: 0 0 0 5px #fff3cf, 0 0 0 7px #e7bd5c, 0 10px 22px rgba(170, 120, 40, .32), inset 0 -6px 10px rgba(160, 110, 30, .28) !important;
+}
+html body .md-veil .md-name { color: #1d2a5c; font-size: 26px; }
+html body .md-veil .md-why { color: #5d596f; }
+html body .md-veil .md-keep { color: #6a6682; }
+html[data-theme="dark"] body .md-veil .md-box { background-color: #26336b; background-image: none; border-color: rgba(255, 255, 255, .16); outline-color: rgba(255, 255, 255, .22); }
+html[data-theme="dark"] body .md-veil .md-name { color: #fff; }
+html[data-theme="dark"] body .md-veil .md-why, html[data-theme="dark"] body .md-veil .md-keep { color: #d7daf2; }
+html[data-theme="dark"] body .md-veil .md-kicker { color: #ffc2d6; }
+@media (prefers-reduced-motion: reduce) { html body .md-veil .md-box::before { animation: none; } }

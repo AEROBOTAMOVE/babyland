@@ -1,0 +1,261 @@
+/* ═══════════════════════════════════════════════════════════════════════════════
+   📔 PREMIUM ТЕФТЕРЪТ „ДНЕС ЗА ТЕБ“ · „Дневник на мама“ (референции 11 и 17), 22.09.2026
+   Блокът е от js/pl-dnevnik.js — под банера на стаята, върху сцената img/scene/dnevnik.webp.
+   22.09 (сцените): облечен в ОБЩИТЕ материали на css/pl-ui.css — страницата е .pl-felt (филц с
+   пунктирен шев), етикетите на личицата и второстепенните бутони са .pl-soft (избраното .on =
+   розов филц), „Пиши“ е .pl-gel (розов гел). Свой гел/филц тук НЯМА — само формата.
+   Фигурите (реф. 11/17): люлякова сатенена панделка-разделител, плюшеният лотос над въпроса
+   (реф. 17, над „5 минути за мен“), пет плюшени филцови копчета с бял ръб и шев (реф. 17,
+   „От какво имаш нужда?“), страница от тефтер с редове, гръбче, купчина листа и каишка със
+   златно сърце (реф. 11), плюшени иконки от спрайтовете img/art/ico-*.webp.
+   Контраст: сметнат в страницата върху ФИЛЦА (текстурата е умножена — мерено с canvas), вж.
+   scratchpad/ag2_dnevnik_kontrast.js. Докосване: всичко ≥ 44 px. Цифри — Nunito (не Georgia).
+   🪤 url() в ТОЗИ файл се разрешава спрямо css/ → пише се ../img/art/…
+   ПЪТ НАЗАД: махни <link href="css/pl-dnevnik.css"> и <script src="js/pl-dnevnik.js"> от index.html.
+   ═══════════════════════════════════════════════════════════════════════════════ */
+
+/* 🪤 #roRoom е flex колона с фиксирана височина — без flex:none блокът се свива. */
+#roRoom > .pl-dn {
+  flex: none; margin: 0; min-width: 0;
+  color: var(--pl-ink, #3b3f5c);
+  font-family: Nunito, Nunito-fallback, system-ui, sans-serif;
+}
+/* старата карта-герой „Днес за теб“ (roomhero.js:174-178) казва същото — само докато тефтерът е над нея */
+.ro-panel.ro-lav #roRoom > .pl-dn ~ .rh-hero { display: none !important; }
+
+/* ── страницата: .pl-felt (фон, кант, сянка, шевът ::after — от pl-ui.css) ── */
+#roRoom .pl-dn-book { padding: 18px 16px 16px; }
+
+/* люляковата сатенена панделка-разделител (реф. 11): прегъната през горния ръб, с блясък по средата */
+.pl-dn-ribbon {
+  position: absolute; top: -5px; right: 26px; width: 20px; height: 66px; z-index: 2;
+  background:
+    linear-gradient(180deg, rgba(90, 60, 140, .28) 0, rgba(90, 60, 140, 0) 9px),
+    linear-gradient(90deg, #a98fdb 0, #c9b4f0 30%, #e6dafa 46%, #c3adec 60%, #a489d6 100%);
+  clip-path: polygon(0 0, 100% 0, 100% 100%, 50% 82%, 0 100%);
+  filter: drop-shadow(0 3px 3px rgba(96, 70, 150, .28));
+}
+.pl-dn-ribbon::before {   /* прегънатото парче върху ръба */
+  content: ''; position: absolute; left: -2px; right: -2px; top: 0; height: 7px; border-radius: 3px;
+  background: linear-gradient(90deg, #9277c9, #b9a1e8 50%, #9277c9);
+}
+
+/* „Днес за теб“ + датата — като „Моят малък план · Днес, 20 септември“ в реф. 17 */
+.pl-dn-eye {
+  position: relative; display: flex; align-items: center; gap: 11px;
+  margin: 0 50px 0 0; line-height: 1.2;
+}
+.pl-dn-eye > span { display: flex; flex-direction: column; gap: 3px; min-width: 0; }
+.pl-dn-eye b { font-family: var(--pl-serif, Georgia, serif); font-size: 18px; font-weight: 700; color: var(--pl-navy, #1d2a5c); }
+.pl-dn-eye small { font-size: 13px; font-weight: 800; color: #5d596f; font-variant-numeric: lining-nums tabular-nums; }
+.pl-dn-sr { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); clip-path: inset(50%); white-space: nowrap; }
+
+/* ── плюшените иконки в кръг (спрайт 4×4; бял фон → multiply върху пастела; нощем бял кръг) ── */
+.pl-dn-ic, .pl-dn-ic2, .pl-dn-ico {
+  flex: none; display: inline-block; border-radius: 50%;
+  background-image: url(../img/art/ico-b.webp); background-size: 400% 400%; background-repeat: no-repeat;
+  background-blend-mode: multiply;
+  box-shadow: inset 0 0 0 2.5px rgba(255, 255, 255, .9), 0 2px 0 rgba(203, 176, 150, .55), 0 5px 10px rgba(110, 76, 52, .12);
+}
+.pl-dn-ic { width: 46px; height: 46px; background-color: #ece4f8; background-position: 33.333% 0%; }            /* ico-b [0,1] лилаво сърце = плочката „Днес за теб“ (premium-rooms.js:68) */
+.pl-dn-ic2 { width: 42px; height: 42px; background-color: #fde6ef; background-image: url(../img/art/ico-a.webp); background-position: 100% 66.667%; }   /* ico-a [2,3] розовият тефтер */
+.pl-dn-last[data-s="lock"] .pl-dn-ic2 { background-color: #ece4f8; background-image: url(../img/art/ico-b.webp); background-position: 66.667% 33.333%; }   /* ico-b [1,2] катинар = „Лично“ */
+.pl-dn-moon { width: 32px; height: 32px; margin-left: -8px; background-color: #fff; background-image: url(../img/art/ico-a.webp); background-position: 33.333% 33.333%; }   /* ico-a [1,1] сънената луна = Луна */
+.pl-dn-pen { width: 38px; height: 38px; background-color: #fff; background-position: 100% 0%; box-shadow: 0 1px 0 rgba(120, 20, 60, .25); }   /* ico-b [0,3] моливът */
+
+/* ── медальонът „Как си днес?“ — плюшеният лотос отгоре (реф. 17, ico-e [0,2]) ── */
+.pl-dn-medal { position: relative; margin: 10px 0 12px; text-align: center; }
+.pl-dn-lotus {
+  /* клетка [0,2] при спрайт 256 px = 64 px клетки; лотосът е в y≈19–49 на клетката → показваме 14–54 */
+  display: block; width: 64px; height: 40px; margin: 0 auto 2px;
+  background: url(../img/art/ico-e.webp) -128px -14px / 256px 256px no-repeat;
+  mix-blend-mode: multiply;      /* белият фон на спрайта изчезва във филца (като .pl-day-it i.pl-art, premium.css:126) */
+}
+.pl-dn-medal::before, .pl-dn-medal::after {   /* златните черти от двете страни (реф. 17 „— От какво имаш нужда? —“) */
+  content: ''; position: absolute; top: 20px; width: calc(50% - 46px); height: 2px; border-radius: 2px;
+  background: linear-gradient(90deg, rgba(214, 180, 128, 0), #d6b480);
+}
+.pl-dn-medal::before { left: 8px; }
+.pl-dn-medal::after { right: 8px; transform: scaleX(-1); }
+.pl-dn-q {
+  position: relative; margin: 0;
+  font-family: var(--pl-serif, Georgia, 'Noto Serif', serif); font-weight: 700; font-size: 32px; line-height: 1.05;
+  letter-spacing: -.5px; color: var(--pl-navy, #1d2a5c);
+}
+.pl-dn-q i { font-style: normal; font-weight: 400; color: #d95a8e; }
+
+/* ── петте личица (rooms.js:112 MOODS) — плюшени филцови копчета с бял ръб и шев (реф. 17) ── */
+/* редът ползва и част от полето на страницата (−8px) — етикетите са на един ред като в реф. 17 */
+.pl-dn-moods { position: relative; display: grid; grid-template-columns: repeat(5, minmax(0, 1fr)); gap: 0; margin: 0 -8px; }
+#roRoom .pl-dn-m {
+  display: flex; flex-direction: column; align-items: center; justify-content: flex-start; gap: 0;
+  min-width: 0; min-height: 44px; margin: 0; padding: 3px 0 4px;
+  border: 0; border-radius: 18px; background: none; cursor: pointer;
+  font: inherit; color: var(--pl-navy, #1d2a5c); -webkit-tap-highlight-color: transparent;
+}
+.pl-dn-face {
+  position: relative; z-index: 0; display: grid; place-items: center; width: 58px; height: 58px; border-radius: 50%;
+  font-size: 28px; line-height: 1;
+  background-color: var(--t1);
+  background-image:
+    radial-gradient(circle at 33% 24%, rgba(255, 255, 255, .92) 0, rgba(255, 255, 255, 0) 44%),
+    radial-gradient(circle at 60% 115%, var(--t2) 0, rgba(255, 255, 255, 0) 72%),
+    url(../img/art/felt.webp);
+  background-size: auto, auto, 120px 120px;
+  background-blend-mode: normal, normal, multiply;
+  border: 3px solid #fff;
+  outline: 1.5px dashed rgba(255, 255, 255, .95); outline-offset: -9px;      /* шевът по диска */
+  box-shadow: 0 0 0 1px var(--rim), 0 3px 0 var(--rim), 0 9px 14px var(--glow), inset 0 -7px 10px rgba(110, 76, 52, .10);
+  transition: transform .2s ease, box-shadow .2s ease, opacity .2s ease, filter .2s ease;
+}
+.pl-dn-m.t-lilac  { --t1: #efe7fb; --t2: #cdbdf0; --rim: #d9ccef; --glow: rgba(143, 122, 224, .24); }
+.pl-dn-m.t-sky    { --t1: #e7effd; --t2: #bcd2f4; --rim: #c9d9f2; --glow: rgba(90, 130, 200, .22); }
+.pl-dn-m.t-butter { --t1: #fdf4da; --t2: #f0d99c; --rim: #eedfb6; --glow: rgba(214, 170, 70, .22); }
+.pl-dn-m.t-mint   { --t1: #e4f4e9; --t2: #bfe2ca; --rim: #cfe6d7; --glow: rgba(80, 170, 120, .22); }
+.pl-dn-m.t-pink   { --t1: #fde8f0; --t2: #f6c3d7; --rim: #f1cfdc; --glow: rgba(229, 109, 153, .24); }
+/* етикетът — кремаво филцово хапче (.pl-soft от pl-ui.css), леко застъпва долния ръб на копчето (реф. 17) */
+/* 🪤 „горе-долу“ се пречупваше на тиретата, „много тежко“ на два реда → хапчета с различна височина.
+   Сега: един ред, центрирано под диска; по-дългите излизат малко встрани от колоната си (съседите
+   са къси — разстоянията се МЕРЯТ в ag2_dnevnik_funk.js: хапчетата не бива да се застъпват). */
+#roRoom .pl-dn-ml.pl-soft {
+  position: relative; z-index: 1; display: block; min-width: 54px; margin-top: -9px; padding: 4px 7px;
+  border-radius: 12px; font-size: 11px; font-weight: 800; line-height: 1.2; text-align: center;
+  white-space: nowrap;
+}
+#roRoom .pl-dn-m:active .pl-dn-face { transform: scale(.93); }
+.pl-dn-m[aria-pressed="true"] .pl-dn-face {
+  transform: translateY(-2px) scale(1.06);
+  box-shadow: 0 0 0 1px var(--rim), 0 0 0 4.5px #e98fb3, 0 3px 0 4.5px #d97aa2, 0 12px 18px rgba(217, 90, 142, .30);
+}
+/* избрано е едно — другите отстъпват (само дискът; хапчето пази контраста си) */
+.pl-dn.has-mood .pl-dn-m[aria-pressed="false"] .pl-dn-face { opacity: .74; filter: saturate(.8); }
+#roRoom .pl-dn-m:focus-visible { outline: 3px solid #b8376f; outline-offset: 2px; }
+
+/* ── отговорът на картата (огледало на rooms.js живДума) ── */
+.pl-dn-st {
+  margin: 12px 0 0; padding: 0 4px; min-height: 20px;
+  font-size: 13.5px; font-weight: 700; line-height: 1.4; text-align: center; color: #5d596f;
+}
+.pl-dn-st.is-reply {
+  position: relative; padding: 11px 14px; border-radius: 18px;
+  background: #fde6ef url(../img/art/felt.webp) 0 0 / 160px 160px; background-blend-mode: multiply;
+  box-shadow: inset 0 0 0 1.5px #f3bfd3, 0 2px 0 #eab3c8;
+  font-size: 14.5px; color: var(--pl-navy, #1d2a5c);
+}
+.pl-dn-st.is-reply::before {   /* опашката на балончето — към личицата */
+  content: ''; position: absolute; top: -7px; left: 50%; width: 14px; height: 14px; margin-left: -7px;
+  background: #fde6ef; transform: rotate(45deg); box-shadow: -1.5px -1.5px 0 #f3bfd3; border-radius: 3px 0 0 0;
+}
+.pl-dn-more { display: flex; flex-wrap: wrap; justify-content: center; gap: 8px; margin-top: 10px; }
+.pl-dn-more:not(:has(button:not([hidden]))) { display: none; }
+#roRoom .pl-dn-link {
+  display: inline-flex; align-items: center; gap: 8px; min-height: 46px; margin: 0; padding: 0 16px;
+  border-radius: 999px; cursor: pointer;
+  font: 800 13.5px/1.2 Nunito, Nunito-fallback, system-ui, sans-serif; -webkit-tap-highlight-color: transparent;
+}
+#roRoom .pl-dn-link[hidden] { display: none; }
+#roRoom .pl-dn-link:focus-visible, #roRoom .pl-dn-write:focus-visible { outline: 3px solid #b8376f; outline-offset: 3px; }
+
+/* ── „Последно написано“ (реф. 17 „Моят малък план“: иконка + серифно заглавие, после страницата) ── */
+.pl-dn-last { margin-top: 18px; }
+.pl-dn-h {
+  display: flex; align-items: center; gap: 10px; margin: 0 0 10px 2px;
+  font-family: var(--pl-serif, Georgia, serif); font-weight: 700; font-size: 19px; line-height: 1.15; color: var(--pl-navy, #1d2a5c);
+}
+.pl-dn-h > span { flex: 1; min-width: 0; }
+.pl-dn-h::after { content: ''; flex: 0 1 60px; height: 2px; border-radius: 2px; background: linear-gradient(90deg, #d6b480, rgba(214, 180, 128, 0)); }
+/* страницата на тефтера (реф. 11): хартия с редове, гръбче вляво, купчина листа отдолу, каишка със сърце */
+.pl-dn-page {
+  position: relative; margin: 0 4px 10px 0; padding: 12px 34px 12px 20px;
+  border-radius: 6px 18px 18px 6px;
+  background:
+    linear-gradient(90deg, rgba(160, 120, 90, .16) 0, rgba(160, 120, 90, 0) 16px),           /* прегъвът към гръбчето */
+    #fffdf7;
+  box-shadow:
+    inset 3px 0 0 #eadcc9,
+    1.5px 2px 0 #f4e9da, 3px 4px 0 #eadbc6, 4.5px 6px 0 #e2cfb6,                          /* ръбовете на листата отдолу */
+    0 12px 18px rgba(110, 76, 52, .16);
+}
+/* каишката с копче-сърце (реф. 11 — ленената каишка на тефтера със златното сърце) */
+.pl-dn-clasp {
+  position: absolute; top: 50%; right: -9px; width: 34px; height: 30px; margin-top: -15px;
+  border-radius: 9px 0 0 9px;
+  background: #e8d9c3 url(../img/art/felt.webp) 0 0 / 80px 80px; background-blend-mode: multiply;
+  box-shadow: inset 0 0 0 1px #d3bea0, inset 0 0 0 3px #efe3d2, 0 2px 4px rgba(110, 76, 52, .22);
+  outline: 1px dashed rgba(170, 135, 100, .6); outline-offset: -6px;          /* шевът на каишката */
+}
+.pl-dn-clasp::before {   /* златното копче-сърце: маска-сърце, пълна с метален градиент */
+  content: ''; position: absolute; left: 7px; top: 50%; width: 18px; height: 16px; margin-top: -8px;
+  background: linear-gradient(155deg, #fff1b8 0, #f0c75e 35%, #cf9a35 70%, #a8761f 100%);
+  -webkit-mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 22'%3E%3Cpath d='M12 21S3.5 15.6 1.6 10.6C.2 6.9 2.5 2.2 6.8 2.2c2.3 0 3.9 1.3 5.2 3.1 1.3-1.8 2.9-3.1 5.2-3.1 4.3 0 6.6 4.7 5.2 8.4C20.5 15.6 12 21 12 21z'/%3E%3C/svg%3E") center / contain no-repeat;
+  mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 22'%3E%3Cpath d='M12 21S3.5 15.6 1.6 10.6C.2 6.9 2.5 2.2 6.8 2.2c2.3 0 3.9 1.3 5.2 3.1 1.3-1.8 2.9-3.1 5.2-3.1 4.3 0 6.6 4.7 5.2 8.4C20.5 15.6 12 21 12 21z'/%3E%3C/svg%3E") center / contain no-repeat;
+}
+.pl-dn-clasp::after {    /* блясъкът върху копчето */
+  content: ''; position: absolute; left: 10px; top: 50%; width: 5px; height: 3px; margin-top: -5px; border-radius: 50%;
+  background: rgba(255, 255, 255, .85); transform: rotate(-25deg);
+}
+.pl-dn-txt {
+  margin: 0; overflow-wrap: anywhere;
+  font-family: var(--pl-serif, Georgia, serif); font-style: italic; font-size: 16.5px; line-height: 27px; color: var(--pl-navy, #1d2a5c);
+  /* линиите на страницата: всеки ред текст стои на своя линия */
+  background: repeating-linear-gradient(180deg, transparent 0, transparent 26px, rgba(170, 140, 200, .34) 26px, rgba(170, 140, 200, .34) 27px);
+}
+/* 🔢 цифрите — Nunito (старинните цифри на Georgia: „0“ се чете „о“) */
+.pl-dn-n { font-family: Nunito, Nunito-fallback, system-ui, sans-serif; font-weight: 600; font-variant-numeric: lining-nums; }
+.pl-dn-last[data-s="empty"] .pl-dn-txt, .pl-dn-last[data-s="lock"] .pl-dn-txt { font-style: normal; font-weight: 700; color: var(--pl-ink, #3b3f5c); }
+.pl-dn-meta { display: block; margin-top: 6px; font-size: 12.5px; font-weight: 800; line-height: 1.3; color: #5d596f; font-variant-numeric: lining-nums; }
+
+/* ── розовото „Пиши“ — гелът е .pl-gel (pl-ui.css); тук само формата: хапче с плюшен молив и › ── */
+#roRoom .pl-dn-write {
+  display: flex; align-items: center; justify-content: center; gap: 12px;
+  width: 100%; min-height: 58px; margin: 18px 0 0; padding: 0 12px 0 10px;
+  border-radius: 999px; cursor: pointer;
+  font: 800 20px/1 Nunito, Nunito-fallback, system-ui, sans-serif; letter-spacing: .2px;
+  -webkit-tap-highlight-color: transparent;
+}
+.pl-dn-wt { flex: 1; text-align: center; margin-right: 26px; }
+.pl-dn-write > b {
+  display: grid; place-items: center; width: 30px; height: 30px; border-radius: 50%;
+  background: rgba(255, 255, 255, .95); color: #b8376f; font-size: 21px; line-height: 1; text-shadow: none;
+  box-shadow: 0 1px 0 rgba(120, 20, 60, .25);
+}
+.pl-dn-priv { margin: 12px 0 0; font-size: 12.5px; font-weight: 700; text-align: center; color: #5d596f; }
+
+/* по-тесен телефон (360 px): личицата се свиват, да не прелее */
+@media (max-width: 370px) {
+  .pl-dn-face { width: 52px; height: 52px; font-size: 25px; }
+  .pl-dn-q { font-size: 29px; }
+  #roRoom .pl-dn-ml.pl-soft { font-size: 10.5px; padding: 4px 5px; min-width: 48px; }
+}
+
+/* ═══ НОЩ (21:00–7:00) — филцът е нощно синьо (pl-ui.css), пастелните копчета светят като стикери ═══ */
+html[data-theme="dark"] .pl-dn-ribbon { filter: drop-shadow(0 3px 3px rgba(0, 0, 0, .35)) brightness(.95); }
+html[data-theme="dark"] .pl-dn-eye { color: #fff; }       /* и невидимата запетая за четеца (.pl-dn-sr) — да не мери 1.2:1 */
+html[data-theme="dark"] .pl-dn-eye small { color: #c9cbe3; }
+html[data-theme="dark"] .pl-dn-eye b { color: #fff; }
+/* плюшените иконки нощем — бял кръг под тях (белият фон на спрайта) */
+html[data-theme="dark"] .pl-dn-ic, html[data-theme="dark"] .pl-dn-ic2, html[data-theme="dark"] .pl-dn-ico { background-color: #fff; background-blend-mode: normal; box-shadow: 0 2px 0 #18214a; }
+html[data-theme="dark"] .pl-dn-last[data-s="lock"] .pl-dn-ic2 { background-color: #fff; }
+html[data-theme="dark"] .pl-dn-lotus { mix-blend-mode: normal; width: 52px; height: 52px; border-radius: 50%; background-color: #fff; background-size: 400% 400%; background-position: 66.667% 0%; box-shadow: 0 2px 0 #18214a; }
+html[data-theme="dark"] .pl-dn-q { color: #fff; }
+html[data-theme="dark"] .pl-dn-q i { color: #f59cbb; }
+html[data-theme="dark"] .pl-dn-face { border-color: #e9ebf8; box-shadow: 0 3px 0 #18214a, 0 8px 14px rgba(0, 0, 0, .35); }
+html[data-theme="dark"] .pl-dn-m[aria-pressed="true"] .pl-dn-face { box-shadow: 0 0 0 4.5px #f59cbb, 0 3px 0 4.5px #c96f95, 0 12px 18px rgba(0, 0, 0, .4); }
+html[data-theme="dark"] .pl-dn.has-mood .pl-dn-m[aria-pressed="false"] .pl-dn-face { opacity: .62; }
+html[data-theme="dark"] .pl-dn-st { color: #c9cbe3; }
+html[data-theme="dark"] .pl-dn-st.is-reply { background-color: #3d2f63; box-shadow: inset 0 0 0 1.5px rgba(245, 156, 187, .45), 0 2px 0 #18214a; color: #fff; }
+html[data-theme="dark"] .pl-dn-st.is-reply::before { background: #3d2f63; box-shadow: -1.5px -1.5px 0 rgba(245, 156, 187, .45); }
+html[data-theme="dark"] #roRoom .pl-dn-m:focus-visible, html[data-theme="dark"] #roRoom .pl-dn-link:focus-visible, html[data-theme="dark"] #roRoom .pl-dn-write:focus-visible { outline-color: #f59cbb; }
+html[data-theme="dark"] .pl-dn-h { color: #fff; }
+html[data-theme="dark"] .pl-dn-page {
+  background: linear-gradient(90deg, rgba(0, 0, 0, .22) 0, rgba(0, 0, 0, 0) 16px), #1e2858;
+  box-shadow: inset 3px 0 0 #2f3b78, 1.5px 2px 0 #2a3570, 3px 4px 0 #243066, 4.5px 6px 0 #1d2858, 0 12px 18px rgba(0, 0, 0, .3);
+}
+html[data-theme="dark"] .pl-dn-clasp { background-color: #b9a88f; }
+html[data-theme="dark"] .pl-dn-txt { color: #fff; background: repeating-linear-gradient(180deg, transparent 0, transparent 26px, rgba(255, 255, 255, .15) 26px, rgba(255, 255, 255, .15) 27px); }
+html[data-theme="dark"] .pl-dn-last[data-s="empty"] .pl-dn-txt, html[data-theme="dark"] .pl-dn-last[data-s="lock"] .pl-dn-txt { color: #e8e9f5; }
+html[data-theme="dark"] .pl-dn-meta, html[data-theme="dark"] .pl-dn-priv { color: #c9cbe3; }
+
+@media (prefers-reduced-motion: reduce) {
+  .pl-dn-face { transition: none; }
+}

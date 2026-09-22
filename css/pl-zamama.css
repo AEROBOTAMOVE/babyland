@@ -1,0 +1,248 @@
+/* ═══════════════════════════════════════════════════════════════════════════════
+   💗 PREMIUM „5 МИНУТИ ЗА МЕН“ · „Жената в мен“ (референция 17 „И ти си важна“), 22.09.2026
+   Блокът е от js/pl-zamama.js — под заглавието на сцената (.pl-rhero):
+     · кремав филцов медальон със ЗЛАТЕН ръб (метален градиент, не плосък цвят), златни завъртулки
+       с гел сърчице отгоре, клонки с листа и розови цветчета отстрани, плюшен лотос (ico-e [0,2]),
+       „5 минути / за мен“ и кръгъл розов гел ▶ (дишане 4-7-8);
+     · филцова карта „От какво имаш нужда?“ — 4 плюшени кръга с пастелен купол + филцово хапче-надпис;
+     · „Моят малък план“ — вдлъбнат кремав лист с два реда-отметки (кръгче → розов гел с ✓, сърце вдясно);
+     · широк розов гел „Избери своя момент ›“.
+   МАТЕРИАЛИТЕ са от css/pl-ui.css (.pl-felt, .pl-soft, .pl-gel) — тук само форма и разположение.
+   🪤 .pl-felt налага border-radius: 26px !important (pl-ui.css:187) — медальонът е кръг, затова по-силен
+      селектор (html body .pl-zm … .pl-felt.pl-felt) + !important. Шевът (::after) става тънък златен кръг.
+   Цифрите („5“, „4-7-8“, датата) са на Nunito: на Georgia са „старинни“ (0 се чете „о“).
+   ПЪТ НАЗАД: махни <link href="css/pl-zamama.css"> и <script src="js/pl-zamama.js"> от index.html.
+   ═══════════════════════════════════════════════════════════════════════════════ */
+
+/* 🪤 #roRoom е flex колона с фиксирана височина — без flex:none блокът се свива. */
+#roRoom > .pl-zm {
+  flex: none; display: flex; flex-direction: column; align-items: stretch; gap: 16px; margin: 0; min-width: 0;
+  color: var(--ui-ink, #1d2a5c);
+  font-family: Nunito, Nunito-fallback, system-ui, sans-serif;
+}
+.pl-zm-sr { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); clip-path: inset(50%); white-space: nowrap; }
+.pl-zm svg { display: block; }
+.pl-zm .pl-art { background-repeat: no-repeat; background-size: 400% 400%; }
+
+/* ══ 1 · МЕДАЛЬОНЪТ ══ */
+.pl-zm-medal {
+  position: relative; align-self: center; flex: none;
+  width: min(292px, 100%); aspect-ratio: 1 / 1; margin: 18px 0 0; padding: 8px; border-radius: 50%;
+  /* злато: светъл блик горе вляво, тъмно дъно вдясно — ръбът е обла метална рамка, не черта */
+  background:
+    radial-gradient(70% 55% at 30% 18%, rgba(255, 250, 225, .85) 0, rgba(255, 250, 225, 0) 60%),
+    conic-gradient(from 200deg, #b8894a, #f6e3aa, #d2a95e, #9f7535, #e9cf8b, #c29352, #f3dfa4, #b8894a);
+  box-shadow:
+    0 22px 40px rgba(110, 76, 52, .30), 0 6px 12px rgba(110, 76, 52, .18),
+    inset 0 2px 1px rgba(255, 255, 255, .75), inset 0 -3px 5px rgba(110, 70, 20, .45);
+}
+html body .pl-zm .pl-zm-disc.pl-felt.pl-felt {
+  position: relative; width: 100%; height: 100%; border-radius: 50% !important;
+  display: flex; flex-direction: column; align-items: center; justify-content: flex-start;
+  padding: 14px 18px 0; text-align: center; overflow: visible;
+  border: 0 !important;
+  /* възглавничка: светъл купол горе, топла сянка по ръба отвътре */
+  box-shadow: inset 0 0 0 3px #fff8ea, inset 0 10px 22px rgba(255, 255, 255, .9), inset 0 -16px 30px rgba(170, 120, 70, .20), inset 0 0 0 1px rgba(160, 120, 60, .35) !important;
+}
+html body .pl-zm .pl-zm-disc.pl-felt.pl-felt::after { inset: 10px; border-radius: 50%; border: 1.5px solid rgba(201, 160, 90, .6); }
+.pl-zm-disc::before {
+  content: ''; position: absolute; inset: 0; border-radius: 50%; pointer-events: none;
+  background: radial-gradient(58% 42% at 42% 20%, rgba(255, 255, 255, .7) 0, rgba(255, 255, 255, 0) 72%);
+}
+.pl-zm-disc > * { position: relative; z-index: 1; }
+.pl-zm-orn { position: absolute !important; top: -22px; left: 50%; width: 112px; height: 38px; margin-left: -56px; z-index: 2 !important; filter: drop-shadow(0 2px 2px rgba(110, 70, 30, .25)); }
+.pl-zm-orn svg { width: 100%; height: 100%; }
+.pl-zm-br { position: absolute !important; top: 36%; width: 40px; height: 124px; z-index: 0 !important; filter: drop-shadow(0 1.5px 1px rgba(70, 90, 60, .22)); }
+.pl-zm-br svg { width: 100%; height: 100%; }
+.pl-zm-br-l { left: 16px; }
+.pl-zm-br-r { right: 16px; transform: scaleX(-1); }
+/* плюшеният лотос върху филца: multiply маха белия фон на спрайта */
+.pl-zm-lotus { flex: none; width: 50px; height: 50px; margin: 2px 0 0; mix-blend-mode: multiply; }
+.pl-zm-t {
+  margin: 0; font-family: var(--pl-serif, Georgia, serif); font-weight: 700; font-size: 27px; line-height: 1.02;
+  color: var(--ui-ink, #1d2a5c); letter-spacing: -.3px; hyphens: none;
+}
+.pl-zm-5 { font-family: Nunito, Nunito-fallback, system-ui, sans-serif; font-weight: 900; font-size: 34px; line-height: .9; font-variant-numeric: lining-nums; letter-spacing: 0; }
+#roRoom .pl-zm-play {
+  display: flex; flex-direction: column; align-items: center; gap: 3px; margin: 8px 0 0; padding: 2px 14px 4px; min-width: 150px; min-height: 44px;
+  background: transparent; border: 0; border-radius: 22px; cursor: pointer; color: var(--ui-ink, #1d2a5c); font: inherit;
+  -webkit-tap-highlight-color: transparent;
+}
+#roRoom .pl-zm-play:focus-visible { outline: none; box-shadow: var(--ui-ring, 0 0 0 4px rgba(217, 90, 142, .28)); }
+/* кръглият гел (материалът е .pl-gel от pl-ui.css) + бял пръстен-ореол като на референцията */
+html body .pl-zm .pl-zm-gel.pl-gel.pl-gel {
+  display: grid; place-items: center; width: 70px; height: 70px; border-radius: 50%;
+  box-shadow: 0 0 0 5px rgba(255, 255, 255, .92), 0 0 0 6.5px rgba(229, 166, 190, .7),
+    inset 0 1.5px 0 rgba(255, 255, 255, .55), inset 0 -4px 0 rgba(120, 20, 60, .22), 0 5px 0 5px rgba(200, 150, 160, .25), 0 12px 22px rgba(200, 69, 122, .35) !important;
+}
+.pl-zm-gel svg { width: 30px; height: 30px; margin-left: 4px; fill: #fff; filter: drop-shadow(0 1px 0 rgba(120, 20, 60, .35)); }
+#roRoom .pl-zm-play:active .pl-zm-gel { transform: translateY(3px); }
+.pl-zm-pl { margin-top: 7px; font-weight: 800; font-size: 15.5px; line-height: 1.15; color: var(--ui-ink, #1d2a5c); }
+.pl-zm-sub { font-weight: 700; font-size: 12px; line-height: 1.2; color: #5d596f; font-variant-numeric: lining-nums; }
+.pl-zm-line { flex: none; width: 58px; height: 2px; margin-top: 5px; border-radius: 2px; background: linear-gradient(90deg, rgba(201, 160, 90, 0), #c9a05a 30%, #c9a05a 70%, rgba(201, 160, 90, 0)); }
+
+/* ══ 2 · КАРТАТА „ОТ КАКВО ИМАШ НУЖДА?“ (филцът е от .pl-felt) ══ */
+.pl-zm-card { padding: 18px 12px 16px; }
+.pl-zm-card > * { position: relative; }   /* над шева (::after на .pl-felt) */
+.pl-zm-h {
+  display: flex; align-items: center; justify-content: center; gap: 10px; margin: 0 0 14px;
+  font-family: var(--pl-serif, Georgia, serif); font-weight: 700; font-size: 19.5px; line-height: 1.15; color: var(--ui-ink, #1d2a5c); letter-spacing: -.2px; text-align: center;
+}
+.pl-zm-rule { flex: 0 1 34px; height: 2px; border-radius: 2px; background: linear-gradient(90deg, rgba(201, 160, 90, 0), #c9a05a); }
+.pl-zm-rule:last-child { background: linear-gradient(90deg, #c9a05a, rgba(201, 160, 90, 0)); }
+
+/* 🪤 мерено 22.09: „Вдъхновение“ = 92 px в колона от 81 px (равни колони) — прелива в съседа.
+   minmax(min-content, 1fr): всяка колона поне колкото надписа си, останалото се дели поравно. */
+.pl-zm-needs { display: grid; grid-template-columns: repeat(4, minmax(min-content, 1fr)); gap: 4px; }
+#roRoom .pl-zm-need {
+  display: flex; flex-direction: column; align-items: center; min-width: 0; margin: 0; padding: 0 0 2px;
+  background: transparent; border: 0; cursor: pointer; font: inherit; color: inherit; -webkit-tap-highlight-color: transparent;
+}
+/* плюшен кръг: пастелен купол с блик горе, бял ръб, мека сянка — предмет, не кръгче */
+.pl-zm-nic {
+  position: relative; display: grid; place-items: center; width: 70px; height: 70px; border-radius: 50%;
+  background: radial-gradient(75% 70% at 38% 28%, var(--zm-hi) 0, var(--zm-t) 58%, var(--zm-lo) 100%);
+  box-shadow: inset 0 0 0 3px rgba(255, 255, 255, .95), inset 0 -6px 12px rgba(120, 80, 110, .14), 0 0 0 1.5px var(--zm-rim), 0 7px 14px rgba(110, 76, 52, .18);
+  transition: transform .14s ease;
+}
+/* 🪤 квадратът 56 px е по-широк от кръга 70 px в ъглите (√2·28 = 39.6 > 35) — нощем белите ъгли стърчаха (снимка d1) */
+.pl-zm-nic i { width: 56px; height: 56px; border-radius: 50%; background-repeat: no-repeat; background-size: 400% 400%; mix-blend-mode: multiply; }
+.pl-zm-nic.t-lav    { --zm-hi: #f4efff; --zm-t: #ddd0f5; --zm-lo: #c6b3ec; --zm-rim: #cbb8ea; }
+.pl-zm-nic.t-pink   { --zm-hi: #fff1f6; --zm-t: #fbd9e6; --zm-lo: #f3bcd1; --zm-rim: #efbfd2; }
+.pl-zm-nic.t-rose   { --zm-hi: #fdf0f5; --zm-t: #f2dbe7; --zm-lo: #e4c1d4; --zm-rim: #e5c6d7; }
+.pl-zm-nic.t-butter { --zm-hi: #fffbeb; --zm-t: #fbefcc; --zm-lo: #f1dca3; --zm-rim: #eed9a6; }
+#roRoom .pl-zm-need:active .pl-zm-nic { transform: translateY(2px) scale(.97); }
+/* надписът — малко филцово хапче, застъпва дъното на кръга (материалът е .pl-soft) */
+html body .pl-zm .pl-zm-nl.pl-soft.pl-soft {
+  /* 🪤 мерено 22.09: с 6 px отстрани сборът на надписите беше 340 px в 338 px — последното хапче опираше в шева */
+  display: block; margin: -12px 0 0; padding: 5px 4px; min-width: 100%; border-radius: 999px;
+  font-family: var(--pl-serif, Georgia, serif); font-weight: 700; font-size: 12.5px; line-height: 1.15; letter-spacing: -.25px;
+  white-space: nowrap; text-align: center; position: relative; z-index: 1;
+}
+#roRoom .pl-zm-need:focus-visible { outline: none; }
+#roRoom .pl-zm-need:focus-visible .pl-zm-nic { box-shadow: var(--ui-ring, 0 0 0 4px rgba(217, 90, 142, .28)), inset 0 0 0 3px #fff; }
+
+/* ── „Моят малък план“ — вдлъбнат кремав лист ── */
+.pl-zm-plan {
+  margin-top: 14px; padding: 6px 8px 8px; border-radius: 22px;
+  background: linear-gradient(180deg, #fffdf8 0, #fff8ef 100%);
+  border: 1px solid rgba(214, 186, 158, .55);
+  box-shadow: inset 0 2px 5px rgba(110, 76, 52, .08), 0 1px 0 #fff;
+}
+#roRoom .pl-zm-ph {
+  display: flex; align-items: center; gap: 10px; width: 100%; min-height: 58px; margin: 0; padding: 4px 6px 4px 2px;
+  background: transparent; border: 0; border-radius: 16px; cursor: pointer; text-align: left; font: inherit; color: var(--ui-ink, #1d2a5c);
+  -webkit-tap-highlight-color: transparent;
+}
+#roRoom .pl-zm-ph:focus-visible { outline: none; box-shadow: var(--ui-ring, 0 0 0 4px rgba(217, 90, 142, .28)); }
+.pl-zm-clip { flex: none; width: 50px; height: 50px; mix-blend-mode: multiply; transform: rotate(-6deg); }
+.pl-zm-pt { flex: 1; min-width: 0; display: flex; flex-direction: column; gap: 1px; }
+.pl-zm-pt b { font-family: var(--pl-serif, Georgia, serif); font-weight: 700; font-size: 18.5px; line-height: 1.12; letter-spacing: -.2px; }
+.pl-zm-date { font-size: 13px; font-weight: 800; line-height: 1.25; color: #4a4660; font-variant-numeric: lining-nums; }
+.pl-zm-chev { flex: none; width: 20px; height: 20px; fill: none; stroke: currentColor; stroke-width: 2.3; stroke-linecap: round; stroke-linejoin: round; }
+.pl-zm-ph .pl-zm-chev { opacity: .8; }
+
+.pl-zm-rows { display: flex; flex-direction: column; gap: 7px; }
+#roRoom .pl-zm-row {
+  display: flex; align-items: center; gap: 10px; width: 100%; min-width: 0; min-height: 60px; margin: 0; padding: 7px 12px 7px 10px;
+  background: #fff; border: 1px solid #f0e2d6; border-radius: 16px; cursor: pointer; text-align: left; font: inherit; color: var(--ui-ink, #1d2a5c);
+  box-shadow: 0 1.5px 0 rgba(203, 176, 150, .55), 0 4px 10px rgba(110, 76, 52, .06);
+  -webkit-tap-highlight-color: transparent; transition: transform .12s ease, box-shadow .12s ease, background-color .2s ease;
+}
+#roRoom .pl-zm-row:active { transform: translateY(1.5px); box-shadow: 0 0 0 rgba(203, 176, 150, .55), 0 2px 5px rgba(110, 76, 52, .06); }
+#roRoom .pl-zm-row:focus-visible { outline: none; box-shadow: var(--ui-ring, 0 0 0 4px rgba(217, 90, 142, .28)); }
+/* кръгчето: празно = вдлъбнато; отметнато = малък розов гел с бяла отметка */
+.pl-zm-box {
+  flex: none; display: grid; place-items: center; width: 28px; height: 28px; border-radius: 50%;
+  background: #fffdf9; border: 2px solid #c9b3a6; box-shadow: inset 0 2px 3px rgba(110, 76, 52, .14);
+  transition: background-color .2s ease, border-color .2s ease;
+}
+.pl-zm-box svg { width: 17px; height: 17px; fill: none; stroke: #fff; stroke-width: 3; stroke-linecap: round; stroke-linejoin: round; opacity: 0; transform: scale(.4); transition: opacity .18s ease, transform .22s cubic-bezier(.3, 1.5, .5, 1); }
+.pl-zm-row[aria-checked="true"] .pl-zm-box {
+  border-color: #b93a6e;
+  background: radial-gradient(90% 60% at 50% 0, rgba(255, 255, 255, .6) 0, rgba(255, 255, 255, 0) 60%), linear-gradient(180deg, #f39bbb 0, #d95a8e 45%, #c8457a 100%);
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, .5), 0 2px 0 #a83566;
+}
+.pl-zm-row[aria-checked="true"] .pl-zm-box svg { opacity: 1; transform: none; }
+/* иконката на реда в пастелен кръг: бялата чаша върху бял ред не се виждаше (снимка v1) */
+.pl-zm-ric {
+  flex: none; width: 42px; height: 42px; border-radius: 50%;
+  background-color: var(--zm-t, #fde6ef); background-blend-mode: multiply;
+  box-shadow: inset 0 0 0 2px rgba(255, 255, 255, .85), 0 2px 5px rgba(110, 76, 52, .12);
+}
+.pl-zm-ric.t-sky { --zm-t: #dfeafb; }
+.pl-zm-ric.t-mint { --zm-t: #dff2e7; }
+.pl-zm-rt { flex: 1; min-width: 0; display: flex; flex-direction: column; gap: 1px; }
+.pl-zm-rt b { font-weight: 800; font-size: 16px; line-height: 1.2; }
+.pl-zm-rt small { font-weight: 700; font-size: 12.5px; line-height: 1.25; color: #5d596f; font-variant-numeric: lining-nums; }
+/* нулата без запис е ПОКАНА (розово, като избраното в pl-ui.css), не „0“ */
+.pl-zm-rt small.is-empty { color: var(--ui-pick-ink, #9e2f5f); }
+.pl-zm-heart { flex: none; width: 26px; height: 26px; }
+.pl-zm-heart svg { width: 100%; height: 100%; fill: none; stroke: #d95a8e; stroke-width: 1.9; stroke-linejoin: round; transition: fill .2s ease; }
+.pl-zm-row[aria-checked="true"] .pl-zm-heart svg { fill: #f59cbb; stroke: #c8457a; }
+
+/* ── „Избери своя момент“ — широкият розов гел (материалът е .pl-gel) ── */
+#roRoom .pl-zm-go {
+  display: flex; align-items: center; justify-content: center; gap: 10px; width: 100%; min-height: 60px; margin: 16px 0 0; padding: 8px 18px;
+  border-radius: 999px; cursor: pointer;
+  font-family: var(--pl-serif, Georgia, serif); font-weight: 700; font-size: 19px; line-height: 1.15; letter-spacing: -.1px;
+  -webkit-tap-highlight-color: transparent;
+}
+.pl-zm-go > i { flex: none; width: 26px; height: 26px; }
+.pl-zm-go > i svg { width: 100%; height: 100%; fill: #fff; filter: drop-shadow(0 1px 0 rgba(120, 20, 60, .35)); }
+.pl-zm-go .pl-zm-chev { width: 18px; height: 18px; stroke: #fff; stroke-width: 2.8; }
+
+/* по-тесен телефон (≤ 360 px): плочките и медальонът се свиват, без да прелеят */
+@media (max-width: 360px) {
+  .pl-zm-nic { width: 62px; height: 62px; }
+  .pl-zm-nic i { width: 50px; height: 50px; }
+  html body .pl-zm .pl-zm-nl.pl-soft.pl-soft { font-size: 11.5px; letter-spacing: -.35px; padding: 4px 3px; }
+  .pl-zm-t { font-size: 25px; }
+}
+/* по-широк телефон: надписите растат */
+@media (min-width: 410px) {
+  html body .pl-zm .pl-zm-nl.pl-soft.pl-soft { font-size: 13.5px; }
+  .pl-zm-nic { width: 76px; height: 76px; }
+  .pl-zm-nic i { width: 60px; height: 60px; }
+}
+
+/* ══ НОЩ — същите предмети в нощно синьо; златото остава злато, но по-меко ══ */
+html[data-theme="dark"] .pl-zm-medal {
+  background:
+    radial-gradient(70% 55% at 30% 18%, rgba(255, 245, 210, .45) 0, rgba(255, 245, 210, 0) 60%),
+    conic-gradient(from 200deg, #8f6a38, #d9bf82, #b08948, #7b5a2a, #c9ad6c, #9c7640, #d4b979, #8f6a38);
+  box-shadow: 0 22px 40px rgba(0, 0, 0, .45), inset 0 2px 1px rgba(255, 255, 255, .35), inset 0 -3px 5px rgba(0, 0, 0, .45);
+}
+html[data-theme="dark"] body .pl-zm .pl-zm-disc.pl-felt.pl-felt {
+  box-shadow: inset 0 0 0 3px rgba(255, 255, 255, .08), inset 0 12px 24px rgba(255, 255, 255, .06), inset 0 -16px 30px rgba(0, 0, 0, .25) !important;
+}
+html[data-theme="dark"] body .pl-zm .pl-zm-disc.pl-felt.pl-felt::after { border-color: rgba(217, 191, 130, .55); }
+html[data-theme="dark"] .pl-zm-disc::before { background: radial-gradient(58% 42% at 42% 20%, rgba(255, 255, 255, .10) 0, rgba(255, 255, 255, 0) 72%); }
+/* нощем — бял кръг под плюшената иконка (multiply върху синьото би я изгасил) */
+html[data-theme="dark"] .pl-zm-lotus, html[data-theme="dark"] .pl-zm-clip {
+  mix-blend-mode: normal; background-color: #fff; border-radius: 50%; box-shadow: 0 0 0 2px rgba(255, 255, 255, .25), 0 3px 8px rgba(0, 0, 0, .3);
+}
+html[data-theme="dark"] .pl-zm-clip { transform: none; }
+html[data-theme="dark"] .pl-zm-ric { background-color: #fff; box-shadow: 0 0 0 2px rgba(255, 255, 255, .25), 0 3px 8px rgba(0, 0, 0, .3); }
+html[data-theme="dark"] .pl-zm-t, html[data-theme="dark"] .pl-zm-h, html[data-theme="dark"] #roRoom .pl-zm-play,
+html[data-theme="dark"] .pl-zm-pl, html[data-theme="dark"] #roRoom .pl-zm-ph { color: #fff; }
+html[data-theme="dark"] .pl-zm-sub, html[data-theme="dark"] .pl-zm-date { color: #d6d8ee; }
+html[data-theme="dark"] body .pl-zm .pl-zm-gel.pl-gel.pl-gel {
+  box-shadow: 0 0 0 5px rgba(255, 255, 255, .16), 0 0 0 6.5px rgba(245, 156, 187, .45),
+    inset 0 1.5px 0 rgba(255, 255, 255, .55), inset 0 -4px 0 rgba(120, 20, 60, .22), 0 12px 22px rgba(0, 0, 0, .4) !important;
+}
+html[data-theme="dark"] .pl-zm-nic { background: #fff; box-shadow: inset 0 0 0 3px #fff, 0 0 0 1.5px rgba(255, 255, 255, .3), 0 7px 14px rgba(0, 0, 0, .35); }
+html[data-theme="dark"] .pl-zm-nic i { mix-blend-mode: normal; }
+html[data-theme="dark"] .pl-zm-plan { background: rgba(20, 29, 70, .55); border-color: rgba(255, 255, 255, .14); box-shadow: inset 0 2px 6px rgba(0, 0, 0, .3); }
+html[data-theme="dark"] #roRoom .pl-zm-row { background: #2b3872; border-color: rgba(255, 255, 255, .16); color: #fff; box-shadow: 0 2px 0 #18214a; }
+html[data-theme="dark"] .pl-zm-rt small { color: #d6d8ee; }
+html[data-theme="dark"] .pl-zm-rt small.is-empty { color: #ffc2d6; }
+html[data-theme="dark"] .pl-zm-box { background: #1b2554; border-color: rgba(255, 255, 255, .45); box-shadow: inset 0 2px 3px rgba(0, 0, 0, .35); }
+html[data-theme="dark"] .pl-zm-row[aria-checked="true"] .pl-zm-box { border-color: #f59cbb; }
+html[data-theme="dark"] .pl-zm-heart svg { stroke: #f59cbb; }
+html[data-theme="dark"] .pl-zm-row[aria-checked="true"] .pl-zm-heart svg { fill: #f59cbb; stroke: #ffc2d6; }
+
+/* движението е по избор */
+@media (prefers-reduced-motion: reduce) {
+  .pl-zm-box, .pl-zm-box svg, .pl-zm-nic, #roRoom .pl-zm-row, .pl-zm-heart svg { transition: none; }
+}
