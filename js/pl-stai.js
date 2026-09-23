@@ -41,8 +41,10 @@
   }
 
   function сложиИзбирач() {
-    document.querySelectorAll('.np-b[data-room], .np-b').forEach(б => {
-      const име = б.getAttribute('data-room') || (б.querySelector('.np-t') || {}).textContent;
+    document.querySelectorAll('.np-b').forEach(б => {
+      // 🪤 МЕРЕНО (izbirach): избирачът (js/nav2.js:73) пише data-r, не data-room —
+      //   затова деветте бутона оставаха без сцена (9 намерени, 0 облечени).
+      const име = б.getAttribute('data-r') || б.getAttribute('data-room') || (б.querySelector('.np-t') || {}).textContent;
       const ф = СЦЕНИ[(име || '').trim()];
       if (!ф || б.dataset.plSt) return;
       б.dataset.plSt = ф;

@@ -1,3 +1,8 @@
+/* 🪤 23.09 МЕРЕНО (nosht_novo): тъмната тема на приложението е html[data-theme="dark"]
+   (js/app.js:33 + css/dark.css). html.bl-night е ДРУГО — тихите часове (js/night.js).
+   Моите нощни правила бяха само за bl-night → в тъмна тема заглавието на картата
+   остана тъмносиньо върху тъмносин филц: контраст 1.24:1. Затова всяко нощно
+   правило тук важи И за двете. */
 /* 🪤 23.09 МЕРЕНО (fei_den2.png): премиумът слага #plHome .pl-pers (ID!) с три колони —
    на 390px третата излизаше извън екрана. Затова ВСИЧКИ мои правила тук са с #plHome. */
 /* ═══════════════════════════════════════════════════════════════════════════════
@@ -94,15 +99,15 @@ html.pl-on #plHome .pl-pers .pl-per[data-pl-fei] > .pl-fei-do {
 }
 
 /* ── нощем ── */
-html.bl-night.pl-on .pl-pers .pl-per[data-pl-fei] {
+html.bl-night.pl-on #plHome .pl-pers .pl-per[data-pl-fei], html[data-theme="dark"].pl-on #plHome .pl-pers .pl-per[data-pl-fei]{
   background: #2a2436;
   box-shadow: 0 10px 22px rgba(0, 0, 0, .4), inset 0 1px 0 rgba(255, 255, 255, .06);
 }
-html.bl-night.pl-on .pl-pers .pl-per[data-pl-fei]::after { border-color: rgba(255, 220, 190, .2); }
-html.bl-night.pl-on .pl-pers .pl-per[data-pl-fei] > b { color: #f2e9ff; }
-html.bl-night.pl-on .pl-pers .pl-per[data-pl-fei] > small { color: #ffc0d8; }
-html.bl-night.pl-on .pl-pers .pl-per[data-pl-fei] > .pl-fei-do { color: rgba(236, 232, 245, .76); }
-html.bl-night.pl-on .pl-pers .pl-per[data-pl-fei] > i { filter: drop-shadow(0 10px 14px rgba(0, 0, 0, .5)) brightness(.94); }
+html.bl-night.pl-on #plHome .pl-pers .pl-per[data-pl-fei]::after, html[data-theme="dark"].pl-on #plHome .pl-pers .pl-per[data-pl-fei]::after{ border-color: rgba(255, 220, 190, .2); }
+html.bl-night.pl-on #plHome .pl-pers .pl-per[data-pl-fei] > b, html[data-theme="dark"].pl-on #plHome .pl-pers .pl-per[data-pl-fei] > b{ color: #f2e9ff; }
+html.bl-night.pl-on #plHome .pl-pers .pl-per[data-pl-fei] > small, html[data-theme="dark"].pl-on #plHome .pl-pers .pl-per[data-pl-fei] > small{ color: #ffc0d8; }
+html.bl-night.pl-on #plHome .pl-pers .pl-per[data-pl-fei] > .pl-fei-do, html[data-theme="dark"].pl-on #plHome .pl-pers .pl-per[data-pl-fei] > .pl-fei-do{ color: rgba(236, 232, 245, .76); }
+html.bl-night.pl-on #plHome .pl-pers .pl-per[data-pl-fei] > i, html[data-theme="dark"].pl-on #plHome .pl-pers .pl-per[data-pl-fei] > i{ filter: drop-shadow(0 10px 14px rgba(0, 0, 0, .5)) brightness(.94); }
 
 @media (prefers-reduced-motion: reduce) {
   html.pl-on #plHome .pl-pers .pl-per[data-pl-fei] > i { animation: none; }
@@ -127,8 +132,8 @@ html.pl-on .horo-b[data-pl-fei] .horo-name {
   font-weight: 700;
   color: var(--pl-ink, #2b3a67);
 }
-html.bl-night.pl-on .horo-b[data-pl-fei] .horo-name { color: #f2e9ff; }
-html.bl-night.pl-on .horo-b[data-pl-fei] .horo-ball { filter: drop-shadow(0 8px 12px rgba(0, 0, 0, .5)) brightness(.93); }
+html.bl-night.pl-on .horo-b[data-pl-fei] .horo-name, html[data-theme="dark"].pl-on .horo-b[data-pl-fei] .horo-name{ color: #f2e9ff; }
+html.bl-night.pl-on .horo-b[data-pl-fei] .horo-ball, html[data-theme="dark"].pl-on .horo-b[data-pl-fei] .horo-ball{ filter: drop-shadow(0 8px 12px rgba(0, 0, 0, .5)) brightness(.93); }
 
 /* 🪤 МЕРЕНО (horo_fei.png): старите балони носят нарисувано личице (.лице с .око/.зеница/
    .усмивка, js/home.js:381) — върху феята то изглеждаше като изпъкнали очи насред тялото.
@@ -139,7 +144,7 @@ html.pl-on .horo-b[data-pl-fei] .horo-ball {
   background-color: #fdf6ec;
   background-clip: padding-box;
 }
-html.bl-night.pl-on .horo-b[data-pl-fei] .horo-ball { background-color: #2a2436; }
+html.bl-night.pl-on .horo-b[data-pl-fei] .horo-ball, html[data-theme="dark"].pl-on .horo-b[data-pl-fei] .horo-ball{ background-color: #2a2436; }
 html.pl-on .horo-b[data-pl-fei] .horo-name { margin-top: 6px; display: block; }
 html.pl-on .horo-b[data-pl-fei] .horo-badge { right: -2px; bottom: -2px; }
 
@@ -152,5 +157,5 @@ html.pl-on .horo-b[data-pl-fei] .horo-name {
   background: rgba(255, 252, 247, .82);
   box-shadow: 0 1px 0 rgba(255, 255, 255, .7);
 }
-html.bl-night.pl-on .horo-b[data-pl-fei] .horo-name { background: rgba(42, 36, 54, .82); box-shadow: none; }
+html.bl-night.pl-on .horo-b[data-pl-fei] .horo-name, html[data-theme="dark"].pl-on .horo-b[data-pl-fei] .horo-name{ background: rgba(42, 36, 54, .82); box-shadow: none; }
 html.pl-on .horo-b[data-pl-fei] .horo-badge { z-index: 5; }

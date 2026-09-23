@@ -1,3 +1,8 @@
+/* 🪤 23.09 МЕРЕНО (nosht_novo): тъмната тема на приложението е html[data-theme="dark"]
+   (js/app.js:33 + css/dark.css). html.bl-night е ДРУГО — тихите часове (js/night.js).
+   Моите нощни правила бяха само за bl-night → в тъмна тема заглавието на картата
+   остана тъмносиньо върху тъмносин филц: контраст 1.24:1. Затова всяко нощно
+   правило тук важи И за двете. */
 /* ═══════════════════════════════════════════════════════════════════════════════
    🏠 ДЕВЕТТЕ СТАИ · филцови карти с истински сцени · 23.09.2026
    Картата става филцов панел с шев; горе — плюшената сцена на стаята в арка
@@ -128,14 +133,14 @@ html.pl-on .np-b[data-pl-st]::before {
 }
 
 /* ── нощем: филцът потъмнява, снимките се смекчават ── */
-html.bl-night.pl-on .room-card[data-pl-st] {
+html.bl-night.pl-on .room-card[data-pl-st], html[data-theme="dark"].pl-on .room-card[data-pl-st]{
   background: #2a2436;
   box-shadow: 0 14px 30px rgba(0, 0, 0, .4), inset 0 1px 0 rgba(255, 255, 255, .06);
 }
-html.bl-night.pl-on .room-card[data-pl-st]::after { border-color: rgba(255, 220, 190, .22); }
-html.bl-night.pl-on .room-card[data-pl-st] h3 { color: #f2e9ff; }
-html.bl-night.pl-on .room-card[data-pl-st] p { color: rgba(236, 232, 245, .78); }
-html.bl-night.pl-on .room-card[data-pl-st] .pl-st-img { filter: brightness(.9) saturate(.95); }
+html.bl-night.pl-on .room-card[data-pl-st]::after, html[data-theme="dark"].pl-on .room-card[data-pl-st]::after{ border-color: rgba(255, 220, 190, .22); }
+html.bl-night.pl-on .room-card[data-pl-st] h3, html[data-theme="dark"].pl-on .room-card[data-pl-st] h3{ color: #f2e9ff; }
+html.bl-night.pl-on .room-card[data-pl-st] p, html[data-theme="dark"].pl-on .room-card[data-pl-st] p{ color: rgba(236, 232, 245, .78); }
+html.bl-night.pl-on .room-card[data-pl-st] .pl-st-img, html[data-theme="dark"].pl-on .room-card[data-pl-st] .pl-st-img{ filter: brightness(.9) saturate(.95); }
 
 @media (prefers-reduced-motion: reduce) {
   html.pl-on .room-card[data-pl-st] { animation: none; }
