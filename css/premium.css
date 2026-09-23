@@ -1042,32 +1042,7 @@ html[data-theme="dark"] #plHome .pl-li small { color: #c9cbe3; }
 html[data-theme="dark"] #plHome .pl-li .pl-art { background-color: #fff; background-blend-mode: normal; }
 @media (max-width: 360px) { #plHome .pl-li { padding: 7px 8px; gap: 6px; } #plHome .pl-li .pl-art { width: 28px; height: 28px; } #plHome .pl-li b { font-size: 14px; } }
 
-/* ═══ 🧹 СТАРАТА РЕКЛАМНА СТРАНИЦА ПОД НАЧАЛОТО (22.09) ═══
-   Под премиум началото стояха ~8400 px стари секции: „Едно денонощие с теб“, „Деветте вълшебни стаи“
-   (3604 px — същите девет стаи, които вече са на рафта), „Какво може Помощникът“, „Пробвай сега“,
-   „Запознай се с помощничките“, „А ти как си днес“, въпросите и инсталацията с анимираното телефонче.
-   Мама вече има всичко това в началото и в стаите; долу то само повтаря и изглежда като друго приложение.
-   Дубликатите се скриват, а ДВЕТЕ полезни (въпросите и „добави ме на телефона“) се отварят с
-   едно докосване от реда долу (js/pl-krai.js → html.pl-landing).
-   🪤 Котвите на долната лента (#стаите, #дневник) са само резерва — кликът се прехваща от app.js:241
-   и отваря стаята; проверено в кода, преди да се скрие каквото и да било.
-   ПЪТ НАЗАД: махни този блок — старата страница се връща цяла. */
-html.pl-on .day24, html.pl-on #стаите, html.pl-on .netsec, html.pl-on .askme,
-html.pl-on #помощничките, html.pl-on #дневник.journal-strip { display: none !important; }
-html.pl-on .faq, html.pl-on .install { display: none; }
-html.pl-on.pl-landing .faq, html.pl-on.pl-landing .install { display: block; }
 
-/* редът долу: две филцови копчета към скритото */
-html.pl-on main > .pl-more { display: flex; gap: 10px; margin: 0 16px 18px; }
-html.pl-on main > .pl-more button {
-  flex: 1 1 0; min-height: 48px; padding: 10px 12px; border: 0; border-radius: 20px; cursor: pointer;
-  font-family: var(--pl-serif, Georgia, serif); font-weight: 700; font-size: 14.5px; color: var(--pl-navy, #1d2a5c);
-  background-color: #fffaf3; background-image: url(../img/art/felt.webp); background-size: 160px 160px; background-blend-mode: multiply;
-  border: 1px solid rgba(214, 186, 158, .65); box-shadow: inset 0 1px 0 #fff, 0 4px 10px rgba(110, 76, 52, .12);
-  outline: 1.5px dashed rgba(196, 160, 124, .5); outline-offset: -6px;
-}
-html.pl-on main > .pl-more button:active { transform: translateY(2px); }
-html[data-theme="dark"].pl-on main > .pl-more button { background-color: #26336b; background-image: none; color: #fff; border-color: rgba(255, 255, 255, .16); outline-color: rgba(255, 255, 255, .2); }
 /* отворените „въпроси“ и „добави ме на телефона“ лягат върху кремав филц — иначе текстът е върху сцената */
 html.pl-on.pl-landing .faq, html.pl-on.pl-landing .install {
   margin: 0 12px 18px; padding: 18px 10px 22px; border-radius: 30px;
@@ -1113,3 +1088,34 @@ html[data-theme="dark"] #plHome .pl-per small { color: #c9cbe3; }
 #plHome .pl-find:active { transform: translateY(2px); }
 html[data-theme="dark"] #plHome .pl-find { background-color: rgba(31, 43, 92, .95); border-color: rgba(255, 255, 255, .14); color: #fff; box-shadow: none; }
 html[data-theme="dark"] #plHome .pl-find .pl-art { background-color: #fff; background-blend-mode: normal; }
+
+/* ═══ 🧶 СЕКЦИИТЕ НА НАЧАЛОТО СЕ ПРЕОБЛИЧАТ (23.09) ═══
+   Първо ги СКРИХ (8400 px стара реклама) — собственикът каза право: това е рязане, не преработка.
+   Сега всяка секция под началото остава, но е облечена като останалото: кремав филц с пунктирен шев,
+   сериф заглавие, меки карти. Плюшените иконки ги слага js/pl-plyush.js.
+   ПЪТ НАЗАД: махни този блок — секциите се връщат към стария си вид (нищо не се маха от страницата). */
+html.pl-on main > section:not(#todaySection):not(.pl-krai) {
+  margin: 0 12px 20px; padding: 20px 12px 24px; border-radius: 32px;
+  background-color: rgba(255, 250, 243, .93); background-image: url(../img/art/felt.webp); background-size: 160px 160px; background-blend-mode: multiply;
+  border: 1px solid rgba(214, 186, 158, .55); box-shadow: 0 10px 26px rgba(110, 76, 52, .14);
+  outline: 1.5px dashed rgba(196, 160, 124, .40); outline-offset: -9px;
+}
+html.pl-on main > section .section-title { font-family: var(--pl-serif, Georgia, serif); color: var(--pl-navy, #1d2a5c); font-size: clamp(22px, 6vw, 27px); line-height: 1.15; }
+html.pl-on main > section .section-sub { color: var(--pl-ink-soft, #6a6682); font-size: 14.5px; }
+/* картите в „Деветте вълшебни стаи“ — кремав филц с арка, както рафта горе */
+html.pl-on .rooms .room-card {
+  background-color: #fffdfb !important; border: 1px solid rgba(241, 228, 217, .95) !important; border-radius: 26px !important;
+  box-shadow: inset 0 1px 0 #fff, 0 6px 14px rgba(110, 76, 52, .14) !important;
+}
+html.pl-on .rooms .room-card h3, html.pl-on .rooms .room-card .rc-t { font-family: var(--pl-serif, Georgia, serif); color: var(--pl-navy, #1d2a5c); }
+html.pl-on .rooms .scene-wrap, html.pl-on .rooms .scene { border-radius: 40px 40px 14px 14px !important; overflow: hidden; }
+/* личицата в „А ти как си днес?“ и хапчетата на телефона */
+html.pl-on .journal-strip .mood { background: #fffdfb; border: 1px solid rgba(241, 228, 217, .95); border-radius: 18px; }
+html.pl-on .install .pt-btn {
+  background-color: #fffaf3; background-image: url(../img/art/felt.webp); background-size: 160px 160px; background-blend-mode: multiply;
+  border: 1px solid rgba(214, 186, 158, .6); border-radius: 999px; color: var(--pl-navy, #1d2a5c); min-height: 44px;
+}
+html.pl-on .install .pt-btn.active { background-color: #fde6ef; color: #9e2f5f; box-shadow: inset 0 0 0 1.5px #f0b7cd; }
+html[data-theme="dark"].pl-on main > section:not(#todaySection):not(.pl-krai) { background-color: rgba(31, 43, 92, .95); background-image: none; border-color: rgba(255, 255, 255, .14); outline-color: rgba(255, 255, 255, .18); }
+html[data-theme="dark"].pl-on .rooms .room-card { background-color: rgba(35, 47, 99, .95) !important; border-color: rgba(255, 255, 255, .14) !important; }
+html[data-theme="dark"].pl-on .journal-strip .mood { background: rgba(35, 47, 99, .95); border-color: rgba(255, 255, 255, .14); }

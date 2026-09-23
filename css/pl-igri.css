@@ -214,11 +214,18 @@
 .pl-ig-drawer.d-first { background: linear-gradient(180deg, #e6f3e7 0, #cfe5d4 100%); }
 .pl-ig-drawer.d-box { background: linear-gradient(180deg, #e5edf9 0, #cddcf1 100%); }
 /* 🪤 22.09, ВТОРИ КРЪГ (находка на проверителя): „Кутия за | спомени“ се пречупваше на два реда,
-   а в реф. 1 надписът е на ЕДИН. Тук се прави само МЯСТОТО (иконката 42→38, по-тесни отстъпи);
-   самата големина я мери единРед() в js/pl-igri.js с истинския шрифт и я слага еднаква на двете. */
-.pl-ig-drawer i { width: 38px; height: 38px; }
-.pl-ig-drawer span { flex: 1; min-width: 0; font-family: var(--pl-serif, Georgia, serif); font-size: 15px; font-weight: 700; line-height: 1.15; }
-.pl-ig-drawer em { font-style: normal; font-size: 21px; line-height: 1; margin-right: -2px; }
+   а в реф. 1 надписът е на ЕДИН. МЕРЕНО (ag2_igri_chekm_mer.js, 390px, истинският Georgia):
+   „Кутия за спомени“ е 143.6px при 15px, а мястото до стрелката е 98px — един ред би искал
+   10.9px, дори иконката да стане 26px (тогава мястото е 110px → 11.25px). Толкова дребен серифен
+   надпис е нечетим за мама нощем, а стъпването на иконката НАД надписа прави чекмеджето 112px
+   високо — в реф. 1 то е ниско и широко (≈57px), тоест по-голямо отклонение от два реда.
+   Затова: вървим по ПРОПОРЦИЯТА на референцията (там надписът е ≈12.3px, а не 15px) — 13px и
+   иконка 34px. Така „Първите пъти“ (98.6px в 102px) влиза на ЕДИН ред, а „Кутия за спомени“
+   остава на два, но стеснени и без да мачкат стрелката. На по-широк телефон единРед() в
+   js/pl-igri.js ги слага И ДВЕТЕ на един ред — щом геометрията позволи, референцията се връща. */
+.pl-ig-drawer i { width: 34px; height: 34px; }
+.pl-ig-drawer span { flex: 1; min-width: 0; font-family: var(--pl-serif, Georgia, serif); font-size: 13px; font-weight: 700; line-height: 1.2; }
+.pl-ig-drawer em { font-style: normal; font-size: 20px; line-height: 1; margin-right: -1px; opacity: .8; }
 
 /* ═══ 📒 ЛИСТЪТ НА ИГРАТА (реф. 12) — цяла страница върху сцената ═══ */
 .pl-ig-veil {
@@ -277,9 +284,14 @@
   position: relative; z-index: 1; max-width: 60%; width: fit-content;
   display: flex; flex-direction: column; align-items: flex-start; gap: 10px;
 }
+/* 🪤 23.09, мерено (ag2_igri_list_full.js, „контрастПодПрага“): с closest-side радиусът на
+   сиянието е ПО-МАЛКАТА полуос, тоест на широка кутия то избледнява доста преди края на реда.
+   Днешната игра има по-дълго заглавие от вчерашната (играта се сменя всеки ден, rooms7.js:70)
+   и краят му легна върху шарената сцена: 2.09:1 при праг 3:1 за едър текст. С farthest-side
+   елипсата стига до НАЙ-ДАЛЕЧНАТА страна, тоест покрива цялата кутия, а платото се държи до 62%. */
 .pl-ig-hero-t::before {        /* кремаво сияние зад текста — сцената отзад е шарена */
-  content: ''; position: absolute; z-index: -1; inset: -34px -46px -30px -40px; pointer-events: none;
-  background: radial-gradient(closest-side, rgba(255, 250, 244, .94) 0, rgba(255, 250, 244, .78) 55%, rgba(255, 250, 244, 0) 100%);
+  content: ''; position: absolute; z-index: -1; inset: -34px -50px -30px -44px; pointer-events: none;
+  background: radial-gradient(farthest-side at 44% 46%, rgba(255, 250, 244, .97) 0, rgba(255, 250, 244, .93) 62%, rgba(255, 250, 244, .6) 84%, rgba(255, 250, 244, 0) 100%);
 }
 .pl-ig-hero-t h2 {
   margin: 0; font-family: var(--pl-serif, Georgia, serif); font-size: 34px; font-weight: 700; line-height: 1.04;
@@ -427,7 +439,9 @@ html[data-theme="dark"] .pl-ig-drawer { color: #fff; box-shadow: inset 0 1px 0 r
 html[data-theme="dark"] .pl-ig-drawer::after { border-color: rgba(255, 255, 255, .16); box-shadow: none; }
 html[data-theme="dark"] .pl-ig-drawer.d-first { background: linear-gradient(180deg, #2c5a5a 0, #244b50 100%); }
 html[data-theme="dark"] .pl-ig-drawer.d-box { background: linear-gradient(180deg, #34508f 0, #2b437c 100%); }
-html[data-theme="dark"] .pl-ig-drawer i { width: 40px; height: 40px; }
+/* 🪤 мерено 23.09: нощната иконка беше 40px и мястото за надписа падаше от 101 на 95px —
+   „Първите пъти“ ставаше на два реда НОЩЕМ, а на един ДЕНЕМ. Еднаква е с дневната. */
+html[data-theme="dark"] .pl-ig-drawer i { width: 34px; height: 34px; }
 
 html[data-theme="dark"] .pl-ig-veil { background: rgba(8, 12, 32, .6); }
 /* нощем: сцената × нощно синьо (multiply), а преходът отдолу е в САМОТО синьо (normal) — без шев */
@@ -439,7 +453,7 @@ html[data-theme="dark"] .pl-ig-sheet {
 }
 html[data-theme="dark"] .pl-ig-x { background: rgba(27, 37, 84, .9); border-color: rgba(255, 255, 255, .2); color: #fff; }
 html[data-theme="dark"] .pl-ig-112 { background: #1b2554; border-color: rgba(255, 170, 180, .55); color: #ffc9d0; }
-html[data-theme="dark"] .pl-ig-hero-t::before { background: radial-gradient(closest-side, rgba(18, 26, 64, .82) 0, rgba(18, 26, 64, .55) 60%, rgba(18, 26, 64, 0) 100%); }
+html[data-theme="dark"] .pl-ig-hero-t::before { background: radial-gradient(farthest-side at 44% 46%, rgba(18, 26, 64, .9) 0, rgba(18, 26, 64, .82) 62%, rgba(18, 26, 64, .5) 84%, rgba(18, 26, 64, 0) 100%); }
 html[data-theme="dark"] .pl-ig-hero-t h2 { color: #fff; text-shadow: 0 0 14px rgba(10, 16, 44, .95), 0 0 28px rgba(10, 16, 44, .8); }
 html[data-theme="dark"] .pl-ig-hero-t p { background: rgba(22, 32, 74, .88); color: #e3e5f5; }
 html[data-theme="dark"] .pl-ig-hero-t p i, html[data-theme="dark"] .pl-ig-book h3 i { color: #ffb3cf; }
@@ -466,10 +480,10 @@ html[data-theme="dark"] .pl-ig-note { background: rgba(22, 32, 74, .9); color: #
   .pl-ig-tab span { font-size: 15px; }
   .pl-ig-title { font-size: 22px; }
   /* 🪤 видяно на снимка при 320px: „спомени“ излизаше вдясно от чекмеджето (за текста оставаха 46px) */
-  .pl-ig-drawer { gap: 4px; padding: 16px 7px 10px 7px; }
-  .pl-ig-drawer i { width: 30px; height: 30px; }
-  .pl-ig-drawer span { font-size: 13.5px; }
-  .pl-ig-drawer em { font-size: 20px; }
+  .pl-ig-drawer { gap: 4px; padding: 16px 6px 10px 7px; }
+  .pl-ig-drawer i { width: 28px; height: 28px; }
+  .pl-ig-drawer span { font-size: 12px; }
+  .pl-ig-drawer em { font-size: 18px; }
   .pl-ig-timer { grid-template-columns: auto minmax(0, 1fr); }
   .pl-ig-go { grid-column: 1 / -1; justify-self: stretch; }
   .pl-ig-hero-t h2 { font-size: 30px; }

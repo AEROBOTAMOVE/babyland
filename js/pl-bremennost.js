@@ -90,7 +90,10 @@
     let бутони = '';
     for (let н = ОТ; н <= ДО; н++) {
       // бутонът е 44×44 (докосването); видимото мънисто е вътрешният span с материала (.pl-soft / .pl-gel)
-      бутони += '<button type="button" class="pl-br-wk' + (н === w ? ' is-now' : '') + '" data-wk="' + н + '" aria-pressed="false" aria-label="' +
+      // 🪤 23.09 (МЕРЕНО, проверката): 39 мъниста = 39 спирки за клавиатурата преди „Предстоящи записи“.
+      //   Сега лентата е ЕДНА спирка (roving tabindex): tabindex=0 получава само избраното мънисто
+      //   в рисувайСедмица(), а вътре се ходи с ← → (Home/End = 4-та/42-ра).
+      бутони += '<button type="button" tabindex="-1" class="pl-br-wk' + (н === w ? ' is-now' : '') + '" data-wk="' + н + '" aria-pressed="false" aria-label="' +
         редна(н) + ' седмица' + (н === w ? ' — твоята' : '') + '"><span class="pl-br-bead pl-soft">' + н + '</span></button>';
     }
     return '<div class="pl-br-card pl-br-wcard pl-felt">' +
@@ -160,6 +163,7 @@
     б.querySelectorAll('.pl-br-wk').forEach(к => {
       const да = +к.dataset.wk === пв; const м = к.firstElementChild;
       клас(к, 'on', да); атр(к, 'aria-pressed', String(да)); клас(м, 'pl-gel', да); клас(м, 'pl-soft', !да);
+      атр(к, 'tabindex', да ? '0' : '-1');        // roving tabindex — лентата е една спирка
     });
     б.querySelectorAll('.pl-br-arr').forEach(с => { const д2 = +с.dataset.d; const спри = (д2 < 0 && пв <= ОТ) || (д2 > 0 && пв >= ДО); if (с.disabled !== спри) с.disabled = спри; });
     // „ти си в …“ + връщане — само когато гледаш чужда седмица и твоята е в лентата
@@ -271,21 +275,26 @@
       // думите са на поканата в preg20.js:262-263 — „стаята се събужда с една дата“
       '<p class="pl-br-invt">Стаята се събужда с <b>една дата</b> — първия ден на последния ти цикъл. От нея оживява твоята седмица.</p>' +
       '<button type="button" class="pl-br-add pl-gel" data-go="invite">Въведи датата</button>' +
+      // 🪤 23.09 (МЕРЕНО, проверката): в поканата нямаше 112 — а правило 5 иска 112 ВИНАГИ видимо.
+      //   Дисклеймърът за записките остава само там, където ИМА записи (картата „Предстоящи записи“).
+      '<p class="pl-br-foot"><span>Ако стане спешно —</span><a class="pl-br-112" href="tel:112" aria-label="Спешна помощ 112">📞 112</a></p>' +
     '</div>';
   }
 
   // ═══ 4. ТРИТЕ ПЛОЧКИ — всяка е малка сцена от 2–3 плюшени предмета (реф. 4) ═══
   //   м = мястото в рамката: g голямото, m долу вдясно, l долу вляво, r долу вдясно (по-малко)
   function плочкиHTML() {
+    //   23.09 (МЕРЕНО, проверката): „q“ беше с ЕДНА фигура, изнесена 8 px извън рамката, с 33 px празно
+    //   поле отляво. В реф. 4 и трите плочки са сцени — затова тук: календар + саксия, чанта + пелена +
+    //   шише, облаче + балонче „?“. Балончето ico-g [0,2] СИ НОСИ въпросителната (не рисуваме своя).
     const П = [
-      ['kal', 'Моят календар', 'Планирай с лекота', 't-pink', [['ico-g', 0, 3, 'g']]],
+      ['kal', 'Моят календар', 'Планирай с лекота', 't-pink', [['ico-g', 0, 3, 'g'], ['ico-f', 0, 2, 'r']]],
       ['bag', 'Чанта за родилното', 'Готова, когато дойде време', 't-butter', [['ico-g', 0, 1, 'g'], ['ico-f', 0, 0, 'l'], ['ico-a', 1, 0, 'r']]],
-      ['q', 'Въпроси към лекаря', 'Запиши за следващия преглед', 't-sky', [['ico-g', 0, 2, 'g']]]
+      ['q', 'Въпроси към лекаря', 'Запиши за следващия преглед', 't-sky', [['ico-b', 0, 2, 'l'], ['ico-g', 0, 2, 'g']]]
     ];
     return '<div class="pl-br-tiles">' + П.map(([go, т, п, цв, ик]) =>
       '<button type="button" class="pl-br-tile pl-felt ' + цв + '" data-go="' + go + '">' +
-        '<span class="pl-br-ta" aria-hidden="true">' + ик.map(([л, р, к, м]) => '<i class="' + м + '" style="' + спрайт(л, р, к) + '"></i>').join('') +
-          '' + '</span>' +
+        '<span class="pl-br-ta" aria-hidden="true">' + ик.map(([л, р, к, м]) => '<i class="' + м + '" style="' + спрайт(л, р, к) + '"></i>').join('') + '</span>' +
         '<span class="pl-br-tl"><b>' + т + '</b><small>' + п + '</small></span>' + ШЕВРОН + '</button>').join('') + '</div>';
   }
 
@@ -400,6 +409,25 @@
       if (цел.classList.contains('pl-br-back')) { пам.гл = Math.max(ОТ, Math.min(ДО, +б.getAttribute('data-w'))); рисувайСедмица(б, true); центрирай(б, true); return; }
       if (цел.classList.contains('pl-br-pill')) { пам.кой = цел.dataset.k; рисувайСедмица(б, true); return; }
       if (цел.dataset.go) действие(корен, цел.dataset.go);
+    });
+    // ← → вътре в лентата (roving tabindex): мести избраното мънисто и носи фокуса със себе си.
+    //   preventScroll — иначе браузърът мята стаята към релсата.
+    б.addEventListener('keydown', е => {
+      const к = е.target && е.target.closest && е.target.closest('.pl-br-wk');
+      if (!к || !б.contains(к) || е.altKey || е.ctrlKey || е.metaKey) return;
+      const пам = корен._plBr; if (!пам) return;
+      let нова = null;
+      if (е.key === 'ArrowLeft' || е.key === 'ArrowUp') нова = пам.гл - 1;
+      else if (е.key === 'ArrowRight' || е.key === 'ArrowDown') нова = пам.гл + 1;
+      else if (е.key === 'Home') нова = ОТ;
+      else if (е.key === 'End') нова = ДО;
+      else return;
+      е.preventDefault();
+      нова = Math.max(ОТ, Math.min(ДО, нова));
+      if (нова === пам.гл) return;
+      пам.гл = нова; рисувайСедмица(б, true); центрирай(б, true);
+      const цел = б.querySelector('.pl-br-wk.on');
+      if (цел) { try { цел.focus({ preventScroll: true }); } catch (e2) { цел.focus(); } }
     });
     return б;
   }

@@ -108,15 +108,30 @@ html body .pl-rz .pl-rz-top.pl-felt::after { border-radius: 23px 23px 23px 7px; 
 .pl-rz-tab.on .pl-rz-ti { mix-blend-mode: normal; background-color: #fff; box-shadow: 0 0 0 2px rgba(255, 255, 255, .5), 0 2px 4px rgba(120, 20, 60, .25); }
 
 /* ── тялото: графика вляво, последен запис + списък вдясно (като в референцията) ── */
+/* 🪤 ИЗМЕРЕНО (проверителят, ag2_rastezh_pv_rez.js; повторено в тази сесия ag2_rz_f_predi):
+   при 128 px страна редът има 90 px за текста, а „20 сеп · 10,75 кг“ иска 103 px → режеше се
+   при ПОЧТИ ВСИЧКИ истински числа (3 от 4 реда на 1-годишно). Най-дългото възможно е 17 знака
+   („20 сеп · 29,75 кг“ при таван 30 кг, „20 сеп · 119,5 см“ при таван 120 см). Затова страната
+   е 141 px, редът е по-стегнат, а датата в него е с 1 px по-дребна от числото. */
 .pl-rz-body {
   display: grid;
-  grid-template-columns: minmax(0, 1fr) 128px;
+  grid-template-columns: minmax(0, 1fr) 141px;
   grid-template-rows: auto 1fr auto;
   grid-template-areas: "chart side" "add side" "msg msg";
   column-gap: 8px; row-gap: 12px;
   align-items: start;
 }
 .pl-rz-body.is-empty { grid-template-columns: minmax(0, 1fr); grid-template-rows: auto auto auto; grid-template-areas: "empty" "add" "msg"; }
+/* „Всички записи (N) ▾“: при 40 записа страната ставаше лента 2205 px с ПРАЗНА лява половина
+   (мерено, pv_rz_40.png). Разгънат → всичко е на цял ред: графиката печели цялата ширина,
+   а редовете стават широки и вече нищо не се реже. Без вложен скрол (стаята си скролва сама). */
+.pl-rz-body.is-all { grid-template-columns: minmax(0, 1fr); grid-template-rows: auto; grid-template-areas: "chart" "side" "add" "msg"; }
+.pl-rz-body.is-all .pl-rz-last { flex-direction: row; flex-wrap: wrap; justify-content: center; align-items: baseline; gap: 2px 12px; padding: 10px 12px; }
+.pl-rz-body.is-all .pl-rz-lhd { flex: none; align-self: center; }
+.pl-rz-body.is-all .pl-rz-lv { margin-top: 0; }
+.pl-rz-body.is-all .pl-rz-row { padding: 0 10px 0 12px; font-size: 14px; gap: 7px; }
+.pl-rz-body.is-all .pl-rz-rd { font-size: 14px; }
+.pl-rz-body.is-all .pl-rz-row em { font-size: 17px; }
 /* листът с графиката — гладка хартия върху филца (без шев: шевът е само на голямата карта) */
 .pl-rz-chart {
   grid-area: chart; position: relative; min-width: 0;
@@ -127,7 +142,7 @@ html body .pl-rz .pl-rz-top.pl-felt::after { border-radius: 23px 23px 23px 7px; 
   cursor: pointer; touch-action: manipulation;
 }
 .pl-rz-svg { display: block; width: 100%; height: 250px; }
-.pl-rz-svg text { font-family: Nunito, 'Nunito-fallback', system-ui, sans-serif; }
+.pl-rz-svg text, .pl-rz-meas text { font-family: Nunito, 'Nunito-fallback', system-ui, sans-serif; }
 .pl-rz-unit { font-size: 12px; font-weight: 800; fill: #5d596f; }
 .pl-rz-yl, .pl-rz-xl { font-size: 11px; font-weight: 700; fill: #5d596f; }
 .pl-rz-gl { stroke: #f1e1e6; stroke-width: 1; }
@@ -146,7 +161,19 @@ html body .pl-rz .pl-rz-top.pl-felt::after { border-radius: 23px 23px 23px 7px; 
 }
 /* последната стойност — едра, НО на Nunito (не Georgia: старинните цифри) */
 .pl-rz-vl.last { font-size: 15.5px; font-weight: 900; fill: #1d2a5c; }
+/* когато точките се сгъстят: етикетът се СМАЛЯВА, преди да бъде пропуснат (находка на проверителя:
+   „7,2 кг“ изчезваше, щом 20.09 и 23.09 се доближат) */
+.pl-rz-vl.sm { font-size: 10px; }
 .pl-rz-vl.sel { fill: #a93a6d; }
+
+/* 🔬 УРЕДЪТ: скрит <svg> в самия блок — истинската ширина на надпис се МЕРИ
+   (getComputedTextLength), не се гади. Старите оценки („текст.length × 6.6“, „28 px за датата“)
+   криеха етикети. 1×1 px, absolute в .pl-rz (то е position:relative) → нула в оформлението,
+   без хоризонтален скрол; overflow:hidden само реже рисуването — мярката си остава вярна. */
+.pl-rz-meas {
+  position: absolute; left: 0; top: 0; width: 1px; height: 1px;
+  overflow: hidden; opacity: 0; pointer-events: none;
+}
 
 /* ── страната: „Последен запис“ + записите ── */
 .pl-rz-side { grid-area: side; display: flex; flex-direction: column; gap: 7px; min-width: 0; }
@@ -175,16 +202,18 @@ html body .pl-rz .pl-rz-top.pl-felt::after { border-radius: 23px 23px 23px 7px; 
 .pl-rz-list li { margin: 0; padding: 0; }
 /* редовете: материалът е .pl-soft (избраният — розов филц от pl-ui.css), тук само формата */
 .pl-rz .pl-rz-row {
-  display: flex; align-items: center; gap: 5px;
-  width: 100%; min-height: 44px; padding: 0 4px 0 9px;
+  display: flex; align-items: center; gap: 4px;
+  width: 100%; min-height: 44px; padding: 0 3px 0 7px;
   border-radius: 16px;
   font-size: 13px; font-weight: 700; text-align: left;
   cursor: pointer; touch-action: manipulation;
 }
-.pl-rz-row i { flex: none; width: 8px; height: 8px; border-radius: 50%; background: #e56d99; box-shadow: 0 0 0 2px rgba(229, 109, 153, .18); }
-.pl-rz-row span { flex: 1; min-width: 0; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.pl-rz-row > i { flex: none; width: 7px; height: 7px; border-radius: 50%; background: #e56d99; box-shadow: 0 0 0 2px rgba(229, 109, 153, .18); }
+.pl-rz-row > span { flex: 1; min-width: 0; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+/* датата с 1 px по-дребна от числото — числото е важното и то не бива да се реже */
+.pl-rz-rd { font-size: 12px; }
 .pl-rz-row b { font-weight: 900; }
-.pl-rz-row em { flex: none; font-style: normal; font-size: 18px; line-height: 1; color: #5d596f; }
+.pl-rz-row em { flex: none; font-style: normal; font-size: 15px; line-height: 1; color: #5d596f; }
 .pl-rz .pl-rz-row:focus-visible, .pl-rz .pl-rz-more:focus-visible, .pl-rz .pl-rz-add:focus-visible { outline: 3px solid var(--pl-navy, #1d2a5c); outline-offset: 2px; }
 .pl-rz .pl-rz-more {
   min-height: 44px; padding: 0 6px;

@@ -29,8 +29,9 @@
     //   къщичката оставаше по средата на страницата. Сега е последното нещо в <main>.
     const н = document.querySelector('main');
     if (!н || !document.getElementById('plHome')) return false;
-    повече(н);
-    if (н.querySelector(':scope > .pl-krai')) { н.appendChild(н.querySelector(':scope > .pl-more')); н.appendChild(н.querySelector(':scope > .pl-krai')); return true; }
+    // редът „повече“ отпадна: секциите вече не се крият, а се преобличат (css/premium.css)
+    const вече = н.querySelector(':scope > .pl-krai');
+    if (вече) { н.appendChild(вече); return true; }        // винаги последно, дори след като JS добави секции
     const ф = document.createElement('figure');
     ф.className = 'pl-krai'; ф.setAttribute('aria-hidden', 'true');
     ф.innerHTML = '<img src="img/art/doma.webp" alt="" loading="lazy" decoding="async" width="720" height="555">' +

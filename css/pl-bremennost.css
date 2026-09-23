@@ -9,7 +9,8 @@
    Цифрите са на Nunito (Georgia пише „старинни“ цифри — 0 се чете „о“).
    Контраст: изчислен в пробата (ag2_bremennost_kontrast.js), не на око.
    ПЪТ НАЗАД: махни <link href="css/pl-bremennost.css"> и <script src="js/pl-bremennost.js">;
-   предишната версия е в scratchpad/ag2_bremennost_predi.css.bak.
+   версията отпреди блока е scratchpad/ag2_bremennost_predi.css.bak, а отпреди поправките
+   по проверката (23.09) — scratchpad/ag2_bremennost_predi2.css.bak (js: …predi2.js.bak).
    ═══════════════════════════════════════════════════════════════════════════════ */
 
 /* 🪤 #roRoom е flex контейнер с фиксирана височина — без flex:none блокът се свива. */
@@ -90,6 +91,10 @@
   background: radial-gradient(circle, #e98bb0 1.7px, transparent 2.2px) center / 5px 5px no-repeat,
               linear-gradient(90deg, #efc6d6, #efc6d6) center / 100% 1.5px no-repeat;
 }
+/* Лентата е ЕДНА спирка за клавиатурата (roving tabindex в js) — затова пръстенът на фокуса
+   трябва да личи: движението е със ← → , а не с 39 таба. */
+.pl-br-wk:focus-visible, .pl-br-arr:focus-visible { outline: 3px solid #b8306a; outline-offset: 1px; border-radius: 50%; }
+html[data-theme="dark"] .pl-br-wk:focus-visible, html[data-theme="dark"] .pl-br-arr:focus-visible { outline-color: #ffd6e5; }
 /* твоята седмица, докато гледаш друга — розов пръстен (по-силно от .pl-soft, който е с !important) */
 html body .pl-br-wk.is-now:not(.on) > .pl-br-bead.pl-soft {
   border-color: #efa3c1 !important; color: #9e2f5f !important;
@@ -284,21 +289,20 @@ html body .pl-br-wk.is-now:not(.on) > .pl-br-bead.pl-soft {
 .pl-br-ta i.m { width: 52px; height: 52px; right: -6px; bottom: -8px; transform: rotate(-14deg); }
 .pl-br-ta i.l { width: 50px; height: 50px; left: -4px; bottom: -8px; }
 .pl-br-ta i.r { width: 46px; height: 46px; right: -4px; bottom: -6px; }
-.pl-br-tile[data-go="kal"] .pl-br-ta i.g { margin-left: -50px; }
+/* „Моят календар“: тефтерът е дръпнат наляво, саксията сяда вдясно пред него (реф. 4: календар + растение) */
+.pl-br-tile[data-go="kal"] .pl-br-ta i.g { width: 78px; height: 78px; margin: -41px 0 0 -47px; }
+.pl-br-tile[data-go="kal"] .pl-br-ta i.r { width: 44px; height: 44px; right: -2px; bottom: -4px; }
 .pl-br-tile[data-go="bag"] .pl-br-ta i.g { margin-top: -52px; }
-.pl-br-tile[data-go="q"] .pl-br-ta i.l { width: 64px; height: 64px; left: -8px; bottom: -12px; }
-.pl-br-tile[data-go="q"] .pl-br-ta i.g { width: 70px; height: 70px; left: auto; right: -8px; top: -2px; margin: 0; }
-.pl-br-qm {                                             /* въпросителната на балончето */
-  position: absolute; right: 8px; top: 6px; width: 24px; height: 24px; border-radius: 50%;
-  display: grid; place-items: center;
-  background: linear-gradient(180deg, #8ebcf0 0, #4f86cf 100%); color: #fff;
-  box-shadow: inset 0 1px 0 rgba(255, 255, 255, .6), 0 2px 0 #3b6db0;
-  font: 700 16px/1 var(--pl-serif);
-}
+/* 🪤 23.09 (МЕРЕНО, проверката): голямото балонче стоеше на right:-8px — 8 px ИЗВЪН рамката и 33 px
+   празно поле отляво. Реф. 4 иска СЦЕНА: облаче отляво + синьо балонче „?“ отдясно, и двете ВЪТРЕ. */
+.pl-br-tile[data-go="q"] .pl-br-ta i.l { width: 62px; height: 62px; left: -1px; bottom: -2px; }
+.pl-br-tile[data-go="q"] .pl-br-ta i.g { width: 58px; height: 58px; left: auto; right: 0; top: 4px; margin: 0; }
 /* заглавието взима цялата ширина; стрелката е долу вдясно, до последния ред на подзаглавието */
 .pl-br-tl { position: relative; z-index: 1; display: block; flex: 1; padding: 9px 11px 0 12px; }
 .pl-br-tl b { display: block; font-family: var(--pl-serif); font-size: 14px; font-weight: 700; line-height: 1.15; letter-spacing: -.2px; color: var(--pl-navy, #1d2a5c); hyphens: none; }
-.pl-br-tl small { display: block; margin-top: 4px; padding-right: 14px; font-size: 12px; font-weight: 700; line-height: 1.28; color: var(--pl-ink-soft, #6a6682); }
+/* 🪤 23.09 (МЕРЕНО, проверката): шевронът заема 9…27 px от десния ръб, а подзаглавието стигаше до 11 px
+   (padding-right само свиваше РЕДА, кутията оставаше под стрелката) → сега кутията се дръпва с margin. */
+.pl-br-tl small { display: block; margin: 4px 22px 0 0; font-size: 12px; font-weight: 700; line-height: 1.28; color: var(--pl-ink-soft, #6a6682); }
 .pl-br-tile .pl-br-chev { position: absolute; z-index: 1; right: 9px; bottom: 12px; width: 18px; height: 18px; color: var(--pl-navy, #1d2a5c); }
 .pl-br-tile .pl-br-chev svg { width: 16px; height: 16px; }
 

@@ -91,6 +91,7 @@
     // извън стаята: профилът, търсенето, листът „Добави“, изборът на стаи, СОС центърът
     '.prof-overlay button:not(.prof-close), .prof-overlay .pr-row, .prof-overlay .prof-tditem, .prof-overlay .prof-row, ' +
     '.rm-veil .rm-item, .rm-veil .rm-row, .rm-veil button, ' +
+    'main > section .section-title, main > section .room-card h3, main > section .mood, main > section li, ' +
     '#searchOverlay .search-res, .np-b, #plDv button, .sos-ov .sos-row';
   function обвий(б) {
     if (б.dataset.plW) return;
@@ -108,7 +109,9 @@
     плюш(с);
   }
   // ── 3 · едрата самотна емоджи-рисунка (цял елемент = едно емоджи, ≥20px) ──
-  const ЕДРИ = '#roRoom span, #roRoom i, #roRoom em, #roRoom strong, #plHome span, .prof-overlay span, .prof-overlay i, #searchOverlay span, #plDv span, .rm-veil span, .rm-veil i';
+  //  и секциите на началната страница (те се преобличат, не се крият — 23.09)
+  const ЕДРИ = '#roRoom span, #roRoom i, #roRoom em, #roRoom strong, #plHome span, .prof-overlay span, .prof-overlay i, ' +
+    '#searchOverlay span, #plDv span, .rm-veil span, .rm-veil i, main > section span, main > section i';
   const БЕЗ = '#roChat, #artBody, .msg, .ask-badge, input, textarea, .pl-em';
   function едро(е) {
     if (е.dataset.plPl || е.children.length) return;
