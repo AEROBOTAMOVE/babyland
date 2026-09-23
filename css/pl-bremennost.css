@@ -84,6 +84,20 @@
   font-variant-numeric: lining-nums tabular-nums;
 }
 .pl-br-wk.on .pl-br-bead { width: 52px; height: 52px; font-size: 24px; letter-spacing: -.5px; }
+/* 🧮 23.09 (ИЗМЕРЕНО ПО ПИКСЕЛИ, wf2_bremennost_piksel.js): гелът е скроен за ХАПЧЕ, не за кръгче.
+   В хапчето (46 px) буквите падат в 30–70 % от прелива и белият надпис е 3.23:1. В кръглото мънисто
+   (52 px) кутията на цифрите е 32 px, тоест 19–81 % — горният ѝ ръб влиза и в блика
+   (radial 120%×70% at 50% −10%, pl-ui.css:40), и в най-светлия стоп на прелива (--ui-gel-top #f39bbb
+   = 2.06:1 срещу бяло). Мерено: 2.97:1 светло и 2.99:1 нощем, при праг 3:1 за едър текст.
+   Тук САМО за избраното мънисто: бликът се свива до горните ~9 px (над цифрите), а преливът тръгва
+   от --ui-gel-mid. ЦВЕТОВЕТЕ СА СЪЩИТЕ променливи на pl-ui.css — материалът не се подменя, само
+   кръгчето се изрязва от по-долната му част. ПЪТ НАЗАД: махни следващото правило — мънистото се
+   връща на общия гел. */
+html body .pl-br-wk.on > .pl-br-bead.pl-gel {
+  background-image:
+    radial-gradient(120% 34% at 50% -16%, rgba(255, 255, 255, .42) 0, rgba(255, 255, 255, .12) 42%, rgba(255, 255, 255, 0) 62%),
+    linear-gradient(180deg, var(--ui-gel-mid, #d95a8e) 0%, var(--ui-gel, #c8457a) 46%, var(--ui-gel-bot, #b93a6e) 100%) !important;
+}
 /* шевът между мънистата: пунктир + розова точица, в средата на пролуката */
 .pl-br-wk:not(:last-child)::after {
   content: ''; position: absolute; top: 50%; left: calc(100% + var(--g) / 2); pointer-events: none;
@@ -242,7 +256,12 @@ html body .pl-br-wk.is-now:not(.on) > .pl-br-bead.pl-soft {
   font: 800 19px/1 Nunito, 'Nunito-fallback', system-ui, sans-serif; letter-spacing: .1px;
 }
 .pl-br-add b { width: 28px; height: 28px; display: grid; place-items: center; border-radius: 50%; background: #fff; color: #c8457a; font-size: 22px; line-height: 1; text-shadow: none; box-shadow: 0 1px 0 rgba(120, 20, 60, .25); }
-.pl-br-foot { position: relative; z-index: 1; display: flex; align-items: center; justify-content: space-between; gap: 10px; margin: 12px 4px 0; font-size: 12.5px; font-weight: 700; color: var(--pl-ink-soft, #6a6682); }
+/* 🧮 23.09: едно и също подножие в двете състояния („Предстоящи записи“ и поканата).
+   Надписът е 190.6 px, бутонът 80.1 px; редът е 328 px на 390 px и 298 px на 360 px — събира се.
+   flex-wrap е ПРЕДПАЗИТЕЛ: под ~290 px надписът слиза на свой ред, вместо да смачка 44-те пиксела
+   на „112“ (мерено на 360 px: бутонът остава 80.1×44). */
+.pl-br-foot { position: relative; z-index: 1; display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 10px; row-gap: 8px; margin: 12px 4px 0; font-size: 12.5px; font-weight: 700; color: var(--pl-ink-soft, #6a6682); }
+.pl-br-foot > span { min-width: 0; }
 .pl-br-112 {
   flex: none; display: inline-flex; align-items: center; justify-content: center;
   min-height: 44px; min-width: 76px; padding: 0 14px; border-radius: 999px;
@@ -285,8 +304,11 @@ html body .pl-br-wk.is-now:not(.on) > .pl-br-bead.pl-soft {
   background: radial-gradient(closest-side, rgba(110, 76, 52, .20), transparent);
 }
 .pl-br-ta i { position: absolute; background-repeat: no-repeat; background-size: 400% 400%; mix-blend-mode: multiply; }
+/* местата са ТРИ: g (голямото в средата), l (долу вляво), r (долу вдясно).
+   🪤 23.09 (МЕРЕНО, проверката): имаше и четвърто — i.m — което нито една от трите плочки не иска
+   (js/pl-bremennost.js:290-294 подрежда само g/l/r). Мъртво правило = следващият го чете като
+   истина. Махнато. Върне ли се място „m“, редът се връща оттук. */
 .pl-br-ta i.g { width: 86px; height: 86px; left: 50%; top: 50%; margin: -46px 0 0 -43px; }
-.pl-br-ta i.m { width: 52px; height: 52px; right: -6px; bottom: -8px; transform: rotate(-14deg); }
 .pl-br-ta i.l { width: 50px; height: 50px; left: -4px; bottom: -8px; }
 .pl-br-ta i.r { width: 46px; height: 46px; right: -4px; bottom: -6px; }
 /* „Моят календар“: тефтерът е дръпнат наляво, саксията сяда вдясно пред него (реф. 4: календар + растение) */

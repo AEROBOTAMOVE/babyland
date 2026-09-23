@@ -72,7 +72,11 @@ html body .pl-rz .pl-rz-top.pl-felt::after { border-radius: 23px 23px 23px 7px; 
 }
 
 /* ═══ 2 · КАРТАТА „Моите измервания“ (.pl-felt) ═══ */
-.pl-rz-card { padding: 18px 14px 14px; }
+/* 🪤 страничното поле е 11, не 14 px: страната на списъка иска 141 px (виж по-долу) и при 14 px
+   за графиката и за бутона „Добави измерване“ оставаха 183 px — бутонът искаше 203 и белият
+   кръг с „+“ опираше в ръба на хапчето (мерено, wf2_rz_sled3_390: запас −20 px).
+   С 11 px тялото е 338 px и графиката става 189 px. */
+.pl-rz-card { padding: 18px 11px 14px; }
 
 .pl-rz .pl-rz-h {
   display: flex; align-items: center; gap: 10px;
@@ -107,12 +111,32 @@ html body .pl-rz .pl-rz-top.pl-felt::after { border-radius: 23px 23px 23px 7px; 
 /* в гела — бял кръг под плюшената иконка (като бялата чантичка в референцията) */
 .pl-rz-tab.on .pl-rz-ti { mix-blend-mode: normal; background-color: #fff; box-shadow: 0 0 0 2px rgba(255, 255, 255, .5), 0 2px 4px rgba(120, 20, 60, .25); }
 
+/* 🪤 ИЗМЕРЕНО ПО ПИКСЕЛИ (wf2_rastezh_piksel.js — цветът ПОД текста, не background-color):
+   белият надпис „Тегло“ върху общия гел е 4.12:1 средно и 3.62 най-ниско, а „Добави измерване“
+   4.09 / 3.73 — под 4.5 за дребен текст. Виновна е СВЕТЛАТА част на отвесния преход: общият гел
+   стига --ui-gel чак на 62% (pl-ui.css:34–50), тоест точно под буквите.
+   Както съседът (pl-hranene.css:169–178): СЪЩИЯТ материал и СЪЩИТЕ цветове (--ui-gel-*), само
+   преходът е по-бърз — --ui-gel вече на 28%, под него #c8457a…#b93a6e. Бликът (радиалният)
+   е непокътнат: той свършва на 55% от 70% височина, тоест над буквите. pl-ui.css НЕ се пипа. */
+html body .pl-rz .pl-rz-tab.pl-gel.pl-gel, html body .pl-rz .pl-rz-add.pl-gel.pl-gel {
+  background-image:
+    radial-gradient(120% 70% at 50% -10%, rgba(255, 255, 255, .62) 0, rgba(255, 255, 255, .18) 38%, rgba(255, 255, 255, 0) 55%),
+    linear-gradient(180deg, var(--ui-gel-top) 0%, var(--ui-gel-mid) 14%, var(--ui-gel) 28%, var(--ui-gel-bot) 100%) !important;
+}
+
 /* ── тялото: графика вляво, последен запис + списък вдясно (като в референцията) ── */
-/* 🪤 ИЗМЕРЕНО (проверителят, ag2_rastezh_pv_rez.js; повторено в тази сесия ag2_rz_f_predi):
+/* 🪤 ИЗМЕРЕНО (проверителят, ag2_rastezh_pv_rez.js; ПОВТОРЕНО в тази сесия, wf2_rastezh_mery):
    при 128 px страна редът има 90 px за текста, а „20 сеп · 10,75 кг“ иска 103 px → режеше се
    при ПОЧТИ ВСИЧКИ истински числа (3 от 4 реда на 1-годишно). Най-дългото възможно е 17 знака
-   („20 сеп · 29,75 кг“ при таван 30 кг, „20 сеп · 119,5 см“ при таван 120 см). Затова страната
-   е 141 px, редът е по-стегнат, а датата в него е с 1 px по-дребна от числото. */
+   („20 фев · 29,75 кг“ при таван 30 кг, „20 фев · 119,5 см“ при таван 120 см).
+   Страната е 141 px. Нужното НЕ се мери с scrollWidth и вече не с Range (редът стана flex —
+   Range връща свитите части, тоест винаги „се побира“), а на КЛОНИНГ извън потока, вътре в
+   същия <ul>, с width:max-content (wf2_rastezh_rez.js). Мерено на 390 px, цял ред с точката,
+   разстоянията и „›“:
+     „20 фев · 119,5 см“ иска 137 при 141 → запас 4 · „20 фев · 29,75 кг“ 135 → 6 ·
+     „20 сеп · 10,75 кг“ 131 → 10 · „20 сеп · 7,2 кг“ 116 → 25.
+   Режещи редове (многоточие или число извън кутията): 0 от 23 случая × 2 ширини.
+   Под 380 px редът е още по-широк (151 px, двете колони) — виж долу. */
 .pl-rz-body {
   display: grid;
   grid-template-columns: minmax(0, 1fr) 141px;
@@ -122,16 +146,25 @@ html body .pl-rz .pl-rz-top.pl-felt::after { border-radius: 23px 23px 23px 7px; 
   align-items: start;
 }
 .pl-rz-body.is-empty { grid-template-columns: minmax(0, 1fr); grid-template-rows: auto auto auto; grid-template-areas: "empty" "add" "msg"; }
-/* „Всички записи (N) ▾“: при 40 записа страната ставаше лента 2205 px с ПРАЗНА лява половина
-   (мерено, pv_rz_40.png). Разгънат → всичко е на цял ред: графиката печели цялата ширина,
-   а редовете стават широки и вече нищо не се реже. Без вложен скрол (стаята си скролва сама). */
+/* „Всички записи (N) ▾“: при 40 записа страната ставаше лента с ПРАЗНА лява половина
+   (мерено от проверителя, pv_rz_40.png). Разгънат → всичко е на цял ред: графиката печели
+   цялата ширина. Без вложен скрол (стаята си скролва сама). */
 .pl-rz-body.is-all { grid-template-columns: minmax(0, 1fr); grid-template-rows: auto; grid-template-areas: "chart" "side" "add" "msg"; }
 .pl-rz-body.is-all .pl-rz-last { flex-direction: row; flex-wrap: wrap; justify-content: center; align-items: baseline; gap: 2px 12px; padding: 10px 12px; }
 .pl-rz-body.is-all .pl-rz-lhd { flex: none; align-self: center; }
 .pl-rz-body.is-all .pl-rz-lv { margin-top: 0; }
-.pl-rz-body.is-all .pl-rz-row { padding: 0 10px 0 12px; font-size: 14px; gap: 7px; }
-.pl-rz-body.is-all .pl-rz-rd { font-size: 14px; }
-.pl-rz-body.is-all .pl-rz-row em { font-size: 17px; }
+/* 🪤 ИЗМЕРЕНО (тази сесия, wf2_rz_predi_40 → wf2_rz_final_390): само „на цял ред“ не стига —
+   40 записа на ЕДНА колона правеха блока 2854 px, а всеки ред пилееше по 166 px празно вдясно.
+   Затова разгънатият списък е на ДВЕ колони: repeat(auto-fill, minmax(147px, 1fr)) дава по 166 px
+   на 390 px и по 151 px на 360 px, а най-дългият възможен ред иска 139 px с обвивката си.
+   След това: блокът е 1834 px (беше 2854), списъкът 1013 (беше 2033), режещи редове 0 от 40.
+   Под ~300 px ширина auto-fill сам се връща на една колона — затова е auto-fill, не „2“. */
+.pl-rz-body.is-all .pl-rz-list {
+  display: grid; grid-template-columns: repeat(auto-fill, minmax(147px, 1fr));
+  align-content: start; gap: 7px;
+}
+.pl-rz-body.is-all .pl-rz-list li { display: flex; }
+.pl-rz-body.is-all .pl-rz-row { padding: 0 4px 0 8px; gap: 4px; }
 /* листът с графиката — гладка хартия върху филца (без шев: шевът е само на голямата карта) */
 .pl-rz-chart {
   grid-area: chart; position: relative; min-width: 0;
@@ -209,10 +242,18 @@ html body .pl-rz .pl-rz-top.pl-felt::after { border-radius: 23px 23px 23px 7px; 
   cursor: pointer; touch-action: manipulation;
 }
 .pl-rz-row > i { flex: none; width: 7px; height: 7px; border-radius: 50%; background: #e56d99; box-shadow: 0 0 0 2px rgba(229, 109, 153, .18); }
-.pl-rz-row > span { flex: 1; min-width: 0; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+/* 🪤 ИЗМЕРЕНО (тази сесия, wf2_rastezh_mery / wf2_rastezh_rez): редът е ДВЕ части и се свива
+   само едната. Досега целият надпис беше един text-overflow:ellipsis — многоточието падаше
+   ОТЗАД, тоест точно върху стойността („20 сеп · 7,2 к…“), а тя е причината за реда.
+   Сега датата е свиваемата част (min-width:0), а числото е flex:none — то не се реже НИКОГА;
+   при недостиг се скъсява датата. Заедно с 141 px страна (виж по-горе) нито едното не се случва:
+   най-дългият възможен ред („20 фев · 119,5 см“) иска 137 px, а има 141. Проверено и по двата
+   независими признака: многоточие върху датата (scrollWidth > clientWidth) — няма;
+   число, излязло извън кутията на реда — няма. */
+.pl-rz-row > span { flex: 1; min-width: 0; display: flex; align-items: baseline; gap: 4px; white-space: nowrap; overflow: hidden; }
 /* датата с 1 px по-дребна от числото — числото е важното и то не бива да се реже */
-.pl-rz-rd { font-size: 12px; }
-.pl-rz-row b { font-weight: 900; }
+.pl-rz-rd { min-width: 0; overflow: hidden; text-overflow: ellipsis; font-size: 12px; }
+.pl-rz-row b { flex: none; font-weight: 900; }
 .pl-rz-row em { flex: none; font-style: normal; font-size: 15px; line-height: 1; color: #5d596f; }
 .pl-rz .pl-rz-row:focus-visible, .pl-rz .pl-rz-more:focus-visible, .pl-rz .pl-rz-add:focus-visible { outline: 3px solid var(--pl-navy, #1d2a5c); outline-offset: 2px; }
 .pl-rz .pl-rz-more {
@@ -222,18 +263,25 @@ html body .pl-rz .pl-rz-top.pl-felt::after { border-radius: 23px 23px 23px 7px; 
 }
 
 /* ── „+ Добави измерване“: материалът е .pl-gel, тук формата и кръгът с плюса ── */
+/* 🪤 ИЗМЕРЕНО (wf2_rz_sled3_390 / wf2_rz_diag_add_360): „Добави измерване“ е Georgia и е дълъг
+   надпис — на 15 px иска 146 px, а с кръгчето и полетата целият бутон искаше 203 px при 183
+   налични. Понеже е white-space:nowrap с overflow:visible, нищо не се режеше — съдържанието
+   просто излизаше извън хапчето (на 360 px с цели 6 px). Затова: по-тясна обвивка (кръг 24,
+   отстъпи 8/10, разстояние 7) и 14 px букви → иска 178 при 189 налични.
+   white-space:normal е ПРЕДПАЗИТЕЛЯТ: при друг шрифт надписът се пренася на два реда вътре
+   в хапчето (то е 54 px високо и ги побира), вместо да излезе навън. */
 .pl-rz .pl-rz-add {
   grid-area: add;
-  display: flex; align-items: center; justify-content: center; gap: 8px;
-  width: 100%; min-height: 54px; padding: 6px 14px 6px 9px; white-space: nowrap;
+  display: flex; align-items: center; justify-content: center; gap: 7px;
+  width: 100%; min-height: 54px; padding: 6px 10px 6px 8px; white-space: normal; text-align: center;
   border-radius: 999px;
-  font-family: var(--pl-serif, Georgia, serif); font-weight: 700; font-size: 15px; line-height: 1.1; letter-spacing: -.3px;
+  font-family: var(--pl-serif, Georgia, serif); font-weight: 700; font-size: 14px; line-height: 1.12; letter-spacing: -.3px;
   cursor: pointer; touch-action: manipulation;
 }
-.pl-rz-plus { position: relative; flex: none; width: 26px; height: 26px; border-radius: 50%; background: #fff; box-shadow: 0 2px 4px rgba(120, 20, 60, .28), inset 0 -2px 0 rgba(200, 69, 122, .15); }
+.pl-rz-plus { position: relative; flex: none; width: 24px; height: 24px; border-radius: 50%; background: #fff; box-shadow: 0 2px 4px rgba(120, 20, 60, .28), inset 0 -2px 0 rgba(200, 69, 122, .15); }
 .pl-rz-plus::before, .pl-rz-plus::after {
   content: ''; position: absolute; left: 50%; top: 50%;
-  width: 13px; height: 3px; margin: -1.5px 0 0 -6.5px; border-radius: 2px; background: #c8457a;
+  width: 12px; height: 3px; margin: -1.5px 0 0 -6px; border-radius: 2px; background: #c8457a;
 }
 .pl-rz-plus::after { transform: rotate(90deg); }
 .pl-rz-msg { grid-area: msg; margin: 0; font-size: 13px; font-weight: 700; color: #9e2f5f; text-align: center; }
@@ -275,16 +323,39 @@ html body .pl-rz .pl-rz-top.pl-felt::after { border-radius: 23px 23px 23px 7px; 
 }
 @keyframes plRzSpot { 50% { outline-color: rgba(229, 109, 153, .25); } }
 
-/* ── тесен екран (под 360px): графиката на цял ред, списъкът под нея ── */
+/* ── ПОД 380 px · ИЗМЕРЕНО в тази сесия (wf2_rz_prelivat_360 / wf2_rz_diag_add_360):
+      на 360 px картата дава 302 px и в подредбата „графика + страна“ графиката падаше на 153 px.
+      Тогава се РЕЖЕХА два надписа извън списъка:
+        · хапчето „Обиколка“ — текстът иска 74 px, а има 68 (и „Ръст“ 34 срещу 32) → многоточие;
+        · „Добави измерване“ — надписът е 136 px (Georgia 14 px), а с кръгчето и полетата бутонът
+          иска 181 px при 153 налични: текстът излизаше 6 px ИЗВЪН хапчето (без многоточие, защото
+          е white-space:nowrap с overflow:visible). Нито едно смаляване на шрифта не го побира,
+          без да го направи нечетим.
+      Затова под 380 px подредбата е на един ред: графиката печели цялата ширина (302 вместо
+      153 px — и четирите дати се виждат), списъкът минава на ДВЕ колони, а бутонът е цял.
+      Старата граница беше 359 px и точно 360 px (най-честата android ширина) оставаше необслужена.
+      Хапчетата са в един ред винаги → само те се смаляват. ── */
+@media (max-width: 379px) {
+  .pl-rz-body { grid-template-columns: minmax(0, 1fr); grid-template-rows: auto; grid-template-areas: "chart" "side" "add" "msg"; }
+  /* страната е на цяла ширина → същите две колони, както при „Всички записи“
+     (под ~300 px auto-fill сам се връща на една) — иначе всеки ред пилее половината празен */
+  .pl-rz-list { display: grid; grid-template-columns: repeat(auto-fill, minmax(147px, 1fr)); align-content: start; gap: 7px; }
+  .pl-rz-list li { display: flex; }
+  .pl-rz .pl-rz-row { padding: 0 4px 0 8px; }
+  /* съотношението 1 : .9 : 1.3 остава — то дава на „Обиколка“ (най-дългото) най-широкото хапче;
+     равните колони (1fr 1fr 1fr) режеха точно него */
+  .pl-rz .pl-rz-tab { font-size: 13.5px; gap: 3px; padding: 4px 5px; }
+  .pl-rz-ti { width: 24px; height: 24px; }
+}
+
+/* ── съвсем тесен екран (под 360px): и заглавието, и жирафът се смаляват ── */
 @media (max-width: 359px) {
   .pl-rz-top { padding-left: 16px; }
   .pl-rz .pl-rz-t { font-size: 24px; }
   .pl-rz-fig { width: 92px; }
   .pl-rz-gir { width: 84px; height: 84px; }
-  .pl-rz-body { grid-template-columns: minmax(0, 1fr); grid-template-rows: auto; grid-template-areas: "chart" "side" "add" "msg"; }
-  .pl-rz-seg { grid-template-columns: 1fr 1fr 1fr; }
-  .pl-rz .pl-rz-tab { font-size: 13.5px; gap: 3px; padding: 4px 5px; }
-  .pl-rz-ti { width: 24px; height: 24px; }
+  .pl-rz .pl-rz-tab { font-size: 12.5px; gap: 3px; padding: 4px 4px; }
+  .pl-rz-ti { width: 22px; height: 22px; }
 }
 
 /* ═══ НОЩ (21:00–7:00): нощно синьо; бели кръгове под плюшените иконки ═══

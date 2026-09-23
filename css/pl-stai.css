@@ -1,0 +1,159 @@
+/* ═══════════════════════════════════════════════════════════════════════════════
+   🏠 ДЕВЕТТЕ СТАИ · филцови карти с истински сцени · 23.09.2026
+   Картата става филцов панел с шев; горе — плюшената сцена на стаята в арка
+   (както арките по рафта в референциите), отдолу сериф заглавие и гел „Влез →“.
+   Старата SVG сцена НЕ се маха: стои отзад, мека и размита, и продължава да се
+   движи — оттам идва животът под плюша.
+   ПЪТ НАЗАД: махни <link href="css/pl-stai.css"> от index.html.
+   ═══════════════════════════════════════════════════════════════════════════════ */
+
+html.pl-on .room-grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 18px;
+  padding: 0 4px;
+}
+@media (min-width: 620px) { html.pl-on .room-grid { grid-template-columns: 1fr 1fr; gap: 22px; } }
+@media (min-width: 1000px) { html.pl-on .room-grid { grid-template-columns: repeat(3, 1fr); } }
+
+/* ── картата: филц с шев ── */
+html.pl-on .room-card[data-pl-st] {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+  text-align: left;
+  padding: 0 0 16px;
+  border: 0;
+  border-radius: 28px;
+  background: var(--pl-felt-bg, #fffaf3);
+  box-shadow: 0 14px 30px rgba(120, 88, 70, .13), inset 0 1px 0 rgba(255, 255, 255, .8);
+  overflow: hidden;
+  transition: transform .45s cubic-bezier(.22, .9, .3, 1), box-shadow .45s ease;
+  animation: plStBreath 7.5s ease-in-out infinite;
+  animation-delay: calc(var(--st-i, 0) * .45s);
+}
+html.pl-on .room-card[data-pl-st]::after {           /* шевът по ръба */
+  content: '';
+  position: absolute; inset: 9px;
+  border: 2px dashed rgba(196, 150, 120, .38);
+  border-radius: 21px;
+  pointer-events: none;
+}
+@keyframes plStBreath {
+  0%, 100% { transform: translateY(0) rotate(0deg); }
+  50% { transform: translateY(-5px) rotate(-.25deg); }
+}
+html.pl-on .room-card[data-pl-st]:hover,
+html.pl-on .room-card[data-pl-st]:focus-visible {
+  transform: translateY(-8px) scale(1.012);
+  box-shadow: 0 22px 44px rgba(120, 88, 70, .2), inset 0 1px 0 rgba(255, 255, 255, .9);
+  animation-play-state: paused;
+}
+html.pl-on .room-card[data-pl-st]:active { transform: translateY(-2px) scale(.994); }
+
+/* ── сцената: плюшената снимка в арка, старата SVG остава отзад ── */
+html.pl-on .room-card[data-pl-st] .scene-wrap {
+  position: relative;
+  margin: 0 0 12px;
+  padding: 0;
+  border-radius: 26px 26px 34px 34px;
+  overflow: hidden;
+  aspect-ratio: 1 / 1;
+  max-height: 236px;
+  isolation: isolate;
+}
+html.pl-on .room-card[data-pl-st] .pl-st-img {
+  position: absolute; inset: 0;
+  background-size: cover;
+  background-position: center;
+  z-index: 2;
+  transform: scale(1.02);
+  transition: transform .6s cubic-bezier(.22, .9, .3, 1);
+  -webkit-mask-image: radial-gradient(120% 110% at 50% 45%, #000 68%, transparent 100%);
+  mask-image: radial-gradient(120% 110% at 50% 45%, #000 68%, transparent 100%);
+}
+html.pl-on .room-card[data-pl-st]:hover .pl-st-img { transform: scale(1.07) translateY(-4px); }
+html.pl-on .room-card[data-pl-st] .scene {           /* старата жива сцена: мек фон */
+  position: absolute; inset: 0;
+  width: 100%; height: 100%;
+  z-index: 1;
+  opacity: .42;
+  filter: blur(7px) saturate(.9);
+  transform: scale(1.15);
+  transition: opacity .5s ease;
+}
+html.pl-on .room-card[data-pl-st]:hover .scene { opacity: .62; }
+
+/* ── надписите ── */
+html.pl-on .room-card[data-pl-st] h3 {
+  margin: 0 18px 6px;
+  font-family: var(--pl-serif, Georgia, serif);
+  font-size: 22px;
+  font-weight: 700;
+  color: var(--pl-ink, #2b3a67);
+  letter-spacing: .01em;
+}
+html.pl-on .room-card[data-pl-st] p {
+  margin: 0 18px 12px;
+  font-size: 13.5px;
+  line-height: 1.55;
+  color: rgba(70, 60, 75, .82);
+  min-height: 62px;
+}
+/* МЕРЕНО (stai_karti.png): старият .room-badge е absolute и лягаше ВЪРХУ текста */
+html.pl-on .room-card[data-pl-st] .room-badge {
+  position: static;
+  margin-top: auto;
+  align-self: flex-start;
+  margin: 0 18px;
+  display: inline-flex; align-items: center; gap: 8px;
+  padding: 9px 16px;
+  min-height: 40px;
+  border-radius: 999px;
+  font-size: 13px; font-weight: 800;
+  color: #7a2f52;
+  background: linear-gradient(180deg, #ffd7e6 0%, #ffbcd4 100%);
+  box-shadow: 0 6px 14px rgba(224, 122, 160, .3), inset 0 1px 0 rgba(255, 255, 255, .85);
+}
+html.pl-on .room-card[data-pl-st] .rr-go { opacity: .85; }
+html.pl-on .room-card[data-pl-st]:hover .rr-go { animation: plStGo 1.1s ease-in-out infinite; }
+@keyframes plStGo { 0%, 100% { transform: translateX(0); } 50% { transform: translateX(4px); } }
+
+/* ── избирачът „Деветте стаи“: същата снимка в арката ── */
+html.pl-on .np-b[data-pl-st]::before {
+  background-image: var(--st-img) !important;
+  background-size: cover !important;
+  background-position: center !important;
+}
+
+/* ── нощем: филцът потъмнява, снимките се смекчават ── */
+html.bl-night.pl-on .room-card[data-pl-st] {
+  background: #2a2436;
+  box-shadow: 0 14px 30px rgba(0, 0, 0, .4), inset 0 1px 0 rgba(255, 255, 255, .06);
+}
+html.bl-night.pl-on .room-card[data-pl-st]::after { border-color: rgba(255, 220, 190, .22); }
+html.bl-night.pl-on .room-card[data-pl-st] h3 { color: #f2e9ff; }
+html.bl-night.pl-on .room-card[data-pl-st] p { color: rgba(236, 232, 245, .78); }
+html.bl-night.pl-on .room-card[data-pl-st] .pl-st-img { filter: brightness(.9) saturate(.95); }
+
+@media (prefers-reduced-motion: reduce) {
+  html.pl-on .room-card[data-pl-st] { animation: none; }
+  html.pl-on .room-card[data-pl-st] .pl-st-img { transition: none; }
+}
+
+/* ── рафтът „Влез в своята стая“: деветте истински сцени в арките (23.09) ──
+   Преди тук стояха рисуваните room-*.webp — собственикът: „тия тъпи фигури е ужасно“.
+   Сега всяка арка носи сцената на своята стая, същата като на голямата карта долу. */
+html.pl-on .pl-room .pl-arch { overflow: hidden; }
+html.pl-on .pl-room .pl-arch img {
+  transform: scale(1.06);
+  transition: transform .5s cubic-bezier(.22, .9, .3, 1);
+}
+html.pl-on .pl-room:hover .pl-arch img,
+html.pl-on .pl-room:focus-visible .pl-arch img { transform: scale(1.14) translateY(-2px); }
+html.pl-on .pl-rooms .pl-room { animation: plStArch 5.2s ease-in-out infinite; }
+html.pl-on .pl-rooms .pl-room:nth-child(2n) { animation-delay: .7s; }
+html.pl-on .pl-rooms .pl-room:nth-child(3n) { animation-delay: 1.4s; }
+@keyframes plStArch { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-4px); } }
+@media (prefers-reduced-motion: reduce) { html.pl-on .pl-rooms .pl-room { animation: none; } }

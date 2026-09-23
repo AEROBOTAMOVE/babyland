@@ -176,7 +176,14 @@ html body #searchOverlay[data-pl-ts] .search-res {
 html body #searchOverlay[data-pl-ts] .search-res:hover { background: #fff; }
 html body #searchOverlay[data-pl-ts] .search-res:active { transform: translateY(2px); box-shadow: 0 0 0 rgba(203, 176, 150, .5), 0 3px 8px rgba(110, 76, 52, .08); }
 html body #searchOverlay[data-pl-ts] .search-res:focus-visible { outline: none; box-shadow: var(--ui-ring, 0 0 0 4px rgba(217, 90, 142, .28)), 0 2px 0 rgba(203, 176, 150, .5); }
-html body #searchOverlay[data-pl-ts] .search-res[data-pl-ts-off] { display: none; }
+/* 🔴 22.09 (независим проверител): филтърът „Отговор“ оставяше САМОТНО заглавие.
+   Причината беше разминаване между двата файла: pl-tarsene.js слагаше data-pl-ts-off и на
+   ТРИТЕ неща (ред, отговор, водещ ред .sf-found), а тук се криеха само първите две — водещият
+   „И ето какво още намерих за теб:“ оставаше да виси над празен лист (мерено: display block,
+   20.1px висок, 0 видими резултата под него). Затова правилото вече е ЕДНО и по АТРИБУТА,
+   а не по класа: каквото pl-tarsene.js изключи, то изчезва. Ново скрито нещо утре няма да
+   иска нов ред тук. */
+html body #searchOverlay[data-pl-ts] [data-pl-ts-off] { display: none !important; }
 /* арката — формата на стаите в началото (premium.css .pl-arch), рисунката е плюшената на стаята */
 .pl-ts-arch {
   position: relative; flex: none; width: 66px; height: 70px;
@@ -217,7 +224,6 @@ html body #searchOverlay[data-pl-ts] .sf-bub {
   font-family: var(--pl-ts-sans); font-size: 14.5px; font-weight: 600; line-height: 1.5;
 }
 html body #searchOverlay[data-pl-ts] .sf-bub strong { color: var(--pl-ts-navy); font-weight: 800; }
-html body #searchOverlay[data-pl-ts] .sf-answer[data-pl-ts-off] { display: none; }
 html body #searchOverlay[data-pl-ts] .sf-ans .sf-bub, html body #searchOverlay[data-pl-ts] .sf-chat .sf-bub { background: #fff; }
 /* спешното остава ЧЕРВЕНО и най-отгоре; 112 = червен гел като в СОС центъра (pl-ui.css, раздел 9) */
 html body #searchOverlay[data-pl-ts] .sf-sos .sf-bub { background: #fff4f3; border-color: #efb7b3; color: #8e1f1a; }

@@ -1,0 +1,61 @@
+/* ═══════════════════════════════════════════════════════════════════════════════
+   🕰️ ЖИВИЯТ ЧАСОВНИК · вид · 23.09.2026
+   Плюшен циферблат (генериран), дървени стрелки, тиктакаща секунда.
+   ПЪТ НАЗАД: махни <link href="css/pl-chas.css"> от index.html.
+   ═══════════════════════════════════════════════════════════════════════════════ */
+
+html.pl-on .d24-wrap { position: relative; }
+
+html.pl-on .pl-chas {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 10px;
+  margin: 0 auto 18px;
+  animation: plChasBreath 6.5s ease-in-out infinite;
+}
+@keyframes plChasBreath {
+  0%, 100% { transform: translateY(0) rotate(0deg); }
+  50% { transform: translateY(-4px) rotate(-.4deg); }
+}
+
+html.pl-on .pl-chas-face {
+  position: relative;
+  width: min(210px, 62vw);
+  aspect-ratio: 1 / 1;
+  background: url(../img/art/chasovnik.webp) center/contain no-repeat;
+  filter: drop-shadow(0 12px 22px rgba(120, 88, 70, .22));
+}
+
+html.pl-on .pl-chas-h { position: absolute; inset: 0; width: 100%; height: 100%; overflow: visible; }
+html.pl-on .pl-chas-h g { transform-origin: 50px 50px; }
+html.pl-on .pl-chas-hh rect { fill: #a9784f; }                      /* час — дърво */
+html.pl-on .pl-chas-mm rect { fill: #c79a6f; }                      /* минута — светло дърво */
+html.pl-on .pl-chas-ss rect,
+html.pl-on .pl-chas-ss circle { fill: #e08aa8; }                    /* секунда — розов конец */
+html.pl-on .pl-chas-hh,
+html.pl-on .pl-chas-mm { transition: transform .5s cubic-bezier(.3, 1.4, .5, 1); }
+html.pl-on .pl-chas-ss { transition: transform .12s cubic-bezier(.3, 1.8, .5, 1); }
+
+html.pl-on .pl-chas-t {
+  display: flex; flex-direction: column; align-items: center; gap: 2px;
+  font-family: 'Nunito', system-ui, sans-serif;
+}
+html.pl-on .pl-chas-t b {
+  font-size: 30px; font-weight: 800; letter-spacing: .02em;
+  font-variant-numeric: tabular-nums;
+  color: var(--pl-ink, #2b3a67);
+}
+html.pl-on .pl-chas-t small { font-size: 12.5px; font-weight: 700; color: rgba(90, 70, 90, .72); }
+
+/* нощем: циферблатът се смекчава, розовата секунда свети мъничко */
+html.bl-night.pl-on .pl-chas-face { filter: drop-shadow(0 12px 22px rgba(0, 0, 0, .45)) brightness(.88); }
+html.bl-night.pl-on .pl-chas-t b { color: #f3ecff; }
+html.bl-night.pl-on .pl-chas-t small { color: rgba(236, 232, 245, .72); }
+html.bl-night.pl-on .pl-chas-ss rect,
+html.bl-night.pl-on .pl-chas-ss circle { fill: #ffb3cd; }
+
+@media (prefers-reduced-motion: reduce) {
+  html.pl-on .pl-chas { animation: none; }
+  html.pl-on .pl-chas-ss, html.pl-on .pl-chas-hh, html.pl-on .pl-chas-mm { transition: none; }
+}

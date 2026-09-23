@@ -54,16 +54,21 @@
     '💧': ['c', 2, 3, 's'], '📊': ['b', 3, 1, 's'], '📈': ['b', 3, 1, 's'], '🕐': ['h', 3, 1, 'p'], '🏆': ['c', 2, 2, 'b'], '🥇': ['c', 2, 2, 'b'],
     '🌷': ['a', 0, 0, 'p'], '🌹': ['a', 0, 0, 'p'], '🌻': ['f', 2, 1, 'b'], '🌱': ['f', 0, 2, 'm'], '🪴': ['f', 0, 2, 'm'], '🔥': ['c', 1, 1, 'c'],
     '🧺': ['a', 0, 2, 'c'], '🍫': ['d', 1, 3, 'c'], '🎂': ['d', 1, 3, 'p'], '🧁': ['d', 1, 3, 'p'], '🛏️': ['t', 0, 0, 's'], '🚼': ['t', 1, 3, 'm'],
+    // 23.09 · лист i: шестнайсетте, които останаха голи на екрана (мерено: emo_inv)
+    '💃': ['i', 0, 0, 'p'], '🕊️': ['i', 0, 1, 's'], '📲': ['i', 0, 2, 'l'], '🃏': ['i', 0, 3, 'l'],
+    '👦': ['i', 1, 0, 's'], '🌅': ['i', 1, 1, 'b'], '🌇': ['i', 1, 1, 'b'], '🌆': ['i', 1, 1, 'b'], '📴': ['i', 1, 2, 'l'], '📱': ['i', 1, 3, 'm'],
+    '➕': ['i', 2, 0, 'p'], '🎤': ['i', 2, 1, 'm'], '👀': ['i', 2, 2, 's'], '🌤️': ['i', 2, 3, 's'], '⛅': ['i', 2, 3, 's'],
+    '😮‍💨': ['i', 3, 0, 'c'], '🫂': ['i', 3, 1, 'p'], '🏰': ['i', 3, 2, 'c'], '💩': ['i', 3, 3, 'c'],
     '🌈': ['b', 1, 3, 'm'], '☁️': ['b', 0, 2, 's'], '🌬️': ['b', 0, 2, 's'], '🫧': ['b', 0, 2, 's'],
   };
-  const ЛИСТ = { a: 'ico-a', b: 'ico-b', c: 'ico-c', d: 'ico-d', e: 'ico-e', f: 'ico-f', g: 'ico-g', h: 'ico-h', x: 'fig-a', t: 'statii-t', m: 'lica' };
+  const ЛИСТ = { a: 'ico-a', b: 'ico-b', c: 'ico-c', d: 'ico-d', e: 'ico-e', f: 'ico-f', g: 'ico-g', h: 'ico-h', i: 'ico-i', x: 'fig-a', t: 'statii-t', m: 'lica' };
   const ДВЕРЕДНИ = { x: 1, m: 1 };                       // листове 4×2 (другите са 4×4)
   const ЕМ = /^\s*(\p{Extended_Pictographic}(?:️|‍\p{Extended_Pictographic}|\p{Emoji_Modifier}|️⃣)*)/u;
   //  .pg20-fruit = едрата рисунка в картата на възрастта (rooms2.js); .ask-badge е ИЗКЛЮЧЕН — той е
   //  лицето на помощничката и се сменя с героинята по стаята (css/pl-figuri.css)
   //  малките елементи-иконки по клас (там емоджито Е иконката, независимо от размера):
   //  .rm-e — картата на стаята, .sos-e — СОС редовете, .ck-e — личицата в „Днес“, .fa-e — аптечката
-  const ЦЕЛИ = '.jr-medal, .pl-em, .pg20-fruit, .bb-big, .td-big, .rm-e, .sos-e, .ck-e, .pl-dn-face, .np-b > span';
+  const ЦЕЛИ = '.jr-medal, .pl-em, .pg20-fruit, .bb-big, .td-big, .rm-e, .sos-e, .ck-e, .pl-dn-face, .np-b > span, .ch-emo, .qa-e, .wk-e';
 
   function стил(е, р) {
     const [л, ред, кол, т] = р;
@@ -92,22 +97,43 @@
     '.prof-overlay button:not(.prof-close), .prof-overlay .pr-row, .prof-overlay .prof-tditem, .prof-overlay .prof-row, ' +
     '.rm-veil .rm-item, .rm-veil .rm-row, .rm-veil button, ' +
     'main > section .section-title, main > section .room-card h3, main > section .mood, main > section li, ' +
+    'main > section p, main > section h3, main > section h4, main > section button, main > section .wk-title, ' +
+    // 23.09: старите секции на началото — заглавия и редове, писани от JS (днес, седмица, въпроси)
+    'main > section div, main > section span, main > section small, main > section b, main > section strong, main > section label, ' +
     '#searchOverlay .search-res, .np-b, #plDv button, .sos-ov .sos-row';
+  // 🪤 23.09 МЕРЕНО (den_nachalo): обвивах САМО водещо емоджи и пропуснах „Добро утро! 🌸“,
+  //   „+ 🌡️ Мерих температура“, „А всъщност? 👀“ — 14 голи емоджита на началния екран.
+  //   Сега се обвива ПЪРВОТО емоджи във всеки СВОЙ текстов възел, където и да стои.
+  //   Текстът остава буква по буква същият (старият код сравнява заглавия и надписи на бутони);
+  //   при най-малко разминаване връщаме обратно БЕЗ да пипаме децата на елемента.
+  const ЕМО = /\p{Extended_Pictographic}(?:️|‍\p{Extended_Pictographic}|\p{Emoji_Modifier}|️⃣)*/u;
   function обвий(б) {
     if (б.dataset.plW) return;
     б.dataset.plW = '1';
-    const п = б.firstChild;
-    if (!п || п.nodeType !== 3) return;
-    const м = п.nodeValue.match(/^(\s*)(\p{Extended_Pictographic}(?:️|‍\p{Extended_Pictographic}|\p{Emoji_Modifier}|️⃣)*)/u);
-    if (!м || !К[м[2]]) return;
+    if (б.closest && б.closest(БЕЗ)) return;
     const преди = б.textContent;
-    const с = document.createElement('span'); с.className = 'pl-em'; с.setAttribute('aria-hidden', 'true'); с.textContent = м[2];
-    if (м[1]) б.insertBefore(document.createTextNode(м[1]), п);
-    п.nodeValue = п.nodeValue.slice(м[0].length);
-    б.insertBefore(с, п);
-    if (б.textContent !== преди) { б.textContent = преди; return; }   // не сме успели чисто → връщаме
-    плюш(с);
+    const мои = [];
+    const възли = [];
+    for (let в = б.firstChild; в; в = в.nextSibling) if (в.nodeType === 3 && в.nodeValue && ЕМО.test(в.nodeValue)) възли.push(в);
+    for (const в of възли) {
+      const м = в.nodeValue.match(ЕМО);
+      if (!м || !К[м[0]]) continue;
+      const сл = в.splitText(м.index);
+      сл.nodeValue = сл.nodeValue.slice(м[0].length);
+      const с = document.createElement('span');
+      с.className = 'pl-em'; с.setAttribute('aria-hidden', 'true'); с.textContent = м[0];
+      б.insertBefore(с, сл);
+      мои.push(с);
+    }
+    if (!мои.length) return;
+    if (б.textContent !== преди) {                       // нещо не се е получило → чисто връщане
+      for (const с of мои) { с.parentNode && с.parentNode.replaceChild(document.createTextNode(с.textContent), с); }
+      б.normalize && б.normalize();
+      return;
+    }
+    for (const с of мои) плюш(с);
   }
+
   // ── 3 · едрата самотна емоджи-рисунка (цял елемент = едно емоджи, ≥20px) ──
   //  и секциите на началната страница (те се преобличат, не се крият — 23.09)
   const ЕДРИ = '#roRoom span, #roRoom i, #roRoom em, #roRoom strong, #plHome span, .prof-overlay span, .prof-overlay i, ' +
