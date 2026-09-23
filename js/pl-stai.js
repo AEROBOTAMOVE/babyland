@@ -36,6 +36,17 @@
     с.setAttribute('aria-hidden', 'true');
     с.style.backgroundImage = 'url(img/art/stai/' + ф + '.webp)';
     обвивка.insertBefore(с, обвивка.firstChild);
+    // феята на стаята застава в ъгъла на сцената — едно лице на стая навсякъде
+    const фея = { "Бременност": "mila", "Моето бебе": "mira", "Захранване": "malina", "Здраве и SOS": "vita",
+      "Дневник на мама": "luna", "Развитие и игри": "iskra", "Инструменти": "dara", "Жената в мен": "niya",
+      "Лабораторията": "ema" }[име];
+    if (фея && !обвивка.querySelector(".pl-st-fey")) {
+      const ф = document.createElement("span");
+      ф.className = "pl-st-fey";
+      ф.setAttribute("aria-hidden", "true");
+      ф.style.backgroundImage = "url(img/art/fei/" + фея + ".webp)";
+      обвивка.appendChild(ф);
+    }
     // лекото полюляване тръгва разместено, за да не дишат деветте в такт
     к.style.setProperty('--st-i', ред.indexOf(име));
   }
