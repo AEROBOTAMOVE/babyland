@@ -161,6 +161,10 @@
           '<span class="pl-baby-go" aria-hidden="true">›</span>' +
         '</button>' +
       '</div>' +
+      '<button type="button" class="pl-find" data-pl="find" aria-label="Търси във всичко — храна, симптом, дума">' +
+        '<i class="pl-art" aria-hidden="true" style="background-image:url(img/art/ico-c.webp);background-position:33.333% 100%"></i>' +
+        '<span>Какво търсим днес?</span><em aria-hidden="true">›</em>' +
+      '</button>' +
       '<div class="pl-card">' +
         '<div class="pl-card-h"><i class="pl-art pl-sun" aria-hidden="true" style="background-image:url(img/art/ico-d.webp);background-position:0% 0%"></i> Нашият ден<button type="button" class="pl-all" data-room="Моето бебе">Виж всички ›</button></div>' +
         '<div class="pl-line" id="plLine" hidden></div>' +
@@ -195,6 +199,13 @@
       const ст = e.target.closest('[data-room]');
       if (ст) { отвори(ст.getAttribute('data-room')); return; }
       if (e.target.closest('[data-pl="add"]')) { добави(); return; }
+      // 🔎 старият вход за търсене (#searchTrigger) стои в скритата секция „Деветте вълшебни стаи“ —
+      //   хванато от проверителя на екрана „Търсене“. Оттук викаме СЪЩОТО търсене.
+      if (e.target.closest('[data-pl="find"]')) {
+        try { if (window.BL_SEARCH && BL_SEARCH.open) { BL_SEARCH.open(); return; } } catch (грешка) {}
+        const т = document.getElementById('searchTrigger'); if (т) т.click();
+        return;
+      }
       if (e.target.closest('#plBaby')) отвори('Моето бебе');
     });
     return с;

@@ -1096,3 +1096,20 @@ html[data-theme="dark"].pl-on.pl-landing .faq, html[data-theme="dark"].pl-on.pl-
 html[data-theme="dark"] #plHome .pl-per { background-color: rgba(31, 43, 92, .95); border-color: rgba(255, 255, 255, .14); box-shadow: none; }
 html[data-theme="dark"] #plHome .pl-per b { color: #fff; }
 html[data-theme="dark"] #plHome .pl-per small { color: #c9cbe3; }
+
+/* ═══ 🔎 „Какво търсим днес?“ на началото (реф. 9) ═══
+   Старият вход #searchTrigger живее в скритата секция „Деветте вълшебни стаи“; този бутон вика
+   СЪЩОТО търсене (BL_SEARCH.open). js/premium-home.js. */
+#plHome .pl-find {
+  display: flex; align-items: center; gap: 10px; width: calc(100% - 32px); margin: 0 16px 14px; padding: 12px 14px;
+  min-height: 56px; border-radius: 999px; cursor: pointer; text-align: left;
+  background-color: #fffdfb; background-image: none; border: 1px solid rgba(241, 228, 217, .95);
+  box-shadow: inset 0 2px 0 #fff, 0 6px 14px rgba(110, 76, 52, .14);
+  font-family: var(--pl-serif, Georgia, serif); font-size: 16.5px; font-weight: 700; color: var(--pl-navy, #1d2a5c);
+}
+#plHome .pl-find .pl-art { flex: none; width: 34px; height: 34px; border-radius: 50%; background-size: 400% 400%; background-repeat: no-repeat; background-color: var(--pl-sky, #dfeafb); background-blend-mode: multiply; }
+#plHome .pl-find span { flex: 1 1 auto; min-width: 0; }
+#plHome .pl-find em { font-style: normal; color: var(--pl-pink, #e56d99); font-weight: 800; }
+#plHome .pl-find:active { transform: translateY(2px); }
+html[data-theme="dark"] #plHome .pl-find { background-color: rgba(31, 43, 92, .95); border-color: rgba(255, 255, 255, .14); color: #fff; box-shadow: none; }
+html[data-theme="dark"] #plHome .pl-find .pl-art { background-color: #fff; background-blend-mode: normal; }
