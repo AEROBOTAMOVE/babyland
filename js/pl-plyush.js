@@ -61,7 +61,9 @@
   const ЕМ = /^\s*(\p{Extended_Pictographic}(?:️|‍\p{Extended_Pictographic}|\p{Emoji_Modifier}|️⃣)*)/u;
   //  .pg20-fruit = едрата рисунка в картата на възрастта (rooms2.js); .ask-badge е ИЗКЛЮЧЕН — той е
   //  лицето на помощничката и се сменя с героинята по стаята (css/pl-figuri.css)
-  const ЦЕЛИ = '.jr-medal, .pl-em, .pg20-fruit, .bb-big, .td-big';
+  //  малките елементи-иконки по клас (там емоджито Е иконката, независимо от размера):
+  //  .rm-e — картата на стаята, .sos-e — СОС редовете, .ck-e — личицата в „Днес“, .fa-e — аптечката
+  const ЦЕЛИ = '.jr-medal, .pl-em, .pg20-fruit, .bb-big, .td-big, .rm-e, .sos-e, .ck-e, .pl-dn-face, .np-b > span';
 
   function стил(е, р) {
     const [л, ред, кол, т] = р;
@@ -88,6 +90,7 @@
     '#roRoom button:not(.pin-btn):not(.fold-btn):not(.ask-mic):not(.sos-call):not(.ro-fab):not(.jr-winbtn), #roRoom .fa-e, #roRoom .lb-q, #roRoom .tl-nn, ' +
     // извън стаята: профилът, търсенето, листът „Добави“, изборът на стаи, СОС центърът
     '.prof-overlay button:not(.prof-close), .prof-overlay .pr-row, .prof-overlay .prof-tditem, .prof-overlay .prof-row, ' +
+    '.rm-veil .rm-item, .rm-veil .rm-row, .rm-veil button, ' +
     '#searchOverlay .search-res, .np-b, #plDv button, .sos-ov .sos-row';
   function обвий(б) {
     if (б.dataset.plW) return;
@@ -105,7 +108,7 @@
     плюш(с);
   }
   // ── 3 · едрата самотна емоджи-рисунка (цял елемент = едно емоджи, ≥20px) ──
-  const ЕДРИ = '#roRoom span, #roRoom i, #roRoom em, #roRoom strong, #plHome span, .prof-overlay span, .prof-overlay i, #searchOverlay span, #plDv span';
+  const ЕДРИ = '#roRoom span, #roRoom i, #roRoom em, #roRoom strong, #plHome span, .prof-overlay span, .prof-overlay i, #searchOverlay span, #plDv span, .rm-veil span, .rm-veil i';
   const БЕЗ = '#roChat, #artBody, .msg, .ask-badge, input, textarea, .pl-em';
   function едро(е) {
     if (е.dataset.plPl || е.children.length) return;

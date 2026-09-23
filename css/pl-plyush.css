@@ -22,3 +22,5 @@ html[data-theme="dark"] .pl-pl { box-shadow: inset 0 0 0 1.5px rgba(255, 255, 25
 
 /* едрата рисунка в картата на възрастта */
 .pg20-fruit.pl-pl, .bb-big.pl-pl, .td-big.pl-pl { display: inline-block; width: 64px !important; height: 64px !important; }
+/* иконките по клас в списъците (картата на стаята, СОС редовете) — кръгче 30px */
+.rm-e.pl-pl, .sos-e.pl-pl { display: inline-block; width: 30px !important; height: 30px !important; vertical-align: -8px; }

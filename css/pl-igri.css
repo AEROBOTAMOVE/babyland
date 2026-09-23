@@ -191,8 +191,8 @@
 }
 .pl-ig-drawer {
   position: relative;
-  display: flex; align-items: center; gap: 6px;
-  min-height: 76px; padding: 16px 10px 10px 9px; min-width: 0;
+  display: flex; align-items: center; gap: 5px;
+  min-height: 76px; padding: 16px 7px 10px 8px; min-width: 0;
   border: 0; border-radius: 14px;
   box-shadow:
     inset 0 2px 0 rgba(255, 255, 255, .85), inset 0 -3px 0 rgba(60, 60, 90, .07),
@@ -213,9 +213,12 @@
 }
 .pl-ig-drawer.d-first { background: linear-gradient(180deg, #e6f3e7 0, #cfe5d4 100%); }
 .pl-ig-drawer.d-box { background: linear-gradient(180deg, #e5edf9 0, #cddcf1 100%); }
-.pl-ig-drawer i { width: 42px; height: 42px; }
+/* 🪤 22.09, ВТОРИ КРЪГ (находка на проверителя): „Кутия за | спомени“ се пречупваше на два реда,
+   а в реф. 1 надписът е на ЕДИН. Тук се прави само МЯСТОТО (иконката 42→38, по-тесни отстъпи);
+   самата големина я мери единРед() в js/pl-igri.js с истинския шрифт и я слага еднаква на двете. */
+.pl-ig-drawer i { width: 38px; height: 38px; }
 .pl-ig-drawer span { flex: 1; min-width: 0; font-family: var(--pl-serif, Georgia, serif); font-size: 15px; font-weight: 700; line-height: 1.15; }
-.pl-ig-drawer em { font-style: normal; font-size: 24px; line-height: 1; }
+.pl-ig-drawer em { font-style: normal; font-size: 21px; line-height: 1; margin-right: -2px; }
 
 /* ═══ 📒 ЛИСТЪТ НА ИГРАТА (реф. 12) — цяла страница върху сцената ═══ */
 .pl-ig-veil {
@@ -314,22 +317,41 @@
   font-size: 13.5px; font-weight: 800; color: #5d4a3a; text-align: center;
 }
 .pl-ig-need[hidden] { display: none; }
+/* 🪤 22.09, ВТОРИ КРЪГ (находка на проверителя): стъпките бяха само кръгче с цифра + ред текст —
+   единственото „плоско“ място. В реф. 12 всяка стъпка носи СНИМКА в рамка, а номерът е кръгче
+   върху горния ѝ ъгъл. Нови картинки НЕ се правят (кредитите са на собственика) — фигурката е
+   от готовите спрайтове, подбрана по думите на самата стъпка (js/pl-igri.js, ФИГУРИ). */
 .pl-ig-steps { list-style: none; margin: 0; padding: 0; }
 .pl-ig-steps li {
-  display: grid; grid-template-columns: 42px minmax(0, 1fr); gap: 12px; align-items: center;
-  margin-top: 8px; padding: 10px 12px 10px 10px; border-radius: 18px;
+  display: grid; grid-template-columns: 64px minmax(0, 1fr); gap: 12px; align-items: center;
+  margin-top: 10px; padding: 10px 12px 10px 10px; border-radius: 18px;
   background: rgba(255, 255, 255, .66);
   box-shadow: inset 0 0 0 1px rgba(214, 186, 158, .6), 0 2px 0 rgba(214, 186, 158, .4);
 }
-.pl-ig-steps li b {
-  display: grid; place-items: center; width: 40px; height: 40px; border-radius: 50%;
-  font-family: var(--ig-sans); font-size: 19px; font-weight: 800; color: #fff; font-variant-numeric: lining-nums;
-  box-shadow: inset 0 2px 0 rgba(255, 255, 255, .3), inset 0 -3px 0 rgba(0, 0, 0, .14), 0 0 0 3px #fff, 0 3px 8px rgba(80, 60, 90, .22);
+/* рамката на фигурката: пастелно платно + бял кант и мека вътрешна сянка, както в реф. 12 */
+.pl-ig-sfig {
+  position: relative; display: grid; place-items: center;
+  width: 64px; height: 58px; border-radius: 15px;
+  box-shadow: 0 0 0 3px #fff, 0 0 0 4px rgba(214, 186, 158, .55), 0 3px 7px rgba(110, 76, 52, .2);
 }
-.pl-ig-steps li.st-1 b { background: #b43a6b; }
-.pl-ig-steps li.st-2 b { background: #2f5fa8; }
-.pl-ig-steps li.st-3 b { background: #2e7d57; }
-.pl-ig-steps li span { font-size: 15px; font-weight: 700; line-height: 1.4; color: var(--pl-ink, #3b3f5c); }
+.pl-ig-sfig::after {           /* лек блясък по горния ръб — рамката да не е плоска */
+  content: ''; position: absolute; inset: 0; border-radius: inherit; pointer-events: none;
+  box-shadow: inset 0 2px 5px rgba(255, 255, 255, .8), inset 0 -3px 6px rgba(110, 76, 52, .12);
+}
+.pl-ig-sfig i { width: 48px; height: 48px; }
+.pl-ig-sfig b {                /* номерът: кръгче върху горния ляв ъгъл на рамката (реф. 12) */
+  position: absolute; z-index: 2; top: -9px; left: -9px;
+  display: grid; place-items: center; width: 28px; height: 28px; border-radius: 50%;
+  font-family: var(--ig-sans); font-size: 15px; font-weight: 800; color: #fff; font-variant-numeric: lining-nums;
+  box-shadow: inset 0 2px 0 rgba(255, 255, 255, .3), inset 0 -3px 0 rgba(0, 0, 0, .14), 0 0 0 3px #fff, 0 2px 6px rgba(80, 60, 90, .26);
+}
+.pl-ig-steps li.st-1 .pl-ig-sfig { background: linear-gradient(180deg, #fdeaf1 0, #f8d7e4 100%); }
+.pl-ig-steps li.st-2 .pl-ig-sfig { background: linear-gradient(180deg, #e8f0fb 0, #d4e2f4 100%); }
+.pl-ig-steps li.st-3 .pl-ig-sfig { background: linear-gradient(180deg, #e8f4e9 0, #d3e7d8 100%); }
+.pl-ig-steps li.st-1 .pl-ig-sfig b { background: #b43a6b; }
+.pl-ig-steps li.st-2 .pl-ig-sfig b { background: #2f5fa8; }
+.pl-ig-steps li.st-3 .pl-ig-sfig b { background: #2e7d57; }
+.pl-ig-stx { font-size: 15px; font-weight: 700; line-height: 1.4; color: var(--pl-ink, #3b3f5c); }
 
 /* таймерът (материал: .pl-felt): будилник · 05:00 · розов гел */
 /* 🪤 мерено 22.09: с колони auto/auto/1fr гелът (213px) лягаше върху „Примерно време“ —
@@ -424,8 +446,13 @@ html[data-theme="dark"] .pl-ig-hero-t p i, html[data-theme="dark"] .pl-ig-book h
 html[data-theme="dark"] .pl-ig-book h3, html[data-theme="dark"] .pl-ig-time b { color: #fff; }
 html[data-theme="dark"] .pl-ig-need { background: rgba(255, 255, 255, .08); border-color: rgba(255, 255, 255, .25); color: #e8e9f5; }
 html[data-theme="dark"] .pl-ig-steps li { background: rgba(255, 255, 255, .07); box-shadow: inset 0 0 0 1px rgba(255, 255, 255, .12); }
-html[data-theme="dark"] .pl-ig-steps li span { color: #eceefa; }
-html[data-theme="dark"] .pl-ig-steps li b { box-shadow: inset 0 2px 0 rgba(255, 255, 255, .25), 0 0 0 3px rgba(255, 255, 255, .85), 0 3px 8px rgba(0, 0, 0, .3); }
+html[data-theme="dark"] .pl-ig-stx { color: #eceefa; }
+/* нощем рамката остава пастелна (тя е „снимката“), но е малко по-приглушена, а фигурката
+   получава кремаво платно и пак се множи — така не става бял диск в тъмна рамка */
+html[data-theme="dark"] .pl-ig-sfig { box-shadow: 0 0 0 3px rgba(255, 255, 255, .85), 0 0 0 4px rgba(255, 255, 255, .18), 0 3px 7px rgba(0, 0, 0, .35); filter: saturate(.9) brightness(.96); }
+html[data-theme="dark"] .pl-ig-sfig::after { box-shadow: inset 0 2px 5px rgba(255, 255, 255, .7), inset 0 -3px 6px rgba(80, 60, 40, .14); }
+html[data-theme="dark"] .pl-ig-sfig i { mix-blend-mode: multiply; background-color: transparent; border-radius: 0; }
+html[data-theme="dark"] .pl-ig-sfig b { box-shadow: inset 0 2px 0 rgba(255, 255, 255, .25), 0 0 0 3px rgba(255, 255, 255, .9), 0 3px 8px rgba(0, 0, 0, .35); }
 html[data-theme="dark"] .pl-ig-time small { color: #d6d8ee; }
 html[data-theme="dark"] .pl-ig-heart { stroke: #ff9cc2; }
 html[data-theme="dark"] .pl-ig-fav[aria-pressed="true"] .pl-ig-heart { fill: #ff9cc2; }
@@ -446,4 +473,9 @@ html[data-theme="dark"] .pl-ig-note { background: rgba(22, 32, 74, .9); color: #
   .pl-ig-timer { grid-template-columns: auto minmax(0, 1fr); }
   .pl-ig-go { grid-column: 1 / -1; justify-self: stretch; }
   .pl-ig-hero-t h2 { font-size: 30px; }
+  /* стъпките: рамката се свива, за да остане ≥140px за текста (мерено на 320px) */
+  .pl-ig-steps li { grid-template-columns: 54px minmax(0, 1fr); gap: 10px; padding: 9px 10px 9px 9px; }
+  .pl-ig-sfig { width: 54px; height: 50px; border-radius: 13px; }
+  .pl-ig-sfig i { width: 40px; height: 40px; }
+  .pl-ig-stx { font-size: 14px; }
 }
