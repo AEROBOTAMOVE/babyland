@@ -169,5 +169,5 @@
     new MutationObserver(отложено).observe(document.body, { childList: true, subtree: true });
   }
   if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', върви); else върви();
-  window.BL_PL_PLYUSH = { мини, К };
+  window.BL_PL_PLYUSH = { мини, К, ЛИСТ, ДВЕРЕДНИ };   // ЛИСТ/ДВЕРЕДНИ трябват на pl-chas.js за рисунките в SVG
 })();

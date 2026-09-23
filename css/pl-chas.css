@@ -64,3 +64,14 @@ html.bl-night.pl-on .pl-chas-ss circle, html[data-theme="dark"].pl-on .pl-chas-s
   html.pl-on .pl-chas { animation: none; }
   html.pl-on .pl-chas-ss, html.pl-on .pl-chas-hh, html.pl-on .pl-chas-mm { transition: none; }
 }
+
+/* 🪤 МЕРЕНО (chas_vid.png): генерираната снимка носи своя кремав квадрат и личеше
+   като лепенка върху филца. Маскираме я до кръг — остава само циферблатът. */
+html.pl-on .pl-chas-face {
+  -webkit-mask-image: radial-gradient(circle at 50% 50%, #000 47%, transparent 49%);
+  mask-image: radial-gradient(circle at 50% 50%, #000 47%, transparent 49%);
+}
+/* денонощният кръг: емоджитата стават плюшени рисунки (js/pl-chas.js) */
+html.pl-on .d24-svg .pl-chas-em { pointer-events: none; }
+html.pl-on .d24-svg text.pl-chas-skrit { fill: transparent !important; }
+html.pl-on .d24-svg tspan.pl-chas-skrit { fill: transparent !important; }
