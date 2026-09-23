@@ -35,7 +35,15 @@
       var д = по(б.getAttribute('data-room')) || ФЕИ[i];
       if (!д || б.dataset.plFei === д.ф) continue;
       б.dataset.plFei = д.ф;
-      б.style.setProperty('--fei', 'url(img/art/fei/' + д.ф + '.webp)');
+      // 🪤 МЕРЕНО (fei_debug): var() се ползва В css файла и url-ът се мери спрямо css/ →
+      //   http://…/css/img/art/fei/mila.webp = 404. Затова рисунката отива ПРЯКО на елемента.
+      var и = б.querySelector('i');
+      if (и) {
+        и.style.backgroundImage = 'url(img/art/fei/' + д.ф + '.webp)';
+        и.style.backgroundPosition = 'center';
+        и.style.backgroundSize = 'contain';
+        и.style.backgroundRepeat = 'no-repeat';
+      }
       б.style.setProperty('--fei-i', i);
       // какво прави — веднъж, под ролята (не пипаме името и ролята: старият текст остава)
       if (!б.querySelector('.pl-fei-do')) {
@@ -49,14 +57,41 @@
     return пипнати > 0 || бутони.length > 0;
   }
 
+
+  // ── ХОРОТО („Запознай се с помощничките“, js/home.js): балоните стават феи ──
+  //   Старата секция си остава — върти се, спира при докосване, води до стаята.
+  //   Сменяме само лицето: вместо нарисуван балон стои истинската фея.
+  function поИме(име) {
+    име = (име || "").trim();
+    for (var i = 0; i < ФЕИ.length; i++) if (ФЕИ[i].име === име) return ФЕИ[i];
+    return null;
+  }
+  function хорото() {
+    var бутони = document.querySelectorAll(".horo-b");
+    for (var i = 0; i < бутони.length; i++) {
+      var б = бутони[i];
+      var име = (б.querySelector(".horo-name") || {}).textContent;
+      var д = поИме(име);
+      if (!д || б.dataset.plFei) continue;
+      б.dataset.plFei = д.ф;
+      var топка = б.querySelector(".horo-ball");
+      if (!топка) continue;
+      топка.style.backgroundImage = "url(img/art/fei/" + д.ф + ".webp)";
+      топка.style.backgroundPosition = "center";
+      топка.style.backgroundSize = "contain";
+      топка.style.backgroundRepeat = "no-repeat";
+      б.style.setProperty("--fei-i", i);
+    }
+  }
   function върви() {
     облечи();
+    хорото();
     var чака = false;
     new MutationObserver(function () {
       if (чака) return; чака = true;
-      setTimeout(function () { чака = false; облечи(); }, 140);
+      setTimeout(function () { чака = false; облечи(); хорото(); }, 140);
     }).observe(document.body, { childList: true, subtree: true });
   }
   if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', върви); else върви();
-  window.BL_PL_FEI = { ФЕИ: ФЕИ, облечи: облечи };
+  window.BL_PL_FEI = { ФЕИ: ФЕИ, облечи: облечи, хорото: хорото };
 })();

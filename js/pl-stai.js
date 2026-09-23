@@ -46,7 +46,11 @@
       const ф = СЦЕНИ[(име || '').trim()];
       if (!ф || б.dataset.plSt) return;
       б.dataset.plSt = ф;
-      б.style.setProperty('--st-img', 'url(img/art/stai/' + ф + '.webp)');
+      // 🪤 23.09: стойността влиза в css променлива, която се ЧЕТЕ в css/pl-stai.css →
+      //   относителният адрес щеше да се мери спрямо css/ (мерено при феите: 404).
+      //   Затова даваме ПЪЛЕН адрес, изчислен от страницата — работи навсякъде.
+      var адрес = new URL('img/art/stai/' + ф + '.webp', document.baseURI).href;
+      б.style.setProperty('--st-img', 'url("' + адрес + '")');
     });
   }
 

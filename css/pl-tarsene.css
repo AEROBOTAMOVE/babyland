@@ -242,6 +242,19 @@ html body #searchOverlay[data-pl-ts] .sf-more.pl-gel {
   display: flex; align-items: center; justify-content: center; width: 100%; min-height: 48px; margin-top: 12px; padding: 0 16px;
   border-radius: 999px; font-family: var(--pl-ts-sans); font-weight: 800; font-size: 14.5px; line-height: 1.2; text-align: center;
 }
+/* 🪤 ИЗМЕРЕНО ПО ПИКСЕЛИ В ТАЗИ СЕСИЯ (scratchpad/wf2_tarsene_meri.js — цветът ПОД буквите, не
+   background-color): белият надпис „💬 Продължи с Вита 💚 →“ върху общия гел е 4.12:1 среден и
+   3.62:1 най-нисък — под 4.5 за дребен текст (14.5px). 3.62 е точно бяло върху --ui-gel-mid
+   (#d95a8e): общият преход стига --ui-gel чак на 62% (pl-ui.css:34–50), тоест светлата му част
+   е точно под буквите. Лекарството е същото, което съседите вече са мерили и приложили
+   (pl-hranene.css:169–178, pl-rastezh.css:114–123): СЪЩИЯТ материал и СЪЩИТЕ променливи, само
+   преходът е по-бърз — --ui-gel вече на 28%, под текста остава #c8457a…#b93a6e (4.6–5.4:1).
+   Бликът е непокътнат: свършва на 55% от 70% височина, тоест над буквите. pl-ui.css НЕ се пипа. */
+html body #searchOverlay[data-pl-ts] .sf-more.pl-gel.pl-gel {
+  background-image:
+    radial-gradient(120% 70% at 50% -10%, rgba(255, 255, 255, .62) 0, rgba(255, 255, 255, .18) 38%, rgba(255, 255, 255, 0) 55%),
+    linear-gradient(180deg, var(--ui-gel-top) 0%, var(--ui-gel-mid) 14%, var(--ui-gel) 28%, var(--ui-gel-bot) 100%) !important;
+}
 html body #searchOverlay[data-pl-ts] .sf-greet { padding: 4px 2px 14px; }
 html body #searchOverlay[data-pl-ts] .sf-lead { margin: 4px 4px 10px; font-family: var(--pl-ts-sans); font-size: 13.5px; font-weight: 800; color: #4a4660; }
 html body #searchOverlay[data-pl-ts] .sf-ideas { gap: 8px; margin-bottom: 14px; }
