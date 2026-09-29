@@ -1154,3 +1154,9 @@ html.pl-on .install .pt-btn.active { transform: translateY(-1px); }
 html[data-theme="dark"].pl-on .faq-item { background: rgba(31, 43, 92, .95); box-shadow: 0 6px 16px rgba(0, 0, 0, .4), inset 0 0 0 1.5px rgba(255, 255, 255, .12); }
 html[data-theme="dark"].pl-on .faq-q { color: #f2e9ff; }
 html[data-theme="dark"].pl-on .faq-a p { color: #c9cbe3; }
+
+/* 🪤 МЕРЕНО (axe, 6 екрана): подписът долу беше #8a8394 върху #f6ede3 = 3.15:1 при 12.5px
+   (иска 4.5:1). Причината е opacity:.8 върху и без това светъл --ink-soft (css/style.css:998).
+   Не пипам стария файл — премиумът го покрива. Ново: 4.89:1. */
+html.pl-on .footer-year { color: #6a6478; opacity: 1; }
+html[data-theme="dark"].pl-on .footer-year { color: #c9cbe3; opacity: 1; }
