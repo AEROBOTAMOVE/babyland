@@ -132,9 +132,14 @@
   function стил(е, р) {
     const [л, ред, кол, т] = р;
     const y = ДВЕРЕДНИ[л] ? ред * 100 : ред * 100 / 3;
-    е.style.backgroundImage = 'url(img/art/' + ЛИСТ[л] + '.webp)';
-    е.style.backgroundPosition = (кол * 100 / 3).toFixed(3) + '% ' + y.toFixed(3) + '%';
-    е.style.backgroundSize = ДВЕРЕДНИ[л] ? '400% 200%' : '400% 400%';
+    // 🪤 29.09 МЕРЕНО (pin_diag): някои стари правила (напр. .pin-btn в rooms.css) са с
+    //   !important и изяждат и вградения стил → рисунката не се вижда, макар класът да е сложен.
+    //   Затова слагаме трите свойства С ПРИОРИТЕТ.
+    е.style.setProperty('background-image', 'url(img/art/' + ЛИСТ[л] + '.webp)', 'important');
+    е.style.setProperty('background-position', (кол * 100 / 3).toFixed(3) + '% ' + y.toFixed(3) + '%', 'important');
+    е.style.setProperty('background-size', ДВЕРЕДНИ[л] ? '400% 200%' : '400% 400%', 'important');
+    е.style.setProperty('color', 'transparent', 'important');
+    е.style.setProperty('-webkit-text-fill-color', 'transparent', 'important');
     е.style.setProperty('--pl-plt', ТОН[т] || ТОН.p);
     е.classList.add('pl-pl', ДВЕРЕДНИ[л] ? 'pl-pl-x' : 'pl-pl-i');
   }
