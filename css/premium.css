@@ -1119,3 +1119,38 @@ html.pl-on .install .pt-btn.active { background-color: #fde6ef; color: #9e2f5f; 
 html[data-theme="dark"].pl-on main > section:not(#todaySection):not(.pl-krai) { background-color: rgba(31, 43, 92, .95); background-image: none; border-color: rgba(255, 255, 255, .14); outline-color: rgba(255, 255, 255, .18); }
 html[data-theme="dark"].pl-on .rooms .room-card { background-color: rgba(35, 47, 99, .95) !important; border-color: rgba(255, 255, 255, .14) !important; }
 html[data-theme="dark"].pl-on .journal-strip .mood { background: rgba(35, 47, 99, .95); border-color: rgba(255, 255, 255, .14); }
+
+/* ═══ 23.09 · ВЪПРОСИТЕ И ИНСТАЛАЦИЯТА ВЪВ ФИЛЦ ═══
+   Секциите „Питат ни често“ и „Как да ме добавиш на телефона“ бяха бели хапчета
+   в свят от филц. Сега редът е филцова карта с шев; отвореният получава златния
+   кант на премиума. Нищо в логиката им не е пипано (js/home.js ги строи както преди). */
+html.pl-on .faq-list { display: flex; flex-direction: column; gap: 10px; }
+html.pl-on .faq-item {
+  border-radius: 20px;
+  background: var(--pl-felt-bg, #fffaf3);
+  box-shadow: 0 6px 16px rgba(120, 88, 70, .1), inset 0 0 0 1.5px rgba(214, 178, 148, .32);
+  overflow: hidden;
+  transition: box-shadow .35s ease, transform .35s cubic-bezier(.22, .9, .3, 1);
+}
+html.pl-on .faq-item:hover { transform: translateY(-2px); }
+html.pl-on .faq-item.open {
+  box-shadow: 0 12px 26px rgba(120, 88, 70, .16), inset 0 0 0 2px rgba(224, 168, 96, .5);
+}
+html.pl-on .faq-q {
+  font-family: var(--pl-serif, Georgia, serif);
+  font-size: 16px;
+  color: var(--pl-navy, #1d2a5c);
+  padding: 15px 16px;
+  min-height: 52px;
+}
+html.pl-on .faq-arr { transition: transform .35s cubic-bezier(.22, .9, .3, 1); color: #c98fae; }
+html.pl-on .faq-item.open .faq-arr { transform: rotate(180deg); }
+html.pl-on .faq-a p { font-size: 14px; line-height: 1.62; color: var(--pl-ink-soft, #6a6682); }
+
+html.pl-on .install .platform-toggle { gap: 10px; }
+html.pl-on .install .pt-btn { min-height: 46px; border-radius: 999px; font-size: 14.5px; }
+html.pl-on .install .pt-btn.active { transform: translateY(-1px); }
+
+html[data-theme="dark"].pl-on .faq-item { background: rgba(31, 43, 92, .95); box-shadow: 0 6px 16px rgba(0, 0, 0, .4), inset 0 0 0 1.5px rgba(255, 255, 255, .12); }
+html[data-theme="dark"].pl-on .faq-q { color: #f2e9ff; }
+html[data-theme="dark"].pl-on .faq-a p { color: #c9cbe3; }

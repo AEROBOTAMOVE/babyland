@@ -85,7 +85,7 @@ html.pl-on #plHome .pl-pers .pl-per[data-pl-fei] > small {
   font-size: 11.5px;
   font-weight: 800;
   letter-spacing: .02em;
-  color: #b06d8e;
+  color: #9c4f75;   /* МЕРЕНО (axe): #b06d8e даваше 3.72:1 при 11.5px получер; сега 5.34:1 */
   text-transform: none;
 }
 html.pl-on #plHome .pl-pers .pl-per[data-pl-fei] > .pl-fei-do {
