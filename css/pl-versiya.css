@@ -1,6 +1,13 @@
 /* 🔢 щемпелът на версията (js/pl-versiya.js) — тих ред долу в профила. ПЪТ НАЗАД: махни двата реда от index.html. */
+/* 🪤 29.09 МЕРЕНО: профилът стоеше избутан 36 px НАЛЯВО и името „Мария“ беше отрязано.
+   Причината е тук: .prof-overlay е флекс РЕД, а щемпелът влезе като втори елемент в
+   реда — 366 + 63 + 32 = 461 px линия в кутия от 366, центрирана, значи излиза и от
+   двете страни. Лекът е един ред: щемпелът заема ЦЯЛАТА ширина и пада на нов ред.
+   ПЪТ НАЗАД: махни flex-basis/width реда долу. */
+.prof-overlay:has(> .pl-ver) { flex-wrap: wrap; }   /* без това 100% не пада на нов ред, а свива */
 .prof-overlay > .pl-ver {
-  margin: 4px 16px calc(28px + env(safe-area-inset-bottom, 0px)); text-align: center;
+  flex: 0 0 100%; width: 100%;
+  margin: 4px 0 calc(28px + env(safe-area-inset-bottom, 0px)); text-align: center;
   font-family: Nunito, 'Nunito-fallback', system-ui, sans-serif; font-size: 11.5px; font-weight: 700;
   color: #8d879d; letter-spacing: .2px; font-variant-numeric: tabular-nums;
 }
