@@ -35,6 +35,8 @@ function изтрий(п) {
   if (!fs.existsSync(п)) return;
   fs.rmSync(п, { recursive: true, force: true });
 }
+const БЕЗ_КОМЕНТАРИ = /\.css$/i;                                 // кои файлове тръгват без коментари
+const ЦЕЛОРЕДОВ_КОМЕНТАР = /^[ \t]*\/\*[\s\S]*?\*\/[ \t]*\r?\n?/gm;
 function копирай(от, до) {
   const ст = fs.statSync(от);
   if (ст.isDirectory()) {
@@ -44,6 +46,13 @@ function копирай(от, до) {
       if (/(^\.)|(\.BAK)|(PREDI)|(ARCHIVE)|(\.pyc$)|(^__)|(^_)/.test(име)) continue;
       копирай(path.join(от, име), path.join(до, име));
     }
+    return;
+  }
+  // 29.09 МЕРЕНО (byudzhet): обясненията в css/ тежат 154 KB gzip — половината таван.
+  //   В dist влиза стилът БЕЗ целоредовите коментари; изходният файл не се пипа.
+  //   Режем САМО коментар, който започва ред (така никой url() или content не пострадва).
+  if (БЕЗ_КОМЕНТАРИ.test(от)) {
+    fs.writeFileSync(до, fs.readFileSync(от, 'utf8').replace(ЦЕЛОРЕДОВ_КОМЕНТАР, ''));
     return;
   }
   fs.copyFileSync(от, до);

@@ -117,9 +117,15 @@ const бро = b => zlib.brotliCompressSync(b, { params: {
   [zlib.constants.BROTLI_PARAM_QUALITY]: 11,
   [zlib.constants.BROTLI_PARAM_LGWIN]: 22,
   [zlib.constants.BROTLI_PARAM_SIZE_HINT]: b.length } }).length;
+// 29.09 МЕРЕНО: обясненията в css/ тежат 154 KB gzip — почти половината таван за стилове.
+//   build.js ги реже, когато пълни dist, значи телефонът НЕ ги тегли. Бюджетът трябва да
+//   мери същото, което телефонът тегли — инак мери моите бележки и вика „надвишено“.
+//   Същото рязане, дума по дума, както в build.js.
+const ЦЕЛОРЕДОВ_КОМЕНТАР = /^[ \t]*\/\*[\s\S]*?\*\/[ \t]*\r?\n?/gm;
 for (const п of уникални) {
   let b;
   try { b = fs.readFileSync(п); } catch (e) { continue; }
+  if (/\.css$/.test(п)) b = Buffer.from(b.toString('utf8').replace(ЦЕЛОРЕДОВ_КОМЕНТАР, ''), 'utf8');
   const g = zlib.gzipSync(b, { level: 9 }).length;
   брВсичкоДобави(b);
   файлове.push([п, b.length, g]);
