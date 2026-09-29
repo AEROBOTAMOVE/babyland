@@ -197,10 +197,30 @@
 
   // всички=false: само новите карти (след всяко пре-рисуване на articles.js draw());
   // всички=true: и старите — след затваряне на статия (прочетено / минутите вече се знаят).
+  // 🔍 29.09: полето за търсене носеше СИСТЕМНО емоджи в подсказката (js/articles.js:464
+  //   „🔍 Търси в статиите…“). Подсказката не е текст, който старият код сравнява — махаме
+  //   знака оттам, а лупата идва като плюшена рисунка (css/pl-statii.css).
+  function плюшенаЛупа() {
+    const п = document.querySelector("#roArticles .art-search");
+    if (!п || п.dataset.plLupa) return;
+    const т = п.getAttribute("placeholder") || "";
+    const без = т.replace(/^\s*\uD83D\uDD0D\s*/, "");
+    if (без !== т) п.setAttribute("placeholder", без);
+    п.dataset.plLupa = "1";
+    // 🪤 МЕРЕНО (lupa_proba.png): спрайтът като ФОН на полето показва и съседните клетки —
+    //   50px високо поле срещу 22px клетка. Затова рисунката отива на обвивка с точен размер.
+    if (!п.parentElement || !п.parentElement.classList.contains("pl-sa-lupa")) {
+      const о = document.createElement("span");
+      о.className = "pl-sa-lupa";
+      п.parentNode.insertBefore(о, п);
+      о.appendChild(п);
+    }
+  }
   function списък(всички) {
     const кон = document.getElementById('roArticles');
     if (!кон || !кон.firstChild) return;                        // още не е строен (helper.js строи при първо показване)
     прозорец(кон);
+    плюшенаЛупа();
     const нови = кон.querySelectorAll('.art-card:not([data-pl])');
     if (нови.length || всички) {
       const r = прочетени();

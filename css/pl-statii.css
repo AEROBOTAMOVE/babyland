@@ -545,3 +545,18 @@ html[data-theme="dark"] #artOverlay .art-disc { background: #16204a; border-top-
   #roArticles .pl-sa-plq { animation: none; }
   #roArticles .art-card[data-pl]:active, #artBody .art-112:active { transform: none; }
 }
+
+/* 🔍 плюшената лупа в полето за търсене (клетка [3,1] на ico-c при 22px).
+   Знакът в подсказката се маха от js/pl-statii.js — на екрана няма системно емоджи. */
+
+/* 🔍 лупата стои на обвивката, не на полето: клетка [3,1] на ico-c, точно 22×22. */
+html body #roArticles .pl-sa-lupa { position: relative; display: block; }
+html body #roArticles .pl-sa-lupa::before {
+  content: ""; position: absolute; left: 18px; top: 50%; width: 22px; height: 22px;
+  transform: translateY(-50%); pointer-events: none; z-index: 1;
+  background-image: url(../img/art/ico-c.webp);
+  background-size: 88px 88px;
+  background-position: -22px -66px;
+}
+html body #roArticles .pl-sa-lupa .art-search { padding-left: 50px; }
+@media (max-width: 360px) { html body #roArticles .pl-sa-lupa::before { left: 14px; } html body #roArticles .pl-sa-lupa .art-search { padding-left: 44px; } }
