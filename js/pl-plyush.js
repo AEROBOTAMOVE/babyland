@@ -70,6 +70,7 @@
     '👆': ['j', 1, 2, 'p'],   // пръст нагоре → сочещият пръст (същата вещ, друга посока)
     '🏔️': ['k', 3, 0, 'b'],   // планина (дълга серия) → медал: значението е постижение
     '🏞️': ['f', 0, 2, 'm'],   // парк (разходка) → растение: природата навън
+    '🫲': ['j', 1, 2, 'p'], '🗳️': ['q', 2, 3, 'c'],   // 29.09 последните два: длан → сочещата ръка, урна → кутията
     // 29.09 · лист q: последната опашка (ръце, дъжд, лица, дребни неща)
     '👇': ['q', 0, 0, 'p'], '🙌': ['q', 0, 1, 'b'], '🖍️': ['q', 0, 2, 'm'], '💪': ['q', 0, 3, 'p'],
     '👏': ['q', 1, 0, 'b'], '🌧️': ['q', 1, 1, 's'], '🌦️': ['q', 1, 1, 's'], '🧻': ['q', 1, 2, 'l'], '🤲': ['q', 1, 3, 'p'],
@@ -244,12 +245,59 @@
     е.dataset.plPl = '1'; стил(е, р);
     е.style.width = Math.round(фс * 1.25) + 'px'; е.style.height = Math.round(фс * 1.25) + 'px'; е.style.display = 'inline-block';
   }
+
+  // ── 4 · емоджито, нарисувано В SVG (<text>) ─────────────────────────────────
+  //  HTML обвиването не стига дотам. Слагаме рисунката като <image> с clipPath точно
+  //  върху мястото на знака и правим самия <text> прозрачен (остава за екранни четци).
+  //  Мерено (zashto_brem): девет 🌱 по лентата на седмиците в „Бременност“.
+  let свгБрояч = 0;
+  function свгРисунка(свод, cx, cy, S, р) {
+    const НС = (име, атр) => { const е = document.createElementNS("http://www.w3.org/2000/svg", име); for (const к in атр) е.setAttribute(к, атр[к]); return е; };
+    const [л, ред, кол] = р;
+    const лист = ЛИСТ[л];
+    if (!лист) return null;
+    const редове = ДВЕРЕДНИ[л] ? 2 : 4;
+    const ид = "plSvgClip" + (++свгБрояч);
+    const defs = свод.querySelector("defs") || свод.insertBefore(НС("defs", {}), свод.firstChild);
+    const cp = НС("clipPath", { id: ид });
+    cp.appendChild(НС("rect", { x: cx - S / 2, y: cy - S / 2, width: S, height: S, rx: S * 0.3 }));
+    defs.appendChild(cp);
+    const g = НС("g", { "clip-path": "url(#" + ид + ")", class: "pl-svg-em" });
+    const im = НС("image", { x: cx - S / 2 - кол * S, y: cy - S / 2 - ред * S, width: 4 * S, height: редове * S });
+    im.setAttribute("href", "img/art/" + лист + ".webp");
+    im.setAttributeNS("http://www.w3.org/1999/xlink", "href", "img/art/" + лист + ".webp");
+    g.appendChild(im);
+    return g;
+  }
+  function свгЕмоджи(корен) {
+    const к = корен && корен.querySelectorAll ? корен : document;
+    if (!к.querySelectorAll) return;
+    к.querySelectorAll("svg text:not([data-pl-svg])").forEach(т => {
+      const текст = (т.textContent || "").trim();
+      if (!текст || текст.length > 6) return;
+      const м = текст.match(ЕМ);
+      if (!м) { т.setAttribute("data-pl-svg", "0"); return; }
+      const р = рис(м[1]);
+      if (!р) { т.setAttribute("data-pl-svg", "0"); return; }
+      const свод = т.ownerSVGElement;
+      if (!свод) return;
+      let кутия; try { кутия = т.getBBox(); } catch (e) { return; }
+      if (!кутия.width) return;
+      const S = Math.max(кутия.width, кутия.height) * 1.05;
+      const g = свгРисунка(свод, кутия.x + кутия.width / 2, кутия.y + кутия.height / 2, S, р);
+      if (!g) return;
+      т.setAttribute("data-pl-svg", "1");
+      т.style.setProperty("fill", "transparent", "important");
+      т.parentNode.insertBefore(g, т.nextSibling);
+    });
+  }
   function мини(корен) {
     const к = корен && корен.querySelectorAll ? корен : document;
     if (к.querySelectorAll) {
       к.querySelectorAll(ЦЕЛИ).forEach(плюш);
       к.querySelectorAll(ОБВИЙ).forEach(обвий);
       к.querySelectorAll(ЕДРИ).forEach(едро);
+      свгЕмоджи(к);
     }
     if (к.matches && к.matches(ЦЕЛИ)) плюш(к);
   }
