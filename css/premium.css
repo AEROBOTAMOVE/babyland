@@ -1179,3 +1179,11 @@ html[data-theme="dark"].pl-on .faq-a p { color: #c9cbe3; }
    Не пипам стария файл — премиумът го покрива. Ново: 4.89:1. */
 html.pl-on .footer-year { color: #6a6478; opacity: 1; }
 html[data-theme="dark"].pl-on .footer-year { color: #c9cbe3; opacity: 1; }
+
+/* ── 29.09 · сцената в главата на стаята диша бавно (нищо рязко, различен ритъм от картите) ── */
+@keyframes plRheroDrift {
+  0%, 100% { transform: translate3d(0, 0, 0) scale(1); }
+  50% { transform: translate3d(-6px, -4px, 0) scale(1.015); }
+}
+html.pl-on .pl-rhero img { animation: plRheroDrift 14s ease-in-out infinite; will-change: transform; }
+@media (prefers-reduced-motion: reduce) { html.pl-on .pl-rhero img { animation: none; } }
