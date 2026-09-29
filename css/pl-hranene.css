@@ -747,3 +747,64 @@ html body #roomOverlay .ro-panel.ro-carrot #roRoom .jr-win .jr-winbtn::after { d
 }
 :is(html[data-theme="dark"], html.bl-night) body #roomOverlay .ro-panel.ro-carrot #roRoom .jr-card :is(button.jr-win, div.jr-win, .cm-row:not(.ob-row))::after { border-color: rgba(255, 255, 255, .2); }
 :is(html[data-theme="dark"], html.bl-night) body #roomOverlay .ro-panel.ro-carrot #roRoom .jr-card :is(button.jr-win, div.jr-win).done { background-color: #2c4a52 !important; }
+
+/* ── 12.12 последните плоски: .al-row, .jr-word, и стрелките .fs-arrow ────────
+   Мерено след втория кръг (wf3_hranene_inv2.js): плоските паднаха 78 → 14.
+   Останалите са редовете на алергените (7 × 325×75), текстовите полета (325×49)
+   и полето на помощничката. */
+html body #roomOverlay .ro-panel.ro-carrot #roRoom .al-row {
+  position: relative;
+  background-color: #fffaf3 !important;
+  background-image: var(--ui-felt) !important;
+  background-size: 160px 160px !important;
+  background-blend-mode: multiply !important;
+  border-radius: 16px !important;
+  box-shadow: inset 0 2px 0 rgba(255, 255, 255, .9), 0 3px 8px rgba(110, 76, 52, .11) !important;
+}
+html body #roomOverlay .ro-panel.ro-carrot #roRoom .al-row::after {
+  content: ''; position: absolute; inset: 5px; border-radius: 11px; pointer-events: none;
+  border: 1.3px dashed rgba(196, 160, 124, .42);
+}
+/* 🪤 :not([data-plhr-ic]) — „🧺 имам: …“ вече има СВОЙ фон с кошницата (12.1b).
+   Без това изключение общото правило щеше да я изтрие: два фона не се сливат,
+   по-късният печели целия слой. */
+html body #roomOverlay .ro-panel.ro-carrot #roRoom .jr-word:not([data-plhr-ic]),
+html body #roomOverlay .ro-panel.ro-carrot #roRoom .ask-inp {
+  background-color: #fffaf3 !important;
+  background-image: var(--ui-felt) !important;
+  background-size: 160px 160px !important;
+  background-blend-mode: multiply !important;
+  border: 1px solid rgba(214, 186, 158, .7) !important;
+  box-shadow: inset 0 2px 0 rgba(255, 255, 255, .9), 0 3px 8px rgba(150, 105, 60, .12) !important;
+}
+
+/* ── стрелките ▾ на разгъващите редове (.fs-arrow, style.css:1581) ────────────
+   Голо системно „▾“ в 7 реда. Знакът се скрива (font-size:0 — текстът ОСТАВА в DOM,
+   плюшът и четецът го виждат) и на негово място идва мека дъга по същия начин,
+   по който pl-ui.css:135 рисува ▾ в картите. Въртенето при отваряне е на
+   САМИЯ елемент (style.css:1582) и продължава да работи. */
+html body #roomOverlay .ro-panel.ro-carrot #roRoom .fs-arrow {
+  font-size: 0 !important; color: transparent !important;
+  display: inline-grid !important; place-items: center;
+  width: 26px !important; height: 26px !important; border-radius: 50% !important;
+  background: rgba(196, 160, 124, .16) !important; opacity: 1 !important;
+}
+html body #roomOverlay .ro-panel.ro-carrot #roRoom .fs-arrow::before {
+  content: ''; display: block; width: 14px; height: 14px; background: #7a6a5c;
+  -webkit-mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='2.6' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M6 9l6 6 6-6'/%3E%3C/svg%3E") center / contain no-repeat;
+  mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='2.6' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M6 9l6 6 6-6'/%3E%3C/svg%3E") center / contain no-repeat;
+}
+
+:is(html[data-theme="dark"], html.bl-night) body #roomOverlay .ro-panel.ro-carrot #roRoom .al-row {
+  background-color: #26336b !important; background-image: none !important;
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, .08), 0 3px 8px rgba(0, 0, 0, .28) !important;
+}
+:is(html[data-theme="dark"], html.bl-night) body #roomOverlay .ro-panel.ro-carrot #roRoom .al-row::after { border-color: rgba(255, 255, 255, .2); }
+:is(html[data-theme="dark"], html.bl-night) body #roomOverlay .ro-panel.ro-carrot #roRoom .jr-word:not([data-plhr-ic]),
+:is(html[data-theme="dark"], html.bl-night) body #roomOverlay .ro-panel.ro-carrot #roRoom .ask-inp {
+  background-color: #26336b !important; background-image: none !important;
+  border-color: rgba(255, 255, 255, .16) !important; color: #f1f2fb !important;
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, .08) !important;
+}
+:is(html[data-theme="dark"], html.bl-night) body #roomOverlay .ro-panel.ro-carrot #roRoom .fs-arrow { background: rgba(255, 255, 255, .12) !important; }
+:is(html[data-theme="dark"], html.bl-night) body #roomOverlay .ro-panel.ro-carrot #roRoom .fs-arrow::before { background: #d8d4e6; }

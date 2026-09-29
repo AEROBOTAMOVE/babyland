@@ -1187,3 +1187,14 @@ html[data-theme="dark"].pl-on .footer-year { color: #c9cbe3; opacity: 1; }
 }
 html.pl-on .pl-rhero img { animation: plRheroDrift 14s ease-in-out infinite; will-change: transform; }
 @media (prefers-reduced-motion: reduce) { html.pl-on .pl-rhero img { animation: none; } }
+
+/* 🪤 МЕРЕНО (preliv_dnevnik): в стая „Дневник на мама“ #roRoom мереше 393 при 390 —
+   украсните петна (.rmx-blob, css/anim.css:664) стърчат извън стаята по замисъл, а
+   една карта беше 3px по-широка. Стаята вече реже САМО водоравно (вертикалният скрол
+   остава) — петната си играят, но нищо не се влачи настрани. */
+html.pl-on #roomOverlay .ro-panel #roRoom { overflow-x: clip; }
+html.pl-on #roomOverlay .ro-panel #roRoom > * { max-width: 100%; }
+/* картата „Как си днес“ в дневника стои леко наклонена и изместена (transform с
+   translate(10px,18px) от стария слой) — затова десният ѝ ъгъл минаваше ръба.
+   Свиваме я със същите 10px, вместо да режем ъгъла. */
+html.pl-on #roomOverlay .ro-panel #roRoom .ck-card { margin-right: 12px; }
