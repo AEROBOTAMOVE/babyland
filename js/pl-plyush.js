@@ -100,7 +100,10 @@
     'main > section p, main > section h3, main > section h4, main > section button, main > section .wk-title, ' +
     // 23.09: старите секции на началото — заглавия и редове, писани от JS (днес, седмица, въпроси)
     'main > section div, main > section span, main > section small, main > section b, main > section strong, main > section label, ' +
-    '#searchOverlay .search-res, .np-b, #plDv button, .sos-ov .sos-row';
+    '#searchOverlay .search-res, .np-b, #plDv button, .sos-ov .sos-row, ' +
+    // 29.09: разговорът с помощничката — мехурчетата ѝ бяха с голи емоджита (chat_mira.png).
+    //   Обвиваме САМО първото емоджи във всеки текстов възел; текстът остава дума по дума същият.
+    '.msg-bubble, .msg-bubble p, .msg-bubble li, .ask-q, .msg-t';   // 🪤 мехурчето е .msg-bubble (helper.js:3789)
   // 🪤 23.09 МЕРЕНО (den_nachalo): обвивах САМО водещо емоджи и пропуснах „Добро утро! 🌸“,
   //   „+ 🌡️ Мерих температура“, „А всъщност? 👀“ — 14 голи емоджита на началния екран.
   //   Сега се обвива ПЪРВОТО емоджи във всеки СВОЙ текстов възел, където и да стои.
@@ -110,7 +113,7 @@
   function обвий(б) {
     if (б.dataset.plW) return;
     б.dataset.plW = '1';
-    if (б.closest && б.closest(БЕЗ)) return;
+    if (б.closest && б.closest(БЕЗ_ОБВИЙ)) return;
     const преди = б.textContent;
     const мои = [];
     const възли = [];
@@ -138,7 +141,8 @@
   //  и секциите на началната страница (те се преобличат, не се крият — 23.09)
   const ЕДРИ = '#roRoom span, #roRoom i, #roRoom em, #roRoom strong, #plHome span, .prof-overlay span, .prof-overlay i, ' +
     '#searchOverlay span, #plDv span, .rm-veil span, .rm-veil i, main > section span, main > section i';
-  const БЕЗ = '#roChat, #artBody, .msg, .ask-badge, input, textarea, .pl-em';
+  const БЕЗ = '#roChat, #artBody, .msg, .ask-badge, input, textarea, .pl-em';        // за ЕДРИТЕ
+  const БЕЗ_ОБВИЙ = '.ask-badge, input, textarea, .pl-em';                            // за ОБВИВАНЕТО
   function едро(е) {
     if (е.dataset.plPl || е.children.length) return;
     const т = (е.textContent || '').trim();
