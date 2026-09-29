@@ -116,6 +116,8 @@ for (const m of html.matchAll(/<link[^>]*\shref=["']([^"']+)["']/g)) запиш�
 for (const m of html.matchAll(/<img[^>]*\ssrc=["']([^"']+)["']/g)) запиши(m[1], 'index.html img');
 for (const m of html.matchAll(/url\((["']?)([^"')]+)\1\)/g)) запиши(m[2], 'index.html inline css');
 
+function безCssКоментари(т) { return т.replace(/\/\*[\s\S]*?\*\//g, ' '); }
+
 // ── 4. Какво css-ите теглят на свой ред (шрифтове, картинки) ──────
 const cssФайлове = [...искани.keys()].filter(f => f.endsWith('.css'));
 for (const c of cssФайлове) {
@@ -123,7 +125,9 @@ for (const c of cssФайлове) {
   // 🪤 22.09: вградена SVG картинка (url("data:image/svg+xml,…")) носи ВЪТРЕ свои препратки към
   //    градиент — fill='url(%23g)'. Старият израз я четеше като файл „css/%23g“ → фалшива „черна
   //    дупка“ (pl-bremennost.css). Първо махаме цялата data: картинка, после търсим файлове.
-  const т = преглед(c).replace(/url\((["'])data:[\s\S]*?\1\)/g, 'url()');
+  // 🪤 29.09: url() ВЪТРЕ в css коментар (обяснение като „url(../img/art/…)“) се четеше като
+  //    истински файл → фалшива черна дупка от css/pl-hranene.css. Коментарите не са код.
+  const т = безCssКоментари(преглед(c)).replace(/url\((["'])data:[\s\S]*?\1\)/g, 'url()');
   const база = path.posix.dirname(c);
   for (const m of т.matchAll(/url\((["']?)([^"')]+)\1\)/g)) {
     const r = m[2];
