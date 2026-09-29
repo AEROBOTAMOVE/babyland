@@ -302,42 +302,42 @@ html body .pl-hr .pl-hr-mi {   /* материалът е .pl-soft */
 @keyframes plHrSpot { 50% { outline-color: rgba(229, 109, 153, .25); } }
 
 /* ═══ НОЩ (21:00–7:00): нощно синьо, кожата — тъмносиня със златен шев, иконките на бял кръг ═══ */
-html[data-theme="dark"] .pl-hr {
+:is(html[data-theme="dark"],html.bl-night) .pl-hr {
   color: #e3e5f5;
   --hr-navy: #fff;
   --hr-soft: #c9cbe3;
   --hr-wood: linear-gradient(180deg, #45539a 0, #3a4786 32%, #2f3b76 36%, #27316a 100%);
 }
-html[data-theme="dark"] .pl-hr-book {
+:is(html[data-theme="dark"],html.bl-night) .pl-hr-book {
   background: linear-gradient(180deg, #34427f 0, #28346b 100%);
   box-shadow: inset 0 0 0 1.5px rgba(240, 210, 137, .5), 0 18px 34px rgba(0, 0, 0, .38);
 }
-html[data-theme="dark"] .pl-hr-book::before { border-color: rgba(240, 210, 137, .45); }
-html[data-theme="dark"] .pl-hr-book::after { background: repeating-linear-gradient(180deg, #3d4a8a 0 1.6px, #222c5e 1.6px 3.2px); box-shadow: none; }
-html[data-theme="dark"] body .pl-hr .pl-hr-sheet.pl-felt { box-shadow: 0 3px 0 #18214a, 0 6px 14px rgba(0, 0, 0, .3) !important; }
-html[data-theme="dark"] .pl-hr-fl, html[data-theme="dark"] .pl-hr-lf { mix-blend-mode: normal; border-radius: 50%; background-color: #fff; box-shadow: 0 2px 6px rgba(0, 0, 0, .3); }
-html[data-theme="dark"] .pl-hr-lf { display: none; }
-html[data-theme="dark"] .pl-hr-hs { stroke: #f59cbb; }
-html[data-theme="dark"] .pl-hr-d > i { background: #ffb8d2; }
-html[data-theme="dark"] .pl-hr-d.is-today > i { background: #fff; }
-html[data-theme="dark"] .pl-hr-d[aria-pressed="true"]::after { border-color: #f59cbb; }
-html[data-theme="dark"] .pl-hr-body::before { background: linear-gradient(90deg, rgba(0, 0, 0, 0) 0, rgba(0, 0, 0, .18) 42%, rgba(0, 0, 0, .34) 50%, rgba(0, 0, 0, .18) 58%, rgba(0, 0, 0, 0) 100%); }
-html[data-theme="dark"] .pl-hr-dish { background: rgba(255, 255, 255, .07); box-shadow: inset 0 0 0 1.5px rgba(255, 255, 255, .14), 0 2px 0 #18214a; }
-html[data-theme="dark"] .pl-hr-dish::after { border-color: rgba(255, 255, 255, .2); }
-html[data-theme="dark"] .pl-hr-photo { filter: brightness(.9); box-shadow: 0 0 0 3px rgba(255, 255, 255, .85), 0 3px 8px rgba(0, 0, 0, .3); }
-html[data-theme="dark"] .pl-hr-ti, html[data-theme="dark"] .pl-hr-mico,
-html[data-theme="dark"] .pl-hr-t.t-опитани .pl-hr-ti, html[data-theme="dark"] .pl-hr-t.t-любими .pl-hr-ti, html[data-theme="dark"] .pl-hr-t.t-бележки .pl-hr-ti,
-html[data-theme="dark"] .pl-hr-mi .pl-hr-mico { background-color: #fff; box-shadow: 0 2px 6px rgba(0, 0, 0, .3); }
-html[data-theme="dark"] .pl-hr-x, html[data-theme="dark"] .pl-hr-inv { color: #ffb8d2; }
-html[data-theme="dark"] .pl-hr-dome { box-shadow: inset 0 0 0 5px rgba(255, 255, 255, .14), inset 0 0 0 6.5px rgba(240, 210, 137, .32), 0 8px 16px rgba(0, 0, 0, .3); }
-html[data-theme="dark"] .pl-hr-dome::before { opacity: .35; }
-html[data-theme="dark"] .pl-hr-a.t-храни .pl-hr-dome { background: linear-gradient(180deg, rgba(229, 109, 153, .38), rgba(229, 109, 153, .18)); }
-html[data-theme="dark"] .pl-hr-a.t-рецепти .pl-hr-dome { background: linear-gradient(180deg, rgba(240, 200, 150, .32), rgba(240, 200, 150, .14)); }
-html[data-theme="dark"] .pl-hr-a.t-дневник .pl-hr-dome { background: linear-gradient(180deg, rgba(110, 200, 160, .34), rgba(110, 200, 160, .15)); }
-html[data-theme="dark"] .pl-hr-ai { width: 66px; height: 66px; margin-top: -14px; mix-blend-mode: normal; border-radius: 50%; background-color: #fff; box-shadow: 0 4px 12px rgba(0, 0, 0, .25); }
-html[data-theme="dark"] .pl-hr-al { background: #2a376f; box-shadow: inset 0 0 0 1.5px rgba(240, 210, 137, .4), 0 3px 6px rgba(0, 0, 0, .3); }
-html[data-theme="dark"] .pl-hr-shelf::after { box-shadow: 0 9px 14px rgba(0, 0, 0, .32), inset 0 1.5px 0 rgba(240, 210, 137, .4); }
-html[data-theme="dark"] #roRoom [data-pl-hr-spot] { outline-color: #f59cbb !important; }
+:is(html[data-theme="dark"],html.bl-night) .pl-hr-book::before { border-color: rgba(240, 210, 137, .45); }
+:is(html[data-theme="dark"],html.bl-night) .pl-hr-book::after { background: repeating-linear-gradient(180deg, #3d4a8a 0 1.6px, #222c5e 1.6px 3.2px); box-shadow: none; }
+:is(html[data-theme="dark"],html.bl-night) body .pl-hr .pl-hr-sheet.pl-felt { box-shadow: 0 3px 0 #18214a, 0 6px 14px rgba(0, 0, 0, .3) !important; }
+:is(html[data-theme="dark"],html.bl-night) .pl-hr-fl, :is(html[data-theme="dark"],html.bl-night) .pl-hr-lf { mix-blend-mode: normal; border-radius: 50%; background-color: #fff; box-shadow: 0 2px 6px rgba(0, 0, 0, .3); }
+:is(html[data-theme="dark"],html.bl-night) .pl-hr-lf { display: none; }
+:is(html[data-theme="dark"],html.bl-night) .pl-hr-hs { stroke: #f59cbb; }
+:is(html[data-theme="dark"],html.bl-night) .pl-hr-d > i { background: #ffb8d2; }
+:is(html[data-theme="dark"],html.bl-night) .pl-hr-d.is-today > i { background: #fff; }
+:is(html[data-theme="dark"],html.bl-night) .pl-hr-d[aria-pressed="true"]::after { border-color: #f59cbb; }
+:is(html[data-theme="dark"],html.bl-night) .pl-hr-body::before { background: linear-gradient(90deg, rgba(0, 0, 0, 0) 0, rgba(0, 0, 0, .18) 42%, rgba(0, 0, 0, .34) 50%, rgba(0, 0, 0, .18) 58%, rgba(0, 0, 0, 0) 100%); }
+:is(html[data-theme="dark"],html.bl-night) .pl-hr-dish { background: rgba(255, 255, 255, .07); box-shadow: inset 0 0 0 1.5px rgba(255, 255, 255, .14), 0 2px 0 #18214a; }
+:is(html[data-theme="dark"],html.bl-night) .pl-hr-dish::after { border-color: rgba(255, 255, 255, .2); }
+:is(html[data-theme="dark"],html.bl-night) .pl-hr-photo { filter: brightness(.9); box-shadow: 0 0 0 3px rgba(255, 255, 255, .85), 0 3px 8px rgba(0, 0, 0, .3); }
+:is(html[data-theme="dark"],html.bl-night) .pl-hr-ti, :is(html[data-theme="dark"],html.bl-night) .pl-hr-mico,
+:is(html[data-theme="dark"],html.bl-night) .pl-hr-t.t-опитани .pl-hr-ti, :is(html[data-theme="dark"],html.bl-night) .pl-hr-t.t-любими .pl-hr-ti, :is(html[data-theme="dark"],html.bl-night) .pl-hr-t.t-бележки .pl-hr-ti,
+:is(html[data-theme="dark"],html.bl-night) .pl-hr-mi .pl-hr-mico { background-color: #fff; box-shadow: 0 2px 6px rgba(0, 0, 0, .3); }
+:is(html[data-theme="dark"],html.bl-night) .pl-hr-x, :is(html[data-theme="dark"],html.bl-night) .pl-hr-inv { color: #ffb8d2; }
+:is(html[data-theme="dark"],html.bl-night) .pl-hr-dome { box-shadow: inset 0 0 0 5px rgba(255, 255, 255, .14), inset 0 0 0 6.5px rgba(240, 210, 137, .32), 0 8px 16px rgba(0, 0, 0, .3); }
+:is(html[data-theme="dark"],html.bl-night) .pl-hr-dome::before { opacity: .35; }
+:is(html[data-theme="dark"],html.bl-night) .pl-hr-a.t-храни .pl-hr-dome { background: linear-gradient(180deg, rgba(229, 109, 153, .38), rgba(229, 109, 153, .18)); }
+:is(html[data-theme="dark"],html.bl-night) .pl-hr-a.t-рецепти .pl-hr-dome { background: linear-gradient(180deg, rgba(240, 200, 150, .32), rgba(240, 200, 150, .14)); }
+:is(html[data-theme="dark"],html.bl-night) .pl-hr-a.t-дневник .pl-hr-dome { background: linear-gradient(180deg, rgba(110, 200, 160, .34), rgba(110, 200, 160, .15)); }
+:is(html[data-theme="dark"],html.bl-night) .pl-hr-ai { width: 66px; height: 66px; margin-top: -14px; mix-blend-mode: normal; border-radius: 50%; background-color: #fff; box-shadow: 0 4px 12px rgba(0, 0, 0, .25); }
+:is(html[data-theme="dark"],html.bl-night) .pl-hr-al { background: #2a376f; box-shadow: inset 0 0 0 1.5px rgba(240, 210, 137, .4), 0 3px 6px rgba(0, 0, 0, .3); }
+:is(html[data-theme="dark"],html.bl-night) .pl-hr-shelf::after { box-shadow: 0 9px 14px rgba(0, 0, 0, .32), inset 0 1.5px 0 rgba(240, 210, 137, .4); }
+:is(html[data-theme="dark"],html.bl-night) #roRoom [data-pl-hr-spot] { outline-color: #f59cbb !important; }
 
 @media (prefers-reduced-motion: reduce) {
   .pl-hr-a, .pl-hr-cta b::before, .pl-hr-cta b::after { transition: none; }

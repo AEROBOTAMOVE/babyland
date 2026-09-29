@@ -415,6 +415,53 @@
 
   function еЗахранване() { const п = document.querySelector('#roomOverlay .ro-panel'); return !!(п && п.classList.contains('ro-carrot')); }
 
+  /* ══════════════════════════════════════════════════════════════════════════
+     🧵 ПРЕОБЛИЧАНЕТО на чуждите части в стаята (29.09).
+     Мерено ПРЕДИ (снимки wf3_hr_predi_l / wf3_hr_y1550 / wf3_hr_y2200, проби wf3_p2…p4):
+       · .sec-find      — плосък БЯЛ хап (bg rgb(255,255,255), box-shadow: none) и
+                          СИСТЕМНО 🔍 в плейсхолдъра → филц + плюшена лупа (CSS)
+       · .pg20-do       — голо 🍓 в текстов възел (плюшът не го хваща — няма елемент)
+     Останалото (дъгата, дните на менюто, закачалките, чиповете) е ЧИСТО CSS —
+     формата и цветът се сменят без да пипаме ни дума от текста.
+     🪤 Всяка наша промяна е мутация за наблюдателя → пишем САМО при разлика и
+        маркираме с data-plhr, иначе въртим безкрайно.
+     ПЪТ НАЗАД: махни извикването на преоблечи() тук долу — DOM-ът се връща сам
+        при следващото прерисуване на стаята от rooms3.js.
+     ══════════════════════════════════════════════════════════════════════════ */
+  const ЛУПА_ТЕКСТ = /^\s*🔍\s*/;            // „🔍 “ в началото на плейсхолдъра
+  const ЯГОДА_ТЕКСТ = /^(\s*)🍓\s*/;          // „🍓 “ в началото на абзаца
+
+  function преоблечи(стая) {
+    // ── 1. търсачката: махаме системната лупа, филцът и плюшената лупа идват от CSS ──
+    // 🪤 querySelectorAll — стаята се рисува понякога два пъти
+    стая.querySelectorAll('.sec-find').forEach(вх => {
+      const п = вх.placeholder || '';
+      if (!ЛУПА_ТЕКСТ.test(п)) return;                  // вече е преоблечена (или чужда)
+      вх.placeholder = п.replace(ЛУПА_ТЕКСТ, '');       // „🔍 в стаята…“ → „в стаята…“
+      вх.setAttribute('data-plhr', 'find');
+    });
+    // ── 2. „Виж кое е подходящо…“: голото 🍓 → плюшената ягода (същата рисунка,
+    //      която плюшът ползва навсякъде: BL_PL_PLYUSH.К['🍓'] = ['a', 2, 1]) ──
+    стая.querySelectorAll('.pg20-do').forEach(п => {
+      if (п.getAttribute('data-plhr') === 'em') return;
+      const пръв = п.firstChild;
+      if (!пръв || пръв.nodeType !== 3 || !ЯГОДА_ТЕКСТ.test(пръв.nodeValue)) return;
+      const К = (window.BL_PL_PLYUSH && window.BL_PL_PLYUSH.К) || null;
+      const ЛИСТ = (window.BL_PL_PLYUSH && window.BL_PL_PLYUSH.ЛИСТ) || null;
+      const к = (К && К['🍓']) || ['a', 2, 1];
+      const лист = (ЛИСТ && ЛИСТ[к[0]]) || 'ico-a';
+      пръв.nodeValue = пръв.nodeValue.replace(ЯГОДА_ТЕКСТ, '$1');
+      const и = document.createElement('i');
+      и.className = 'pl-hr-em';
+      и.setAttribute('aria-hidden', 'true');
+      // 🪤 рисунката ПРЯКО на елемента — url в CSS променлива се мери спрямо css/ и дава 404
+      и.style.backgroundImage = 'url(img/art/' + лист + '.webp)';
+      и.style.backgroundPosition = (к[2] * 100 / 3).toFixed(3) + '% ' + (к[1] * 100 / 3).toFixed(3) + '%';
+      п.insertBefore(и, п.firstChild);
+      п.setAttribute('data-plhr', 'em');
+    });
+  }
+
   function сложи() {
     try {
       const ов = document.getElementById('roomOverlay');
@@ -427,6 +474,7 @@
         if (!б) б = рисувай();
         мястото(стая, б);
         опресни(б);
+        try { преоблечи(стая); } catch (e) { грешки.push('преоблечи: ' + String(e && e.message || e).slice(0, 120)); }
       });
     } catch (e) { грешки.push(String(e && e.stack || e).slice(0, 300)); }
   }

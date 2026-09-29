@@ -259,3 +259,164 @@ html[data-theme="dark"] .pl-dn-meta, html[data-theme="dark"] .pl-dn-priv { color
 @media (prefers-reduced-motion: reduce) {
   .pl-dn-face { transition: none; }
 }
+
+/* ═══════════════════════════════════════════════════════════════════════════════
+   29.09 · ЦЯЛАТА СТАЯ В СВЕТА НА ТЕФТЕРА (реф. 11: кремава хартия с редове, люлякова
+   панделка, златни звездички върху розов филц; реф. 17: кръгли плюшени копчета).
+   Дотук преоблечен беше САМО тефтерът „Днес за теб“ отгоре. Под него 34 карти още
+   бяха от стария свят. МЕРЕНО преди (wf3_dn_meri, 390px, светло):
+     · 34 заглавия се пречупваха на 3–4 реда — „Банка с идеи за / разпускане“ падаше
+       ПОД медальона и оставяше дупка (h=92px, 4 реда при ред 25px);
+     · 19 полета за писане бяха ПЛОСКО БЯЛО (bg rgb(255,255,255), background-image NONE)
+       — в стаята на дневника хартията трябва да е хартия;
+     · 3 системни емоджита светеха жълто в „Днес успях да…“ — pl-plyush.js:161 не ги
+       обвива, защото нямат рисунка в картата К (оправено в js/pl-dnevnik.js).
+   ВСИЧКО тук е под ключ „.ro-lav“ (персонажът на дневника) — другите стаи не се пипат.
+   ПЪТ НАЗАД: маха се целият блок от този ред надолу — горният тефтер остава цял.
+   ═══════════════════════════════════════════════════════════════════════════════ */
+
+/* ── 1 · ЗАГЛАВИЕТО: медальонът е СВОЯ колона, а не буква в реда ──
+   h4.jr-title е блок, а .jr-medal е inline-block → вторият ред на дълго заглавие
+   минаваше ПОД медальона. С flex заглавието е свой елемент и се пречупва в своята
+   колона; .jr-sub пада на цял ред отдолу, както си беше. Полето вдясно (54px за
+   карфицата и стрелката, mega.css:621) не се пипа. */
+html body #roomOverlay .ro-lav .jr-card > h4.jr-title {
+  display: flex; flex-wrap: wrap; align-items: center; column-gap: 9px; row-gap: 2px;
+}
+html body #roomOverlay .ro-lav .jr-card > h4.jr-title > .jr-medal { flex: 0 0 auto; }
+html body #roomOverlay .ro-lav .jr-card > h4.jr-title > .jr-sub { flex: 1 0 100%; margin-top: 1px; }
+/* карфицата и стрелката са absolute — flex не ги мести, но да сме сигурни */
+html body #roomOverlay .ro-lav .jr-card > h4.jr-title > .pin-btn,
+html body #roomOverlay .ro-lav .jr-card > h4.jr-title > .fold-btn { flex: 0 0 auto; }
+
+/* ── 2 · ХАРТИЯТА (реф. 11) ──
+   Плоското бяло поле става лист от тефтер: кремаво, с люлякови редове и с полето
+   вляво, както е начертан листът в референцията. background-attachment:local —
+   редовете се плъзгат С текста, иначе буквите се откъсват от чертите.
+   Редът е 26px и line-height е 26px → написаното ляга ВЪРХУ чертата, не между тях. */
+html body #roomOverlay .ro-lav .jr-card textarea.jr-paper,
+html body #roomOverlay .ro-lav .jr-card input.jr-word {
+  background-color: #fffdf5 !important;
+  background-image:
+    linear-gradient(90deg, rgba(168, 134, 190, .34) 0 1.5px, rgba(168, 134, 190, 0) 1.5px),
+    repeating-linear-gradient(180deg, rgba(0, 0, 0, 0) 0 25px, rgba(150, 124, 172, .22) 25px 26px) !important;
+  background-repeat: no-repeat, repeat !important;
+  background-attachment: local, local !important;
+  background-position: 17px 0, 0 7px !important;
+  background-size: auto, auto !important;
+  border: 1px solid rgba(196, 160, 124, .62) !important;
+  border-radius: 16px !important;
+  box-shadow: inset 0 2px 5px rgba(120, 88, 58, .09), 0 2px 0 rgba(255, 255, 255, .8) !important;
+  color: #2b2450 !important;
+  font-family: var(--pl-serif, Georgia), Georgia, serif !important;
+  font-size: 15px !important;
+  line-height: 26px !important;
+  padding: 9px 14px 11px 27px !important;
+}
+/* подсказката да се чете (мерено по пиксели, не на око) */
+html body #roomOverlay .ro-lav .jr-card textarea.jr-paper::placeholder,
+html body #roomOverlay .ro-lav .jr-card input.jr-word::placeholder {
+  color: #655b83 !important; opacity: 1 !important; font-style: italic;
+}
+html body #roomOverlay .ro-lav .jr-card textarea.jr-paper:focus,
+html body #roomOverlay .ro-lav .jr-card input.jr-word:focus {
+  border-color: rgba(217, 116, 157, .7) !important;
+  box-shadow: inset 0 2px 5px rgba(120, 88, 58, .09), 0 0 0 3px rgba(245, 190, 212, .55) !important;
+}
+
+/* ── 3 · МАЛКИТЕ ПОБЕДИ (.jr-wins) — филцови редове вместо плоски бели хапчета ──
+   Кръгчето .jr-check става филцово копче; щом е избрано — розов гел с бяла отметка. */
+html body #roomOverlay .ro-lav .jr-wins .jr-win {
+  position: relative;
+  display: flex; align-items: center; gap: 9px;
+  min-height: 52px;
+  background-color: #fffaf0 !important;
+  background-image: var(--ui-felt) !important;
+  background-size: 150px 150px !important;
+  background-blend-mode: multiply !important;
+  border: 1px solid rgba(214, 186, 158, .6) !important;
+  border-radius: 20px !important;
+  box-shadow: 0 3px 0 rgba(198, 166, 134, .32), inset 0 2px 0 rgba(255, 255, 255, .9) !important;
+  color: #3a2f4e !important;
+  text-align: left;
+  transition: transform .18s cubic-bezier(.22, .9, .3, 1), box-shadow .18s ease;
+}
+html body #roomOverlay .ro-lav .jr-wins .jr-win:active {
+  transform: translateY(2px); box-shadow: 0 1px 0 rgba(198, 166, 134, .32) !important;
+}
+html body #roomOverlay .ro-lav .jr-wins .jr-win > .jr-check {
+  flex: 0 0 auto; width: 26px; height: 26px; border-radius: 50%;
+  background: #fff7ec; border: 2px solid rgba(196, 160, 124, .75);
+  box-shadow: inset 0 2px 3px rgba(120, 88, 58, .14);
+  position: relative; transition: background .2s ease, border-color .2s ease;
+}
+html body #roomOverlay .ro-lav .jr-wins .jr-win.on,
+html body #roomOverlay .ro-lav .jr-wins .jr-win[aria-pressed="true"],
+html body #roomOverlay .ro-lav .jr-wins .jr-win.done { background-color: #fff2f7 !important; border-color: rgba(217, 116, 157, .5) !important; }
+html body #roomOverlay .ro-lav .jr-wins .jr-win.on > .jr-check,
+html body #roomOverlay .ro-lav .jr-wins .jr-win[aria-pressed="true"] > .jr-check,
+html body #roomOverlay .ro-lav .jr-wins .jr-win.done > .jr-check {
+  background: radial-gradient(120% 120% at 50% 18%, #f7a6c4 0, #e4779f 58%, #cf5f8c 100%);
+  border-color: rgba(201, 84, 130, .62);
+}
+html body #roomOverlay .ro-lav .jr-wins .jr-win.on > .jr-check::after,
+html body #roomOverlay .ro-lav .jr-wins .jr-win[aria-pressed="true"] > .jr-check::after,
+html body #roomOverlay .ro-lav .jr-wins .jr-win.done > .jr-check::after {
+  content: ''; position: absolute; left: 7px; top: 4px; width: 6px; height: 11px;
+  border: 2.5px solid #fff; border-top: 0; border-left: 0; border-radius: 1px;
+  transform: rotate(42deg);
+}
+
+/* ── 4 · ДВИЖЕНИЕТО — меко, с РАЗЛИЧЕН ритъм на съседните редове, НУЛА безкрайни ──
+   (безкрайна анимация извън екрана яде ток; тук всяка се пуска по веднъж) */
+@keyframes plDnLegna { from { opacity: 0; transform: translateY(9px); } to { opacity: 1; transform: none; } }
+html body #roomOverlay .ro-lav .jr-wins .jr-win { animation: plDnLegna .5s cubic-bezier(.22, .9, .3, 1) backwards; }
+html body #roomOverlay .ro-lav .jr-wins .jr-win:nth-child(odd) { animation-duration: .58s; animation-delay: .05s; }
+html body #roomOverlay .ro-lav .jr-wins .jr-win:nth-child(even) { animation-duration: .44s; animation-delay: .12s; }
+@keyframes plDnList { from { opacity: 0; transform: translateY(6px) rotate(-.4deg); } to { opacity: 1; transform: none; } }
+html body #roomOverlay .ro-lav .jr-card textarea.jr-paper { animation: plDnList .62s ease-out .06s backwards; }
+
+/* ── 5 · НОЩ (тъмната тема на приложението) ── */
+html[data-theme="dark"] body #roomOverlay .ro-lav .jr-card textarea.jr-paper,
+html[data-theme="dark"] body #roomOverlay .ro-lav .jr-card input.jr-word {
+  background-color: #1e2858 !important;
+  background-image:
+    linear-gradient(90deg, rgba(196, 170, 224, .40) 0 1.5px, rgba(196, 170, 224, 0) 1.5px),
+    repeating-linear-gradient(180deg, rgba(0, 0, 0, 0) 0 25px, rgba(255, 255, 255, .16) 25px 26px) !important;
+  border-color: rgba(255, 255, 255, .18) !important;
+  box-shadow: inset 0 2px 6px rgba(0, 0, 0, .3) !important;
+  color: #ffffff !important;
+}
+html[data-theme="dark"] body #roomOverlay .ro-lav .jr-card textarea.jr-paper::placeholder,
+html[data-theme="dark"] body #roomOverlay .ro-lav .jr-card input.jr-word::placeholder { color: #c9cbe3 !important; }
+html[data-theme="dark"] body #roomOverlay .ro-lav .jr-wins .jr-win {
+  background-color: #2b3872 !important; background-image: none !important;
+  border-color: rgba(255, 255, 255, .16) !important;
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, .10), 0 3px 0 #18214a !important;
+  color: #f1f2fb !important;
+}
+html[data-theme="dark"] body #roomOverlay .ro-lav .jr-wins .jr-win > .jr-check {
+  background: #1d2757; border-color: rgba(255, 255, 255, .34); box-shadow: none;
+}
+html[data-theme="dark"] body #roomOverlay .ro-lav .jr-wins .jr-win.on,
+html[data-theme="dark"] body #roomOverlay .ro-lav .jr-wins .jr-win[aria-pressed="true"],
+html[data-theme="dark"] body #roomOverlay .ro-lav .jr-wins .jr-win.done { background-color: #5a2c55 !important; border-color: rgba(245, 156, 187, .6) !important; color: #ffe1ec !important; }
+
+/* ── 6 · ТИХИТЕ ЧАСОВЕ (html.bl-night) са ДРУГО от тъмната тема (js/app.js:33) ──
+   Нощем листът не бива да свети в очите на мама в 3 сутринта. */
+html.bl-night body #roomOverlay .ro-lav .jr-card textarea.jr-paper,
+html.bl-night body #roomOverlay .ro-lav .jr-card input.jr-word { filter: brightness(.94) saturate(.95); }
+
+/* ── 7 · БЕЗ ДВИЖЕНИЕ, АКО ТЕЛЕФОНЪТ ТАКА КАЗВА ── */
+@media (prefers-reduced-motion: reduce) {
+  html body #roomOverlay .ro-lav .jr-wins .jr-win,
+  html body #roomOverlay .ro-lav .jr-card textarea.jr-paper { animation: none !important; transition: none !important; }
+  html body #roomOverlay .ro-lav .jr-wins .jr-win > .jr-check { transition: none !important; }
+}
+
+/* ── 8 · 360px — хартията и редовете да не преливат ── */
+@media (max-width: 374px) {
+  html body #roomOverlay .ro-lav .jr-card textarea.jr-paper,
+  html body #roomOverlay .ro-lav .jr-card input.jr-word { padding-left: 24px !important; font-size: 14.5px !important; }
+  html body #roomOverlay .ro-lav .jr-wins .jr-win { min-height: 50px; gap: 7px; }
+}
