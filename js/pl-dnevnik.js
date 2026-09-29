@@ -348,3 +348,167 @@
   if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', върви); else върви();
   window.BL_PL_DNEVNIK = { сложи, грешки, пъти: () => пъти };
 })();
+
+/* ═══════════════════════════════════════════════════════════════════════════════
+   📔 ВТОРА ОБИКОЛКА · „Дневник на мама“ · 29.09.2026 — ТОВА, КОЕТО ПЛЮШЪТ ПОДМИНА
+   js/pl-plyush.js обвива емоджи САМО когато има рисунка за него (pl-plyush.js:165
+   „if (!м || !рис(м[0])) continue“) и само за класовете в своя списък ОБВИЙ. МЕРЕНО в
+   стая „Дневник на мама“ (wf3_dnevnik_survey.js, 390×844):
+     · „Днес успях да…“ — 🚿 🙋‍♀️ 🙅‍♀️ светеха жълти между шест плюшени кръгчета
+       (картата К няма рисунка за тях);
+     · „🔋 Енергия“ (.jr-elabel, rooms.js:238) и 😭/🔒 в редовете .jr-privacy —
+       рисунка ИМА, но класът им не е в ОБВИЙ.
+   НОВИ КАРТИНКИ НЕ СЕ ПРАВЯТ. Трите без рисунка се връзват към вече нарисувана клетка —
+   казано честно тук, за да не изглежда като съвпадение:
+     🚿 → капката (душът е вода) · 🙋‍♀️ → жената (да поискаш помощ е да повикаш човек)
+     🙅‍♀️ → знакът „не“ (да кажеш „не“) · ↩/⬇️ → подносът за прибиране
+   Листовете и мрежата идват от window.BL_PL_PLYUSH.ЛИСТ/ДВЕРЕДНИ — същият извор, от който
+   чете и js/pl-chas.js. Нищо не се записва: в този блок няма setItem/removeItem.
+   🪤 КАПАН 1 (платен с кръв): css променлива с url(), зададена от JS, се разрешава спрямо
+      CSS ФАЙЛА → css/img/… = 404. Затова рисунката се слага ПРЯКО на елемента с ПЪЛЕН адрес
+      new URL('img/art/…', document.baseURI).href.
+   🪤 КАПАН „текстът“: обвиването НЕ променя текста — емоджито влиза в <i>, textContent се
+      сверява буква по буква и при най-малко разминаване се връща обратно (както pl-plyush.js).
+   🪤 КАПАН „мутацията“: всяка промяна тук е мутация за наблюдателя → пише се САМО при разлика
+      и всичко се маркира с data-pl.
+   ПЪТ НАЗАД: маха се целият блок от този ред надолу — първата обиколка остава цяла.
+   ═══════════════════════════════════════════════════════════════════════════════ */
+(function () {
+  'use strict';
+  if (window.BL_PL_DN_SVET) return;
+  const грешки = [];
+
+  // клетките, които вече ги ИМА нарисувани (лист, ред, колона, тон) — нито една нова картинка
+  const ДОРИСУВКА = {
+    '🚿': ['c', 2, 3, 's'],        // душ → капката
+    '🙋': ['g', 1, 2, 'p'], '🙋‍♀️': ['g', 1, 2, 'p'], '🙋‍♂️': ['g', 1, 2, 'p'],   // помощ → човек
+    '🙅': ['k', 2, 3, 'c'], '🙅‍♀️': ['k', 2, 3, 'c'], '🙅‍♂️': ['k', 2, 3, 'c'],   // „не“ → знакът „не“
+    '↩': ['k', 1, 3, 'm'], '↩️': ['k', 1, 3, 'm'], '⬇': ['k', 1, 3, 'm'], '⬇️': ['k', 1, 3, 'm'],
+  };
+  const МЕДАЛ = ['f', 3, 2, 'm'];   // ✅ отметката — за картата „Днес успях да…“
+  const ТОН = { p: '#fde6ef', s: '#dfeafb', m: '#dff2e7', l: '#ece4f8', c: '#fdeedd', b: '#fbf1d6' };
+  const ЕМО = /\p{Extended_Pictographic}(?:️|‍\p{Extended_Pictographic}|\p{Emoji_Modifier}|️⃣)*/u;
+
+  // ключът на стаята: .ro-lav е панелът на „Дневник на мама“ — другите стаи не се пипат
+  const СТАЯ = '#roomOverlay .ro-panel.ro-lav';
+  // където плюшът не стига: редовете „малките победи“, етикетът на енергията, дребните редове
+  // 🪤 .rv-wave (вълничките-разделител в „Историята ни") е ОПИТАНО и ВЪРНАТО: от три еднакви
+  //   загатнати вълни станаха ДВЕ плюшени кръгчета и една гола вълничка (снимка wf3_reka.png).
+  //   Разделител не е иконка — остава си ред от вълни.
+  const ЦЕЛИ = '.jr-wins .jr-win, .jr-elabel, .jr-privacy, .jr-note';
+
+  function рис(з) {
+    if (!з) return null;
+    const К = (window.BL_PL_PLYUSH && window.BL_PL_PLYUSH.К) || {};
+    const без = з.split('️').join('');
+    return ДОРИСУВКА[з] || ДОРИСУВКА[без] || ДОРИСУВКА[без + '️'] ||
+           К[з] || К[без] || К[без + '️'] || null;
+  }
+  // 🪤 КАПАН 1: пълен адрес спрямо СТРАНИЦАТА, не спрямо css/
+  function адрес(лист) { try { return new URL('img/art/' + лист + '.webp', document.baseURI).href; } catch (e) { return 'img/art/' + лист + '.webp'; } }
+  function боядисай(е, р) {
+    const П = window.BL_PL_PLYUSH;
+    const ЛИСТ = (П && П.ЛИСТ) || {}, ДВЕ = (П && П.ДВЕРЕДНИ) || {};
+    const [л, ред, кол, т] = р;
+    const име = ЛИСТ[л]; if (!име) return false;
+    const дву = !!ДВЕ[л];                                  // листовете 4×2 (fig-a, lica) срещу 4×4
+    const y = дву ? ред * 100 : ред * 100 / 3;
+    е.style.backgroundImage = 'url("' + адрес(име) + '")';
+    е.style.backgroundPosition = (кол * 100 / 3).toFixed(3) + '% ' + y.toFixed(3) + '%';
+    е.style.backgroundSize = дву ? '400% 200%' : '400% 400%';
+    е.style.setProperty('--pl-plt', ТОН[т] || ТОН.p);
+    return true;
+  }
+
+  // ── 1 · обвиване на голото емоджи, БЕЗ да се мени текстът ──
+  function обвий(б) {
+    if (б.dataset.plDnW) return;
+    б.dataset.plDnW = '1';
+    if (б.closest('input, textarea, .pl-em, .pl-dn')) return;   // тефтерът горе си има свое
+    const преди = б.textContent;
+    const мои = [];
+    const възли = [];
+    for (let в = б.firstChild; в; в = в.nextSibling) if (в.nodeType === 3 && в.nodeValue && ЕМО.test(в.nodeValue)) възли.push(в);
+    for (const в of възли) {
+      const м = в.nodeValue.match(ЕМО);
+      const р = м && рис(м[0]);
+      if (!р) continue;                                    // няма рисунка → не пипаме нищо
+      const сл = в.splitText(м.index);
+      сл.nodeValue = сл.nodeValue.slice(м[0].length);
+      const и = document.createElement('i');
+      и.className = 'pl-dn-em'; и.setAttribute('aria-hidden', 'true');
+      и.dataset.pl = '1'; и.textContent = м[0];
+      б.insertBefore(и, сл);
+      мои.push([и, р]);
+    }
+    if (!мои.length) return;
+    if (б.textContent !== преди) {                         // нещо не се получи → чисто назад
+      for (const [и] of мои) { и.parentNode && и.parentNode.replaceChild(document.createTextNode(и.textContent), и); }
+      б.normalize && б.normalize();
+      return;
+    }
+    for (const [и, р] of мои) { if (!боядисай(и, р)) и.classList.remove('pl-dn-em'); }
+  }
+
+  // ── 2 · медальонът, който липсваше на „Днес успях да…“ ──
+  //   Свой клас (не .jr-medal) — старият код брои и сравнява своите медальони.
+  //   Празен <i> → textContent на заглавието НЕ се мени с нито една буква.
+  function медальон(корен) {
+    корен.querySelectorAll('.jr-card > h4.jr-title').forEach(з => {
+      if (з.querySelector('.jr-medal, .pl-dn-med')) return;
+      if (!/Днес успях/.test(з.textContent)) return;
+      const преди = з.textContent;
+      const и = document.createElement('i');
+      и.className = 'pl-dn-med'; и.setAttribute('aria-hidden', 'true'); и.dataset.pl = '1';
+      з.insertBefore(и, з.firstChild);
+      if (з.textContent !== преди) { и.remove(); return; }   // не се получи → чисто назад
+      боядисай(и, МЕДАЛ);
+    });
+  }
+
+  // ── 3 · запълването на плъзгача (--pl-v) ──
+  //   CSS с appearance:none губи цветната част вляво. Тук само ЧЕТЕМ стойността и пишем
+  //   променлива; нито едно събитие не се спира, нищо не се записва.
+  function плъзгач(корен) {
+    корен.querySelectorAll('input[type="range"]').forEach(п => {
+      const мин = parseFloat(п.min) || 0;
+      const макс = (п.max === '' || п.max == null) ? 100 : (parseFloat(п.max) || 100);
+      const ст = parseFloat(п.value);
+      const дял = (макс > мин && isFinite(ст)) ? Math.max(0, Math.min(100, (ст - мин) * 100 / (макс - мин))) : 50;
+      const нов = дял.toFixed(1) + '%';
+      if (п.style.getPropertyValue('--pl-v') !== нов) п.style.setProperty('--pl-v', нов);   // само при разлика
+      if (!п.dataset.plDnV) {
+        п.dataset.plDnV = '1';
+        const опресни = () => { try { плъзгач(корен); } catch (ex) { грешки.push(String((ex && ex.message) || ex)); } };
+        п.addEventListener('input', опресни, { passive: true });
+        п.addEventListener('change', опресни, { passive: true });
+      }
+    });
+  }
+
+  // 🪤 стаята понякога се рисува ДВА пъти (стар панел още не е махнат, нов вече е сложен).
+  //   В тази сесия мерих ЕДИН панел (wf3_dnevnik_dve.js: ro_lav = 1), но querySelector би
+  //   облякъл само първия. querySelectorAll струва същото и не зависи от късмета.
+  function мини() {
+    const стаи = document.querySelectorAll(СТАЯ);
+    if (!стаи.length) return;
+    стаи.forEach(стая => {
+      стая.querySelectorAll(ЦЕЛИ).forEach(обвий);
+      медальон(стая);
+      плъзгач(стая);
+    });
+  }
+
+  // 🪤 #roRoom се СМЕНЯ при отваряне на стая → наблюдаваме статичния #roomOverlay;
+  //   40 ms отлагане, за да не гоним всяка междинна мутация (и своята собствена).
+  let чака = false;
+  function отложено() { if (чака) return; чака = true; setTimeout(() => { чака = false; try { мини(); } catch (ex) { грешки.push(String((ex && ex.message) || ex)); } }, 40); }
+  function върви() {
+    const ов = document.getElementById('roomOverlay');
+    if (!ов) return;
+    new MutationObserver(отложено).observe(ов, { childList: true, subtree: true, attributes: true, attributeFilter: ['class', 'hidden'] });
+    мини();
+  }
+  if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', върви); else върви();
+  window.BL_PL_DN_SVET = { мини, грешки };
+})();

@@ -420,3 +420,284 @@ html.bl-night body #roomOverlay .ro-lav .jr-card input.jr-word { filter: brightn
   html body #roomOverlay .ro-lav .jr-card input.jr-word { padding-left: 24px !important; font-size: 14.5px !important; }
   html body #roomOverlay .ro-lav .jr-wins .jr-win { min-height: 50px; gap: 7px; }
 }
+
+/* ═══════════════════════════════════════════════════════════════════════════════
+   29.09 · ВТОРА ОБИКОЛКА — ТОВА, КОЕТО ОЩЕ БЕШЕ ОТ СТАРИЯ СВЯТ
+   Горният тефтер и картите бяха преоблечени. МЕРЕНО в тази сесия (wf3_dnevnik_meri.js,
+   390×844, светло и тъмно, 0 грешки в страницата) остана:
+     · 6-те плочки на навигацията: background rgb(255,253,251), background-image NONE
+       — плоско бяло в стая, чиито карти СА филц (реф. 11: всичко е плат и хартия);
+     · полето за търсене .sec-find: rgb(255,255,255), плоско бяло хапче;
+     · петте личица .ck-e в картата „Как си днес?“: 38.2×28.1, 38.9×28.6, 38.8×28.5,
+       37.8×27.8, 36.6×26.9 — СМАЧКАНИ. Клетката на lica.webp е КВАДРАТНА, а css/pl-plyush.css
+       дава размер само на .rm-e/.sos-e, не и на .ck-e → филцовото личице се разтегля по
+       кутията на емоджито и лицата изглеждаха мръсни. (Само тук — другите стаи не пипам.)
+     · плъзгачът на енергията: appearance:auto, background rgb(255,255,255) — СИСТЕМЕН
+       плъзгач, единствената сива пластмаса на екрана;
+     · 3 системни емоджита в „Днес успях да…“ светеха жълто (🚿 🙋‍♀️ 🙅‍♀️) — картата К на
+       pl-plyush.js няма рисунка за тях, затова обвиването ги подминава (pl-plyush.js:165);
+       + 🔋 в „Енергия“ и 😭/🔒 в редовете за поверителност (техните класове не са в ОБВИЙ).
+       Оправено в js/pl-dnevnik.js — БЕЗ нови картинки: връзва ги към вече нарисувани клетки.
+     · картата „Днес успях да…“ беше ЕДИНСТВЕНАТА без медальон (мерено: medal=false) —
+       дупка в реда от кръгчета;
+     · стикерът в гел-бутона: .pl-em има margin-left:-.35em (pl-ui.css:177) — правилно за
+       емоджи в НАЧАЛОТО („☕ Изпих…“), но при „Запечатай капсулата 💌“ емоджито е НАКРАЯ и
+       кръгчето ляга ВЪРХУ буквите (мерено −5.075px).
+     · .ck-e въртеше ckBreath 4.6s infinite, а .ck-st.picked — ckBeat 1.6s infinite
+       (rooms.css:2143/2149). Безкрайна анимация яде ток и извън екрана → тук са КРАЙНИ.
+   Всичко е под ключ „.ro-lav“ → другите стаи не се пипат.
+   🪤 Специфичност: premium.css бие с ID (#roRoom .sec-nav .sec-chip[data-pl] = 1-3-0).
+      Тук ключът е html body #roomOverlay .ro-lav … = 1-3-2 и печели. Мерено, не предположено.
+   🪤 url() в ТОЗИ файл се разрешава спрямо css/ → ../img/art/…
+   ПЪТ НАЗАД: маха се целият блок от този ред надолу — първата обиколка остава цяла.
+   ═══════════════════════════════════════════════════════════════════════════════ */
+
+/* ── 9 · ПЛОЧКИТЕ НА НАВИГАЦИЯТА → филц с шев (реф. 11: кремав плат, не бяла хартия) ── */
+html body #roomOverlay .ro-lav .sec-nav .sec-chip {
+  position: relative;
+  background-color: #fffaf3 !important;
+  background-image: var(--ui-felt) !important;
+  background-size: 150px 150px !important;
+  background-blend-mode: multiply !important;
+  border: 1px solid rgba(214, 186, 158, .62) !important;
+  box-shadow: 0 4px 0 rgba(198, 166, 134, .26), 0 10px 20px rgba(110, 76, 52, .12), inset 0 2px 0 rgba(255, 255, 255, .9) !important;
+  color: #23306a !important;
+  transition: transform .18s cubic-bezier(.22, .9, .3, 1), box-shadow .18s ease;
+}
+/* пунктирният шев — навътре от ръба, както по картите */
+html body #roomOverlay .ro-lav .sec-nav .sec-chip::after {
+  content: ''; position: absolute; inset: 5px; border-radius: 15px; pointer-events: none;
+  border: 1.5px dashed rgba(196, 160, 124, .5);
+}
+html body #roomOverlay .ro-lav .sec-nav .sec-chip:active { transform: translateY(2px); box-shadow: 0 1px 0 rgba(198, 166, 134, .26), 0 4px 10px rgba(110, 76, 52, .12) !important; }
+html body #roomOverlay .ro-lav .sec-nav .sec-chip.on {
+  background-color: #fff3f7 !important;
+  border-color: rgba(225, 140, 176, .66) !important;
+  box-shadow: 0 0 0 2px rgba(246, 194, 214, .85), 0 4px 0 rgba(213, 150, 179, .3), 0 10px 20px rgba(229, 109, 153, .16) !important;
+}
+html body #roomOverlay .ro-lav .sec-nav .sec-chip.on::after { border-color: rgba(220, 138, 174, .6); }
+/* кръгчето под плюшената иконка получава свой шев — както копчетата в реф. 17 */
+html body #roomOverlay .ro-lav .sec-chip .pl-ti {
+  box-shadow: inset 0 0 0 2px rgba(255, 255, 255, .92), 0 2px 5px rgba(110, 76, 52, .16);
+}
+
+/* ── 10 · ТЪРСАЧКАТА В СТАЯТА → филцово хапче (беше чисто бяло) ── */
+html body #roomOverlay .ro-lav .sec-nav .sec-find {
+  background-color: #fffaf3 !important;
+  background-image: var(--ui-felt) !important;
+  background-size: 150px 150px !important;
+  background-blend-mode: multiply !important;
+  border: 1.5px solid rgba(214, 186, 158, .7) !important;
+  box-shadow: inset 0 2px 4px rgba(120, 88, 58, .08), 0 2px 0 rgba(255, 255, 255, .8) !important;
+  color: #23306a !important;
+}
+html body #roomOverlay .ro-lav .sec-nav .sec-find::placeholder { color: #6a5f84 !important; opacity: 1 !important; }
+html body #roomOverlay .ro-lav .sec-nav .sec-find:focus {
+  border-color: rgba(217, 116, 157, .75) !important;
+  box-shadow: inset 0 2px 4px rgba(120, 88, 58, .08), 0 0 0 3px rgba(245, 190, 212, .5) !important;
+}
+
+/* ── 11 · ПЕТТЕ ЛИЧИЦА В „КАК СИ ДНЕС?“ — филцови копчета, а не смачкани емоджи-кутии ──
+   Клетката на lica.webp е квадратна → елементът трябва да е квадратен, иначе лицето се
+   разтегля. 40×40 в бял ръб с шев — същият материал като личицата в тефтера отгоре. */
+html body #roomOverlay .ro-lav .ck-st .ck-e {
+  display: inline-block !important;
+  width: 40px !important; height: 40px !important;
+  vertical-align: middle !important;
+  border-radius: 50% !important;
+  border: 2.5px solid #fff;
+  outline: 1.5px dashed rgba(255, 255, 255, .92); outline-offset: -7px;   /* шевът по диска */
+  box-shadow: 0 2px 0 rgba(198, 166, 134, .34), 0 6px 10px rgba(110, 76, 52, .14), inset 0 -5px 8px rgba(110, 76, 52, .08) !important;
+}
+html body #roomOverlay .ro-lav .ck-st { display: inline-grid; place-items: center; }
+html body #roomOverlay .ro-lav .ck-st.picked .ck-e {
+  box-shadow: 0 0 0 3.5px #e98fb3, 0 3px 0 3.5px #d97aa2, 0 10px 16px rgba(217, 90, 142, .28) !important;
+}
+
+/* ── 12 · ЕНЕРГИЯТА — филцова лента с розово гел копче вместо системния плъзгач ──
+   Запълването е --pl-v (js/pl-dnevnik.js го пише при всяка промяна) — иначе с
+   appearance:none изчезва цветната част вляво. */
+html body #roomOverlay .ro-lav .jr-card input[type="range"] {
+  -webkit-appearance: none !important; appearance: none !important;
+  background: transparent !important;
+  height: 44px !important;            /* цел за докосване — лентата е тънка, зоната не е */
+  padding: 0 !important; border: 0 !important; box-shadow: none !important;
+}
+html body #roomOverlay .ro-lav .jr-card input[type="range"]::-webkit-slider-runnable-track {
+  height: 16px; border-radius: 999px;
+  background-color: #fdf4e8;
+  background-image:
+    linear-gradient(90deg, #efa0c2 0, #e0789f var(--pl-v, 50%), rgba(0, 0, 0, 0) var(--pl-v, 50%)),
+    var(--ui-felt);
+  background-size: auto, 120px 120px;
+  background-blend-mode: normal, multiply;
+  border: 1px solid rgba(206, 172, 140, .7);
+  box-shadow: inset 0 2px 4px rgba(120, 88, 58, .16);
+}
+html body #roomOverlay .ro-lav .jr-card input[type="range"]::-webkit-slider-thumb {
+  -webkit-appearance: none; appearance: none;
+  width: 30px; height: 30px; margin-top: -8px; border-radius: 50%;
+  background: radial-gradient(120% 120% at 50% 20%, #fbc3d8 0, #e98fb3 46%, #d3648f 100%);
+  border: 3px solid #fff;
+  box-shadow: 0 2px 0 rgba(186, 88, 128, .55), 0 6px 12px rgba(217, 90, 142, .3);
+  cursor: pointer;
+}
+html body #roomOverlay .ro-lav .jr-card input[type="range"]::-moz-range-track {
+  height: 16px; border-radius: 999px; background-color: #fdf4e8; border: 1px solid rgba(206, 172, 140, .7);
+}
+html body #roomOverlay .ro-lav .jr-card input[type="range"]::-moz-range-progress { height: 16px; border-radius: 999px; background: #e0789f; }
+html body #roomOverlay .ro-lav .jr-card input[type="range"]::-moz-range-thumb {
+  width: 26px; height: 26px; border-radius: 50%; background: #e98fb3; border: 3px solid #fff; box-shadow: 0 2px 0 rgba(186, 88, 128, .55);
+}
+html body #roomOverlay .ro-lav .jr-card input[type="range"]:focus-visible { outline: 3px solid #b8376f; outline-offset: 3px; }
+
+/* ── 13 · СТИКЕРЪТ НАКРАЯ НА БУТОНА да не ляга върху буквите ──
+   .pl-em дърпа −.35em наляво (вярно за емоджи в началото). Когато е ПОСЛЕДЕН — дърпа надясно. */
+html body #roomOverlay .ro-lav .jr-btn > .pl-em:last-child,
+html body #roomOverlay .ro-lav .pl-gel > .pl-em:last-child,
+html body #roomOverlay .ro-lav .jr-chip > .pl-em:last-child {
+  margin-left: .2em !important; margin-right: -.06em !important;
+}
+
+/* ── 14 · МЕДАЛЬОНЪТ, КОЙТО ЛИПСВАШЕ („Днес успях да…“) ──
+   Същите мерки като .jr-medal.pl-pl (pl-plyush.css:14): 34px, кръг, умножен върху пастел.
+   Рисунката я слага js/pl-dnevnik.js — ПРЯКО на елемента (капан 1: css променлива с url()
+   се разрешава спрямо CSS файла). */
+html body #roomOverlay .ro-lav .jr-title > .pl-dn-med {
+  display: inline-block; flex: 0 0 auto; width: 34px; height: 34px; vertical-align: -9px;
+  border-radius: 50%; background-repeat: no-repeat; background-blend-mode: multiply;
+  background-color: var(--pl-plt, #dff2e7);
+  box-shadow: inset 0 0 0 1.5px rgba(255, 255, 255, .9), 0 2px 5px rgba(110, 76, 52, .14);
+}
+
+/* ── 15 · ГОЛИТЕ ЕМОДЖИТА, КОИТО ПЛЮШЪТ ПОДМИНА (js/pl-dnevnik.js ги обвива в .pl-dn-em) ──
+   В РЕДА на текста: кръгче колкото буквата, без да разкъсва изречението. */
+html body #roomOverlay .ro-lav .pl-dn-em {
+  display: inline-grid; place-items: center; flex: none;
+  width: 1.7em; height: 1.7em; margin: -.3em .14em -.3em -.3em; vertical-align: -.42em;
+  border-radius: 50%; font-size: 1em; line-height: 1;
+  color: transparent !important; text-shadow: none !important; -webkit-text-fill-color: transparent;
+  background-repeat: no-repeat !important; background-blend-mode: multiply;
+  background-color: var(--pl-plt, #fde6ef);
+  box-shadow: inset 0 0 0 1.5px rgba(255, 255, 255, .9), 0 1px 4px rgba(110, 76, 52, .16);
+}
+/* в редовете „малките победи“ стикерите са в кръгчета — новите да са със същия ръст */
+html body #roomOverlay .ro-lav .jr-wins .jr-win > .pl-dn-em { width: 1.9em; height: 1.9em; margin-right: .2em; }
+/* в дребния ред за поверителност (11.5px) кръгчето не бива да разбутва реда */
+html body #roomOverlay .ro-lav .jr-privacy > .pl-dn-em { width: 1.5em; height: 1.5em; vertical-align: -.34em; }
+
+/* ── 16 · ДВИЖЕНИЕТО — краен ритъм вместо две безкрайни анимации ──
+   rooms.css:2143 върти ckBreath 4.6s infinite на петте личица и ckBeat 1.6s infinite на
+   избраното. Тук личицата идват веднъж (с различен ритъм от съседа) и подскачат веднъж
+   при избор. Нула безкрайни анимации в тази стая. */
+@keyframes plDnLiceIdva { from { opacity: 0; transform: translateY(7px) scale(.86); } 70% { transform: translateY(0) scale(1.05); } to { opacity: 1; transform: none; } }
+@keyframes plDnLicePop  { 0% { transform: scale(1); } 45% { transform: scale(1.14); } 100% { transform: scale(1.06); } }
+html body #roomOverlay .ro-lav .ck-st .ck-e { animation: plDnLiceIdva .5s cubic-bezier(.22, .9, .3, 1) backwards !important; }
+html body #roomOverlay .ro-lav .ck-st:nth-of-type(odd) .ck-e { animation-duration: .58s !important; animation-delay: .04s !important; }
+html body #roomOverlay .ro-lav .ck-st:nth-of-type(even) .ck-e { animation-duration: .44s !important; animation-delay: .13s !important; }
+html body #roomOverlay .ro-lav .ck-st.picked .ck-e { animation: plDnLicePop .42s cubic-bezier(.3, 1.5, .5, 1) forwards !important; }
+/* плочките лягат веднъж, с редуващ се ритъм (не всички наведнъж — така се усеща ръка) */
+@keyframes plDnPlochka { from { opacity: 0; transform: translateY(8px) rotate(-.5deg); } to { opacity: 1; transform: none; } }
+html body #roomOverlay .ro-lav .sec-nav .sec-chip { animation: plDnPlochka .5s cubic-bezier(.22, .9, .3, 1) backwards; }
+html body #roomOverlay .ro-lav .sec-nav .sec-chip:nth-child(3n+1) { animation-delay: .02s; animation-duration: .52s; }
+html body #roomOverlay .ro-lav .sec-nav .sec-chip:nth-child(3n+2) { animation-delay: .09s; animation-duration: .44s; }
+html body #roomOverlay .ro-lav .sec-nav .sec-chip:nth-child(3n)   { animation-delay: .15s; animation-duration: .58s; }
+
+/* ── 17 · НОЩ (тъмната тема на приложението, html[data-theme="dark"] · js/app.js:33) ── */
+html[data-theme="dark"] body #roomOverlay .ro-lav .sec-nav .sec-chip {
+  background-color: #26336b !important; background-image: none !important;
+  border-color: rgba(255, 255, 255, .15) !important;
+  box-shadow: 0 4px 0 rgba(0, 0, 0, .3), 0 10px 20px rgba(0, 0, 0, .3) !important;
+  color: #f2f0fb !important;
+}
+html[data-theme="dark"] body #roomOverlay .ro-lav .sec-nav .sec-chip::after { border-color: rgba(255, 255, 255, .2); }
+html[data-theme="dark"] body #roomOverlay .ro-lav .sec-nav .sec-chip.on {
+  background-color: #5a2c55 !important; border-color: rgba(245, 156, 187, .6) !important;
+  box-shadow: 0 0 0 2px rgba(245, 156, 187, .3), 0 10px 20px rgba(0, 0, 0, .3) !important;
+  color: #ffe6ef !important;
+}
+html[data-theme="dark"] body #roomOverlay .ro-lav .sec-nav .sec-find {
+  background-color: #232f63 !important; background-image: none !important;
+  border-color: rgba(255, 255, 255, .18) !important; color: #efeaf8 !important;
+  box-shadow: inset 0 2px 4px rgba(0, 0, 0, .3) !important;
+}
+html[data-theme="dark"] body #roomOverlay .ro-lav .sec-nav .sec-find::placeholder { color: #b9b2d4 !important; }
+html[data-theme="dark"] body #roomOverlay .ro-lav .ck-st .ck-e {
+  border-color: rgba(255, 255, 255, .9);
+  box-shadow: 0 2px 0 rgba(0, 0, 0, .35), 0 6px 10px rgba(0, 0, 0, .3) !important;
+}
+html[data-theme="dark"] body #roomOverlay .ro-lav .jr-card input[type="range"]::-webkit-slider-runnable-track {
+  background-color: #1e2858;
+  background-image: linear-gradient(90deg, #f59cbb 0, #e0789f var(--pl-v, 50%), rgba(0, 0, 0, 0) var(--pl-v, 50%));
+  border-color: rgba(255, 255, 255, .2);
+  box-shadow: inset 0 2px 4px rgba(0, 0, 0, .35);
+}
+html[data-theme="dark"] body #roomOverlay .ro-lav .jr-card input[type="range"]::-webkit-slider-thumb { border-color: #f4eefb; box-shadow: 0 2px 0 rgba(0, 0, 0, .45), 0 6px 12px rgba(0, 0, 0, .35); }
+html[data-theme="dark"] body #roomOverlay .ro-lav .pl-dn-em,
+html[data-theme="dark"] body #roomOverlay .ro-lav .jr-title > .pl-dn-med { box-shadow: inset 0 0 0 1.5px rgba(255, 255, 255, .85), 0 2px 6px rgba(0, 0, 0, .35); }
+
+/* ── 18 · ТИХИТЕ ЧАСОВЕ (html.bl-night) — ДРУГО от тъмната тема; екранът да не свети в очите ── */
+html.bl-night body #roomOverlay .ro-lav .sec-nav .sec-chip,
+html.bl-night body #roomOverlay .ro-lav .sec-nav .sec-find { filter: brightness(.95) saturate(.95); }
+html.bl-night body #roomOverlay .ro-lav .jr-card input[type="range"]::-webkit-slider-thumb { filter: brightness(.95); }
+
+/* ── 19 · БЕЗ ДВИЖЕНИЕ, АКО ТЕЛЕФОНЪТ ТАКА КАЗВА ── */
+@media (prefers-reduced-motion: reduce) {
+  html body #roomOverlay .ro-lav .sec-nav .sec-chip,
+  html body #roomOverlay .ro-lav .ck-st .ck-e,
+  html body #roomOverlay .ro-lav .ck-st.picked .ck-e { animation: none !important; transition: none !important; }
+  html body #roomOverlay .ro-lav .sec-nav .sec-chip:active { transform: none; }
+}
+
+/* ── 20 · 360px — плочките и лентата да не преливат ── */
+@media (max-width: 374px) {
+  html body #roomOverlay .ro-lav .sec-nav { gap: 8px !important; }
+  html body #roomOverlay .ro-lav .sec-nav .sec-chip { min-height: 106px; padding: 10px 4px 9px !important; font-size: 12px !important; }
+  html body #roomOverlay .ro-lav .sec-nav .sec-chip::after { inset: 4px; border-radius: 14px; }
+  html body #roomOverlay .ro-lav .ck-st .ck-e { width: 36px !important; height: 36px !important; }
+  html body #roomOverlay .ro-lav .jr-card input[type="range"]::-webkit-slider-thumb { width: 28px; height: 28px; margin-top: -7px; }
+}
+
+/* ── 21 · ДВЕ ПОПРАВКИ ПО МЯРКА (а не на око) ──
+   1) „Енергия“ (.jr-elabel, rooms.css:144 → var(--ink-soft) = rgb(111,105,128)) върху филца:
+      МЕРЕНО ПО ПИКСЕЛИ от snimki/wf3_kon_svetlo.png — 4.93:1 върху модата на фона и 3.75:1
+      върху най-тъмното петно на филца, 75 пиксела под 4.5. Под прага → мастилото потъмнява.
+   2) Стикерът в чипа („👶 До бебето“) стоеше долепен до буквата — .pl-em дърпа −.35em наляво
+      (pl-ui.css:177). Тук получава дъх отдясно. */
+html body #roomOverlay .ro-lav .jr-elabel { color: #453f5e !important; }
+html[data-theme="dark"] body #roomOverlay .ro-lav .jr-elabel { color: #ddd7ee !important; }
+html body #roomOverlay .ro-lav .jr-chip > .pl-em:first-child { margin-left: -.18em !important; margin-right: .26em !important; }
+
+/* ── 22 · 🪤 ЛИЧИЦЕТО СЕ РИСУВАШЕ ДВА ПЪТИ, ВТОРИЯТ — ИЗМЕСТЕН ──
+   На тъмна карта всяко от петте лица имаше „второ лице“ горе-вляво. Първо помислих, че
+   съседната клетка от листа влиза в кръга (background-origin) — ОПИТЪТ ГО ОПРОВЕРГА:
+   махнах рисунката от .ck-e и лицето ОСТАНА (snimki/wf3_zoom_opit.png — червеният диск е
+   .ck-e, зеленият кръг е .ck-st, а лицето стърчи вляво от двата).
+   ИСТИНСКАТА причина, намерена с elementsFromPoint (wf3_dnevnik_koe.js): в .ck-e има ВТОРИ
+   елемент .pl-em с рисунка. js/pl-plyush.js рисува личицето ДВА пъти — веднъж по клас
+   (ЦЕЛИ съдържа „.ck-e“) и втори път като стикер в бутона (ОБВИЙ съдържа „#roRoom button“),
+   а стикерът носи margin −.35em наляво (pl-ui.css:177) → изместеното копие.
+   Скрива се КОПИЕТО, остава рисунката по клас: тя е центрирана и с правилния размер.
+   Достъпността не страда — бутонът има свой aria-label (rooms.js:198), а стикерът е
+   aria-hidden още при обвиването (pl-plyush.js:170).
+   МЕРЕНО след това: същото ДВОЙНО рисуване има и на другите две места в тази стая —
+   .pl-dn-face (5 бр., личицата в тефтера горе) и .jr-medal (33 бр., медальонът на ВСЯКА
+   карта). Денем кремавото копие се губи в кремавата хартия; НОЩЕМ се вижда като второ
+   лице и второ сърце (snimki/wf3_zoom_dnface.png, snimki/wf3_zoom_medal.png).
+   Броят е мерен: .ck-st .ck-e > .pl-em = 5, .pl-dn-face > .pl-em = 5, .jr-medal > .pl-em = 33.
+   Ако външният кръг няма рисунка, няма я и вътрешният (и двата минават през едно и също
+   рис() със същото емоджи) — значи скриването не оставя празно кръгче. */
+html body #roomOverlay .ro-lav .ck-st .ck-e > .pl-em,
+html body #roomOverlay .ro-lav .pl-dn-face > .pl-em,
+html body #roomOverlay .ro-lav .jr-title > .jr-medal > .pl-em { display: none !important; }
+
+/* ── 23 · 🌙 КАРФИЦАТА ИЗЧЕЗВАШЕ НОЩЕМ ──
+   МЕРЕНО (wf3_dnevnik_pin.js): светло .pin-btn има color rgb(106,102,130) и точката
+   (::before, 16×16) е със същия цвят; ТЪМНО и двете са rgba(0,0,0,0) — НЕВИДИМИ.
+   premium.css:584 облича карфицата само за html:not([data-theme="dark"]), а нощна
+   двойка няма. Бутонът работи, но мама не го вижда в 3 сутринта. Пипаемата зона
+   (::after 36×44, mega.css:651) НЕ се пипа — тя е премерена на 04.08 и е права. */
+html[data-theme="dark"] body #roomOverlay .ro-lav .jr-card .pin-btn { color: #c9cbe3 !important; }
+html[data-theme="dark"] body #roomOverlay .ro-lav .jr-card .pin-btn::before { background: #c9cbe3 !important; }
+html[data-theme="dark"] body #roomOverlay .ro-lav .jr-card .pin-btn.on { color: #ffc9dd !important; }
+html[data-theme="dark"] body #roomOverlay .ro-lav .jr-card .pin-btn.on::before { background: #ffc9dd !important; }
