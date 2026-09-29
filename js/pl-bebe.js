@@ -268,15 +268,23 @@
     const точка = (ключ, ик, надпис) => '<button type="button" class="pl-bb-mi pl-soft" data-go="' + ключ + '">' + ико(ик, 'pl-bb-mico') + '<span>' + надпис + '</span></button>';
     const мид = 'plBbMenu' + (++номер);   // стаята може да е нарисувана два пъти — id без повторение
     с.innerHTML =
-      '<button type="button" class="pl-bb-id" data-go="профил">' +
+      // 29.09: визитката беше матово стъкло (backdrop-filter) — единственото стъкло във филцов
+      // свят. Сега е общият филц .pl-felt от css/pl-ui.css, с неговия пунктирен шев.
+      '<button type="button" class="pl-bb-id pl-felt" data-go="профил">' +
         ико('бебе', 'pl-bb-av') +
         '<span class="pl-bb-idt"></span>' +
         '<svg class="pl-bb-pen" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 20h4L19 9a2.8 2.8 0 0 0-4-4L4 16z" fill="currentColor"/><path d="M13.5 6.5l4 4" stroke="#fff" stroke-width="1.4"/></svg>' +
       '</button>' +
       '<div class="pl-bb-shelf">' +
         // украсата на дървената арка (реф. 8): звезда на върха, звездички по дъгата
-        '<span class="pl-bb-deco" aria-hidden="true"><i class="pl-bb-st s0">★</i><i class="pl-bb-st s1">★</i><i class="pl-bb-st s2">★</i><i class="pl-bb-st s3">★</i><i class="pl-bb-st s4">★</i></span>' +
-        '<h3 class="pl-bb-plaque"><i aria-hidden="true">★</i>Днес<i aria-hidden="true">★</i></h3>' +
+        // 29.09: бяха седем ★ от ШРИФТА (мерено: textContent „★“, 11–22px). Сега са рисувани
+        // звезди с ИСТИНСКАТА филцова шарка (--ui-felt, css/pl-ui.css) — вж. бележката в CSS
+        // защо плюшеният лист не става тук: .pl-bb-deco е z-index:1, значи собствен стекинг
+        // контекст, а mix-blend-mode:multiply в него няма какво да умножи → бял квадрат
+        // (мерено на снимка wf3_bebe_sled1.png). Текст няма — pl-plyush.js няма какво да подменя.
+        '<span class="pl-bb-deco" aria-hidden="true">' +
+          '<i class="pl-bb-st s0"></i><i class="pl-bb-st s1"></i><i class="pl-bb-st s2"></i><i class="pl-bb-st s3"></i><i class="pl-bb-st s4"></i></span>' +
+        '<h3 class="pl-bb-plaque"><i aria-hidden="true"></i>Днес<i aria-hidden="true"></i></h3>' +
         '<div class="pl-bb-arches">' +
           арка('feed', 'шише', 'Хранене', 'Запиши хранене — към бутоните Ляво, Дясно, Шише') +
           арка('sleep', 'луна', 'Сън', 'Запиши сън — към бутона Заспа или Събуди се') +
@@ -290,11 +298,11 @@
       '<div class="pl-bb-tiles">' +
         '<button type="button" class="pl-bb-t t-grow" data-go="растеж">' +
           '<span class="pl-bb-tsc" aria-hidden="true">' + ико('жираф', 'pl-bb-tbig') + ико('линийка', 'pl-bb-tsm') + ико('листо', 'pl-bb-tmini') + '</span>' +
-          '<span class="pl-bb-tp"><i class="pl-bb-knob" aria-hidden="true"></i><span><b>Растеж</b><small class="pl-bb-t1"></small></span><em aria-hidden="true">›</em></span>' +
+          '<span class="pl-bb-tp"><i class="pl-bb-knob" aria-hidden="true"></i><span><b>Растеж</b><small class="pl-bb-t1"></small></span><em class="pl-bb-ch" aria-hidden="true"></em></span>' +
         '</button>' +
         '<button type="button" class="pl-bb-t t-first" data-go="умения">' +
           '<span class="pl-bb-tsc" aria-hidden="true">' + ико('обувки', 'pl-bb-tbig') + ико('пирамида', 'pl-bb-tsm') + ико('звезда', 'pl-bb-tmini') + '</span>' +
-          '<span class="pl-bb-tp"><i class="pl-bb-knob" aria-hidden="true"></i><span><b>Първи умения</b><small class="pl-bb-t2"></small></span><em aria-hidden="true">›</em></span>' +
+          '<span class="pl-bb-tp"><i class="pl-bb-knob" aria-hidden="true"></i><span><b>Първи умения</b><small class="pl-bb-t2"></small></span><em class="pl-bb-ch" aria-hidden="true"></em></span>' +
         '</button>' +
       '</div>' +
       '<button type="button" class="pl-bb-cta pl-gel" data-go="меню" aria-expanded="false" aria-controls="' + мид + '"><b aria-hidden="true"></b>Нов запис</button>' +
@@ -323,7 +331,9 @@
 
   // пише innerHTML само ако низът е друг от последно написания (🪤 иначе всяка мутация
   // вика наблюдателя, той — нас, и кръгът става безкраен)
-  function пиши(е, html) { if (е && е._pl !== html) { е._pl = html; е.innerHTML = html; } }
+  // 29.09: връща true, когато НАИСТИНА е писало — само тогава се пуска влизането и броенето
+  // нагоре (иначе 30-секундният опресняващ такт щеше да пуска анимацията на всеки половин минута).
+  function пиши(е, html) { if (е && е._pl !== html) { е._pl = html; е.innerHTML = html; return true; } return false; }
 
   function опресни(б) {
     const бб = бебето(), д = денят();
@@ -359,16 +369,19 @@
         брояч('diaper', 'пелени', 'боди', д.пелени || null, д.пелени ? бр(д.пелени, 'смяна', 'смени') : '+ запиши', '',
           д.пелени ? д.пелени + ' ' + бр(д.пелени, 'смяна', 'смени') + ' на пелена днес — запиши още' : 'Запиши пелена') +
         '</div>';
-      const ред = (ик, време, текст, към, клас) => '<li><button type="button" class="pl-bb-row pl-soft' + (клас ? ' ' + клас : '') + '" data-go="' + към + '" data-view="1">' +
-        ико(ик, 'pl-bb-ri') + '<b>' + време + '</b><span>' + текст + '</span><em aria-hidden="true">›</em></button></li>';
+      // 29.09: --i е редът на реда — стълбичка от по 55 мс при влизане (css „🎞️ ЖИВОТЪТ“)
+      let нр = 0;
+      const ред = (ик, време, текст, към, клас) => '<li style="--i:' + (нр++) + '"><button type="button" class="pl-bb-row pl-soft' + (клас ? ' ' + клас : '') + '" data-go="' + към + '" data-view="1">' +
+        ико(ик, 'pl-bb-ri') + '<b>' + време + '</b><span>' + текст + '</span><em class="pl-bb-ch" aria-hidden="true"></em></button></li>';
       const редове = д.събития.slice(0, 4).map(с => ред(с.вид === 'храна' ? 'шише' : 'луна', с.жив ? 'сега' : часът(с.ts), esc(с.текст), с.към, с.жив ? 'is-live' : ''));
       if (д.пелени) редове.push(ред('боди', 'днес', 'Пелени днес: ' + д.пелени + (д.мокри && д.каки ? ' <small>(' + д.мокри + ' мокри, ' + д.каки + ' каки)</small>' : ''), 'пелени', 'is-day'));
-      html += '<div class="pl-bb-logh"><h3>Днешни записи</h3><button type="button" class="pl-bb-all" data-go="всички" data-view="1">Виж всички <span aria-hidden="true">›</span></button></div>' +
+      html += '<div class="pl-bb-logh"><h3>Днешни записи</h3><button type="button" class="pl-bb-all" data-go="всички" data-view="1">Виж всички <i class="pl-bb-ch" aria-hidden="true"></i></button></div>' +
         '<ul class="pl-bb-log">' + редове.join('') + '</ul>' +
         (д.събития.length > 4 ? '<p class="pl-bb-more">и още ' + (д.събития.length - 4) + ' по-рано днес</p>' : '') +
         '<p class="pl-bb-note">Записките не заменят преглед.</p>';
     }
-    пиши(б.querySelector('.pl-bb-live'), html);
+    // 29.09: върна ли true, редовете са ПРЕСНИ → CSS ги внася на стълбичка, а числата тръгват от 0
+    if (пиши(б.querySelector('.pl-bb-live'), html)) преброй(б);
 
     // рафтовете: последното мерене (rooms2.js:472–473 → bl_growth) и златните „първи пъти“ (rooms2.js:1574–1581 → bl_firsts)
     const р = чети('bl_growth', []);
@@ -379,6 +392,47 @@
     const ф = чети('bl_firsts', {});
     const брФ = ф && typeof ф === 'object' ? Object.keys(ф).filter(к => ф[к]).length : 0;
     пиши(б.querySelector('.pl-bb-t2'), брФ ? брФ + ' ' + бр(брФ, 'златен миг', 'златни мига') + '<br>' + бр(брФ, 'вече записан', 'вече записани') : 'Малките постижения са големи радости');
+  }
+
+  /* ═══ 29.09 · ЖИВОТЪТ ═══════════════════════════════════════════════════════════════════
+     Мерено преди пипане (wf3_bebe_odit): в целия блок animationName = none на ВСЕКИ елемент —
+     нула анимации. Движението се добавя така:
+       · влизането (визитка, рафт, куполи, редове, шкафове, гел) е в CSS върху ПРЕСНИ елементи —
+         `пиши` сменя innerHTML само при разлика, значи анимацията тръгва точно когато нещо се е
+         променило, а не на всеки 30-секунден такт;
+       · дишането на плюша и бликът по гела са БЕЗКРАЙНИ, затова не текат извън екрана:
+         --bb-play се сменя на „paused“ от IntersectionObserver и при скрит раздел (ток).
+         Пише се в style (не в class) — 🪤 наблюдателят следи class, а не style: без кръг.
+       · при prefers-reduced-motion CSS ги гаси всички, а `тихо()` спира и броенето нагоре.  */
+  const тихо = () => { try { return matchMedia('(prefers-reduced-motion: reduce)').matches; } catch (e) { return false; } };
+
+  // броячите се качват от 0 до числото (12 стъпки по 52 мс ≈ 620 мс, с омекотяване накрая)
+  function преброй(б) {
+    if (тихо() || document.hidden) return;
+    б.querySelectorAll('.pl-bb-cnt .pl-bb-c > span > b').forEach(е => {
+      const цел = (е.textContent || '').trim();
+      if (!/^\d{1,3}$/.test(цел)) return;             // „спи“ и поканата „+“ не се броят
+      const n = +цел; if (n < 2) return;              // от 1 нагоре няма какво да се гледа
+      let к = 0; const СТЪПКИ = 12;
+      е.textContent = '0';
+      const тик = setInterval(() => {
+        к++;
+        if (к >= СТЪПКИ || е.textContent == null || !е.isConnected) { clearInterval(тик); if (е.isConnected) е.textContent = цел; return; }
+        е.textContent = String(Math.round(n * (1 - Math.pow(1 - к / СТЪПКИ, 3))));
+      }, 52);
+    });
+  }
+
+  // токът: безкрайните анимации спират, щом блокът излезе от екрана или разделът се скрие
+  function гледач(б) {
+    const вкл = в => { try { б.style.setProperty('--bb-play', в && !document.hidden ? 'running' : 'paused'); } catch (e) {} };
+    if (б._plIO) { вкл(б._plВид); return; }
+    б._plВид = false; вкл(false);
+    try {
+      б._plIO = new IntersectionObserver(з => { б._plВид = з.some(x => x.isIntersecting); вкл(б._plВид); }, { rootMargin: '100px' });
+      б._plIO.observe(б);
+    } catch (e) { б._plВид = true; вкл(true); }        // без IntersectionObserver: просто върви
+    б._plСпри = () => вкл(б._plВид);
   }
 
   // ── мястото: под банера, преди картите; не се бие с други premium блокове (pl-*) между нас ──
@@ -402,10 +456,11 @@
       document.querySelectorAll('#roRoom').forEach(стая => {
         let б = стая.querySelector(':scope > .pl-bb');
         // рисуваме само когато картите-цели са там (иначе бутоните биха водили на празно)
-        if (!бебе || !стая.querySelector('.bb-dip')) { if (б) б.remove(); return; }
+        if (!бебе || !стая.querySelector('.bb-dip')) { if (б) { if (б._plIO) { б._plIO.disconnect(); б._plIO = null; } б.remove(); } return; }
         if (!б) б = рисувай();
         мястото(стая, б);
         опресни(б);
+        гледач(б);
       });
     } catch (e) { грешки.push(String(e && e.stack || e).slice(0, 300)); }
   }
@@ -414,7 +469,12 @@
   //   с поддърво; отлагане с таймер (requestAnimationFrame спира, когато страницата не се рисува).
   let чака = false;
   function отложено() { if (чака) return; чака = true; setTimeout(() => { чака = false; сложи(); }, 40); }
-  function опресниВсички() { if (document.hidden) return; document.querySelectorAll('#roRoom > .pl-bb').forEach(б => { try { опресни(б); } catch (e) { грешки.push(String(e)); } }); }
+  function опресниВсички() {
+    // 29.09: при скрит раздел не опресняваме, но СПИРАМЕ безкрайните анимации (ток)
+    document.querySelectorAll('#roRoom > .pl-bb').forEach(б => { try { if (б._plСпри) б._plСпри(); } catch (e) {} });
+    if (document.hidden) return;
+    document.querySelectorAll('#roRoom > .pl-bb').forEach(б => { try { опресни(б); } catch (e) { грешки.push(String(e)); } });
+  }
 
   function върви() {
     const ов = document.getElementById('roomOverlay');

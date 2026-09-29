@@ -375,3 +375,155 @@
   if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', върви); else върви();
   window.BL_PL_ZDRAVE = { сложи, пъти: () => пъти };
 })();
+
+/* ═══════════════════════════════════════════════════════════════════════════════
+   🧸 29.09 · ПРЕОБЛИЧАНЕ НА СТАРОТО В „Здраве и SOS“ — втори, самостоятелен модул.
+   Първият (горе) прави СВОЯ блок. Този не прави нищо ново на екрана — само сваля голите
+   системни емоджита от чуждите карти и им дава клетка от листовете img/art/.
+   Мерено преди (одит на живо, 29.09): 13 голи емоджита останаха в стаята —
+     аптечката: 🫁 🤕 🩸 ⚡ 🐝 🫀 (🔥 вече беше плюшено),
+     термометърът: 🦾 👂 😐 🍑,
+     поясите: ⚠️ ×2 (и 📞 ×3 по бутоните за звънене).
+   И шестте от аптечката са освен това ПЛАШЕЩИ (окървавена капка, анатомично сърце, бинтована
+   глава с болезнено лице) — точно каквото уплашена майка не бива да вижда. Затова клетките са
+   избрани по ДЕЙСТВИЕТО, не по органа: облаче-дъх за задавяне, будилник за гърч (засичаш колко
+   трае), навита кърпа за кървене (притискаш), сърце с бяло кръстче за реанимация.
+   🪤 ТЕКСТЪТ НЕ СЕ ПИПА: емоджито остава буква в буква в textContent (стар код сравнява
+      заглавия), само се обвива в span и се скрива визуално — както прави js/pl-plyush.js.
+   🪤 РИСУНКАТА СЕ СЛАГА ПРЯКО НА ЕЛЕМЕНТА (element.style.backgroundImage): адресът се разрешава
+      спрямо ДОКУМЕНТА. През CSS променлива щеше да се разреши спрямо css/ → css/img/... = 404.
+   🪤 ПИШЕ САМО ПРИ РАЗЛИКА и маркира с data-pl-zd* — иначе всяка промяна е мутация,
+      наблюдателят вика пак и се получава безкраен кръг.
+   ПЪТ НАЗАД: изтрий този модул (всичко от реда по-горе надолу) — файлът пак става 30651 байта
+   (копие: scratchpad/wf3_zdrave_js_PREDI.bak).
+   ═══════════════════════════════════════════════════════════════════════════════ */
+(function () {
+  'use strict';
+  if (window.BL_PL_ZDRAVE_OBLEKLO) return;
+
+  const ЛИСТ = { a: 'ico-a', b: 'ico-b', c: 'ico-c', d: 'ico-d', e: 'ico-e', f: 'ico-f', g: 'ico-g', h: 'ico-h', i: 'ico-i', x: 'fig-a', t: 'statii-t', m: 'lica' };
+  const ДВУРЕДНИ = { x: 1, m: 1 };                       // листовете 4×2 (другите са 4×4)
+  const ТОН = { p: '#fde6ef', s: '#dfeafb', m: '#dff2e7', l: '#ece4f8', b: '#fff0d4', c: '#fde5d8' };
+
+  // емоджи → [лист, ред, колона, тон]. Само тези, които голямата карта (pl-plyush.js) НЕ знае,
+  // плюс трите, които нарочно надписвам (😐 в термометъра да не става личице).
+  const ДОП = {
+    // ── аптечката: рисунката казва КАКВО СЕ ПРАВИ, не какво боли ──
+    '\u{1FAC1}': ['b', 0, 2, 's'],   // 🫁 Задавяне        → облаче с дъх (ico-b 0,2)
+    '\u{1F915}': ['b', 3, 2, 'c'],   // 🤕 Удар в главата  → навито бинтче (ico-b 3,2)
+    '\u{1FA78}': ['e', 0, 0, 'p'],   // 🩸 Кървене         → навита кърпа (притискаш) (ico-e 0,0)
+    '⚡':    ['b', 3, 0, 's'],   // ⚡ Гърч            → будилник: засичаш колко трае (ico-b 3,0)
+    '\u{1F41D}': ['a', 2, 2, 'b'],   // 🐝 Алергична реакция → филцов триъгълник (ico-a 2,2)
+    '\u{1FAC0}': ['g', 1, 1, 'p'],   // 🫀 Реанимация      → сърце с бяло кръстче (ico-g 1,1)
+    // ── поясите и бутоните ──
+    '⚠️': ['a', 2, 2, 'b'], // ⚠️ → същият триъгълник
+    '⚠':       ['a', 2, 2, 'b'],
+    '\u{1F4DE}': ['e', 1, 3, 's'],   // 📞 → филцова слушалка (ico-e 1,3)
+    '\u{1F5A8}️': ['b', 3, 1, 'l'], // 🖨️ → дъсчица с отметки (ico-b 3,1)
+    '\u{1F5A8}':       ['b', 3, 1, 'l'],
+    // ── четирите места за мерене: един и същи термометър в четири пастела (честно: всички са
+    //    едно и също действие на различно място; 🍑 за ректално беше просто грешна картинка) ──
+    '\u{1F9BE}': ['a', 3, 1, 's'],   // 🦾 Под мишница
+    '\u{1F442}': ['a', 3, 1, 'm'],   // 👂 В ухото
+    '\u{1F610}': ['a', 3, 1, 'b'],   // 😐 На челото
+    '\u{1F351}': ['a', 3, 1, 'p'],   // 🍑 Ректално
+    // 🪤 мерено на snimki/wf3_px_avh_light.png: голямата карта дава на ✅ клетка f(3,2) — линиран
+    //    бележник. В „кое е нормално след ваксина“ той излизаше като блед празен правоъгълник.
+    //    Тук ✅ става зайчето, което си почива в леглото (ico-e 2,3) — „нормално е, отминава“.
+    '✅': ['e', 2, 3, 'm'],      // ✅ Нормално (до 1-2 дни)
+  };
+  const голяма = () => (window.BL_PL_PLYUSH && window.BL_PL_PLYUSH.К) || {};
+  const знам = е => !!(ДОП[е] || голяма()[е]);
+
+  let сложени = 0, обвити = 0;
+
+  // ── рисунката ПРЯКО на елемента (капан 1) ──
+  function рисунка(е, спец) {
+    const ключ = спец.join('|');
+    if (е.dataset.plZdArt === ключ) return false;        // пише САМО при разлика
+    const [л, ред, кол, т] = спец;
+    const y = ДВУРЕДНИ[л] ? ред * 100 : ред * 100 / 3;
+    е.style.backgroundImage = 'url(img/art/' + ЛИСТ[л] + '.webp)';
+    е.style.backgroundPosition = (кол * 100 / 3).toFixed(3) + '% ' + y.toFixed(3) + '%';
+    е.style.backgroundSize = ДВУРЕДНИ[л] ? '400% 200%' : '400% 400%';
+    е.style.setProperty('--pl-plt', ТОН[т] || ТОН.p);
+    if (!е.classList.contains('pl-pl')) е.classList.add('pl-pl', ДВУРЕДНИ[л] ? 'pl-pl-x' : 'pl-pl-i');
+    е.dataset.plPl = '1';                                // „заето“ — pl-plyush.js да не го пипа
+    е.dataset.plZdArt = ключ;
+    сложени++;
+    return true;
+  }
+
+  // ── обвиване на ПЪРВОТО емоджи във всеки СВОЙ текстов възел (както pl-plyush.js:обвий) ──
+  const ЕМО = /\p{Extended_Pictographic}(?:️|‍\p{Extended_Pictographic}|\p{Emoji_Modifier})*/u;
+  function обвий(б) {
+    if (!б || б.dataset.plZdW) return [];
+    б.dataset.plZdW = '1';
+    const преди = б.textContent;
+    const възли = [];
+    for (let в = б.firstChild; в; в = в.nextSibling) if (в.nodeType === 3 && в.nodeValue && ЕМО.test(в.nodeValue)) възли.push(в);
+    const мои = [];
+    for (const в of възли) {
+      const м = в.nodeValue.match(ЕМО);
+      if (!м || !знам(м[0])) continue;
+      const сл = в.splitText(м.index);
+      сл.nodeValue = сл.nodeValue.slice(м[0].length);
+      const с = document.createElement('span');
+      с.className = 'pl-em'; с.setAttribute('aria-hidden', 'true'); с.textContent = м[0];
+      б.insertBefore(с, сл);
+      мои.push(с);
+    }
+    if (!мои.length) return [];
+    if (б.textContent !== преди) {                       // и една буква разлика = чисто връщане
+      for (const с of мои) if (с.parentNode) с.parentNode.replaceChild(document.createTextNode(с.textContent), с);
+      if (б.normalize) б.normalize();
+      return [];
+    }
+    обвити += мои.length;
+    return мои;
+  }
+  // на обвитите: моята рисунка, ако я знам; иначе я оставям на pl-plyush.js (той чете .pl-em)
+  const дай = с => { const р = ДОП[(с.textContent || '').trim()]; if (р) рисунка(с, р); };
+
+  // ── самият елемент Е емоджито (цялата му текстова стойност) ──
+  function цялото(е) {
+    if (е.querySelector && е.querySelector('.pl-em')) return;   // вече обвито от чужд скрипт
+    const р = ДОП[(е.textContent || '').trim()];
+    if (р) рисунка(е, р);
+  }
+
+  function преоблечи(стая) {
+    // 1 · аптечката: 🫁 🤕 🩸 ⚡ 🐝 🫀 (🔥 вече е плюшено от pl-plyush.js)
+    стая.querySelectorAll('.fa-e').forEach(цялото);
+    // 2 · бутоните за звънене до номерата: 📞
+    стая.querySelectorAll('.sos-call').forEach(цялото);
+    // 3 · 112 — емоджито е ВЪТРЕ в текста на връзката
+    стая.querySelectorAll('.sos-btn').forEach(б => обвий(б).forEach(дай));
+    // 4 · четирите места за мерене и двата заглавни реда и поясите
+    стая.querySelectorAll('.th-k, .av-h, .jr-privacy').forEach(б => обвий(б).forEach(дай));
+    // 5 · чуждите стикери, които голямата карта е отбелязала като непознати (data-pl-pl="0")
+    стая.querySelectorAll('.pl-em[data-pl-pl="0"]').forEach(с => дай(с));
+  }
+
+  const зелена = () => {
+    const п = document.querySelector('#roomOverlay .ro-panel');
+    return !!(п && п.classList.contains('ro-green'));
+  };
+  function мини() {
+    if (!зелена()) return;
+    document.querySelectorAll('#roRoom').forEach(преоблечи);   // стаята понякога се рисува два пъти
+  }
+
+  // 🪤 #roRoom се СМЕНЯ при отваряне на стая → наблюдаваме статичния #roomOverlay (поддърво),
+  //    с отлагане 40 ms и setTimeout (не rAF — той спира, когато страницата не се рисува).
+  let чака = false;
+  function отложено() { if (чака) return; чака = true; setTimeout(() => { чака = false; try { мини(); } catch (e) {} }, 40); }
+  function върви() {
+    const ов = document.getElementById('roomOverlay');
+    if (!ов) return;
+    new MutationObserver(отложено).observe(ов, { childList: true, subtree: true, attributes: true, attributeFilter: ['class', 'hidden'] });
+    мини();
+  }
+  if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', върви); else върви();
+  window.BL_PL_ZDRAVE_OBLEKLO = { мини, брой: () => ({ рисунки: сложени, обвити }) };
+})();
