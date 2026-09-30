@@ -1,0 +1,10 @@
+const { zaredi } = require('../dev/pyasachnik.js');
+const A = zaredi(null, { памет: { bl_baby: { birth: '2025-11-20' } } });
+const KB = (A.BL_KB || A.KB);
+const e = KB.entries;
+console.log('ОБЩО КАРТИ: ' + e.length);
+const стаи = {};
+for (const c of e) стаи[c.room] = (стаи[c.room]||0)+1;
+console.log('СТАИ:'); for (const [k,v] of Object.entries(стаи).sort((a,b)=>b[1]-a[1])) console.log('  ' + v + '  ' + k);
+console.log('\nКЛЮЧОВЕ НА ПЪРВА КАРТА (форма):');
+console.log(JSON.stringify(Object.keys(e[0])));

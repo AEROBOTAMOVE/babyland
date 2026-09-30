@@ -1,0 +1,275 @@
+{
+ "боклук": [
+  [
+   "br-kontrakcii",
+   "Бременност",
+   "Как разбирам, че почва",
+   "правилото пет едно едно"
+  ],
+  [
+   "ni-obezopasy-vazrast",
+   "Инструменти",
+   "Обезопасяването по възраст — и трите без компромис",
+   "правилото на ролката"
+  ],
+  [
+   "ni-obezopasy-vazrast",
+   "Инструменти",
+   "Обезопасяването по възраст — и трите без компромис",
+   "правилото на ролка"
+  ],
+  [
+   "sn-potene",
+   "Моето бебе",
+   "Поти се, докато спи",
+   "правилото: за ВСЕКИ ключ „<глагол> се X“ да се добави и „се <глагол> X“"
+  ],
+  [
+   "zh5-parvi-sedem-dni",
+   "Захранване",
+   "Първата седмица — ден по ден",
+   "правилото на трите дни"
+  ]
+ ],
+ "двойни": [
+  [
+   "наддаване",
+   [
+    "br-telo",
+    "mb-rastej"
+   ]
+  ],
+  [
+   "студени ръчички и крачета",
+   [
+    "mb-temperatura-tialo",
+    "zim-studeno-priznaci"
+   ]
+  ],
+  [
+   "зачервено около пъпчето",
+   [
+    "mb-navel",
+    "zd-pypna-ranka"
+   ]
+  ],
+  [
+   "пъпчето мирише лошо",
+   [
+    "mb-navel",
+    "zd-pypna-ranka"
+   ]
+  ],
+  [
+   "пъпчето мирише",
+   [
+    "mb-navel",
+    "zd-pypna-ranka"
+   ]
+  ],
+  [
+   "гной от пъпчето",
+   [
+    "mb-navel",
+    "zd-pypna-ranka"
+   ]
+  ],
+  [
+   "пъпчето гнои",
+   [
+    "mb-navel",
+    "zd-pypna-ranka"
+   ]
+  ],
+  [
+   "подуто около пъпчето",
+   [
+    "mb-navel",
+    "zd-pypna-ranka"
+   ]
+  ],
+  [
+   "пъпчето не зараства",
+   [
+    "mb-navel",
+    "zd-pypna-ranka"
+   ]
+  ],
+  [
+   "ръчичките му са студени",
+   [
+    "mb5-obleklo-san",
+    "zim-studeno-priznaci"
+   ]
+  ],
+  [
+   "петте минути, които наистина работят",
+   [
+    "dn-vreme-mama",
+    "v4-pet-minuti-rabotyat"
+   ]
+  ],
+  [
+   "казват че съм прекалено загрижена",
+   [
+    "dn-tajno",
+    "nd-nepoiskani-saveti"
+   ]
+  ],
+  [
+   "двамата, след като станахте трима",
+   [
+    "dn-partnior",
+    "v4-stanahte-trima"
+   ]
+  ],
+  [
+   "болки в кръста след раждане",
+   [
+    "nb-epiduraln-pravi",
+    "nia-gyrbat"
+   ]
+  ],
+  [
+   "скарлатина",
+   [
+    "ns-obrivna-bolest",
+    "zd-skarlatina"
+   ]
+  ],
+  [
+   "не смея да питам лекаря",
+   [
+    "in-ne-razbrah-lekarya",
+    "mst-pediatar-vaprosi"
+   ]
+  ],
+  [
+   "страх ме е да питам лекаря",
+   [
+    "in-ne-razbrah-lekarya",
+    "mst-pediatar-vaprosi"
+   ]
+  ],
+  [
+   "ограничител за прозорец",
+   [
+    "x3-komarnik-prozorec",
+    "sf-prozorec-balkon",
+    "y4-kontakti-shkafove-stalbi"
+   ]
+  ],
+  [
+   "да го оставя ли в колата за минута",
+   [
+    "x3-nagoreshtena-kola",
+    "sf-kolata-zhega"
+   ]
+  ],
+  [
+   "скача в локвите",
+   [
+    "x3-dazhd-vyatar",
+    "y9-navan-vsyako-vreme"
+   ]
+  ],
+  [
+   "игри за дете на година и половина",
+   [
+    "igr-dvanaiset-osemnaiset",
+    "y9-igra-doma-1-3"
+   ]
+  ],
+  [
+   "рисува само драскулки",
+   [
+    "igr-boichki-draskulki",
+    "y9-capane-bez-nervi"
+   ]
+  ],
+  [
+   "става и си тръгва докато чета",
+   [
+    "kn-kak-se-chete",
+    "y9-knijka-v-dvizhenie"
+   ]
+  ],
+  [
+   "дюнер за дете",
+   [
+    "x6-pica-dyuner",
+    "y1-fastfood"
+   ]
+  ],
+  [
+   "картофки за дете",
+   [
+    "x6-pica-dyuner",
+    "y1-fastfood"
+   ]
+  ],
+  [
+   "детско меню в заведение",
+   [
+    "x6-restorant",
+    "y1-fastfood"
+   ]
+  ],
+  [
+   "пуша и съм бременна",
+   [
+    "z3-pushene-bremenna",
+    "z3-pushene-bremenna"
+   ]
+  ],
+  [
+   "не мога да спра цигарите бременна",
+   [
+    "z3-pushene-bremenna",
+    "z3-pushene-bremenna"
+   ]
+  ],
+  [
+   "не искам детето ми в социалните мрежи",
+   [
+    "z5-snimki-na-deteto-online",
+    "z6-onlayn-riskyt-dete"
+   ]
+  ],
+  [
+   "снимки на детето във фейсбук",
+   [
+    "z5-snimki-na-deteto-online",
+    "z6-onlayn-riskyt-dete"
+   ]
+  ],
+  [
+   "боли го устата и не яде",
+   [
+    "w1-stomatit",
+    "w2-ranichki-usta-hranene"
+   ]
+  ],
+  [
+   "говорим само за бебето",
+   [
+    "v4-govorim-samo-za-bebeto",
+    "v5-govorim-samo-za-bebeto"
+   ]
+  ],
+  [
+   "разговорите ни са само логистика",
+   [
+    "v4-govorim-samo-za-bebeto",
+    "v5-govorim-samo-za-bebeto"
+   ]
+  ],
+  [
+   "нямаме за какво да си говорим вече",
+   [
+    "v4-govorim-samo-za-bebeto",
+    "v5-govorim-samo-za-bebeto"
+   ]
+  ]
+ ]
+}
