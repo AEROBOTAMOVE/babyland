@@ -55,6 +55,19 @@ function копирай(от, до) {
     fs.writeFileSync(до, fs.readFileSync(от, 'utf8').replace(ЦЕЛОРЕДОВ_КОМЕНТАР, ''));
     return;
   }
+  // 30.09 МЕРЕНО (byudzhet): JS беше 2.71 от 2.75 MB, а обясненията в kb.js и
+  //   helper.js тежат 151 KB gzip (helper.js е 61% коментари). Тук НЕ става с
+  //   регулярен израз: helper.js има 145 многоредови шаблона и ред в тях, почващ
+  //   с „//“, е текст за майката. dev/rezhi_js_komentari.js има токенизатор и се
+  //   проверява сам — различи ли се поне един низ, връща ОРИГИНАЛА.
+  //   Само за нашия js/ — lib/ е чужд код и не се пипа.
+  if (/[\\/]js[\\/][^\\/]+\.js$/i.test(от)) {
+    const { безопасноРежи } = require('./dev/rezhi_js_komentari.js');
+    const р = безопасноРежи(fs.readFileSync(от, 'utf8'), от);
+    fs.writeFileSync(до, р.текст);
+    if (р.защо) console.log('   ⚠️ ' + path.basename(от) + ': ' + р.защо);
+    return;
+  }
   fs.copyFileSync(от, до);
 }
 

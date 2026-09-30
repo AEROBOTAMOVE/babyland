@@ -126,6 +126,12 @@ for (const п of уникални) {
   let b;
   try { b = fs.readFileSync(п); } catch (e) { continue; }
   if (/\.css$/.test(п)) b = Buffer.from(b.toString('utf8').replace(ЦЕЛОРЕДОВ_КОМЕНТАР, ''), 'utf8');
+  // 30.09: и JS тръгва към телефона без целоредовите коментари (build.js, със същия
+  //   самопроверяващ се ножец) — значи бюджетът мери същото.
+  if (/(^|[\\/])js[\\/][^\\/]+\.js$/i.test(п)) {
+    const { безопасноРежи } = require('./rezhi_js_komentari.js');
+    b = Buffer.from(безопасноРежи(b.toString('utf8'), п).текст, 'utf8');
+  }
   const g = zlib.gzipSync(b, { level: 9 }).length;
   брВсичкоДобави(b);
   файлове.push([п, b.length, g]);
