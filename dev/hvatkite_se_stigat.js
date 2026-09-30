@@ -69,6 +69,9 @@ const ДВОЙКИ = [
   ['падна от масата', 'padna'],
   ['удари си главата в ръба', 'padna'],
   ['разряза си пръстчето и кърви', 'krav'],
+  // 🔤 и както го пише телефон на латиница (шльокавицата ги свежда сама)
+  ['ne disha', 'reanim'], ['ne dishe', 'reanim'], ['ne reagira', 'reanim'],
+  ['gurchi se', 'garch'], ['zadavi se s hapka', 'zadavi'], ['padna ot masata', 'padna'],
 ];
 
 const { zaredi } = require(path.join(__dirname, 'pyasachnik.js'));
@@ -99,6 +102,26 @@ if (недостижими.length) {
 
 // ── 2 · правилната двойка (мери се през текста на избирача, не през догадка) ──
 //    Пресъздаваме избирача като функция върху нормализиран текст.
+// 🪤 Живото приложение вика избирача със СВЕДЕНИЯ текст (normalize → шльокавица).
+//    Ако пазачът го вика със суровия, латинските двойки падат „null“ — грешка на
+//    пробата, не на приложението. Вадим истинската таблица от helper.js.
+const ШЛЬО_ОТ_HELPER = (function () {
+  const н = helper.indexOf('var ШЛЬО = [');
+  if (н < 0) return null;
+  const к = helper.indexOf('];', н);
+  return new Function('return ' + helper.slice(н + 'var ШЛЬО = '.length, к + 1))();
+})();
+function сведи(т) {
+  let x = String(т || "").toLowerCase();
+  if (!ШЛЬО_ОТ_HELPER || !/[a-z]/i.test(x)) return x;
+  return x.split(/(\s+)/).map(w => {
+    if (!/[a-z]/i.test(w) || /[а-яё]/i.test(w)) return w;
+    let t = w;
+    for (const [от, до] of ШЛЬО_ОТ_HELPER) t = t.split(от).join(до);
+    return t;
+  }).join("").replace(/(^|[^а-я])дише([^а-я]|$)/gi, "$1диша$2");   // същото като normalize()
+}
+
 const ФУНК = new Function('q', тяло
   .replace('const сцен = (function () {', '')
   .replace(/const q = normalize\(text\);/, '')
@@ -111,7 +134,7 @@ const ФУНК = new Function('q', тяло
 let ок = 0; const паднали = [];
 for (const [текст, чака] of ДВОЙКИ) {
   let дава = null;
-  try { дава = ФУНК(String(текст).toLowerCase()); } catch (e) { дава = 'ГРЕШКА: ' + e.message; }
+  try { дава = ФУНК(сведи(текст)); } catch (e) { дава = 'ГРЕШКА: ' + e.message; }
   if (дава === чака) ок++; else паднали.push('„' + текст + '“  чака ' + чака + ' · дава ' + дава);
 }
 console.log('\n  двойки „изречение → сценарий“: ' + ок + ' от ' + ДВОЙКИ.length);
@@ -119,7 +142,7 @@ console.log('\n  двойки „изречение → сценарий“: ' +
 
 if (САМО) {
   let дава = null;
-  try { дава = ФУНК('задави се с хапка'); } catch (e) {}
+  try { дава = ФУНК(сведи('задави се с хапка')); } catch (e) {}
   const хваща = дава !== 'reanim';
   console.log('\n  САМОПРОВЕРКА: „задави се с хапка“ НЕ бива да е reanim → ' + (хваща ? '✅ уредът различава' : '🔴 уредът е сляп'));
   process.exit(хваща ? 0 : 1);
