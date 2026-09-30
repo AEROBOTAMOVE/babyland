@@ -1,0 +1,354 @@
+
+═══════ Дневник на мама  (178) ═══════
+dn-skrol                                     | 18к | Скролът в три през нощта
+dn-dostatachno-dobra                         | 18к | Достатъчно добра е наистина достатъчно
+dn-sram-sled-gniv                            | 38к | След като избухна
+dn-strah-za-bebeto                           | 58к | Страхът, че нещо ще му се случи
+dn-iskam-da-izbyagam                         | 37к | Понякога ти се иска да избягаш
+dn-otvrashtenie-karmene                      | 21к | Когато кърменето ти е неприятно
+dn-pin                                       | 9к | Ключалката: какво става, ако забравиш ПИН-а
+dn-nyama-vrazka                              | 34к | Ако още не усещаш „онова чувство“
+zg-tialoto                                   | 20к | Тялото ти сега
+zg-zashto                                    | 19к | Не е от нещо, което си направила
+zg-pak                                       | 24к | Кога пак — по твоето време
+zg-s-kogo                                    | 16к | Има с кого
+zg-nikoy                                     | 10к | Когато другите не знаят какво да кажат
+dn-samota                                    | 22к | Самотата в майчинството
+dn-sravnenie                                 | 16к | Другите майки изглеждат по-добре
+dn-vreme-mama                                | 10к | Двайсетте минути
+dn-radost                                    | 19к | Ако не усещаш радостта
+dn-pisane                                    | 15к | Защо изобщо да пиша
+dn-telo-posle                                | 16к | Тялото се възстановява
+dn-nedospivane                               | 49к | Недоспиването не е дреболия
+dn-pomosht                                   | 23к | Да поискаш помощ не е слабост
+dn-gniv                                      | 42к | Ядът, за който никой не говори
+dn-vreme                                     | 10к | Нямам и минута за себе си…
+dn-tajno                                     | 33к | Понякога ми е тежко и се чувствам виновна…
+dn-partnior                                  | 22к | С половинката се отдалечихме…
+lb-trevojnost                                | 35к | Тревожността след раждането (по-честа от депресията)
+lb-natraplivi                                | 39к | Натрапливите мисли — казвам ти истината
+nd-vina                                      | 11к | „Аз ли съм виновна, че подрани?“
+bz-pomosht                                   | 11к | Двама плачат, ти си една
+dn-tatko-depresia                            | 14к | И бащите преживяват следродилно
+dn-tatko-priznaci                            | 29к | По какво да го познаеш
+dn-tatko-kak-pomogna                         | 11к | Как двамата да си помогнете
+dn-tatko-opora                               | 7к | Опора, която да не се изгуби
+nd-osinovyavane                              | 12к | Когато детето дойде по друг път
+zg-kysna                                     | 26к | Когато загубата е късна
+dn-bolna-kurmene                             | 20к | Болна си — кърменето продължава
+dn-useshta-nastroenie                        | 27к | Усеща ли, че съм тъжна
+dn-vtoro-serce                               | 19к | Ще стигне ли сърцето ми за двете
+dn-psiholog-bg                               | 25к | На психолог: откъде се почва
+dn-pusha-kurmya                              | 26к | Пуша и кърмя
+dn-rabota-vkashti                            | 13к | Работя от вкъщи с бебето
+dn-pri-baba                                  | 32к | При баба е по-спокоен
+nd-golyamoto-varna                           | 49к | Голямото се върна назад след бебето
+nd-rodninite-savetite                        | 33к | Роднините, съветите и границата
+nd-samotata-mezhdu                           | 21к | Самотата между четири стени
+nd-vinata-syankata                           | 16к | Вината — сянката на грижата
+nd-sled-kryasaka                             | 41к | След крясъка: поправката
+nd-tri-neshta                                | 18к | Три неща на ден
+nd-ne-mi-se-pishe                            | 22к | Вечер, в която не ти се пише
+nd-zabravyam                                 | 35к | Дните се сливат и не помниш нищо
+nd-pismo-18                                  | 15к | Писмо, което ще прочете като голям
+nd-parvite-pati                              | 36к | Първите пъти
+nd-nepoiskani-saveti                         | 44к | Непоисканите съвети
+nd-sravnyavat-deteto                         | 13к | Когато сравняват детето ти
+nd-razlika-decata                            | 40к | Разликата между децата: коя е трудната
+dn-budya-se-predi                            | 41к | Будиш се преди него и не заспиваш пак
+dn-ne-sam-yala                               | 37к | Цял ден не си яла нищо
+dn-kogo-da-slusham                           | 27к | Кого да слушам, като всички говорят различно
+dn-sestra-sravnenie                          | 9к | Сестра ми роди по същото време
+dn-koga-vtoroto                              | 26к | Питат кога второто, а аз още не съм се събрала
+dn-radvam-se-zaspi                           | 12к | Радвам се, когато заспи
+nd-proshtapulnik                             | 16к | Проходка с питка — прощъпулникът
+mst-pazar-sama                               | 17к | Пазаруване сама с бебето
+mst-svatba                                   | 12к | На сватба с бебе
+prz-koleda                                   | 11к | Коледа с бебе
+mst-izlizane-dve-deca                        | 21к | Излизане сама с две деца
+nd-tatko-ne-zhivee                           | 15к | Как обяснявам, че татко няма да живее с нас
+nd-kade-sam-vsyaka-minuta                    | 10к | Иска да знае къде съм всяка минута
+nd-strah-sama-s-nego                         | 10к | Страх ме е да остана сама с него — с кого?
+dn2-hora-gledat                              | 18к | Хората гледат, докато то се тръшка
+dn2-lipsva-mi-bebeto                         | 21к | Липсва ми бебето, което беше
+pt-nyamame-seks                              | 28к | Не сме били от месеци
+pt-otdelni-stai                              | 21к | Спим в отделни стаи
+pt-karame-se-pred                            | 23к | Караме се пред детето
+pt-koy-pochiva                               | 21к | Той работи, аз съм вкъщи
+pt-razgovor-razdyala                         | 24к | Как се почва разговорът за раздяла
+pt-dva-doma                                  | 21к | Двата дома: детето между вас
+pt-nov-partnior                              | 15к | Нов човек в живота ми и детето
+pt-ne-ostava-sam                             | 16к | Не иска да остане сам с бебето
+pt-deteto-vizhda                             | 20к | Детето вижда и чува всичко
+pt-ne-posyaga-deteto                         | 17к | На детето не посяга, само на мен
+pt-karame-se-poveche                         | 20к | Караме се повече, откакто се роди
+dn-anemia-sled-razhdane                      | 30к | Кръвта, която си загубила при раждането
+dn-razhdane-ne-kakto-iskah                   | 14к | Раждането не мина както исках
+nb4-parva-sedmica-kroy                       | 23к | Първата седмица: кой какво поема
+nd-vkashti-bez-bebeto                        | 13к | Вкъщи си, а бебето не е
+bz-neonatologia-razdeleni                    | 13к | Единият е вкъщи, другият още не
+bz-obicham-li-gi-ednakvo                     | 12к | Обичам ли ги еднакво
+sn-denyat-na-diagnozata                      | 13к | Денят, в който чуваш диагнозата
+sn-kak-kazvam-na-horata                      | 13к | Как се казва на хората
+sn-drugoto-dete                              | 13к | Другото дете, което е добре
+x3-bolno-predi-pat                           | 17к | Детето се разболя преди пътуването
+sf-vina-sled-zlopoluka                       | 9к | Стана пред очите ми
+y7-roditel-po-podrazbirane                   | 26к | Аз съм родителят по подразбиране
+y7-dumata-pomagam                            | 18к | „Помагам ти“ — думата, която боли
+y7-noshtta-pri-karmene                       | 16к | Кърмя аз — значи нощта е моя?
+y7-skandal-v-tri                             | 16к | Кавгата в три през нощта
+y7-kazhi-mi-kakvo                            | 16к | „Кажи ми какво да направя“
+y7-nyama-koga                                | 16к | Няма кога, не че няма желание
+y7-revnuva-karmeneto                         | 16к | Ревнува от кърменето
+y7-dvete-babi                                | 19к | Моята майка може, твоята не
+y7-razlichno-vazpitanie                      | 16к | Не сме съгласни как се възпитава
+y7-vecherniyat-chas                          | 16к | Часът, в който и двамата се прибирате
+y7-petnaiset-minuti                          | 16к | Петнайсет минути в неделя
+y7-ugovorkata-predi-vtoroto                  | 17к | Той иска второ, аз още не
+y8-sama-ot-nachaloto                         | 17к | Сама от самото начало
+y8-razdyala-kogato-e-bebe                    | 17к | Раздяла, докато детето е още бебе
+y8-grafik-i-dumite                           | 18к | Графикът: на хартия и наживо
+y8-bashtata-ne-pita                          | 16к | Бащата не пита за детето
+y8-poyavyava-i-izchezva                      | 16к | Появява се и изчезва
+y8-izdrazhkata-ne-idva                       | 16к | Издръжката не идва
+y8-detsteto-pita-za-tatko                    | 16к | Детето пита за татко
+y8-iskam-vryzka                              | 15к | Искам връзка, а ме е срам
+y8-tihata-kashta                             | 16к | Тихата къща, докато го няма
+y8-zaguba-dokato-si-mayka                    | 16к | Загуба на близък, докато си майка
+y8-godishninata                              | 16к | Годишнината
+y8-dagovo-bebe                               | 15к | Дъгово бебе: детето след загубата
+h6-sledrodilna-psihoza                       | 17к | Когато светът се измести
+h6-ako-kazha-nay-strashnoto                  | 29к | Ако кажеш най-страшната си мисъл
+z5-privarzanost-osnovi                       | 17к | Привързаността: с какво точно се гради
+z5-koregulaciya-burya                        | 16к | Ко-регулацията: спокойствието минава през теб
+z5-samouspokoyavane-koga                     | 14к | Кога се научава да се успокоява само
+z5-prazen-rezervoar                          | 21к | Когато нямаш какво да дадеш
+z5-koe-ot-edno-vreme                         | 15к | Кое от едно време вече не важи
+z5-gostite-sled-razhdane                     | 25к | Гостите след раждането: кой влиза, кога и за колко
+z5-celuvkite-po-liceto                       | 26к | Целувките по лицето: защо се казва не
+z5-snimki-na-deteto-online                   | 13к | Снимките на детето в чужди профили
+z5-dve-deca-parviyat-mesec                   | 22к | Две деца, един ден: първият месец
+z5-golyamoto-dokato-karmish                  | 17к | Кърмиш малкото, голямото те дърпа
+z5-koyto-darzhi-vsichki                      | 13к | Човекът, който държи всички
+z5-kogato-mama-e-bolna                       | 12к | Когато се разболее тази, която държи всички
+z5-losh-den-ili-model                        | 13к | Мъжката версия на тежестта
+z5-ti-predi-bebeto                           | 27к | Ти преди бебето не е изчезнала
+sem-dve-mayki-doma                           | 18к | Две майки: вкъщи и пред хората
+sem-surogatstvo-vryzka                       | 16к | Когато бебето е родено от друга жена
+sem-bashta-sam                               | 17к | Сам с бебето
+sem-otkade-doydoh                            | 27к | Откъде дойдох: как се говори за произхода
+sem-priemno-dete                             | 15к | Приемен родител: първите седмици
+v5-predpochita-drugiya                       | 17к | Иска само татко, а мен ме бута
+v5-mnogo-blizki-hora                         | 15к | Може ли да е близко с повече от един
+v5-nastroenieto-se-preliva                   | 15к | Детето хваща настроението ми
+v5-govorim-samo-za-bebeto                    | 15к | Говорим само за бебето
+v5-dopir-bez-pokana                          | 15к | Допирът, който не е покана
+v5-vryshtane-v-edno-leglo                    | 15к | Как се връщате в едно легло
+v5-nyamam-pochiven-den                       | 15к | Майката няма почивен ден
+v5-predi-razgovora-papka                     | 15к | Какво се приготвя преди разговора
+v5-ne-sam-sigurna-razdyala                   | 15к | Не съм сигурна дали искам раздяла
+v5-kak-kazvam-na-blizkite                    | 15к | Как казвам на своите, че се разделяме
+v5-nyama-na-kogo-da-zvunna                   | 14к | Няма на кого да звънна
+v5-priyatelka-na-koyato-e-lesno              | 15к | На нея всичко ѝ изглежда лесно
+w6-koy-gleda-golyamoto                       | 15к | Кой ще гледа голямото, докато раждам
+w6-partniorat-vtoro-razhdane                 | 14к | Той при мен или при голямото
+w6-vinata-kam-parvoto                        | 31к | Вината, че отнех детството на голямото
+w6-vtoroto-ne-e-kato-parvoto                 | 13к | На второто не правя нищо от това, което правех на първото
+w6-nyama-snimki-vtoroto                      | 12к | Второто расте без снимки
+w6-vremeto-za-dvete                          | 23к | Времето не стига за двете
+w6-babite-i-vtoroto                          | 11к | На второто не му се радват както на първото
+w6-podaraci-samo-bebeto                      | 11к | Гостите гледат само бебето
+w6-golyamoto-ot-krevatcheto                  | 12к | Голямото излиза от креватчето заради бебето
+w6-dve-legla-edna-staya                      | 22к | Две легла и една стая
+w6-razdelihme-si-decata                      | 12к | Разделихме си децата и вече не сме заедно
+w6-golyamoto-stana-ogromno                   | 12к | Голямото изведнъж ми се стори огромно
+w6-tarpenie-kam-golyamoto                    | 11к | Изкарвам умората на голямото
+w6-vtoroto-drugo-chuvstvo                    | 11к | Към второто чувствам друго
+w6-golyamoto-mrazi-bebeto                    | 19к | Голямото каза, че мрази бебето
+w6-lipsva-mi-samo-golyamoto                  | 11к | Липсва ми времето само с голямото
+g3d-bezplatnite-linii-na-koito-se-zvan       | 16к | Безплатните линии, на които се звъни
+g3d-kade-se-otbelyazva-nastroenieto          | 15к | Къде се отбелязва настроението
+g3d-kakvo-e-skasay-lista                     | 14к | Какво е „Скъсай листа“
+g3d-ako-s-men-stane-neshto                   | 11к | Ако с мен стане нещо
+g3d-zhiveem-v-chuzhbina-kak-se-stiga-d       | 12к | Живеем в чужбина: как се стига до педиатър
+g3d-vinata-che-razdelih-semeystvoto          | 11к | Вината, че разделих семейството
+g3d-na-17-s-bebe-uchilishteto-ne-se-za       | 12к | На 17 с бебе: училището не се затваря
+g3d-mlada-sam-a-vkashti-nyama-podkrepa       | 10к | Млада съм, а вкъщи няма подкрепа
+g3d-gledat-me-otvisoko-zashtoto-sam-ml       | 11к | Гледат ме отвисоко, защото съм млада
+g3d-na-16-i-bremenna-otkade-se-hvashta       | 12к | На 16 и бременна: откъде се хваща
+dn-skuchno-mi-e-da-igraya                    | 11к | „Скучно ми е да си играя с него“
+prz-godinka-bez-stres                        | 12к | Годинката без стрес: часът и гостите
+
+═══════ Жената в мен  (172) ═══════
+nia-libido                                   | 40к | Желанието изчезна някъде
+nia-dvijenie                                 | 31к | Кога мога пак да се движа
+nia-novi-prijatelki                          | 29к | Как се намират нови приятелки
+wm-nyama-vreme                               | 7к | „Нямам време за нищо“
+nia-friends                                  | 22к | Приятелите се смениха
+nia-glavobolie                               | 15к | Боли ме главата
+nia-time                                     | 20к | Времето за теб
+nia-work                                     | 18к | Връщането на работа
+nia-koya                                     | 59к | Не се познавам вече
+nia-vreme                                    | 13к | Нямам никакво време за себе си
+nia-vina                                     | 17к | Чувствам се виновна, че искам да съм сама
+nia-ogledalo                                 | 21к | Не се харесвам в огледалото
+nia-prijatelki                               | 7к | Приятелките ми изчезнаха
+nia-partnior                                 | 38к | Той не ме вижда вече
+nia-maika-lipsva                             | 14к | Да си майка без своята майка
+nia-maika-mi                                 | 22к | Майка ми и аз, отначало
+nia-pari                                     | 19к | Нямам свои пари
+nia-sama                                     | 35к | Сама съм — вашите съвети са за двама
+nia-snimki                                   | 12к | Няма ме на нито една снимка
+nia-vkus                                     | 12к | Не помня какво обичах
+nia-lichno                                   | 18к | Ако дам копие — ще види ли дневничето ми?
+nia-ne-smeya-lekar                           | 24к | Не смея да го изрека на глас
+nia-nosht-smyana                             | 19к | Аз ставам всяка нощ
+nia-strah-ot-nego                            | 51к | Когато вкъщи не е безопасно
+nia-parite-mi                                | 15к | Нямам пари за себе си
+nia-ime                                      | 13к | Никой не ме вика по име
+nia-replika                                  | 35к | Не знам как да го кажа
+nia-moqt-red                                 | 14к | Твоят ред все го няма
+nia-ne                                       | 20к | Твоето „не“ е цял отговор
+nia-bremenna-za-men                          | 12к | Аз още чакам — тази стая моя ли е?
+nia-svekarva                                 | 19к | Свекърва ми и границата
+nia-yad-adres                                | 21к | Гневът, който не е към бебето
+nia-yad-drugite                              | 21к | Тези, които гледат и коментират
+nia-tovar-predavane                          | 39к | Как се предава невидимото
+nia-lipsva                                   | 22к | Липсва ми предишният ми живот
+nia-priklyuchenia                            | 10к | Всеки ден е един и същ
+nia-zodia                                    | 9к | Как работят зодиите тук?
+nia-chislo                                   | 6к | Какво е числото на пътя?
+nia-karta                                    | 6к | Картата на деня
+nia-luna                                     | 8к | Луната днес
+nia-stil                                     | 15к | Цветовете и стилът ми
+nia-chanta                                   | 7к | Чантата, която е само моя
+nia-tayni                                    | 14к | Заключеното дневниче
+nia-cv                                       | 6к | CV на майката
+nia-rabota                                   | 6к | Страх ме е да се върна на работа
+nia-zdrave                                   | 7к | Това е за Вита, не за мен
+nia-skrining                                 | 26к | Твоят скрининг след раждането
+nia-prava-rabota                             | 43к | Правата ти при връщане на работа
+nia-razdyala                                 | 32к | Мисля да си тръгна, а нямам къде
+nia-salon                                    | 16к | Боя за коса и салонът, докато кърмиш
+nia-kitka                                    | 30к | Боли ме китката от носене
+nia-vino                                     | 14к | Чаша вино, докато кърмя
+nia-zybi                                     | 29к | Зъбите ми след раждането
+nia-kurmene-pred-hora                        | 19к | Срам ме е да кърмя пред хора
+nia-vtoro                                    | 23к | Второ дете — искам ли аз
+nia-svoi-pari                                | 16к | Свои пари, докато си с бебето
+nia-dush                                     | 18к | Не съм се къпала от дни
+nw-trevozhno-panik                           | 34к | Тревожността и паник атаката след раждане
+nw-izpuskane-urina                           | 45к | Изпускане на урина след раждане
+nw-beybi-blus                                | 37к | Бейби блус или следродилна депресия
+nw-seksat-sled                               | 37к | Сексът след раждането
+nw-tyaloto-sled                              | 93к | Тялото след раждането
+nw-karmeneto-predpazva                       | 16к | Кърменето не е предпазване
+nia-shevove-dolu                             | 35к | Шевовете долу — седмиците, докато зараснат
+nia-hemoroidi                                | 20к | Първото ходене по нужда след раждането
+nia-tazovo-dano                              | 28к | Тежестта долу, за която не се пита
+nia-potene                                   | 30к | Мокра от пот в три през нощта
+nia-bivshiyat                                | 10к | Мисля за бившия си
+nia-gyrbat                                   | 47к | Боли ме гърбът от носене
+pt-revnuva-bebeto                            | 29к | Той ревнува от бебето
+pt-ne-vyarva                                 | 18к | Той не вярва, че ми е зле
+pt-dobar-bashta                              | 19к | Добър баща е, но не ми е добър партньор
+pt-sumnenie                                  | 21к | Съмнявам се, че има друга
+pt-kreshti                                   | 20к | Крещи ми и се смалявам
+pt-chupi                                     | 20к | Чупи неща, когато се ядоса
+pt-kontrol-pari                              | 20к | Парите вкъщи се дават с условия
+pt-kontrol-svoboda                           | 20к | Проверява ме и не ме пуска
+pt-vinata-krug                               | 20к | Казва, че аз съм го предизвикала
+pt-planat                                    | 20к | Планът, ако трябва да изляза бързо
+pt-zapoved                                   | 20к | Заповед за защита: как се иска
+pt-toy-pie                                   | 20к | Той пие
+zc-invitro                                   | 19к | Ин витро: как се избира и какво обещават
+zc-podkrepa                                  | 14к | Кой плаща и с кого се говори
+zc-chakaneto                                 | 17к | Какво прави чакането с теб
+nia-otslabvane-kurmene                       | 16к | Отслабване, докато кърмиш
+nia-veni-kraka                               | 21к | Вените на краката след раждането
+sn-jivotat-samo-terapii                      | 13к | Животът, който стана само терапии
+x3-mama-v-jegata                             | 18к | Жегата за теб: кърмене, вода и прегряване
+y5-tazovo-kinezi                             | 19к | Прегледът при кинезитерапевт по тазово дъно
+y5-diastaza-kakvo-vredi                      | 36к | Диастазата: кое я влошава и кое я прибира
+y5-sport-etapi                               | 25к | Връщането към спорт: стълбица, не скок
+y5-shtitovidna-tireoidit                     | 24к | Щитовидната жлеза след раждане
+y5-zhelyazo-umora                            | 42к | Умората, която сънят не оправя
+y5-kosopad-linia                             | 20к | Косопадът: челото, слепоочията и какво НЕ помага
+y5-zybi-kabinetat                            | 22к | Зъболекарят, когото отлагаш
+y5-veni-hemoroidi-ostanaha                   | 19к | Хемороидите и вените, които не си отидоха
+y5-kontracepcia-avaria                       | 19к | Скъсал се е презервативът, пропуснала си хапче
+y5-suhota-parene                             | 18к | Сухота и парене, и извън леглото
+y5-cikyl-kakav-e                             | 20к | Първите цикли: какви са всъщност
+y5-gyrdite-sled-kyrmene                      | 18к | Гърдите след кърменето
+y6-parvata-sedmica-rabota                    | 17к | Първата седмица на работа
+y6-intervyu-s-malko-dete                     | 16к | Интервю за работа, когато детето е малко
+y6-rabota-ot-vkashti-s-dete                  | 16к | Работа от вкъщи, докато детето е при теб
+y6-uchene-s-bebe                             | 17к | Да учиш с бебе на ръце
+y6-az-izcheznah-priyatelstva                 | 20к | Аз бях тази, която изчезна
+y6-samota-sred-hora                          | 18к | Самотна съм и сред хора
+y6-drehite-ne-mi-stavat                      | 38к | Дрехите ми не стават, а не искам да купувам
+y6-hobi-bez-vina                             | 17к | Хоби — нещото, което не е нито почивка, нито полза
+y6-ambiciya-i-vina                           | 15к | Искам повече от майчинството
+y6-zavisima-ot-negovite-pari                 | 16к | Зависима съм от неговите пари
+y6-pak-zad-volana                            | 18к | Пак зад волана — и сама на път
+y6-parvata-nosht-navan                       | 16к | Първата вечер навън без него
+z4-ranna-zaguba                              | 22к | Ранната загуба: седмиците, за които не си казала на никого
+z4-povtaryashti-zagubi                       | 14к | Втора и трета загуба: кога вече се изследва
+z4-priyatelka-bez-deca                       | 14к | Приятелката без деца спря да пише
+z4-priyatelstvo-s-mayka                      | 15к | От познанство до приятелство с друга майка
+z4-gnevat-te-plashi                          | 29к | Гневът, който те плаши
+z4-sravnyavane-mayki                         | 15к | Сравняваш се с майката до теб
+z4-spontannost                               | 15к | Загубата на спонтанност
+z4-kritikat                                  | 15к | Критикът в главата ти
+z4-nevidim-tovar                             | 15к | Невидимият товар: защо си изтощена без видима работа
+z4-tyaloto-instrument                        | 15к | Тялото ти е инструмент, не украса
+z4-radostta-sama                             | 15к | Радостта да си сама — и срамът след нея
+z4-topla-hrana                               | 15к | Кога яде топла храна на спокойствие
+z4-raste-barzo                               | 15к | Тъгата, че расте твърде бързо
+v4-pet-minuti-rabotyat                       | 17к | Петте минути, които наистина работят
+v4-pet-minuti-bez-pomosht                    | 14к | Петте минути, когато няма кой да поеме бебето
+v4-natiskat-da-se-varnesh                    | 15к | Натискът да се върнеш след раждане
+v4-komentari-za-tyaloto                      | 21к | Кога ще свалиш килограмите — питат всички
+v4-stanahte-trima                            | 16к | Двамата, след като станахте трима
+v4-govorim-samo-za-bebeto                    | 12к | Говорим само за бебето
+v4-blagodarnost-za-normalnoto                | 13к | Той иска благодарност, че е гледал детето си
+v4-sreshta-bez-pari                          | 12к | Среща без бавачка и без пари
+v4-izrechenieto-koeto-ne-izliza              | 14к | Изречението, което не излиза: как се казва на лекаря
+v4-kazaha-che-e-normalno                     | 14к | Казаха ми, че е нормално след раждане
+v4-sezonniyat-tip-pette-vaprosa              | 16к | Сезонният тип: петте въпроса
+v4-tri-cvyata-uniforma                       | 13к | Трите цвята, с които се обличаш за трийсет секунди
+w5-zhelanie-vtorata-godina                   | 15к | Мина година, а желанието още го няма
+w5-deteto-spi-mezhdu-nas                     | 13к | Детето спи между нас, а няма къде
+w5-sram-ot-tyaloto-pred-nego                 | 13к | Срам ме е от тялото си пред него
+w5-hranene-bez-dieta                         | 15к | Храня се с това, което остане
+w5-dvizhenie-bez-zala                        | 13к | Движение, когато няма нито време, нито с кого
+w5-kantar-vsyaka-sutrin                      | 13к | Кантарът всяка сутрин
+w5-chatat-na-maykite                         | 13к | Групата на майките в чата
+w5-priyatelstvo-koeto-vzima                  | 13к | Приятелка, която само взима
+w5-sreshti-s-deca-ne-sa-sreshta              | 13к | Среща с деца не е среща
+w5-vecher-za-dvama-vkashti                   | 13к | Вечер за двама, вкъщи, след като заспи
+w5-nyama-koy-da-gleda                        | 13к | Няма на кого да го оставим дори за два часа
+w5-svoya-smetka-i-rezerv                     | 13к | Своя сметка и малък резерв
+w5-razgovorat-za-parite                      | 13к | Разговорът за парите, без да стане скандал
+w5-kakav-kurs-si-struva                      | 13к | Кой курс си струва и кой само взима пари
+w5-biznes-parvata-stapka                     | 13к | Малък бизнес от вкъщи: първата стъпка не е стока
+w5-cenata-na-truda-mi                        | 13к | Колко да искам за това, което правя
+w5-bolen-roditel-i-dete                      | 13к | Болен родител и малко дете едновременно
+w5-vinata-kam-roditelite                     | 13к | Не стигам и за тях
+w5-roditel-v-drug-grad                       | 13к | Родителят ми е в друг град, а аз не мога да пътувам
+y6-promenila-sam-se                          | 11к | Мъжът ми казва, че съм се променила
+y5-kozhata-sled-razhdane                     | 11к | Кожата ми след раждането
+g3j-vana-ili-samo-dush-sled-razhdaneto       | 10к | Вана или само душ след раждането
+g3j-stavite-bolyat-a-ne-si-gi-udryala        | 8к | Ставите болят, а не си ги удряла
+g3j-benkata-potamnya-ot-bremennostta         | 16к | Бенката потъмня от бременността
+g3j-prevrazkite-za-sled-razhdaneto           | 9к | Превръзките за след раждането
+nia-metodi-predpazvane                       | 11к | Кои методи вървят с кърменето
+nia-belegat-darpa                            | 11к | Белегът дърпа и е изтръпнал
+nia-zavist-bezdetni                          | 10к | Завиждам на бездетните си приятелки
+nw-sekcio-sram                               | 10к | Родих със секцио — и това е раждане
+shevat-boli-sled-dva-meseca                  | 16к | Шевът още боли — кога това вече не е зарастване
+nia-cistit-sled                              | 26к | Пари при пишкане след раждането и докато кърмиш
+nia-simfiza-sled-razhdane                    | 28к | Срамната кост още боли след раждането
+nia-lekarstva-kurmene                        | 52к | Антидепресант, успокоително или силно обезболяващо, докато кърмиш
+nia-gyrda-trevozhni-promeni                  | 49к | Промени в гърдата, които не се отлагат
+nia-vina-ne-kurmi                            | 35к | Кърменето не се получи — и вината остана
