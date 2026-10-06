@@ -222,6 +222,13 @@
       const с = document.createElement('span');
       с.className = 'pl-em'; с.setAttribute('aria-hidden', 'true'); с.textContent = м[0];
       б.insertBefore(с, сл);
+      // 06.10 МЕРЕНО (обиколка): .pl-em дърпа −.35em наляво — правилно за емоджи в
+      //   НАЧАЛОТО на бутон, но в края на изречение („стига.👆“, „следващото.👆“)
+      //   стикерът лягаше върху точката. CSS не вижда текстовите възли преди него —
+      //   тук ги виждаме, затова отбелязваме: „преди мен има текст“.
+      for (let пр = с.previousSibling; пр; пр = пр.previousSibling) {
+        if ((пр.textContent || '').trim()) { с.classList.add('pl-em-sled'); break; }
+      }
       мои.push(с);
     }
     if (!мои.length) return;

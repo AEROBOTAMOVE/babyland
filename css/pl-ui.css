@@ -475,3 +475,9 @@ html body #roomOverlay .jr-card > h4.jr-title:has(> .jr-medal) > .jr-medal { fle
 html body #roomOverlay .jr-card > h4.jr-title:has(> .jr-medal) > .jr-sub { flex: 1 0 100%; margin-top: 1px; }
 html body #roomOverlay .jr-card > h4.jr-title:has(> .jr-medal) > .pin-btn,
 html body #roomOverlay .jr-card > h4.jr-title:has(> .jr-medal) > .fold-btn { flex: 0 0 auto; }
+
+/* 06.10 · СТИКЕРЪТ СЛЕД ТЕКСТ не ляга върху точката — навсякъде, не само в дневника.
+   js/pl-plyush.js слага .pl-em-sled, когато преди емоджито в същия елемент има текст
+   („…млякото стига.👆 Броя само“). Стойностите са доказаните от дневника (pl-dnevnik.css §13).
+   ПЪТ НАЗАД: махни тези два реда. */
+html body .pl-em.pl-em-sled { margin-left: .2em !important; margin-right: -.06em !important; }
