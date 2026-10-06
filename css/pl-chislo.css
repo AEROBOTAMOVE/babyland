@@ -1,0 +1,37 @@
+/* ═══════════════════════════════════════════════════════════════════════════════
+   🔢 ЖИВИТЕ ЧИСЛА · 06.10.2026
+   Броячите (пелени, мл, зъби, хранения) са най-натисканите бутони в приложението,
+   а числото се сменяше без никакъв знак, че натискането е хванато. Тук то
+   „подскача“: идва с плъзгане и размазване и застава рязко.
+   Кривата, времето, разстоянието и размазването са дословно от „Number pop-in“ —
+   jakubantalik/transitions-dev (MIT), намерено през КиберНинджа · skills.sh.
+   Посоката: число нагоре идва ОТДОЛУ, число надолу — ОТГОРЕ (--pl-dir).
+   ПЪТ НАЗАД: махни <link>/<script> на pl-chislo от index.html.
+   ═══════════════════════════════════════════════════════════════════════════════ */
+:root {
+  --digit-dur: 500ms;
+  --digit-distance: 8px;
+  --digit-blur: 2px;
+  --digit-ease: cubic-bezier(0.34, 1.45, 0.64, 1);
+}
+
+@keyframes t-digit-pop-in {
+  0% {
+    transform: translate(0, calc(var(--digit-distance) * var(--pl-dir, 1)));
+    opacity: 0;
+    filter: blur(var(--digit-blur));
+  }
+  100% { transform: translate(0, 0); opacity: 1; filter: blur(0); }
+}
+
+/* само вградените (inline) числа стават inline-block — иначе transform не важи;
+   блоковите и флекс елементите не се пипат, за да не мърда оформлението */
+.pl-chislo-ib { display: inline-block; }
+.pl-chislo-pop {
+  will-change: transform, opacity, filter;
+  animation: t-digit-pop-in var(--digit-dur) var(--digit-ease) both;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .pl-chislo-pop { animation: none !important; }
+}
