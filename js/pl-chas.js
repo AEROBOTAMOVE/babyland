@@ -1,20 +1,28 @@
 /* ═══════════════════════════════════════════════════════════════════════════════
-   🕰️ ЖИВИЯТ ЧАСОВНИК · секция „Едно денонощие с теб“ · 23.09.2026
-   Собственикът: „тоя часовник мега генерация, як жив часовник пак да отмерва“.
-   Слагаме истински плюшен циферблат (img/art/chasovnik.webp — генериран по неговата
-   референция) с ТРИ стрелки, които се движат по НАСТОЯЩОТО време: часът и минутата
-   плавно, секундата — тик по тик, всяка секунда.
-   Старият денонощен кръг (js/home.js, .d24-svg) НЕ се пипа: той показва деня като
-   дъга, този показва часа. Двата стоят един до друг.
-   ПЕСТИ ТОК: спира, когато секцията не се вижда (IntersectionObserver) и когато
-   разделът е скрит (visibilitychange) — иначе би въртял 24/7 в джоба на мама.
-   ПЪТ НАЗАД: махни <link>/<script> на pl-chas от index.html.
+   🕰️ ЕДИН ЖИВ ЧАСОВНИК · секция „Едно денонощие с теб“ · 06.10.2026
+   Собственикът: „в началото има пак 2 часовника“. Така беше: над денонощния кръг
+   стоеше втори, филцов часовник със стрелки — и розовата му стрелка излизаше ИЗВЪН
+   циферблата. Два часовника за едно и също време е шум, не лукс.
+
+   Сега часовникът е ЕДИН — самият денонощен кръг (js/home.js, .d24-svg), и е жив:
+     · в центъра, на мястото на „24/7 · тук сме“, стои СЕГАШНОТО време и частта от
+       деня („09:20 · предобед“), двоеточието тиктака;
+     · розова точка обикаля вътрешния кръг веднъж в минута — секундите;
+     · стрелката на деня (от home.js) си върви както преди.
+   Редът „СЕГА при теб е 09:20“ под кръга отпада — времето вече е в центъра.
+   Слънцето и луната, които обикаляха и застъпваха надписите „нощта“ и „обед“,
+   се прибират — надписите си носят своите иконки.
+
+   Старият код НЕ се пипа: само четем елементите му и им сменяме текста/вида.
+   ПЕСТИ ТОК: спира, когато секцията не се вижда и когато разделът е скрит.
+   ПЪТ НАЗАД: js/pl-chas.js.PREDI_EDIN и css/pl-chas.css.PREDI_EDIN (филцовият часовник).
    ═══════════════════════════════════════════════════════════════════════════════ */
 (function () {
   'use strict';
   if (window.BL_PL_CHAS) return;
 
-  var часовник = null, таймер = 0, вижда = true, наЕкрана = true;
+  var CX = 110, CY = 110, R_ВЪТРЕ = 74;          // геометрията на кръга от js/home.js (R = 96, R - 22)
+  var свод = null, таймер = 0, вижда = true, наЕкрана = true, градусиСек = -1;
 
   function НС(име, атр) {
     var е = document.createElementNS('http://www.w3.org/2000/svg', име);
@@ -22,31 +30,51 @@
     return е;
   }
 
+  function частОтДеня(ч) {
+    return ч < 5 ? 'дълбока нощ' : ч < 9 ? 'ранна утрин' : ч < 12 ? 'предобед'
+      : ч < 15 ? 'обед' : ч < 19 ? 'следобед' : ч < 22 ? 'вечер' : 'нощ';
+  }
+
+  // превръща центъра на кръга в часовник; прави го веднъж
   function направи() {
-    var сек = document.querySelector('.d24-wrap');
-    if (!сек || сек.querySelector('.pl-chas')) return sек_готов(сек);
-    var обв = document.createElement('div');
-    обв.className = 'pl-chas';
-    обв.setAttribute('aria-hidden', 'true');           // времето е изписано и с думи отдолу
-    obv_html(обв);
-    сек.insertBefore(обв, сек.firstChild);
-    return sек_готов(сек);
-  }
-  function sек_готов(сек) { return !!сек; }
-
-  function obv_html(обв) {
-    обв.innerHTML =
-      '<div class="pl-chas-face">' +
-        '<svg class="pl-chas-h" viewBox="0 0 100 100">' +
-          '<g class="pl-chas-hh"><rect x="48.4" y="26" width="3.2" height="26" rx="1.6"/></g>' +
-          '<g class="pl-chas-mm"><rect x="48.8" y="15" width="2.4" height="37" rx="1.2"/></g>' +
-          '<g class="pl-chas-ss"><rect x="49.5" y="12" width="1" height="40" rx=".5"/>' +
-            '<circle cx="50" cy="50" r="2.6"/></g>' +
-        '</svg>' +
-      '</div>' +
-      '<div class="pl-chas-t"><b id="plChasT">--:--</b><small id="plChasD">сега при теб</small></div>';
+    свод = document.querySelector('.d24-svg');
+    if (!свод) return false;
+    if (свод.dataset.plEdin) return true;
+    var горе = свод.querySelector('text.d24-mid'), долу = свод.querySelector('text.d24-mid2');
+    if (!горе || !долу) return false;
+    горе.classList.add('pl-chas-vreme');
+    долу.classList.add('pl-chas-chast');
+    горе.textContent = '';
+    горе.appendChild(НС('tspan', { class: 'pl-chas-ch' }));
+    var кол = НС('tspan', { class: 'pl-chas-kol' }); кол.textContent = ':';
+    горе.appendChild(кол);
+    горе.appendChild(НС('tspan', { class: 'pl-chas-mn' }));
+    // секундите: точка на вътрешния кръг, обикаля веднъж в минута
+    var г = НС('g', { class: 'pl-chas-sek' });
+    г.appendChild(НС('circle', { cx: CX, cy: CY - R_ВЪТРЕ, r: 3.2, class: 'pl-chas-sek-t' }));
+    свод.appendChild(г);
+    свод.setAttribute('aria-label', 'Денонощен кръг — часовник');
+    свод.dataset.plEdin = '1';
+    return true;
   }
 
+  function завърти() {
+    if (!свод || !свод.isConnected) { if (!направи()) return; }
+    var н = new Date();
+    var ч = н.getHours(), м = н.getMinutes(), с = н.getSeconds();
+    var чч = свод.querySelector('.pl-chas-ch'), мм = свод.querySelector('.pl-chas-mn');
+    var чс = ('0' + ч).slice(-2), мс = ('0' + м).slice(-2);
+    if (чч && чч.textContent !== чс) чч.textContent = чс;              // пишем само при разлика
+    if (мм && мм.textContent !== мс) мм.textContent = мс;
+    var долу = свод.querySelector('.pl-chas-chast'), дума = частОтДеня(ч);
+    if (долу && долу.textContent !== дума) долу.textContent = дума;
+    // секундите вървят само НАПРЕД — при 59→0 не се връщат назад през кръга
+    var цел = с * 6;
+    if (градусиСек < 0) градусиСек = цел;
+    else { var тек = ((градусиСек % 360) + 360) % 360; градусиСек += ((цел - тек) + 360) % 360; }
+    var сек = свод.querySelector('.pl-chas-sek');
+    if (сек) сек.style.transform = 'rotate(' + градусиСек + 'deg)';
+  }
 
   // ═══ ПЛЮШ ВЪРХУ ДЕНОНОЩНИЯ КРЪГ (23.09) ═══
   //  Кръгът (js/home.js) рисува емоджита като SVG <text>. Плюшеният слой не може да
@@ -120,33 +148,6 @@
     if (брой) свод.dataset.plChas = брой;
   }
 
-  function завърти() {
-    if (!часовник) return;
-    var н = new Date();
-    var с = н.getSeconds(), м = н.getMinutes(), ч = н.getHours() % 12;
-    var гс = с * 6;                                    // 360/60
-    var гм = м * 6 + с * .1;
-    var гч = ч * 30 + м * .5;
-    var ss = часовник.querySelector('.pl-chas-ss');
-    var mm = часовник.querySelector('.pl-chas-mm');
-    var hh = часовник.querySelector('.pl-chas-hh');
-    if (ss) ss.style.transform = 'rotate(' + гс + 'deg)';
-    if (mm) mm.style.transform = 'rotate(' + гм + 'deg)';
-    if (hh) hh.style.transform = 'rotate(' + гч + 'deg)';
-    var т = document.getElementById('plChasT');
-    if (т) {
-      var ново = ('0' + н.getHours()).slice(-2) + ':' + ('0' + м).slice(-2);
-      if (т.textContent !== ново) т.textContent = ново;               // пишем само при разлика
-    }
-    var д = document.getElementById('plChasD');
-    if (д) {
-      var ч24 = н.getHours();
-      var дума = ч24 < 5 ? 'дълбока нощ · тук сме' : ч24 < 9 ? 'ранна утрин' : ч24 < 12 ? 'предобед'
-        : ч24 < 15 ? 'следобед' : ч24 < 19 ? 'привечер' : ч24 < 22 ? 'вечер' : 'нощта е дълга — не си сама';
-      if (д.textContent !== дума) д.textContent = дума;
-    }
-  }
-
   function пусни() {
     if (таймер || !вижда || !наЕкрана) return;
     завърти();
@@ -155,23 +156,20 @@
   function спри() { if (таймер) { clearInterval(таймер); таймер = 0; } }
 
   function старт() {
+    if (!направи()) return false;
     var сек = document.querySelector('.d24-wrap');
-    if (!сек) return false;
-    направи();
-    часовник = сек.querySelector('.pl-chas');
-    if (!часовник) return false;
     document.addEventListener('visibilitychange', function () {
       вижда = !document.hidden;
       if (вижда) пусни(); else спри();
     });
-    if ('IntersectionObserver' in window) {
+    if ('IntersectionObserver' in window && сек) {
       new IntersectionObserver(function (з) {
         наЕкрана = z_има(з);
         if (наЕкрана) пусни(); else спри();
-      }, { threshold: .05 }).observe(часовник);
+      }, { threshold: .05 }).observe(сек);
     }
     пусни();
-    setTimeout(емоджиНаКръга, 400);      // кръгът се рисува от home.js след нас
+    setTimeout(емоджиНаКръга, 400);      // кръгът се рисува от home.js; иконките после
     setTimeout(емоджиНаКръга, 1600);
     return true;
   }

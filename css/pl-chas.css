@@ -1,77 +1,67 @@
-/* 🪤 23.09 МЕРЕНО (nosht_novo): тъмната тема на приложението е html[data-theme="dark"]
-   (js/app.js:33 + css/dark.css). html.bl-night е ДРУГО — тихите часове (js/night.js).
-   Моите нощни правила бяха само за bl-night → в тъмна тема заглавието на картата
-   остана тъмносиньо върху тъмносин филц: контраст 1.24:1. Затова всяко нощно
-   правило тук важи И за двете. */
 /* ═══════════════════════════════════════════════════════════════════════════════
-   🕰️ ЖИВИЯТ ЧАСОВНИК · вид · 23.09.2026
-   Плюшен циферблат (генериран), дървени стрелки, тиктакаща секунда.
-   ПЪТ НАЗАД: махни <link href="css/pl-chas.css"> от index.html.
+   🕰️ ЕДИН ЖИВ ЧАСОВНИК · вид · 06.10.2026
+   Денонощният кръг е самият часовник: в центъра — сегашното време, тиктакащо
+   двоеточие, розова точка за секундите по вътрешния кръг.
+   (Филцовият часовник с отделните стрелки е махнат — бяха два часовника.)
+   🪤 23.09 МЕРЕНО: тъмната тема е html[data-theme="dark"], тихите часове са
+   html.bl-night — всяко нощно правило тук важи и за двете.
+   ПЪТ НАЗАД: css/pl-chas.css.PREDI_EDIN.
    ═══════════════════════════════════════════════════════════════════════════════ */
 
 html.pl-on .d24-wrap { position: relative; }
 
-html.pl-on .pl-chas {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 10px;
-  margin: 0 auto 18px;
-  animation: plChasBreath 6.5s ease-in-out infinite;
-}
-@keyframes plChasBreath {
-  0%, 100% { transform: translateY(0) rotate(0deg); }
-  50% { transform: translateY(-4px) rotate(-.4deg); }
-}
-
-html.pl-on .pl-chas-face {
-  position: relative;
-  width: min(210px, 62vw);
-  aspect-ratio: 1 / 1;
-  background: url(../img/art/chasovnik.webp) center/contain no-repeat;
-  filter: drop-shadow(0 12px 22px rgba(120, 88, 70, .22));
-}
-
-html.pl-on .pl-chas-h { position: absolute; inset: 0; width: 100%; height: 100%; overflow: visible; }
-html.pl-on .pl-chas-h g { transform-origin: 50px 50px; }
-html.pl-on .pl-chas-hh rect { fill: #a9784f; }                      /* час — дърво */
-html.pl-on .pl-chas-mm rect { fill: #c79a6f; }                      /* минута — светло дърво */
-html.pl-on .pl-chas-ss rect,
-html.pl-on .pl-chas-ss circle { fill: #e08aa8; }                    /* секунда — розов конец */
-html.pl-on .pl-chas-hh,
-html.pl-on .pl-chas-mm { transition: transform .5s cubic-bezier(.3, 1.4, .5, 1); }
-html.pl-on .pl-chas-ss { transition: transform .12s cubic-bezier(.3, 1.8, .5, 1); }
-
-html.pl-on .pl-chas-t {
-  display: flex; flex-direction: column; align-items: center; gap: 2px;
+/* ── времето в центъра ── */
+html.pl-on .d24-svg text.pl-chas-vreme {
   font-family: 'Nunito', system-ui, sans-serif;
-}
-html.pl-on .pl-chas-t b {
   font-size: 30px; font-weight: 800; letter-spacing: .02em;
   font-variant-numeric: tabular-nums;
-  color: var(--pl-ink, #2b3a67);
+  fill: var(--pl-ink, #2b3a67);
+  paint-order: stroke; stroke: rgba(255, 255, 255, .55); stroke-width: 3px;
 }
-html.pl-on .pl-chas-t small { font-size: 12.5px; font-weight: 700; color: rgba(90, 70, 90, .72); }
+html.pl-on .d24-svg tspan.pl-chas-kol { animation: plChasKol 1s steps(1, end) infinite; }
+@keyframes plChasKol { 0%, 49% { opacity: 1; } 50%, 100% { opacity: .25; } }
 
-/* нощем: циферблатът се смекчава, розовата секунда свети мъничко */
-html.bl-night.pl-on .pl-chas-face, html[data-theme="dark"].pl-on .pl-chas-face{ filter: drop-shadow(0 12px 22px rgba(0, 0, 0, .45)) brightness(.88); }
-html.bl-night.pl-on .pl-chas-t b, html[data-theme="dark"].pl-on .pl-chas-t b{ color: #f3ecff; }
-html.bl-night.pl-on .pl-chas-t small, html[data-theme="dark"].pl-on .pl-chas-t small{ color: rgba(236, 232, 245, .72); }
-html.bl-night.pl-on .pl-chas-ss rect, html[data-theme="dark"].pl-on .pl-chas-ss rect,
-html.bl-night.pl-on .pl-chas-ss circle, html[data-theme="dark"].pl-on .pl-chas-ss circle{ fill: #ffb3cd; }
-
-@media (prefers-reduced-motion: reduce) {
-  html.pl-on .pl-chas { animation: none; }
-  html.pl-on .pl-chas-ss, html.pl-on .pl-chas-hh, html.pl-on .pl-chas-mm { transition: none; }
+html.pl-on .d24-svg text.pl-chas-chast {
+  font-family: 'Nunito', system-ui, sans-serif;
+  font-size: 11.5px; font-weight: 800; letter-spacing: .08em; text-transform: uppercase;
+  fill: #b05a82;
 }
 
-/* 🪤 МЕРЕНО (chas_vid.png): генерираната снимка носи своя кремав квадрат и личеше
-   като лепенка върху филца. Маскираме я до кръг — остава само циферблатът. */
-html.pl-on .pl-chas-face {
-  -webkit-mask-image: radial-gradient(circle at 50% 50%, #000 47%, transparent 49%);
-  mask-image: radial-gradient(circle at 50% 50%, #000 47%, transparent 49%);
+/* ── секундите: точка по вътрешния кръг ── */
+html.pl-on .d24-svg .pl-chas-sek {
+  transform-box: view-box;
+  transform-origin: 110px 110px;
+  transition: transform .45s cubic-bezier(.3, 1.35, .5, 1);
 }
-/* денонощният кръг: емоджитата стават плюшени рисунки (js/pl-chas.js) */
+html.pl-on .d24-svg .pl-chas-sek-t {
+  fill: #e48ab0;
+  filter: drop-shadow(0 0 3px rgba(228, 138, 176, .75));
+}
+
+/* ── чистота: слънцето и луната по орбитата застъпваха „нощта“ и „обед“;
+      надписите вече носят своите иконки. Времето е в центъра — редът
+      „СЕГА при теб е 09:20“ под кръга е повторение. ── */
+html.pl-on .d24-svg .d24-orbit { display: none; }
+html.pl-on .d24-card .d24-now { display: none; }
+
+/* ── денонощният кръг: емоджитата стават плюшени рисунки (js/pl-chas.js) ── */
 html.pl-on .d24-svg .pl-chas-em { pointer-events: none; }
 html.pl-on .d24-svg text.pl-chas-skrit { fill: transparent !important; }
 html.pl-on .d24-svg tspan.pl-chas-skrit { fill: transparent !important; }
+
+/* ── нощем ── */
+html.bl-night.pl-on .d24-svg text.pl-chas-vreme,
+html[data-theme="dark"].pl-on .d24-svg text.pl-chas-vreme { fill: #f3ecff; stroke: rgba(20, 16, 40, .5); }
+html.bl-night.pl-on .d24-svg text.pl-chas-chast,
+html[data-theme="dark"].pl-on .d24-svg text.pl-chas-chast { fill: #ffb3cd; }
+html.bl-night.pl-on .d24-svg .pl-chas-sek-t,
+html[data-theme="dark"].pl-on .d24-svg .pl-chas-sek-t { fill: #ffb3cd; }
+
+@media (prefers-reduced-motion: reduce) {
+  html.pl-on .d24-svg tspan.pl-chas-kol { animation: none; }
+  html.pl-on .d24-svg .pl-chas-sek { transition: none; }
+}
+
+/* 06.10: часовникът вече Е кръгът — плюшеният 🕐 в заглавието е повторение и
+   се криеше под бутона за тема, застъпвайки „теб“. Текстът му остава за четците. */
+html.pl-on .day24 .section-title .pl-em { display: none !important; }
