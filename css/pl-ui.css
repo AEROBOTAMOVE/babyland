@@ -481,3 +481,9 @@ html body #roomOverlay .jr-card > h4.jr-title:has(> .jr-medal) > .fold-btn { fle
    („…млякото стига.👆 Броя само“). Стойностите са доказаните от дневника (pl-dnevnik.css §13).
    ПЪТ НАЗАД: махни тези два реда. */
 html body .pl-em.pl-em-sled { margin-left: .2em !important; margin-right: -.06em !important; }
+
+/* 🔖 06.10 МЕРЕНО (razpyani.js, „Жената в мен“ → „Репликата в джоба“): иконката в
+   бутона „Запази при моите“ (.jr-x) ставаше 48×24 — 400%-овият лист се разтягаше на овал
+   (15 бутона). Иконката е квадрат; бутонът си остава 40×40 (touch.css).
+   ПЪТ НАЗАД: махни това правило. */
+html body .jr-x > .pl-em.pl-pl { width: 24px !important; height: 24px !important; min-width: 0 !important; margin: 0 !important; flex: none !important; }
