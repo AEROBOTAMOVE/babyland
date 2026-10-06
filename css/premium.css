@@ -837,6 +837,9 @@ html.pl-on body, html.pl-on:not([data-theme="dark"]) body { background: transpar
   position: fixed; inset: 0; z-index: -1; pointer-events: none;
   background: #f6ede3 url(../img/scene/nachalo.webp) 50% 0 / cover no-repeat;
 }
+/* ☀️ 06.10 светлината от прозореца (premium-home.js, „светлината“) — над нощното було, под всичко друго.
+   ПЪТ НАЗАД: махни този ред заедно с блока в premium-home.js. */
+#plScene .pl-hero-svetlina { position: absolute; inset: 0; width: 100%; height: 100%; z-index: 1; pointer-events: none; mix-blend-mode: screen; }
 html.pl-on .sky { display: none !important; }            /* старото небе с петна — сцената го замества */
 html.pl-on #plHome { background: transparent; }
 html.pl-on .pl-hero { min-height: 312px; border-radius: 0; overflow: visible; }
@@ -1204,3 +1207,93 @@ html.pl-on #roomOverlay .ro-panel #roRoom .ck-card { margin-right: 12px; }
    само невидимата пипаема зона, 44×44. Нула промяна в оформлението. */
 .brief-x { position: relative; }
 .brief-x::after { content: ''; position: absolute; left: 50%; top: 50%; width: 44px; height: 44px; transform: translate(-50%, -50%); }
+
+/* ═══════════════════════════════════════════════════════════════════════════════
+   🎀 ТРИТЕ СТАРИ СЕКЦИИ В ПРЕМИУМА · 06.10.2026
+   Собственикът: „табове от предишния стил още не пипнати“ — „Едно денонощие с теб“,
+   „Какво може Помощникът на мама“, „Пробвай сега“. Бяха розово-лилави градиенти,
+   надписи от 6 px, кутия в кутията. Логиката (home.js) не се пипа — тук е само видът;
+   малките щрихи в DOM са в premium-home.js („старитеСекции“).
+   Бутоните: тъмна роза #c9447a→#a92f63 — бяло върху горния тон = 4.57:1 (по-светлото
+   розово на „Добави момент“ държи само за 18 px; тези бутони са 15 px).
+   ПЪТ НАЗАД: махни този блок и „старитеСекции“ в premium-home.js.
+   ═══════════════════════════════════════════════════════════════════════════════ */
+
+/* ── общите бутони на трите ── */
+html.pl-on .d24-go, html.pl-on .net-go, html.pl-on .askme-form button {
+  background: linear-gradient(180deg, #c9447a 0, #a92f63 100%) !important;
+  box-shadow: 0 8px 18px rgba(169, 47, 99, .28), inset 0 1px 0 rgba(255, 255, 255, .35);
+  color: #fff; font-weight: 800; letter-spacing: .2px; border-radius: 999px;
+}
+
+/* ── „Едно денонощие с теб“: пръстенът в злато, картата като „Нашият ден“ ── */
+html.pl-on .d24-ring { stroke: #f4e7da; }
+html.pl-on .d24-arc { stroke: #e3c39c; }
+html.pl-on .d24-tick { stroke: rgba(190, 150, 110, .45); }
+html.pl-on .d24-bg { stroke: #ecd8c4; }
+html.pl-on .d24-dot.on .d24-bg { fill: var(--pl-pink-soft); stroke: var(--pl-pink-2); filter: drop-shadow(0 4px 10px rgba(229, 109, 153, .35)); }
+html.pl-on .d24-lbl { font-size: 9.5px; letter-spacing: .04em; fill: #9a7b5c; }
+html.pl-on .d24-card {
+  background: var(--pl-card); border: 1px solid var(--pl-line); border-radius: var(--pl-radius);
+  box-shadow: var(--pl-shadow-sm); padding: 18px 18px 20px;
+}
+html.pl-on .d24-t { font-family: var(--pl-serif); font-weight: 700; font-size: 19px; color: var(--pl-navy); }
+html.pl-on .d24-s { color: var(--pl-ink); font-size: 15px; }
+html.pl-on .d24-s strong { color: #b8406f; }
+html.pl-on .d24-go { min-height: 48px; padding: 0 22px; font-size: 15px; }
+
+/* ── „Какво може Помощникът на мама“: едно заглавие, мрежа без празно, четими възли ── */
+html.pl-on .net-name { background: none; -webkit-background-clip: border-box; background-clip: border-box; color: inherit; }
+html.pl-on .net-nm { font-size: 15px; fill: var(--pl-navy); paint-order: stroke; stroke: rgba(255, 253, 251, .9); stroke-width: 3px; }
+html.pl-on .net-cnt { font-size: 13px; }
+html.pl-on .net-ct { font-family: var(--pl-serif); fill: #b8406f; }
+html.pl-on .net-panel {
+  background: var(--pl-card); border: 1px solid var(--pl-line); border-radius: var(--pl-radius);
+  box-shadow: var(--pl-shadow-sm);
+}
+html.pl-on .net-pt { font-family: var(--pl-serif); font-weight: 700; font-size: 19px; color: var(--pl-navy); }
+html.pl-on .net-ps { font-size: 13px; color: var(--pl-ink-soft); }
+html.pl-on .net-list { gap: 8px; scrollbar-width: thin; scrollbar-color: #ead7c4 transparent; }
+html.pl-on .net-chip {
+  min-height: 40px; padding: 8px 14px; font-size: 14px; font-weight: 700;
+  background: var(--pl-cream); border: 1px solid var(--pl-line); color: var(--pl-navy);
+}
+html.pl-on .net-chip-x { background: var(--pl-pink-soft); border-color: #f6cadb; }
+html.pl-on .net-go { min-height: 48px; font-size: 15px; margin-top: 12px; }
+
+/* ── „Пробвай сега“: без кутия в кутията, балонът е плюшен, полето не реже ── */
+html.pl-on .askme-box { background: none; border: 0; box-shadow: none; padding: 6px 2px; gap: 12px; align-items: flex-start; }
+html.pl-on .askme-ava { width: 52px; }
+html.pl-on .askme-ava .pl-em, html.pl-on .askme-ava img { width: 52px; height: 52px; font-size: 44px; display: block; }
+html.pl-on .askme-t { font-family: var(--pl-serif); font-weight: 700; font-size: 19px; line-height: 1.3; color: var(--pl-navy); margin-bottom: 12px; }
+html.pl-on .askme-chips { gap: 8px; }
+html.pl-on .askme-chip {
+  min-height: 44px; padding: 10px 16px; text-align: left;
+  background: var(--pl-cream); border: 1px solid var(--pl-line); color: var(--pl-navy);
+  font-size: 15px; font-weight: 700; box-shadow: none;
+}
+html.pl-on .askme-form input {
+  min-height: 48px; background: #fff; border: 1px solid var(--pl-line); color: var(--pl-navy); font-size: 15px;
+}
+html.pl-on .askme-form input:focus { border-color: var(--pl-pink-2); box-shadow: 0 0 0 3px rgba(245, 156, 187, .25); }
+html.pl-on .askme-form button { min-height: 48px; padding: 0 20px; font-size: 15px; flex: none; }
+
+/* ── нощем ── */
+html[data-theme="dark"].pl-on .d24-ring { stroke: rgba(255, 255, 255, .1); }
+html[data-theme="dark"].pl-on .d24-lbl { fill: #d9c7ad; }
+html[data-theme="dark"].pl-on .d24-card, html[data-theme="dark"].pl-on .net-panel { background: rgba(31, 43, 92, .95); border-color: rgba(255, 255, 255, .14); }
+html[data-theme="dark"].pl-on .d24-t, html[data-theme="dark"].pl-on .net-pt, html[data-theme="dark"].pl-on .askme-t { color: #fff; }
+html[data-theme="dark"].pl-on .d24-s, html[data-theme="dark"].pl-on .net-ps { color: #c9cbe3; }
+html[data-theme="dark"].pl-on .d24-s strong { color: #ffb3cd; }
+html[data-theme="dark"].pl-on .net-nm { fill: #fff; stroke: rgba(20, 28, 70, .85); }
+html[data-theme="dark"].pl-on .net-chip, html[data-theme="dark"].pl-on .askme-chip, html[data-theme="dark"].pl-on .askme-form input { background: rgba(255, 255, 255, .07); border-color: rgba(255, 255, 255, .16); color: #fff; }
+html[data-theme="dark"].pl-on .net-chip-x { background: rgba(229, 109, 153, .2); }
+/* мерено 06.10 (DOM): pl-plyush дава на вградената иконка отрицателни полета (−15 px / −8 px вляво),
+   за да я „сложи“ в реда — тук това я изкарваше през ръба на картата и върху „е“ в „помощничките“ */
+html.pl-on .askme-ava .pl-em { margin: 0 !important; }
+html.pl-on .section-title .wobble > .pl-em { margin-left: 0 !important; }
+html.pl-on .net-chip .pl-em, html.pl-on .askme-chip .pl-em { margin: -4px .35em -4px 0 !important; }
+/* нощем заглавията на секциите оставаха тъмносини върху тъмносиньо */
+html[data-theme="dark"].pl-on .day24 .section-title, html[data-theme="dark"].pl-on .netsec .section-title,
+html[data-theme="dark"].pl-on .section-title { color: #fff; }
+html[data-theme="dark"].pl-on .section-sub { color: #c9cbe3; }
