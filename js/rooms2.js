@@ -2428,7 +2428,11 @@
     }
 
     const h = new Date().getHours();
-    const hello = h < 5 ? 'Будна в малките часове' : h < 11 ? 'Добро утро' : h < 18 ? 'Здравей' : 'Добър вечер';
+    // 06.10 (обиколка): на началото „Добро утро“ излизаше ЧЕТИРИ пъти — героят горе
+    //   („Добро утро, мамо!“) вече поздравява по часа. Тук остава само нощният ред,
+    //   който казва нещо различно; денем картата просто е „Днес“.
+    //   ПЪТ НАЗАД: върни 'Добро утро' : 'Здравей' : 'Добър вечер'.
+    const hello = h < 5 ? 'Будна в малките часове…' : 'Днес';
     const nm = baby.name || 'Бебето';
     const пулСъвети = DAY_TIPS.filter(x => !a || (a.devMonths >= x.a0 && a.devMonths <= x.a1));
     const съвети = пулСъвети.length ? пулСъвети : DAY_TIPS;
@@ -2484,7 +2488,7 @@
       `<div class="td-inner reveal">
         <div class="td-top">
           ${bebeAva(a)}
-          <div><div class="td-hello">${hello}! 🌸</div><div class="td-age">${esc(nm)} е на <strong>${esc(a.text)}</strong></div></div>
+          <div><div class="td-hello">${hello} 🌸</div><div class="td-age">${esc(nm)} е на <strong>${esc(a.text)}</strong></div></div>
         </div>
         ${banner}
         <div class="td-tip">💡 ${tip}</div>

@@ -1198,3 +1198,9 @@ html.pl-on #roomOverlay .ro-panel #roRoom > * { max-width: 100%; }
    translate(10px,18px) от стария слой) — затова десният ѝ ъгъл минаваше ръба.
    Свиваме я със същите 10px, вместо да режем ъгъла. */
 html.pl-on #roomOverlay .ro-panel #roRoom .ck-card { margin-right: 12px; }
+
+/* 06.10 МЕРЕНО (обиколка): ✕ на бележката от Луна беше 10×16 px — по-малко от
+   върха на пръста. Като 📍 и ▾ (mega.css, 04.08): иконата остава същата, расте
+   само невидимата пипаема зона, 44×44. Нула промяна в оформлението. */
+.brief-x { position: relative; }
+.brief-x::after { content: ''; position: absolute; left: 50%; top: 50%; width: 44px; height: 44px; transform: translate(-50%, -50%); }

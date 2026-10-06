@@ -178,7 +178,10 @@
       '<h2 class="pl-h2">Влез в своята стая</h2>' +
       '<div class="pl-shelf"><div class="pl-rooms">' +
         СТАИ.map(р => '<button type="button" class="pl-room ' + р.клас + '" data-room="' + esc(р.стая) + '" aria-label="Стая ' + esc(р.надпис) + '">' +
-          '<span class="pl-arch" aria-hidden="true"><img src="img/art/' + р.рис + '.webp" alt="" loading="lazy" decoding="async" width="160" height="160"></span>' +
+          // 06.10 МЕРЕНО (обиколка): деветата плочка („Лабораторията“) стоеше като ПРАЗНА
+          //   синя арка — картинката е заредена и видима, но с loading="lazy" идваше
+          //   последна и „изскачаше“ след миг. Рафтът е най-горе на началото — зарежда се веднага.
+          '<span class="pl-arch" aria-hidden="true"><img src="img/art/' + р.рис + '.webp" alt="" loading="eager" decoding="async" width="160" height="160"></span>' +
           '<span>' + esc(р.надпис) + '</span></button>').join('') +
       '</div></div>' +
       // 🧸 деветте помощнички с ИСТИНСКИТЕ им лица (img/art/persony.webp, 3×3; клетка x = колона·50%, y = ред·50%).
