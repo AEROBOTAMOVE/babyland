@@ -516,3 +516,20 @@ html[data-theme="dark"] #roRoom [data-pl-spot] { outline-color: #f59cbb !importa
   .pl-bb, .pl-bb *, .pl-bb *::before, .pl-bb *::after { animation: none !important; }
   .pl-bb-cta::after { display: none; }
 }
+
+/* ═══ 06.10 · „ПЕЛЕНИ ДНЕС“ — БРОЯЧЪТ НЕ СЕ СЪБИРАШЕ ═══
+   МЕРЕНО (обиколка): всяка кутия е 156 px, а „💧 Мокри [−] 0 [+]“ се простираше
+   от 23 до 199 px — излизаше и отляво, и отдясно; „+“-ът на мокрите влизаше в
+   кутията на „Каки“, а иконката висеше над етикета. Бутоните бяха пораснали до
+   44 px (пипаемата норма) и вече не се побираха на един ред с етикета.
+   Сега етикетът е на свой ред най-горе, а − 0 + отдолу (≈126 px от 156).
+   ПЪТ НАЗАД: махни този блок. */
+html body #roomOverlay .bb-dipbox {
+  flex-wrap: wrap; justify-content: center; row-gap: 8px; column-gap: 10px;
+  padding: 12px 8px 14px;
+}
+html body #roomOverlay .bb-dipbox > .bb-diplbl {
+  flex: 1 0 100%; text-align: center;
+  display: inline-flex; align-items: center; justify-content: center; gap: 6px;
+}
+html body #roomOverlay .bb-dipbox > .bb-dipnum { min-width: 26px; text-align: center; }

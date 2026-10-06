@@ -458,3 +458,20 @@ html[data-theme="dark"] .pl-em { background: rgba(255, 255, 255, .12); box-shado
   html body .jr-btn.jr-btn.running { animation: none; }
   html body .jr-btn.jr-btn, html body .jr-chip.jr-chip, html body .gl-row.gl-row { transition: none; }
 }
+
+/* ═══ 06.10 · ЗАГЛАВИЯТА НА КАРТИТЕ ВЪВ ВСИЧКИ СТАИ ═══
+   МЕРЕНО (обиколка на „Моето бебе“): 26 от 32 заглавия са на 3–4 реда, и редовете
+   след първия падаха ПОД медальона (.jr-medal), вместо до текста — най-видно при
+   „Профилактичните прегледи“, където „прегледи“ стоеше сам, под иконата.
+   Дневникът (pl-dnevnik.css, 23.09) вече го беше решил с flex — само за себе си.
+   Тук същото, доказано решение важи за всяка стая, но само за заглавие С медальон:
+   заглавието се пречупва в своята колона, подзаглавието пада на цял ред отдолу.
+   Карфицата и стрелката са absolute — flex не ги мести; полето вдясно не се пипа.
+   ПЪТ НАЗАД: махни този блок. */
+html body #roomOverlay .jr-card > h4.jr-title:has(> .jr-medal) {
+  display: flex; flex-wrap: wrap; align-items: center; column-gap: 9px; row-gap: 2px;
+}
+html body #roomOverlay .jr-card > h4.jr-title:has(> .jr-medal) > .jr-medal { flex: 0 0 auto; margin-right: 0; }
+html body #roomOverlay .jr-card > h4.jr-title:has(> .jr-medal) > .jr-sub { flex: 1 0 100%; margin-top: 1px; }
+html body #roomOverlay .jr-card > h4.jr-title:has(> .jr-medal) > .pin-btn,
+html body #roomOverlay .jr-card > h4.jr-title:has(> .jr-medal) > .fold-btn { flex: 0 0 auto; }
