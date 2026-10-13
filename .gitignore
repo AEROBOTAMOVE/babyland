@@ -39,3 +39,8 @@ dist/
 dist-dzhamp/
 babyland-dzhamp.zip
 babyland-netlify.zip
+
+# пробите (dev/proba): снимки и временни профили на Chrome
+dev/proba/snimki/
+dev/proba/chrome_*/
+dev/proba/razpyani.json
