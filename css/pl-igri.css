@@ -493,3 +493,158 @@ html[data-theme="dark"] .pl-ig-note { background: rgba(22, 32, 74, .9); color: #
   .pl-ig-sfig i { width: 40px; height: 40px; }
   .pl-ig-stx { font-size: 14px; }
 }
+
+/* 06.10 · КАРТИТЕ НА СТАЯТА в премиум вида („Какво умее сега?“, Дървото, лентите, песничките,
+   „Баба каза…“, броячът на екранното време, „Този месец“). САМО в тази стая (.ro-sun = helper.js:137).
+   Видяно на снимки 06.10 (snimki/ig06_L_*, ig06_D_*) и мерено (ig_dom1.js):
+   · „🤸 Едро моторно“: колоната за надписа беше 96px → „Едро | моторно“ на два реда, иконката 20px,
+     описанието 12.5px встрани. Сега: надписът е ред-етикет (иконка 26px + думите), описанието под него.
+   · флагът „👀 Ако до…“: жълта кутия с 12px кафяво и иконка-трошичка → златиста бележка, иконка 32px.
+   · „Сега — около 6-ия месец“ беше #c0396f (стара палитра) на 13px.
+   · ДВОЙНА рисунка: pl-plyush.js рисува И обвивката (.pg20-fruit / .jr-medal / .rg-e), И вложеното
+     .pl-em → в „Този месец“ звездата 84px лягаше изместена върху кръга 66px (два кръга един в друг).
+     Скриваме вложеното копие; обвивката остава (емоджито е в textContent — кодът не усеща нищо).
+   · „0 мин.“ беше лилаво (#7256b0 / нощем #c3b1ea), песничката — на лилав фон (#fbf7ff / нощем #241f38),
+     легендата на лентите 10.5px с opacity .7, „обикновено 1.5-3 м.“ 11px с opacity .6.
+   ПЪТ НАЗАД: махни този блок. */
+#roomOverlay .ro-panel.ro-sun #roRoom :is(.pg20-fruit, .jr-medal, .rg-e).pl-pl > .pl-em.pl-pl { display: none !important; }
+#roomOverlay .ro-panel.ro-sun #roRoom .pg20-fruit.pl-pl { flex: none; }
+
+/* ── 📈 „Какво умее сега?“ ── */
+#roomOverlay .ro-panel.ro-sun #roRoom .dv-flabel { font-size: 13px; font-weight: 700; line-height: 1.45; color: #5d596f; margin: 12px 2px 8px; }
+#roomOverlay .ro-panel.ro-sun #roRoom .dv-flabel > .pl-em { width: 24px; height: 24px; margin: -4px 4px -4px 0; vertical-align: middle; }
+#roomOverlay .ro-panel.ro-sun #roRoom .dv-mstitle {
+  display: flex; align-items: center; gap: 8px; margin: 14px 2px 10px;
+  font-family: Nunito, Nunito-fallback, system-ui, sans-serif; font-size: 15.5px; font-weight: 800; line-height: 1.25;
+  color: var(--pl-navy, #1d2a5c);
+}
+#roomOverlay .ro-panel.ro-sun #roRoom .dv-mstitle > .pl-em { width: 28px; height: 28px; margin: 0; flex: none; }
+#roomOverlay .ro-panel.ro-sun #roRoom .dv-msrow {
+  display: grid !important; grid-template-columns: 30px minmax(0, 1fr); grid-template-areas: "ch lb" "ch tx";
+  column-gap: 12px; row-gap: 3px; align-items: center;
+  width: 100%; min-height: 62px; margin: 0 0 8px; padding: 11px 14px 12px 12px;
+  background-color: #fffdf9 !important; background-image: none !important;
+  border: 1px solid #f1e4d9 !important; border-radius: 18px !important;
+  box-shadow: 0 2px 0 rgba(214, 186, 158, .38), 0 6px 14px rgba(110, 76, 52, .06) !important;
+  text-align: left; transition: transform .12s ease, background-color .2s ease;
+}
+#roomOverlay .ro-panel.ro-sun #roRoom .dv-msrow:active { transform: translateY(1.5px); }
+#roomOverlay .ro-panel.ro-sun #roRoom .dv-msrow > .jr-check {
+  grid-area: ch; position: relative; width: 28px; height: 28px; margin: 0;
+  border-radius: 50%; background: #fff7ec; border: 2px solid rgba(196, 160, 124, .72);
+  box-shadow: inset 0 2px 3px rgba(120, 88, 58, .14);
+  font-size: 0; color: transparent;               /* ✔ остава в текста; рисуваме го долу с ::after */
+}
+#roomOverlay .ro-panel.ro-sun #roRoom .dv-msrow > .jr-check > * { display: none !important; }
+#roomOverlay .ro-panel.ro-sun #roRoom .dv-msrow > .dv-mslbl {
+  grid-area: lb; width: auto; min-width: 0; display: flex; align-items: center; gap: 7px;
+  font-family: Nunito, Nunito-fallback, system-ui, sans-serif; font-size: 12px; font-weight: 800; line-height: 1.2;
+  letter-spacing: .5px; text-transform: uppercase; color: #b43a6b;
+}
+#roomOverlay .ro-panel.ro-sun #roRoom .dv-msrow > .dv-mslbl > .pl-em { width: 26px; height: 26px; margin: -2px 0; flex: none; font-size: 14px; }
+#roomOverlay .ro-panel.ro-sun #roRoom .dv-msrow > .dv-mstxt {
+  grid-area: tx; min-width: 0;
+  font-family: Nunito, Nunito-fallback, system-ui, sans-serif; font-size: 14.5px; font-weight: 700; line-height: 1.38;
+  color: var(--pl-ink, #3b3f5c);
+}
+/* отметнатото — розов филц, кръгчето е розов гел с бяла отметка (езикът на „избраното“ в pl-ui.css) */
+#roomOverlay .ro-panel.ro-sun #roRoom .dv-msrow.done { background-color: #fff2f7 !important; border-color: rgba(217, 116, 157, .45) !important; box-shadow: 0 2px 0 rgba(231, 160, 189, .45), 0 6px 14px rgba(217, 90, 142, .08) !important; }
+#roomOverlay .ro-panel.ro-sun #roRoom .dv-msrow.done > .jr-check { background: radial-gradient(120% 120% at 50% 18%, #f7a6c4 0, #e4779f 58%, #cf5f8c 100%); border-color: rgba(201, 84, 130, .62); }
+#roomOverlay .ro-panel.ro-sun #roRoom .dv-msrow.done > .jr-check::after {
+  content: ''; position: absolute; left: 8px; top: 3.5px; width: 6.5px; height: 12px;
+  border: solid #fff; border-width: 0 2.6px 2.6px 0; border-radius: 1px; transform: rotate(42deg);
+}
+/* флагът „👀 Ако до …“ — златиста бележка: иконката вляво, текстът в своя колона (не се увива под нея) */
+#roomOverlay .ro-panel.ro-sun #roRoom .dv-flag {
+  display: grid; grid-template-columns: 32px minmax(0, 1fr); column-gap: 11px; align-items: start;
+  margin: 12px 0 10px; padding: 13px 15px 13px 12px; border-radius: 18px;
+  background: linear-gradient(180deg, #fffaf0 0, #fdf1da 100%) !important;
+  border: 1px solid #ecd3a0; border-left: 1px solid #ecd3a0;
+  box-shadow: inset 0 1px 0 #fff, 0 3px 10px rgba(169, 122, 38, .10);
+  font-family: Nunito, Nunito-fallback, system-ui, sans-serif; font-size: 13.5px; font-weight: 700; line-height: 1.5;
+  color: #6a4a16;                                  /* върху #fdf3e0 ≈ 7.9:1 */
+}
+#roomOverlay .ro-panel.ro-sun #roRoom .dv-flag > .pl-em { width: 32px; height: 32px; margin: 0; font-size: 16px; }
+#roomOverlay .ro-panel.ro-sun #roRoom .dv-flag.dv-flag-soon { background: #fffaf2 !important; border-style: dashed; border-color: #e3c39c; box-shadow: none; }
+
+/* ── 🌳 Дървото на уменията — меко сияние зад дървото, четим надпис, легенда с истински иконки ── */
+#roomOverlay .ro-panel.ro-sun #roRoom .st-box {
+  padding: 6px 4px 4px; border-radius: 22px;
+  background: radial-gradient(60% 52% at 50% 44%, rgba(253, 230, 239, .75) 0, rgba(253, 230, 239, .28) 60%, rgba(253, 230, 239, 0) 100%);
+}
+#roomOverlay .ro-panel.ro-sun #roRoom .st-trunk, #roomOverlay .ro-panel.ro-sun #roRoom .st-branch { stroke: #a2774f; }
+#roomOverlay .ro-panel.ro-sun #roRoom .st-box .cs-note { margin: 6px 6px 4px; }
+#roomOverlay .ro-panel.ro-sun #roRoom .st-legend { margin: 8px 0 2px; font-size: 18px; line-height: 34px; color: #5d596f; text-align: center; }
+#roomOverlay .ro-panel.ro-sun #roRoom .st-legend > .pl-em { width: 30px; height: 30px; margin: 0 12px 0 3px; vertical-align: middle; }
+#roomOverlay .ro-panel.ro-sun #roRoom .st-legend > .pl-em:last-child { margin-right: 0; }
+
+/* ── бележките под картите (cs-note: Дървото, „Баба каза…“, „За хладилника“) — 12.5 → 13.5px ── */
+#roomOverlay .ro-panel.ro-sun #roRoom .cs-note { font-size: 13.5px; font-weight: 700; line-height: 1.5; color: #5d596f; }
+
+/* ── 📊 Кога „обикновено“ (лентите) ── */
+#roomOverlay .ro-panel.ro-sun #roRoom .rg-list { gap: 12px; }
+#roomOverlay .ro-panel.ro-sun #roRoom .rg-row { gap: 10px; }
+#roomOverlay .ro-panel.ro-sun #roRoom .rg-e.pl-pl { display: inline-block; flex: none; width: 36px !important; height: 36px !important; }
+#roomOverlay .ro-panel.ro-sun #roRoom .rg-n { margin: 0 0 6px; font-size: 14px; font-weight: 800; line-height: 1.3; color: var(--pl-navy, #1d2a5c); }
+#roomOverlay .ro-panel.ro-sun #roRoom .rg-n small { font-size: 12px; font-weight: 700; opacity: 1; color: #6a6682; font-variant-numeric: lining-nums; white-space: nowrap; }
+#roomOverlay .ro-panel.ro-sun #roRoom .rg-bar { height: 10px; background: #f3e7dc; box-shadow: inset 0 1px 2px rgba(110, 76, 52, .14); }
+#roomOverlay .ro-panel.ro-sun #roRoom .rg-now { background: rgba(29, 42, 92, .55); }
+#roomOverlay .ro-panel.ro-sun #roRoom .rg-leg { gap: 6px; margin: 8px 0 4px; font-size: 12.5px; font-weight: 700; opacity: 1; color: #5d596f; }
+#roomOverlay .ro-panel.ro-sun #roRoom .rg-leg .rg-legbit { width: 16px; height: 9px; border-radius: 999px; }
+#roomOverlay .ro-panel.ro-sun #roRoom .rg-leg .rg-now.rg-legbit { width: 3px; height: 12px; border-radius: 1px; }
+#roomOverlay .ro-panel.ro-sun #roRoom .lb-kind { font-size: 13px; line-height: 1.55; color: #5d596f; }
+
+/* ── 🎵 приспивните: думите на кремав лист, серифни — не на лилав фон ── */
+#roomOverlay .ro-panel.ro-sun #roRoom .lul-text {
+  background: linear-gradient(180deg, #fffaf3 0, #fdf3ea 100%) !important;
+  border: 1px solid #f1e4d9; border-radius: 20px; padding: 18px 16px;
+  box-shadow: inset 0 2px 0 #fff, 0 6px 14px rgba(110, 76, 52, .08);
+}
+#roomOverlay .ro-panel.ro-sun #roRoom .lul-text p { margin: 0; font-family: var(--pl-serif, Georgia, serif); font-size: 17px; font-weight: 400; line-height: 1.6; color: var(--pl-navy, #1d2a5c); }
+
+/* ── 👵 „Баба каза…“: записаните деветини — кремави редове вместо сиви ── */
+#roomOverlay .ro-panel.ro-sun #roRoom .bm-row { padding: 11px 13px; border-radius: 16px; background: #fffdf9; box-shadow: inset 0 0 0 1px #f1e4d9, 0 2px 0 rgba(214, 186, 158, .3); }
+#roomOverlay .ro-panel.ro-sun #roRoom .bm-txt { font-size: 14.5px; font-weight: 700; line-height: 1.5; color: var(--pl-navy, #1d2a5c); }
+#roomOverlay .ro-panel.ro-sun #roRoom .bm-my { font-size: 13.5px; opacity: 1; color: #5d596f; }
+
+/* ── 📺 броячът „0 мин.“ — тъмносини цифри на Nunito (беше лилаво) ── */
+#roomOverlay .ro-panel.ro-sun #roRoom .db-big { font-family: Nunito, Nunito-fallback, system-ui, sans-serif; font-weight: 800; font-size: 34px; font-variant-numeric: tabular-nums lining-nums; color: var(--pl-navy, #1d2a5c); }
+
+/* ── 🌙 нощ ── */
+html[data-theme="dark"] #roomOverlay .ro-panel.ro-sun #roRoom .dv-flabel { color: #c9cbe3; }
+html[data-theme="dark"] #roomOverlay .ro-panel.ro-sun #roRoom .dv-mstitle { color: #fff; }
+html[data-theme="dark"] #roomOverlay .ro-panel.ro-sun #roRoom .dv-msrow { background-color: #2b3872 !important; border-color: rgba(255, 255, 255, .14) !important; box-shadow: inset 0 1px 0 rgba(255, 255, 255, .08), 0 2px 0 #18214a !important; }
+html[data-theme="dark"] #roomOverlay .ro-panel.ro-sun #roRoom .dv-msrow > .jr-check { background: #1d2757; border-color: rgba(255, 255, 255, .36); box-shadow: none; }
+html[data-theme="dark"] #roomOverlay .ro-panel.ro-sun #roRoom .dv-msrow > .dv-mslbl { color: #ffb3cf; }
+html[data-theme="dark"] #roomOverlay .ro-panel.ro-sun #roRoom .dv-msrow > .dv-mstxt { color: #eceefa; }
+html[data-theme="dark"] #roomOverlay .ro-panel.ro-sun #roRoom .dv-msrow.done { background-color: #5a2c55 !important; border-color: rgba(245, 156, 187, .6) !important; }
+html[data-theme="dark"] #roomOverlay .ro-panel.ro-sun #roRoom .dv-msrow.done > .dv-mstxt { color: #ffe1ec; }
+html[data-theme="dark"] #roomOverlay .ro-panel.ro-sun #roRoom .dv-msrow.done > .jr-check { background: radial-gradient(120% 120% at 50% 18%, #f7a6c4 0, #e4779f 58%, #cf5f8c 100%); border-color: rgba(255, 214, 229, .7); }
+html[data-theme="dark"] #roomOverlay .ro-panel.ro-sun #roRoom .dv-flag { background: rgba(227, 195, 156, .13) !important; border-color: rgba(227, 195, 156, .42); box-shadow: none; color: #f6e6c4; }
+html[data-theme="dark"] #roomOverlay .ro-panel.ro-sun #roRoom .dv-flag.dv-flag-soon { background: rgba(227, 195, 156, .07) !important; }
+html[data-theme="dark"] #roomOverlay .ro-panel.ro-sun #roRoom .st-box { background: radial-gradient(60% 52% at 50% 44%, rgba(245, 156, 187, .16) 0, rgba(245, 156, 187, .06) 60%, rgba(245, 156, 187, 0) 100%); }
+html[data-theme="dark"] #roomOverlay .ro-panel.ro-sun #roRoom .st-trunk, html[data-theme="dark"] #roomOverlay .ro-panel.ro-sun #roRoom .st-branch { stroke: #c9a27a; }
+html[data-theme="dark"] #roomOverlay .ro-panel.ro-sun #roRoom :is(.cs-note, .st-legend, .rg-leg, .lb-kind, .bm-my) { color: #c9cbe3; }
+html[data-theme="dark"] #roomOverlay .ro-panel.ro-sun #roRoom .rg-n { color: #fff; }
+html[data-theme="dark"] #roomOverlay .ro-panel.ro-sun #roRoom .rg-n small { color: #c9cbe3; }
+html[data-theme="dark"] #roomOverlay .ro-panel.ro-sun #roRoom .rg-bar { background: rgba(255, 255, 255, .1); box-shadow: none; }
+html[data-theme="dark"] #roomOverlay .ro-panel.ro-sun #roRoom .rg-now { background: rgba(255, 255, 255, .6); }
+html[data-theme="dark"] #roomOverlay .ro-panel.ro-sun #roRoom .lul-text { background: rgba(255, 255, 255, .06) !important; border-color: rgba(255, 255, 255, .14); box-shadow: none; }
+html[data-theme="dark"] #roomOverlay .ro-panel.ro-sun #roRoom .lul-text p { color: #fff; }
+html[data-theme="dark"] #roomOverlay .ro-panel.ro-sun #roRoom .bm-row { background: rgba(255, 255, 255, .06); box-shadow: inset 0 0 0 1px rgba(255, 255, 255, .14); }
+html[data-theme="dark"] #roomOverlay .ro-panel.ro-sun #roRoom .bm-txt { color: #fff; }
+html[data-theme="dark"] #roomOverlay .ro-panel.ro-sun #roRoom .db-big { color: #fff; }
+@media (prefers-reduced-motion: reduce) { #roomOverlay .ro-panel.ro-sun #roRoom .dv-msrow { transition: none; } }
+/* втори кръг (снимки igB_*): маркерът „при вас“ беше старото #e56ba4 (ловецът го хвана); под чиповете
+   +10/+20 текстът лепнеше за тях; нощем „+“ на лентите имаше лилав пръстен (розово .5 върху синьо),
+   а бележката на „Този месец“ (.pg20-do) — сива кутия с пунктир. */
+#roomOverlay .ro-panel.ro-sun #roRoom .rg-mine { background: #c8457a; }
+#roomOverlay .ro-panel.ro-sun #roRoom .db-big ~ .jr-quick { margin-bottom: 12px; }
+#roomOverlay .ro-panel.ro-sun #roRoom .rh-hero .pg20-do {
+  background: #fff8ec !important; border: 1px solid #ecd6b8 !important; border-radius: 16px !important;
+  color: var(--pl-ink, #3b3f5c); font-size: 13.5px; line-height: 1.45; padding: 10px 13px;
+}
+html[data-theme="dark"] #roomOverlay .ro-panel.ro-sun #roRoom .rg-mine { background: #ff9cc2; }
+html[data-theme="dark"] body #roomOverlay .ro-panel.ro-sun #roRoom .rg-mark.rg-mark { border-color: rgba(255, 179, 207, .85) !important; }
+html[data-theme="dark"] #roomOverlay .ro-panel.ro-sun #roRoom .rh-hero .pg20-do { background: rgba(227, 195, 156, .12) !important; border-color: rgba(227, 195, 156, .4) !important; color: #f3e6cc; }
+/* /06.10 */

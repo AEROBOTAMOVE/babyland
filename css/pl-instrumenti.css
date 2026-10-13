@@ -339,3 +339,142 @@ html[data-theme="dark"] .pl-in-chip { background: #5a2c55; color: #ffe1ec; }
   .pl-in-ico { width: 78px; height: 78px; }
   .pl-in-ico2 { width: 48px; height: 48px; }
 }
+
+/* ═══════════════════════════════════════════════════════════════════════════════
+   06.10 · ДОВЪРШВАНЕ НА СТАЯТА „ИНСТРУМЕНТИ“ (картите под шкафа)
+   МЕРЕНО в тази сесия (scratchpad: in_lil_s.out.txt / in_lil_t.out.txt — ловец на лилаво по
+   getComputedStyle; in_dom2/in_dom3.out.txt — структурата; снимки snimki/in_svetla_*, in_tamna_*,
+   in_predi_t_*, in_predi_s_*):
+     1 · ДВОЙНА ИКОНКА: медалът .jr-medal.pl-pl носи рисунката, а ВЪТРЕ стои второ .pl-em със
+         същата — два изместени кръга във ВСЯКО заглавие; в „Каквото ти трябва сега“ вътрешното
+         зъбно колело е 82×82 с margin −18px и излиза през левия ръб на картата.
+         Вътрешното се скрива визуално (буквата остава — стар код сравнява заглавия).
+     2 · ЗАГЛАВИЕ ПОД ИКОНАТА: „Какво пази приложението“ (230 px) не се събира до медала в
+         flex реда (pl-ui.css 06.10) и пада ЦЯЛО под него. Тук — решетка: медал | текст, текстът
+         се пречупва в своята колона, подзаглавието е на цял ред.
+     3 · СТАР СТИЛ (лилаво): ключетата в „Настройки“ — градиент #f7a8cb→#b9a7e0 и #e3ddef;
+         ±-бутоните в „Гардеробчето“ #f0eaf8 на Arial; кантът на „Документите“ #e8e0ea;
+         стрелките в „Речник“ #6f5fa8 и в „Конвертори“ #b9a7e0; чертата до заглавията на
+         разделите #e7dcf3; броячът на раздела нощем #3a3355 и 9.5 px.
+     4 · НОЩ: редовете на чеклистите #342f4e, кръгчетата #221d36 (почти невидими), речникът,
+         документите, гардеробът, „Какво предстои“ и таблиците в „Конвертори“ #241f38 —
+         лилаво-черно вместо нощно синьо; бележникът на редове #221d36/#2a2440;
+         вторичният текст #a49dbb; бежова черта под всеки ред (сянката на дневната тема).
+     5 · „Печатаемата кутия“: рисунката (37 px в кутия 40 px) лягаше върху името;
+         „Бременност/Захранване…“ отдолу беше 10 px.
+     6 · ГОЛИ ЕМОДЖИ: ⬇️/⬆️ в „Свали копие“/„Възстанови от файл“ (pl-plyush няма рисунка →
+         data-pl-pl="0", синьо системно квадратче) — тук чиста стрелка в бял кръг;
+         🇧🇬 до „Наръчник и документи“ и 💾 в бележката на „Настройки“ ги облича
+         js/pl-instrumenti.js (същия лист и клетка като плочката/медала им).
+   Обхват: само тази стая — картите по data-blkey „Инструменти|…“, а разделите и „героят“
+   само когато шкафът .pl-in е до тях (той се слага само тук).
+   ПЪТ НАЗАД: махни този блок (до „край 06.10“). Копие преди: scratchpad/in_predi_0610.css
+   ═══════════════════════════════════════════════════════════════════════════════ */
+
+/* 1 · една рисунка в медала и в кръга на „Каквото ти трябва сега“ */
+html body #roomOverlay #roRoom > .jr-card[data-blkey^="Инструменти|"] .jr-medal.pl-pl { position: relative; }
+html body #roomOverlay #roRoom > .jr-card[data-blkey^="Инструменти|"] .jr-medal.pl-pl > .pl-em,
+html body #roomOverlay #roRoom > .pl-in ~ .pg20-hero .pg20-fruit.pl-pl > .pl-em {
+  position: absolute !important; left: 0 !important; top: 0 !important;
+  width: 1px !important; height: 1px !important; min-width: 0 !important; min-height: 0 !important;
+  margin: 0 !important; padding: 0 !important; overflow: hidden !important;
+  clip-path: inset(50%) !important; opacity: 0 !important; pointer-events: none !important;
+  box-shadow: none !important; border: 0 !important;
+}
+html body #roomOverlay #roRoom > .pl-in ~ .pg20-hero .pg20-fruit.pl-pl { position: relative; flex: none; }
+
+/* 2 · заглавието до медала, не под него */
+html body #roomOverlay #roRoom > .jr-card[data-blkey^="Инструменти|"] > h4.jr-title:has(> .jr-medal) {
+  display: grid; grid-template-columns: auto minmax(0, 1fr); align-items: center; column-gap: 9px; row-gap: 2px;
+}
+html body #roomOverlay #roRoom > .jr-card[data-blkey^="Инструменти|"] > h4.jr-title:has(> .jr-medal) > .jr-medal { grid-column: 1; }
+html body #roomOverlay #roRoom > .jr-card[data-blkey^="Инструменти|"] > h4.jr-title:has(> .jr-medal) > .jr-sub { grid-column: 1 / -1; }
+
+/* бележката в „Каквото ти трябва сега“ — кремава плочка със златен кант, не жълта кутия с пунктир */
+html body #roomOverlay #roRoom > .pl-in ~ .pg20-hero .pg20-do {
+  background: #fff8ec !important; border: 1px solid #ecd6b8 !important; border-radius: 16px !important;
+  color: var(--pl-ink, #3b3f5c) !important; font-size: 13.5px; line-height: 1.45;
+}
+
+/* 3 · разделите: броячът ≥ 12 px и тъмна роза (#8e2350 върху #fde6ef = 7.08:1, сметнато в pl-hranene.css);
+       чертата до заглавието — златна, не лилава */
+html body #roomOverlay #roRoom > .pl-in ~ .sec-head .sec-n {
+  font: 800 12px/1.35 Nunito, Nunito-fallback, system-ui, sans-serif !important; padding: 2px 8px !important;
+  background: #fde6ef !important; color: #8e2350 !important;
+}
+html body #roomOverlay #roRoom > .pl-in ~ .sec-head::after { background: linear-gradient(90deg, #e3c39c, rgba(227, 195, 156, 0)) !important; }
+
+/* ключетата в „Настройки“ — кремав улей, включеното е розов гел */
+html body #roomOverlay #roRoom > .jr-card[data-blkey^="Инструменти|"] .set-dot {
+  background: #efe3d8; box-shadow: inset 0 1px 3px rgba(110, 76, 52, .22);
+}
+html body #roomOverlay #roRoom > .jr-card[data-blkey^="Инструменти|"] .set-tgl.on .set-dot {
+  background: linear-gradient(180deg, #e56d99, #c9447a); box-shadow: inset 0 1px 0 rgba(255, 255, 255, .35);
+}
+
+/* ±-бутоните на „Гардеробчето“ — розово хапче с тъмна роза, Nunito */
+html body #roomOverlay #roRoom > .jr-card[data-blkey^="Инструменти|Гардероб"] .wd-ctl > button {
+  border-radius: 50% !important; border: 1.5px solid #f3c6d6 !important;
+  background: #fde6ef !important; color: #8e2350 !important;
+  font: 800 20px/1 Nunito, Nunito-fallback, system-ui, sans-serif !important;
+  box-shadow: inset 0 1px 0 #fff, 0 2px 0 #ecc3d2 !important; cursor: pointer;
+}
+html body #roomOverlay #roRoom > .jr-card[data-blkey^="Инструменти|Гардероб"] .wd-ctl > button:active { transform: translateY(1.5px); box-shadow: inset 0 1px 0 #fff, 0 0 0 #ecc3d2 !important; }
+
+/* редовете в „Документите“ — топъл кант; стрелките в речника и конверторите — тъмна роза */
+html:not([data-theme="dark"]) body #roomOverlay #roRoom > .jr-card[data-blkey^="Инструменти|"] .qd-row { border-color: #efdccf !important; }
+html body #roomOverlay #roRoom > .jr-card[data-blkey^="Инструменти|"] .gl-arr,
+html body #roomOverlay #roRoom > .jr-card[data-blkey^="Инструменти|"] .cv-eq { color: #c9447a !important; }
+
+/* 5 · „Печатаемата кутия“: рисунката над името, не върху него; долният ред ≥ 12 px */
+html body #roomOverlay #roRoom > .jr-card[data-blkey^="Инструменти|"] .pb-item {
+  background: #fffdf9 !important; border: 1px solid #f1e4d9 !important; color: var(--pl-navy, #1d2a5c) !important; gap: 4px;
+}
+html body #roomOverlay #roRoom > .jr-card[data-blkey^="Инструменти|"] .pb-e {
+  display: grid !important; place-items: center; width: 44px; height: 44px; margin: 0 auto 4px; font-size: 24px; line-height: 1;
+}
+html body #roomOverlay #roRoom > .jr-card[data-blkey^="Инструменти|"] .pb-e > .pl-em.pl-pl { width: 42px !important; height: 42px !important; margin: 0 !important; vertical-align: 0 !important; }
+html body #roomOverlay #roRoom > .jr-card[data-blkey^="Инструменти|"] .pb-l { font-size: 13px !important; font-weight: 800; line-height: 1.25; color: var(--pl-navy, #1d2a5c) !important; }
+html body #roomOverlay #roRoom > .jr-card[data-blkey^="Инструменти|"] .pb-r { font-size: 12px !important; font-weight: 700; color: var(--pl-ink-soft, #6a6682) !important; }
+
+/* 6 · ⬇️/⬆️ без рисунка → стрелка в бял кръг (като стикерите по гел бутоните) */
+html body #roomOverlay #roRoom > .jr-card[data-blkey^="Инструменти|"] .jr-btn > .pl-em[data-pl-pl="0"] {
+  display: inline-block !important; width: 24px !important; height: 24px !important; vertical-align: middle !important;
+  margin: -2px 6px 0 0; border-radius: 50%; overflow: hidden; font-size: 0 !important; line-height: 0;
+  color: transparent !important; -webkit-text-fill-color: transparent !important; text-shadow: none !important;
+  background: #fff url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23c9447a' stroke-width='2.6' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M12 4.5v10M7.5 10.5 12 15l4.5-4.5M6.5 19h11'/%3E%3C/svg%3E") 50% 50% / 70% 70% no-repeat !important;
+  box-shadow: inset 0 0 0 1.5px rgba(255, 255, 255, .9), 0 2px 5px rgba(110, 30, 60, .25) !important;
+}
+html body #roomOverlay #roRoom > .jr-card[data-blkey^="Инструменти|"] .jr-btn.tl-imp > .pl-em[data-pl-pl="0"] {
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23c9447a' stroke-width='2.6' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M12 15V5M7.5 9.5 12 5l4.5 4.5M6.5 19h11'/%3E%3C/svg%3E") !important;
+}
+
+/* ═══ 🌙 НОЩ — нощно синьо вместо лилаво-черно ═══ */
+html[data-theme="dark"] body #roomOverlay #roRoom > .pl-in ~ .pg20-hero .pg20-do {
+  background: rgba(38, 51, 107, .95) !important; border-color: rgba(227, 195, 156, .4) !important; color: #e3e5f5 !important;
+}
+html[data-theme="dark"] body #roomOverlay #roRoom > .pl-in ~ .sec-head .sec-n { background: #4a2a44 !important; color: #ffd0e1 !important; }
+html[data-theme="dark"] body #roomOverlay #roRoom > .pl-in ~ .sec-head::after { background: linear-gradient(90deg, rgba(227, 195, 156, .55), rgba(227, 195, 156, 0)) !important; }
+/* редовете: чеклисти, речник, документи, „Какво предстои“, гардероб, таблици, печатаема кутия */
+html[data-theme="dark"] body #roomOverlay #roRoom > .jr-card[data-blkey^="Инструменти|"] :is(button.jr-win:not([aria-pressed="true"]), .gl-row, .qd-row:not([aria-pressed="true"]), .ev-row, .wd-cell, .cv-tbl, .pb-item) {
+  background-color: #26336b !important; border-color: rgba(255, 255, 255, .12) !important; color: #f1f2fb !important;
+  box-shadow: inset 0 0 0 1px rgba(255, 255, 255, .10), 0 1.5px 0 #18214a !important;
+}
+html[data-theme="dark"] body #roomOverlay #roRoom > .jr-card[data-blkey^="Инструменти|"] :is(button.jr-win:not([aria-pressed="true"]), .qd-row:not([aria-pressed="true"])) .jr-check {
+  background: #1b2554 !important; box-shadow: inset 0 0 0 2px rgba(201, 203, 227, .7) !important;
+}
+html[data-theme="dark"] body #roomOverlay #roRoom > .jr-card[data-blkey^="Инструменти|"] :is(.gl-term, .pb-l, .ev-t, .cv-tbl strong) { color: #fff !important; }
+html[data-theme="dark"] body #roomOverlay #roRoom > .jr-card[data-blkey^="Инструменти|"] :is(.gl-arr, .cv-eq) { color: #f59cbb !important; }
+html[data-theme="dark"] body #roomOverlay #roRoom > .jr-card[data-blkey^="Инструменти|"] :is(.jr-sub, .jr-privacy, .bg-lv, .bb-note, .cv-tbl, .ev-t small, .pb-r, .gl-def) { color: #c9cbe3 !important; opacity: 1 !important; }
+html[data-theme="dark"] body #roomOverlay #roRoom > .jr-card[data-blkey^="Инструменти|Гардероб"] .wd-ctl > button {
+  background: #2b3872 !important; border-color: rgba(255, 255, 255, .18) !important; color: #fff !important;
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, .10), 0 2px 0 #18214a !important;
+}
+html[data-theme="dark"] body #roomOverlay #roRoom > .jr-card[data-blkey^="Инструменти|"] .set-dot { background: #1b2554; box-shadow: inset 0 0 0 1.5px rgba(255, 255, 255, .22); }
+html[data-theme="dark"] body #roomOverlay #roRoom > .jr-card[data-blkey^="Инструменти|"] .set-tgl.on .set-dot { background: linear-gradient(180deg, #e56d99, #c9447a); box-shadow: none; }
+/* бележникът на редове — нощно синьо, не лилаво-черно */
+html[data-theme="dark"] body #roomOverlay #roRoom > .jr-card[data-blkey^="Инструменти|"] textarea.jr-paper {
+  background-color: #1b2554 !important;
+  background-image: repeating-linear-gradient(180deg, #1b2554 0, #1b2554 26px, #2b3872 26px, #2b3872 27px) !important;
+}
+/* край 06.10 */

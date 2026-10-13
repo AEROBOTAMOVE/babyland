@@ -266,7 +266,7 @@
       const б = е.target.closest('button'); if (!б || !с.contains(б)) return;
       const зм = б.getAttribute('data-zm');
       if (зм === 'breath') {
-        if (window.BL_BREATH && typeof BL_BREATH.open === 'function') BL_BREATH.open();
+        if (window.BL_BREATH && typeof BL_BREATH.open === 'function') { BL_BREATH.open(); дъхОтТук(); }   // 06.10: дъхОтТук() — виж края на файла
         else къмКарта(с, '5-те минути', 'Ритуалите');
         return;
       }
@@ -338,6 +338,7 @@
     document.querySelectorAll('#roRoom').forEach(стая => {
       let б = стая.querySelector(':scope > .pl-zm');
       if (!тук) { if (б) б.remove(); return; }
+      белиПлюсове(стая);                                                // 06.10 — виж края на файла
       if (!б) {
         // само в истинската стая: картата „5-те минути“ (women2.js:629) е вътре
         if (!карта(стая, '5-те минути')) return;
@@ -367,4 +368,25 @@
   window.addEventListener('storage', е => { if (!е.key || е.key === 'bl_water' || е.key === 'bl_wins') отложено(); });
   if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', върви); else върви();
   window.BL_PL_ZAMAMA = { сложи, пъти: () => пъти };
+
+  /* 06.10 · два дребни DOM щриха за вида (логиката на картите не се пипа):
+     · белиПлюсове — бутоните „+“ (18 в стаята, мерено) получават класа .pl-zm-plus, за да ги облече
+       css/pl-zamama.css като кръгло действие в тъмна роза. CSS не може да избере бутон по текста му.
+     · дъхОтТук — дишането (extras.js, общ прозорец #breathOverlay) получава .pl-zm-dah САМО когато е
+       отворено от „Започни сега“ тук; щом прозорецът се скрие (по който и да е път — следим атрибута
+       hidden), класът се маха — другите стаи виждат дишането си както досега.
+     ПЪТ НАЗАД: махни този блок и двата реда, които го викат (белиПлюсове(стая) в сложи(),
+     дъхОтТук() при data-zm="breath"). */
+  function белиПлюсове(стая) {
+    стая.querySelectorAll('button.jr-chip:not(.pl-zm-plus)').forEach(б => { if (б.textContent.trim() === '+') б.classList.add('pl-zm-plus'); });
+  }
+  function дъхОтТук() {
+    const ов = document.getElementById('breathOverlay');
+    if (!ов) return;
+    ов.classList.add('pl-zm-dah');
+    if (!ов.hasAttribute('data-pl-zm')) {
+      ов.setAttribute('data-pl-zm', '1');
+      new MutationObserver(() => { if (ов.hidden) ов.classList.remove('pl-zm-dah'); }).observe(ов, { attributes: true, attributeFilter: ['hidden'] });
+    }
+  }
 })();

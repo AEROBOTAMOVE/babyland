@@ -246,3 +246,120 @@ html[data-theme="dark"] .pl-zm-row[aria-checked="true"] .pl-zm-heart svg { fill:
 @media (prefers-reduced-motion: reduce) {
   .pl-zm-box, .pl-zm-box svg, .pl-zm-nic, #roRoom .pl-zm-row, .pl-zm-heart svg { transition: none; }
 }
+
+/* ═══════════════════════════════════════════════════════════════════════════════
+   06.10 · „ЖЕНАТА В МЕН“ — ВЪТРЕШНОСТТА НА КАРТИТЕ ДО ПРЕМИУМ НИВО
+   МЕРЕНО в тази сесия (cdp_proba + zm_dom1.js / zm_int.js, светла и тъмна, профил baby):
+     · 13 полета textarea.jr-note — шрифт monospace 13.3 px (системният на браузъра);
+     · 6 заглавия („Списъкът, който още не съм направила“, „Мечтите ми — тогава и сега“,
+       „Когато вкъщи не е безопасно“, „Коя бях · коя съм · коя ставам“, „Обратното броене до
+       работа“, „Тази седмица — за всички нас“) — медалът стоеше САМ на ред, текстът падаше
+       под него (flex-wrap: текстът е анонимен flex елемент → цял се пренася на нов ред);
+     · „Ангелските числа 11:11“ — единственото заглавие без медал (няма емоджи в него);
+     · 18 бутона „+“ — кремав чип 45×45 с „+“ от 12.5 px (почти невидим);
+     · след действие (дата / изтеглена карта / 5 отговора) излизат стари кутии: #fbeef5
+       (розово-лилаво) в .wm-elem/.wm-py/.wm-chin/.wm-pal/.wh-text/.wm-lrow/.wm-timer,
+       градиент #fbeef5→#fff в .rt-box/.wm-rittoday/.wm-ritrow/.wm-cvrow, .wm-tarot с
+       розово-лилав градиент и 2 px рамка; нощем същите са в слива #3a2436 / #342f4e;
+     · текстът в тях е в стария сливов цвят (#6b3a5e, #4a3550, #4a2b3d, #7a4f86);
+     · „Започни сега“ отваря дишането — кръгът там е розово→ЛИЛАВО (#fbd3e6→#b9a7e0, inline
+       от extras.js) върху лилав воал rgba(35,30,55,.82). Пипаме го САМО когато е отворено
+       от тази стая (класът .pl-zm-dah го слага js/pl-zamama.js).
+   Всичко е вързано за .ro-panel.ro-rose — другите стаи не се пипат.
+   ПЪТ НАЗАД: махни този блок (и блока „06.10“ в края на js/pl-zamama.js).
+   ═══════════════════════════════════════════════════════════════════════════════ */
+
+/* 1 · полетата за писане — шрифтът на приложението, не monospace */
+html body #roomOverlay .ro-panel.ro-rose textarea.jr-note {
+  font-family: Nunito, Nunito-fallback, system-ui, sans-serif !important; font-size: 15px !important; font-weight: 600;
+  line-height: 1.5 !important; padding: 12px 14px !important; resize: vertical;
+}
+html body #roomOverlay .ro-panel.ro-rose :is(.wm-slot, .wt-o) { font-family: Nunito, Nunito-fallback, system-ui, sans-serif !important; }
+/* нощем календарчето в полето за дата беше тъмно върху тъмно */
+html[data-theme="dark"] body #roomOverlay .ro-panel.ro-rose input[type="date"] { color-scheme: dark; }
+
+/* 2 · заглавията — медалът вляво, текстът до него (на колкото реда трябва), подзаглавието отдолу.
+   grid, не flex: анонимният текст влиза във втората колона и се пречупва в нея. Карфицата и
+   стрелката са absolute (мерено) — мрежата не ги мести. */
+html body #roomOverlay .ro-panel.ro-rose .jr-card > h4.jr-title:has(> .jr-medal),
+html body #roomOverlay .ro-panel.ro-rose .jr-card[data-blkey$="|Ангелските числа 11:11"] > h4.jr-title {
+  display: grid !important; grid-template-columns: auto minmax(0, 1fr); align-items: center; column-gap: 9px; row-gap: 2px;
+}
+html body #roomOverlay .ro-panel.ro-rose .jr-card > h4.jr-title:has(> .jr-medal) > .jr-medal { grid-column: 1; margin: 0; }
+html body #roomOverlay .ro-panel.ro-rose .jr-card > h4.jr-title > .jr-sub { grid-column: 1 / -1; }
+/* медалът на „Ангелските числа“ — плюшеният гълъб (ico-i [0,1], тонът на 🕊️ от pl-plyush.js) */
+html body #roomOverlay .ro-panel.ro-rose .jr-card[data-blkey$="|Ангелските числа 11:11"] > h4.jr-title::before {
+  content: ''; grid-column: 1; grid-row: 1; width: 34px; height: 34px; border-radius: 50%;
+  background: #dfeafb url(../img/art/ico-i.webp) 33.333% 0% / 400% 400% no-repeat; background-blend-mode: multiply;
+  box-shadow: inset 0 0 0 1.5px rgba(255, 255, 255, .9), 0 2px 5px rgba(110, 76, 52, .14);
+}
+html[data-theme="dark"] body #roomOverlay .ro-panel.ro-rose .jr-card[data-blkey$="|Ангелските числа 11:11"] > h4.jr-title::before {
+  box-shadow: inset 0 0 0 1.5px rgba(255, 255, 255, .85), 0 2px 6px rgba(0, 0, 0, .35);
+}
+
+/* 3 · „+“ (запиши) — малко кръгло действие: тъмна роза, бял знак 24 px (бяло върху #a92f63 = 6.9:1) */
+html body #roomOverlay .ro-panel.ro-rose .jr-chip.jr-chip.pl-zm-plus {
+  width: 46px; height: 46px; min-width: 46px !important; min-height: 46px !important; padding: 0 !important; flex: none;
+  display: inline-grid; place-items: center; border-radius: 50% !important; border: 0 !important;
+  background: radial-gradient(90% 55% at 50% 0, rgba(255, 255, 255, .38) 0, rgba(255, 255, 255, 0) 70%), linear-gradient(180deg, #c9447a 0, #a92f63 100%) !important;
+  color: #fff !important; font: 800 25px/1 Nunito, Nunito-fallback, system-ui, sans-serif !important; text-shadow: 0 1px 0 rgba(90, 10, 40, .35);
+  box-shadow: inset 0 1.5px 0 rgba(255, 255, 255, .45), inset 0 -3px 0 rgba(90, 10, 40, .22), 0 3px 0 #8e2754, 0 8px 16px rgba(169, 47, 99, .28) !important;
+}
+html body #roomOverlay .ro-panel.ro-rose .jr-chip.jr-chip.pl-zm-plus:active { transform: translateY(2px); box-shadow: inset 0 1.5px 0 rgba(255, 255, 255, .4), 0 1px 0 #8e2754, 0 3px 8px rgba(169, 47, 99, .25) !important; }
+html[data-theme="dark"] body #roomOverlay .ro-panel.ro-rose .jr-chip.jr-chip.pl-zm-plus { box-shadow: inset 0 1.5px 0 rgba(255, 255, 255, .4), inset 0 -3px 0 rgba(90, 10, 40, .22), 0 3px 0 #5a1838, 0 8px 16px rgba(0, 0, 0, .35) !important; }
+
+/* 4 · кутиите в картите — кремав лист с топъл кант вместо розово-лилавото */
+html body #roomOverlay .ro-panel.ro-rose .jr-card :is(.wm-elem, .wm-py, .wm-chin, .wm-pal, .wh-text, .wm-wishes p, .cp-box, .wt-result) {
+  background: #fffdf9 !important; border: 0 !important; border-radius: 16px !important; box-shadow: inset 0 0 0 1px #f1e4d9 !important; color: #3b3f5c !important;
+}
+html body #roomOverlay .ro-panel.ro-rose .jr-card :is(.wh-text, .cp-box) { box-shadow: inset 0 0 0 1px #f1e4d9, inset 3px 0 0 #e3c39c !important; }
+/* „днешното“ (ритуалът, днешната карта) — същият лист със златна линия: тя носи смисъла „днес“ */
+html body #roomOverlay .ro-panel.ro-rose .jr-card :is(.rt-box, .wm-rittoday) {
+  background: #fffdf9 !important; background-image: none !important; border: 1px solid #e3c39c !important; border-radius: 18px !important;
+  box-shadow: inset 0 0 0 3px #fffdf9, inset 0 0 0 4px rgba(227, 195, 156, .45), 0 4px 12px rgba(110, 76, 52, .07) !important;
+}
+html body #roomOverlay .ro-panel.ro-rose .jr-card .wm-ritrow:not(.wm-rittoday) { background-image: none !important; border: 0 !important; }
+html body #roomOverlay .ro-panel.ro-rose .jr-card :is(.wm-lrow, .wm-cvrow):not(.on) { background: #fffdf9 !important; background-image: none !important; border: 1px solid #efdccf !important; color: #3b3f5c !important; }
+html body #roomOverlay .ro-panel.ro-rose .jr-card .wm-cvrow.on { background: #fde6ef !important; background-image: none !important; border: 1px solid #efa3c1 !important; color: #1d2a5c !important; }
+html body #roomOverlay .ro-panel.ro-rose .jr-card .wm-timer { background: #f1e4d9 !important; }
+html body #roomOverlay .ro-panel.ro-rose .jr-card .wm-timer i { background: linear-gradient(90deg, #d95a8e, #e3c39c) !important; }
+/* картата на деня — кремав лист, тънък златен кант и шев отвътре; името — serif, тъмносиньо */
+html body #roomOverlay .ro-panel.ro-rose .jr-card .wm-tarot {
+  background: linear-gradient(180deg, #fffdf9 0, #fff8f2 100%) !important; border: 1px solid #e3c39c !important; border-radius: 22px !important;
+  box-shadow: inset 0 0 0 5px #fffdf9, inset 0 0 0 6px rgba(217, 185, 143, .55), 0 6px 16px rgba(110, 76, 52, .10) !important; padding: 18px 16px !important;
+}
+html body #roomOverlay .ro-panel.ro-rose .jr-card .wm-tarot strong { font-family: var(--pl-serif, Georgia, serif) !important; font-size: 20px !important; color: #1d2a5c !important; letter-spacing: -.2px; }
+html body #roomOverlay .ro-panel.ro-rose .jr-card .wm-tarot p { color: #3b3f5c; font-size: 14.5px; }
+/* текстът в стария сливов цвят → мастилото на премиума */
+html body #roomOverlay .ro-panel.ro-rose .jr-card :is(.wm-me, .wm-horo, .wm-mtxt, .wm-num p, .wm-moon p, .wm-pal p, .wt-desc, .cp-t, .rt-d, .wm-cvrow small, .wm-lt small) { color: #3b3f5c !important; }
+html body #roomOverlay .ro-panel.ro-rose .jr-card :is(.wm-me strong, .wm-name, .wm-num strong, .wm-moon strong, .wm-pal strong, .wt-q, .rt-t, .pl-h, .cm-row summary, .wm-qt) { color: #1d2a5c !important; }
+html body #roomOverlay .ro-panel.ro-rose .jr-card :is(.wm-pal small, .wm-mrow small) { color: #6a6682 !important; opacity: 1 !important; }
+html body #roomOverlay .ro-panel.ro-rose .jr-card :is(.wt-name, .rt-out, .cp-why) { color: #a92f63 !important; }
+html body #roomOverlay .ro-panel.ro-rose .jr-card .wm-name { font-family: var(--pl-serif, Georgia, serif); font-size: 17px; font-weight: 700; }
+html body #roomOverlay .ro-panel.ro-rose .jr-card .wm-swatch i { width: 38px; height: 38px; border: 0; box-shadow: inset 0 0 0 2px rgba(255, 255, 255, .85), 0 2px 5px rgba(110, 76, 52, .18); }
+html body #roomOverlay .ro-panel.ro-rose .jr-card .cm-row summary { font-weight: 800; min-height: 44px; display: flex; align-items: center; }
+
+/* нощ — същите предмети в нощно синьо, без слива */
+html[data-theme="dark"] body #roomOverlay .ro-panel.ro-rose .jr-card :is(.wm-elem, .wm-py, .wm-chin, .wm-pal, .wh-text, .wm-wishes p, .cp-box, .wt-result, .wm-lrow, .wm-cvrow, .wm-ritrow, .wm-slot, .cm-row, .pl-pin) {
+  background: #2b3872 !important; background-image: none !important; border: 0 !important;
+  box-shadow: inset 0 0 0 1px rgba(255, 255, 255, .14) !important; color: #f1f2fb !important;
+}
+html[data-theme="dark"] body #roomOverlay .ro-panel.ro-rose .jr-card :is(.wh-text, .cp-box) { box-shadow: inset 0 0 0 1px rgba(255, 255, 255, .14), inset 3px 0 0 #d9bf82 !important; }
+html[data-theme="dark"] body #roomOverlay .ro-panel.ro-rose .jr-card :is(.rt-box, .wm-rittoday, .wm-tarot) {
+  background: #2b3872 !important; background-image: none !important; border: 1px solid rgba(217, 191, 130, .6) !important;
+  box-shadow: inset 0 0 0 4px #2b3872, inset 0 0 0 5px rgba(217, 191, 130, .3), 0 6px 16px rgba(0, 0, 0, .3) !important; color: #f1f2fb !important;
+}
+html[data-theme="dark"] body #roomOverlay .ro-panel.ro-rose .jr-card .wm-cvrow.on { background: #3a3f80 !important; box-shadow: inset 0 0 0 1.5px rgba(245, 156, 187, .6) !important; }
+html[data-theme="dark"] body #roomOverlay .ro-panel.ro-rose .jr-card .wm-timer { background: #1b2554 !important; }
+html[data-theme="dark"] body #roomOverlay .ro-panel.ro-rose .jr-card :is(.wm-me, .wm-horo, .wm-mtxt, .wm-num p, .wm-moon p, .wm-pal p, .wt-desc, .cp-t, .rt-d, .wm-tarot p, .wm-cvrow small, .wm-lt small, .wm-pal small, .wm-mrow small) { color: #c9cbe3 !important; }
+html[data-theme="dark"] body #roomOverlay .ro-panel.ro-rose .jr-card :is(.wm-me strong, .wm-name, .wm-num strong, .wm-moon strong, .wm-pal strong, .wt-q, .rt-t, .pl-h, .cm-row summary, .wm-qt, .wm-tarot strong) { color: #fff !important; }
+html[data-theme="dark"] body #roomOverlay .ro-panel.ro-rose .jr-card :is(.wt-name, .rt-out, .cp-why) { color: #f59cbb !important; }
+
+/* 5 · дишането от „Започни сега“ — розов перлен кръг със златен пръстен върху нощно синьо (без лилавото) */
+#breathOverlay.pl-zm-dah { background: rgba(20, 29, 70, .86) !important; }
+#breathOverlay.pl-zm-dah #brCircle {
+  background: radial-gradient(circle at 36% 28%, #ffffff 0, #fff3f7 30%, #fbd3e3 64%, #f2a9c6 100%) !important;
+  box-shadow: 0 0 0 5px rgba(255, 255, 255, .55), 0 0 0 7px rgba(227, 195, 156, .9), 0 18px 44px rgba(200, 69, 122, .38), inset 0 -10px 24px rgba(200, 69, 122, .16) !important;
+}
+#breathOverlay.pl-zm-dah #brText { color: #1d2a5c !important; text-shadow: 0 1px 0 rgba(255, 255, 255, .7) !important; font-weight: 800; }
+#breathOverlay.pl-zm-dah .br-count { color: #f3dfa8 !important; font-size: 14px; }

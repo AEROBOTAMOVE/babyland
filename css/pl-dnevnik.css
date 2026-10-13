@@ -701,3 +701,176 @@ html[data-theme="dark"] body #roomOverlay .ro-lav .jr-card .pin-btn { color: #c9
 html[data-theme="dark"] body #roomOverlay .ro-lav .jr-card .pin-btn::before { background: #c9cbe3 !important; }
 html[data-theme="dark"] body #roomOverlay .ro-lav .jr-card .pin-btn.on { color: #ffc9dd !important; }
 html[data-theme="dark"] body #roomOverlay .ro-lav .jr-card .pin-btn.on::before { background: #ffc9dd !important; }
+
+/* ═══════════════════════════════════════════════════════════════════════════════
+   06.10 · ТРЕТА ОБИКОЛКА — каквото още беше от стария свят или счупено.
+   МЕРЕНО в тази сесия (scratchpad/dn06_meri.js, 390×844, светло; снимки dn06_L_*/dn06_D_*):
+     · 2 заглавия с медальон ОТДЕЛНО на първия ред („Банка с идеи за разпускане“,
+       „Сънят му × настроението ти“) — flex-wrap праща дългия текст на нов ред → дупка;
+     · 3 подсказки по-дълги от полето (271>269, 299>281, 179>175 px при 15px) → рязан текст;
+       посвещението в „Годишникът“ иска 98px, полето е 72px → третият ред отрязан;
+     · СТАР СТИЛ: .br-circle („Дишай с формата“) — розово→лилав градиент (247,168,203)+(185,167,224);
+       .rv-wave („Историята ни“) лилаво #b9a7e0 + безкрайно люлеене + голи 〰️;
+       .dp-today („Снимка на деня“) лилав пунктир #c3b1ea; .jr-relaxcard лилаво→розов градиент;
+     · седмицата: 7 плоски лавандулови кутийки (#f7f4fc, радиус 10) + безкрайно ckToday;
+     · часовникът „Време за мен“ сиво rgb(90,84,112) вместо тъмносиньо;
+     · иконката в НАЧАЛОТО на бутон („▶ Започни моето време“, „▶️ Дишай с мен“, „📥 Подреди“…)
+       е и :last-child → §13 я дърпаше като стикер НАКРАЯ (margin-right −.06em) → долепена до буквата;
+     · .ask-live „на линия“ 10.5px (под 11px).
+   Всичко е под ключ „.ro-lav“ (+ #bubGame — играта се пуска само от тази стая).
+   ПЪТ НАЗАД: махни този блок до края на файла. */
+
+/* ── 24 · ЗАГЛАВИЕТО: медальонът и текстът са ДВЕ КОЛОНИ (grid), .jr-sub — цял ред отдолу ──
+   Карфицата и ▾ са position:absolute (mega.css:628/641) → не влизат в решетката. */
+html body #roomOverlay .ro-lav .jr-card > h4.jr-title:has(> .jr-medal, > .pl-dn-med) {
+  display: grid; grid-template-columns: auto minmax(0, 1fr); align-items: center; column-gap: 9px; row-gap: 2px;
+}
+html body #roomOverlay .ro-lav .jr-card > h4.jr-title:has(> .jr-medal, > .pl-dn-med) > .jr-sub { grid-column: 1 / -1; }
+
+/* ── 25 · ПОЛЕТАТА НА ЕДИН РЕД: подсказката да се събира (14px вместо 15px, полето вляво 24px) ── */
+html body #roomOverlay .ro-lav .jr-card input.jr-word {
+  font-size: 14px !important; padding-left: 24px !important;
+  background-position: 14px 0, 0 7px !important;
+}
+/* посвещението в „Годишникът“ — три реда подсказка се виждат цели */
+html body #roomOverlay .ro-lav .jr-card textarea.yb2-dedic { min-height: 102px !important; }
+
+/* ── 26 · ИКОНКАТА В НАЧАЛОТО НА БУТОНА — дъх отдясно (поправя §13) ──
+   js/pl-plyush.js слага .pl-em-sled САМО на стикера СЛЕД текст; без него стикерът е отпред. */
+html body #roomOverlay .ro-lav .jr-btn > .pl-em:last-child:not(.pl-em-sled),
+html body #roomOverlay .ro-lav .pl-gel > .pl-em:last-child:not(.pl-em-sled),
+html body #roomOverlay .ro-lav .jr-chip > .pl-em:last-child:not(.pl-em-sled) {
+  margin-left: -.3em !important; margin-right: .3em !important;
+}
+
+/* ── 27 · „ДИШАЙ С ФОРМАТА“ — розов филцов диск със златен ръб и шев (беше розово→лилава мъгла) ── */
+html body #roomOverlay .ro-lav .br-circle {
+  position: relative;
+  background-color: #fde6ef;
+  background-image: radial-gradient(circle at 34% 26%, rgba(255, 255, 255, .95) 0, rgba(255, 255, 255, 0) 46%), radial-gradient(circle at 60% 110%, #f6c3d7 0, rgba(246, 195, 215, 0) 70%), var(--ui-felt);
+  background-size: auto, auto, 120px 120px;
+  background-blend-mode: normal, normal, multiply;
+  border: 3px solid #fff;
+  outline: 1.5px dashed rgba(217, 116, 157, .45); outline-offset: -10px;
+  box-shadow: 0 0 0 1.5px #e3c39c, 0 4px 0 rgba(198, 166, 134, .35), 0 14px 26px rgba(229, 109, 153, .22);
+}
+html body #roomOverlay .ro-lav .br-circle .br-word { color: #1d2a5c !important; text-shadow: none !important; font-weight: 800; }
+
+/* ── 28 · „ИСТОРИЯТА НИ“ — разделителят е златна вълна, не три голи 〰️ в лилаво ──
+   Текстът остава в DOM непокътнат (font-size 0 + прозрачен); вълната е фон. Без безкрайно люлеене. */
+html body #roomOverlay .ro-lav .rv-card .rv-wave {
+  display: block; width: 96px; height: 12px; margin: 4px auto 6px; overflow: hidden;
+  font-size: 0 !important; letter-spacing: 0 !important; color: transparent !important; -webkit-text-fill-color: transparent;
+  background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='24' height='10' viewBox='0 0 24 10'%3E%3Cpath d='M1 5 Q6.5 0.5 12 5 T23 5' fill='none' stroke='%23d9b98f' stroke-width='2' stroke-linecap='round'/%3E%3C/svg%3E") 0 50% / 24px 10px repeat-x;
+  animation: none !important;
+}
+html body #roomOverlay .ro-lav .rv-card .rv-wave > * { display: none !important; }
+
+/* ── 29 · „СНИМКА НА ДЕНЯ“ — кремав филц със златен пунктир (беше лилав пунктир) ── */
+html body #roomOverlay .ro-lav .dp-today {
+  background-color: #fffaf3 !important; background-image: var(--ui-felt) !important; background-size: 150px 150px !important; background-blend-mode: multiply !important;
+  border: 1.5px dashed rgba(196, 160, 124, .75) !important; border-radius: 18px !important;
+  box-shadow: inset 0 2px 4px rgba(120, 88, 58, .07);
+  color: #5d596f !important;
+}
+html body #roomOverlay .ro-lav .dp-today .dp-plus { color: #e56d99 !important; }
+
+/* ── 30 · ИДЕЯТА ОТ БАНКАТА — филцова карта със златна черта (беше лилаво→розов градиент) ── */
+html body #roomOverlay .ro-lav .jr-relaxcard {
+  position: relative;
+  background-color: #fffaf3 !important; background-image: var(--ui-felt) !important; background-size: 150px 150px !important; background-blend-mode: multiply !important;
+  border: 1px solid rgba(214, 186, 158, .7); border-left: 4px solid #e3c39c;
+  border-radius: 18px; box-shadow: 0 3px 0 rgba(198, 166, 134, .3), 0 10px 18px rgba(110, 76, 52, .1);
+  color: #1d2a5c !important; font-size: 14.5px;
+}
+/* „Подреди мислите“ — въпросът и кофите като листчета от тефтера */
+html body #roomOverlay .ro-lav .bd-ask, html body #roomOverlay .ro-lav .bd-bucket {
+  background-color: #fffaf3; background-image: var(--ui-felt); background-size: 150px 150px; background-blend-mode: multiply;
+  border: 1px solid rgba(214, 186, 158, .65); border-radius: 18px; padding: 12px 14px;
+  box-shadow: 0 2px 0 rgba(198, 166, 134, .28);
+}
+html body #roomOverlay .ro-lav .bd-q { font-family: var(--pl-serif, Georgia, serif); font-size: 16px; color: #1d2a5c; }
+html body #roomOverlay .ro-lav .bd-h { color: #1d2a5c; opacity: 1; font-size: 13.5px; }
+html body #roomOverlay .ro-lav .bd-item { color: #3b3f5c; font-size: 14px; }
+
+/* ── 31 · СЕДМИЦАТА — филцови плочки с шев, днешната с розов ръб; без безкрайно пулсиране ── */
+html body #roomOverlay .ro-lav .jr-week .jr-day {
+  background-image: var(--ui-felt); background-size: 120px 120px; background-blend-mode: multiply;
+  border: 1px solid rgba(214, 186, 158, .62); border-radius: 14px;
+  box-shadow: 0 2px 0 rgba(198, 166, 134, .3), inset 0 1px 0 rgba(255, 255, 255, .9);
+}
+html body #roomOverlay .ro-lav .jr-week .jr-day:not([class*="ck-d"]) { background-color: #fffaf3; }
+html body #roomOverlay .ro-lav .jr-week .jr-day.today {
+  border-color: rgba(225, 140, 176, .8);
+  box-shadow: 0 0 0 2px rgba(246, 194, 214, .9), 0 2px 0 rgba(213, 150, 179, .35);
+  animation: plDnLegna .5s cubic-bezier(.22, .9, .3, 1) .4s backwards;
+}
+
+/* ── 32 · ЧАСОВНИКЪТ — тъмносиньо, цифри с еднаква ширина (да не подскачат) ── */
+html body #roomOverlay .ro-lav .jr-clock { color: #1d2a5c !important; font-variant-numeric: tabular-nums lining-nums; }
+
+/* ── 33 · ДРЕБНИЯТ НАДПИС „на линия“ — 11.5px, не 10.5px ── */
+html body #roomOverlay .ro-lav .ask-live { font-size: 11.5px !important; }
+
+/* ── 34 · ЛИСТЧЕТАТА ПРИ „СКЪСАЙ ГО!“ — хартия от тефтера (кремаво с черти) ── */
+html body #roomOverlay .ro-lav .jr-strip {
+  background: #fffdf5 repeating-linear-gradient(180deg, rgba(0, 0, 0, 0) 0 25px, rgba(150, 124, 172, .22) 25px 26px);
+  box-shadow: 0 4px 10px rgba(110, 76, 52, .2);
+}
+html body #roomOverlay .ro-lav .jr-stripin { color: #2b2450; font-family: var(--pl-serif, Georgia, serif); }
+
+/* ── 35 · „ПУКНИ БАЛОНЧЕТО“ (#bubGame, пуска се само оттук) — нощно синьо небе, не лилава мъгла ── */
+html body #bubGame.bub-overlay {
+  background:
+    radial-gradient(1.5px 1.5px at 18% 22%, rgba(255, 236, 200, .9) 50%, rgba(255, 236, 200, 0) 51%),
+    radial-gradient(1.5px 1.5px at 72% 14%, rgba(255, 236, 200, .8) 50%, rgba(255, 236, 200, 0) 51%),
+    radial-gradient(2px 2px at 86% 38%, rgba(255, 236, 200, .7) 50%, rgba(255, 236, 200, 0) 51%),
+    radial-gradient(1.5px 1.5px at 34% 56%, rgba(255, 236, 200, .6) 50%, rgba(255, 236, 200, 0) 51%),
+    linear-gradient(180deg, #24316b 0%, #1d2a5c 45%, #121a40 100%);
+}
+html body #bubGame .bub-hud {
+  background: rgba(31, 43, 92, .95); border: 1px solid rgba(227, 195, 156, .55);
+  box-shadow: 0 6px 16px rgba(0, 0, 0, .3); color: #fff; font-variant-numeric: tabular-nums;
+}
+html body #bubGame .bub-hud .jr-chip {
+  min-height: 40px; padding: 0 16px; border: 0 !important; border-radius: 999px;
+  background: linear-gradient(180deg, #c9447a, #a92f63) !important; color: #fff !important; font-weight: 800;
+}
+html body #bubGame .bub-done p { color: #fff; font-family: var(--pl-serif, Georgia, serif) !important; }
+html body #bubGame .bub-done .bub-sub { color: #c9cbe3; font-family: Nunito, Nunito-fallback, system-ui, sans-serif !important; }
+
+/* ── 36 · НОЩ (html[data-theme="dark"]) — карти rgba(31,43,92,.95), бели заглавия, #c9cbe3 ── */
+html[data-theme="dark"] body #roomOverlay .ro-lav .br-circle {
+  background-color: #3d2f63; background-image: radial-gradient(circle at 34% 26%, rgba(255, 255, 255, .22) 0, rgba(255, 255, 255, 0) 50%), radial-gradient(circle at 60% 110%, #6b3f72 0, rgba(107, 63, 114, 0) 70%);
+  border-color: rgba(255, 255, 255, .85); outline-color: rgba(245, 156, 187, .5);
+  box-shadow: 0 0 0 1.5px rgba(227, 195, 156, .6), 0 4px 0 rgba(0, 0, 0, .3), 0 14px 26px rgba(0, 0, 0, .35);
+}
+html[data-theme="dark"] body #roomOverlay .ro-lav .br-circle .br-word { color: #fff !important; }
+html[data-theme="dark"] body #roomOverlay .ro-lav .dp-today {
+  background-color: rgba(31, 43, 92, .95) !important; background-image: none !important;
+  border-color: rgba(255, 255, 255, .3) !important; color: #c9cbe3 !important;
+}
+html[data-theme="dark"] body #roomOverlay .ro-lav .dp-today .dp-plus { color: #f59cbb !important; }
+html[data-theme="dark"] body #roomOverlay .ro-lav .jr-relaxcard,
+html[data-theme="dark"] body #roomOverlay .ro-lav .bd-ask,
+html[data-theme="dark"] body #roomOverlay .ro-lav .bd-bucket {
+  background-color: #26336b !important; background-image: none !important;
+  border-color: rgba(255, 255, 255, .16) !important; box-shadow: 0 3px 0 rgba(0, 0, 0, .3) !important;
+  color: #fff !important;
+}
+html[data-theme="dark"] body #roomOverlay .ro-lav .jr-relaxcard { border-left-color: #e3c39c !important; }
+html[data-theme="dark"] body #roomOverlay .ro-lav .bd-q,
+html[data-theme="dark"] body #roomOverlay .ro-lav .bd-h { color: #fff; }
+html[data-theme="dark"] body #roomOverlay .ro-lav .bd-item { color: #c9cbe3; }
+/* 🪤 dark.css:73-88 слага „background: #342f4e !important“ (лилаво) на .jr-day → тук също !important */
+html[data-theme="dark"] body #roomOverlay .ro-lav .jr-week .jr-day { background-image: none !important; border-color: rgba(255, 255, 255, .15); box-shadow: 0 2px 0 rgba(0, 0, 0, .3); color: #c9cbe3; }
+html[data-theme="dark"] body #roomOverlay .ro-lav .jr-week .jr-day:not([class*="ck-d"]) { background-color: #26336b !important; }
+html[data-theme="dark"] body #roomOverlay .ro-lav .jr-week .jr-day.today { border-color: rgba(245, 156, 187, .75); box-shadow: 0 0 0 2px rgba(245, 156, 187, .35), 0 2px 0 rgba(0, 0, 0, .3); }
+html[data-theme="dark"] body #roomOverlay .ro-lav .jr-clock { color: #fff !important; }
+html[data-theme="dark"] body #roomOverlay .ro-lav .jr-strip { background: #1e2858 repeating-linear-gradient(180deg, rgba(0, 0, 0, 0) 0 25px, rgba(255, 255, 255, .14) 25px 26px); }
+html[data-theme="dark"] body #roomOverlay .ro-lav .jr-stripin { color: #fff; }
+
+/* ── 37 · БЕЗ ДВИЖЕНИЕ, АКО ТЕЛЕФОНЪТ ТАКА КАЗВА ── */
+@media (prefers-reduced-motion: reduce) {
+  html body #roomOverlay .ro-lav .jr-week .jr-day.today { animation: none !important; }
+}

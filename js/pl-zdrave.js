@@ -527,3 +527,95 @@
   if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', върви); else върви();
   window.BL_PL_ZDRAVE_OBLEKLO = { мини, брой: () => ({ рисунки: сложени, обвити }) };
 })();
+
+/* ═══════════════════════════════════════════════════════════════════════════════
+   06.10 · ПАНЕЛЪТ С ПЪРВАТА ПОМОЩ (#faOverlay) — ПЛЮШ ВМЕСТО ГОЛИТЕ ЕМОДЖИТА
+   Мерено (scratchpad/snimki/zd6_a_l_10.jpg): панелът (rooms6.js отвори()) живее в <html>, извън
+   #roomOverlay, и нито модулът горе, нито pl-plyush.js го стигат — заглавието („🫁 Задавяне“),
+   „⛔ …“, „📞 112“ и препратката „🫀 Не диша…“ в стъпките бяха голи системни емоджита.
+   Същият похват като модула горе: емоджито остава буква в буква в textContent (обвито в
+   span.pl-em и скрито), рисунката е inline на елемента (адресът — спрямо документа).
+   Текстът на стъпките НЕ се пипа. Пише само веднъж на елемент (data-pl-zd-fa) → без безкраен кръг.
+   Вида на панела дава css/pl-zdrave.css (раздел 9 от блока 06.10).
+   ПЪТ НАЗАД: махни този блок. */
+(function () {
+  'use strict';
+  if (window.BL_PL_ZDRAVE_FA) return;
+  const ТОН = { p: '#fde6ef', s: '#dfeafb', m: '#dff2e7', l: '#ece4f8', b: '#fff0d4', c: '#fde5d8' };
+  const ЛИСТ = { a: 'ico-a', b: 'ico-b', c: 'ico-c', e: 'ico-e', g: 'ico-g' };
+  // същите клетки като в модула горе и в pl-plyush.js (огънят е оттам: c 1,1)
+  const КАРТА = {
+    '\u{1FAC1}': ['b', 0, 2, 's'],   // Задавяне      → облаче с дъх
+    '\u{1F525}': ['c', 1, 1, 'c'],   // Изгаряне      → като в pl-plyush.js
+    '\u{1F915}': ['b', 3, 2, 'c'],   // Удар в главата → навито бинтче
+    '\u{1FA78}': ['e', 0, 0, 'p'],   // Кървене       → навита кърпа
+    '⚡': ['b', 3, 0, 's'],      // Гърч          → будилник
+    '\u{1F41D}': ['a', 2, 2, 'b'],   // Алергия       → филцов триъгълник
+    '\u{1FAC0}': ['g', 1, 1, 'p'],   // Реанимация    → сърце с бяло кръстче
+    '⛔': ['a', 2, 2, 'c'],      // „никога“      → филцов триъгълник
+    '\u{1F4DE}': ['e', 1, 3, 's'],   // 112           → филцова слушалка
+  };
+  const ЕМО = /\p{Extended_Pictographic}(?:️|‍\p{Extended_Pictographic}|\p{Emoji_Modifier})*/u;
+  const ключ = е => е.replace(/️/g, '');
+  let обвити = 0;
+
+  function обвий(е) {
+    if (!е || е.dataset.plZdFa) return;
+    е.dataset.plZdFa = '1';
+    const преди = е.textContent;
+    const мои = [];
+    const възли = [];
+    for (let в = е.firstChild; в; в = в.nextSibling) if (в.nodeType === 3 && в.nodeValue) възли.push(в);
+    for (const в of възли) {
+      let текущ = в;
+      for (let пазач = 0; пазач < 6 && текущ; пазач++) {
+        const м = текущ.nodeValue.match(ЕМО);
+        if (!м || !КАРТА[ключ(м[0])]) break;
+        const сл = текущ.splitText(м.index);
+        сл.nodeValue = сл.nodeValue.slice(м[0].length);
+        const с = document.createElement('span');
+        с.className = 'pl-em pl-pl pl-pl-i';
+        с.setAttribute('aria-hidden', 'true');
+        с.textContent = м[0];
+        const [л, р, к, т] = КАРТА[ключ(м[0])];
+        с.style.backgroundImage = 'url(img/art/' + ЛИСТ[л] + '.webp)';
+        с.style.backgroundPosition = (к * 100 / 3).toFixed(3) + '% ' + (р * 100 / 3).toFixed(3) + '%';
+        с.style.backgroundSize = '400% 400%';
+        с.style.setProperty('--pl-plt', ТОН[т]);
+        с.dataset.plPl = '1';                                // „заето“ — pl-plyush.js да не го пипа
+        е.insertBefore(с, сл);
+        мои.push(с);
+        текущ = сл;
+      }
+    }
+    if (мои.length && е.textContent !== преди) {           // и една буква разлика = чисто връщане
+      for (const с of мои) if (с.parentNode) с.parentNode.replaceChild(document.createTextNode(с.textContent), с);
+      if (е.normalize) е.normalize();
+      return;
+    }
+    обвити += мои.length;
+  }
+
+  function мини() {
+    const ов = document.getElementById('faOverlay');
+    if (!ов) return;
+    ов.querySelectorAll('.fa-title, .fa-never, .fa-sos, .fa-steps li').forEach(обвий);
+  }
+  let чака = false;
+  function отложено() { if (чака) return; чака = true; setTimeout(() => { чака = false; try { мини(); пази(); } catch (e) {} }, 30); }
+  // панелът се ражда при първото докосване на плочка и после само сменя съдържанието си
+  let гледан = null;
+  function пази() {
+    const ов = document.getElementById('faOverlay');
+    if (!ов || ов === гледан) return;
+    гледан = ов;
+    new MutationObserver(отложено).observe(ов, { childList: true });
+  }
+  function върви() {
+    new MutationObserver(отложено).observe(document.documentElement, { childList: true });
+    if (document.body) new MutationObserver(отложено).observe(document.body, { childList: true });
+    отложено();
+  }
+  if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', върви); else върви();
+  window.BL_PL_ZDRAVE_FA = { мини, брой: () => обвити };
+})();

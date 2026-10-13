@@ -533,3 +533,112 @@ html body #roomOverlay .bb-dipbox > .bb-diplbl {
   display: inline-flex; align-items: center; justify-content: center; gap: 6px;
 }
 html body #roomOverlay .bb-dipbox > .bb-dipnum { min-width: 26px; text-align: center; }
+
+/* ═══ 06.10 · ДОВЪРШВАНЕ НА СТАЯТА „МОЕТО БЕБЕ“ (картите под таблото) ═══
+   Обиколка светла+тъмна: snimki/bb_predi_sv_*.jpg, bb_predi_tm_*.jpg; мярка bb_diag_*.txt,
+   bb_diag2_*.txt (getComputedStyle + кои правила печелят). Всичко е само в тази стая
+   (.ro-sky — панелът на „Моето бебе“, premium-rooms.js:17), чуждите файлове не се пипат.
+     1 · медалът на ВСЯКА карта носеше ДВЕ рисунки една върху друга (.jr-medal + вътрешно .pl-em) —
+         вътрешното се скрива визуално (буквата остава в textContent), както в pl-zdrave.css/pl-dnevnik.css;
+     2 · „Профилактичните прегледи“: заглавието падаше на ред ПОД медала (анонимният текст във
+         flex реда не се побира до 34px медал) → тази карта е на две колони;
+     3 · „Кърмене-таймер“: бутонът 🌙 (нощен режим, rooms5.js:509) стоеше сам на свой ред — празна
+         дупка над часовника; цифрите бяха лилаво-сиви (var(--ink-soft)) → бутонът отива в реда на
+         заглавието, часовникът е кремав циферблат с тъмносини цифри; нощният режим (mega.css:324
+         #1d1930 + лилав текст) става нощно синьо;
+     4 · „Сънят днес“: кръгът и „Заспа“ бяха ЛИЛАВИ (premium.css:751–765, #a497e8→#7a6cd3) →
+         гел-розов бутон като всички големи действия; кръгът — крем/злато, „спи“ = тъмносиньо;
+     5 · „Звуци за сън“: „Спри след:“ делеше реда с чиповете и „60 мин“/„∞“ падаха сами отдолу;
+     6 · „Фото-лента“: надписите 9.5px (под 11) и лилав „+“ (#6f5fa8, touch.css:525);
+     7 · НОЩ: полетата за писане бяха лилаво-черна „тетрадка“ (dark.css .jr-paper #221d36),
+         кутиите „Мокри/Каки“ и клетките на фото-лентата — #342f4e / #241f38 (лилаво), кръгчетата
+         за отметка в „Профилактичните прегледи“ — тъмно върху тъмно.
+   ПЪТ НАЗАД: махни този блок (до „край 06.10 · стаята“). Предишният файл: scratchpad/bb_pl-bebe_css_predi_0610.bak */
+
+/* 1 · една рисунка в медала */
+html body #roomOverlay .ro-sky #roRoom .jr-medal.pl-pl { position: relative; }
+html body #roomOverlay .ro-sky #roRoom .jr-medal.pl-pl > .pl-em {
+  position: absolute !important; left: 0 !important; top: 0 !important;
+  width: 1px !important; height: 1px !important; min-width: 0 !important; min-height: 0 !important;
+  margin: 0 !important; padding: 0 !important; overflow: hidden !important;
+  clip-path: inset(50%) !important; opacity: 0 !important; pointer-events: none !important;
+  box-shadow: none !important; border: 0 !important;
+}
+
+/* 2 · „Профилактичните прегледи“: медал | заглавие (пречупва се в своята колона), подзаглавието на цял ред */
+html body #roomOverlay .ro-sky #roRoom .jr-card[data-blkey^="Моето бебе|Профилактичните"] > h4.jr-title {
+  display: grid; grid-template-columns: auto minmax(0, 1fr); align-items: center; column-gap: 9px; row-gap: 2px;
+}
+html body #roomOverlay .ro-sky #roRoom .jr-card[data-blkey^="Моето бебе|Профилактичните"] > h4.jr-title > .jr-sub { grid-column: 1 / -1; }
+
+/* 3 · кърмене-таймерът */
+html body #roomOverlay .ro-sky #roRoom .jr-title > .nr-night {
+  position: absolute; top: -8px; right: 54px; margin: 0; padding: 0;
+  width: 44px; height: 44px; min-width: 44px; min-height: 44px; border-radius: 50%; opacity: 1;
+  display: inline-flex; align-items: center; justify-content: center;
+  background: radial-gradient(circle, #fffdfb 0 15px, #f1e4d9 15px 16.5px, rgba(255, 255, 255, 0) 17px);
+}
+html body #roomOverlay .ro-sky #roRoom .jr-title > .nr-night > .pl-em { width: 24px !important; height: 24px !important; margin: 0 !important; }
+html body #roomOverlay .ro-sky #roRoom .nr-disp {
+  display: block; width: fit-content; min-width: 170px; margin: 12px auto 14px; padding: 9px 28px 7px;
+  border-radius: 999px; text-align: center;
+  font-size: 40px; line-height: 1.1; letter-spacing: 1px; color: var(--pl-navy, #1d2a5c);
+  background: linear-gradient(180deg, #fffdfb 0, #fff6ee 100%);
+  box-shadow: inset 0 0 0 1.5px #f1e4d9, inset 0 2px 0 #fff, 0 2px 0 rgba(214, 186, 158, .45), 0 6px 14px rgba(110, 76, 52, .08);
+}
+html body #roomOverlay .ro-sky #roRoom .nr-disp.run { color: #b8416f; box-shadow: inset 0 0 0 2px #f59cbb, inset 0 2px 0 #fff, 0 2px 0 rgba(214, 186, 158, .45), 0 6px 16px rgba(229, 109, 153, .18); }
+/* нощният режим на таймера: тъмно и едро — но в нощното синьо на премиума, не в лилаво-черното */
+html body #roomOverlay .ro-sky #roRoom .jr-card.nr-dark { background: linear-gradient(180deg, #1f2b5e 0, #161f48 100%) !important; }
+html body #roomOverlay .ro-sky #roRoom .jr-card.nr-dark .nr-disp { font-size: 54px; color: #f59cbb; background: rgba(255, 255, 255, .06); box-shadow: inset 0 0 0 1.5px rgba(240, 210, 137, .35); }
+html body #roomOverlay .ro-sky #roRoom .jr-card.nr-dark .jr-title { color: #fff !important; }
+html body #roomOverlay .ro-sky #roRoom .jr-card.nr-dark :is(.jr-sub, .nr-hrow, .jr-privacy, .jr-hint, .nr-forgot p) { color: #c9cbe3 !important; }
+html body #roomOverlay .ro-sky #roRoom .jr-card.nr-dark .jr-title > .nr-night { background: radial-gradient(circle, rgba(255, 255, 255, .12) 0 15px, rgba(240, 210, 137, .5) 15px 16.5px, rgba(255, 255, 255, 0) 17px); }
+
+/* 4 · сънят: гел-розов бутон, кръг в крем и злато */
+html body #roomOverlay .ro-sky #roRoom .pl-sleepring ~ .jr-btn.jr-btn:not(.running) {
+  background-color: var(--ui-gel, #c8457a) !important;
+  background-image:
+    radial-gradient(120% 70% at 50% -10%, rgba(255, 255, 255, .62) 0, rgba(255, 255, 255, .18) 38%, rgba(255, 255, 255, 0) 55%),
+    linear-gradient(180deg, var(--ui-gel-top, #f39bbb) 0%, var(--ui-gel-mid, #d95a8e) 28%, var(--ui-gel, #c8457a) 55%, var(--ui-gel-bot, #b93a6e) 100%) !important;
+  box-shadow: inset 0 1.5px 0 rgba(255, 255, 255, .55), inset 0 -3px 0 rgba(120, 20, 60, .22), 0 3px 0 #a83566, 0 10px 20px rgba(200, 69, 122, .32) !important;
+}
+html body #roomOverlay .ro-sky #roRoom .pl-sr-bg { stroke: #f4e6da; }
+html body #roomOverlay .ro-sky #roRoom .pl-sr-fg { stroke: #e3c39c; }
+html body #roomOverlay .ro-sky #roRoom .pl-sleepring[data-s="спи"] .pl-sr-fg { stroke: #1d2a5c; }
+html body #roomOverlay .ro-sky #roRoom .pl-sr-in { background: radial-gradient(circle at 50% 30%, #fffdfb 0, #fff4ea 100%); box-shadow: inset 0 0 0 1.5px #f1e4d9, 0 6px 16px rgba(110, 76, 52, .10); }
+
+/* 5 · звуците: „Спри след:“ на свой ред, четирите срока под него в един ред */
+html body #roomOverlay .ro-sky #roRoom .jr-card[data-blkey^="Моето бебе|Звуци за сън"] .jr-quick > .jr-elabel {
+  flex: 1 0 100%; display: flex; align-items: center; gap: 6px; margin: 6px 0 0;
+}
+
+/* 6 · фото-лентата: четим надпис, розов „+“ */
+html body #roomOverlay .ro-sky #roRoom .pho-plus { color: #c8457a; }
+html body #roomOverlay .ro-sky #roRoom .pho-m { font-size: 11.5px; line-height: 1.25; background: rgba(29, 42, 92, .72); }
+html body #roomOverlay .ro-sky #roRoom .pho-cell.empty .pho-m { color: var(--pl-ink-soft, #6a6682); background: rgba(255, 253, 251, .94); padding: 1px 8px; }
+
+/* полетата за писане: тънка златна лента за превъртане вместо лилавата */
+html body #roomOverlay .ro-sky #roRoom :is(textarea.jr-paper, textarea.jr-note, .lx-inp) { scrollbar-width: thin; scrollbar-color: #e3c39c transparent; }
+
+/* 7 · НОЩ */
+html[data-theme="dark"] body #roomOverlay .ro-sky #roRoom :is(textarea.jr-paper, textarea.jr-note, .lx-inp) {
+  background-color: #1b2554 !important;
+  background-image: repeating-linear-gradient(180deg, rgba(255, 255, 255, 0) 0 26px, rgba(255, 255, 255, .07) 26px 27px) !important;
+  scrollbar-color: rgba(240, 210, 137, .55) transparent;
+}
+html[data-theme="dark"] body #roomOverlay .ro-sky #roRoom .bb-dipbox { background: rgba(255, 255, 255, .06) !important; border: 1px solid rgba(240, 210, 137, .28) !important; }
+html[data-theme="dark"] body #roomOverlay .ro-sky #roRoom .pho-cell { background: rgba(255, 255, 255, .05); }
+html[data-theme="dark"] body #roomOverlay .ro-sky #roRoom .pho-cell.empty { border-color: rgba(240, 210, 137, .38); }
+html[data-theme="dark"] body #roomOverlay .ro-sky #roRoom .pho-plus { color: #f59cbb; }
+html[data-theme="dark"] body #roomOverlay .ro-sky #roRoom .pho-cell.empty .pho-m { color: #c9cbe3; background: transparent; }
+html[data-theme="dark"] body #roomOverlay .ro-sky #roRoom .pg20-calrow[aria-pressed="false"] .jr-check {
+  background-color: rgba(255, 255, 255, .08) !important; box-shadow: inset 0 0 0 1.5px rgba(240, 210, 137, .6) !important;
+}
+html[data-theme="dark"] body #roomOverlay .ro-sky #roRoom .jr-title > .nr-night { background: radial-gradient(circle, rgba(255, 255, 255, .1) 0 15px, rgba(240, 210, 137, .45) 15px 16.5px, rgba(255, 255, 255, 0) 17px); }
+html[data-theme="dark"] body #roomOverlay .ro-sky #roRoom .nr-disp { color: #fff; background: rgba(255, 255, 255, .07); box-shadow: inset 0 0 0 1.5px rgba(240, 210, 137, .35), 0 4px 12px rgba(0, 0, 0, .22); }
+html[data-theme="dark"] body #roomOverlay .ro-sky #roRoom .nr-disp.run { color: #ffb8d2; box-shadow: inset 0 0 0 2px rgba(245, 156, 187, .7), 0 4px 12px rgba(0, 0, 0, .22); }
+html[data-theme="dark"] body #roomOverlay .ro-sky #roRoom .pl-sr-fg { stroke: #e3c39c; }
+html[data-theme="dark"] body #roomOverlay .ro-sky #roRoom .pl-sleepring[data-s="спи"] .pl-sr-fg { stroke: #f59cbb; }
+html[data-theme="dark"] body #roomOverlay .ro-sky #roRoom .pl-sr-bg { stroke: rgba(255, 255, 255, .12); }
+html[data-theme="dark"] body #roomOverlay .ro-sky #roRoom .pl-sr-in { background: radial-gradient(circle at 50% 30%, rgba(255, 255, 255, .10), rgba(255, 255, 255, .04)); box-shadow: inset 0 0 0 1px rgba(240, 210, 137, .3); }
+/* край 06.10 · стаята */

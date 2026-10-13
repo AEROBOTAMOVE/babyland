@@ -354,3 +354,77 @@
   if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', върви); else върви();
   window.BL_PL_INSTRUMENTI = { сложи: всички, броячи, далеч: () => далеч(таймери()) };
 })();
+
+/* 06.10 · ДВЕ ГОЛИ ЕМОДЖИ В СТАЯТА → ПЛЮШ (дребен DOM щрих; видът е в css/pl-instrumenti.css 06.10)
+   МЕРЕНО (scratchpad/in_dom2.out.txt, in_dom3.out.txt): pl-plyush.js няма рисунка за знамето и за
+   дискетата в текст, затова излизаха системни:
+     · „🇧🇬 Наръчник и документи“ — заглавието на раздела (.sec-head#sec-tb) е ГОЛ текст; на Windows
+       знамето излиза като „BG“, на телефона — системно знаме до плюшените иконки на другите раздели;
+     · „…архивът 💾 — по-горе…“ в бележката на „Настройки“ (.jr-privacy), до вече плюшената 🔒.
+   Емоджито остава в текста (за четеца и за кода, който сравнява заглавия) — само се обвива в
+   .pl-em.pl-pl със СЪЩАТА клетка: знамето — ico-c [0,0], както плочката „Наръчник и документи“
+   (premium-rooms.js:75); дискетата — копие на рисунката от медала на „Резервно копие 💾“.
+   Пише само ако намери голо емоджи → след обвиването няма какво да прави (не се върти).
+   ПЪТ НАЗАД: махни този блок. */
+(function () {
+  'use strict';
+  if (window.BL_PL_INSTRUMENTI_0610) return;
+  const брой = { обвити: 0, пресмятания: 0 };
+  window.BL_PL_INSTRUMENTI_0610 = брой;
+  const ЗНАМЕ = '\u{1F1E7}\u{1F1EC}', ДИСКЕТА = '\u{1F4BE}';
+  const ПЛЮШ = 'color:transparent !important;-webkit-text-fill-color:transparent !important;background-size:400% 400% !important;';
+
+  function обвий(е, знак, стил, клас) {
+    if (!е || !стил) return;
+    const ход = document.createTreeWalker(е, NodeFilter.SHOW_TEXT);
+    const възли = [];
+    for (let н = ход.nextNode(); н; н = ход.nextNode()) {
+      if (н.nodeValue.indexOf(знак) !== -1 && !(н.parentElement && н.parentElement.closest('.pl-em'))) възли.push(н);
+    }
+    for (const н of възли) {
+      const и = н.nodeValue.indexOf(знак);
+      const сл = н.splitText(и);
+      сл.splitText(знак.length);
+      const с = document.createElement('span');
+      с.className = клас;
+      с.setAttribute('aria-hidden', 'true');
+      с.setAttribute('data-pl-pl', '1');
+      с.setAttribute('style', стил);
+      с.textContent = знак;
+      сл.parentNode.replaceChild(с, сл);
+      брой.обвити++;
+    }
+  }
+  // рисунката на медала (inline стил от pl-plyush.js) → същият стил за стикера в текста
+  function стилОт(е) {
+    if (!е) return '';
+    const бг = е.style.getPropertyValue('background-image'), поз = е.style.getPropertyValue('background-position');
+    if (!бг || бг === 'none' || !/ico-/.test(бг)) return '';
+    const пл = е.style.getPropertyValue('--pl-plt');
+    return 'background-image:' + бг + ' !important;background-position:' + поз + ' !important;' + ПЛЮШ + (пл ? '--pl-plt:' + пл + ';' : '');
+  }
+  function мини() {
+    брой.пресмятания++;
+    const стая = document.getElementById('roRoom');
+    if (!стая || !стая.querySelector(':scope > .pl-in')) return;   // само в „Инструменти“ (шкафът е там)
+    стая.querySelectorAll(':scope > .sec-head').forEach(х => {
+      if (х.textContent.indexOf(ЗНАМЕ) === -1) return;
+      обвий(х, ЗНАМЕ, 'background-image:url(img/art/ico-c.webp) !important;background-position:0% 0% !important;' + ПЛЮШ + '--pl-plt:#fde6ef;', 'pl-em pl-pl pl-pl-i');
+    });
+    const наст = стая.querySelector(':scope > section.jr-card[data-blkey^="Инструменти|Настройки"]');
+    const бел = наст && наст.querySelector('.jr-privacy');
+    if (бел && бел.textContent.indexOf(ДИСКЕТА) !== -1) {
+      const медал = стая.querySelector(':scope > section.jr-card[data-blkey^="Инструменти|Резервно"] .jr-medal');
+      обвий(бел, ДИСКЕТА, стилОт(медал), 'pl-em pl-em-sled pl-pl pl-pl-i');
+    }
+  }
+  let чака = false;
+  function отложено() { if (чака) return; чака = true; setTimeout(() => { чака = false; мини(); }, 60); }
+  function върви() {
+    const ов = document.getElementById('roomOverlay');
+    if (!ов) return;
+    new MutationObserver(отложено).observe(ов, { childList: true, subtree: true });
+    мини();
+  }
+  if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', върви); else върви();
+})();
