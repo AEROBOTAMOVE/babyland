@@ -1552,3 +1552,21 @@ html[data-theme="dark"] body .pn-txt, html[data-theme="dark"] body .ct-row, html
   background: rgba(255, 255, 255, .05) !important; border: 1px solid rgba(255, 255, 255, .1); color: #e8e9f5;
 }
 /* край 21.10 · общите остатъци */
+
+/* 🧹 21.10 · ОБЩИТЕ ОСТАТЪЦИ, ВТОРИ ПРОХОД (докладвани от агента на „Здраве и SOS“; той ги оправи само в
+   своята стая — тук важат за всички):
+   1 · тъмна тема: листът .jr-paper (#221d36, dark.css:110) и редовете .vx-row (#342f4e) — лилаво-черно → нощно синьо;
+   2 · кръгчето за отметка .jr-check — лилав пръстен (rooms.css:263) → златен;
+   3 · редовете в списъците .nt-row — #faf8ff (лилавеещо, rooms.css:787) → крем;
+   4 · датата .ph-date — max-width 130 px режеше „гггг“ (mega.css:164) → поле по съдържание;
+   5 · картата с помощничката: „на линия“ 10.5 px · 4.43:1 и редът под нея с opacity .7 · 3.62:1 → четими.
+   ПЪТ НАЗАД: махни този блок. */
+html[data-theme="dark"] body .jr-paper.jr-paper { background: repeating-linear-gradient(180deg, #1f2a5c 0 26px, #26326a 26px 27px) !important; }
+html[data-theme="dark"] body .vx-row.vx-row { background: rgba(255, 255, 255, .05) !important; border-color: rgba(255, 255, 255, .12) !important; }
+html:not([data-theme="dark"]) body .jr-check { box-shadow: inset 0 0 0 2px #d9b98f; }
+html:not([data-theme="dark"]) body .nt-row { background: #fff8f2; border: 1px solid #f1e4d9; }
+html[data-theme="dark"] body .nt-row { background: rgba(255, 255, 255, .05); border: 1px solid rgba(255, 255, 255, .1); }
+html body .ph-date { max-width: none; min-width: 9.5em; }
+html:not([data-theme="dark"]) body .ask-live { font-size: 11.5px; color: #22675a; }
+html body #roomOverlay .ask-line { opacity: 1; }
+/* край 21.10 · втори проход */
