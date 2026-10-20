@@ -13,6 +13,7 @@ const ПОРТ = 9200 + Math.floor(Math.random() * 700);
 const пауза = ms => new Promise(r => setTimeout(r, ms));
 const КАДРИ = 'new Promise(r => { let k = 0; const f = () => (++k >= 40 ? r(1) : requestAnimationFrame(f)); requestAnimationFrame(f); })';
 (async () => {
+  await require('./slot.js')('chrome');   // 🚦 20.10 опашката (slot.js) — ПЪТ НАЗАД: махни този ред
   let ch, цел;
   for (let опит = 0; опит < 3 && !цел; опит++) {
     ch = spawn(CHROME, ['--headless=new', '--remote-debugging-port=' + (ПОРТ + опит), '--user-data-dir=' + ПРОФИЛ + опит, '--no-first-run', '--window-size=390,844', 'about:blank'], { stdio: 'ignore' });
