@@ -18,3 +18,13 @@ html[data-theme="dark"] .pl-krai img { filter: brightness(.72) saturate(.9); }
 html[data-theme="dark"] .pl-krai figcaption { color: #fff; text-shadow: 0 0 14px rgba(10, 16, 44, .9); }
 html[data-theme="dark"] .pl-krai figcaption b { color: #ffc2d6; }
 @media (prefers-reduced-motion: reduce) { .pl-krai img { animation: none; } }
+
+/* 20.10 · надписът „Малки стъпки. Голям свят.“ лежеше ПОД рисунката: тя е с transform (плава) и се рисува
+   след него — меката ѝ (маскирана) долна част го забулваше наполовина (мерено: gl20_c1_t06, увеличено).
+   ПЪТ НАЗАД: махни този ред. */
+.pl-krai figcaption { position: relative; z-index: 1; }
+/* 20.10 · нощем рисунката стоеше като светъл правоъгълник с остри ръбове (мерено: gl20_c3D_t13) — маската
+   „75% 70%“ не стига до ръбовете и на тъмен фон ръбът личи. „closest-side“ гасне точно до ръба, отвсякъде.
+   ПЪТ НАЗАД: махни този ред. */
+.pl-krai img { -webkit-mask-image: radial-gradient(closest-side, #000 58%, transparent 100%); mask-image: radial-gradient(closest-side, #000 58%, transparent 100%); }
+/* край 20.10 */

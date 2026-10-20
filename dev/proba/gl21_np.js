@@ -1,0 +1,1 @@
+(() => { const б = document.getElementById('plNapomni'); return { видим: !!(б && !б.hidden && б.offsetHeight), текст: б ? б.textContent.replace(/\s+/g,' ').trim() : null, взети: document.querySelectorAll('.pl-np-vzeto').length }; })()

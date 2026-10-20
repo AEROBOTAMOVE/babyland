@@ -83,14 +83,26 @@
       б.style.setProperty("--fei-i", i);
     }
   }
+  // 20.10 · ТЕЖЕСТТА: наблюдателят гледаше ЦЕЛИЯ документ (subtree) завинаги — при всяка промяна
+  //   където и да е (часовник, броячи, стаи) бягаха две търсения по документа. Сега спира сам, щом
+  //   деветте в лентата и деветте в хорото са облечени. ПЪТ НАЗАД: махни проверката „готово“.
+  function готово() {
+    var п = document.querySelectorAll('.pl-pers .pl-per'), х = document.querySelectorAll('.horo-b');
+    if (п.length < 9 || х.length < 9) return false;
+    for (var i = 0; i < п.length; i++) if (!п[i].dataset.plFei) return false;
+    for (var j = 0; j < х.length; j++) if (!х[j].dataset.plFei) return false;
+    return true;
+  }
   function върви() {
     облечи();
     хорото();
+    if (готово()) return;
     var чака = false;
-    new MutationObserver(function () {
+    var н = new MutationObserver(function () {
       if (чака) return; чака = true;
-      setTimeout(function () { чака = false; облечи(); хорото(); }, 140);
-    }).observe(document.body, { childList: true, subtree: true });
+      setTimeout(function () { чака = false; облечи(); хорото(); if (готово()) н.disconnect(); }, 140);
+    });
+    н.observe(document.body, { childList: true, subtree: true });
   }
   if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', върви); else върви();
   window.BL_PL_FEI = { ФЕИ: ФЕИ, облечи: облечи, хорото: хорото };

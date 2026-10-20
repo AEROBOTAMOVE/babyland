@@ -79,7 +79,10 @@
     new MutationObserver(() => {
       if (чака) return; чака = true;
       setTimeout(() => { чака = false; огледай(); }, 120);
-    }).observe(document.body, { childList: true, subtree: true });
+    }).observe(document.body, { childList: true });
+    // 20.10 · ТЕЖЕСТТА: беше { childList, subtree } — всяка промяна в документа будеше търсене по него.
+    //   Картите са в index.html (облечени още при старта), а избирачът (nav2.js:75) се слага ПРЯКО в <body> →
+    //   стига да гледаме децата на <body>. ПЪТ НАЗАД: върни „, subtree: true“.
   }
   if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', върви); else върви();
   window.BL_PL_STAI = { огледай, СЦЕНИ };

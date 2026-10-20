@@ -1297,3 +1297,209 @@ html.pl-on .net-chip .pl-em, html.pl-on .askme-chip .pl-em { margin: -4px .35em 
 html[data-theme="dark"].pl-on .day24 .section-title, html[data-theme="dark"].pl-on .netsec .section-title,
 html[data-theme="dark"].pl-on .section-title { color: #fff; }
 html[data-theme="dark"].pl-on .section-sub { color: #c9cbe3; }
+
+/* ═══════════════════════════════════════════════════════════════════════════════
+   🗂️ 20.10 · ПОДРЕДБАТА НА НАЧАЛОТО (gl20) — видът на „20.10 · ПОДРЕДБАТА“ от js/premium-home.js
+   Ред: герой → Днес (Нашият ден · Добави момент · ЕДНО напомняне) → стаите (рафтът; „Всички отблизо“)
+   → помощничките (лента) → Мира → „Днес“ в три карти → Едно денонощие → „Още за Бейби Ленд“ → краят.
+   Всичко е с обхват #plHome / #todaySection / main > … при html.pl-gl20 (класът го слага само началото).
+   ПЪТ НАЗАД: махни този блок (до „край 20.10“) и блока „ПОДРЕДБАТА“ в js/premium-home.js.
+   ═══════════════════════════════════════════════════════════════════════════════ */
+
+/* ── картичката на бебето: плътен крем вместо размазване (backdrop-filter се пресмята при всеки кадър) ── */
+html.pl-gl20 #plHome .pl-baby { -webkit-backdrop-filter: none; backdrop-filter: none; background: rgba(255, 252, 248, .96); }
+html[data-theme="dark"].pl-gl20 #plHome .pl-baby { background: rgba(31, 43, 92, .95); }
+
+/* ── ЕДНОТО напомняне под „Добави момент“ ── */
+html.pl-gl20 #plHome .pl-napomni[hidden] { display: none !important; }
+html.pl-gl20 #plHome .pl-napomni {
+  position: relative; display: flex; align-items: center; gap: 12px;
+  width: calc(100% - 32px); min-height: 66px; margin: 14px 16px 0; padding: 10px 14px 10px 10px;
+  border: 1px solid rgba(214, 186, 158, .6); border-radius: 22px; cursor: pointer; text-align: left;
+  background: #fffaf3; box-shadow: 0 8px 20px rgba(110, 76, 52, .12);
+  font: inherit; color: var(--pl-navy);
+  transition: transform .25s cubic-bezier(.25, 1, .5, 1);
+}
+html.pl-gl20 #plHome .pl-napomni.is-hot { border-color: rgba(229, 109, 153, .45); background: linear-gradient(90deg, #fff4f8 0, #fffaf3 70%); }
+html.pl-gl20 #plHome .pl-napomni:active { transform: scale(.98); }
+html.pl-gl20 #plHome .pl-np-i {
+  position: relative; flex: none; width: 46px; height: 46px; border-radius: 50%; display: grid; place-items: center;
+  background: var(--pl-pink-soft); font-size: 24px; line-height: 1;
+}
+html.pl-gl20 #plHome .pl-np-i .pl-em { width: 32px !important; height: 32px !important; margin: 0 !important; }
+/* дишане: един мек пръстен около иконката — само при важното, само transform/opacity */
+html.pl-gl20 #plHome .pl-napomni.is-hot .pl-np-i::after {
+  content: ''; position: absolute; inset: 0; border-radius: 50%; box-shadow: 0 0 0 2px rgba(229, 109, 153, .45);
+  animation: plGlDish 2.8s cubic-bezier(.45, 0, .55, 1) infinite; pointer-events: none;
+}
+@keyframes plGlDish { 0% { transform: scale(1); opacity: .9; } 70%, 100% { transform: scale(1.32); opacity: 0; } }
+html.pl-gl20 #plHome .pl-np-t { flex: 1 1 auto; min-width: 0; display: flex; flex-direction: column; gap: 1px; }
+html.pl-gl20 #plHome .pl-np-k { font-size: 11.5px; font-weight: 800; letter-spacing: .06em; text-transform: uppercase; color: #a3365f; }
+html.pl-gl20 #plHome .pl-np-t b { font-size: 16px; font-weight: 800; line-height: 1.2; color: var(--pl-navy); }
+html.pl-gl20 #plHome .pl-np-t span { font-size: 13px; font-weight: 600; color: var(--pl-ink-soft); line-height: 1.3; }
+html.pl-gl20 #plHome .pl-napomni em { flex: none; font-style: normal; font-size: 24px; font-weight: 700; color: var(--pl-pink); }
+html[data-theme="dark"].pl-gl20 #plHome .pl-napomni { background: rgba(31, 43, 92, .95); border-color: rgba(255, 255, 255, .16); box-shadow: 0 8px 20px rgba(0, 0, 0, .3); }
+html[data-theme="dark"].pl-gl20 #plHome .pl-napomni.is-hot { background: linear-gradient(90deg, rgba(120, 50, 92, .55) 0, rgba(31, 43, 92, .95) 70%); border-color: rgba(245, 156, 187, .4); }
+html[data-theme="dark"].pl-gl20 #plHome .pl-np-k { color: #ffb3cd; }
+html[data-theme="dark"].pl-gl20 #plHome .pl-np-t b { color: #fff; }
+html[data-theme="dark"].pl-gl20 #plHome .pl-np-t span { color: #c9cbe3; }
+html[data-theme="dark"].pl-gl20 #plHome .pl-np-i { background: #fff; }
+
+/* ── „Мира е до теб“ — малко повече въздух след лентата ── */
+html.pl-gl20 #plHome .pl-mira { margin-top: 14px; }
+
+/* ── „ДНЕС“ В ТРИ КАРТИ ──
+   Редовете остават чуждите елементи (rooms2.js, home2.js, chasovnik.js…); тук само губят своя „остров“
+   (собствен фон, сянка, шев) и стават редове на обща карта: горе заглавие, между редовете златна
+   нишка, долу — „още ▾“. pl-ui.css пише с (1,2,2)+!important → тук (1,5,2)+!important. */
+html.pl-gl20 body #todaySection { padding: 0 12px; max-width: 620px; }
+html.pl-gl20 body #todaySection .td-inner.pl-dg {
+  display: flex !important; flex-direction: column !important; gap: 0 !important;
+  padding: 0 !important; margin: 0 !important; background: none !important; box-shadow: none !important; border: 0 !important;
+}
+html.pl-gl20 body.bl-party #todaySection .td-inner.pl-dg { box-shadow: none !important; }
+html.pl-gl20 body #todaySection .td-inner.pl-dg > [data-pl-dg][data-pl-dg] {
+  margin: 0 !important; border-radius: 0 !important; box-shadow: none !important; outline: none !important;
+  border: 0 !important; border-left: 1px solid rgba(214, 186, 158, .55) !important; border-right: 1px solid rgba(214, 186, 158, .55) !important;
+  padding: 13px 16px !important;
+  background-color: #fffaf3 !important;
+  background-image: linear-gradient(90deg, transparent 16px, rgba(196, 160, 124, .38) 16px, rgba(196, 160, 124, .38) calc(100% - 16px), transparent calc(100% - 16px)) !important;
+  background-size: 100% 1px !important; background-repeat: no-repeat !important; background-position: 0 0 !important; background-blend-mode: normal !important;
+}
+html.pl-gl20 body #todaySection .td-inner.pl-dg > .pl-dg-h.pl-dg-h {
+  margin-top: 18px !important; border-top: 1px solid rgba(214, 186, 158, .55) !important;
+  border-radius: 26px 26px 0 0 !important; background-image: none !important; padding-top: 16px !important;
+}
+html.pl-gl20 body #todaySection .td-inner.pl-dg > .pl-dg-end.pl-dg-end {
+  border-bottom: 1px solid rgba(214, 186, 158, .55) !important; border-bottom-left-radius: 26px !important; border-bottom-right-radius: 26px !important;
+  padding-bottom: 15px !important; box-shadow: 0 18px 26px -18px rgba(110, 76, 52, .45) !important;
+}
+html.pl-gl20 body #todaySection .td-inner.pl-dg > .pl-dg-skrit.pl-dg-skrit,
+html.pl-gl20 body #todaySection .td-inner > .pl-np-vzeto.pl-np-vzeto { display: none !important; }
+/* заглавията на картите (моите) */
+html.pl-gl20 body #todaySection .td-inner.pl-dg > .pl-dg-hh { display: flex; flex-direction: column; gap: 2px; }
+html.pl-gl20 body #todaySection .pl-dg-hh b { font-family: var(--pl-serif); font-weight: 700; font-size: 20px; line-height: 1.15; color: var(--pl-navy); }
+html.pl-gl20 body #todaySection .pl-dg-hh small { font-size: 13px; font-weight: 600; color: var(--pl-ink-soft); }
+/* „Днес · Алекс е на 7 месеца“ е заглавието на първата карта */
+html.pl-gl20 body #todaySection .td-inner.pl-dg > .td-top { gap: 12px; align-items: center; }
+html.pl-gl20 body #todaySection .td-inner.pl-dg > .td-top .td-hello { font-size: 22px !important; margin: 0 !important; }
+/* „още ▾“ */
+html.pl-gl20 body #todaySection .td-inner.pl-dg > .pl-dg-more {
+  display: flex; align-items: center; justify-content: center; gap: 8px; width: 100%; min-height: 50px; cursor: pointer;
+  font: 800 14px/1.2 Nunito, Nunito-fallback, sans-serif; color: #9e2f5f; text-align: center;
+}
+html.pl-gl20 body #todaySection .pl-dg-more i { font-style: normal; font-size: 13px; transition: transform .3s cubic-bezier(.25, 1, .5, 1); }
+html.pl-gl20 body #todaySection .pl-dg-more:active { background-color: #fdf0e6 !important; }
+/* редовете, които сами са карта в картата, губят и вътрешната кутия */
+html.pl-gl20 body #todaySection .td-inner.pl-dg > .td-tip, html.pl-gl20 body #todaySection .td-inner.pl-dg > .td-cheer { font-size: 15px; line-height: 1.5; }
+/* нощем */
+html[data-theme="dark"].pl-gl20 body #todaySection .td-inner.pl-dg > [data-pl-dg][data-pl-dg] {
+  background-color: rgba(31, 43, 92, .95) !important; border-color: rgba(255, 255, 255, .14) !important;
+  background-image: linear-gradient(90deg, transparent 16px, rgba(255, 255, 255, .14) 16px, rgba(255, 255, 255, .14) calc(100% - 16px), transparent calc(100% - 16px)) !important;
+}
+html[data-theme="dark"].pl-gl20 body #todaySection .td-inner.pl-dg > .pl-dg-h.pl-dg-h { background-image: none !important; border-top-color: rgba(255, 255, 255, .14) !important; }
+html[data-theme="dark"].pl-gl20 body #todaySection .td-inner.pl-dg > .pl-dg-end.pl-dg-end { border-bottom-color: rgba(255, 255, 255, .14) !important; box-shadow: 0 18px 26px -18px rgba(0, 0, 0, .6) !important; }
+html[data-theme="dark"].pl-gl20 body #todaySection .pl-dg-hh b { color: #fff; }
+html[data-theme="dark"].pl-gl20 body #todaySection .pl-dg-hh small { color: #c9cbe3; }
+html[data-theme="dark"].pl-gl20 body #todaySection .td-inner.pl-dg > .pl-dg-more { color: #ffb3cd; }
+
+/* ── СТАИТЕ ОТБЛИЗО: „Деветте вълшебни стаи“ стои прибрана; „Всички отблизо“ я донася в рафта ── */
+html.pl-gl20 main > #стаите { display: none !important; }
+html.pl-gl20 #plHome .pl-stai-vse[hidden] { display: none !important; }
+html.pl-gl20 #plHome .pl-stai-vse { margin: 16px -4px 0; }
+html.pl-gl20 #plHome .pl-stai-vse #стаите { margin: 0; padding: 0; background: none; border: 0; box-shadow: none; outline: none; }
+html.pl-gl20 #plHome .pl-stai-vse #стаите > .section-title,
+html.pl-gl20 #plHome .pl-stai-vse #стаите > .section-sub,
+html.pl-gl20 #plHome .pl-stai-vse #стаите > #searchTrigger { display: none !important; }
+html.pl-gl20 #plHome .pl-stai-vse .room-grid { padding: 0; gap: 14px; }
+/* деветте големи карти са тежки (жива SVG сцена + плюш) — рисуват се само около екрана */
+html.pl-gl20 #plHome .pl-stai-vse .room-card { content-visibility: auto; contain-intrinsic-size: auto 430px; }
+html.pl-gl20 #plHome .pl-vse-dolu { display: flex; margin: 14px auto 2px; }
+
+/* ── „ОЩЕ ЗА БЕЙБИ ЛЕНД“: шестте стари секции — редове в една карта; един допир разгъва цялата ── */
+html.pl-gl20 main > .pl-oshte-h {
+  display: flex; align-items: center; justify-content: center; gap: 12px; margin: 30px 16px 12px;
+  font-family: var(--pl-serif); font-weight: 700; font-size: 20px; color: var(--pl-navy);
+}
+html.pl-gl20 main > .pl-oshte-h::before, html.pl-gl20 main > .pl-oshte-h::after { content: ''; width: 28px; height: 2px; border-radius: 2px; background: #d9b98f; }
+html.pl-gl20 main > section.pl-svit:not(.pl-svit-on):not(#todaySection) {
+  margin: 0 12px; padding: 0; border-radius: 0; box-shadow: none; outline: none;
+  border-top-width: 0; border-bottom-width: 0;
+}
+html.pl-gl20 main > section.pl-svit:not(.pl-svit-on):not(#todaySection) > :not(.pl-svit-b) { display: none !important; }
+html.pl-gl20 main > section.pl-svit.pl-svit-1:not(.pl-svit-on):not(#todaySection) { border-top-width: 1px; border-radius: 26px 26px 0 0; }
+html.pl-gl20 main > section.pl-svit.pl-svit-z:not(.pl-svit-on):not(#todaySection) { border-bottom-width: 1px; border-radius: 0 0 26px 26px; box-shadow: 0 18px 26px -18px rgba(110, 76, 52, .45); margin-bottom: 8px; }
+html.pl-gl20 main > section.pl-svit.pl-svit-1.pl-svit-z:not(.pl-svit-on):not(#todaySection) { border-radius: 26px; }
+html.pl-gl20 main > section.pl-svit.pl-svit-on:not(#todaySection) { margin: 10px 12px; padding-top: 0; }
+html.pl-gl20 main > section.pl-svit-on > .section-title, html.pl-gl20 main > section.pl-svit-on .journal-inner > .section-title { display: none; }
+html.pl-gl20 main > section.pl-svit > .pl-svit-b {
+  display: flex; align-items: center; gap: 12px; width: 100%; min-height: 64px; padding: 12px 18px; margin: 0;
+  border: 0; background: none; cursor: pointer; text-align: left; font: inherit; color: var(--pl-navy);
+}
+html.pl-gl20 main > section.pl-svit:not(.pl-svit-1):not(.pl-svit-on) > .pl-svit-b {
+  background: linear-gradient(90deg, transparent 18px, rgba(196, 160, 124, .38) 18px, rgba(196, 160, 124, .38) calc(100% - 18px), transparent calc(100% - 18px)) 0 0 / 100% 1px no-repeat;
+}
+html.pl-gl20 main > section.pl-svit-on > .pl-svit-b { margin: 0 -12px 8px; width: calc(100% + 24px); }
+html.pl-gl20 .pl-svit-t { flex: 1 1 auto; min-width: 0; display: flex; flex-direction: column; gap: 2px; }
+html.pl-gl20 .pl-svit-t b { font-family: var(--pl-serif); font-weight: 700; font-size: 16.5px; line-height: 1.2; color: var(--pl-navy); }
+html.pl-gl20 .pl-svit-t small { font-size: 13px; font-weight: 600; color: var(--pl-ink-soft); }
+html.pl-gl20 .pl-svit-b > i { flex: none; font-style: normal; font-size: 14px; color: #a07a4e; transition: transform .35s cubic-bezier(.25, 1, .5, 1); }
+html.pl-gl20 .pl-svit-on > .pl-svit-b > i { transform: rotate(180deg); }
+html.pl-gl20 .pl-svit-b:active { background-color: rgba(253, 240, 230, .8); }
+html[data-theme="dark"].pl-gl20 main > .pl-oshte-h { color: #fff; }
+html[data-theme="dark"].pl-gl20 .pl-svit-t b { color: #fff; }
+html[data-theme="dark"].pl-gl20 .pl-svit-t small { color: #c9cbe3; }
+html[data-theme="dark"].pl-gl20 .pl-svit-b > i { color: #e3c39c; }
+html[data-theme="dark"].pl-gl20 main > section.pl-svit:not(.pl-svit-1):not(.pl-svit-on) > .pl-svit-b {
+  background: linear-gradient(90deg, transparent 18px, rgba(255, 255, 255, .14) 18px, rgba(255, 255, 255, .14) calc(100% - 18px), transparent calc(100% - 18px)) 0 0 / 100% 1px no-repeat;
+}
+
+/* ── долу: краят и подписът се рисуват само около екрана ── */
+html.pl-gl20 main > .pl-krai, html.pl-gl20 body > footer.footer { content-visibility: auto; contain-intrinsic-size: auto 320px; }
+
+/* ── празникът (today8.js: балони при месечнина) летеше НАД картите и ги цапаше — сега е зад тях ── */
+html.pl-gl20 body > #t8Party { z-index: -1; }
+
+@media (prefers-reduced-motion: reduce) {
+  html.pl-gl20 #plHome .pl-napomni.is-hot .pl-np-i::after { animation: none; opacity: .6; }
+  html.pl-gl20 #plHome .pl-napomni, html.pl-gl20 .pl-svit-b > i, html.pl-gl20 body #todaySection .pl-dg-more i { transition: none; }
+}
+/* край 20.10 */
+
+/* 20.10 · „Под ръка“: хапчетата (td-chip) бяха 3D възглавници на цял ред (мерено: gl20_c2_t03 — 7 една под
+   друга ≈ 750 px). В картата стават леки хапчета един до друг: тънък кант, без релеф; важните — розов оттенък.
+   ПЪТ НАЗАД: махни този блок. */
+html.pl-gl20 body #todaySection .td-inner.pl-dg > .td-chips { display: flex !important; flex-wrap: wrap !important; gap: 8px !important; }
+html.pl-gl20 body #todaySection .td-inner.pl-dg > .td-chips .td-chip.td-chip {
+  min-height: 40px !important; padding: 8px 14px !important; margin: 0 !important; text-align: left !important;
+  font-size: 14px !important; font-weight: 700 !important; line-height: 1.3 !important;
+  background: #fffdf8 !important; border: 1px solid rgba(214, 186, 158, .7) !important; border-radius: 999px !important;
+  box-shadow: none !important; color: var(--pl-navy) !important;
+}
+html.pl-gl20 body #todaySection .td-inner.pl-dg > .td-chips .td-chip.td-chip.td-accent { background: #fdeef3 !important; border-color: rgba(229, 109, 153, .4) !important; color: #8e2a55 !important; }
+html[data-theme="dark"].pl-gl20 body #todaySection .td-inner.pl-dg > .td-chips .td-chip.td-chip { background: rgba(255, 255, 255, .06) !important; border-color: rgba(255, 255, 255, .18) !important; color: #fff !important; }
+html[data-theme="dark"].pl-gl20 body #todaySection .td-inner.pl-dg > .td-chips .td-chip.td-chip.td-accent { background: rgba(229, 109, 153, .2) !important; border-color: rgba(245, 156, 187, .4) !important; color: #ffd6e5 !important; }
+/* край 20.10 */
+
+/* 20.10 · „Още за Бейби Ленд“: редът до разгъната секция получава свой ръб (мерено: gl20_c3D_t12 — висеше без горен кант);
+   дребните надписи в „Днес“ (10.5–11 px: ch-legal, wk-l, fd-qn) — до 11.5–12.5 px. Текстът им не е пипан.
+   ПЪТ НАЗАД: махни този блок. */
+html.pl-gl20 main > section.pl-svit-on + section.pl-svit:not(.pl-svit-on):not(#todaySection) { border-top-width: 1px; border-top-left-radius: 26px; border-top-right-radius: 26px; }
+html.pl-gl20 main > section.pl-svit-on + section.pl-svit:not(.pl-svit-on) > .pl-svit-b { background: none; }
+html.pl-gl20 main > section.pl-svit:not(.pl-svit-on):not(#todaySection):has(+ section.pl-svit-on) { border-bottom-width: 1px; border-bottom-left-radius: 26px; border-bottom-right-radius: 26px; margin-bottom: 0; }
+html.pl-gl20 body #todaySection .td-inner.pl-dg .ch-legal { font-size: 12.5px !important; line-height: 1.5 !important; }
+html.pl-gl20 body #todaySection .td-inner.pl-dg .wk-l { font-size: 12px !important; }
+html.pl-gl20 body #todaySection .td-inner.pl-dg .fd-qn { font-size: 11.5px !important; }
+/* край 20.10 */
+
+/* 20.10 · на широк екран началото е една колона (като телефона), не карти, разтегнати на 1250 px
+   (мерено: gl20_shirok.png, 1280×800). Сцената зад нея е до 820 px (pl-zhivo.css). ПЪТ НАЗАД: махни този блок. */
+@media (min-width: 760px) {
+  html.pl-gl20 #plHome, html.pl-gl20 body > main { max-width: 680px; margin-left: auto; margin-right: auto; }
+}
+/* край 20.10 */
+
+/* 20.10 · взетото за „Важно днес“ се прибира и когато е хапче ВЪТРЕ в .td-chips (мерено: gl20_sled_L_03 — „Хепатит Б…“
+   стоеше и горе, и в „Под ръка“; правилото горе гледаше само преките деца). ПЪТ НАЗАД: махни този ред. */
+html.pl-gl20 body #todaySection .pl-np-vzeto.pl-np-vzeto { display: none !important; }
+/* край 20.10 */

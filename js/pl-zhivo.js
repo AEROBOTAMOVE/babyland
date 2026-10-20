@@ -23,10 +23,10 @@
   // светлинките: [ляво %, размер px, продължителност s, закъснение s, вид]
   const ЧАСТИЦИ = [[8, 14, 17, 0, 'h'], [22, 8, 21, 6, 'd'], [38, 11, 19, 11, 's'], [55, 7, 23, 3, 'd'], [68, 13, 18, 9, 'h'], [82, 9, 22, 14, 's'], [93, 7, 20, 5, 'd']];
 
-  function частици(къде) {
+  function частици(къде, само) {
     const с = document.createElement('div');
     с.className = 'pl-zh-pp'; с.setAttribute('aria-hidden', 'true');
-    с.innerHTML = ЧАСТИЦИ.map(([л, р, т, з, в]) => '<i class="pl-zh-p pl-zh-' + в + '" style="left:' + л + '%;--s:' + р + 'px;--t:' + т + 's;--d:-' + з + 's"></i>').join('');
+    с.innerHTML = (само ? ЧАСТИЦИ.filter((x, i) => само.includes(i)) : ЧАСТИЦИ).map(([л, р, т, з, в]) => '<i class="pl-zh-p pl-zh-' + в + '" style="left:' + л + '%;--s:' + р + 'px;--t:' + т + 's;--d:-' + з + 's"></i>').join('');
     къде.appendChild(с);
   }
 
@@ -74,12 +74,15 @@
   // ── НАЧАЛОТО ──
   function начало() {
     const с = document.getElementById('plScene'); if (!с || с.querySelector('.pl-zh-pp')) return;
-    if (!тихо) частици(с);
+    if (!тихо) частици(с, [0, 2, 4, 5, 6]);   // 20.10: на началото 5 светлинки (беше 7) — по-тихо и по-леко
   }
   let чакаН = false;
   function превъртиНачало() {
     if (тихо || чакаН) return; чакаН = true;
-    requestAnimationFrame(() => { чакаН = false; const с = document.getElementById('plScene'); if (с) с.style.setProperty('--zh-y', (-Math.min(90, scrollY * 0.07)).toFixed(1) + 'px'); });
+    // 20.10: сцената вече НЕ е заковала зад цялата страница (pl-zhivo.css) — тръгва нагоре с героя, само
+    //   по-бавно (дълбочина): изостава 22% от превъртането, до 280 px; щом героят излезе, не се пише нищо.
+    //   Само transform. ПЪТ НАЗАД: върни (-Math.min(90, scrollY * 0.07)).
+    requestAnimationFrame(() => { чакаН = false; const с = document.getElementById('plScene'); if (!с) return; const y = Math.min(280, Math.max(0, scrollY) * 0.22).toFixed(1) + 'px'; if (с.__zhY !== y) { с.__zhY = y; с.style.setProperty('--zh-y', y); } });
   }
 
   // ── ПРОБЛЯСЪКЪТ на гел бутоните — веднъж, когато влязат в кадър ──

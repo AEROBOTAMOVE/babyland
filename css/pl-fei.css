@@ -159,3 +159,73 @@ html.pl-on .horo-b[data-pl-fei] .horo-name {
 }
 html.bl-night.pl-on .horo-b[data-pl-fei] .horo-name, html[data-theme="dark"].pl-on .horo-b[data-pl-fei] .horo-name{ background: rgba(42, 36, 54, .82); box-shadow: none; }
 html.pl-on .horo-b[data-pl-fei] .horo-badge { z-index: 5; }
+
+/* ═══════════════════════════════════════════════════════════════════════════════
+   🧚 20.10 · ПОМОЩНИЧКИТЕ — ЕДНА ЛЕНТА (gl20)
+   Беше: 9 едри карти в 2 колони ≈ 1142 px (два екрана), с 9 безкрайни „летения“ (plFeiFly) —
+   и същите девет пак в хорото долу и в ъгъла на всяка голяма карта. Сега: една лента, която се
+   плъзга с пръст (snap), 9 компактни карти — фея, име, роля, какво прави (нищо не е махнато).
+   Движение: при влизане в кадър феите долитат веднъж една след друга (outQuart, по 50 ms);
+   при докосване — малък подскок. Безкрайното летене е спряно.
+   ПЪТ НАЗАД: махни този блок (до „край 20.10“).
+   ═══════════════════════════════════════════════════════════════════════════════ */
+html.pl-gl20 #plHome .pl-pomosht { position: relative; margin: 26px 0 0; }
+html.pl-gl20 #plHome .pl-pomosht .pl-panel-h { display: flex; align-items: baseline; justify-content: space-between; gap: 10px; margin: 0 20px 8px; }
+html.pl-gl20 #plHome .pl-pomosht .pl-ph { margin: 0; font-family: var(--pl-serif); font-weight: 700; font-size: 21px; line-height: 1.15; color: var(--pl-navy); }
+html.pl-gl20 #plHome .pl-pomosht .pl-panel-h small { font-size: 12.5px; font-weight: 700; color: var(--pl-ink-soft); }
+html.pl-gl20 #plHome .pl-pomosht .pl-pers {
+  display: flex; grid-template-columns: none; gap: 10px; margin: 0; padding: 6px 16px 16px;
+  overflow-x: auto; overflow-y: hidden; overscroll-behavior-x: contain; -webkit-overflow-scrolling: touch;
+  scroll-snap-type: x mandatory; scroll-padding: 0 16px; scrollbar-width: none;
+}
+html.pl-gl20 #plHome .pl-pomosht .pl-pers::-webkit-scrollbar { display: none; }
+/* десният ръб се топи — подсказва, че има още (статичен преливник, не маска) */
+html.pl-gl20 #plHome .pl-pomosht::after {
+  content: ''; position: absolute; right: 0; top: 38px; bottom: 16px; width: 26px; pointer-events: none;
+  background: linear-gradient(90deg, rgba(246, 237, 227, 0), #f6ede3);
+}
+html.pl-gl20 #plHome .pl-pers .pl-per[data-pl-fei] {
+  flex: 0 0 118px; scroll-snap-align: start; display: flex; flex-direction: column; align-items: center; gap: 1px;
+  padding: 10px 8px 12px; border-radius: 22px; border: 1px solid rgba(214, 186, 158, .5);
+  background: #fffaf3; box-shadow: 0 6px 14px rgba(110, 76, 52, .12);
+  transition: opacity .55s cubic-bezier(.25, 1, .5, 1), transform .55s cubic-bezier(.25, 1, .5, 1);
+  transition-delay: calc(var(--i, 0) * 50ms);
+}
+html.pl-gl20 #plHome .pl-pers .pl-per[data-pl-fei]::after { content: none; display: none; }      /* шевът — в малка карта е шум */
+html.pl-gl20 #plHome .pl-pers .pl-per[data-pl-fei]:hover, html.pl-gl20 #plHome .pl-pers .pl-per[data-pl-fei]:focus-visible { transform: none; }
+html.pl-gl20 #plHome .pl-pers .pl-per[data-pl-fei] > i {
+  width: 84px !important; height: 84px !important; animation: none !important;
+  filter: drop-shadow(0 6px 8px rgba(120, 88, 70, .16));
+  transition: transform .45s cubic-bezier(.3, 1.4, .5, 1);
+}
+html.pl-gl20 #plHome .pl-pers .pl-per[data-pl-fei]:active > i { transform: translate3d(0, -5px, 0) rotate(-4deg); transition-duration: .18s; }
+html.pl-gl20 #plHome .pl-pers .pl-per[data-pl-fei] > b { font-size: 15.5px; margin-top: 4px; color: var(--pl-navy); }
+html.pl-gl20 #plHome .pl-pers .pl-per[data-pl-fei] > small { font-size: 11.5px; }
+html.pl-gl20 #plHome .pl-pers .pl-per[data-pl-fei] > .pl-fei-do {
+  margin-top: 3px; font-size: 11.5px; line-height: 1.35; color: var(--pl-ink-soft);
+  display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden;
+}
+/* поява: веднъж, когато лентата влезе в кадър (.pl-vh — js/premium-home.js) */
+html.pl-gl20-io #plHome .pl-pomosht:not(.pl-vh) .pl-pers .pl-per { opacity: 0; transform: translate3d(22px, 0, 0); }
+/* нощем */
+html[data-theme="dark"].pl-gl20 #plHome .pl-pomosht .pl-ph { color: #fff; }
+html[data-theme="dark"].pl-gl20 #plHome .pl-pomosht .pl-panel-h small { color: #c9cbe3; }
+html[data-theme="dark"].pl-gl20 #plHome .pl-pomosht::after { background: linear-gradient(90deg, rgba(22, 29, 69, 0), #161d45); }
+html[data-theme="dark"].pl-gl20 #plHome .pl-pers .pl-per[data-pl-fei] { background: rgba(31, 43, 92, .95); border-color: rgba(255, 255, 255, .14); box-shadow: 0 6px 14px rgba(0, 0, 0, .35); }
+html[data-theme="dark"].pl-gl20 #plHome .pl-pers .pl-per[data-pl-fei] > b { color: #fff; }
+html[data-theme="dark"].pl-gl20 #plHome .pl-pers .pl-per[data-pl-fei] > .pl-fei-do { color: #c9cbe3; }
+@media (prefers-reduced-motion: reduce) {
+  html.pl-gl20 #plHome .pl-pers .pl-per[data-pl-fei], html.pl-gl20 #plHome .pl-pers .pl-per[data-pl-fei] > i { transition: none; }
+  html.pl-gl20-io #plHome .pl-pomosht:not(.pl-vh) .pl-pers .pl-per { opacity: 1; transform: none; }
+}
+/* 🌙 тихите часове (html.bl-night) правеха лентата тъмна И В СВЕТЛА тема (мерено 20.10, gl20_c1) — в светла остава светла */
+html:not([data-theme="dark"]).pl-gl20 #plHome .pl-pers .pl-per[data-pl-fei] { background: #fffaf3; box-shadow: 0 6px 14px rgba(110, 76, 52, .12); }
+html:not([data-theme="dark"]).pl-gl20 #plHome .pl-pers .pl-per[data-pl-fei] > b { color: var(--pl-navy); }
+html:not([data-theme="dark"]).pl-gl20 #plHome .pl-pers .pl-per[data-pl-fei] > small { color: #9c4f75; }
+html:not([data-theme="dark"]).pl-gl20 #plHome .pl-pers .pl-per[data-pl-fei] > .pl-fei-do { color: var(--pl-ink-soft); }
+html:not([data-theme="dark"]).pl-gl20 #plHome .pl-pers .pl-per[data-pl-fei] > i { filter: drop-shadow(0 6px 8px rgba(120, 88, 70, .16)); }
+html:not([data-theme="dark"]).pl-gl20 .horo-b[data-pl-fei] .horo-name { color: var(--pl-ink, #2b3a67); background: rgba(255, 252, 247, .82); }
+html:not([data-theme="dark"]).pl-gl20 .horo-b[data-pl-fei] .horo-ball { background-color: #fdf6ec; filter: drop-shadow(0 8px 12px rgba(120, 88, 70, .22)); }
+/* рисунката на феята е квадрат с кремав фон — заобленият ъгъл я прави плочка, не изрезка */
+html.pl-gl20 #plHome .pl-pers .pl-per[data-pl-fei] > i { border-radius: 18px; }
+/* край 20.10 */

@@ -189,3 +189,110 @@ html[data-theme="dark"].pl-on .room-card[data-pl-st] .pl-st-fey {
   box-shadow: 0 6px 14px rgba(0, 0, 0, .45), inset 0 0 0 2px rgba(255, 255, 255, .12);
 }
 @media (prefers-reduced-motion: reduce) { html.pl-on .room-card[data-pl-st] .pl-st-fey { animation: none; } }
+
+/* ═══════════════════════════════════════════════════════════════════════════════
+   🏛️ 20.10 · СТАИТЕ НА ЕДНО МЯСТО — рафтът става панел от кремав филц със злат кант (gl20)
+   Собственикът: „много ми е дървено началото“. Дървото беше тук: лавица под всеки ред
+   (premium.css: .pl-room::after #f1dcc0→#dfc2a0) и двоен вътрешен кант като рамка на шкаф.
+   Сега: филц, тънка златна нишка, арките — плюшени сцени в златен пръстен, надписът — сериф под арката.
+   Движение: еднократна поява на арките (по 45 ms една след друга, outQuart), ЕДИН златен проблясък
+   през рафта на 9 s (един елемент, само transform). Безкрайното полюшване на 18-те арки (plStArch +
+   plArchBob) и дишането на 9-те големи карти (plStBreath, plStFey) — спрени: бяха 36 безкрайни анимации.
+   Под рафта: „Всички отблизо ▾“ разгъва големите карти ТУК (js/premium-home.js, „ПОДРЕДБАТА“).
+   ПЪТ НАЗАД: махни този блок (до „край 20.10“).
+   ═══════════════════════════════════════════════════════════════════════════════ */
+html.pl-gl20 #plHome .pl-shelf {
+  position: relative; margin: 24px 12px 0; padding: 16px 14px 18px;
+  border-radius: 30px; border: 1px solid rgba(214, 186, 158, .55);
+  background: #fffaf3 url(../img/art/felt.webp) 0 0 / 160px 160px; background-blend-mode: multiply;
+  box-shadow: 0 16px 32px -8px rgba(110, 76, 52, .2);
+}
+html.pl-gl20 #plHome .pl-shelf::before {             /* златната нишка — като кант на кутия за бижута */
+  content: ''; position: absolute; inset: 7px; border-radius: 24px; border: 1px solid rgba(217, 185, 143, .6); pointer-events: none;
+}
+html.pl-gl20 #plHome .pl-panel-h { position: relative; z-index: 1; display: flex; align-items: center; justify-content: space-between; gap: 10px; margin: 2px 4px 14px 8px; }
+html.pl-gl20 #plHome .pl-ph { margin: 0; font-family: var(--pl-serif); font-weight: 700; font-size: 21px; line-height: 1.15; color: var(--pl-navy); }
+html.pl-gl20 #plHome .pl-vse {
+  z-index: 1; margin: 16px auto 0; flex: none; display: flex; align-items: center; gap: 6px; min-height: 40px; padding: 0 14px;
+  border-radius: 999px; border: 1px solid rgba(217, 185, 143, .8); background: #fffdf8; cursor: pointer;
+  font: 800 13px/1 Nunito, Nunito-fallback, sans-serif; color: #7a5328;
+  box-shadow: 0 2px 6px rgba(110, 76, 52, .1);
+}
+html.pl-gl20 #plHome .pl-vse::after { content: ''; position: absolute; inset: -4px 0; }      /* пръстът: ≥ 44 px */
+html.pl-gl20 #plHome .pl-vse { position: relative; }
+html.pl-gl20 #plHome .pl-vse i { font-style: normal; font-size: 12px; }
+html.pl-gl20 #plHome .pl-vse:active { transform: scale(.97); }
+html.pl-gl20 #plHome .pl-rooms {
+  position: relative; z-index: 1; display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px 10px;
+  margin: 0 -10px -12px; padding: 6px 10px 12px; overflow: hidden; border-radius: 0 0 22px 22px;
+}
+html.pl-gl20 #plHome .pl-rooms .pl-room {
+  min-height: 0; padding: 0; gap: 8px; justify-content: flex-start;
+  animation: none !important;
+  transition: opacity .6s cubic-bezier(.25, 1, .5, 1), transform .6s cubic-bezier(.25, 1, .5, 1);
+  transition-delay: calc(var(--i, 0) * 45ms);
+}
+html.pl-gl20 #plHome .pl-rooms .pl-room::after { content: none !important; display: none !important; }   /* лавицата */
+html.pl-gl20 #plHome .pl-rooms .pl-arch {
+  width: 100%; height: auto; aspect-ratio: 1 / 1.04; border-radius: 999px 999px 20px 20px;
+  animation: none !important;
+  box-shadow: 0 0 0 3px #fffaf3, 0 0 0 4.5px rgba(217, 185, 143, .9), 0 6px 12px rgba(110, 76, 52, .16);
+  transition: transform .3s cubic-bezier(.25, 1, .5, 1);
+}
+html.pl-gl20 #plHome .pl-rooms .pl-arch img { transform: scale(1.04); transition: transform .5s cubic-bezier(.25, 1, .5, 1); }
+html.pl-gl20 #plHome .pl-rooms .pl-room:active { transform: none; }            /* натискът е на арката — плочката има закъснение за появата */
+html.pl-gl20 #plHome .pl-rooms .pl-room:active .pl-arch { transform: scale(.95); }
+html.pl-gl20 #plHome .pl-rooms .pl-room > span:not(.pl-arch) {
+  margin: 0; padding: 0; min-width: 0; background: none; box-shadow: none; border-radius: 0;
+  font-family: var(--pl-serif); font-weight: 700; font-size: 13.5px; line-height: 1.2; color: var(--pl-navy); white-space: nowrap;
+}
+/* проблясъкът: един лъч злато минава през рафта за 2 s, после 7 s покой */
+html.pl-gl20 #plHome .pl-rooms::after {
+  content: ''; position: absolute; top: 0; bottom: 0; left: 0; width: 42%; z-index: 2; pointer-events: none;
+  background: linear-gradient(105deg, rgba(255, 246, 222, 0) 0, rgba(255, 246, 222, .5) 50%, rgba(255, 246, 222, 0) 100%);
+  transform: translate3d(-130%, 0, 0) skewX(-12deg);
+  animation: plGlSjaj 9s cubic-bezier(.45, 0, .25, 1) 2.2s infinite;
+}
+@keyframes plGlSjaj { 0% { transform: translate3d(-130%, 0, 0) skewX(-12deg); } 22%, 100% { transform: translate3d(340%, 0, 0) skewX(-12deg); } }
+/* поява: арките изплуват веднъж, когато рафтът влезе в кадър (класът .pl-vh — js/premium-home.js) */
+html.pl-gl20-io #plHome .pl-shelf:not(.pl-vh) .pl-rooms .pl-room { opacity: 0; transform: translate3d(0, 12px, 0); }
+/* отметките на firstday.js върху арките: „сега е времето“ (злато) и „спи до раждането“ */
+html.pl-gl20 #plHome .pl-rooms .pl-room.pl-sega .pl-arch { box-shadow: 0 0 0 3px #fffaf3, 0 0 0 5.5px #e2b765, 0 0 18px rgba(226, 183, 101, .5), 0 6px 12px rgba(110, 76, 52, .16); }
+html.pl-gl20 #plHome .pl-rooms .pl-room.pl-sega::before, html.pl-gl20 #plHome .pl-rooms .pl-room.pl-spi-st::before {
+  position: absolute; top: -6px; right: -2px; z-index: 3; padding: 3px 8px; border-radius: 999px;
+  font: 800 11.5px/1.1 Nunito, Nunito-fallback, sans-serif; box-shadow: 0 3px 8px rgba(110, 76, 52, .2);
+}
+html.pl-gl20 #plHome .pl-rooms .pl-room.pl-sega::before { content: 'сега'; background: linear-gradient(180deg, #f8e2b3, #e9c37f); color: #4e3210; }
+html.pl-gl20 #plHome .pl-rooms .pl-room.pl-spi-st::before { content: 'спи'; background: #eef0fb; color: #3b4170; }
+html.pl-gl20 #plHome .pl-rooms .pl-room.pl-spi-st .pl-arch img { opacity: .62; }
+/* нощем */
+html[data-theme="dark"].pl-gl20 #plHome .pl-shelf { background: rgba(31, 43, 92, .96); border-color: rgba(255, 255, 255, .14); box-shadow: 0 16px 32px -8px rgba(0, 0, 0, .45); }
+html[data-theme="dark"].pl-gl20 #plHome .pl-shelf::before { border-color: rgba(227, 195, 156, .32); }
+html[data-theme="dark"].pl-gl20 #plHome .pl-ph { color: #fff; }
+html[data-theme="dark"].pl-gl20 #plHome .pl-vse { background: rgba(255, 255, 255, .06); border-color: rgba(227, 195, 156, .55); color: #f3dcb8; box-shadow: none; }
+html[data-theme="dark"].pl-gl20 #plHome .pl-rooms .pl-arch { box-shadow: 0 0 0 3px #1f2b5c, 0 0 0 4.5px rgba(227, 195, 156, .55), 0 6px 12px rgba(0, 0, 0, .35); }
+html[data-theme="dark"].pl-gl20 #plHome .pl-rooms .pl-arch img { filter: none; opacity: .92; }
+html[data-theme="dark"].pl-gl20 #plHome .pl-rooms .pl-room > span:not(.pl-arch) { background: none; box-shadow: none; color: #fff; }
+html[data-theme="dark"].pl-gl20 #plHome .pl-rooms::after { background: linear-gradient(105deg, rgba(227, 195, 156, 0) 0, rgba(227, 195, 156, .22) 50%, rgba(227, 195, 156, 0) 100%); }
+
+/* ── големите карти (вече само в „Всички отблизо“): без безкрайно дишане, без размазана жива сцена ── */
+html.pl-on .room-card[data-pl-st] { animation: none; }
+html.pl-on .room-card[data-pl-st] .pl-st-fey { animation: none; }
+/* живата SVG сцена стоеше ПОД плюшената снимка с blur(7px) — вижда се само по ръбовете, а се
+   пресмяташе при всеки кадър (9 × размазване). Прибрана е; DOM-ът ѝ остава (helper.js я клонира). */
+html.pl-on .room-card[data-pl-st] .scene { display: none; }
+
+@media (prefers-reduced-motion: reduce) {
+  html.pl-gl20 #plHome .pl-rooms::after { animation: none; display: none; }
+  html.pl-gl20-io #plHome .pl-shelf:not(.pl-vh) .pl-rooms .pl-room { opacity: 1; transform: none; }
+  html.pl-gl20 #plHome .pl-rooms .pl-room, html.pl-gl20 #plHome .pl-rooms .pl-arch { transition: none; }
+}
+/* 🌙 тихите часове (html.bl-night, js/night.js, 22–6 ч.) потъмняваха големите карти И В СВЕТЛА тема —
+   мерено 20.10 (gl20_c1): тъмни плочки сред светли карти. В светла тема остават светли; в тъмна — нощните. */
+html:not([data-theme="dark"]).pl-gl20 .room-card[data-pl-st] { background: var(--pl-felt-bg, #fffaf3); box-shadow: 0 14px 30px rgba(120, 88, 70, .13), inset 0 1px 0 rgba(255, 255, 255, .8); }
+html:not([data-theme="dark"]).pl-gl20 .room-card[data-pl-st]::after { border-color: rgba(196, 150, 120, .38); }
+html:not([data-theme="dark"]).pl-gl20 .room-card[data-pl-st] h3 { color: var(--pl-ink, #2b3a67); }
+html:not([data-theme="dark"]).pl-gl20 .room-card[data-pl-st] p { color: rgba(70, 60, 75, .82); }
+html:not([data-theme="dark"]).pl-gl20 .room-card[data-pl-st] .pl-st-img { filter: none; }
+html:not([data-theme="dark"]).pl-gl20 .room-card[data-pl-st] .pl-st-fey { background-color: rgba(255, 252, 247, .86); box-shadow: 0 6px 14px rgba(120, 88, 70, .22), inset 0 0 0 2px rgba(255, 255, 255, .7); }
+/* край 20.10 */

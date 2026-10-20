@@ -75,3 +75,35 @@ html[data-theme="dark"] .pl-zh-d { background: radial-gradient(circle, rgba(255,
 html .ro-fab, html #roFab { transition: filter .22s ease; }
 html.pl-fab-away .ro-fab, html.pl-fab-away #roFab { filter: opacity(.22) saturate(.85); pointer-events: none; }
 @media (prefers-reduced-motion: reduce) { html .ro-fab, html #roFab { transition: none; } }
+
+/* ═══════════════════════════════════════════════════════════════════════════════
+   🖼️ 20.10 · СЦЕНАТА НА ГЕРОЯ ВЕЧЕ НЕ Е ЗАКОВАНА ЗАД ЦЯЛАТА СТРАНИЦА (gl20)
+   Собственикът: „много странна разтеглена картинка“. Мерено (gl20_predi_diag.log, getComputedStyle):
+   #plScene беше position:fixed, 390×944, фон nachalo.webp 720×1280 с размер max(100%, 57vh) — на
+   телефон не е разтеглен, но е ЗАКОВАН: бебето на облака стоеше зад всяка карта на 14 544 px страница
+   („пак се вижда зад Мира е до теб“); а на широк екран max(100%, …) го надуваше ×2–×2.7 (размазано).
+   Сега: сцената е горе, колкото един екран, тръгва нагоре с героя (по-бавно — дълбочина, pl-zhivo.js),
+   долу се топи в крема на страницата; „cover“ горе в средата; на широк екран — не по-широка от 820 px
+   (ръбовете се топят), т.е. картината никога не расте над ×1.14.
+   ПЪТ НАЗАД: махни този блок (до „край 20.10“) и върни реда с превъртиНачало в js/pl-zhivo.js.
+   ═══════════════════════════════════════════════════════════════════════════════ */
+html.pl-on #plScene {
+  position: absolute !important; top: 0; left: 0; right: 0; bottom: auto !important;
+  height: 880px; height: max(880px, 100vh);
+  margin: 0 auto; max-width: 820px;
+  background: #f6ede3 url(../img/scene/nachalo.webp) 50% 0 / cover no-repeat !important;
+}
+/* долният ръб се топи в цвета на страницата (статичен преливник — не маска) */
+html.pl-on #plScene::before {
+  content: ''; position: absolute; left: 0; right: 0; bottom: 0; height: 36%; z-index: 3; pointer-events: none;
+  background: linear-gradient(180deg, rgba(246, 237, 227, 0) 0, rgba(246, 237, 227, .78) 55%, #f6ede3 94%);
+}
+html[data-theme="dark"].pl-on { background: #161d45; }
+html[data-theme="dark"].pl-on #plScene::before { background: linear-gradient(180deg, rgba(22, 29, 69, 0) 0, rgba(22, 29, 69, .8) 55%, #161d45 94%); }
+@media (min-width: 821px) {
+  html.pl-on #plScene {
+    -webkit-mask-image: linear-gradient(90deg, transparent 0, #000 9%, #000 91%, transparent 100%);
+    mask-image: linear-gradient(90deg, transparent 0, #000 9%, #000 91%, transparent 100%);
+  }
+}
+/* край 20.10 */

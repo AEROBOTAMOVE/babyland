@@ -102,50 +102,62 @@
     return g;
   }
 
+  // 20.10 · ТЕЖЕСТТА (CPU профил на главната сесия, ×4: емоджиНаКръга = 1020–1603 ms собствено време — второто
+  //   най-тежко в приложението). Причината: в цикъла четене (getComputedStyle, getBBox) и писане (insertBefore,
+  //   textContent) се редуваха → всяко четене пресмяташе наново стиловете/подредбата на целия документ, и то
+  //   по време на старта. Сега: ФАЗА 1 само чете (един размер на шрифт за клас, всички кутии наведнъж),
+  //   ФАЗА 2 само пише; и тръгва чак когато кръгът наближи екрана, в празно време на браузъра.
+  //   Слънцето и луната (.d24-orbit) са скрити (css/pl-chas.css) — за тях вече не се рисува нищо.
+  //   ПЪТ НАЗАД: dev/proba/gl20_predi/js/pl-chas.js (старата функция с двата setTimeout).
   function емоджиНаКръга() {
     var свод = document.querySelector('.d24-svg');
     var П = window.BL_PL_PLYUSH;
-    if (!свод || !П || !П.К || свод.dataset.plChas) return;
-    var ЕМО = /\p{Extended_Pictographic}(?:\uFE0F|\u200D\p{Extended_Pictographic}|\p{Emoji_Modifier}|\uFE0F\u20E3)*/u;
-    var брой = 0;
-    // 1 · самотните: точките по кръга и слънцето/луната
-    var сами = свод.querySelectorAll('text.d24-e, text.d24-orb');
+    if (!свод || свод.dataset.plChas) return true;
+    if (!П || !П.К) return false;
+    var ЕМО = /\p{Extended_Pictographic}(?:️|‍\p{Extended_Pictographic}|\p{Emoji_Modifier}|️⃣)*/u;
+    // ── ФАЗА 1 · само четене ──
+    var шрифт = {};
+    function F(е, по) { var к = е.getAttribute('class') || ''; if (!(к in шрифт)) шрифт[к] = parseFloat(getComputedStyle(е).fontSize) || по; return шрифт[к]; }
+    var точки = [], етикети = [];
+    var сами = свод.querySelectorAll('text.d24-e');
     for (var i = 0; i < сами.length; i++) {
-      var т = сами[i];
-      var м = (т.textContent || '').trim().match(ЕМО);
-      if (!м || !П.К[м[0]]) continue;
-      var F = parseFloat(getComputedStyle(т).fontSize) || 13;
-      var x = parseFloat(т.getAttribute('x')) || 0;
-      var y = (parseFloat(т.getAttribute('y')) || 0) - F * .34;
-      var g = рисунка(свод, x, y, F * 1.22, П.К[м[0]]);
-      if (!g) continue;
-      т.classList.add('pl-chas-skrit');
-      т.parentNode.insertBefore(g, т.nextSibling);
-      брой++;
+      var м = (сами[i].textContent || '').trim().match(ЕМО);
+      if (м && П.К[м[0]]) точки.push({ т: сами[i], з: м[0], F: F(сами[i], 13) });
     }
-    // 2 · надписите „🌙 нощта“: емоджито става tspan-невидимка, рисунката идва пред него
     var надписи = свод.querySelectorAll('text.d24-lbl');
     for (var k = 0; k < надписи.length; k++) {
-      var н = надписи[k];
-      var текст = н.textContent || '';
-      var м2 = текст.match(ЕМО);
-      if (!м2 || !П.К[м2[0]]) continue;
-      var F2 = parseFloat(getComputedStyle(н).fontSize) || 11;
-      var кутия = н.getBBox();
-      var g2 = рисунка(свод, кутия.x + F2 * .55, кутия.y + кутия.height * .45, F2 * 1.25, П.К[м2[0]]);
-      if (!g2) continue;
-      // скриваме САМО знака: разделяме текста на невидим tspan + останалото
-      var преди = текст.slice(0, м2.index), знак = м2[0], след = текст.slice(м2.index + знак.length);
-      н.textContent = '';
-      if (преди) н.appendChild(document.createTextNode(преди));
-      var ts = НС('tspan', { class: 'pl-chas-skrit' });
-      ts.textContent = знак;
-      н.appendChild(ts);
-      if (след) н.appendChild(document.createTextNode(след));
-      н.parentNode.insertBefore(g2, н.nextSibling);
-      брой++;
+      var текст = надписи[k].textContent || '', м2 = текст.match(ЕМО);
+      if (м2 && П.К[м2[0]]) етикети.push({ н: надписи[k], текст: текст, м: м2, F: F(надписи[k], 11), к: надписи[k].getBBox() });
     }
-    if (брой) свод.dataset.plChas = брой;
+    // ── ФАЗА 2 · само писане ──
+    var брой = 0;
+    точки.forEach(function (о) {
+      var x = parseFloat(о.т.getAttribute('x')) || 0, y = (parseFloat(о.т.getAttribute('y')) || 0) - о.F * .34;
+      var g = рисунка(свод, x, y, о.F * 1.22, П.К[о.з]); if (!g) return;
+      о.т.classList.add('pl-chas-skrit'); о.т.parentNode.insertBefore(g, о.т.nextSibling); брой++;
+    });
+    етикети.forEach(function (о) {
+      var g2 = рисунка(свод, о.к.x + о.F * .55, о.к.y + о.к.height * .45, о.F * 1.25, П.К[о.м[0]]); if (!g2) return;
+      var преди = о.текст.slice(0, о.м.index), знак = о.м[0], след = о.текст.slice(о.м.index + знак.length);
+      о.н.textContent = '';
+      if (преди) о.н.appendChild(document.createTextNode(преди));
+      var ts = НС('tspan', { class: 'pl-chas-skrit' }); ts.textContent = знак; о.н.appendChild(ts);
+      if (след) о.н.appendChild(document.createTextNode(след));
+      о.н.parentNode.insertBefore(g2, о.н.nextSibling); брой++;
+    });
+    свод.dataset.plChas = брой || 'празно';
+    return true;
+  }
+  // кога: щом кръгът наближи екрана (600 px), в празно време; плюшеният речник може още да не е готов — до 8 опита
+  function иконкиКогатоТрябва(сек) {
+    var опит = 0;
+    function направиСега() {
+      var празно = window.requestIdleCallback || function (ф) { return setTimeout(ф, 60); };
+      празно(function () { if (!емоджиНаКръга() && ++опит < 8) setTimeout(направиСега, 700); }, { timeout: 1500 });
+    }
+    if (!('IntersectionObserver' in window) || !сек) { setTimeout(направиСега, 1600); return; }
+    var н = new IntersectionObserver(function (з) { if (z_има(з)) { н.disconnect(); направиСега(); } }, { rootMargin: '600px 0px' });
+    н.observe(сек);
   }
 
   function пусни() {
@@ -169,8 +181,7 @@
       }, { threshold: .05 }).observe(сек);
     }
     пусни();
-    setTimeout(емоджиНаКръга, 400);      // кръгът се рисува от home.js; иконките после
-    setTimeout(емоджиНаКръга, 1600);
+    иконкиКогатоТрябва(сек);              // 20.10: беше setTimeout 400 + 1600 по време на старта (вж. горе)
     return true;
   }
   function z_има(з) { for (var i = 0; i < з.length; i++) if (з[i].isIntersecting) return true; return false; }

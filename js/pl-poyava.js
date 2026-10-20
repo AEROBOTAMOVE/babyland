@@ -29,15 +29,16 @@
     }
   }
 
+  // 20.10 · ТЕЖЕСТТА (CPU профил, ×4: приготви = 39–453 ms): getBoundingClientRect за всяка секция,
+  //   редувано с classList.add → принудена подредба на целия документ при всяка секция, по време на старта.
+  //   Сега НЕ четем нищо: наблюдателят сам казва (след подредбата, без да я принуждава) коя секция е вече
+  //   в кадър — тя не се крие изобщо; коя е долу — тя се крие и изплува, когато мама стигне до нея.
+  //   ПЪТ НАЗАД: dev/proba/gl20_predi/js/pl-poyava.js.
   function приготви(е) {
     if (е.dataset.plPv) return;
     е.dataset.plPv = '1';
-    е.classList.add('pl-pv');
     брой++;
-    if (!МОЖЕ) { пусни(е); return; }
-    // вече видимо при зареждане → пускаме веднага (без трепване на първия екран)
-    var р = е.getBoundingClientRect();
-    if (р.top < (window.innerHeight || 800) * .92) { пусни(е); return; }
+    if (!МОЖЕ) return;                       // без наблюдател нищо не се крие — нищо не изчезва
     набл.observe(е);
   }
 
@@ -56,7 +57,13 @@
     if (МОЖЕ) {
       набл = new IntersectionObserver(function (записи) {
         for (var i = 0; i < записи.length; i++) {
-          if (записи[i].isIntersecting) { пусни(записи[i].target); набл.unobserve(записи[i].target); }
+          var е = записи[i].target;
+          if (записи[i].isIntersecting) {
+            набл.unobserve(е);
+            if (е.classList.contains('pl-pv')) пусни(е);      // беше скрита долу → изплува
+            continue;                                         // беше в кадър от самото начало → не я пипаме
+          }
+          if (!е.classList.contains('pl-pv')) е.classList.add('pl-pv');   // долу е → крие се до появата
         }
       }, { rootMargin: '0px 0px -8% 0px', threshold: .04 });
     }
