@@ -1503,3 +1503,29 @@ html.pl-gl20 body #todaySection .td-inner.pl-dg .fd-qn { font-size: 11.5px !impo
    стоеше и горе, и в „Под ръка“; правилото горе гледаше само преките деца). ПЪТ НАЗАД: махни този ред. */
 html.pl-gl20 body #todaySection .pl-np-vzeto.pl-np-vzeto { display: none !important; }
 /* край 20.10 */
+
+/* ⏱️ 21.10 · БЕЗ РАЗМАЗВАНЕ ЗАД ЗАКОВАНИТЕ ЛЕНТИ — backdrop-filter върху лента над превъртащо се съдържание
+   се пресмята при ВСЕКИ кадър на скрола (докладвано от агентите на началото и стаите; мерено: кадри над
+   20 ms на телефон). Фоновете и без това са 84–96% плътни → правим ги почти плътни, без размазване.
+   ПЪТ НАЗАД: махни този блок. */
+html .bottom-nav, html body #roomOverlay .ro-panel .ro-head .ro-nav, html body #roomOverlay .ro-panel #roTabs, html #roForm.ro-inputbar {
+  -webkit-backdrop-filter: none !important; backdrop-filter: none !important;
+}
+html:not([data-theme="dark"]) .bottom-nav { background: rgba(255, 253, 250, .985) !important; }
+html:not([data-theme="dark"]) body #roomOverlay .ro-panel .ro-head .ro-nav { background: rgba(255, 252, 247, .97) !important; }
+html:not([data-theme="dark"]) body #roomOverlay .ro-panel #roTabs { background: rgba(255, 250, 244, .97) !important; }
+html:not([data-theme="dark"]) #roForm.ro-inputbar { background: rgba(255, 252, 249, .99) !important; }
+html[data-theme="dark"] .bottom-nav { background: rgba(30, 40, 86, .97) !important; }
+/* край 21.10 */
+
+/* 🌙 21.10 · БАНЕРЪТ НА СТАЯТА НОЩЕМ — банерите (img/art/stai/banner_*.webp) са с кремав фон; нощем се
+   затъмняваха до бежов ПРАВОЪГЪЛНИК върху синята сцена (видяно: gl21_blur_D.png, „Моето бебе“ — зад облачето).
+   Нощем маската е овална и меко гасне — остава светлина като от нощна лампа, без ръбове. Денем — непипнато.
+   ПЪТ НАЗАД: махни този блок. */
+html[data-theme="dark"] body #roomOverlay .pl-rhero img {
+  -webkit-mask-image: radial-gradient(ellipse 50% 54% at 58% 52%, #000 34%, rgba(0, 0, 0, .55) 60%, transparent 82%);
+  mask-image: radial-gradient(ellipse 50% 54% at 58% 52%, #000 34%, rgba(0, 0, 0, .55) 60%, transparent 82%);
+  -webkit-mask-composite: source-over; mask-composite: add;
+  filter: brightness(.6) saturate(.85) !important;
+}
+/* край 21.10 · банерът нощем */
