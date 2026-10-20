@@ -394,7 +394,14 @@ html[data-theme="dark"] .pl-br-tile .pl-br-chev { color: #fff; }
         прелив, лилавото „+“ на „Коремчето по седмици“ (#b9a7e0), лилави рамки/пътека/точки,
         лилавата писта .pgb-track (#f0eaf8 / нощем #342f4e), лилавото поле .pg-note.
    Обхватът: само .ro-panel.ro-peach (= Мила = „Бременност“, premium-rooms.js:16, helper.js:32).
-   ПЪТ НАЗАД: махни този блок (до края на файла). Копие отпреди: scratchpad/br_0610_predi.css.bak
+   🔴 20.10 (ПРЕГЛЕД, br20 · МЕРЕНО): 25-те нощни реда бяха `:is(html[data-theme="dark"], html.bl-night)`.
+      html.bl-night НЕ е тъмната тема — това са тихите часове 23:00–06:00 (js/night.js:26-31) върху
+      СВЕТЛИТЕ кремави карти (dark.css:179 само сепия). Мерено в 00:25 при светла тема: „Седмица 20“ 1.09:1,
+      бележките .pg-note 1.19:1, „Остават около…“ 1.53:1, клетките на „Коремчето“ невидими, броячът .sec-n
+      тъмнослива върху крем (dev/proba/br20_nosht_L.log). Сега нощните редове са САМО html[data-theme="dark"].
+      ПЪТ НАЗАД за тази поправка: замени `^html[data-theme="dark"] body #roomOverlay` в блока обратно с
+      `:is(html[data-theme="dark"], html.bl-night) body #roomOverlay` (25 реда, само от тук до края).
+   ПЪТ НАЗАД: махни този блок (до края на файла). Копие отпреди: dev/proba/br20_predi.css (= git 4ae873e)
    ═══════════════════════════════════════════════════════════════════════════════ */
 
 /* ── 2) броячът на раздела („Днес с коремчето 13“) — същите мерки като в „Захранване“ (pl-hranene.css:678) ── */
@@ -403,7 +410,7 @@ html body #roomOverlay .ro-panel.ro-peach #roRoom .sec-head .sec-n {
   font-size: 12px !important; font-weight: 800 !important; padding: 2px 8px !important; vertical-align: 3px;
   background: #fde6ef !important; color: #8e2350 !important;      /* 7.08:1 */
 }
-:is(html[data-theme="dark"], html.bl-night) body #roomOverlay .ro-panel.ro-peach #roRoom .sec-head .sec-n { background: #4a2a44 !important; color: #ffd0e1 !important; }
+html[data-theme="dark"] body #roomOverlay .ro-panel.ro-peach #roRoom .sec-head .sec-n { background: #4a2a44 !important; color: #ffd0e1 !important; }
 
 /* ── 4) медальон без плюшена рисунка (💫 „Този месец боли това“, 😰 „От какво ме е страх“):
    емоджито остава (pl-plyush.js нарочно не гадае), но кръгът е пастелен като плюшените, не стария прелив ── */
@@ -411,7 +418,7 @@ html body #roomOverlay .ro-panel.ro-peach #roRoom .jr-title > .jr-medal:not(.pl-
   background: #fde6ef !important; background-image: none !important;
   box-shadow: inset 0 0 0 1.5px rgba(255, 255, 255, .85), 0 2px 6px rgba(110, 76, 52, .18) !important;
 }
-:is(html[data-theme="dark"], html.bl-night) body #roomOverlay .ro-panel.ro-peach #roRoom .jr-title > .jr-medal:not(.pl-pl) {
+html[data-theme="dark"] body #roomOverlay .ro-panel.ro-peach #roRoom .jr-title > .jr-medal:not(.pl-pl) {
   box-shadow: inset 0 0 0 1.5px rgba(255, 255, 255, .85), 0 2px 6px rgba(0, 0, 0, .35) !important;
 }
 
@@ -431,47 +438,246 @@ html body #roomOverlay .ro-panel.ro-peach #roRoom .pgb-baby { filter: drop-shado
 html body #roomOverlay .ro-panel.ro-peach #roRoom .pgb-legend span { font-size: 11.5px !important; opacity: 1 !important; color: var(--pl-ink-soft, #6a6682) !important; }
 html body #roomOverlay .ro-panel.ro-peach #roRoom .pgb-legend span.on { color: #a92f63 !important; }
 /* нощ: табелката и бележките стават нощни (светла кутия с бял текст беше 1.11:1) */
-:is(html[data-theme="dark"], html.bl-night) body #roomOverlay .ro-panel.ro-peach #roRoom .pg-hero {
+html[data-theme="dark"] body #roomOverlay .ro-panel.ro-peach #roRoom .pg-hero {
   background: rgba(229, 109, 153, .14) !important; box-shadow: inset 0 0 0 1px rgba(245, 156, 187, .35);
 }
-:is(html[data-theme="dark"], html.bl-night) body #roomOverlay .ro-panel.ro-peach #roRoom .pg-week { color: #ffd6e5 !important; }
-:is(html[data-theme="dark"], html.bl-night) body #roomOverlay .ro-panel.ro-peach #roRoom .pg-sub { color: #c9cbe3 !important; }
-:is(html[data-theme="dark"], html.bl-night) body #roomOverlay .ro-panel.ro-peach #roRoom .pg-note {
+html[data-theme="dark"] body #roomOverlay .ro-panel.ro-peach #roRoom .pg-week { color: #ffd6e5 !important; }
+html[data-theme="dark"] body #roomOverlay .ro-panel.ro-peach #roRoom .pg-sub { color: #c9cbe3 !important; }
+html[data-theme="dark"] body #roomOverlay .ro-panel.ro-peach #roRoom .pg-note {
   background: rgba(255, 255, 255, .06) !important; box-shadow: inset 0 0 0 1px rgba(255, 255, 255, .16);
 }
-:is(html[data-theme="dark"], html.bl-night) body #roomOverlay .ro-panel.ro-peach #roRoom .pg-note p { color: #e3e5f5 !important; }
-:is(html[data-theme="dark"], html.bl-night) body #roomOverlay .ro-panel.ro-peach #roRoom .pg-note strong { color: #fff !important; }
-:is(html[data-theme="dark"], html.bl-night) body #roomOverlay .ro-panel.ro-peach #roRoom .pg-left { color: #ffb8d2 !important; }
-:is(html[data-theme="dark"], html.bl-night) body #roomOverlay .ro-panel.ro-peach #roRoom .pgb-track { background: rgba(255, 255, 255, .12) !important; box-shadow: inset 0 1px 2px rgba(0, 0, 0, .3); }
-:is(html[data-theme="dark"], html.bl-night) body #roomOverlay .ro-panel.ro-peach #roRoom .pgb-tick { background: rgba(31, 43, 92, .9) !important; }
-:is(html[data-theme="dark"], html.bl-night) body #roomOverlay .ro-panel.ro-peach #roRoom .pgb-legend span { color: #c9cbe3 !important; }
-:is(html[data-theme="dark"], html.bl-night) body #roomOverlay .ro-panel.ro-peach #roRoom .pgb-legend span.on { color: #ffd6e5 !important; }
-:is(html[data-theme="dark"], html.bl-night) body #roomOverlay .ro-panel.ro-peach #roRoom .pgb-txt { color: #c9cbe3 !important; }
+html[data-theme="dark"] body #roomOverlay .ro-panel.ro-peach #roRoom .pg-note p { color: #e3e5f5 !important; }
+html[data-theme="dark"] body #roomOverlay .ro-panel.ro-peach #roRoom .pg-note strong { color: #fff !important; }
+html[data-theme="dark"] body #roomOverlay .ro-panel.ro-peach #roRoom .pg-left { color: #ffb8d2 !important; }
+html[data-theme="dark"] body #roomOverlay .ro-panel.ro-peach #roRoom .pgb-track { background: rgba(255, 255, 255, .12) !important; box-shadow: inset 0 1px 2px rgba(0, 0, 0, .3); }
+html[data-theme="dark"] body #roomOverlay .ro-panel.ro-peach #roRoom .pgb-tick { background: rgba(31, 43, 92, .9) !important; }
+html[data-theme="dark"] body #roomOverlay .ro-panel.ro-peach #roRoom .pgb-legend span { color: #c9cbe3 !important; }
+html[data-theme="dark"] body #roomOverlay .ro-panel.ro-peach #roRoom .pgb-legend span.on { color: #ffd6e5 !important; }
+html[data-theme="dark"] body #roomOverlay .ro-panel.ro-peach #roRoom .pgb-txt { color: #c9cbe3 !important; }
 
 /* ── 3) + 4) „Календарчето на прегледите“ и „по-късно“ (pg20-later): седмиците ≥ 11px, без лилаво ── */
 html body #roomOverlay .ro-panel.ro-peach #roRoom .pg20-calw { font-size: 11.5px !important; width: 58px; color: var(--pl-ink-soft, #6a6682) !important; }
 html body #roomOverlay .ro-panel.ro-peach #roRoom .pg20-when { font-size: 11.5px !important; opacity: 1 !important; color: var(--pl-ink-soft, #6a6682) !important; }
-:is(html[data-theme="dark"], html.bl-night) body #roomOverlay .ro-panel.ro-peach #roRoom :is(.pg20-calw, .pg20-when) { color: #c9cbe3 !important; }
+html[data-theme="dark"] body #roomOverlay .ro-panel.ro-peach #roRoom :is(.pg20-calw, .pg20-when) { color: #c9cbe3 !important; }
 
 /* ── 3) + 4) „Пътеката на чакането“ (SVG): надписите 10 → 11.1px на екрана, точките и пътят без лилаво ── */
 html body #roomOverlay .ro-panel.ro-peach #roRoom .pg20-msw { font-size: 10px !important; fill: var(--pl-ink-soft, #6a6682) !important; }
 html body #roomOverlay .ro-panel.ro-peach #roRoom .pg20-msdot { stroke: rgba(217, 185, 143, .8) !important; }
-:is(html[data-theme="dark"], html.bl-night) body #roomOverlay .ro-panel.ro-peach #roRoom .pg20-msw { fill: #c9cbe3 !important; }
-:is(html[data-theme="dark"], html.bl-night) body #roomOverlay .ro-panel.ro-peach #roRoom .pg20-msdot { fill: #26336b !important; stroke: rgba(245, 156, 187, .55) !important; }
-:is(html[data-theme="dark"], html.bl-night) body #roomOverlay .ro-panel.ro-peach #roRoom .pg20-mamabg { fill: #26336b !important; }
-:is(html[data-theme="dark"], html.bl-night) body #roomOverlay .ro-panel.ro-peach #roRoom .pg20-road { stroke: rgba(255, 255, 255, .22) !important; }
+html[data-theme="dark"] body #roomOverlay .ro-panel.ro-peach #roRoom .pg20-msw { fill: #c9cbe3 !important; }
+html[data-theme="dark"] body #roomOverlay .ro-panel.ro-peach #roRoom .pg20-msdot { fill: #26336b !important; stroke: rgba(245, 156, 187, .55) !important; }
+html[data-theme="dark"] body #roomOverlay .ro-panel.ro-peach #roRoom .pg20-mamabg { fill: #26336b !important; }
+html[data-theme="dark"] body #roomOverlay .ro-panel.ro-peach #roRoom .pg20-road { stroke: rgba(255, 255, 255, .22) !important; }
 
 /* ── 3) + 4) „Коремчето по седмици“ и „Ехо-албумът“: розово „+“, надпис ≥ 11px, нощем без лилаво ── */
 html body #roomOverlay .ro-panel.ro-peach #roRoom .pho-plus { color: #e56d99 !important; }
 html body #roomOverlay .ro-panel.ro-peach #roRoom .pho-m { font-size: 11px !important; }
 html body #roomOverlay .ro-panel.ro-peach #roRoom .pg20-polaroid .pho-m { color: var(--pl-ink-soft, #6a6682) !important; }
-:is(html[data-theme="dark"], html.bl-night) body #roomOverlay .ro-panel.ro-peach #roRoom .pho-plus { color: #f59cbb !important; }
-:is(html[data-theme="dark"], html.bl-night) body #roomOverlay .ro-panel.ro-peach #roRoom .pho-cell.empty { background: rgba(255, 255, 255, .06) !important; border-color: rgba(255, 255, 255, .24) !important; }
-:is(html[data-theme="dark"], html.bl-night) body #roomOverlay .ro-panel.ro-peach #roRoom .pho-cell.empty .pho-m { color: #c9cbe3 !important; }
-:is(html[data-theme="dark"], html.bl-night) body #roomOverlay .ro-panel.ro-peach #roRoom .pg20-polaroid .pho-cell { background: #fffaf3 !important; }
+html[data-theme="dark"] body #roomOverlay .ro-panel.ro-peach #roRoom .pho-plus { color: #f59cbb !important; }
+html[data-theme="dark"] body #roomOverlay .ro-panel.ro-peach #roRoom .pho-cell.empty { background: rgba(255, 255, 255, .06) !important; border-color: rgba(255, 255, 255, .24) !important; }
+html[data-theme="dark"] body #roomOverlay .ro-panel.ro-peach #roRoom .pho-cell.empty .pho-m { color: #c9cbe3 !important; }
+html[data-theme="dark"] body #roomOverlay .ro-panel.ro-peach #roRoom .pg20-polaroid .pho-cell { background: #fffaf3 !important; }
 
 /* ── 4) „Купих ли го“: групите със златна линия вместо лилава ── */
 html body #roomOverlay .ro-panel.ro-peach #roRoom .mk-fold { border-color: #efdccf !important; }
 html body #roomOverlay .ro-panel.ro-peach #roRoom .mk-fold.open { border-color: rgba(229, 109, 153, .45) !important; }
-:is(html[data-theme="dark"], html.bl-night) body #roomOverlay .ro-panel.ro-peach #roRoom .mk-fold { border-color: rgba(255, 255, 255, .16) !important; }
-:is(html[data-theme="dark"], html.bl-night) body #roomOverlay .ro-panel.ro-peach #roRoom .mk-fold.open { border-color: rgba(245, 156, 187, .5) !important; }
+html[data-theme="dark"] body #roomOverlay .ro-panel.ro-peach #roRoom .mk-fold { border-color: rgba(255, 255, 255, .16) !important; }
+html[data-theme="dark"] body #roomOverlay .ro-panel.ro-peach #roRoom .mk-fold.open { border-color: rgba(245, 156, 187, .5) !important; }
+
+/* ═══════════════════════════════════════════════════════════════════════════════
+   20.10 · ДОВЪРШВАНЕ ДО ПРЕМИУМ — старите карти на стаята „Бременност“ (агент br20)
+   Видът само; текстът, медицинските редове и функциите са непипнати. Обхват: .ro-panel.ro-peach.
+   Мерено ПРЕДИ (dev/proba/br20_dom.log, br20_ab_L.log, снимки snimki/br20_a_L20_s*.jpg, br20_ab_*):
+     · лилаво от стария слой: кръгчетата .jr-check (inset #eae3f7), рамките на .qd-row (#e8e0ea) и
+       .pg20-calrow (rgba(125,107,189,.18)), фонът на групите .mk-fold (rgba(141,120,216,.06)),
+       въпросите .ct-row и текстът .pn-txt (#faf6fb), чашката .wt-cup (#faf8ff), пътят .pg20-road
+       (rgba(125,107,189,.25)), дишащото кръгче .pg-breath-c (… #c3a4e0);
+     · „Ритна!“ — плосък правоъгълник (135° #d1487f→#b83a70), иконката 15 px;
+     · бележката под кантара .pw-box носи сянката на МОДАЛ (0 18px 50px rgba(0,0,0,.3));
+     · дребен текст: .jr-privacy 11.5 px, .cs-note 12.5 px, .mk-cnt 11 px, .pg20-calt small 11 px;
+     · „· от 26-та“ (.pg20-when) — сериф на заглавието, сам на ред, без вид;
+     · нощем (тихите часове html.bl-night) .jr-sub е с opacity .72 (dark.css:186) → 2.98:1.
+   ПЪТ НАЗАД: махни този блок (до „край 20.10“).
+   ═══════════════════════════════════════════════════════════════════════════════ */
+
+/* 1 · РЕДОВЕТЕ С КРЪГЧЕ — „Прегледът“, „Купих ли го“, „Календарчето“: златно копче, розов гел щом е отметнато */
+html body #roomOverlay .ro-panel.ro-peach #roRoom :is(.qd-row, .pg20-calrow) { border-color: #f1e4d9 !important; }
+html body #roomOverlay .ro-panel.ro-peach #roRoom :is(.qd-row, .pg20-calrow) > .jr-check {
+  width: 26px; height: 26px; flex: none; align-self: center;
+  background: #fffaf3; color: #fff; font-size: 13px; font-weight: 900; line-height: 1;
+  box-shadow: inset 0 0 0 2px rgba(217, 185, 143, .9), inset 0 2px 3px rgba(120, 88, 58, .12);
+}
+html body #roomOverlay .ro-panel.ro-peach #roRoom :is(.qd-row.done, .pg20-calrow.done) > .jr-check {
+  background: radial-gradient(120% 120% at 50% 18%, #f7a6c4 0, #e4779f 58%, #cf5f8c 100%);
+  box-shadow: inset 0 0 0 1.5px rgba(201, 84, 130, .62), 0 1px 0 rgba(169, 47, 99, .35);
+  text-shadow: 0 1px 0 rgba(120, 20, 60, .35);
+}
+html body #roomOverlay .ro-panel.ro-peach #roRoom .qd-row { align-items: center; color: var(--pl-ink, #3b3f5c); }
+
+/* 2 · „КАЛЕНДАРЧЕТО НА ПРЕГЛЕДИТЕ“ — подреден ред: седмици │ иконка │ какво │ копче */
+html body #roomOverlay .ro-panel.ro-peach #roRoom .pg20-calrow { gap: 10px; padding: 10px 12px; }
+html body #roomOverlay .ro-panel.ro-peach #roRoom .pg20-calrow .pg20-calw {
+  width: 52px !important; flex: none; font-family: Nunito, 'Nunito-fallback', system-ui, sans-serif;
+  font-size: 12.5px !important; font-weight: 800; line-height: 1.2; font-variant-numeric: lining-nums tabular-nums;
+}
+html body #roomOverlay .ro-panel.ro-peach #roRoom .pg20-calrow.now .pg20-calw { color: #a92f63 !important; }
+html body #roomOverlay .ro-panel.ro-peach #roRoom .pg20-calrow .pg20-cale { width: 34px; height: 34px; flex: none; display: grid; place-items: center; font-size: 17px; line-height: 1; }
+html body #roomOverlay .ro-panel.ro-peach #roRoom .pg20-calrow .pg20-cale > .pl-em { margin: 0 !important; }
+html body #roomOverlay .ro-panel.ro-peach #roRoom .pg20-calrow .pg20-calt { min-width: 0; line-height: 1.25; }
+html body #roomOverlay .ro-panel.ro-peach #roRoom .pg20-calrow .pg20-calt strong { font-size: 14px; line-height: 1.25; color: var(--pl-navy, #1d2a5c); }
+html body #roomOverlay .ro-panel.ro-peach #roRoom .pg20-calrow .pg20-calt small { display: block; margin-top: 2px; font-size: 12.5px; line-height: 1.35; opacity: 1; color: var(--pl-ink-soft, #6a6682); }
+
+/* 3 · „КУПИХ ЛИ ГО“ — групите: кремав филц вместо лилавата мъгла; цветната точка е рисувана (js: .pl-br-dot) */
+html body #roomOverlay .ro-panel.ro-peach #roRoom .mk-fold { background: #fffaf3 !important; min-height: 48px; padding: 9px 14px; border-radius: 16px; box-shadow: 0 1.5px 0 rgba(203, 176, 150, .45); }
+html body #roomOverlay .ro-panel.ro-peach #roRoom .mk-fold.open { background: #fff2f7 !important; }
+html body #roomOverlay .ro-panel.ro-peach #roRoom .mk-fold .mk-cnt { font-size: 12px; opacity: 1; color: var(--pl-ink-soft, #6a6682); font-variant-numeric: lining-nums tabular-nums; }
+html body #roomOverlay .ro-panel.ro-peach #roRoom .mk-fold .mk-arrow { color: var(--pl-navy, #1d2a5c); }
+html body #roomOverlay .ro-panel.ro-peach #roRoom .pl-br-dot { display: inline-block; width: 14px; height: 14px; margin: 0 9px -1px 0; border-radius: 50%; font-size: 0; color: transparent; vertical-align: baseline; }
+html body #roomOverlay .ro-panel.ro-peach #roRoom .pl-br-dot[data-c="r"] { background: radial-gradient(circle at 35% 30%, #f7a6c4 0, #e0607e 55%, #b93a5a 100%); }
+html body #roomOverlay .ro-panel.ro-peach #roRoom .pl-br-dot[data-c="y"] { background: radial-gradient(circle at 35% 30%, #fbe9b4 0, #e2b95c 55%, #c79535 100%); }
+html body #roomOverlay .ro-panel.ro-peach #roRoom .pl-br-dot[data-c="w"] { background: radial-gradient(circle at 35% 30%, #fff 0, #f6ede4 60%, #e9d6c3 100%); box-shadow: inset 0 0 0 1.5px rgba(217, 185, 143, .9); }
+
+/* 4 · „ИСТИНСКИ ЛИ СА?“ и „ИМА ЛИ КОЙ ДА ТИ ПОМАГА?“ — кремава писта с тънка линия вместо лилавото поле */
+html body #roomOverlay .ro-panel.ro-peach #roRoom .ct-row { background: #fff8f2; box-shadow: inset 0 0 0 1px #f1e4d9; border-radius: 16px; padding: 8px 8px 8px 14px; }
+html body #roomOverlay .ro-panel.ro-peach #roRoom .ct-row .ct-q { color: var(--pl-ink, #3b3f5c); font-size: 13.5px; line-height: 1.4; }
+html body #roomOverlay .ro-panel.ro-peach #roRoom .pn-txt { background: #fff8f2; box-shadow: inset 0 0 0 1px #f1e4d9; color: var(--pl-ink, #3b3f5c); }
+
+/* 5 · „ВОДА ДНЕС“ — чашката е кръгъл стикер, не квадратна кутийка; „Дневник на наддаването“ — бележката без модална сянка */
+html body #roomOverlay .ro-panel.ro-peach #roRoom .wt-cup { width: 48px; height: 48px; border-radius: 50%; background: transparent; display: inline-grid; place-items: center; }
+html body #roomOverlay .ro-panel.ro-peach #roRoom .wt-cup > .pl-em { width: 42px !important; height: 42px !important; margin: 0 !important; }
+html body #roomOverlay .ro-panel.ro-peach #roRoom .wt-cup.full > .pl-em { box-shadow: inset 0 0 0 2px #9cc2ea, 0 2px 0 rgba(110, 140, 190, .3); }
+html body #roomOverlay .ro-panel.ro-peach #roRoom .jr-card .pw-box { max-width: none; padding: 12px 14px; border-radius: 16px; background: #fff8f2; box-shadow: inset 0 0 0 1px #f1e4d9; }
+
+/* 6 · „БРОЯЧ НА РИТАНИЯ“ — „Ритна!“ е голям гел-бутон (материалът е от pl-ui.css · .pl-gel), броеницата е от мъниста */
+html body #roomOverlay .ro-panel.ro-peach #roRoom .pg-kick {
+  display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 8px;
+  min-height: 128px; padding: 18px 20px 16px; border-radius: 28px;
+  background-color: var(--ui-gel, #c8457a) !important;
+  background-image:
+    radial-gradient(120% 60% at 50% -10%, rgba(255, 255, 255, .5) 0, rgba(255, 255, 255, .14) 40%, rgba(255, 255, 255, 0) 58%),
+    linear-gradient(180deg, var(--ui-gel-mid, #d95a8e) 0%, var(--ui-gel, #c8457a) 55%, var(--ui-gel-bot, #b93a6e) 100%) !important;
+  box-shadow: inset 0 1.5px 0 rgba(255, 255, 255, .55), inset 0 -3px 0 rgba(120, 20, 60, .22), 0 4px 0 #a83566, 0 12px 24px rgba(200, 69, 122, .3) !important;
+  text-shadow: 0 1px 0 rgba(120, 20, 60, .35);
+}
+html body #roomOverlay .ro-panel.ro-peach #roRoom .pg-kick:active { transform: translateY(3px); box-shadow: inset 0 1.5px 0 rgba(255, 255, 255, .45), 0 1px 0 #a83566, 0 5px 12px rgba(200, 69, 122, .26) !important; }
+html body #roomOverlay .ro-panel.ro-peach #roRoom .pg-kick > .pl-em { width: 52px !important; height: 52px !important; margin: 0 !important; font-size: 26px; background-color: #fff; box-shadow: 0 2px 0 rgba(120, 20, 60, .28) !important; }
+html body #roomOverlay .ro-panel.ro-peach #roRoom .pg-kick > span:not(.pl-em) { margin: 0; font-size: 20px; font-weight: 800; letter-spacing: .2px; }
+html body #roomOverlay .ro-panel.ro-peach #roRoom .pg-kickring { gap: 10px; max-width: 260px; margin: 14px auto 6px; }
+html body #roomOverlay .ro-panel.ro-peach #roRoom .pg-kickring .kd { width: 16px; height: 16px; border: 0; background: #fffaf3; box-shadow: inset 0 0 0 1.5px rgba(217, 185, 143, .9), inset 0 1px 2px rgba(120, 88, 58, .14); }
+html body #roomOverlay .ro-panel.ro-peach #roRoom .pg-kickring .kd.on { background: radial-gradient(circle at 35% 30%, #f7a6c4 0, #e4779f 58%, #cf5f8c 100%); box-shadow: 0 1px 0 rgba(169, 47, 99, .35); }
+
+/* 7 · „БРОЯЧ НА КОНТРАКЦИИ“ — дишащото кръгче розово-златно вместо розово-лилаво; секундите на Nunito */
+html body #roomOverlay .ro-panel.ro-peach #roRoom .pg-breath:not([hidden]) { padding: 10px 14px; border-radius: 18px; background: #fff8f2; box-shadow: inset 0 0 0 1px #f1e4d9; }
+html body #roomOverlay .ro-panel.ro-peach #roRoom .pg-breath-c { background: radial-gradient(circle at 35% 30%, #fde6ef 0, #f59cbb 55%, #e3c39c 100%); }
+html body #roomOverlay .ro-panel.ro-peach #roRoom .pg-breath-t { opacity: 1; color: var(--pl-navy, #1d2a5c); }
+html body #roomOverlay .ro-panel.ro-peach #roRoom .pg-breath-s { font-family: Nunito, 'Nunito-fallback', system-ui, sans-serif; font-weight: 800; color: #a92f63; }
+
+/* 8 · „СИГНАЛИ, КОИТО НЕ ЧАКАТ“ — иконката в своя колона, редът продължава под текста, не под иконката */
+html body #roomOverlay .ro-panel.ro-peach #roRoom .pg20-siglist { padding: 0; margin: 8px 0 10px; }
+html body #roomOverlay .ro-panel.ro-peach #roRoom .pg20-siglist > li { position: relative; min-height: 30px; padding: 5px 0 5px 40px; font-size: 14px; line-height: 1.45; color: var(--pl-ink, #3b3f5c); }
+html body #roomOverlay .ro-panel.ro-peach #roRoom .pg20-siglist > li > .pl-em:first-child { position: absolute; left: 0; top: 3px; width: 30px !important; height: 30px !important; margin: 0 !important; font-size: 15px; }
+
+/* 9 · „· от 26-та“ / „· към 28-ма“ — малък златен етикет (Nunito), не сериф на свой ред */
+html body #roomOverlay .ro-panel.ro-peach #roRoom .jr-title .pg20-when {
+  display: inline-block; margin: 6px 0 0; padding: 3px 10px; border-radius: 999px;
+  background: #fff1d1; color: #7a5410 !important; opacity: 1 !important;
+  font-family: Nunito, 'Nunito-fallback', system-ui, sans-serif; font-size: 12px !important; font-weight: 800; line-height: 1.3; letter-spacing: 0;
+}
+
+/* 10 · „Пътеката на чакането“ — предстоящият път в шампанско злато вместо лилав */
+html body #roomOverlay .ro-panel.ro-peach #roRoom .pg20-road { stroke: rgba(217, 185, 143, .4); }
+
+/* 11 · дребният текст на старите карти: изречения ≥ 13 px */
+html body #roomOverlay .ro-panel.ro-peach #roRoom > .jr-card :is(p.jr-privacy, p.cs-note) { font-size: 13px; line-height: 1.5; }
+
+/* 12 · ТИХИТЕ ЧАСОВЕ (html.bl-night, светли карти): подзаглавието на картата без приглушаване */
+html.bl-night body #roomOverlay .ro-panel.ro-peach #roRoom .jr-sub { opacity: 1; }
+
+/* 13 · МОИТЕ ПЛОЧКИ — подзаглавието на цялата ширина (беше 4 реда „Готова, / когато / дойде / време“), стрелката под него */
+.ro-peach .pl-br-tl { padding: 9px 10px 26px 11px; }
+.ro-peach .pl-br-tl small { margin-right: 0; }
+.ro-peach .pl-br-tile .pl-br-chev { bottom: 10px; }
+/* „✨ Тази седмица:“ — блясъкът е плюшен (ico-b [2,1], същата клетка като ✨ в pl-plyush.js), не голо емоджи */
+.ro-peach .pl-br-tip::before {
+  content: ''; display: inline-block; width: 22px; height: 22px; margin: 0 5px -5px 0; border-radius: 50%;
+  background: #fff0d4 url(../img/art/ico-b.webp) 33.333% 66.667% / 400% 400% no-repeat; background-blend-mode: multiply;
+}
+/* плодът на седмицата — плюшен, когато има рисунка (js: .is-pl); иначе си остава емоджи в кръгчето */
+.ro-peach .pl-br-fruit.is-pl { color: transparent; background-color: #fff; background-repeat: no-repeat; font-size: 0; }
+/* „(теме-опашка)“ се цепеше на тирето през два реда (снимка br20_plod_00.jpg, 14-та седмица) */
+.ro-peach .pl-br-size small { white-space: nowrap; }
+
+/* ── НОЩ (тъмна тема) за всичко горе ── */
+html[data-theme="dark"] body #roomOverlay .ro-panel.ro-peach #roRoom :is(.qd-row, .pg20-calrow) { border-color: rgba(255, 255, 255, .14) !important; }
+html[data-theme="dark"] body #roomOverlay .ro-panel.ro-peach #roRoom :is(.qd-row, .pg20-calrow):not(.done) > .jr-check { background: rgba(255, 255, 255, .08); box-shadow: inset 0 0 0 1.5px rgba(240, 210, 137, .6); }
+html[data-theme="dark"] body #roomOverlay .ro-panel.ro-peach #roRoom .qd-row { color: #e3e5f5; }
+html[data-theme="dark"] body #roomOverlay .ro-panel.ro-peach #roRoom .pg20-calrow .pg20-calt strong { color: #fff; }
+html[data-theme="dark"] body #roomOverlay .ro-panel.ro-peach #roRoom .pg20-calrow .pg20-calt small { color: #c9cbe3; }
+html[data-theme="dark"] body #roomOverlay .ro-panel.ro-peach #roRoom .pg20-calrow.now .pg20-calw { color: #ffd6e5 !important; }
+html[data-theme="dark"] body #roomOverlay .ro-panel.ro-peach #roRoom .mk-fold { background: rgba(255, 255, 255, .05) !important; box-shadow: none; }
+html[data-theme="dark"] body #roomOverlay .ro-panel.ro-peach #roRoom .mk-fold.open { background: rgba(229, 109, 153, .12) !important; }
+html[data-theme="dark"] body #roomOverlay .ro-panel.ro-peach #roRoom :is(.mk-fold .mk-cnt, .mk-fold .mk-arrow) { color: #d0d3ea; }
+html[data-theme="dark"] body #roomOverlay .ro-panel.ro-peach #roRoom :is(.ct-row, .pn-txt, .jr-card .pw-box, .pg-breath:not([hidden])) { background: rgba(255, 255, 255, .06); box-shadow: inset 0 0 0 1px rgba(255, 255, 255, .14); color: #e3e5f5; }
+html[data-theme="dark"] body #roomOverlay .ro-panel.ro-peach #roRoom .ct-row .ct-q { color: #e3e5f5; }
+html[data-theme="dark"] body #roomOverlay .ro-panel.ro-peach #roRoom .pg-breath-t { color: #fff; }
+html[data-theme="dark"] body #roomOverlay .ro-panel.ro-peach #roRoom .pg-breath-s { color: #ffb8d2; }
+html[data-theme="dark"] body #roomOverlay .ro-panel.ro-peach #roRoom .pg-kickring .kd:not(.on) { background: rgba(255, 255, 255, .08); box-shadow: inset 0 0 0 1.5px rgba(240, 210, 137, .55); }
+html[data-theme="dark"] body #roomOverlay .ro-panel.ro-peach #roRoom .pg20-siglist > li { color: #e3e5f5; }
+html[data-theme="dark"] body #roomOverlay .ro-panel.ro-peach #roRoom .jr-title .pg20-when { background: rgba(240, 210, 137, .18); color: #f6dc97 !important; }
+html[data-theme="dark"] body #roomOverlay .ro-panel.ro-peach #roRoom .pg20-road { stroke: rgba(240, 210, 137, .3) !important; }
+
+/* ── поправки след първата снимка (br20_b_L20_s*.jpg) ── */
+/* 🪤 display:flex на „Ритна!“ надвиваше сгъването (mega.css:639 `.jr-card.folded > *:not(.jr-title)`) — бутонът стърчеше от сгънатата карта */
+html body #roomOverlay .ro-panel.ro-peach #roRoom > .jr-card.folded > .pg-kick { display: none; }
+/* текущият ред в календарчето пази розовата си рамка (горе линията стана обща) */
+html body #roomOverlay .ro-panel.ro-peach #roRoom .pg20-calrow.now { border-color: rgba(229, 109, 153, .55) !important; }
+html[data-theme="dark"] body #roomOverlay .ro-panel.ro-peach #roRoom .pg20-calrow.now { border-color: rgba(245, 156, 187, .6) !important; }
+/* точката и надписът на групата — на една ос (точката падаше под реда) */
+html body #roomOverlay .ro-panel.ro-peach #roRoom .mk-fold > span:first-child { display: inline-flex; align-items: center; gap: 10px; min-width: 0; }
+html body #roomOverlay .ro-panel.ro-peach #roRoom .mk-fold > span:first-child > .pl-br-dot { margin: 0; flex: none; }
+/* „📞 112 — ако не можеш…“: иконата до текста, редът не се пречупва под нея */
+html body #roomOverlay .ro-panel.ro-peach #roRoom .pg20-signals > .ro-sos { display: flex; align-items: center; gap: 12px; min-height: 56px; padding: 10px 18px 10px 12px; line-height: 1.3; text-align: left; }
+html body #roomOverlay .ro-panel.ro-peach #roRoom .pg20-signals > .ro-sos > .pl-em:first-child { flex: none; width: 34px !important; height: 34px !important; margin: 0 !important; }
+/* дребните етикети ≥ 11.5 px на екрана: „4 с.“ в лентата на коремчето и седмиците на пътеката (SVG 10.5 = 12 px) */
+html body #roomOverlay .ro-panel.ro-peach #roRoom .pho-m { font-size: 11.5px !important; }
+html body #roomOverlay .ro-panel.ro-peach #roRoom .pg20-msw { font-size: 10.5px !important; }
+/* „Пътеката на чакането“: горните 37 от 150-те единици на рисунката са празни (пътят почва на y≈40, preg20.js:601)
+   → дупка ~40 px под подзаглавието; рисунката се качва с 22 px (най-горната спирка остава под текста) */
+html body #roomOverlay .ro-panel.ro-peach #roRoom .pg20-path .pg20-svgwrap { margin-top: -22px; }
+/* историята на контракциите (.bb-histrow, rooms.css:421 — лилаво #f7f4fc) — кремав ред с линия; часът и секундите на Nunito */
+html body #roomOverlay .ro-panel.ro-peach #roRoom .pg-contract .bb-histrow { align-items: center; min-height: 40px; padding: 8px 14px; border-radius: 14px; background: #fff8f2; box-shadow: inset 0 0 0 1px #f1e4d9; font-size: 13.5px; color: var(--pl-ink, #3b3f5c); font-variant-numeric: lining-nums tabular-nums; }
+html[data-theme="dark"] body #roomOverlay .ro-panel.ro-peach #roRoom .pg-contract .bb-histrow { background: rgba(255, 255, 255, .06) !important; box-shadow: inset 0 0 0 1px rgba(255, 255, 255, .14); color: #f1f2fb; }
+html body #roomOverlay .ro-panel.ro-peach #roRoom .pg-kickhist .jr-weekcap { font-size: 12px; }
+/* „Чанта за родилния дом“ / „План за раждане“ (от 28-ма, .jr-win — rooms.css:240 #f7f4fc; нощем dark.css:72 #342f4e !important
+   с кръгче #221d36 — лилаво и тъмно върху тъмно, снимка br20_c_D30_s02-03.jpg): филцов ред със златно копче като горе */
+html body #roomOverlay .ro-panel.ro-peach #roRoom .jr-wins .jr-win {
+  background-color: #fffaf3 !important; border: 1px solid #f1e4d9 !important; border-radius: 18px !important; color: var(--pl-ink, #3b3f5c);
+}
+html body #roomOverlay .ro-panel.ro-peach #roRoom .jr-wins .jr-win.done { background-color: #fff2f7 !important; border-color: rgba(229, 109, 153, .45) !important; }
+/* в „Плана“ (div.jr-win > button.jr-winbtn) рамката е на РЕДА, бутонът е прозрачен (така го иска pl-ui.css:376);
+   нощем pl-ui.css:420 връщаше филц на бутона → кутия в кутия (снимка br20_c_D30_s14.jpg) — тук и нощем е прозрачен */
+html body #roomOverlay .ro-panel.ro-peach #roRoom .jr-wins .jr-win .jr-winbtn.jr-winbtn { width: 100%; text-align: left; background: transparent !important; background-image: none !important; border: 0 !important; box-shadow: none !important; color: inherit; }
+html body #roomOverlay .ro-panel.ro-peach #roRoom .jr-wins .jr-check {
+  width: 26px; height: 26px; flex: none; background: #fffaf3; color: #fff; font-size: 13px; font-weight: 900;
+  box-shadow: inset 0 0 0 2px rgba(217, 185, 143, .9), inset 0 2px 3px rgba(120, 88, 58, .12);
+}
+html body #roomOverlay .ro-panel.ro-peach #roRoom .jr-wins :is(.jr-win.done, .jr-winbtn[aria-pressed="true"], .jr-win.done .jr-winbtn) .jr-check {
+  background: radial-gradient(120% 120% at 50% 18%, #f7a6c4 0, #e4779f 58%, #cf5f8c 100%); box-shadow: inset 0 0 0 1.5px rgba(201, 84, 130, .62); text-shadow: 0 1px 0 rgba(120, 20, 60, .35);
+}
+/* лентата „10 неща те чакат“ (.bg-fill — mega.css:840 стария прелив #f7a8cb→#b9a7e0) */
+html body #roomOverlay .ro-panel.ro-peach #roRoom .bg-track { height: 10px; background: #f3e6da; box-shadow: inset 0 1px 2px rgba(110, 76, 52, .16); }
+html body #roomOverlay .ro-panel.ro-peach #roRoom .bg-fill { background: linear-gradient(90deg, #f59cbb, #e56d99) !important; }
+html body #roomOverlay .ro-panel.ro-peach #roRoom .bg-txt { color: var(--pl-ink, #3b3f5c); opacity: 1; }
+/* нощ */
+html[data-theme="dark"] body #roomOverlay .ro-panel.ro-peach #roRoom .qd-row:not(.done) { background: rgba(255, 255, 255, .06) !important; }
+html[data-theme="dark"] body #roomOverlay .ro-panel.ro-peach #roRoom .jr-wins .jr-win { background-color: rgba(255, 255, 255, .06) !important; border-color: rgba(255, 255, 255, .14) !important; color: #f1f2fb; }
+html[data-theme="dark"] body #roomOverlay .ro-panel.ro-peach #roRoom .jr-wins .jr-win.done { background-color: rgba(229, 109, 153, .14) !important; border-color: rgba(245, 156, 187, .45) !important; }
+html[data-theme="dark"] body #roomOverlay .ro-panel.ro-peach #roRoom .jr-wins .jr-win:not(.done) > .jr-check,
+html[data-theme="dark"] body #roomOverlay .ro-panel.ro-peach #roRoom .jr-wins .jr-win:not(.done) > .jr-winbtn:not([aria-pressed="true"]) > .jr-check { background: rgba(255, 255, 255, .08); box-shadow: inset 0 0 0 1.5px rgba(240, 210, 137, .6); }
+html[data-theme="dark"] body #roomOverlay .ro-panel.ro-peach #roRoom .bg-track { background: rgba(255, 255, 255, .12); box-shadow: inset 0 1px 2px rgba(0, 0, 0, .3); }
+html[data-theme="dark"] body #roomOverlay .ro-panel.ro-peach #roRoom .bg-txt { color: #e3e5f5; }
+/* „Писмо до бебето“ и другите тетрадки нощем: линиите бяха #221d36 (лилаво) — сега нощно синьо с бели нишки (като pl-bebe.css) */
+html[data-theme="dark"] body #roomOverlay .ro-panel.ro-peach #roRoom textarea.jr-paper {
+  background-color: #1b2554 !important;
+  background-image: repeating-linear-gradient(180deg, rgba(255, 255, 255, 0) 0 26px, rgba(255, 255, 255, .07) 26px 27px) !important;
+}
+/* край 20.10 */

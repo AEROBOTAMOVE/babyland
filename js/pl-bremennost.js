@@ -148,6 +148,7 @@
     const тхт = б.querySelector('.pl-br-txt');
     текст(тхт, д.бел[кой] || '');
     текст(б.querySelector('.pl-br-fruit'), д.плод ? д.плод[1] : '');
+    плодПлюш(б.querySelector('.pl-br-fruit'), д.плод ? д.плод[1] : '');   // 20.10 · плюшен плод (виж блока 20.10 по-долу)
     // размерът — същият ред като preg20.js:143
     const разм = б.querySelector('.pl-br-size');
     const htmlР = д.плод ? ('колкото <b>' + esc(д.плод[0]) + '</b>' + (д.рз ? ' · ~' + тегло(д.рз[0]) + ' · ~' + д.рз[1] + ' см <small>(' + д.мярка + ')</small>' : '')) : '';
@@ -186,7 +187,24 @@
     try { тр.scrollTo({ left: цел, behavior: меко ? 'smooth' : 'auto' }); } catch (e) { тр.scrollLeft = цел; }
     // 🪤 22.09 (мерено, ag2_bremennost_funk): плавното плъзгане, прекъснато от второ натискане, спря
     //   на 227 px встрани от избраната седмица → след 450 мс донагласяме без анимация.
-    if (меко) { clearTimeout(тр._plBrT); тр._plBrT = setTimeout(() => { if (Math.abs(тр.scrollLeft - цел) > 2) тр.scrollLeft = цел; }, 450); }
+    // 🪤 20.10 (МЕРЕНО, br20_int2.log): бързо „8 → ↩ → За мен → За бебето“ остави релсата на 1254 при цел 1128 —
+    //   избраната 30-та извън лентата (снимка br20_int_L30_00.jpg). Едно донагласяне със scrollLeft не стига: докато
+    //   плавното плъзгане тече, Chrome го довършва до своята точка. Сега: до три проверки (450/850/1250 мс), целта се
+    //   смята наново, скокът е 'instant' (прекъсва плавното); пипне ли мама релсата — проверките спират.
+    //   ПЪТ НАЗАД: върни реда `if (меко) { clearTimeout(тр._plBrT); тр._plBrT = setTimeout(() => { if (Math.abs(тр.scrollLeft - цел) > 2) тр.scrollLeft = цел; }, 450); }`
+    if (!тр._plBrL) { тр._plBrL = 1; ['pointerdown', 'touchstart', 'wheel'].forEach(и => тр.addEventListener(и, () => clearTimeout(тр._plBrT), { passive: true })); }
+    clearTimeout(тр._plBrT);
+    if (меко) {
+      const провери = (още) => {
+        тр._plBrT = setTimeout(() => {
+          const к2 = тр.querySelector('.pl-br-wk.on'); if (!к2 || !тр.clientWidth) return;
+          const ц2 = Math.max(0, Math.min(тр.scrollWidth - тр.clientWidth, Math.round(к2.offsetLeft + к2.offsetWidth / 2 - тр.clientWidth / 2)));
+          if (Math.abs(тр.scrollLeft - ц2) > 2) { try { тр.scrollTo({ left: ц2, behavior: 'instant' }); } catch (e) { тр.scrollLeft = ц2; } }
+          if (още > 0) провери(още - 1);
+        }, още === 2 ? 450 : 400);
+      };
+      провери(2);
+    }
   }
 
   // ═══ 2. ПРЕДСТОЯЩИТЕ ЗАПИСИ ═══
@@ -393,6 +411,68 @@
     return false;
   }
 
+  /* 20.10 · ДРЕБНИ ЩРИХИ НА ВИДА (агент br20) — само обвиване за CSS, текстът (textContent) остава същият.
+     1) Плодът на седмицата (.pl-br-fruit) беше голо емоджи в бялото кръгче → ако pl-plyush.js има рисунка
+        за него (BL_PL_PLYUSH.К), кръгчето я носи като фон и емоджито се скрива (.is-pl, css/pl-bremennost.css §13).
+     2) Емоджита без плюшена рисунка, останали голи в старите карти (мерено, br20_dom.log):
+        „Сигнали, които не чакат“ 🩸 🤕 → в същия кремав кръг като стикерите (.pl-em от pl-ui.css), в своя колона;
+        „Календарчето“ 🧬 → същото; „Купих ли го“ 🔴 🟡 ⚪ → рисувана точка .pl-br-dot (цветът си остава смисълът).
+        Емоджи, за което pl-plyush.js ИМА рисунка, не се пипа — то става плюшено само.
+     3) Наблюдателят слуша и class: всяко „изплуване“ на карта (is-pending → is-in) будеше обхода — мерено при
+        превъртане на „телефон“ (×4): 126 повиквания за 16 с, от тях НУЛА нужни (br20_tezh_prof.log). Сега
+        промяна на class/hidden буди само ако е на #roomOverlay, панела или #roRoom; childList — винаги.
+     ПЪТ НАЗАД: махни блока до „край 20.10“, двата реда с „20.10“ в рисувайСедмица/обработи и върни
+     `new MutationObserver(отложено)` във върви(). */
+  const ЕМ20 = /^(\s*)(\p{Extended_Pictographic}(?:️|‍\p{Extended_Pictographic}|\p{Emoji_Modifier})*)/u;
+  const ТОЧКИ20 = { '🔴': 'r', '🟡': 'y', '⚪': 'w' };
+  function плюшКлетка(з) {
+    const P = window.BL_PL_PLYUSH; if (!P || !P.К || !з) return null;
+    const без = з.replace(/️/g, '');
+    return P.К[з] || P.К[без] || P.К[без + '️'] || null;
+  }
+  // клетка, която pl-plyush.js дава на НЯКОЛКО различни емоджита, е сборна рисунка (🍓🥕🍎🍠🍐 → ягода + морков;
+  //   мерено с dev/proba/br20_plodove.js) — „колкото малина“ с морков до нея лъже. Плод получава плюш САМО от своя клетка.
+  let кл20 = null;
+  const самотна = в => {
+    if (!кл20) { кл20 = new Map(); const К = window.BL_PL_PLYUSH.К; Object.keys(К).forEach(з => { const к = К[з].slice(0, 3).join(','); const с = кл20.get(к) || new Set(); с.add(з.replace(/️/g, '')); кл20.set(к, с); }); }
+    const с = кл20.get(в.slice(0, 3).join(',')); return !!с && с.size === 1;
+  };
+  function плодПлюш(е, з) {
+    if (!е) return;
+    let в = плюшКлетка(з); if (в && !самотна(в)) в = null;
+    const лист = в && window.BL_PL_PLYUSH.ЛИСТ && window.BL_PL_PLYUSH.ЛИСТ[в[0]];
+    const два = в && window.BL_PL_PLYUSH.ДВЕРЕДНИ && window.BL_PL_PLYUSH.ДВЕРЕДНИ[в[0]];
+    const ст = лист ? 'background-image:url(img/art/' + лист + '.webp);background-size:400% ' + (два ? '200%' : '400%') +
+      ';background-position:' + (в[2] * 100 / 3) + '% ' + (два ? в[1] * 100 : в[1] * 100 / 3) + '%' : '';
+    if ((е.getAttribute('style') || '') !== ст) { if (ст) е.setAttribute('style', ст); else е.removeAttribute('style'); }
+    клас(е, 'is-pl', !!ст);
+  }
+  // първото емоджи в текстовия възел → <span>; връща true, ако е обвило
+  function обвийПърво(е, прави) {
+    const н = е.firstChild; if (!н || н.nodeType !== 3) return false;
+    const м = н.textContent.match(ЕМ20); if (!м) return false;
+    const с = прави(м[2]); if (!с) return false;
+    с.setAttribute('aria-hidden', 'true'); с.textContent = м[2];
+    н.textContent = н.textContent.slice(м[0].length);
+    е.insertBefore(с, н);
+    return true;
+  }
+  const стикер = з => { if (плюшКлетка(з)) return null; const с = document.createElement('span'); с.className = 'pl-em pl-br-em'; return с; };
+  const точка = з => { const ц = ТОЧКИ20[з.replace(/️/g, '')]; if (!ц) return null; const с = document.createElement('span'); с.className = 'pl-br-dot'; с.dataset.c = ц; return с; };
+  function щрихи(корен) {
+    корен.querySelectorAll(':scope > .pg20-signals .pg20-siglist > li, :scope > .pg20-cal .pg20-cale').forEach(е => обвийПърво(е, стикер));
+    корен.querySelectorAll(':scope > .jr-card .mk-fold > span:first-child').forEach(е => обвийПърво(е, точка));
+  }
+  function важно(сп) {
+    for (const з of сп) {
+      if (з.type === 'childList') return true;
+      const т = з.target;
+      if (т && (т.id === 'roomOverlay' || т.id === 'roRoom' || (т.classList && т.classList.contains('ro-panel')))) return true;
+    }
+    return false;
+  }
+  /* край 20.10 */
+
   // ═══ СГЛОБЯВАНЕТО ═══
   function направи(корен, с) {
     const б = document.createElement('section');
@@ -444,6 +524,7 @@
     const тук = панел && панел.classList.contains('ro-peach') &&
       !!корен.querySelector(':scope > .pg20-hero, :scope > .pg20-invite, :scope > .pg20-doc, :scope > .pg20-path');
     let б = корен.querySelector(':scope > .pl-br');
+    if (тук) щрихи(корен);                         // 20.10 · голите емоджита в старите карти (блокът 20.10 горе)
     const с = тук ? състояние() : { вид: 'нищо' };
     // 🪤 22.09 (МЕРЕНО, ag2_bremennost_diag3): #roRoom НЕ е нов елемент при ново отваряне — helper.js:5407
     //   го чисти с innerHTML = ''. Затова: няма ли го нашия блок, стаята е нарисувана наново (или е друга) →
@@ -476,7 +557,8 @@
   function върви() {
     const ов = document.getElementById('roomOverlay');
     if (!ов) return;
-    new MutationObserver(отложено).observe(ов, { childList: true, subtree: true, attributes: true, attributeFilter: ['class', 'hidden'] });
+    // 20.10: беше `new MutationObserver(отложено)` — буди се само от важните промени (важно(), блокът 20.10)
+    new MutationObserver(сп => { if (важно(сп)) отложено(); }).observe(ов, { childList: true, subtree: true, attributes: true, attributeFilter: ['class', 'hidden'] });
     обходи();
   }
   if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', върви); else върви();
