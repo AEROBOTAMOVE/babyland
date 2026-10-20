@@ -1529,3 +1529,26 @@ html[data-theme="dark"] body #roomOverlay .pl-rhero img {
   filter: brightness(.6) saturate(.85) !important;
 }
 /* край 21.10 · банерът нощем */
+
+/* 🧹 21.10 · ОБЩИТЕ ОСТАТЪЦИ ОТ СТАРИЯ СВЯТ — намерени от агентите на стаите (Бременност, Моето бебе),
+   важат за ВСИЧКИ стаи, затова са тук, а не по стаите:
+   1 · тихите часове (html.bl-night, 21/23–06/07 ч.) правеха подзаглавията на картите opacity .72 → 2.98:1
+       (dark.css:186) — „по-малко шум“ не струва нечетим текст в 3 сутринта;
+   2 · тъмна тема: .jr-win лилаво-черно #342f4e (dark.css:72) → нощно синьо стъкло;
+   3 · тъмна тема: копчето .jr-winbtn вътре в реда .jr-win получаваше филца (pl-ui.css:420) — кутия в кутия;
+   4 · розово→лилавите ленти .bg-fill (mega.css:840), лавандуловите кутийки .pn-txt / .ct-row / .bb-histrow.
+   ПЪТ НАЗАД: махни този блок. */
+html.bl-night body .jr-sub, html.bl-night body .jr-privacy { opacity: 1 !important; }
+html[data-theme="dark"] body .jr-win.jr-win { background: rgba(255, 255, 255, .05) !important; border-color: rgba(255, 255, 255, .12) !important; }
+html[data-theme="dark"] body .jr-win .jr-winbtn.jr-winbtn {
+  background: transparent !important; background-color: transparent !important; background-image: none !important;
+  border: 0 !important; box-shadow: none !important;
+}
+html:not(.bl-night) body .bg-fill { background: linear-gradient(90deg, #f59cbb, #e56d99 62%, #d9b98f) !important; }
+html:not([data-theme="dark"]) body .pn-txt, html:not([data-theme="dark"]) body .ct-row, html:not([data-theme="dark"]) body .bb-histrow {
+  background: #fff8f2 !important; border: 1px solid #f1e4d9;
+}
+html[data-theme="dark"] body .pn-txt, html[data-theme="dark"] body .ct-row, html[data-theme="dark"] body .bb-histrow {
+  background: rgba(255, 255, 255, .05) !important; border: 1px solid rgba(255, 255, 255, .1); color: #e8e9f5;
+}
+/* край 21.10 · общите остатъци */
