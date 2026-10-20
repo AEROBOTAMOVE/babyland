@@ -87,3 +87,50 @@
 ## ЛИПСВА:
 - Единно българско правило за захранване «4 или 6 месеца» — брошурата МЗ 2008 допуска формулата между 4 и 6 м. по преценка на лекар, а ESPGHAN/NHS/СЗО са «около 6» (04/02); картата на приложението `zh-parvo` трябва да се сверява с това.
 - Дали сред профилактичните прегледи по НЗОК има отделен слухов/зрителен скрининг преди 6 м. — Наредба № 8 дава ориентировъчна оценка на зрение и слух чак на 6 и 12 м. (07/07).
+
+---
+## Файлове на библиотеката, на които се опира
+- `02/05` = `02-novorodeno/05-plach-koliki.md`
+- `03/02` = `03-karmene/02-chestota-prodalzhitelnost.md`
+- `03/03` = `03-karmene/03-dostatachno-mlyako.md`
+- `03/05` = `03-karmene/05-nosht-i-skokove.md`
+- `04/02` = `04-zahranvane/02-start-i-gotovnost.md`
+- `04/05` = `04-zahranvane/05-alergeni-protokol.md`
+- `04/08` = `04-zahranvane/08-voda-sokove-mlyako-napitki.md`
+- `04/18` = `04-zahranvane/18-babini-saveti-za-hraneneto.md`
+- `05/01` = `05-san/01-kolko-spi-i-rezhim.md`
+- `05/03` = `05-san/03-noshtni-budenia-regresii.md`
+- `05/05` = `05-san/05-kade-spi-staya-leglo-saspane.md`
+- `05/06` = `05-san/06-obuchenie-za-san.md`
+- `05/07` = `05-san/07-bezopasen-san-svds.md`
+- `06/01` = `06-razvitie/01-etapi-0-12-meseca.md`
+- `06/03` = `06-razvitie/03-motorika.md`
+- `06/05` = `06-razvitie/05-igri-po-mesetsi.md`
+- `06/07` = `06-razvitie/07-igrachki-bezopasnost.md`
+- `06/14` = `06-razvitie/14-babini-poverija-razvitie.md`
+- `07/01` = `07-zdrave/01-vaksini-bg.md`
+- `07/04` = `07-zdrave/04-zabki.md`
+- `07/07` = `07-zdrave/07-lichen-lekar-nzok-spesheno.md`
+- `07/10` = `07-zdrave/10-spravka-kogato-kam-lekar.md`
+- `08/01` = `08-mama/01-tyaloto-po-vreme.md`
+- `08/03` = `08-mama/03-diastaza-korem-bandazh.md`
+- `08/04` = `08-mama/04-sport-i-dvizhenie.md`
+- `08/05` = `08-mama/05-kosa-kozha-ryce.md`
+- `08/07` = `08-mama/07-seks-kontracepcia-cikyl.md`
+- `08/09` = `08-mama/09-pomosht-v-balgaria.md`
+- `08/11` = `08-mama/11-vrazka-i-partnior.md`
+- `09/01` = `09-prava/01-maychinstvo-410-dni.md`
+- `09/03` = `09-prava/03-bashtinstvo-i-bolnichni-za-dete.md`
+- `09/04` = `09-prava/04-pomoshti-asp-sumi-2026.md`
+- `09/05` = `09-prava/05-danachni-oblekchenia-za-deca.md`
+- `09/08` = `09-prava/08-lichen-lekar-i-zdravna-knizhka.md`
+- `12/03` = `12-praktika/03-stolche-za-kola.md`
+- `12/07` = `12-praktika/07-obezopasyavane-na-doma.md`
+- `14/03` = `14-ezik/03-temi-karmene.md`
+- `00-PROTIVORECHIYA` = `00-PROTIVORECHIYA.md` (разминавания между източниците; № = номер в таблицата)
+- Само по заглавия/кратките резюмета (съдържанието им не е преразказано тук, виж файловете): `14/03` — за `14/..` това са формулировки на майките (Как пита майката).
+- `карта: id` = записи от `00-IMAME.md` (js/kb.js) — 39 различни id в този файл, 39 от 39 намерени в 00-IMAME.md при проверка на 20.10.2026
+
+## Статус на файла (протокол «Равносметка»)
+- ПРОВЕРЕНО (отворих и видях в тази сесия): разделите на изходните файлове, цитирани в скобите (освен тези от реда по-горе, за които съм чела само заглавия/резюмета), и всеки `id` на карта срещу 00-IMAME.md.
+- ПРЕДПОЛОЖЕНО: самите факти са такива, каквито са в изходните файлове — с техните белези ([от паметта], [непроверено], «изчислено»); нова проверка в мрежата не е правена. Сумите и сроковете са за 2026 г. и се менят.

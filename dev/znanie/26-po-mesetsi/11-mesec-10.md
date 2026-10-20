@@ -85,3 +85,45 @@
 ## ЛИПСВА:
 - Единно тълкуване на «снак» преди 12 м. — СЗО (1–2 снака) и NHS (не са нужни) се съгласуват само ако снакът е част от храна (04/07).
 - Количества храна в грамове за 10–12 м. — има брошурата от 2008 (лъжици) и яслените норми, но не и съвременен родителски стандарт (04/04, 04/07).
+
+---
+## Файлове на библиотеката, на които се опира
+- `04/03` = `04-zahranvane/03-pyureta-blw-tekstura.md`
+- `04/04` = `04-zahranvane/04-parvi-hrani-kalendar.md`
+- `04/07` = `04-zahranvane/07-kolichestva-i-rezhim-chisla.md`
+- `04/08` = `04-zahranvane/08-voda-sokove-mlyako-napitki.md`
+- `04/09` = `04-zahranvane/09-sol-zahar-med-chisla.md`
+- `04/16` = `04-zahranvane/16-menyuta-za-sedmica-po-vazrast.md`
+- `04/18` = `04-zahranvane/18-babini-saveti-za-hraneneto.md`
+- `05/01` = `05-san/01-kolko-spi-i-rezhim.md`
+- `05/03` = `05-san/03-noshtni-budenia-regresii.md`
+- `05/04` = `05-san/04-dryamki-i-ranno-stavane.md`
+- `06/01` = `06-razvitie/01-etapi-0-12-meseca.md`
+- `06/03` = `06-razvitie/03-motorika.md`
+- `06/05` = `06-razvitie/05-igri-po-mesetsi.md`
+- `06/08` = `06-razvitie/08-chetene-knizhki.md`
+- `06/13` = `06-razvitie/13-yasla-gradina-adaptatsia.md`
+- `06/14` = `06-razvitie/14-babini-poverija-razvitie.md`
+- `07/01` = `07-zdrave/01-vaksini-bg.md`
+- `07/04` = `07-zdrave/04-zabki.md`
+- `07/07` = `07-zdrave/07-lichen-lekar-nzok-spesheno.md`
+- `08/08` = `08-mama/08-blus-depresia-trevozhnost.md`
+- `08/14` = `08-mama/14-vrashtane-na-rabota.md`
+- `09/02` = `09-prava/02-vtora-godina-i-prehvarlyane.md`
+- `09/03` = `09-prava/03-bashtinstvo-i-bolnichni-za-dete.md`
+- `09/06` = `09-prava/06-dokumenti-akt-egn-pasport-patuvane.md`
+- `09/07` = `09-prava/07-yasla-i-gradina-priem.md`
+- `09/08` = `09-prava/08-lichen-lekar-i-zdravna-knizhka.md`
+- `12/03` = `12-praktika/03-stolche-za-kola.md`
+- `12/07` = `12-praktika/07-obezopasyavane-na-doma.md`
+- `14/04` = `14-ezik/04-temi-zahranvane.md`
+- `14/05` = `14-ezik/05-temi-san.md`
+- `23/04` = `23-bezopasnost-sezoni/04-otrovni-rasteniya-i-gabi.md`
+- `23/12` = `23-bezopasnost-sezoni/12-lekarstva-toksikologia-pirogov.md`
+- `00-PROTIVORECHIYA` = `00-PROTIVORECHIYA.md` (разминавания между източниците; № = номер в таблицата)
+- Само по заглавия/кратките резюмета (съдържанието им не е преразказано тук, виж файловете): `14/04`, `14/05`, `23/04` — за `14/..` това са формулировки на майките (Как пита майката).
+- `карта: id` = записи от `00-IMAME.md` (js/kb.js) — 38 различни id в този файл, 38 от 38 намерени в 00-IMAME.md при проверка на 20.10.2026
+
+## Статус на файла (протокол «Равносметка»)
+- ПРОВЕРЕНО (отворих и видях в тази сесия): разделите на изходните файлове, цитирани в скобите (освен тези от реда по-горе, за които съм чела само заглавия/резюмета), и всеки `id` на карта срещу 00-IMAME.md.
+- ПРЕДПОЛОЖЕНО: самите факти са такива, каквито са в изходните файлове — с техните белези ([от паметта], [непроверено], «изчислено»); нова проверка в мрежата не е правена. Сумите и сроковете са за 2026 г. и се менят.

@@ -82,3 +82,42 @@
 - Точен текст на домашното посещение (патронаж) в БГ — Наредба № 9/2019 е само проект 2024, НЕПРОВЕРЕНО (02/01).
 - Срок за подаване на еднократната помощ — ASP не го пише, «до 3 г.» е от правна медия (09/04).
 - Единен отговор за витамин D (02/01, 00-PROTIVORECHIYA №2).
+
+---
+## Файлове на библиотеката, на които се опира
+- `02/01` = `02-novorodeno/01-purvite-40-dni.md`
+- `02/02` = `02-novorodeno/02-pupche.md`
+- `02/04` = `02-novorodeno/04-peleni.md`
+- `02/05` = `02-novorodeno/05-plach-koliki.md`
+- `02/06` = `02-novorodeno/06-san-novorodeno.md`
+- `02/09` = `02-novorodeno/09-nosene-slingove.md`
+- `03/02` = `03-karmene/02-chestota-prodalzhitelnost.md`
+- `03/03` = `03-karmene/03-dostatachno-mlyako.md`
+- `03/05` = `03-karmene/05-nosht-i-skokove.md`
+- `03/12` = `03-karmene/12-voda-chay.md`
+- `04/10` = `04-zahranvane/10-jelezo-vitamin-d-i-dobavki.md`
+- `05/01` = `05-san/01-kolko-spi-i-rezhim.md`
+- `05/07` = `05-san/07-bezopasen-san-svds.md`
+- `06/01` = `06-razvitie/01-etapi-0-12-meseca.md`
+- `06/03` = `06-razvitie/03-motorika.md`
+- `06/05` = `06-razvitie/05-igri-po-mesetsi.md`
+- `06/14` = `06-razvitie/14-babini-poverija-razvitie.md`
+- `07/01` = `07-zdrave/01-vaksini-bg.md`
+- `07/07` = `07-zdrave/07-lichen-lekar-nzok-spesheno.md`
+- `07/10` = `07-zdrave/10-spravka-kogato-kam-lekar.md`
+- `08/01` = `08-mama/01-tyaloto-po-vreme.md`
+- `08/07` = `08-mama/07-seks-kontracepcia-cikyl.md`
+- `08/08` = `08-mama/08-blus-depresia-trevozhnost.md`
+- `09/01` = `09-prava/01-maychinstvo-410-dni.md`
+- `09/03` = `09-prava/03-bashtinstvo-i-bolnichni-za-dete.md`
+- `09/04` = `09-prava/04-pomoshti-asp-sumi-2026.md`
+- `09/06` = `09-prava/06-dokumenti-akt-egn-pasport-patuvane.md`
+- `09/08` = `09-prava/08-lichen-lekar-i-zdravna-knizhka.md`
+- `12/03` = `12-praktika/03-stolche-za-kola.md`
+- `12/07` = `12-praktika/07-obezopasyavane-na-doma.md`
+- `00-PROTIVORECHIYA` = `00-PROTIVORECHIYA.md` (разминавания между източниците; № = номер в таблицата)
+- `карта: id` = записи от `00-IMAME.md` (js/kb.js) — 43 различни id в този файл, 43 от 43 намерени в 00-IMAME.md при проверка на 20.10.2026
+
+## Статус на файла (протокол «Равносметка»)
+- ПРОВЕРЕНО (отворих и видях в тази сесия): разделите на изходните файлове, цитирани в скобите (освен тези от реда по-горе, за които съм чела само заглавия/резюмета), и всеки `id` на карта срещу 00-IMAME.md.
+- ПРЕДПОЛОЖЕНО: самите факти са такива, каквито са в изходните файлове — с техните белези ([от паметта], [непроверено], «изчислено»); нова проверка в мрежата не е правена. Сумите и сроковете са за 2026 г. и се менят.

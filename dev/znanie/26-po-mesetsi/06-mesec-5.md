@@ -85,3 +85,52 @@
 ## ЛИПСВА:
 - Български документ с конкретни «първи 4 седмици» след 2008 — бавният вариант (брошурата) и бързият (NHS/AAP) са алтернативи; кой е по-добър е разговор с педиатъра (04/04).
 - Готовите бурканчета и пакетчетата за смучене имат отделни правила (04/03, 04/17) — не са преразказани тук.
+
+---
+## Файлове на библиотеката, на които се опира
+- `03/02` = `03-karmene/02-chestota-prodalzhitelnost.md`
+- `03/12` = `03-karmene/12-voda-chay.md`
+- `04/02` = `04-zahranvane/02-start-i-gotovnost.md`
+- `04/03` = `04-zahranvane/03-pyureta-blw-tekstura.md`
+- `04/04` = `04-zahranvane/04-parvi-hrani-kalendar.md`
+- `04/05` = `04-zahranvane/05-alergeni-protokol.md`
+- `04/07` = `04-zahranvane/07-kolichestva-i-rezhim-chisla.md`
+- `04/08` = `04-zahranvane/08-voda-sokove-mlyako-napitki.md`
+- `04/09` = `04-zahranvane/09-sol-zahar-med-chisla.md`
+- `04/10` = `04-zahranvane/10-jelezo-vitamin-d-i-dobavki.md`
+- `04/12` = `04-zahranvane/12-zapek-razstroystvo-ot-hrana.md`
+- `04/17` = `04-zahranvane/17-detski-hrani-ot-magazina-etiket.md`
+- `04/18` = `04-zahranvane/18-babini-saveti-za-hraneneto.md`
+- `05/01` = `05-san/01-kolko-spi-i-rezhim.md`
+- `05/03` = `05-san/03-noshtni-budenia-regresii.md`
+- `05/05` = `05-san/05-kade-spi-staya-leglo-saspane.md`
+- `05/06` = `05-san/06-obuchenie-za-san.md`
+- `05/07` = `05-san/07-bezopasen-san-svds.md`
+- `06/01` = `06-razvitie/01-etapi-0-12-meseca.md`
+- `06/05` = `06-razvitie/05-igri-po-mesetsi.md`
+- `06/07` = `06-razvitie/07-igrachki-bezopasnost.md`
+- `06/14` = `06-razvitie/14-babini-poverija-razvitie.md`
+- `07/01` = `07-zdrave/01-vaksini-bg.md`
+- `07/04` = `07-zdrave/04-zabki.md`
+- `07/07` = `07-zdrave/07-lichen-lekar-nzok-spesheno.md`
+- `08/04` = `08-mama/04-sport-i-dvizhenie.md`
+- `08/07` = `08-mama/07-seks-kontracepcia-cikyl.md`
+- `08/08` = `08-mama/08-blus-depresia-trevozhnost.md`
+- `08/09` = `08-mama/09-pomosht-v-balgaria.md`
+- `08/11` = `08-mama/11-vrazka-i-partnior.md`
+- `08/14` = `08-mama/14-vrashtane-na-rabota.md`
+- `09/03` = `09-prava/03-bashtinstvo-i-bolnichni-za-dete.md`
+- `09/04` = `09-prava/04-pomoshti-asp-sumi-2026.md`
+- `09/05` = `09-prava/05-danachni-oblekchenia-za-deca.md`
+- `12/03` = `12-praktika/03-stolche-za-kola.md`
+- `12/07` = `12-praktika/07-obezopasyavane-na-doma.md`
+- `14/04` = `14-ezik/04-temi-zahranvane.md`
+- `14/05` = `14-ezik/05-temi-san.md`
+- `23/12` = `23-bezopasnost-sezoni/12-lekarstva-toksikologia-pirogov.md`
+- `00-PROTIVORECHIYA` = `00-PROTIVORECHIYA.md` (разминавания между източниците; № = номер в таблицата)
+- Само по заглавия/кратките резюмета (съдържанието им не е преразказано тук, виж файловете): `04/12`, `04/17`, `14/04`, `14/05` — за `14/..` това са формулировки на майките (Как пита майката).
+- `карта: id` = записи от `00-IMAME.md` (js/kb.js) — 44 различни id в този файл, 44 от 44 намерени в 00-IMAME.md при проверка на 20.10.2026
+
+## Статус на файла (протокол «Равносметка»)
+- ПРОВЕРЕНО (отворих и видях в тази сесия): разделите на изходните файлове, цитирани в скобите (освен тези от реда по-горе, за които съм чела само заглавия/резюмета), и всеки `id` на карта срещу 00-IMAME.md.
+- ПРЕДПОЛОЖЕНО: самите факти са такива, каквито са в изходните файлове — с техните белези ([от паметта], [непроверено], «изчислено»); нова проверка в мрежата не е правена. Сумите и сроковете са за 2026 г. и се менят.

@@ -82,3 +82,41 @@
 ## ЛИПСВА:
 - Български срок за подаване на заявление-декларация Приложение № 2 спрямо края на болничните — 09/01 дава само 135 дни и изчислението; точната дата се уточнява с работодателя/ТП на НОИ.
 - Български отговор «кога мога да лета с бебе» по законите на авиокомпаниите — 12/08 е само по AAP.
+
+---
+## Файлове на библиотеката, на които се опира
+- `02/05` = `02-novorodeno/05-plach-koliki.md`
+- `02/06` = `02-novorodeno/06-san-novorodeno.md`
+- `02/07` = `02-novorodeno/07-normalno-li-e.md`
+- `03/02` = `03-karmene/02-chestota-prodalzhitelnost.md`
+- `03/05` = `03-karmene/05-nosht-i-skokove.md`
+- `03/12` = `03-karmene/12-voda-chay.md`
+- `04/02` = `04-zahranvane/02-start-i-gotovnost.md`
+- `04/18` = `04-zahranvane/18-babini-saveti-za-hraneneto.md`
+- `05/01` = `05-san/01-kolko-spi-i-rezhim.md`
+- `05/07` = `05-san/07-bezopasen-san-svds.md`
+- `05/11` = `05-san/11-babini-poverija-za-sana.md`
+- `06/01` = `06-razvitie/01-etapi-0-12-meseca.md`
+- `06/05` = `06-razvitie/05-igri-po-mesetsi.md`
+- `07/01` = `07-zdrave/01-vaksini-bg.md`
+- `07/07` = `07-zdrave/07-lichen-lekar-nzok-spesheno.md`
+- `07/10` = `07-zdrave/10-spravka-kogato-kam-lekar.md`
+- `08/02` = `08-mama/02-shevove-tazovo-dano.md`
+- `08/03` = `08-mama/03-diastaza-korem-bandazh.md`
+- `08/04` = `08-mama/04-sport-i-dvizhenie.md`
+- `08/05` = `08-mama/05-kosa-kozha-ryce.md`
+- `08/07` = `08-mama/07-seks-kontracepcia-cikyl.md`
+- `08/08` = `08-mama/08-blus-depresia-trevozhnost.md`
+- `08/15` = `08-mama/15-vreme-za-sebe-si.md`
+- `09/01` = `09-prava/01-maychinstvo-410-dni.md`
+- `09/04` = `09-prava/04-pomoshti-asp-sumi-2026.md`
+- `12/07` = `12-praktika/07-obezopasyavane-na-doma.md`
+- `12/08` = `12-praktika/08-patuvane-s-bebe.md`
+- `14/03` = `14-ezik/03-temi-karmene.md`
+- `00-PROTIVORECHIYA` = `00-PROTIVORECHIYA.md` (разминавания между източниците; № = номер в таблицата)
+- Само по заглавия/кратките резюмета (съдържанието им не е преразказано тук, виж файловете): `14/03` — за `14/..` това са формулировки на майките (Как пита майката).
+- `карта: id` = записи от `00-IMAME.md` (js/kb.js) — 39 различни id в този файл, 39 от 39 намерени в 00-IMAME.md при проверка на 20.10.2026
+
+## Статус на файла (протокол «Равносметка»)
+- ПРОВЕРЕНО (отворих и видях в тази сесия): разделите на изходните файлове, цитирани в скобите (освен тези от реда по-горе, за които съм чела само заглавия/резюмета), и всеки `id` на карта срещу 00-IMAME.md.
+- ПРЕДПОЛОЖЕНО: самите факти са такива, каквито са в изходните файлове — с техните белези ([от паметта], [непроверено], «изчислено»); нова проверка в мрежата не е правена. Сумите и сроковете са за 2026 г. и се менят.
