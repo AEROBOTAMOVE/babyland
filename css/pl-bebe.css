@@ -642,3 +642,139 @@ html[data-theme="dark"] body #roomOverlay .ro-sky #roRoom .pl-sleepring[data-s="
 html[data-theme="dark"] body #roomOverlay .ro-sky #roRoom .pl-sr-bg { stroke: rgba(255, 255, 255, .12); }
 html[data-theme="dark"] body #roomOverlay .ro-sky #roRoom .pl-sr-in { background: radial-gradient(circle at 50% 30%, rgba(255, 255, 255, .10), rgba(255, 255, 255, .04)); box-shadow: inset 0 0 0 1px rgba(240, 210, 137, .3); }
 /* край 06.10 · стаята */
+
+/* ═══ 20.10 · ТАБЛОТО: ДЪРВОТО Е ЛАК, НЕ ДЪСКА + ДОВЪРШВАНЕ НА КАРТИТЕ ПОД НЕГО ═══
+   Снимки преди: dev/proba/snimki/bb20_B_*_L.jpg / _D.jpg (×2), bb20_A_*_sled*.jpg; мерки в bb20_B_L.log.
+     1 · ДЪРВОТО (арката „Днес“, дъската, колчетата, двата шкафа): отвесни ивици през 7 px и кафяво
+         #d5ab76…#e2be8e — „дървено“ в лошия смисъл. Сега е слонова кост с атлазен блик и едва
+         загатната жилка (3.5%), обшито със шампанско злато (#e3c39c / #d9b98f от палитрата);
+         дъската — кремав лак със златна нишка между плота и ръба. Нощем: полунощен лак без ивици.
+     2 · „Растеж“/„Първи умения“: поличката в нишата — същият лак, не кафява летва.
+     3 · „Днес още няма записи“: последната дума падаше сама на ред („ви.“) → text-wrap: pretty.
+     4 · КАРТИТЕ: „Последни:“ в нощния режим на таймера (p.jr-weekcap) оставаше сиво-лилав
+         #6f6980 върху синьо — сега #c9cbe3; месецът в „Профилактичните прегледи“ (.pg20-calw)
+         беше 10.5 px (под 11) и нощем лилав #b3a4d1 → 12 px, нощем #c9cbe3;
+         „Рекордите“ (.rc-row) нощем бяха кално кафяво-маслинени (mega.css:518 #3a3320→#3a2b3a) →
+         нощно синьо със златна нишка; „Лексиконът“ (.lx-inp, rows=1) показваше лента за
+         превъртане при празно поле (scrollHeight 44 > clientHeight 43 — мерено) → field-sizing:
+         content (полето расте с текста, лента няма), горе 240 px; редовете на прегледите — без дупка
+         и двоен ред; „п45“ в калкулатора 2.77:1 → тъмна роза; героят „7 месеца“ — две рисунки една
+         върху друга (.pg20-fruit) → една; нощем „Хвани един момент…“ и „Въведи тегло…“ — без сиво/лилаво-черно.
+     5 · ЖИВОТЪТ ПРИ ЗАПИС: с js/pl-bebe.js 20.10 — подскача само сменилият се брояч, влиза само новият ред.
+   Обхват: класовете на таблото (.pl-bb-*) и стаята (#roomOverlay .ro-sky #roRoom).
+   ПЪТ НАЗАД: махни този блок (до „край 20.10 · таблото“). Предишният файл: dev/proba/bb20_predi_pl-bebe.css */
+
+/* 1 · лакът — ПРЕдефинирам променливите на блока (арката и шкафовете ги ползват) */
+#roRoom .pl-bb {
+  --bb-wood:
+    radial-gradient(120% 55% at 50% 0%, rgba(255, 255, 255, .7) 0, rgba(255, 255, 255, 0) 62%),
+    repeating-linear-gradient(93deg, rgba(186, 146, 102, .035) 0 1px, transparent 1px 13px),
+    linear-gradient(180deg, #fffaf2 0, #f8eddd 52%, #f2e2cb 100%);
+  --bb-rim: inset 0 0 0 1.5px #dfc097, inset 0 0 0 10px #fffaf3, inset 0 0 0 11.5px rgba(217, 185, 143, .85);
+}
+#roRoom .pl-bb .pl-bb-shelf::before {
+  box-shadow: var(--bb-rim), inset 0 14px 22px rgba(255, 255, 255, .45), 0 10px 24px rgba(150, 110, 70, .15), 0 1px 0 rgba(217, 185, 143, .5);
+}
+#roRoom .pl-bb .pl-bb-arches::after {   /* дъската: кремав плот, златна нишка, ръб в шампанско */
+  background: linear-gradient(180deg, #fffcf7 0, #faf0e2 33%, #e3c39c 33.5%, #e3c39c 36%, #f3e5cf 36.5%, #ead7b9 100%);
+  box-shadow: 0 8px 16px rgba(150, 110, 70, .17), 0 0 0 1px rgba(217, 185, 143, .55), inset 0 1.5px 0 #fff;
+}
+#roRoom .pl-bb .pl-bb-sp { background: linear-gradient(90deg, #e2c9a2 0, #fff8ec 46%, #d9bd94 100%); box-shadow: 0 0 0 .5px rgba(190, 150, 105, .4); }
+#roRoom .pl-bb .pl-bb-sp::before { background: radial-gradient(circle at 35% 30%, #fffefb 0, #f4e7d1 52%, #d8bd93 100%); box-shadow: 0 1px 2px rgba(150, 110, 70, .25); }
+#roRoom .pl-bb .pl-bb-dome { box-shadow:
+  inset 0 0 0 5px #fffaf2, inset 0 0 0 6.5px rgba(217, 185, 143, .8),
+  inset 0 16px 18px rgba(255, 255, 255, .5), inset 0 -12px 16px rgba(110, 76, 52, .08),
+  0 0 0 1.5px rgba(217, 185, 143, .6), 0 8px 16px rgba(150, 110, 70, .16); }
+/* 2 · шкафовете и поличката в нишата */
+#roRoom .pl-bb .pl-bb-t { box-shadow: inset 0 0 0 1.5px #dfc097, inset 0 0 0 5px #fffaf3, inset 0 0 0 6.5px rgba(217, 185, 143, .85), 0 12px 24px rgba(150, 110, 70, .15); }
+#roRoom .pl-bb .pl-bb-tsc::after {
+  background: linear-gradient(180deg, #fffcf7 0, #f6ead7 42%, #ead7b9 100%);
+  box-shadow: 0 -1px 0 rgba(217, 185, 143, .75), 0 -3px 6px rgba(110, 76, 52, .08);
+}
+#roRoom .pl-bb .pl-bb-tp { box-shadow: inset 0 0 0 1.5px #ead3b0, inset 0 2px 0 #fff, 0 2px 5px rgba(150, 110, 70, .12); }
+/* 3 · празното */
+#roRoom .pl-bb .pl-bb-empty p { text-wrap: pretty; }
+
+/* НОЩ: полунощен лак без ивици, златна обшивка */
+html[data-theme="dark"] #roRoom .pl-bb {
+  --bb-wood:
+    radial-gradient(120% 55% at 50% 0%, rgba(255, 255, 255, .10) 0, rgba(255, 255, 255, 0) 62%),
+    linear-gradient(180deg, #34428a 0, #2a3673 55%, #232e64 100%);
+  --bb-rim: inset 0 0 0 1.5px rgba(240, 210, 137, .55), inset 0 0 0 10px rgba(255, 255, 255, .035), inset 0 0 0 11.5px rgba(240, 210, 137, .32);
+}
+html[data-theme="dark"] #roRoom .pl-bb .pl-bb-shelf::before { box-shadow: var(--bb-rim), 0 10px 24px rgba(0, 0, 0, .32); }
+html[data-theme="dark"] #roRoom .pl-bb .pl-bb-arches::after {
+  background: linear-gradient(180deg, #4a58a2 0, #3e4b8f 33%, rgba(240, 210, 137, .6) 33.5%, rgba(240, 210, 137, .6) 36%, #313d7c 36.5%, #28326c 100%);
+  box-shadow: 0 9px 16px rgba(0, 0, 0, .32), 0 0 0 1px rgba(240, 210, 137, .3), inset 0 1.5px 0 rgba(255, 255, 255, .14);
+}
+html[data-theme="dark"] #roRoom .pl-bb .pl-bb-sp { background: linear-gradient(90deg, #9f8147 0, #f3dca2 46%, #957840 100%); box-shadow: none; }
+html[data-theme="dark"] #roRoom .pl-bb .pl-bb-sp::before { background: radial-gradient(circle at 35% 30%, #fff6da 0, #e8c977 55%, #9a7a36 100%); box-shadow: 0 0 6px rgba(240, 210, 137, .35); }
+html[data-theme="dark"] #roRoom .pl-bb .pl-bb-dome { box-shadow: inset 0 0 0 4px rgba(255, 255, 255, .14), inset 0 0 0 5.5px rgba(240, 210, 137, .34), 0 0 0 1px rgba(240, 210, 137, .22), 0 8px 16px rgba(0, 0, 0, .28); }
+html[data-theme="dark"] #roRoom .pl-bb .pl-bb-t { box-shadow: inset 0 0 0 1.5px rgba(240, 210, 137, .5), inset 0 0 0 5px rgba(255, 255, 255, .05), inset 0 0 0 6.5px rgba(240, 210, 137, .3), 0 12px 24px rgba(0, 0, 0, .3); }
+html[data-theme="dark"] #roRoom .pl-bb .pl-bb-tsc::after { background: linear-gradient(180deg, #4a58a2 0, #303c7a 100%); box-shadow: 0 -1px 0 rgba(240, 210, 137, .5), 0 -3px 6px rgba(0, 0, 0, .2); }
+html[data-theme="dark"] #roRoom .pl-bb .pl-bb-tp { box-shadow: inset 0 0 0 1.5px rgba(240, 210, 137, .32); }
+/* редовете „Днешни записи“ нощем: синьо върху синьо се сливаше — тънка златна нишка отгоре */
+html[data-theme="dark"] body #roRoom .pl-bb .pl-bb-row.pl-soft { box-shadow: inset 0 1px 0 rgba(240, 210, 137, .22), 0 2px 0 #18214a !important; }
+html[data-theme="dark"] body #roRoom .pl-bb .pl-bb-row.pl-soft:active { box-shadow: inset 0 1px 0 rgba(240, 210, 137, .22), 0 0 0 #18214a !important; }
+
+/* 4 · картите под таблото */
+html body #roomOverlay .ro-sky #roRoom .jr-card.nr-dark .jr-weekcap { color: #c9cbe3 !important; }
+html[data-theme="dark"] body #roomOverlay .ro-sky #roRoom .jr-weekcap { color: #c9cbe3; }
+html body #roomOverlay .ro-sky #roRoom .pg20-calw { font-size: 12px; }
+html[data-theme="dark"] body #roomOverlay .ro-sky #roRoom .pg20-calw { color: #c9cbe3; }
+/* редовете на прегледите: колоната за месеца беше 52 px (дупка до иконката), а пояснението —
+   11 px с opacity .75 и двоен ред (снимка bb20_C_profil_L) → 36 px колона, 12.5 px, ред 1.4, без избледняване */
+html body #roomOverlay .ro-sky #roRoom .pg20-calrow { gap: 10px; padding: 10px 12px; }
+html body #roomOverlay .ro-sky #roRoom .pg20-calrow .pg20-calw { width: 36px; }
+html body #roomOverlay .ro-sky #roRoom .pg20-calrow .pg20-calt strong { font-size: 14px; line-height: 1.25; color: var(--pl-navy, #1d2a5c); margin-bottom: 2px; }
+html body #roomOverlay .ro-sky #roRoom .pg20-calrow .pg20-calt small { display: block; font-size: 12.5px; line-height: 1.4; opacity: 1; color: var(--pl-ink-soft, #6a6682); }
+html[data-theme="dark"] body #roomOverlay .ro-sky #roRoom .pg20-calrow .pg20-calt strong { color: #fff; }
+html[data-theme="dark"] body #roomOverlay .ro-sky #roRoom .pg20-calrow .pg20-calt small { color: #c9cbe3; }
+html body #roomOverlay .ro-sky #roRoom .rc-row { border: 1px solid rgba(227, 195, 156, .45); }
+html[data-theme="dark"] body #roomOverlay .ro-sky #roRoom .rc-row { background: rgba(255, 255, 255, .06); border-color: rgba(240, 210, 137, .3); color: #f1f2fb; }
+@supports (field-sizing: content) {
+  html body #roomOverlay .ro-sky #roRoom textarea.lx-inp { field-sizing: content; max-height: 240px; }
+}
+/* „Рекордите“: крайното стикерче не пада само на нов ред (text-wrap: pretty взима и дума с него);
+   бутонът „Сподели“ не опира в последния ред. (Опитът с „висяща“ иконка вляво — снимка
+   bb20_D_rekordi_L — пренасяше „г.)“ на нов ред: махнат.) */
+html body #roomOverlay .ro-sky #roRoom .rc-row { line-height: 1.45; text-wrap: pretty; }
+html body #roomOverlay .ro-sky #roRoom .rc-list { margin-bottom: 12px; }
+/* „Калкулатор на растежа“, историята: „п45“ (.bb-hp, var(--pink-deep)) беше 2.77:1 денем (мерено, bb20_E_L.log),
+   а „✕“ (.bb-del) нощем — 3.43:1 (полупрозрачно). → тъмна роза / светла роза и #c9cbe3 */
+html body #roomOverlay .ro-sky #roRoom .bb-hp { color: #b8416f; }
+html[data-theme="dark"] body #roomOverlay .ro-sky #roRoom .bb-hp { color: #ffb8d2; }
+html[data-theme="dark"] body #roomOverlay .ro-sky #roRoom .bb-del { color: #c9cbe3; }
+/* героят „Днес Алекс е на 7 месеца“: ДВЕ рисунки една върху друга — span.pg20-fruit.pl-pl (67 px) носи
+   плюша, а вътрешното .pl-em (84 px) излизаше извън него (мерено, bb20_G_D.log; снимка bb20_G_hero_D) —
+   същият дефект като медала (06.10 · 1), същото лекарство: вътрешното се скрива визуално */
+html body #roomOverlay .ro-sky #roRoom .pg20-fruit.pl-pl {
+  position: relative; flex: none; display: inline-block;
+  /* без вътрешното .pl-em кутията губеше ширината си и кръгът ставаше ОВАЛ 37×64 (снимка bb20_G_hero_L2) →
+     собствен квадрат: 67 px, колкото мереше външният кръг (bb20_G_D.log) */
+  width: 67px !important; height: 67px !important; min-width: 67px !important; min-height: 67px !important; aspect-ratio: 1;
+}
+html body #roomOverlay .ro-sky #roRoom .pg20-fruit.pl-pl > .pl-em {
+  position: absolute !important; left: 0 !important; top: 0 !important;
+  width: 1px !important; height: 1px !important; min-width: 0 !important; min-height: 0 !important;
+  margin: 0 !important; padding: 0 !important; overflow: hidden !important;
+  clip-path: inset(50%) !important; opacity: 0 !important; pointer-events: none !important; box-shadow: none !important; border: 0 !important;
+}
+/* бележката „Хвани един момент…“ (.pg20-do) — нощем сива кутия; кутията „Въведи тегло…“ (.bb-empty,
+   dark.css/rooms.css:757 #241f38 + #40395c) — лилаво-черна. → нощно синьо със златна нишка, както съседите */
+html[data-theme="dark"] body #roomOverlay .ro-sky #roRoom .rh-hero .pg20-do { background: rgba(227, 195, 156, .10) !important; border-color: rgba(227, 195, 156, .4) !important; color: #f3e6cc; }
+html[data-theme="dark"] body #roomOverlay .ro-sky #roRoom .bb-empty { background: rgba(255, 255, 255, .05) !important; border-color: rgba(240, 210, 137, .3) !important; }
+html[data-theme="dark"] body #roomOverlay .ro-sky #roRoom .bb-empty span { color: #c9cbe3; }
+/* „История:“ в калкулатора (.bb-histrow): текстът стоеше горе, а ✕ (40 px) дърпаше реда надолу — празно
+   дъно; денем фонът беше лилав #f7f4fc, нощем #342f4e (dark.css:85) → кремав / нощно син, по средата */
+html body #roomOverlay .ro-sky #roRoom .bb-histrow { align-items: center; padding: 4px 6px 4px 12px; background: #fff8f0; border: 1px solid #f1e4d9; }
+html[data-theme="dark"] body #roomOverlay .ro-sky #roRoom .bb-histrow { background: rgba(255, 255, 255, .06) !important; border-color: rgba(240, 210, 137, .25); color: #f1f2fb; }
+
+/* 5 · ЖИВОТЪТ ПРИ ЗАПИС (js/pl-bebe.js 20.10): стълбичката е само при първото рисуване; после влиза
+   само новият ред, а сменилият се брояч подскача веднъж. Тихият режим ги гаси (блокът по-горе). */
+#roRoom .pl-bb .pl-bb-live.is-settled :is(.pl-bb-cnt, .pl-bb-logh, .pl-bb-log li) { animation: none; }
+#roRoom .pl-bb .pl-bb-live.is-settled .pl-bb-log li.is-new { animation: plBbRow .5s cubic-bezier(.22, 1, .36, 1) .04s both; }
+@keyframes plBbBump { 0% { transform: scale(1); } 38% { transform: scale(1.24); } 100% { transform: scale(1); } }
+#roRoom .pl-bb .pl-bb-c b.pl-bb-bump { transform-origin: 0 65%; animation: plBbBump .56s cubic-bezier(.3, 1.45, .5, 1) both; }
+@media (prefers-reduced-motion: reduce) { #roRoom .pl-bb .pl-bb-c b.pl-bb-bump, #roRoom .pl-bb .pl-bb-log li.is-new { animation: none !important; } }
+/* край 20.10 · таблото */

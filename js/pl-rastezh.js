@@ -129,12 +129,27 @@
     return ш;
   }
   // шрифтът се зарежда след първото рисуване → мерките се сменят: чистим кеша и рисуваме наново
-  if (document.fonts && document.fonts.ready && document.fonts.ready.then) {
-    document.fonts.ready.then(() => {
-      кешШ.clear();
-      document.querySelectorAll('section.pl-rz').forEach(с => { с._plSig = ''; });
-      отложено();
-    }).catch(() => {});
+  // 20.10 · ТЕЖЕСТТА ПРИ СТАРТ (главната сесия, tezhest.js --profil ×4: 495 ms собствено време на
+  //   анонимната функция ред 50 — тази обвивка). Дотук `document.fonts.ready` се питаше ВЕДНАГА при
+  //   зареждане — на началния екран, преди стаята да е отворена. ПРЕДПОЛОЖЕНО: достъпът до FontFaceSet
+  //   по време на зареждането кара Blink да доизчисли стила синхронно и времето пада върху обвивката
+  //   (след зареждане същият достъп е 0–3 ms — мерено, bb20_C_*.log, значи цената е само при старта).
+  //   МЕРЕНО А/Б (dev/proba/bb20_tz.js, ×4, по 4 пускания): старото 69.9 / 0.6 / 67 / 0 ms, новото 0 / 0 / 3.2 / 0 ms.
+  //   Сега се пита веднъж, когато блокът се строи за първи път (стаята е отворена).
+  //   ПЪТ НАЗАД: върни извикването на шрифтовете() тук, на това място (беше if (document.fonts…) {…}).
+  let шрифтовеЧакам = false;
+  function шрифтовете() {
+    if (шрифтовеЧакам) return;
+    шрифтовеЧакам = true;
+    try {
+      if (document.fonts && document.fonts.ready && document.fonts.ready.then) {
+        document.fonts.ready.then(() => {
+          кешШ.clear();
+          document.querySelectorAll('section.pl-rz').forEach(с => { с._plSig = ''; });
+          отложено();
+        }).catch(() => {});
+      }
+    } catch (е) { грешки.push(String(е)); }
   }
 
   function записи(к) {
@@ -350,7 +365,16 @@
     с.querySelector('.pl-rz-more').addEventListener('click', () => { всички = !всички; обновиВсички(); });
     с.querySelector('.pl-rz-add').addEventListener('click', () => { try { добави(с); } catch (е) { грешки.push(String(е)); } });
     // ширината на графиката зависи от оформлението (скрит таб → 0 px): при промяна рисуваме наново
-    if (window.ResizeObserver) { try { new ResizeObserver(отложено).observe(гр); } catch (е) { грешки.push(String(е)); } }
+    // 20.10 · наблюдателят ЗАПИСВА ширината (гр._plW) — обнови() вече не чете clientWidth при всяка
+    //   мутация в стаята (принудена подредба по време на превъртане). Беше: new ResizeObserver(отложено).
+    if (window.ResizeObserver) {
+      try {
+        new ResizeObserver(з => {
+          for (const x of з) { const ш = Math.round(x.contentRect.width); if (ш !== гр._plW) { гр._plW = ш; отложено(); } }
+        }).observe(гр);
+      } catch (е) { грешки.push(String(е)); }
+    }
+    шрифтовете();   // 20.10 · шрифтовете се питат чак тук — при първия блок, не при старта
     return с;
   }
 
@@ -409,7 +433,9 @@
     скрий(гр, празно);
     скрий(с.querySelector('.pl-rz-side'), празно);
     скрий(с.querySelector('.pl-rz-empty'), !празно);
-    const Ш = Math.round(гр.clientWidth);
+    // 20.10 · ширината идва от ResizeObserver (виж строй); clientWidth само докато той още не е казал.
+    //   Беше: const Ш = Math.round(гр.clientWidth); — принудена подредба при ВСЯКА мутация в стаята.
+    const Ш = гр._plW != null ? гр._plW : Math.round(гр.clientWidth);
     const подпис = [к, избран, всички, Ш, днесКлюч(), JSON.stringify(данни)].join('|');
     if (с._plSig === подпис) return;                                   // 🪤 само при разлика
     с._plSig = подпис;
@@ -545,7 +571,9 @@
 
   // ── къде стои блокът: веднага след „📏 Как расте“; без кътчета — точно над калкулатора ──
   function котви() {
-    const гл = [...document.querySelectorAll('[id="sec-bg"]')].filter(х => х.parentElement);
+    // 20.10 · търсим само в стаята (беше document.querySelectorAll('[id="sec-bg"]') — атрибутен
+    //   селектор по ЦЕЛИЯ документ, при всяка мутация)
+    const гл = [...document.querySelectorAll('#roomOverlay [id="sec-bg"]')].filter(х => х.parentElement);
     if (гл.length) return гл.map(х => ({ след: х }));
     return [...document.querySelectorAll('#roomOverlay section.jr-card')]
       .filter(к => /Калкулатор на растежа/.test(((к.querySelector('.jr-title') || {}).textContent) || ''))
@@ -555,6 +583,8 @@
     // „рисувай картите истински“ живее само докато стаята с блока е отворена (close() в helper.js:5534 слага hidden)
     const ов = document.getElementById('roomOverlay');
     document.querySelectorAll('#roRoom[data-pl-rz-go]').forEach(р => { if ((ов && ов.hidden) || !р.querySelector('section.pl-rz')) р.removeAttribute('data-pl-rz-go'); });
+    // 20.10 · затворена стая = нищо за правене (блокът стои, където е; отваряне = мутация → пак сме тук)
+    if (!ов || ов.hidden) return;
     котви().forEach(к => {
       const о = к.след || к.преди, родител = о.parentElement;
       let с = родител.querySelector(':scope > section.pl-rz');
@@ -585,7 +615,19 @@
   function върви() {
     const ов = document.getElementById('roomOverlay');
     if (!ов) return;
-    new MutationObserver(отложено).observe(ов, { childList: true, subtree: true, attributes: true, attributeFilter: ['class', 'hidden'] });
+    // 20.10 · наблюдателят пресява: класовете на картите (появата при превъртане сменя card-in/is-in
+    //   на всеки екран) и собствените ни записи в section.pl-rz не будят сложи(). Будят го: отваряне/
+    //   затваряне (атрибутът hidden/class на #roomOverlay и .ro-panel) и нови/сменени деца извън блока.
+    //   Беше: new MutationObserver(отложено) — всяка мутация в която и да е стая. ПЪТ НАЗАД: върни го.
+    new MutationObserver(списък => {
+      for (const з of списък) {
+        const т = з.target;
+        if (з.type === 'attributes') { if (т === ов || (т.classList && т.classList.contains('ro-panel'))) { отложено(); return; } continue; }
+        if (ов.hidden) continue;                                   // затворена стая: само отварянето ни трябва
+        if (т.closest && т.closest('section.pl-rz')) continue;    // собственото ни рисуване
+        отложено(); return;
+      }
+    }).observe(ов, { childList: true, subtree: true, attributes: true, attributeFilter: ['class', 'hidden'] });
     сложи();
   }
   if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', върви); else върви();

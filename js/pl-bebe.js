@@ -75,11 +75,18 @@
   const цифри = s => esc(s).replace(/\d+(?:[.,:]\d+)*/g, м => '<span class="pl-bb-d">' + м + '</span>');
   // 📸 последната снимка от Фото-лентата; същият щит като profile.js:175 и extras2.js:292
   const СНИМКА = /^data:image\/(jpeg|png|webp|gif);base64,[A-Za-z0-9+/=]+$/;
+  // 20.10 · bl_photos са до 9 снимки base64 (стотици KB) — разбираше се (JSON.parse + регулярен израз
+  //   върху всяка) при ВСЯКО опресняване. Сега само когато суровият низ е друг. Беше без кеша.
+  let снКлюч = null, снОтг = '';
   function снимката() {
+    let суров = null; try { суров = localStorage.getItem('bl_photos'); } catch (e) {}
+    if (суров === снКлюч) return снОтг;
+    снКлюч = суров; снОтг = '';
     const с = чети('bl_photos', {});
     if (!с || typeof с !== 'object') return '';
     const м = Object.keys(с).filter(к => /^\d+$/.test(к) && typeof с[к] === 'string' && СНИМКА.test(с[к])).sort((a, b) => b - a)[0];
-    return м == null ? '' : с[м];
+    снОтг = м == null ? '' : с[м];
+    return снОтг;
   }
 
   // ── 👶 визитката: възрастта е СЪЩАТА сметка като premium-home.js бебето() (ред 36–50) ──
@@ -381,7 +388,25 @@
         '<p class="pl-bb-note">Записките не заменят преглед.</p>';
     }
     // 29.09: върна ли true, редовете са ПРЕСНИ → CSS ги внася на стълбичка, а числата тръгват от 0
-    if (пиши(б.querySelector('.pl-bb-live'), html)) преброй(б);
+    // 20.10 · МЕРЕНО (bb20_C_L.log): един „+“ на мокрите пускаше НАНОВО всичко — трите брояча
+    //   от 0 (3/2/4 → 2/1/2 → …) и целия списък на стълбичка. Сега стълбичката е само при първото
+    //   рисуване (и при „празно → първи запис“); после влиза само НОВИЯТ ред (.is-new), а сменилият се
+    //   брояч само подскача (.pl-bb-bump) — другите стоят. Беше: if (пиши(…)) преброй(б);
+    const жив = б.querySelector('.pl-bb-live');
+    const бешеПразно = !жив._pl || жив._pl.indexOf('pl-bb-empty') >= 0;
+    const стариРедове = жив._plРедове;
+    if (пиши(жив, html)) {
+      // ключът на реда = накъде води + часът („сън|10:40“, „пелени|днес“) — „Спи сега · от 35 мин“
+      // сменя текста си всяка минута, но не е нов ред и не бива да влиза наново
+      const ключ = li => { const б2 = li.querySelector('[data-go]'); return б2 ? б2.getAttribute('data-go') + '|' + ((б2.querySelector('b') || {}).textContent || '') : li.textContent; };
+      const редове = [...жив.querySelectorAll('.pl-bb-log li')];
+      if (!бешеПразно && стариРедове) {
+        жив.classList.add('is-settled');
+        редове.forEach(li => { if (!стариРедове.has(ключ(li))) li.classList.add('is-new'); });
+      } else жив.classList.remove('is-settled');
+      жив._plРедове = new Set(редове.map(ключ));
+      преброй(б, !бешеПразно && !!стариРедове);
+    }
 
     // рафтовете: последното мерене (rooms2.js:472–473 → bl_growth) и златните „първи пъти“ (rooms2.js:1574–1581 → bl_firsts)
     const р = чети('bl_growth', []);
@@ -407,7 +432,21 @@
   const тихо = () => { try { return matchMedia('(prefers-reduced-motion: reduce)').matches; } catch (e) { return false; } };
 
   // броячите се качват от 0 до числото (12 стъпки по 52 мс ≈ 620 мс, с омекотяване накрая)
-  function преброй(б) {
+  // 20.10 · смяна (втори аргумент) = само сменилите се броячи подскачат; другите стоят на числото си.
+  //   Предишните стойности се пазят в б._plБр по вид (feed/sleep/diaper).
+  function преброй(б, смяна) {
+    const пред = б._plБр || {}, нови = {};
+    const всички = [...б.querySelectorAll('.pl-bb-cnt .pl-bb-c')];
+    всички.forEach(c => { const в = (/\bt-(feed|sleep|diaper)\b/.exec(c.className) || [])[1]; const е = c.querySelector(':scope > span > b'); if (в && е) нови[в] = (е.textContent || '').trim(); });
+    б._plБр = нови;
+    if (смяна) {
+      if (тихо() || document.hidden) return;
+      всички.forEach(c => {
+        const в = (/\bt-(feed|sleep|diaper)\b/.exec(c.className) || [])[1]; const е = c.querySelector(':scope > span > b');
+        if (в && е && пред[в] != null && пред[в] !== нови[в]) е.classList.add('pl-bb-bump');
+      });
+      return;
+    }
     if (тихо() || document.hidden) return;
     б.querySelectorAll('.pl-bb-cnt .pl-bb-c > span > b').forEach(е => {
       const цел = (е.textContent || '').trim();
@@ -424,15 +463,21 @@
   }
 
   // токът: безкрайните анимации спират, щом блокът излезе от екрана или разделът се скрие
+  // 20.10 · ТОКЪТ ПО ЧАСТИ: блокът е ~1100 px висок — с един наблюдател за целия, звездичките и
+  //   куполите горе дишаха, докато мама гледа „+ Нов запис“ долу (извън екрана). Сега рафтът, картата
+  //   и гелът имат СВОЙ --bb-play (най-близкият предшественик печели в CSS) — тече само видимото.
+  //   Беше: един IntersectionObserver върху целия .pl-bb (rootMargin 100px). ПЪТ НАЗАД: върни го.
   function гледач(б) {
-    const вкл = в => { try { б.style.setProperty('--bb-play', в && !document.hidden ? 'running' : 'paused'); } catch (e) {} };
-    if (б._plIO) { вкл(б._plВид); return; }
-    б._plВид = false; вкл(false);
+    const части = ['.pl-bb-shelf', '.pl-bb-card', '.pl-bb-cta'].map(с => б.querySelector(':scope > ' + с)).filter(Boolean);
+    const вкл = е => { try { е.style.setProperty('--bb-play', е._plВид && !document.hidden ? 'running' : 'paused'); } catch (x) {} };
+    if (б._plIO) { части.forEach(вкл); return; }
+    try { б.style.setProperty('--bb-play', 'paused'); } catch (x) {}
+    части.forEach(е => { е._plВид = false; вкл(е); });
     try {
-      б._plIO = new IntersectionObserver(з => { б._plВид = з.some(x => x.isIntersecting); вкл(б._plВид); }, { rootMargin: '100px' });
-      б._plIO.observe(б);
-    } catch (e) { б._plВид = true; вкл(true); }        // без IntersectionObserver: просто върви
-    б._plСпри = () => вкл(б._plВид);
+      б._plIO = new IntersectionObserver(з => { з.forEach(x => { x.target._plВид = x.isIntersecting; вкл(x.target); }); }, { rootMargin: '40px' });
+      части.forEach(е => б._plIO.observe(е));
+    } catch (x) { части.forEach(е => { е._plВид = true; вкл(е); }); }   // без IntersectionObserver: просто върви
+    б._plСпри = () => части.forEach(вкл);
   }
 
   // ── мястото: под банера, преди картите; не се бие с други premium блокове (pl-*) между нас ──
@@ -479,7 +524,20 @@
   function върви() {
     const ов = document.getElementById('roomOverlay');
     if (!ов) return;
-    new MutationObserver(отложено).observe(ов, { childList: true, subtree: true, attributes: true, attributeFilter: ['class', 'hidden'] });
+    // 20.10 · наблюдателят пресява (както в pl-rastezh.js): класовете на картите — появата при
+    //   превъртане сменя card-in/is-in на всеки екран — и собственото ни рисуване в .pl-bb не будят
+    //   сложи(); будят го отваряне/затваряне (#roomOverlay, .ro-panel) и нови/сменени деца в картите
+    //   (там е броячът на пелените — числото му е текст). Затворена стая: само отварянето.
+    //   Беше: new MutationObserver(отложено). ПЪТ НАЗАД: върни го.
+    new MutationObserver(списък => {
+      for (const з of списък) {
+        const т = з.target;
+        if (з.type === 'attributes') { if (т === ов || (т.classList && т.classList.contains('ro-panel'))) { отложено(); return; } continue; }
+        if (ов.hidden) continue;
+        if (т.closest && т.closest('.pl-bb')) continue;
+        отложено(); return;
+      }
+    }).observe(ов, { childList: true, subtree: true, attributes: true, attributeFilter: ['class', 'hidden'] });
     отложено();
     // запис от друг раздел, връщане в приложението и „спи от 35м“ да не застива
     window.addEventListener('storage', e => { if (!e.key || /^bl_(nursing|feed|feedlog|sleep|diapers|growth|firsts|baby|photos)$/.test(e.key)) опресниВсички(); });

@@ -410,3 +410,23 @@ html[data-theme="dark"] #roRoom [data-pl-rz-spot] { outline-color: #f59cbb !impo
       ги държи по 220px „на ужким“ (content-visibility:auto) и целта подскачаше 3412 ↔ 3995 px
       (ag2_rastezh_diag2). Атрибутът се маха от js-а при затваряне на стаята. Като pl-dobavi.css:224. ── */
 #roRoom[data-pl-rz-go] section.jr-card { content-visibility: visible !important; }
+
+/* ═══ 20.10 · ЛИНИЙКАТА И ЛАКЪТ ═══
+   Мерено (bb20_B_L.log, getComputedStyle): числата по линийката 50…90 бяха 10.5 px — под 11
+   (дребните етикети са ≥ 11.5). Линийката е 34 px, числото стига до 17 px, чертите почват от 21 →
+   11.5 px се побира. Линийката — същият кремав лак със златна обшивка като таблото (pl-bebe.css 20.10).
+   ПЪТ НАЗАД: махни този блок. Предишният файл: dev/proba/bb20_predi_pl-rastezh.css */
+#roRoom .pl-rz .pl-rz-sc b { font-size: 11.5px; left: 2px; letter-spacing: -.2px; }
+/* числата по осите (4…8, „20.09“) — 11 → 11.5 px; ширината на датите се МЕРИ (уредът .pl-rz-meas
+   ползва същия клас), значи разстоянията между тях следват сами */
+#roRoom .pl-rz .pl-rz-yl, #roRoom .pl-rz .pl-rz-xl { font-size: 11.5px; }
+#roRoom .pl-rz .pl-rz-rul {
+  background: radial-gradient(140% 40% at 30% 0%, rgba(255, 255, 255, .7) 0, rgba(255, 255, 255, 0) 70%), linear-gradient(90deg, #fffaf2 0, #f8ecda 55%, #f1e0c6 100%);
+  box-shadow: inset 0 0 0 1px rgba(217, 185, 143, .8), inset 1px 0 0 #fff, 0 3px 8px rgba(110, 76, 52, .14);
+}
+/* нощем — нощната линийка отгоре (ред 368), със златна обшивка; иначе горното (с #roRoom) щеше да я бие */
+html[data-theme="dark"] #roRoom .pl-rz .pl-rz-rul {
+  background: linear-gradient(90deg, #3a4886 0, #33407a 100%);
+  box-shadow: inset 0 0 0 1px rgba(240, 210, 137, .4), 0 3px 6px rgba(0, 0, 0, .3);
+}
+/* край 20.10 */
