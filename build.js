@@ -35,6 +35,22 @@ function изтрий(п) {
   if (!fs.existsSync(п)) return;
   fs.rmSync(п, { recursive: true, force: true });
 }
+// 20.10 · kb.js → window.KB = JSON.parse('…') (виж при копирай). Връща новия текст или null, ако
+//   самопроверката не мине: изпълнява и двата варианта в празен контекст и сравнява JSON-а буква по буква.
+function kbКатоJson(текст) {
+  try {
+    const vm = require('vm');
+    const изпълни = код => { const к = { window: {} }; к.self = к.window; vm.createContext(к); vm.runInContext(код, к); return к.window; };
+    const стар = изпълни(текст);
+    if (Object.keys(стар).join() !== 'KB') return null;            // kb.js слага САМО window.KB
+    const json = JSON.stringify(стар.KB);
+    const литерал = "'" + json.replace(/\\/g, '\\\\').replace(/'/g, "\\'") + "'";
+    const нов = '/* Бейби Ленд · знанието (dist: JSON.parse — по-бързо от JS литерал) */\nwindow.KB = JSON.parse(' + литерал + ');\n';
+    const пак = изпълни(нов);
+    if (Object.keys(пак).join() !== 'KB' || JSON.stringify(пак.KB) !== json) return null;
+    return нов;
+  } catch (e) { return null; }
+}
 const БЕЗ_КОМЕНТАРИ = /\.css$/i;                                 // кои файлове тръгват без коментари
 const ЦЕЛОРЕДОВ_КОМЕНТАР = /^[ \t]*\/\*[\s\S]*?\*\/[ \t]*\r?\n?/gm;
 function копирай(от, до) {
@@ -64,6 +80,16 @@ function копирай(от, до) {
   if (/[\\/]js[\\/][^\\/]+\.js$/i.test(от)) {
     const { безопасноРежи } = require('./dev/rezhi_js_komentari.js');
     const р = безопасноРежи(fs.readFileSync(от, 'utf8'), от);
+    // 20.10 МЕРЕНО (dev/proba/tezhest.js + node): kb.js е ЧИСТИ ДАННИ (0 функции, 0 регекси) —
+    //   като JS литерал браузърът го разбира за 150 ms (на телефон ×4), като JSON.parse — за 24 ms.
+    //   В dist отива `window.KB = JSON.parse('…')`. Самопроверка: новото се изпълнява и трябва да
+    //   даде БУКВА ПО БУКВА същия обект; иначе остава текстът от безопасноРежи. Изходният файл не се пипа.
+    //   ПЪТ НАЗАД: махни този if.
+    if (path.basename(от) === 'kb.js') {
+      const н = kbКатоJson(р.текст);
+      if (н) { fs.writeFileSync(до, н); return; }
+      console.log('   ⚠️ kb.js: JSON.parse самопроверката не мина — остава JS литералът');
+    }
     fs.writeFileSync(до, р.текст);
     if (р.защо) console.log('   ⚠️ ' + path.basename(от) + ': ' + р.защо);
     return;

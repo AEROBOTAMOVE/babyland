@@ -71,7 +71,33 @@
 
   // Кой има безкрайна анимация. Гледаме computed style — така хващаме и
   // това, което е сложено от JS, не само от CSS файловете.
+  // ⏱️ 20.10 МЕРЕНО (dev/proba/bbox_diag.js, процесор ×4): запиши() викаше getComputedStyle 8 432 пъти
+  //   за 15 секунди на началото — всеки неанимиран елемент се проверява наново при всяка промяна в DOM-а
+  //   (прегледайНовите → запиши(document.body)). Браузърът вече знае кои анимации вървят:
+  //   document.getAnimations() дава ~170-те; от тях взимаме безкрайните CSS анимации и само за тях
+  //   питаме за position (fixed/sticky). Скритото (display:none няма анимация) се хваща при следващия
+  //   оглед — той върви при всяка промяна и след всеки скрол. ПЪТ НАЗАД: махни запишиБързо и реда в запиши().
+  function запишиБързо() {
+    if (!document.getAnimations || typeof CSSAnimation === 'undefined') return false;
+    var а = document.getAnimations();
+    for (var i = 0; i < а.length; i++) {
+      if (!(а[i] instanceof CSSAnimation)) continue;
+      var еф = а[i].effect, e = еф && еф.target;
+      if (!e || e.__blVun || e.nodeType !== 1) continue;
+      var т = еф.getTiming ? еф.getTiming() : null;
+      if (!т || т.iterations !== Infinity) continue;
+      var cs = getComputedStyle(e);
+      if (cs.position === 'fixed' || cs.position === 'sticky') { пропуснатиФиксирани++; e.__blVun = 1; continue; }
+      if (e.closest('.' + КЛАС)) continue;
+      e.__blVun = 1;
+      набл.observe(e);
+      записаниЕл.push(e);
+      наблюдавани++;
+    }
+    return true;
+  }
   function запиши(корен) {
+    if (запишиБързо()) return;
     var к = корен || document.body;
     // 🪤 querySelectorAll('*') НЕ връща самия корен. При обхождането на цялото
     //   тяло това е без значение, но когато корен е новодобавен възел (виж

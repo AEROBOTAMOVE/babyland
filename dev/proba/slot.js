@@ -12,7 +12,7 @@ const fs = require('fs');
 const path = require('path');
 const ПАПКА = path.join(__dirname, '.sloti');
 // 20.10: ТИХ РЕЖИМ — докато другият чат работи на същата машина: по 1. След него → { chrome: 3, mozak: 2 }.
-const ПО_ПОДРАЗБИРАНЕ = { chrome: 1, mozak: 1 };
+const ПО_ПОДРАЗБИРАНЕ = { chrome: 2, mozak: 2 };   // 20.10 вечер: „работи на макс“ → 2/2
 const жив = pid => { try { process.kill(pid, 0); return true; } catch (e) { return e.code === 'EPERM'; } };
 module.exports = async function взимамСлот(канал = 'chrome', брой) {
   const n = Number(брой || process.env['BL_SLOTI_' + канал.toUpperCase()] || ПО_ПОДРАЗБИРАНЕ[канал] || 2);

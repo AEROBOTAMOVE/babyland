@@ -30,10 +30,12 @@ const пауза = ms => new Promise(r => setTimeout(r, ms));
     await send('Emulation.setCPUThrottlingRate', { rate: CPU });
     // наблюдателят за дълги задачи трябва да е там ОТ ПЪРВИЯ ред на страницата
     await send('Page.addScriptToEvaluateOnNewDocument', { source: `window.__dalgi = []; try { new PerformanceObserver(l => { for (const e of l.getEntries()) window.__dalgi.push([Math.round(e.startTime), Math.round(e.duration)]); }).observe({ type: 'longtask', buffered: true }); } catch (e) {}` });
+    if (арг.profil) { await send('Profiler.enable'); await send('Profiler.setSamplingInterval', { interval: 200 }); await send('Profiler.start'); }
     const т0 = Date.now();
     await send('Page.navigate', { url: 'http://localhost:' + (арг.port || 8911) + '/' });
     let готов = null; for (let i = 0; i < 400; i++) { await пауза(100); if (await изр('!!window.MamaHelper && document.readyState === "complete"') === true) { готов = Date.now() - т0; break; } }
     await пауза(3000);
+    if (арг.profil) require('./profil_obobshti.js')((await send('Profiler.stop')).result.profile);
     const м = await изр(`(() => { const nav = performance.getEntriesByType('navigation')[0] || {}; const fcp = (performance.getEntriesByName('first-contentful-paint')[0] || {}).startTime;
       const рес = performance.getEntriesByType('resource'); const скр = рес.filter(r => r.initiatorType === 'script' || /\\.js(\\?|$)/.test(r.name));
       const тежки = скр.map(r => [r.name.replace(location.origin + '/', '').replace(/\\?.*/, ''), Math.round((r.decodedBodySize || r.encodedBodySize || 0) / 1024), Math.round(r.duration)]).sort((a, b) => b[1] - a[1]).slice(0, 8);

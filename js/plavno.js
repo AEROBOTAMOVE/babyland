@@ -78,9 +78,30 @@
            getComputedStyle(el, '::after').animationName !== 'none';
   }
 
+  // ⏱️ 20.10 МЕРЕНО (dev/proba/tezhest.js --profil, процесор ×4): имаАнимация() по 3 getComputedStyle
+  //   (елементът + ::before + ::after) за ВСЕКИ от ~1900 елемента = 626 ms собствено време при старта.
+  //   Браузърът вече знае кои вървят: document.getAnimations() дава ~170-те CSS анимации с целите им
+  //   (и тези на ::before/::after — целта е самият елемент). Белязваме тях. Скрито при огледа (display:none
+  //   няма анимация) се хваща при следващия оглед — изчисти() минава след всеки жест.
+  //   ПЪТ НАЗАД: махни този блок и „if (бележиБързо()) return;“ в бележи().
+  function бележиБързо() {
+    if (!document.getAnimations || typeof CSSAnimation === 'undefined') return false;
+    var а = document.getAnimations();
+    for (var i = 0; i < а.length; i++) {
+      if (!(а[i] instanceof CSSAnimation)) continue;
+      var еф = а[i].effect, el = еф && еф.target;
+      if (!el || el.__blDv) continue;
+      el.__blDv = 1; прегледани++;
+      el.classList.add(БЕЛЕГ);
+      белязани.push(el);
+    }
+    return true;
+  }
+
   function бележи(корен) {
     if (!корен || корен.nodeType !== 1) return;
     огледи++;
+    if (бележиБързо()) return;
     var деца = корен.querySelectorAll('*');
     var списък = [корен];
     for (var i = 0; i < деца.length; i++) списък.push(деца[i]);
@@ -108,8 +129,10 @@
   function изчисти() {
     if (опашка.length) {
       var q = опашка; опашка = [];
-      for (var i = 0; i < q.length && i < 200; i++) бележи(q[i]);
-    }
+      // 20.10: с getAnimations() един оглед покрива всички новодошли — не по един на възел
+      if (document.getAnimations && typeof CSSAnimation !== 'undefined') бележи(q[0].isConnected ? q[0] : document.body);
+      else for (var i = 0; i < q.length && i < 200; i++) бележи(q[i]);
+    } else if (document.getAnimations && typeof CSSAnimation !== 'undefined') бележиБързо();   // показаното след скрито
     подсили();
   }
 
