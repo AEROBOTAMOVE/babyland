@@ -503,6 +503,12 @@
     стая.querySelectorAll('.th-k, .av-h, .jr-privacy').forEach(б => обвий(б).forEach(дай));
     // 5 · чуждите стикери, които голямата карта е отбелязала като непознати (data-pl-pl="0")
     стая.querySelectorAll('.pl-em[data-pl-pl="0"]').forEach(с => дай(с));
+    // 6 · 20.10 · СЪСТЕЗАНИЕТО С pl-plyush.js (мерено: zd20_E_full_D_5/17 и zd20_A_sega_L_6/7 срещу
+    //   zd20_C_sega_Lden_6/7 — един и същи код, различна снимка): обвие ли голямата карта емоджито
+    //   ПРЕДИ мен, стъпки 3–4 не намират гол текст и в термометъра оставаха личице (😐) и праскова (🍑),
+    //   в „Нормално“ — празен бележник (✅). Тук и вече обвитите получават моята рисунка
+    //   (рисунка() пише само при разлика — data-pl-zd-art). ПЪТ НАЗАД: махни този ред.
+    стая.querySelectorAll('.sos-btn > .pl-em, .th-k > .pl-em, .av-h > .pl-em, .jr-privacy > .pl-em').forEach(дай);
   }
 
   const зелена = () => {
@@ -618,4 +624,48 @@
   }
   if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', върви); else върви();
   window.BL_PL_ZDRAVE_FA = { мини, брой: () => обвити };
+})();
+
+/* ═══════════════════════════════════════════════════════════════════════════════
+   20.10 · ПЪРВА ПОМОЩ: КАВИЧКАТА НЕ ОСТАВА САМА В КРАЯ НА РЕДА
+   Мерено (dev/proba/snimki/zd20_C_sega_Lden_8.jpg, „Задавяне“, стъпка 5): „…виж картата „“ + нов ред +
+   стикерът 🫀 + „Не диша и не реагира“ — браузърът чупи реда между кавичката и стикера (вграденият
+   блок е място за пречупване). Тук кавичката и стикерът влизат в общ span.pl-zd-nb (nowrap в
+   css/pl-zdrave.css · 20.10 · 6). Текстът е буква в буква същият (сверява се; при разлика — връщане).
+   Гледа само #faOverlay и само докато панелът се ражда/сменя. ПЪТ НАЗАД: махни този блок.
+   ═══════════════════════════════════════════════════════════════════════════════ */
+(function () {
+  'use strict';
+  if (window.BL_PL_ZDRAVE_FA_NB) return;
+  const КАВ = /[„“"«(]$/;
+  let слепени = 0;
+  function слепи() {
+    const ов = document.getElementById('faOverlay');
+    if (!ов || ов.hidden) return;
+    ов.querySelectorAll('.fa-steps li > .pl-em').forEach(и => {
+      const пр = и.previousSibling, li = и.parentNode;
+      if (!пр || пр.nodeType !== 3 || !КАВ.test(пр.nodeValue)) return;
+      const преди = li.textContent;
+      const кав = пр.splitText(пр.nodeValue.length - 1);
+      const w = document.createElement('span');
+      w.className = 'pl-zd-nb';
+      li.insertBefore(w, кав); w.appendChild(кав); w.appendChild(и);
+      if (li.textContent !== преди) { li.insertBefore(кав, w); li.insertBefore(и, w); w.remove(); li.normalize(); return; }
+      слепени++;
+    });
+  }
+  let чака = false, гледан = null;
+  function отложено() { if (чака) return; чака = true; setTimeout(() => { чака = false; try { пази(); слепи(); } catch (e) {} }, 80); }
+  function пази() {
+    const ов = document.getElementById('faOverlay');
+    if (!ов || ов === гледан) return;
+    гледан = ов;
+    new MutationObserver(отложено).observe(ов, { childList: true, subtree: true });
+  }
+  function върви() {
+    new MutationObserver(отложено).observe(document.documentElement, { childList: true });
+    отложено();
+  }
+  if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', върви); else върви();
+  window.BL_PL_ZDRAVE_FA_NB = { слепи, брой: () => слепени };
 })();

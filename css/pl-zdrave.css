@@ -358,62 +358,62 @@ html[data-theme="dark"] #roRoom .pl-zd button:focus-visible, html[data-theme="da
 
 /* ═══ НОЩ · и двете: html[data-theme="dark"] (js/app.js:33) И html.bl-night (тихите часове) ═══ */
 html[data-theme="dark"] #roomOverlay .ro-panel.ro-green #roRoom .sos-row,
-html.bl-night #roomOverlay .ro-panel.ro-green #roRoom .sos-row {
+html.bl-night[data-theme="dark"] #roomOverlay .ro-panel.ro-green #roRoom .sos-row {
   background-color: #2b3872 !important; background-image: none !important;
   border-color: rgba(255, 255, 255, .16) !important;
   box-shadow: inset 0 1px 0 rgba(255, 255, 255, .10), 0 2px 0 #18214a;
 }
 html[data-theme="dark"] #roomOverlay .ro-panel.ro-green #roRoom .sos-row .jr-word,
-html.bl-night #roomOverlay .ro-panel.ro-green #roRoom .sos-row .jr-word {
+html.bl-night[data-theme="dark"] #roomOverlay .ro-panel.ro-green #roRoom .sos-row .jr-word {
   background-color: #1e2a5e !important; border-color: rgba(255, 255, 255, .22) !important; color: #f4f5ff;
   box-shadow: inset 0 2px 4px rgba(0, 0, 0, .25);
 }
 html[data-theme="dark"] #roomOverlay .ro-panel.ro-green #roRoom .sos-row .jr-word::placeholder,
-html.bl-night #roomOverlay .ro-panel.ro-green #roRoom .sos-row .jr-word::placeholder { color: #c8cbeb; opacity: 1; }
+html.bl-night[data-theme="dark"] #roomOverlay .ro-panel.ro-green #roRoom .sos-row .jr-word::placeholder { color: #c8cbeb; opacity: 1; }
 html[data-theme="dark"] #roomOverlay .ro-panel.ro-green #roRoom .th-row,
-html.bl-night #roomOverlay .ro-panel.ro-green #roRoom .th-row {
+html.bl-night[data-theme="dark"] #roomOverlay .ro-panel.ro-green #roRoom .th-row {
   background-color: rgba(255, 255, 255, .07); border-color: rgba(255, 255, 255, .16);
   box-shadow: inset 0 1px 0 rgba(255, 255, 255, .08);
 }
 html[data-theme="dark"] #roomOverlay .ro-panel.ro-green #roRoom .th-k,
-html.bl-night #roomOverlay .ro-panel.ro-green #roRoom .th-k { color: #fff; }
+html.bl-night[data-theme="dark"] #roomOverlay .ro-panel.ro-green #roRoom .th-k { color: #fff; }
 html[data-theme="dark"] #roomOverlay .ro-panel.ro-green #roRoom .th-o,
-html.bl-night #roomOverlay .ro-panel.ro-green #roRoom .th-o { color: #d9dcf2; }
+html.bl-night[data-theme="dark"] #roomOverlay .ro-panel.ro-green #roRoom .th-o { color: #d9dcf2; }
 html[data-theme="dark"] #roomOverlay .ro-panel.ro-green #roRoom .av-h,
-html.bl-night #roomOverlay .ro-panel.ro-green #roRoom .av-h {
+html.bl-night[data-theme="dark"] #roomOverlay .ro-panel.ro-green #roRoom .av-h {
   background-color: rgba(122, 210, 160, .18); border-color: rgba(122, 210, 160, .45); color: #effaf3;
   box-shadow: inset 0 1px 0 rgba(255, 255, 255, .06);
 }
 html[data-theme="dark"] #roomOverlay .ro-panel.ro-green #roRoom .av-h ~ .av-h,
-html.bl-night #roomOverlay .ro-panel.ro-green #roRoom .av-h ~ .av-h {
+html.bl-night[data-theme="dark"] #roomOverlay .ro-panel.ro-green #roRoom .av-h ~ .av-h {
   background-color: rgba(240, 170, 100, .2); border-color: rgba(240, 170, 100, .5); color: #fff5ea;
 }
 html[data-theme="dark"] #roomOverlay .ro-panel.ro-green #roRoom .sec-find,
-html.bl-night #roomOverlay .ro-panel.ro-green #roRoom .sec-find {
+html.bl-night[data-theme="dark"] #roomOverlay .ro-panel.ro-green #roRoom .sec-find {
   background-color: #2b3872 !important; background-image: none !important;
   border-color: rgba(255, 255, 255, .22) !important; color: #f4f5ff;
   box-shadow: inset 0 2px 4px rgba(0, 0, 0, .25);
 }
 html[data-theme="dark"] #roomOverlay .ro-panel.ro-green #roRoom .sec-find::placeholder,
-html.bl-night #roomOverlay .ro-panel.ro-green #roRoom .sec-find::placeholder { color: #c8cbeb; }
+html.bl-night[data-theme="dark"] #roomOverlay .ro-panel.ro-green #roRoom .sec-find::placeholder { color: #c8cbeb; }
 html[data-theme="dark"] #roomOverlay .ro-panel.ro-green #roRoom .sec-nav .sec-chip,
-html.bl-night #roomOverlay .ro-panel.ro-green #roRoom .sec-nav .sec-chip {
+html.bl-night[data-theme="dark"] #roomOverlay .ro-panel.ro-green #roRoom .sec-nav .sec-chip {
   background-color: #2b3872 !important; background-image: none !important;
   border-color: rgba(255, 255, 255, .16) !important; color: #f1f2fb !important;
   box-shadow: inset 0 1px 0 rgba(255, 255, 255, .10), 0 3px 0 #18214a !important;
 }
 html[data-theme="dark"] #roomOverlay .ro-panel.ro-green #roRoom .sec-nav .sec-chip.on,
-html.bl-night #roomOverlay .ro-panel.ro-green #roRoom .sec-nav .sec-chip.on {
+html.bl-night[data-theme="dark"] #roomOverlay .ro-panel.ro-green #roRoom .sec-nav .sec-chip.on {
   background-color: #5a2c55 !important; border-color: rgba(245, 156, 187, .6) !important; color: #ffe1ec !important;
 }
 /* 112 нощем: същият червен гел (това е бутонът, който се търси в тъмното) — мени се само сянката */
 html[data-theme="dark"] #roomOverlay .ro-panel.ro-green #roRoom .sos-btn,
-html.bl-night #roomOverlay .ro-panel.ro-green #roRoom .sos-btn {
+html.bl-night[data-theme="dark"] #roomOverlay .ro-panel.ro-green #roRoom .sos-btn {
   box-shadow: inset 0 1.5px 0 rgba(255, 255, 255, .5), inset 0 -3px 0 rgba(90, 10, 25, .25),
               0 4px 0 #6d1324, 0 12px 26px rgba(0, 0, 0, .45);
 }
 html[data-theme="dark"] #roomOverlay .ro-panel.ro-green #roRoom .sos-btn::after,
-html.bl-night #roomOverlay .ro-panel.ro-green #roRoom .sos-btn::after { border-color: rgba(255, 150, 160, .45); }
+html.bl-night[data-theme="dark"] #roomOverlay .ro-panel.ro-green #roRoom .sos-btn::after { border-color: rgba(255, 150, 160, .45); }
 
 /* ── 360px: плочките на аптечката остават три в ред, но без преливане ── */
 @media (max-width: 374px) {
@@ -466,7 +466,7 @@ html.bl-night #roomOverlay .ro-panel.ro-green #roRoom .sos-btn::after { border-c
    Нощем остава светло — там мереното беше 5.0:1 и не пипам работещото. */
 #roomOverlay .ro-panel.ro-green #roRoom .jr-privacy { color: #5a5470; }
 html[data-theme="dark"] #roomOverlay .ro-panel.ro-green #roRoom .jr-privacy,
-html.bl-night #roomOverlay .ro-panel.ro-green #roRoom .jr-privacy { color: #cdd0ea; }
+html.bl-night[data-theme="dark"] #roomOverlay .ro-panel.ro-green #roRoom .jr-privacy { color: #cdd0ea; }
 
 /* ── 13 · „Нормално / НЕ е нормално“ — ЛЕНТАТА СТАВА БЯЛ ЕТИКЕТ, НЕ ЗЕЛЕНА ──
    🪤 мерено на snimki/wf3_px_avh_light.png: двата реда НЕ са съседи (всеки седи в СВОЯ кутия —
@@ -482,8 +482,8 @@ html.bl-night #roomOverlay .ro-panel.ro-green #roRoom .jr-privacy { color: #cdd0
 }
 html[data-theme="dark"] #roomOverlay .ro-panel.ro-green #roRoom .av-h,
 html[data-theme="dark"] #roomOverlay .ro-panel.ro-green #roRoom .av-h ~ .av-h,
-html.bl-night #roomOverlay .ro-panel.ro-green #roRoom .av-h,
-html.bl-night #roomOverlay .ro-panel.ro-green #roRoom .av-h ~ .av-h {
+html.bl-night[data-theme="dark"] #roomOverlay .ro-panel.ro-green #roRoom .av-h,
+html.bl-night[data-theme="dark"] #roomOverlay .ro-panel.ro-green #roRoom .av-h ~ .av-h {
   background-color: rgba(255, 255, 255, .12);
   border-color: rgba(255, 255, 255, .22);
   box-shadow: inset 0 1px 0 rgba(255, 255, 255, .08);
@@ -631,15 +631,15 @@ html.bl-night #roomOverlay .ro-panel.ro-green #roRoom .av-h ~ .av-h {
 #faOverlay .fa-never .pl-em.pl-pl { width: 28px; height: 28px; margin: -3px 0 0; }
 #faOverlay .fa-sos .pl-em.pl-pl { width: 38px; height: 38px; margin: 0; background-color: #fff !important; }
 /* нощ */
-html[data-theme="dark"] #faOverlay .fa-box, html.bl-night #faOverlay .fa-box { background: #1f2b5c; border-color: rgba(255, 255, 255, .14); box-shadow: 0 24px 60px rgba(0, 0, 0, .55); }
-html[data-theme="dark"] #faOverlay .fa-title, html.bl-night #faOverlay .fa-title,
-html[data-theme="dark"] #faOverlay .fa-when strong, html.bl-night #faOverlay .fa-when strong { color: #fff; }
-html[data-theme="dark"] #faOverlay .fa-when, html.bl-night #faOverlay .fa-when,
-html[data-theme="dark"] #faOverlay .fa-steps li, html.bl-night #faOverlay .fa-steps li { color: #e4e6f6; }
-html[data-theme="dark"] #faOverlay .fa-steps li::marker, html.bl-night #faOverlay .fa-steps li::marker { color: #f59cbb; }
-html[data-theme="dark"] #faOverlay .fa-never, html.bl-night #faOverlay .fa-never { color: #ffd6dc; background: rgba(255, 120, 135, .14); border-color: rgba(255, 138, 152, .45); }
-html[data-theme="dark"] #faOverlay .fa-foot, html.bl-night #faOverlay .fa-foot { background: #1f2b5c !important; box-shadow: 0 -10px 14px -10px rgba(0, 0, 0, .5); }
-html[data-theme="dark"] #faOverlay .fa-foot .jr-chip, html.bl-night #faOverlay .fa-foot .jr-chip { color: #fff; background: #2b3872; border-color: rgba(255, 255, 255, .22); box-shadow: inset 0 1px 0 rgba(255, 255, 255, .1), 0 2px 0 #18214a; }
+html[data-theme="dark"] #faOverlay .fa-box, html.bl-night[data-theme="dark"] #faOverlay .fa-box { background: #1f2b5c; border-color: rgba(255, 255, 255, .14); box-shadow: 0 24px 60px rgba(0, 0, 0, .55); }
+html[data-theme="dark"] #faOverlay .fa-title, html.bl-night[data-theme="dark"] #faOverlay .fa-title,
+html[data-theme="dark"] #faOverlay .fa-when strong, html.bl-night[data-theme="dark"] #faOverlay .fa-when strong { color: #fff; }
+html[data-theme="dark"] #faOverlay .fa-when, html.bl-night[data-theme="dark"] #faOverlay .fa-when,
+html[data-theme="dark"] #faOverlay .fa-steps li, html.bl-night[data-theme="dark"] #faOverlay .fa-steps li { color: #e4e6f6; }
+html[data-theme="dark"] #faOverlay .fa-steps li::marker, html.bl-night[data-theme="dark"] #faOverlay .fa-steps li::marker { color: #f59cbb; }
+html[data-theme="dark"] #faOverlay .fa-never, html.bl-night[data-theme="dark"] #faOverlay .fa-never { color: #ffd6dc; background: rgba(255, 120, 135, .14); border-color: rgba(255, 138, 152, .45); }
+html[data-theme="dark"] #faOverlay .fa-foot, html.bl-night[data-theme="dark"] #faOverlay .fa-foot { background: #1f2b5c !important; box-shadow: 0 -10px 14px -10px rgba(0, 0, 0, .5); }
+html[data-theme="dark"] #faOverlay .fa-foot .jr-chip, html.bl-night[data-theme="dark"] #faOverlay .fa-foot .jr-chip { color: #fff; background: #2b3872; border-color: rgba(255, 255, 255, .22); box-shadow: inset 0 1px 0 rgba(255, 255, 255, .1), 0 2px 0 #18214a; }
 html[data-theme="dark"] #faOverlay :focus-visible { outline-color: #fff; }
 
 /* 10 · SOS ДЪХ (#breathOverlay, extras.js openBreath) — кръгът беше розово→ЛИЛАВ преливащ
@@ -657,3 +657,182 @@ html:has(#roomOverlay .ro-panel.ro-green) #breathOverlay .br-circle span {
 }
 html:has(#roomOverlay .ro-panel.ro-green) #breathOverlay .br-count { color: #fde6ef; font-size: 14px; font-weight: 800; }
 /* край 06.10 */
+
+/* ═══════════════════════════════════════════════════════════════════════════════
+   20.10 · ПО КОНЕЦ — СВЕТЛА, ТЪМНА И ТИХИТЕ ЧАСОВЕ (снимки преди: dev/proba/snimki/zd20_A_sega_L_*
+   (00:27 ч, светла), zd20_C_sega_Lden_*, zd20_D_sweep_Lden_* (ден, светла), zd20_E_full_D_* (тъмна);
+   мерки по getComputedStyle: dev/proba/zd20_F_mer_*.log, zd20_G_mer2.log)
+   0 · ТИХИТЕ ЧАСОВЕ НЕ СА ТЪМНА ТЕМА. html.bl-night (js/night.js, 23–6 ч) пуска само филтър върху
+       html — картите остават кремави. А нощните правила по-горе (29.09 и 06.10) бяха и за
+       html.bl-night: в 00:27 на светла тема „Моите номера“ ставаха тъмносини кутии в кремава карта,
+       текстът на термометъра, „Нормално / НЕ е нормално“ и поясите — #d9dcf2/#cdd0ea върху крем
+       (нечетимо), а панелът „Първа помощ“ — тъмен в светла тема. ЛЕК в старите редове: всеки
+       „html.bl-night #…“ стана „html.bl-night[data-theme="dark"] #…“ (26 селектора) — тъмната тема
+       си има свои правила, тихият час вече не боядисва. ПЪТ НАЗАД за т.0 (в корена):
+       sed -i 's/html\.bl-night\[data-theme="dark"\] #/html.bl-night #/g' css/pl-zdrave.css
+   ПЪТ НАЗАД за останалото: махни този блок (до „край 20.10“). */
+
+/* 1 · ТИХИЯТ ЧАС: dark.css:186 гаси .jr-sub/.jr-privacy до opacity .72 → подзаглавията падат на 2.8:1
+       (сметнато: rgb(106,102,130)×.72 върху крем rgb(246,237,227)). В тази стая — плътни (4.7:1). */
+html.bl-night #roomOverlay .ro-panel.ro-green #roRoom :is(.jr-sub, .jr-privacy) { opacity: 1; }
+
+/* 2 · БРОЯЧЪТ НА РАЗДЕЛА („Спешно — сега 5“): светло #c24d7b върху #fde6ef = 3.82:1; тъмно 9.5 px
+       сиво върху сиво. Езикът е като в „Захранване“ (pl-hranene.css): 12 px, тъмна роза / светла роза. */
+html body #roomOverlay .ro-panel.ro-green #roRoom .sec-head .sec-n {
+  background: #fde6ef !important; color: #8e2350 !important;
+  font: 800 12px/1.2 Nunito, Nunito-fallback, system-ui, sans-serif !important; padding: 2px 8px !important; min-width: 22px; text-align: center;
+}
+html[data-theme="dark"] body #roomOverlay .ro-panel.ro-green #roRoom .sec-head .sec-n { background: #4a2a44 !important; color: #ffd0e1 !important; }
+
+/* 3 · КРЪГЧЕТАТА ЗА ОТМЕТКА (имунизационният календар, „Тръгваме за спешното“, „Аптечката“):
+       пръстенът беше лилав #eae3f7 (rooms.css:263, стар език); нощем кръгчето беше #221d36 върху
+       тъмно и не се виждаше, а редовете — лилаво-черни #342f4e/#241f38 (dark.css:74) в тъмносинята
+       карта. Езикът е като в „Бременност“ (pl-bremennost.css · 1): златно копче 26 px, отметнатото —
+       розов гел с бяла отметка. Нощем: стъклен ред като „Здравният дневник“ горе + бял пръстен. */
+#roomOverlay .ro-panel.ro-green #roRoom :is(.vx-row, .qd-row) { border-color: #f1e4d9 !important; }
+#roomOverlay .ro-panel.ro-green #roRoom :is(.vx-row, .qd-row) > .jr-check {
+  width: 26px; height: 26px; flex: none; align-self: center;
+  background: #fffaf3; color: #fff; font-size: 13px; font-weight: 900; line-height: 1;
+  box-shadow: inset 0 0 0 2px rgba(217, 185, 143, .9), inset 0 2px 3px rgba(120, 88, 58, .12);
+}
+#roomOverlay .ro-panel.ro-green #roRoom :is(.vx-row.done, .qd-row.done) > .jr-check {
+  background: radial-gradient(120% 120% at 50% 18%, #f7a6c4 0, #e4779f 58%, #cf5f8c 100%);
+  box-shadow: inset 0 0 0 1.5px rgba(201, 84, 130, .62), 0 1px 0 rgba(169, 47, 99, .35);
+  text-shadow: 0 1px 0 rgba(120, 20, 60, .35);
+}
+#roomOverlay .ro-panel.ro-green #roRoom .qd-row { align-items: center; }
+html[data-theme="dark"] #roomOverlay .ro-panel.ro-green #roRoom :is(.vx-row, .qd-row) {
+  background: rgba(255, 255, 255, .07) !important; border: 1px solid rgba(255, 255, 255, .14) !important;
+  box-shadow: 0 2px 0 rgba(0, 0, 0, .18) !important; color: #fff;
+}
+html[data-theme="dark"] #roomOverlay .ro-panel.ro-green #roRoom :is(.vx-row, .qd-row).done {
+  background: rgba(122, 210, 160, .16) !important; border-color: rgba(122, 210, 160, .42) !important;
+}
+html[data-theme="dark"] #roomOverlay .ro-panel.ro-green #roRoom :is(.vx-row, .qd-row):not(.done) > .jr-check {
+  background: rgba(255, 255, 255, .08); box-shadow: inset 0 0 0 2px rgba(255, 255, 255, .6);
+}
+
+/* 4 · „Аптечката вкъщи“: датата беше 130 px (mega.css:164) и „yyyy“ се режеше от календарчето;
+       „+“ беше 45 px с 12.5 px знак. Датата взема реда, „+“ е 56×48 с едър знак (етикетът е в aria-label). */
+#roomOverlay .ro-panel.ro-green #roRoom .jr-addrow:has(> .ph-date) > .ph-date { max-width: none; flex: 1 1 0; }
+#roomOverlay .ro-panel.ro-green #roRoom .jr-addrow:has(> .ph-date) > .jr-chip {
+  flex: 0 0 56px; min-width: 56px; min-height: 48px; padding: 0 !important;
+  font: 800 24px/1 Nunito, Nunito-fallback, system-ui, sans-serif !important;
+}
+
+/* 5 · „Здравето днес“ (pg20-hero): ДВА кръга един върху друг — span.pg20-fruit (65 px) носи рисунката
+       (ico-b 33.3% 0%), а вътре стоеше второ .pl-em (83 px) със СЪЩАТА клетка, изместено вляво
+       (мерено zd20_G_mer2.log). Както медалите (06.10 · 1): вътрешното се скрива визуално,
+       буквата остава в textContent. */
+#roomOverlay .ro-panel.ro-green #roRoom .pg20-fruit.pl-pl { position: relative; }
+#roomOverlay .ro-panel.ro-green #roRoom .pg20-fruit.pl-pl > .pl-em {
+  position: absolute !important; left: 0 !important; top: 0 !important;
+  width: 1px !important; height: 1px !important; min-width: 0 !important; min-height: 0 !important;
+  margin: 0 !important; padding: 0 !important; overflow: hidden !important;
+  clip-path: inset(50%) !important; opacity: 0 !important; pointer-events: none !important;
+  box-shadow: none !important; border: 0 !important;
+}
+
+/* 6 · ПАНЕЛЪТ „ПЪРВА ПОМОЩ“ (#faOverlay)
+       а) стикерът в текста на стъпка („виж картата „🫀 Не диша…“) беше 1.7em (26 px) — раздуваше реда
+          и кавичката оставаше сама в края на горния ред; става 1.4em и се слепва с кавичката
+          (js/pl-zdrave.js · 20.10 слага span.pl-zd-nb около тях — текстът е буква в буква същият);
+       б) нощем „Затвори“ беше лилаво-черно #342f4e (dark.css:74 с !important бие правилото 06.10);
+       в) плъзгачът на кутията — тънък и в тона на картата, не сив системен. */
+#faOverlay .fa-steps li .pl-em.pl-pl { width: 1.4em; height: 1.4em; margin: 0 .22em 0 .06em; vertical-align: -.36em; }
+#faOverlay .pl-zd-nb { white-space: nowrap; }
+html[data-theme="dark"] #faOverlay .fa-foot .jr-chip {
+  background: #2b3872 !important; color: #fff !important; border-color: rgba(255, 255, 255, .22) !important;
+}
+#faOverlay .fa-box { scrollbar-width: thin; scrollbar-color: rgba(29, 42, 92, .28) transparent; }
+html[data-theme="dark"] #faOverlay .fa-box { scrollbar-color: rgba(255, 255, 255, .3) transparent; }
+
+/* 7 · ДЪХ МЕЖДУ ПОЯСА И ОНОВА НАД НЕГО (снимки zd20_H_sled_Lden_13/14/17): „Записвай при мерене…“ лепеше
+       за полето, „Дано никога не потрябва…“ (той е ВЪТРЕ в .pho-grid) — за „Добави снимка“, „Дали да
+       се даде…“ — за розовата кутия. 06.10 · 7 хващаше само .jr-btn + .jr-privacy. */
+#roomOverlay .ro-panel.ro-green #roRoom .jr-addrow + .tp-box,
+#roomOverlay .ro-panel.ro-green #roRoom .jr-btn ~ .pho-grid,
+#roomOverlay .ro-panel.ro-green #roRoom .av-grid + .jr-privacy,
+#roomOverlay .ro-panel.ro-green #roRoom div:has(> .qd-row) + .jr-privacy { margin-top: 12px; }   /* и под списъка „Какво да питам педиатъра“ (zd20_M_sled_L2_14) */
+
+/* 8 · ВАКСИНИТЕ: копчето порасна 22 → 26 px и „в родилния дом, първите часове/дни“ се пречупи на „/“ —
+       в реда на ваксините копчето е 24 px, празнините 10 → 8 (същата ширина за текста като преди). */
+#roomOverlay .ro-panel.ro-green #roRoom .vx-row { gap: 8px; }
+#roomOverlay .ro-panel.ro-green #roRoom .vx-row > .jr-check { width: 24px; height: 24px; }
+/*    и дребният ред под ваксината („в родилния дом…“, „≈ 20.03.2026 г.“) беше 11 px, а нощем #a49dbb
+      върху стъклото = 4.15:1 (мерено zd20_I_sled_D.log) → 12 px и #c9cbe3 (6.7:1 сметнато). */
+#roomOverlay .ro-panel.ro-green #roRoom .vx-name small { font-size: 12px; line-height: 1.45; }
+html[data-theme="dark"] #roomOverlay .ro-panel.ro-green #roRoom .vx-name small { color: #c9cbe3; }
+/*    нощем на отметнатия (зеления) ред „2 мес“ #f291bd = 4.31:1 (мерено zd20_L_sled_D2.log) → #ffc2dc (6.3:1 сметнато). */
+html[data-theme="dark"] #roomOverlay .ro-panel.ro-green #roRoom .vx-row.done .vx-when { color: #ffc2dc; }
+
+/* 9 · ЗАПИСИТЕ В СПИСЪЦИТЕ („Аптечката вкъщи“ и др.): .nt-row беше лилаво-бяло #faf8ff (rooms.css:787,
+       стар език), датата 11 px, кошчето — 55 % прозрачно. Тук: топъл бял ред с шев, дата 12 px,
+       кошчето плътно, цел 44×44 (мерено след: 44×44). Нощем — стъкло, не #241f38. */
+#roomOverlay .ro-panel.ro-green #roRoom :is(.nt-row, .gl-row) {
+  background: #fffdf9 !important; border: 1px solid #f1e4d9;
+  box-shadow: 0 1.5px 0 rgba(203, 176, 150, .45), 0 4px 10px rgba(110, 76, 52, .06);
+}
+#roomOverlay .ro-panel.ro-green #roRoom .nt-meta { font-size: 12px; color: #5f5a77; }
+#roomOverlay .ro-panel.ro-green #roRoom .nt-del { position: relative; opacity: .9; }
+#roomOverlay .ro-panel.ro-green #roRoom .nt-del::after { content: ''; position: absolute; left: 50%; top: 50%; width: 44px; height: 44px; transform: translate(-50%, -50%); border-radius: 50%; }
+html[data-theme="dark"] #roomOverlay .ro-panel.ro-green #roRoom :is(.nt-row, .gl-row) {
+  background: rgba(255, 255, 255, .07) !important; border-color: rgba(255, 255, 255, .14); box-shadow: 0 2px 0 rgba(0, 0, 0, .18);
+}
+html[data-theme="dark"] #roomOverlay .ro-panel.ro-green #roRoom .nt-meta { color: #c9cbe3; }
+
+/* 10 · „Здравето днес“: след т.5 рисунката е сама — да не се свие от реда в овал (мерено след: 67×67). */
+#roomOverlay .ro-panel.ro-green #roRoom .pg20-fruit.pl-pl { flex-shrink: 0 !important; aspect-ratio: 1 / 1; }
+
+/* 11 · SOS ДЪХ (#breathOverlay): правилото 06.10 · 10 НЕ хващаше кръга — extras.js:362 слага фона ИНЛАЙН
+       (розово→лилаво #fbd3e6→#b9a7e0), а инлайн бие лист без !important (мерено zd20_J_sled_Ln_24.jpg и
+       getComputedStyle: „radial-gradient(circle at 35% 30%, rgb(251, 211, 230), rgb(185…“). Тук — с !important.
+       И: при „Вдишай“ кръгът расте ×1.7 (mega.css:1047) върху реда „кръг 1 от 4“ и опира в „Затвори“ —
+       мястото под него става 78 px (160 × 0.35 = 56 px растеж + дъх). */
+html:has(#roomOverlay .ro-panel.ro-green) #breathOverlay #brCircle {
+  background: radial-gradient(circle at 36% 30%, #ffffff 0, #fff3f7 30%, #fde6ef 58%, #f59cbb 100%) !important;
+  margin: 60px auto 78px !important;
+}
+
+/* 12 · „Здравето днес“: бутонът „🚨 При спешност — отвори СОС номерата си сега“ стоеше в жълта пунктирна
+       кутия .pg20-do (rooms.css:1807) — кутия-в-кутия; нощем сиво-кафява. Кутията изчезва, бутонът
+       е меко розово хапче 48 px (#8e2350 върху #fde6ef = 7.1:1; нощем #ffd0e1 = 7.4:1 сметнато). */
+#roomOverlay .ro-panel.ro-green #roRoom .rh-hero .pg20-do:has(> .rh-sos-jump) {
+  background: none !important; border: 0 !important; box-shadow: none !important; padding: 0 !important; margin-top: 12px;
+}
+#roomOverlay .ro-panel.ro-green #roRoom .rh-hero .rh-sos-jump {
+  display: flex; align-items: center; justify-content: center; gap: 6px; min-height: 48px; margin: 0;
+  padding: 8px 16px; border-radius: 999px; border: 1.5px solid #efa3c1;
+  background: #fde6ef; color: #8e2350; font-weight: 800; font-size: 14px; line-height: 1.3;
+  box-shadow: inset 0 1px 0 #fff, 0 2px 0 rgba(239, 163, 193, .55);
+}
+html[data-theme="dark"] #roomOverlay .ro-panel.ro-green #roRoom .rh-hero .rh-sos-jump {
+  background: rgba(245, 156, 187, .14); border-color: rgba(245, 156, 187, .45); color: #ffd0e1;
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, .08), 0 2px 0 rgba(0, 0, 0, .2);
+}
+
+/* 13 · МАСТИЛАТА ПОД 4.5:1, мерени по getComputedStyle (dev/proba/zd20_M_sled_L2.log, светла, ден):
+       присъдата на температурния ориентир „Има температура…“ #a5762a върху #fdf3d7 = 3.63:1, а редът
+       „Дозите лекарства определя…“ — същият цвят ×0.8 = 2.70:1; зелената присъда #2f7d5f = 4.26:1 и
+       червената #c0392b = 4.49:1 (сметнато); „2 мес“ на отметнат (мента) ред = 4.46:1; надписите
+       „Задължително / Винаги / От 0 мес.“ (×0.86) = 4.49:1; „Зъбките наближават…“ (×0.85) = 4.40:1.
+       Текстът е същият — сменя се само мастилото: 5.7 / 6.1 / 5.5 / 6.3:1 (сметнато). */
+#roomOverlay .ro-panel.ro-green #roRoom .tmp-out.tmp-warn { color: #7a5410; }
+#roomOverlay .ro-panel.ro-green #roRoom .tmp-out.tmp-ok { color: #24684d; }
+#roomOverlay .ro-panel.ro-green #roRoom .tmp-out.tmp-red { color: #a82a1e; }
+#roomOverlay .ro-panel.ro-green #roRoom .tmp-out .bb-note { opacity: 1; }
+html[data-theme="dark"] #roomOverlay .ro-panel.ro-green #roRoom .tmp-out.tmp-warn { color: #f2ce8a; }
+html[data-theme="dark"] #roomOverlay .ro-panel.ro-green #roRoom .tmp-out.tmp-ok { color: #a8e0bd; }
+html[data-theme="dark"] #roomOverlay .ro-panel.ro-green #roRoom .tmp-out.tmp-red { color: #ffb3ab; }
+#roomOverlay .ro-panel.ro-green #roRoom .vx-row.done .vx-when { color: #a92f63; }
+#roomOverlay .ro-panel.ro-green #roRoom :is(.mk-h, .pg20-size) { opacity: 1; }
+
+/* 14 · НОЩЕМ ПОЛЕТАТА ЗА ПИСАНЕ (textarea: „Въпросите ми към лекаря…“, „Здравни бележки“) бяха лилаво-черни,
+       а полетата на един ред до тях — rgb(27,37,84) = #1b2554 (мерено zd20_O_ta_D.log; снимка zd20_sled_D_06). Един материал за всички. */
+html[data-theme="dark"] #roomOverlay .ro-panel.ro-green #roRoom textarea {
+  background-color: #1b2554 !important; border-color: rgba(255, 255, 255, .22) !important; color: #f4f5ff !important;
+  /* редовете на „тетрадката“ (dark.css:110 — лилаво-черни #221d36/#2a2440) — като в „Моето бебе“ и „Бременност“ */
+  background-image: repeating-linear-gradient(180deg, rgba(255, 255, 255, 0) 0 26px, rgba(255, 255, 255, .07) 26px 27px) !important;
+}
+html[data-theme="dark"] #roomOverlay .ro-panel.ro-green #roRoom textarea::placeholder { color: #c8cbeb; opacity: 1; }
+/* край 20.10 */
