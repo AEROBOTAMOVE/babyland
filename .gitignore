@@ -44,3 +44,6 @@ babyland-netlify.zip
 dev/proba/snimki/
 dev/proba/chrome_*/
 dev/proba/razpyani.json
+
+# 🚦 20.10 опашката на пробите (slot.js) — временни слотове
+dev/proba/.sloti/
