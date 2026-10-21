@@ -41,14 +41,15 @@
      новото начало с празни кръгчета. Причината: новото начало го слага js/premium-home.js, 100-ият от 130 отложени
      скрипта. Сега от първия кадър стои облакът „Baby Land“ (векторен, вграден — нито един файл), а когато новото
      начало е подредено (html.pl-gl20) и плюшените знаци са там, облакът ОТЛИТА на мястото си горе в началото
-     (същото лого, header.hero), а фонът се топи. Ако нещо пропадне — най-късно след 7 с. 112 се вижда през цялото време.
+     (същото лого, header.hero), а фонът се топи. Ако нещо пропадне — 1,5 с след DOMContentLoaded, най-късно след 15 с. 112 се вижда през цялото време.
      ПЪТ НАЗАД: махни <link> и <style> тук + #blSplash и скрипта след <body>. -->
 <link rel="preload" href="fonts/pacifico-400-latin.woff2" as="font" type="font/woff2" crossorigin>
 <style>
 #blSplash{position:fixed;inset:0;z-index:2147483000;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:6px;padding:0 20px;text-align:center}
 #blSplash::before{content:'';position:absolute;inset:0;z-index:-1;background:linear-gradient(180deg,#fdf3f9 0%,#f3f2fc 45%,#ecf5fb 80%,#eaf7f2 100%);transition:opacity .55s ease}
 #blSplash .bls-logo{width:min(340px,86vw);height:auto;display:block;overflow:visible;transform-origin:50% 50%;transition:transform .7s cubic-bezier(.22,.9,.24,1)}
-#blSplash .bls-t{font-family:'Pacifico','Comfortaa',cursive;font-size:97px;paint-order:stroke fill;stroke:#fff;stroke-width:12px;stroke-linejoin:round}
+#blSplash .bls-t{font-family:'Pacifico','Comfortaa',cursive;font-size:97px;paint-order:stroke fill;stroke:#fff;stroke-width:12px;stroke-linejoin:round;opacity:0;transition:opacity .3s ease}
+#blSplash.bls-f .bls-t{opacity:1}
 #blSplash .bls-cloud{animation:blsBob 7s ease-in-out infinite}
 #blSplash .bls-bal{transform-origin:445px 60px;animation:blsBal 5.5s ease-in-out infinite}
 #blSplash .bls-face{transform-origin:322px 404px;animation:blsFace 6s ease-in-out infinite}
@@ -200,8 +201,13 @@ html[data-theme="dark"] #blSplash .bls-sos{color:#ffd0dc;background:rgba(255,255
 <script>
 (function () {
   var S = document.getElementById('blSplash'); if (!S) return;
-  var R = document.documentElement, т0 = Date.now(), готовоОт = 0, домОт = 0, свършено = false;
+  var R = document.documentElement, т0 = Date.now(), готовоОт = 0, домОт = 0, свършено = false, домГотов = false, причина = '';
+  document.addEventListener('DOMContentLoaded', function () { домГотов = true; });
   var тихо = false; try { тихо = matchMedia('(prefers-reduced-motion: reduce)').matches; } catch (e) {}
+  // 🔤 „Baby Land“ е на Pacifico: в първия кадър той още не е зареден и надписът излизаше с резервен шрифт, после
+  //   подскачаше (запис letene.js, let21_k00). Надписът се показва, щом шрифтът е готов — най-късно след 0,9 с.
+  var шрифт = function () { S.classList.add('bls-f'); };
+  try { if (document.fonts && document.fonts.load) { document.fonts.load('97px Pacifico', 'Baby Land').then(шрифт, шрифт); setTimeout(шрифт, 900); } else шрифт(); } catch (e) { шрифт(); }
   function махни() { if (S.parentNode) S.parentNode.removeChild(S); R.classList.remove('bls-fly'); }
   function прибери() {
     if (свършено) return; свършено = true;
@@ -217,7 +223,7 @@ html[data-theme="dark"] #blSplash .bls-sos{color:#ffd0dc;background:rgba(255,255
         ((рЦ.top + рЦ.height / 2) - (рМ.top + рМ.height / 2)).toFixed(1) + 'px) scale(' + (рЦ.width / рМ.width).toFixed(4) + ')';
     } else { S.style.transition = 'opacity .45s ease'; S.style.opacity = '0'; }
     S.classList.add('bls-off');
-    window.BL_SPLASH = { лети: !!лети, прозорец: прозорец, мс: Date.now() - т0 };   // за пробите (dev/proba/filmova.js)
+    window.BL_SPLASH = { лети: !!лети, прозорец: прозорец, мс: Date.now() - т0, при: Date.now(), причина: причина };   // за пробите (dev/proba/filmova.js)
     setTimeout(махни, лети ? 760 : 480);
   }
   function провери() {
@@ -226,10 +232,13 @@ html[data-theme="dark"] #blSplash .bls-sos{color:#ffd0dc;background:rgba(255,255
     if (подредено && !готовоОт) готовоОт = Date.now();
     // плюшените знаци (js/pl-plyush.js) идват малко след подредбата — чакаме ги до 0,7 с, не повече
     var знаци = !!document.querySelector('.pl-pl') || (готовоОт && Date.now() - готовоОт > 700);
-    // новото начало не тръгна (грешка в скрипт): DOM е готов, а pl-on няма 1,5 с — показваме каквото има
-    if (document.readyState !== 'loading' && !R.classList.contains('pl-on')) { if (!домОт) домОт = Date.now(); } else домОт = 0;
+    // новото начало не тръгна (грешка в скрипт): ВСИЧКИ отложени скриптове са минали (DOMContentLoaded), а pl-on
+    //   няма 1,5 с — показваме каквото има. 🪤 21.10 МЕРЕНО (dev/proba/letene.js, let21_k05–k28): беше
+    //   „readyState !== 'loading'“ — то е „interactive“ ПРЕДИ 130-те отложени скрипта; под товар екранът се прибираше
+    //   на 2,8 с и отдолу излизаше старата страница („Разгледай стаите“, „Вход“). Таванът 7 → 15 с по същата причина.
+    if (домГотов && !R.classList.contains('pl-on')) { if (!домОт) домОт = Date.now(); } else домОт = 0;
     var безНово = домОт && Date.now() - домОт > 1500;
-    if ((подредено && знаци) || безНово || т > 7000) { requestAnimationFrame(function () { requestAnimationFrame(прибери); }); return; }
+    if ((подредено && знаци) || безНово || т > 15000) { причина = (подредено && знаци) ? 'ново' : безНово ? 'без-ново' : 'таван'; requestAnimationFrame(function () { requestAnimationFrame(прибери); }); return; }
     setTimeout(провери, 80);
   }
   провери();
@@ -1589,7 +1598,7 @@ html[data-theme="dark"] #blSplash .bls-sos{color:#ffd0dc;background:rgba(255,255
 <script src="js/store.js?v=12" defer></script>
 <script src="js/sleephist.js?v=8" defer></script>
 <script src="js/expect.js?v=1" defer></script>
-<script src="js/kb.js?v=293" defer></script>
+<script src="js/kb.js?v=294" defer></script>
 <script src="js/data.js?v=15" defer></script>
 <script src="js/rooms.js?v=24" defer></script>
 <!-- 🛡️ ТОЧНО ТУК: след създателя на ROOM_FEATURES (rooms.js), преди всички
