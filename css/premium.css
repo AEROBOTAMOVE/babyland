@@ -1584,3 +1584,17 @@ html body #roomOverlay .jr-medal.pl-pl > .pl-em, html body #roomOverlay .pg20-fr
 }
 html body #roomOverlay .jr-medal.pl-pl, html body #roomOverlay .pg20-fruit.pl-pl { position: relative; }
 /* край 21.10 · една рисунка */
+
+/* 🧹 21.10 · ОБЩИТЕ ОСТАТЪЦИ, ТРЕТИ ПРОХОД (докладвани от агентите на 5 стаи — всеки го оправяше само у себе си):
+   1 · броячът на раздела .sec-n (mega.css:595): 9.5 px и #c24d7b върху #fde6ef = 3.82:1 → 12 px, 7:1; нощем —
+       сливово #3a3355 (mega.css:618) → нощна роза;
+   2 · „на линия“ в картата с помощничката нощем — 10.5 px → 11.5 px (денем вече беше);
+   3 · дишането: кръгът (.br-circle, 96 px) расте ×1.7 при вдишване, а мястото около него не — покриваше
+       „кръг N от 4“ (mega.css:1047). Мястото вече е за големия кръг; цветът — роза и злато вместо розово→лилаво.
+   ПЪТ НАЗАД: махни този блок. */
+html body #roomOverlay #roRoom .sec-head .sec-n { font-size: 12px; }
+html:not([data-theme="dark"]) body #roomOverlay #roRoom .sec-head .sec-n { color: #8e2350; background: #fde6ef; }
+html[data-theme="dark"] body #roomOverlay #roRoom .sec-head .sec-n { color: #ffd0e1; background: rgba(229, 109, 153, .24); }
+html[data-theme="dark"] body .ask-live { font-size: 11.5px; }
+html body .br-circle { margin-top: 36px; margin-bottom: 36px; background: radial-gradient(circle, rgba(245, 156, 187, .38), rgba(217, 185, 143, .22)); }
+/* край 21.10 · трети проход */

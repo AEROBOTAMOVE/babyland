@@ -1,0 +1,1 @@
+(() => { const м = s => { const e = document.querySelector(s); if (!e) return 'няма'; const st = getComputedStyle(e); return st.fontSize + ' ' + st.color + ' / ' + st.backgroundColor; }; return { secN: м('#roRoom .sec-head .sec-n'), live: м('#roRoom .ask-live') }; })()
