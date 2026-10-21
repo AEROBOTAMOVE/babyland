@@ -35,6 +35,54 @@
 <link rel="preload" href="fonts/nunito-400-cyrillic.woff2" as="font" type="font/woff2" crossorigin>
 <link rel="preload" href="fonts/nunito-700-cyrillic.woff2" as="font" type="font/woff2" crossorigin>
 <link rel="preload" href="fonts/comfortaa-700-cyrillic.woff2" as="font" type="font/woff2" crossorigin>
+<!-- ✨ 21.10 · СТАРТОВИЯТ ЕКРАН = СТАРОТО ЛОГО. Собственикът: „първо зареди тотално старата версия, после едва
+     едва новата… старата версия беше яка… оставяй като предната анимация — компилирай стара и нова версия“.
+     Мерено (dev/proba/filmova.js, film21, процесор ×4): до 2,1 с се виждаше старата рекламна страница, на 2,65 с —
+     новото начало с празни кръгчета. Причината: новото начало го слага js/premium-home.js, 100-ият от 130 отложени
+     скрипта. Сега от първия кадър стои облакът „Baby Land“ (векторен, вграден — нито един файл), а когато новото
+     начало е подредено (html.pl-gl20) и плюшените знаци са там, облакът ОТЛИТА на мястото си горе в началото
+     (същото лого, header.hero), а фонът се топи. Ако нещо пропадне — най-късно след 7 с. 112 се вижда през цялото време.
+     ПЪТ НАЗАД: махни <link> и <style> тук + #blSplash и скрипта след <body>. -->
+<link rel="preload" href="fonts/pacifico-400-latin.woff2" as="font" type="font/woff2" crossorigin>
+<style>
+#blSplash{position:fixed;inset:0;z-index:2147483000;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:6px;padding:0 20px;text-align:center}
+#blSplash::before{content:'';position:absolute;inset:0;z-index:-1;background:linear-gradient(180deg,#fdf3f9 0%,#f3f2fc 45%,#ecf5fb 80%,#eaf7f2 100%);transition:opacity .55s ease}
+#blSplash .bls-logo{width:min(340px,86vw);height:auto;display:block;overflow:visible;transform-origin:50% 50%;transition:transform .7s cubic-bezier(.22,.9,.24,1)}
+#blSplash .bls-t{font-family:'Pacifico','Comfortaa',cursive;font-size:97px;paint-order:stroke fill;stroke:#fff;stroke-width:12px;stroke-linejoin:round}
+#blSplash .bls-cloud{animation:blsBob 7s ease-in-out infinite}
+#blSplash .bls-bal{transform-origin:445px 60px;animation:blsBal 5.5s ease-in-out infinite}
+#blSplash .bls-face{transform-origin:322px 404px;animation:blsFace 6s ease-in-out infinite}
+#blSplash .bls-eye{transform-origin:center;transform-box:fill-box;animation:blsBlink 5.2s ease-in-out infinite}
+#blSplash .bls-spk{animation:blsTw 3.2s ease-in-out infinite}
+#blSplash .bls-spk.k2{animation-delay:-1.1s}#blSplash .bls-spk.k3{animation-delay:-2.1s}
+#blSplash .bls-rest{transition:opacity .3s ease}
+#blSplash p{margin:4px 0 0;font:700 16px/1.45 Nunito,system-ui,sans-serif;color:#6c5f86}
+#blSplash p em{font-style:normal;color:#d4558f}
+#blSplash .bls-dots{display:flex;justify-content:center;gap:8px;margin-top:16px}
+#blSplash .bls-dots b{width:8px;height:8px;border-radius:50%;background:#e59ac0;animation:blsDot 1.2s ease-in-out infinite}
+#blSplash .bls-dots b:nth-child(2){animation-delay:.2s;background:#a9c7ec}
+#blSplash .bls-dots b:nth-child(3){animation-delay:.4s;background:#9fd8c3}
+#blSplash .bls-sos{position:absolute;left:50%;transform:translateX(-50%);bottom:calc(24px + env(safe-area-inset-bottom,0px));
+  font:800 13px/1 Nunito,system-ui,sans-serif;color:#b23a5e;text-decoration:none;padding:11px 18px;border-radius:999px;
+  background:rgba(255,255,255,.75);box-shadow:0 0 0 1px rgba(178,58,94,.25);transition:opacity .3s ease}
+#blSplash.bls-off{pointer-events:none}
+#blSplash.bls-off::before,#blSplash.bls-off .bls-rest,#blSplash.bls-off .bls-sos{opacity:0}
+html.bls-fly header.hero .logo-art{visibility:hidden}
+@keyframes blsBob{0%,100%{transform:translateY(0)}50%{transform:translateY(-4px)}}
+@keyframes blsBal{0%,100%{transform:translateY(0) rotate(-2.4deg)}50%{transform:translateY(-14px) rotate(2.8deg)}}
+@keyframes blsFace{0%,100%{transform:rotate(-2deg)}50%{transform:rotate(2.4deg)}}
+@keyframes blsBlink{0%,91%,100%{transform:scaleY(1)}94%,96%{transform:scaleY(.15)}}
+@keyframes blsTw{0%,100%{opacity:.2}50%{opacity:1}}
+@keyframes blsDot{0%,80%,100%{transform:scale(.6);opacity:.35}40%{transform:scale(1);opacity:1}}
+html[data-theme="dark"] #blSplash::before{background:linear-gradient(180deg,#1f1b3a 0%,#1b1f4a 50%,#151a3c 100%)}
+html[data-theme="dark"] #blSplash .bls-wc{opacity:.32}
+html[data-theme="dark"] #blSplash .bls-cl{fill:#ece8f7;stroke:#d9d1ee}
+html[data-theme="dark"] #blSplash .bls-t{stroke:#ece8f7}
+html[data-theme="dark"] #blSplash p{color:#cfc3e2}
+html[data-theme="dark"] #blSplash p em{color:#f39ac0}
+html[data-theme="dark"] #blSplash .bls-sos{color:#ffd0dc;background:rgba(255,255,255,.08);box-shadow:0 0 0 1px rgba(255,208,220,.3)}
+@media (prefers-reduced-motion:reduce){#blSplash *,#blSplash::before{animation:none!important;transition:none!important}}
+</style>
 <link rel="stylesheet" href="css/fonts.css?v=2">
 <link rel="stylesheet" href="css/style.css?v=57">
 <link rel="stylesheet" href="css/rooms.css?v=93">
@@ -80,13 +128,113 @@
   <link rel="stylesheet" href="css/pl-profil.css?v=1">
   <link rel="stylesheet" href="css/pl-zdrave.css?v=3">
   <link rel="stylesheet" href="css/pl-bebe.css?v=4">
+  <link rel="stylesheet" href="css/pl-start.css?v=2">
 <!-- 📶 силата на телефона: слага data-motion/data-quality ПРЕДИ рисуването.
      Нарочно БЕЗ defer и рано — с defer отметките идват след първото
      рисуване и екранът мигва. Файлът е 3 KB. -->
 <script src="js/tier.js?v=4"></script>
 </head>
 <body>
-<script>try{if(localStorage.getItem('bl_theme')==='dark')document.documentElement.setAttribute('data-theme','dark');}catch(e){}</script>
+<!-- 🌙 21.10 · същото правило като js/app.js:61 (изборът на мама → иначе 21–07 ч. или системна тъмна) още в
+     първия кадър. Досега тук се питаше САМО изборът — нощем без избор приложението светваше бяло и чак след
+     ~3,6 с (app.js е отложен) потъмняваше: бял блясък в 3 през нощта. ПЪТ НАЗАД: върни само проверката на bl_theme. -->
+<script>try{var blТ=localStorage.getItem('bl_theme'),blЧ=new Date().getHours();if(blТ?blТ==='dark':(blЧ>=21||blЧ<7||(window.matchMedia&&matchMedia('(prefers-color-scheme: dark)').matches)))document.documentElement.setAttribute('data-theme','dark');}catch(e){}</script>
+<div id="blSplash" role="status" aria-label="Бейби Ленд се отваря">
+  <svg class="bls-logo" viewBox="0 0 640 478" aria-hidden="true">
+    <defs>
+      <linearGradient id="blsBP" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#fbd3e6"/><stop offset="1" stop-color="#f5b1d1"/></linearGradient>
+      <linearGradient id="blsBB" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#8fc3ec"/><stop offset="1" stop-color="#5f9fd6"/></linearGradient>
+      <linearGradient id="blsBK" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#d3a76c"/><stop offset="1" stop-color="#b98b52"/></linearGradient>
+      <linearGradient id="blsTP" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#f584bb"/><stop offset="1" stop-color="#e35f9c"/></linearGradient>
+      <linearGradient id="blsTB" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#79b3e5"/><stop offset="1" stop-color="#3f86c5"/></linearGradient>
+      <radialGradient id="blsWP"><stop offset="0" stop-color="#f6b7d5" stop-opacity=".85"/><stop offset="1" stop-color="#f6b7d5" stop-opacity="0"/></radialGradient>
+      <radialGradient id="blsWL"><stop offset="0" stop-color="#cfc0ec" stop-opacity=".8"/><stop offset="1" stop-color="#cfc0ec" stop-opacity="0"/></radialGradient>
+      <radialGradient id="blsWB"><stop offset="0" stop-color="#a8cdf0" stop-opacity=".8"/><stop offset="1" stop-color="#a8cdf0" stop-opacity="0"/></radialGradient>
+      <radialGradient id="blsWM"><stop offset="0" stop-color="#aee3cf" stop-opacity=".8"/><stop offset="1" stop-color="#aee3cf" stop-opacity="0"/></radialGradient>
+      <path id="blsSp" d="M0 -9 C1.6 -2.2 2.2 -1.6 9 0 C2.2 1.6 1.6 2.2 0 9 C-1.6 2.2 -2.2 1.6 -9 0 C-2.2 -1.6 -1.6 -2.2 0 -9Z"/>
+    </defs>
+    <g class="bls-wc">
+      <ellipse cx="215" cy="130" rx="215" ry="118" fill="url(#blsWP)" transform="rotate(-10 215 130)"/>
+      <ellipse cx="465" cy="150" rx="185" ry="105" fill="url(#blsWL)" transform="rotate(7 465 150)"/>
+      <ellipse cx="185" cy="330" rx="200" ry="115" fill="url(#blsWB)" transform="rotate(5 185 330)"/>
+      <ellipse cx="465" cy="340" rx="205" ry="120" fill="url(#blsWM)" transform="rotate(-7 465 340)"/>
+      <ellipse cx="325" cy="235" rx="250" ry="160" fill="url(#blsWP)" opacity=".5"/>
+    </g>
+    <g class="bls-cloud">
+      <path class="bls-cl" d="M130 302 C 88 302 66 268 80 236 C 58 206 78 166 118 164 C 120 126 164 104 200 120 C 220 82 284 72 314 102 C 342 72 408 76 430 110 C 468 92 518 112 522 154 C 562 160 582 204 560 238 C 586 268 568 306 528 310 C 520 346 478 364 444 348 C 420 380 362 386 334 356 C 302 388 246 384 228 352 C 188 370 142 350 130 302 Z" fill="#ffffff" stroke="#f1eaf8" stroke-width="3"/>
+      <path d="M120 300 C 160 330 250 344 330 340 C 420 344 500 326 536 300" fill="none" stroke="#e8eef9" stroke-width="10" stroke-linecap="round" opacity=".55"/>
+      <text class="bls-t" x="88" y="252" transform="rotate(-5 230 220)" fill="url(#blsTP)">Baby</text>
+      <text class="bls-t" x="286" y="342" transform="rotate(-3 420 310)" fill="url(#blsTB)">Land</text>
+      <use href="#blsSp" x="150" y="150" fill="#f2a9cc" class="bls-spk" transform="scale(0.9)"/>
+      <use href="#blsSp" x="258" y="126" fill="#bfe0d4" class="bls-spk k2" transform="scale(0.65)"/>
+      <use href="#blsSp" x="508" y="252" fill="#cfc0ec" class="bls-spk k3" transform="scale(0.8)"/>
+      <path d="M232 362 q30 12 62 8" stroke="#f2a9cc" stroke-width="5" stroke-linecap="round" fill="none" opacity=".7"/>
+      <path d="M392 366 q26 6 50 -4" stroke="#a8cdf0" stroke-width="5" stroke-linecap="round" fill="none" opacity=".7"/>
+    </g>
+    <g class="bls-bal"><g transform="translate(400 22) scale(1.5) rotate(7)">
+      <path d="M30 3 C12 3 4 18 4 33 C4 49 20 61 26 68 L34 68 C40 61 56 49 56 33 C56 18 48 3 30 3Z" fill="url(#blsBP)"/>
+      <path d="M22 4.4 C14.5 8.5 9 20 9 33 C9 46 18 57 25 66 L27 67 C21.5 55 17.5 44 17.5 32 C17.5 19 19.5 9.5 22 4.4Z" fill="#ef8fbe"/>
+      <path d="M38 4.4 C45.5 8.5 51 20 51 33 C51 46 42 57 35 66 L33 67 C38.5 55 42.5 44 42.5 32 C42.5 19 40.5 9.5 38 4.4Z" fill="#ef8fbe"/>
+      <path d="M30 3 C26 8.5 23.5 19 23.5 32 C23.5 45 26.5 57 30 68 C33.5 57 36.5 45 36.5 32 C36.5 19 34 8.5 30 3Z" fill="url(#blsBB)"/>
+      <path d="M26 68 L24.6 78 M34 68 L35.4 78" stroke="#b78957" stroke-width="1.7" fill="none"/>
+      <rect x="21.5" y="77" width="17" height="13" rx="3.5" fill="url(#blsBK)"/>
+      <path d="M21.5 81.3 H38.5 M21.5 85.6 H38.5 M27 77 V90 M33 77 V90" stroke="#a97c48" stroke-width="1.2"/>
+      <ellipse cx="20" cy="15" rx="4.5" ry="8" fill="#ffffff" opacity=".6" transform="rotate(-20 20 15)"/>
+    </g></g>
+    <g class="bls-face">
+      <circle cx="322" cy="404" r="47" fill="#ffffff" stroke="#4f8fc4" stroke-width="6.5"/>
+      <path d="M322 358 C317 348 330 343 333 351 C334.6 356 329 358.5 325 357.4" fill="none" stroke="#4f8fc4" stroke-width="6" stroke-linecap="round"/>
+      <g class="bls-eye"><path d="M296 398 q7 -10 14 0" fill="none" stroke="#4f8fc4" stroke-width="6" stroke-linecap="round"/></g>
+      <g class="bls-eye"><path d="M334 398 q7 -10 14 0" fill="none" stroke="#4f8fc4" stroke-width="6" stroke-linecap="round"/></g>
+      <path d="M310 420 q12 11 24 0" fill="none" stroke="#4f8fc4" stroke-width="6" stroke-linecap="round"/>
+      <circle cx="291" cy="413" r="6.5" fill="#f9c0d8"/>
+      <circle cx="353" cy="413" r="6.5" fill="#f9c0d8"/>
+    </g>
+  </svg>
+  <div class="bls-rest">
+    <p>Вълшебната джобна библиотека на мама —<br>от „<em>чакаме бебе!</em>“ до първите стъпки.</p>
+    <div class="bls-dots" aria-hidden="true"><b></b><b></b><b></b></div>
+  </div>
+  <a class="bls-sos" href="tel:112">SOS · 112</a>
+</div>
+<script>
+(function () {
+  var S = document.getElementById('blSplash'); if (!S) return;
+  var R = document.documentElement, т0 = Date.now(), готовоОт = 0, домОт = 0, свършено = false;
+  var тихо = false; try { тихо = matchMedia('(prefers-reduced-motion: reduce)').matches; } catch (e) {}
+  function махни() { if (S.parentNode) S.parentNode.removeChild(S); R.classList.remove('bls-fly'); }
+  function прибери() {
+    if (свършено) return; свършено = true;
+    // облакът отлита на мястото на същото лого горе в началото (header.hero, css/pl-start.css)
+    var цел = document.querySelector('header.hero .logo-art'), мое = S.querySelector('.bls-logo');
+    var рЦ = цел && цел.getBoundingClientRect(), рМ = мое && мое.getBoundingClientRect();
+    // отворен прозорец (обиколка, въпрос) — облакът не минава над него, а се топи с фона
+    var прозорец = false; try { var пр = document.querySelectorAll('.md-veil, .tour-ov, [role="dialog"]'); for (var i = 0; i < пр.length; i++) if (!S.contains(пр[i]) && пр[i].getClientRects().length) прозорец = true; } catch (e) {}
+    var лети = !тихо && !прозорец && рЦ && рМ && рЦ.width > 60 && рЦ.bottom > 0 && рМ.width > 0;
+    if (лети) {
+      R.classList.add('bls-fly');
+      мое.style.transform = 'translate(' + ((рЦ.left + рЦ.width / 2) - (рМ.left + рМ.width / 2)).toFixed(1) + 'px,' +
+        ((рЦ.top + рЦ.height / 2) - (рМ.top + рМ.height / 2)).toFixed(1) + 'px) scale(' + (рЦ.width / рМ.width).toFixed(4) + ')';
+    } else { S.style.transition = 'opacity .45s ease'; S.style.opacity = '0'; }
+    S.classList.add('bls-off');
+    window.BL_SPLASH = { лети: !!лети, прозорец: прозорец, мс: Date.now() - т0 };   // за пробите (dev/proba/filmova.js)
+    setTimeout(махни, лети ? 760 : 480);
+  }
+  function провери() {
+    if (свършено) return;
+    var т = Date.now() - т0, подредено = R.classList.contains('pl-gl20');
+    if (подредено && !готовоОт) готовоОт = Date.now();
+    // плюшените знаци (js/pl-plyush.js) идват малко след подредбата — чакаме ги до 0,7 с, не повече
+    var знаци = !!document.querySelector('.pl-pl') || (готовоОт && Date.now() - готовоОт > 700);
+    // новото начало не тръгна (грешка в скрипт): DOM е готов, а pl-on няма 1,5 с — показваме каквото има
+    if (document.readyState !== 'loading' && !R.classList.contains('pl-on')) { if (!домОт) домОт = Date.now(); } else домОт = 0;
+    var безНово = домОт && Date.now() - домОт > 1500;
+    if ((подредено && знаци) || безНово || т > 7000) { requestAnimationFrame(function () { requestAnimationFrame(прибери); }); return; }
+    setTimeout(провери, 80);
+  }
+  провери();
+})();
+</script>
 
 <button class="theme-toggle" id="themeToggle" aria-label="Смени темата (ден/нощ)">🌙</button>
 
@@ -1478,7 +1626,7 @@
 <script src="js/rooms4.js?v=22" defer></script>
 <script src="js/river.js?v=20" defer></script>
 <script src="js/yearbook.js?v=12" defer></script>
-<script src="js/badges2.js?v=4" defer></script>
+<script src="js/badges2.js?v=5" defer></script>
 <script src="js/yearbook2.js?v=6" defer></script>
 <script src="js/rooms5.js?v=22" defer></script>
 <script src="js/fx.js?v=10" defer></script>
@@ -1543,7 +1691,7 @@
 <script src="js/profile.js?v=28" defer></script>
 <script src="js/app.js?v=25" defer></script>
 <script src="js/nav2.js?v=2" defer></script>
-<script src="js/premium-home.js?v=20" defer></script>
+<script src="js/premium-home.js?v=21" defer></script>
 <script src="js/premium-rooms.js?v=12" defer></script>
   <script src="js/pl-versiya.js?v=1" defer></script>
   <script src="js/pl-plyush.js?v=41" defer></script>

@@ -155,7 +155,8 @@
       '<div class="pl-hero">' +
         '<img class="pl-hero-art" src="img/art/hero-home.webp" alt="" decoding="async" fetchpriority="high" width="720" height="1280">' +
         '<div class="pl-hero-txt">' +
-          '<h1><span id="plGreet">' + esc(поздрав()) + '</span>,<br>мамо! <span class="pl-heart" aria-hidden="true">♡</span></h1>' +
+          // 21.10 · интервал преди <br>: css/pl-start.css крие <br> (заглавието е на един ред под облака) — без него „утро,мамо“
+          '<h1><span id="plGreet">' + esc(поздрав()) + '</span>, <br>мамо! <span class="pl-heart" aria-hidden="true">♡</span></h1>' +
           '<p>Малки стъпки. Голям свят.</p>' +
         '</div>' +
         '<button type="button" class="pl-baby" id="plBaby" aria-label="Отвори стаята на бебето">' +

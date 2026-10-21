@@ -46,6 +46,9 @@
     let до = тишинаДо;
     try { const пазено = +(localStorage.getItem('bl_alarm_at') || 0); if (пазено) до = Math.max(до, пазено + 10 * 60 * 1000); } catch (e) {}
     if (Date.now() < до) { setTimeout(ако, до - Date.now() + 500); return; }
+    // 21.10 · докато стои стартовият екран (#blSplash, index.html), медальончето чака — иначе излизаше
+    //   (със звън и конфети) В СЪЩИЯ миг, в който облакът отлита (кадър film21c_f01). ПЪТ НАЗАД: махни реда.
+    if (document.getElementById('blSplash')) { setTimeout(ако, 400); return; }
     върви = true;
     const b = опашка.shift();
 

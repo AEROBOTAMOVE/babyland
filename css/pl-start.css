@@ -1,0 +1,70 @@
+/* ═══════════════════════════════════════════════════════════════════════════════
+   🎈 21.10 · СТАРОТО + НОВОТО: облакът „Baby Land“ се връща горе на началото
+   Собственикът (21.10): „не ме кефи тая картинка която почва приложението… старата версия беше
+   яка… ако трябва махай картинки, оставяй като предната анимация — компилирай стара и нова версия“.
+   Сега: горе стои ВЕКТОРНОТО лого на старото начало (header.hero в index.html — облак, балон,
+   личице; плува и мига; 0 картинки), под него новото „Добро утро, мамо! ♡“ и цялата нова подредба.
+   Старото небе (.sky — петна, облачета, звездички, балончета; само transform/opacity) пак плува
+   отзад. 3D сцената (#plScene, img/scene/nachalo.webp, 64 KB + разкодиране) на началото не се тегли.
+   Стартовият екран (#blSplash, index.html) е същото лого — при готовност отлита точно тук.
+   Файлът е ПОСЛЕДНИЯТ css в index.html — затова еднаквите селектори с !important тук бият
+   premium.css:35 („header.hero … display:none“) и premium.css:843 („.sky … display:none“).
+   ПЪТ НАЗАД: махни <link href="css/pl-start.css"> от index.html — всичко се връща само.
+   ═══════════════════════════════════════════════════════════════════════════════ */
+
+/* ── 1 · старият герой: само логото, компактно ── */
+html.pl-on header.hero#начало { display: flex !important; min-height: 0; padding: calc(env(safe-area-inset-top, 0px) + 4px) 12px 0; }
+html.pl-on header.hero#начало .tagline,
+html.pl-on header.hero#начало .hero-cta,
+html.pl-on header.hero#начало .scroll-hint { display: none !important; }
+/* .reveal чака превъртане, а героят е горе — показва се веднага (стартовият екран вече е „входът“) */
+html.pl-on header.hero#начало .hero-inner { opacity: 1 !important; transform: none !important; animation: none !important; }
+html.pl-on header.hero#начало .logo-stage { overflow: visible; padding-top: 6px; }
+html.pl-on header.hero#начало .logo-art { width: min(260px, 68vw); margin: 0 auto; }
+/* въртящият се надпис („Всичко за съня — в джоба ти“) е трети лозунг — прибран.
+   Балонената страна (js/hero.js, .land-frame) — прибрана: мерено (film21c_f04 → f05) тя идва СЛЕД началото
+   и бутва „Добро утро, мамо“, бебето и „Нашият ден“ с 260 px надолу, а стаите ѝ са същите като в рафта
+   „Влез в своята стая“ отдолу. Без нея всичко важно е в първия екран. ПЪТ НАЗАД (страната обратно):
+   махни „.land-frame“ от реда долу — размерите ѝ по-долу остават готови. */
+html.pl-on header.hero#начало .hero-flip,
+html.pl-on header.hero#начало .land-frame { display: none !important; }
+html.pl-on header.hero#начало .land-frame { height: 250px; margin: 6px auto 0; z-index: 2; }
+/* 🪤 мерено (start21_fon.js): под героя всичко е прозрачно — „шевът“ беше сянката на страната
+   (hero.css: 0 24px 60px), рязана от overflow:hidden на героя точно на долния му ръб. По-къса сянка + място под нея. */
+html.pl-on header.hero#начало { padding-bottom: 30px; }
+html.pl-on header.hero#начало .land-frame { box-shadow: inset 0 0 0 1.5px rgba(255, 255, 255, .5), 0 10px 22px rgba(150, 120, 180, .16); }
+html.pl-on header.hero.sky-night .land-frame { box-shadow: inset 0 0 0 1.5px rgba(255, 255, 255, .12), 0 10px 22px rgba(10, 5, 30, .4); }
+/* небето на часа (home.css:13–16, зора/ден/здрач/нощ) беше фон на САМИЯ герой и свършваше с ръб
+   (нощем #574d80 срещу тъмносиньото отдолу). Сега същите преливки са на .sky-layer, който се топи надолу. */
+html.pl-on header.hero#начало { background: none !important; }
+html.pl-on header.hero.sky-dawn  .sky-layer { background: linear-gradient(180deg, #ffe9d6 0%, #ffd9e8 45%, #fdf3f9 100%); }
+html.pl-on header.hero.sky-day   .sky-layer { background: linear-gradient(180deg, #dff0fb 0%, #eef7fd 50%, #fdf3f9 100%); }
+html.pl-on header.hero.sky-dusk  .sky-layer { background: linear-gradient(180deg, #e8ddf6 0%, #ffd9e0 55%, #fdf3f9 100%); }
+html.pl-on header.hero.sky-night .sky-layer { background: linear-gradient(180deg, #241f45 0%, #3a3060 55%, #2a2a5a 100%); }
+html.pl-on header.hero#начало .sky-layer {
+  -webkit-mask-image: linear-gradient(180deg, #000 0, #000 62%, transparent 100%);
+  mask-image: linear-gradient(180deg, #000 0, #000 62%, transparent 100%);
+}
+/* слънцето на зората (home.css:39, top 42%) беше върху ъгъла на страната — стои над нея, вляво от облака */
+html.pl-on header.hero#начало .sk-sun.dawn { top: 18%; }
+
+/* ── 2 · новото заглавие под облака — по средата, без картина зад него ── */
+html.pl-on .pl-hero { min-height: 0 !important; overflow: visible; text-align: center; padding: 0 16px 2px; margin-top: -18px; }
+html.pl-on .pl-hero::after { display: none; }
+html.pl-on .pl-hero-txt { padding: 0 !important; max-width: none !important; }
+html.pl-on .pl-hero h1 { font-size: clamp(28px, 7.8vw, 34px); text-shadow: none; }
+html.pl-on .pl-hero h1 br { display: none; }
+html.pl-on .pl-hero p { margin-top: 4px; text-shadow: none; color: var(--pl-ink-soft); }
+html.pl-on .pl-baby { position: relative !important; left: auto !important; bottom: auto !important; margin: 14px auto 0; width: fit-content; max-width: 100%; }
+
+/* ── 3 · без 3D сцената; старото небе пак е отзад ── */
+html.pl-on #plScene { display: none !important; }
+html.pl-on .sky { display: block !important; }
+html.pl-on:not([data-theme="dark"]) { background: linear-gradient(180deg, #fdf3f9 0, #f3f2fc 380px, #f6eef0 760px, #f6ede3 1200px) #f6ede3; }
+
+/* ── 4 · нощем облакът не свети като фенер ── */
+html[data-theme="dark"].pl-on header.hero .lg-cloud > path:first-child { fill: #ece8f7; stroke: #d9d1ee; }
+html[data-theme="dark"].pl-on header.hero .lg-baby,
+html[data-theme="dark"].pl-on header.hero .lg-land { stroke: #ece8f7; }
+html[data-theme="dark"].pl-on header.hero .lg-splash { opacity: .32; }
+html[data-theme="dark"].pl-on .pl-hero p { color: #cfc3e2; }
