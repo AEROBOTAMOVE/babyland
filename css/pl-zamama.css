@@ -363,3 +363,204 @@ html[data-theme="dark"] body #roomOverlay .ro-panel.ro-rose .jr-card :is(.wt-nam
 }
 #breathOverlay.pl-zm-dah #brText { color: #1d2a5c !important; text-shadow: 0 1px 0 rgba(255, 255, 255, .7) !important; font-weight: 800; }
 #breathOverlay.pl-zm-dah .br-count { color: #f3dfa8 !important; font-size: 14px; }
+
+/* ═══════════════════════════════════════════════════════════════════════════════
+   20.10 · „ЖЕНАТА В МЕН“ — ДОВЪРШВАНЕ ПО КОНЕЦ (агент zm20)
+   ВИДЯНО на снимки в тази сесия (светла в тих час 03–04 ч. = html.bl-night, тъмна; профил baby +
+   bl_me рождена дата): dev/proba/snimki/zm20_C_L_*.png, zm20_C_D_*.png, zm20_B_L_*.jpg; DOM — zm20_insp.log.
+     1 · ЗОДИИТЕ ♈…♓ — голи емоджита (лилав квадрат) в медала на „Хороскопът ти днес“ и „Вие двете“,
+         в заглавието („Вие двете ♓“), в „Коя си ти“ (♉ Телец) и 34 px в двойката ти+бебето.
+         js/pl-zamama.js 20.10 ги слага в span.pl-zm-zod[data-z] → тук: текстов знак в злато на монета.
+     2 · РАЗДЕЛИТЕ „Тайните“ / „Моите хора“ — голо емоджи (рисунката идва от js/pl-zamama.js 20.10);
+         тъмна тема: броят .sec-n без хапче (като в pl-hranene.css / pl-igri.css).
+     3 · „Банята като храм“ — стъпките (.sp-trick): сиви плоски кутии, 12.5 / 11.5 px с opacity .7.
+     4 · „Моят преглед“ (.wm-sent .jr-win) — кръгчето горе вляво, текстът се пренася ПОД него;
+         нощем кръгчето е тъмно петно без ръб (premium.css 21.10 дава ръба само в светла).
+     5 · „Невидимият товар“ (.ld-row) — етикетът в колона 74 px (3 реда), „и двамата“ на 2 реда;
+         обобщението .ld-out — розова кутия, числото лилаво #b9a7e0 (mega.css:989).
+     6 · „Как роди“ — полето 195 px (половин карта).
+     7 · „Комплиментите“ — две полета по 135 px + „+“: „какво ти казаха…“ рязано.
+     8 · „Гардеробът СЕГА“ (.wm-size) — иконката сама над 12 px етикет, 5 полета на цял ред.
+     9 · „Тайната страница“ (.wm-lock), „Микро-приключение“ (.wm-micro), „Въпросът за ТЕБ“ (.wm-qme),
+         етикетите с иконка (.wm-qt) — иконката сама на ред / стърчи вляво над текста.
+    10 · details.cm-row („Езикът на картите“, „Репликата в джоба“, „Моите пари“) — 06.10 махна ▶ (flex)
+         и не сложи нищо: не личи, че се отварят → мека стрелка, както в pl-hranene.css 4e.
+    11 · „Когато вкъщи не е безопасно“ — „0800 18 676“ се чупеше на два реда.
+    12 · текст под 13 px: .jr-privacy 11.5 px (цели абзаци-въведения), .ask-chip 12 px, .wm-q opacity .85.
+   Тихият час (html.bl-night) — нищо тук не е вързано за него; нощ = САМО html[data-theme="dark"].
+   ПЪТ НАЗАД: махни този блок (до „край 20.10“) и блока 20.10 в края на js/pl-zamama.js
+   (копие на файла отпреди: dev/proba/zm20_predi20_pl-zamama.css).
+   ═══════════════════════════════════════════════════════════════════════════════ */
+
+/* ── 1 · зодиите: знакът като текст (\FE0E = текстов вид), златен; емоджито под него е прозрачно ── */
+html body #roomOverlay .ro-panel.ro-rose #roRoom .pl-zm-zod {
+  position: relative; display: inline-block; min-width: 1em; text-align: center; font-style: normal;
+  color: transparent !important; -webkit-text-fill-color: transparent !important; text-shadow: none !important;
+}
+html body #roomOverlay .ro-panel.ro-rose #roRoom .pl-zm-zod::after {
+  content: attr(data-z) "\FE0E"; position: absolute; left: 50%; top: 50%; transform: translate(-50%, -52%);
+  font-family: "Segoe UI Symbol", "Noto Sans Symbols 2", "Noto Sans Symbols", "Apple Symbols", "DejaVu Sans", sans-serif;
+  font-variant-emoji: text; font-weight: 400; line-height: 1; white-space: nowrap;
+  color: #8f6230; -webkit-text-fill-color: #8f6230;
+}
+/* медалът със знак — кремава монета със златен кант, като плюшените медали (34 px) */
+html body #roomOverlay .ro-panel.ro-rose #roRoom .jr-card .jr-title > .jr-medal:has(> .pl-zm-zod) {
+  display: inline-grid !important; place-items: center; width: 34px !important; height: 34px !important; font-size: 19px !important;
+  background: radial-gradient(circle at 34% 28%, #fffaf0 0, #fbf0dc 52%, #efd8b0 100%) !important;
+  box-shadow: inset 0 0 0 1.5px rgba(255, 255, 255, .95), 0 0 0 1.5px #e3c39c, 0 2px 6px rgba(110, 76, 52, .16) !important;
+}
+/* двойката ти + бебето: знаците — по-едри монети */
+html body #roomOverlay .ro-panel.ro-rose #roRoom .wm-mrow > span:has(> .pl-zm-zod) {
+  display: grid !important; place-items: center; width: 58px; height: 58px; margin: 0 auto 6px; border-radius: 50%; font-size: 30px !important;
+  background: radial-gradient(circle at 34% 28%, #fffaf0 0, #fbf0dc 52%, #efd8b0 100%);
+  box-shadow: inset 0 0 0 2px rgba(255, 255, 255, .95), 0 0 0 1.5px #e3c39c, 0 4px 10px rgba(110, 76, 52, .16);
+}
+html body #roomOverlay .ro-panel.ro-rose #roRoom .wm-mrow small { font-size: 13px !important; font-weight: 700; opacity: 1 !important; color: #5d596f; }
+html[data-theme="dark"] body #roomOverlay .ro-panel.ro-rose #roRoom .pl-zm-zod::after { color: #ecd3a4; -webkit-text-fill-color: #ecd3a4; }
+html[data-theme="dark"] body #roomOverlay .ro-panel.ro-rose #roRoom :is(.jr-card .jr-title > .jr-medal, .wm-mrow > span):has(> .pl-zm-zod) {
+  background: radial-gradient(circle at 34% 28%, #3a4890 0, #2b3872 60%, #222d62 100%) !important;
+  box-shadow: inset 0 0 0 1.5px rgba(255, 255, 255, .12), 0 0 0 1.5px rgba(217, 191, 130, .7), 0 2px 8px rgba(0, 0, 0, .35) !important;
+}
+html[data-theme="dark"] body #roomOverlay .ro-panel.ro-rose #roRoom .wm-mrow small { color: #c9cbe3; }
+
+/* ── 2 · разделите: плюшът на „Тайните“ / „Моите хора“ като на другите; броят нощем — хапче ── */
+html[data-theme="dark"] body #roomOverlay .ro-panel.ro-rose #roRoom .sec-head .sec-n { background: #4a2a44 !important; color: #ffd0e1 !important; }
+
+/* ── 3 · „Банята като храм“: стъпките — кремав лист, иконка в своя колона, четим текст ── */
+html body #roomOverlay .ro-panel.ro-rose #roRoom .sp-trick {
+  align-items: center; gap: 12px; padding: 11px 14px 11px 12px; border-radius: 16px;
+  background: #fffdf9; box-shadow: inset 0 0 0 1px #f1e4d9, 0 2px 6px rgba(110, 76, 52, .06);
+}
+html body #roomOverlay .ro-panel.ro-rose #roRoom .sp-trick > span:first-child { flex: none; display: grid; place-items: center; width: 38px; height: 38px; }
+html body #roomOverlay .ro-panel.ro-rose #roRoom .sp-trick > span:first-child > .pl-em.pl-pl { width: 38px !important; height: 38px !important; margin: 0 !important; vertical-align: 0 !important; }
+html body #roomOverlay .ro-panel.ro-rose #roRoom .sp-trick strong { font-size: 15px !important; font-weight: 800; line-height: 1.3; color: #1d2a5c; }
+html body #roomOverlay .ro-panel.ro-rose #roRoom .sp-trick small { display: block; margin-top: 2px; font-size: 13.5px !important; font-weight: 600; line-height: 1.45; opacity: 1 !important; color: #5d596f; }
+html[data-theme="dark"] body #roomOverlay .ro-panel.ro-rose #roRoom .sp-trick { background: #2b3872; box-shadow: inset 0 0 0 1px rgba(255, 255, 255, .14); }
+html[data-theme="dark"] body #roomOverlay .ro-panel.ro-rose #roRoom .sp-trick strong { color: #fff; }
+html[data-theme="dark"] body #roomOverlay .ro-panel.ro-rose #roRoom .sp-trick small { color: #c9cbe3; }
+
+/* ── 4 · „Моят преглед“: кръгче | текст (пречупва се в своята колона); нощем — златен ръб ── */
+html body #roomOverlay .ro-panel.ro-rose #roRoom .wm-sent .jr-win {
+  display: grid !important; grid-template-columns: 26px minmax(0, 1fr); column-gap: 12px; align-items: center;
+  padding: 12px 14px !important; font-size: 15px; font-weight: 700; line-height: 1.4; text-align: left;
+}
+html body #roomOverlay .ro-panel.ro-rose #roRoom .wm-sent .jr-win > .jr-check { grid-column: 1; width: 26px; height: 26px; font-size: 14px; }
+html[data-theme="dark"] body #roomOverlay .ro-panel.ro-rose #roRoom .jr-check { background: #1b2554; box-shadow: inset 0 0 0 2px rgba(217, 191, 130, .85); color: #9fe3c6; }
+
+/* ── 5 · „Невидимият товар“: въпросът на цял ред, трите отговора — три равни колони ── */
+html body #roomOverlay .ro-panel.ro-rose #roRoom .ld-row { grid-template-columns: minmax(0, 1fr) !important; row-gap: 9px; padding: 12px !important; margin-top: 8px; }
+html body #roomOverlay .ro-panel.ro-rose #roRoom .ld-t { font-size: 15px; font-weight: 800; line-height: 1.35; color: #1d2a5c; }
+html body #roomOverlay .ro-panel.ro-rose #roRoom .ld-row .ct-btns { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 7px; }
+html body #roomOverlay .ro-panel.ro-rose #roRoom .ld-row .ct-b { min-width: 0; width: 100%; padding: 6px 4px; font-size: 14px; white-space: nowrap; }
+html body #roomOverlay .ro-panel.ro-rose #roRoom .ld-out {
+  padding: 12px 14px; border: 0; border-radius: 16px; background: #fffdf9; color: #3b3f5c;
+  box-shadow: inset 0 0 0 1px #f1e4d9, inset 3px 0 0 #e3c39c;
+}
+html body #roomOverlay .ro-panel.ro-rose #roRoom .ld-out strong { color: #a92f63; font-family: Nunito, Nunito-fallback, system-ui, sans-serif; }
+html[data-theme="dark"] body #roomOverlay .ro-panel.ro-rose #roRoom .ld-t { color: #fff; }
+html[data-theme="dark"] body #roomOverlay .ro-panel.ro-rose #roRoom .ld-out { background: #2b3872; color: #e8e9f5; box-shadow: inset 0 0 0 1px rgba(255, 255, 255, .14), inset 3px 0 0 #d9bf82; }
+html[data-theme="dark"] body #roomOverlay .ro-panel.ro-rose #roRoom .ld-out strong { color: #f59cbb; }
+
+/* ── 6 · полетата за писане — на цялата ширина на картата („Как роди“ беше 195 px) ── */
+html body #roomOverlay .ro-panel.ro-rose #roRoom .jr-card textarea.jr-note { display: block; width: 100% !important; max-width: 100%; box-sizing: border-box; }
+
+/* ── 7 · „Комплиментите“: „какво ти казаха…“ на цял ред, „кой“ + „+“ под него ── */
+html body #roomOverlay .ro-panel.ro-rose #roRoom .jr-addrow:has(> .wm-who) { flex-wrap: wrap; }
+html body #roomOverlay .ro-panel.ro-rose #roRoom .jr-addrow:has(> .wm-who) > .jr-word:not(.wm-who) { flex: 1 1 100%; min-width: 0; }
+html body #roomOverlay .ro-panel.ro-rose #roRoom .jr-addrow:has(> .wm-who) > .wm-who { flex: 1 1 0; min-width: 0; }
+
+/* ── 8 · „Гардеробът СЕГА“: редове иконка · име · поле ── */
+html body #roomOverlay .ro-panel.ro-rose #roRoom .wm-sizes { display: flex; flex-direction: column; gap: 8px; margin: 8px 0 10px; }
+html body #roomOverlay .ro-panel.ro-rose #roRoom label.wm-size {
+  display: grid; grid-template-columns: 38px minmax(0, 1fr) minmax(0, 132px); column-gap: 12px; align-items: center; margin: 0;
+  padding: 6px 6px 6px 10px; border-radius: 16px; background: #fffdf9; box-shadow: inset 0 0 0 1px #f1e4d9;
+}
+html body #roomOverlay .ro-panel.ro-rose #roRoom label.wm-size > span:first-child { display: grid; place-items: center; width: 38px; height: 38px; }
+html body #roomOverlay .ro-panel.ro-rose #roRoom label.wm-size > span:first-child > .pl-em.pl-pl { width: 36px !important; height: 36px !important; margin: 0 !important; vertical-align: 0 !important; }
+html body #roomOverlay .ro-panel.ro-rose #roRoom label.wm-size > small { font-size: 15px !important; font-weight: 800; line-height: 1.2; opacity: 1 !important; color: #1d2a5c; }
+html body #roomOverlay .ro-panel.ro-rose #roRoom label.wm-size > .jr-word { width: 100%; min-width: 0; margin: 0 !important; text-align: center; font-weight: 800; }
+html[data-theme="dark"] body #roomOverlay .ro-panel.ro-rose #roRoom label.wm-size { background: #2b3872; box-shadow: inset 0 0 0 1px rgba(255, 255, 255, .14); }
+html[data-theme="dark"] body #roomOverlay .ro-panel.ro-rose #roRoom label.wm-size > small { color: #fff; }
+
+/* ── 9 · иконка + текст: иконката в своя колона, на височината на текста ── */
+html body #roomOverlay .ro-panel.ro-rose #roRoom .wm-lock {
+  display: grid; grid-template-columns: 48px minmax(0, 1fr); column-gap: 14px; align-items: center; margin: 8px 0 4px;
+  padding: 12px 14px; border-radius: 18px; background: #fffdf9; box-shadow: inset 0 0 0 1px #f1e4d9, inset 3px 0 0 #e3c39c;
+}
+html body #roomOverlay .ro-panel.ro-rose #roRoom .wm-lock > span:first-child { display: grid; place-items: center; width: 48px; height: 48px; }
+html body #roomOverlay .ro-panel.ro-rose #roRoom .wm-lock > span:first-child > .pl-em.pl-pl { width: 46px !important; height: 46px !important; margin: 0 !important; vertical-align: 0 !important; }
+html body #roomOverlay .ro-panel.ro-rose #roRoom .wm-lock > p { margin: 0; font-size: 16px; font-weight: 700; line-height: 1.45; color: #1d2a5c; }
+html body #roomOverlay .ro-panel.ro-rose #roRoom .wm-lock > p strong { color: #a92f63; }
+html body #roomOverlay .ro-panel.ro-rose #roRoom :is(p.wm-micro, p.wm-qme) {
+  display: flex; align-items: flex-start; gap: 12px; margin: 8px 0 10px !important; padding: 12px 14px !important; border-radius: 16px;
+  font-size: 16px !important; font-weight: 700; line-height: 1.45; color: #1d2a5c;
+  background: #fffdf9; box-shadow: inset 0 0 0 1px #f1e4d9, inset 3px 0 0 #e3c39c;
+}
+html body #roomOverlay .ro-panel.ro-rose #roRoom :is(p.wm-micro, p.wm-qme) > .pl-em.pl-pl { flex: none; width: 32px !important; height: 32px !important; margin: -3px 0 0 !important; vertical-align: 0 !important; }
+html body #roomOverlay .ro-panel.ro-rose #roRoom p.wm-qt:has(> .pl-em:first-child) { display: flex; align-items: center; gap: 9px; font-weight: 800; color: #1d2a5c; }
+html body #roomOverlay .ro-panel.ro-rose #roRoom p.wm-qt > .pl-em.pl-pl:first-child { flex: none; width: 30px !important; height: 30px !important; margin: 0 !important; vertical-align: 0 !important; }
+html[data-theme="dark"] body #roomOverlay .ro-panel.ro-rose #roRoom :is(.wm-lock, p.wm-micro, p.wm-qme) { background: #2b3872; box-shadow: inset 0 0 0 1px rgba(255, 255, 255, .14), inset 3px 0 0 #d9bf82; }
+html[data-theme="dark"] body #roomOverlay .ro-panel.ro-rose #roRoom :is(.wm-lock > p, p.wm-micro, p.wm-qme, p.wm-qt) { color: #fff; }
+html[data-theme="dark"] body #roomOverlay .ro-panel.ro-rose #roRoom .wm-lock > p strong { color: #f59cbb; }
+
+/* ── 10 · details.cm-row: мека стрелка вдясно, обръща се при отваряне ── */
+html body #roomOverlay .ro-panel.ro-rose #roRoom .jr-card details.cm-row > summary { list-style: none; gap: 10px; cursor: pointer; }
+html body #roomOverlay .ro-panel.ro-rose #roRoom .jr-card details.cm-row > summary::-webkit-details-marker { display: none; }
+html body #roomOverlay .ro-panel.ro-rose #roRoom .jr-card details.cm-row > summary::after {
+  content: ''; flex: none; margin-left: auto; width: 26px; height: 26px; border-radius: 50%;
+  background: rgba(196, 160, 124, .16) url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%237a6a5c' stroke-width='2.6' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M6 9l6 6 6-6'/%3E%3C/svg%3E") center / 14px 14px no-repeat;
+  transition: transform .25s ease;
+}
+html body #roomOverlay .ro-panel.ro-rose #roRoom .jr-card details.cm-row[open] > summary::after { transform: rotate(180deg); }
+html[data-theme="dark"] body #roomOverlay .ro-panel.ro-rose #roRoom .jr-card details.cm-row > summary::after {
+  background-color: rgba(255, 255, 255, .1);
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23e8e9f5' stroke-width='2.6' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M6 9l6 6 6-6'/%3E%3C/svg%3E");
+}
+@media (prefers-reduced-motion: reduce) { html body #roomOverlay .ro-panel.ro-rose #roRoom .jr-card details.cm-row > summary::after { transition: none; } }
+
+/* ── 11 · „0800 18 676“ на един ред (обяснението под него се пренася само) ── */
+html body #roomOverlay .ro-panel.ro-rose #roRoom .wm-sosb { white-space: nowrap; }
+html body #roomOverlay .ro-panel.ro-rose #roRoom .wm-sosb small { white-space: normal; font-size: 12.5px; line-height: 1.35; }
+/* иконката стърчеше през левия ръб на бутона (−.35em от pl-em) */
+html body #roomOverlay .ro-panel.ro-rose #roRoom .wm-sosb > .pl-em.pl-pl { flex: none; margin: 0 !important; }
+html body #roomOverlay .ro-panel.ro-rose #roRoom .wm-sosb.wm-sosb-soft { justify-content: flex-start; gap: 10px; padding: 8px 14px; border-radius: 16px; }
+/* нощем редовете на „Невидимият товар“ бяха почти черни кутии — нощно стъкло като другите редове */
+html[data-theme="dark"] body #roomOverlay .ro-panel.ro-rose #roRoom .ld-row { background: rgba(255, 255, 255, .05) !important; box-shadow: inset 0 0 0 1px rgba(255, 255, 255, .12); }
+
+/* ── 12 · четим текст: въведенията и бележките ≥ 13 px, чиповете на Ния 13 px ── */
+html body #roomOverlay .ro-panel.ro-rose #roRoom .jr-card .jr-privacy { font-size: 13px !important; line-height: 1.5; }
+html body #roomOverlay .ro-panel.ro-rose #roRoom .ask-chip { font-size: 13px !important; }
+html body #roomOverlay .ro-panel.ro-rose #roRoom .wm-q { opacity: 1; font-size: 14.5px; color: #3b3f5c; }
+html[data-theme="dark"] body #roomOverlay .ro-panel.ro-rose #roRoom .wm-q { color: #e8e9f5; }
+/* мерено след първия проход (zm20_D_L.log, getComputedStyle): копчетата .jr-chip 12.5 px, бележките .lb-kind
+   12.5 px, идеите .nl-idea 12.5 px, „Кога последно“ — подредът 12 px с opacity .7 (4.28:1) и „днес ✔“ 12 px,
+   „Косата ми пада“ .hr-k 12.5 px, CV-то — уменията 12 px, „Пиши ми за ТЕБ“ 12.5 px.
+   (Редът под „Чаша вода“ остава 12.5 px: на 13 px „една“ падаше сама на втори ред — снимка zm20_sled_L_01.) */
+html body #roomOverlay .ro-panel.ro-rose #roRoom .jr-card :is(.jr-chip:not(.pl-zm-plus), .nl-idea) { font-size: 13.5px !important; }
+html body #roomOverlay .ro-panel.ro-rose #roRoom .jr-card .lb-kind { font-size: 13px !important; line-height: 1.5; }
+html body #roomOverlay .ro-panel.ro-rose #roRoom .jr-card .wm-lt small { font-size: 13px !important; opacity: 1 !important; color: #5d596f !important; }
+html body #roomOverlay .ro-panel.ro-rose #roRoom .jr-card .wm-lb { font-size: 13px !important; opacity: 1 !important; font-weight: 800; }
+html body #roomOverlay .ro-panel.ro-rose #roRoom .jr-card .hr-k { font-size: 13.5px !important; }
+html body #roomOverlay .ro-panel.ro-rose #roRoom .jr-card :is(.jr-win, .wm-cvrow) small { font-size: 13px !important; opacity: 1 !important; }
+html body #roomOverlay .ro-panel.ro-rose #roRoom .jr-card .wm-cvrow .jr-check { width: 26px; height: 26px; font-size: 14px; }
+/* „Едно намигане от небето…“ (.wm-sign) — беше сливово #6b3a5e курсив 11.5 px */
+html body #roomOverlay .ro-panel.ro-rose #roRoom .jr-card .wm-sign { font-size: 13px !important; color: #6a6682 !important; opacity: 1 !important; }
+html[data-theme="dark"] body #roomOverlay .ro-panel.ro-rose #roRoom .jr-card .wm-sign { color: #c9cbe3 !important; }
+/* нощем (мерено zm20_D_D.log): „на линия“ 10.5 px, броят на раздела 9.5 px, „Дели се…“ в обобщението 4.25:1 */
+html[data-theme="dark"] body #roomOverlay .ro-panel.ro-rose #roRoom .ask-live { font-size: 11.5px !important; }
+html[data-theme="dark"] body #roomOverlay .ro-panel.ro-rose #roRoom .sec-head .sec-n { font-size: 12px !important; }
+html[data-theme="dark"] body #roomOverlay .ro-panel.ro-rose #roRoom .ld-out .jr-privacy { color: #d6d8ee !important; }
+/* дишането (06.10 · 5): при „Вдишай/Задръж“ кръгът расте 1.7× (mega.css:1047) — 272 px върху 160 px място —
+   и покриваше „кръг 1 от 4“ (снимка zm20_INT_L.png: броенето го няма, кръгът опира в „Затвори“).
+   Мястото около кръга става колкото порасналия кръг. */
+#breathOverlay.pl-zm-dah #brCircle { margin: 60px auto 78px !important; }
+#breathOverlay.pl-zm-dah .br-count { position: relative; z-index: 1; min-height: 1.3em; margin: 0 0 18px; letter-spacing: .2px; }
+/* „Ти днес“: плюшената фигура беше 25×66 — свита от текста до нея (razpyani.js) → кръг 64 px, не се свива */
+html body #roomOverlay .ro-panel.ro-rose #roRoom .pg20-top > .pg20-fruit.pl-pl { flex: none !important; aspect-ratio: 1 / 1; }
+/* нощем „Слез долу за твоите кътчета…“ (.pg20-do) стоеше в сива плоска кутия (zm20_sled_D_02) → нощно стъкло */
+html[data-theme="dark"] body #roomOverlay .ro-panel.ro-rose #roRoom .pg20-hero .pg20-do {
+  background: rgba(255, 255, 255, .06) !important; border-color: rgba(217, 191, 130, .35) !important; color: #e8e9f5 !important;
+}
+html body #roomOverlay .ro-panel.ro-rose #roRoom .ask-line { font-size: 13px !important; }
+html[data-theme="dark"] body #roomOverlay .ro-panel.ro-rose #roRoom .jr-card .wm-lt small { color: #c9cbe3 !important; }
+/* край 20.10 */

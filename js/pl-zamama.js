@@ -339,6 +339,7 @@
       let б = стая.querySelector(':scope > .pl-zm');
       if (!тук) { if (б) б.remove(); return; }
       белиПлюсове(стая);                                                // 06.10 — виж края на файла
+      зодии(стая); главиРаздели(стая);                                  // 20.10 — виж края на файла
       if (!б) {
         // само в истинската стая: картата „5-те минути“ (women2.js:629) е вътре
         if (!карта(стая, '5-те минути')) return;
@@ -388,5 +389,58 @@
       ов.setAttribute('data-pl-zm', '1');
       new MutationObserver(() => { if (ов.hidden) ов.classList.remove('pl-zm-dah'); }).observe(ов, { attributes: true, attributeFilter: ['hidden'] });
     }
+  }
+
+  /* 20.10 · още два DOM щриха за вида (zm20; текстът не се пипа — textContent остава буква в буква същият):
+     · зодии — знаците ♈…♓ (women.js: медалът и заглавието на „Хороскопът ти днес“ / „Вие двете“,
+       „Коя си ти“, двойката ти+бебето) са емоджита с лилав квадрат и нямат плюш. Всеки знак влиза в
+       span.pl-zm-zod[data-z] — css/pl-zamama.css 20.10 го рисува като текстов знак в злато.
+     · главиРаздели — „🕵️‍♀️ Тайните“ и „👭 Моите хора“ (order8.js:15,18) стояха с голо емоджи (pl-plyush.js
+       няма рисунка за тях). Емоджито влиза в span.pl-em с СЪЩАТА плюшена рисунка като плочката на
+       раздела горе (premium-rooms.js:77-78, ico-c). Другите раздели имат плюш — не се пипат.
+     ПЪТ НАЗАД: махни този блок и реда „зодии(стая); главиРаздели(стая);“ в сложи(). */
+  const ЗНАК = /[♈-♓]️?/;
+  function зодии(стая) {
+    стая.querySelectorAll('section.jr-card :is(.jr-title, .wm-me, .wm-match)').forEach(к => {
+      if (!ЗНАК.test(к.textContent || '')) return;
+      const ход = document.createTreeWalker(к, NodeFilter.SHOW_TEXT, {
+        acceptNode: в => (ЗНАК.test(в.nodeValue) && !(в.parentElement && в.parentElement.closest('.pl-zm-zod, button'))) ? NodeFilter.FILTER_ACCEPT : NodeFilter.FILTER_REJECT
+      });
+      const възли = []; for (let в = ход.nextNode(); в; в = ход.nextNode()) възли.push(в);
+      възли.forEach(в => {
+        let т = в;
+        for (let м = т.nodeValue.match(ЗНАК); м; м = т.nodeValue.match(ЗНАК)) {
+          const зн = т.splitText(м.index);
+          т = зн.splitText(м[0].length);
+          const с = document.createElement('span');
+          с.className = 'pl-zm-zod'; с.setAttribute('data-z', м[0].charAt(0));
+          зн.parentNode.replaceChild(с, зн); с.appendChild(зн);
+        }
+      });
+    });
+  }
+  const ГЛАВИ = { 'Тайните': [1, 2, '#fff0d4'], 'Моите хора': [2, 1, '#fde6ef'] };   // ico-c [ред, колона], тонът — като pl-plyush.js
+  const ЕМО_ГЛ = /^\s*(\p{Extended_Pictographic}(?:️|‍\p{Extended_Pictographic}|\p{Emoji_Modifier})*)/u;
+  function главиРаздели(стая) {
+    стая.querySelectorAll(':scope > .sec-head').forEach(г => {
+      if (г.querySelector('.pl-em')) return;
+      const в = г.firstChild;
+      if (!в || в.nodeType !== 3) return;
+      const м = в.nodeValue.match(ЕМО_ГЛ);
+      if (!м) return;
+      const р = ГЛАВИ[в.nodeValue.slice(м[0].length).trim()];
+      if (!р) return;
+      const зн = в.splitText(м.index + м[0].length - м[1].length);
+      зн.splitText(м[1].length);
+      const с = document.createElement('span');
+      с.className = 'pl-em pl-pl pl-pl-i pl-zm-gl'; с.setAttribute('aria-hidden', 'true');
+      с.style.setProperty('background-image', 'url(img/art/ico-c.webp)', 'important');
+      с.style.setProperty('background-position', (р[1] * 100 / 3).toFixed(3) + '% ' + (р[0] * 100 / 3).toFixed(3) + '%', 'important');
+      с.style.setProperty('background-size', '400% 400%', 'important');
+      с.style.setProperty('color', 'transparent', 'important');
+      с.style.setProperty('-webkit-text-fill-color', 'transparent', 'important');
+      с.style.setProperty('--pl-plt', р[2]);
+      зн.parentNode.replaceChild(с, зн); с.appendChild(зн);
+    });
   }
 })();
