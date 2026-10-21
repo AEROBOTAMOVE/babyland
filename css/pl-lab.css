@@ -465,3 +465,197 @@ html[data-theme="dark"] body #roomOverlay .ro-panel.ro-cork #roRoom :is(.ob-mine
 html[data-theme="dark"] body #roomOverlay .ro-panel.ro-cork #roRoom :is(.cl-row) { border-bottom-color: rgba(255, 255, 255, .12); }
 html[data-theme="dark"] body #roomOverlay .ro-panel.ro-cork #roRoom .cl-res { background: rgba(245, 156, 187, .12); }
 html[data-theme="dark"] body #roomOverlay .ro-panel.ro-cork #roRoom .nm-fill { background: linear-gradient(180deg, #f59cbb, #e56d99); }
+
+/* ═══════════════════════════════════════════════════════════════════════════════
+   20.10 · ДОВЪРШВАНЕТО НА ВЪТРЕШНОСТТА — присъдата, тетрадката нощем, обичаите, таблото на баба, дребното
+   ПРЕГЛЕД (lb20, снимки lb20_B_sega_* срещу lb20_B_predi_* = без блока 06.10): 06.10 остава — махна жълтото,
+   маслиненото и лилавото. Довършено тук (мерено с getComputedStyle, dev/proba/lb20_plan_mer.js):
+   · „Присъдата“: lab.css дава display:block на ВСЕКИ strong в .lb-verdict, 06.10 ги направи 17px →
+     „4 от 4“ и „0 от 3“ стояха на отделни редове с празен ред отгоре. Сега числата са едно хапче.
+   · нощем тетрадката/присъдата/числата бяха розово/кафяво върху синьо = патладжан и кафяво → нощно синьо
+     с цветна черта отляво (смисълът е в чертата и в думите).
+   · обичаите: голото ▶ → иконка · име · мека стрелка (същият ред като „Развитие и игри“, pl-igri.css).
+   · „Табло: къде баба позна“: тъмнозелено/ръждиво + бледи редове (3.20:1, 2.63:1) → ясни ✔ ✘ ≈ в кръгчета.
+   · бележките .jr-privacy 11.5 → 13.5 px, чиповете 12.5 → 13.5, датите под стълбчетата 11 → 12.5,
+     „Традицията е обич…“ (сливово, 11.5) → #6a6682 13 px, „Всеки род има свое…“ (кафяво #8a5a12) → мастило.
+   · стълбчетата на „Числата…“ бяха еднакво високи: % височина във flex колона, която не стига → flex-shrink
+     ги изравнява (rooms.css:1085). Решетка → процентът е от реалното място.
+   · иконката отпред на бележките (💡 💚 ⚠️ 🔬) висеше в полето → стои в своя колона, текстът е подравнен.
+   · 🔬 до „или напиши свой въпрос…“ → кръгъл розов бутон 48×48 с рисунка 30×30.
+   · рамка в рамка: „Опитът в числа“ и „Опитът те чака“ бяха пунктир в пунктира на картата → без рамка / мек фон.
+   Само в Лабораторията (.ro-panel.ro-cork); нищо не е вързано за html.bl-night.
+   ПЪТ НАЗАД: махни този блок. */
+
+/* ── присъдата: заглавието горе, числата в едно хапче, без празния ред ── */
+html body #roomOverlay .ro-panel.ro-cork #roRoom .lb-verdict { padding: 14px 16px; }
+html body #roomOverlay .ro-panel.ro-cork #roRoom .lb-verdict > strong { display: block; margin: 0 0 4px; font-family: Nunito, Nunito-fallback, system-ui, sans-serif; font-size: 17px; font-weight: 800; line-height: 1.3; }
+html body #roomOverlay .ro-panel.ro-cork #roRoom .lb-verdict p { font-size: 14px; line-height: 1.55; color: var(--pl-ink, #3b3f5c); }
+html body #roomOverlay .ro-panel.ro-cork #roRoom .lb-verdict p > br:has(+ .lb-num),
+html body #roomOverlay .ro-panel.ro-cork #roRoom .lb-verdict .lb-num + br,
+html body #roomOverlay .ro-panel.ro-cork #roRoom .lb-verdict .lb-num + br + br { display: none; }
+html body #roomOverlay .ro-panel.ro-cork #roRoom .lb-verdict .lb-num {
+  display: block; margin: 8px 0 10px; padding: 8px 12px; border-radius: 12px;
+  background: rgba(255, 255, 255, .72); box-shadow: inset 0 0 0 1px rgba(29, 42, 92, .08);
+  font-size: 14px; line-height: 1.5; color: var(--pl-ink, #3b3f5c);
+}
+html body #roomOverlay .ro-panel.ro-cork #roRoom .lb-verdict .lb-num strong {
+  display: inline; margin: 0; font-size: inherit; font-weight: 800; color: var(--pl-navy, #1d2a5c);
+  font-variant-numeric: lining-nums tabular-nums; white-space: nowrap;
+}
+
+/* ── иконката отпред на бележка: своя колона, текстът не се увива под нея ── */
+html body #roomOverlay .ro-panel.ro-cork #roRoom :is(p.lb-kind, p.lb-crosswhy, p.ab-h):has(> .pl-em.pl-pl:first-child) { position: relative; padding-left: 32px; }
+html body #roomOverlay .ro-panel.ro-cork #roRoom :is(p.lb-kind, p.lb-crosswhy, p.ab-h) > .pl-em.pl-pl:first-child {
+  position: absolute; left: 0; top: 0; width: 24px !important; height: 24px !important; margin: 0 !important; vertical-align: top;
+}
+html body #roomOverlay .ro-panel.ro-cork #roRoom p.we-t:has(> .pl-em.pl-pl:first-child) { position: relative; padding-left: 40px; min-height: 30px; }
+html body #roomOverlay .ro-panel.ro-cork #roRoom p.we-t > .pl-em.pl-pl:first-child {
+  position: absolute; left: 0; top: -2px; width: 30px !important; height: 30px !important; margin: 0 !important;
+}
+html body #roomOverlay .ro-panel.ro-cork #roRoom .lb-warn2:has(> .pl-em.pl-pl:first-child) { position: relative; padding: 11px 14px 11px 46px; }
+html body #roomOverlay .ro-panel.ro-cork #roRoom .lb-warn2 > .pl-em.pl-pl:first-child {
+  position: absolute; left: 12px; top: 10px; width: 24px !important; height: 24px !important; margin: 0 !important;
+}
+html body #roomOverlay .ro-panel.ro-cork #roRoom .lb-warn2 { font-size: 13.5px; line-height: 1.55; }
+
+/* ── редовете на „Тръгни на опит“: рисунката винаги квадрат 38×38 в колона 40 px ── */
+html body #roomOverlay .ro-panel.ro-cork #roRoom .lb-card > .lb-e {
+  flex: 0 0 40px; width: 40px; height: 40px; display: grid; place-items: center; font-size: 24px; line-height: 1;
+}
+html body #roomOverlay .ro-panel.ro-cork #roRoom .lb-card > .lb-e > .pl-em.pl-pl {
+  flex: none; width: 38px !important; height: 38px !important; min-width: 38px; min-height: 38px; max-width: none; aspect-ratio: 1 / 1; margin: 0 !important; vertical-align: middle;
+}
+html body #roomOverlay .ro-panel.ro-cork #roRoom .lb-card > div { flex: 1 1 auto; min-width: 0; }
+
+/* ── 🔬 „Започни своя опит“: кръгъл розов бутон, рисунката 30×30 върху бяло ── */
+html body #roomOverlay .ro-panel.ro-cork #roRoom .jr-addrow > button.jr-chip[aria-label="Започни своя опит"] {
+  flex: 0 0 48px; width: 48px; min-width: 48px; height: 48px; min-height: 48px; padding: 0 !important;
+  display: grid; place-items: center; border-radius: 50% !important; font-size: 20px; line-height: 1;
+  background-color: #d95a8e !important; background-image: linear-gradient(180deg, #f39bbb 0, #e0628f 48%, #c8457a 100%) !important;
+  border: 0 !important; box-shadow: inset 0 1.5px 0 rgba(255, 255, 255, .45), 0 3px 0 #8f2552, 0 6px 14px rgba(169, 47, 99, .28) !important;
+}
+html body #roomOverlay .ro-panel.ro-cork #roRoom .jr-addrow > button.jr-chip[aria-label="Започни своя опит"] > .pl-em.pl-pl {
+  width: 34px !important; height: 34px !important; min-width: 34px; margin: 0 !important; background-color: #fff !important; vertical-align: middle;
+}
+html body #roomOverlay .ro-panel.ro-cork #roRoom .jr-addrow > button.jr-chip[aria-label="Започни своя опит"]:active { transform: translateY(2px); box-shadow: inset 0 1.5px 0 rgba(255, 255, 255, .45), 0 1px 0 #8f2552, 0 3px 8px rgba(169, 47, 99, .22) !important; }
+
+/* ── дребното: бележки, чипове, подписът, подсказката ── */
+html body #roomOverlay .ro-panel.ro-cork #roRoom .jr-card p.jr-privacy { font-size: 13.5px !important; line-height: 1.5; }
+html body #roomOverlay .ro-panel.ro-cork #roRoom .jr-card p.jr-privacy strong { font-size: inherit; }
+html body #roomOverlay .ro-panel.ro-cork #roRoom .ask-line { font-size: 13.5px !important; }
+html body #roomOverlay .ro-panel.ro-cork #roRoom .jr-card .jr-chip { font-size: 13.5px; }
+html body #roomOverlay .ro-panel.ro-cork #roRoom .jr-card :is(.lb-arm, .lb-rate) { font-size: 15px; }
+html body #roomOverlay .ro-panel.ro-cork #roRoom .jr-card .wm-sign { display: block; font-size: 13px !important; line-height: 1.5; color: #6a6682 !important; opacity: 1 !important; }
+html body #roomOverlay .ro-panel.ro-cork #roRoom .jr-card .jr-hint { font-size: 13.5px; line-height: 1.5; color: var(--pl-ink, #3b3f5c); }
+html body #roomOverlay .ro-panel.ro-cork #roRoom .jr-card .jr-elabel { font-size: 14px; color: var(--pl-navy, #1d2a5c); }
+html body #roomOverlay .ro-panel.ro-cork #roRoom .lb-kind { font-size: 13.5px; color: var(--pl-ink-soft, #6a6682); }
+
+/* ── „Опитът те чака…“ и „Опитът в числа“: без пунктир в пунктира ── */
+html body #roomOverlay .ro-panel.ro-cork #roRoom .lb-forgot { border: 0; background: #fff6ec; box-shadow: inset 0 0 0 1px #f3e2cf; padding: 12px 14px; }
+html body #roomOverlay .ro-panel.ro-cork #roRoom .lb-forgot p { font-size: 14px; color: var(--pl-ink, #3b3f5c); }
+html body #roomOverlay .ro-panel.ro-cork #roRoom .ab-box { margin: 14px 0 6px; padding: 0; border: 0; border-radius: 0; background: none; }
+html body #roomOverlay .ro-panel.ro-cork #roRoom .ab-h { margin: 0 0 8px; font-size: 15px; font-weight: 800; color: var(--pl-navy, #1d2a5c); }
+html body #roomOverlay .ro-panel.ro-cork #roRoom .ab-h .jr-sub { display: block; margin-top: 1px; }
+
+/* ── „Защо се буди в 3?“: шрифтът и мастилото на въпросите и копчетата ── */
+html body #roomOverlay .ro-panel.ro-cork #roRoom .cl-q { font-size: 14px; line-height: 1.45; color: var(--pl-navy, #1d2a5c); }
+html body #roomOverlay .ro-panel.ro-cork #roRoom .cl-b { font-family: Nunito, Nunito-fallback, system-ui, sans-serif; font-size: 14px; font-weight: 800; min-width: 44px; min-height: 44px; }
+html body #roomOverlay .ro-panel.ro-cork #roRoom .cl-rt { color: var(--pl-navy, #1d2a5c); font-size: 14.5px; font-weight: 800; }
+
+/* ── „Числата вместо усещането“: стълбчетата по истинската височина, датите четими ── */
+html body #roomOverlay .ro-panel.ro-cork #roRoom .nm-bars { height: 96px; gap: 6px; }
+html body #roomOverlay .ro-panel.ro-cork #roRoom .nm-bar { display: grid; grid-template-columns: minmax(0, 1fr); grid-template-rows: minmax(0, 1fr) auto; justify-content: stretch; align-content: stretch; }
+html body #roomOverlay .ro-panel.ro-cork #roRoom .nm-bar > .nm-fill { align-self: end; justify-self: center; width: 72%; max-width: 34px; min-height: 4px; border-radius: 9px 9px 4px 4px; }
+html body #roomOverlay .ro-panel.ro-cork #roRoom .nm-d { text-align: center; font-size: 12.5px; font-weight: 700; color: var(--pl-ink-soft, #6a6682); font-variant-numeric: lining-nums tabular-nums; }
+html body #roomOverlay .ro-panel.ro-cork #roRoom .nm-verd { font-size: 14px; line-height: 1.55; padding: 10px 12px 10px 14px; border-radius: 14px; border-left: 4px solid transparent; color: var(--pl-ink, #3b3f5c); }
+html body #roomOverlay .ro-panel.ro-cork #roRoom .nm-verd.nm-yes { background: #eef8f2; border-left-color: #5fb88a; }
+html body #roomOverlay .ro-panel.ro-cork #roRoom .nm-verd.nm-no  { background: #fdeef4; border-left-color: #e56d99; }
+html body #roomOverlay .ro-panel.ro-cork #roRoom .nm-verd.nm-mid { background: #f6f1ea; border-left-color: #c9b49a; }
+html body #roomOverlay .ro-panel.ro-cork #roRoom .nm-verd strong { color: var(--pl-navy, #1d2a5c); }
+
+/* ── обичаите: иконка · име · мека стрелка (без голото ▶) ── */
+html body #roomOverlay .ro-panel.ro-cork #roRoom .jr-card details.ob-row { margin: 0 0 8px; padding: 0 14px 0 12px; border-radius: 18px; }
+html body #roomOverlay .ro-panel.ro-cork #roRoom .jr-card details.ob-row > summary {
+  list-style: none; display: flex; align-items: center; gap: 11px; min-height: 54px; padding: 9px 0; box-sizing: border-box;
+  font-family: Nunito, Nunito-fallback, system-ui, sans-serif; font-size: 15px; font-weight: 800; line-height: 1.3; cursor: pointer;
+}
+html body #roomOverlay .ro-panel.ro-cork #roRoom .jr-card details.ob-row > summary::-webkit-details-marker { display: none; }
+html body #roomOverlay .ro-panel.ro-cork #roRoom .jr-card details.ob-row > summary::marker { content: ''; }
+html body #roomOverlay .ro-panel.ro-cork #roRoom .jr-card details.ob-row > summary > .pl-em.pl-pl { flex: none; width: 34px !important; height: 34px !important; margin: 0 !important; }
+html body #roomOverlay .ro-panel.ro-cork #roRoom .jr-card details.ob-row > summary::after {
+  content: ''; flex: none; margin-left: auto; width: 28px; height: 28px; border-radius: 50%;
+  background: rgba(196, 160, 124, .16) url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%237a6a5c' stroke-width='2.6' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M6 9l6 6 6-6'/%3E%3C/svg%3E") center / 14px 14px no-repeat;
+  transition: transform .25s ease;
+}
+html body #roomOverlay .ro-panel.ro-cork #roRoom .jr-card details.ob-row[open] > summary::after { transform: rotate(180deg); }
+html body #roomOverlay .ro-panel.ro-cork #roRoom .jr-card details.ob-row > p { margin: 0 0 12px; font-size: 14px; line-height: 1.6; }
+html body #roomOverlay .ro-panel.ro-cork #roRoom .jr-card details.ob-row > p > strong > .pl-em.pl-pl:first-child { width: 22px !important; height: 22px !important; vertical-align: -5px; margin: 0 6px 0 0 !important; position: static; }
+html body #roomOverlay .ro-panel.ro-cork #roRoom .tl-row .nt-del { opacity: .9; }
+
+/* ── „Табло: къде баба позна“: лентата, легендата, редовете ── */
+html body #roomOverlay .ro-panel.ro-cork #roRoom .mb-bar { height: 26px; margin: 12px 0 8px; background: #f1e4d9; box-shadow: inset 0 1px 2px rgba(110, 76, 52, .14); }
+html body #roomOverlay .ro-panel.ro-cork #roRoom .mb-s { font-size: 13px; font-weight: 800; min-width: 26px; font-variant-numeric: lining-nums tabular-nums; }
+html body #roomOverlay .ro-panel.ro-cork #roRoom .mb-bar .mb-yes { background: linear-gradient(180deg, #3f9068, #2b7552); }
+html body #roomOverlay .ro-panel.ro-cork #roRoom .mb-bar .mb-mid { background: linear-gradient(180deg, #6a6f8e, #5a5f80); }
+html body #roomOverlay .ro-panel.ro-cork #roRoom .mb-bar .mb-no  { background: linear-gradient(180deg, #c9447a, #a92f63); }
+html body #roomOverlay .ro-panel.ro-cork #roRoom .mb-leg { gap: 4px 12px; font-size: 13px; font-weight: 700; opacity: 1; color: var(--pl-ink-soft, #6a6682); }
+html body #roomOverlay .ro-panel.ro-cork #roRoom .mb-k { width: 12px; height: 12px; border-radius: 50%; margin-right: 5px; }
+html body #roomOverlay .ro-panel.ro-cork #roRoom .mb-leg .mb-yes { background: #3f9068; }
+html body #roomOverlay .ro-panel.ro-cork #roRoom .mb-leg .mb-mid { background: #6a6f8e; }
+html body #roomOverlay .ro-panel.ro-cork #roRoom .mb-leg .mb-no  { background: #c9447a; }
+html body #roomOverlay .ro-panel.ro-cork #roRoom .mb-row { grid-template-columns: 30px 1fr; gap: 2px 10px; padding: 10px 0; border-bottom: 1px dashed #ead9c6; }
+html body #roomOverlay .ro-panel.ro-cork #roRoom .mb-i { display: grid; place-items: center; width: 28px; height: 28px; border-radius: 50%; font-size: 15px; font-weight: 800; line-height: 1; }
+html body #roomOverlay .ro-panel.ro-cork #roRoom .mb-row .mb-i.mb-yes { background: #e3f3ea; color: #2b7552; }
+html body #roomOverlay .ro-panel.ro-cork #roRoom .mb-row .mb-i.mb-no  { background: #fde6ef; color: #a92f63; }
+html body #roomOverlay .ro-panel.ro-cork #roRoom .mb-row .mb-i.mb-mid { background: #ecedf4; color: #4f5475; }
+html body #roomOverlay .ro-panel.ro-cork #roRoom .mb-q { font-size: 14px; font-weight: 800; line-height: 1.4; color: var(--pl-navy, #1d2a5c); }
+html body #roomOverlay .ro-panel.ro-cork #roRoom .mb-v { font-size: 13px; opacity: 1; color: var(--pl-ink-soft, #6a6682); }
+
+/* ── „Работеше… и спря“: датата не е бледа ── */
+html body #roomOverlay .ro-panel.ro-cork #roRoom .fl-t { font-size: 14.5px; font-weight: 700; color: var(--pl-navy, #1d2a5c); }
+html body #roomOverlay .ro-panel.ro-cork #roRoom .fl-d { font-size: 12.5px; font-weight: 600; opacity: 1; color: var(--pl-ink-soft, #6a6682); }
+
+/* ═══ 🌙 НОЩ (само тъмната тема) — синьо, не патладжан и не кафяво; смисълът е в цветната черта ═══ */
+html[data-theme="dark"] body #roomOverlay .ro-panel.ro-cork #roRoom :is(.lb-note.lb-yes, .lb-note.lb-no, .lb-note.lb-same, .lb-note.lb-thin) {
+  background: #2a3670; border-color: rgba(255, 255, 255, .14); border-left-width: 4px;
+}
+html[data-theme="dark"] body #roomOverlay .ro-panel.ro-cork #roRoom .lb-note.lb-yes  { border-left-color: #7fd3a3; }
+html[data-theme="dark"] body #roomOverlay .ro-panel.ro-cork #roRoom .lb-note.lb-no   { border-left-color: #f59cbb; }
+html[data-theme="dark"] body #roomOverlay .ro-panel.ro-cork #roRoom .lb-note.lb-same { border-left-color: #a9bcf0; }
+html[data-theme="dark"] body #roomOverlay .ro-panel.ro-cork #roRoom .lb-note.lb-thin { border-left-color: #f0be8c; }
+html[data-theme="dark"] body #roomOverlay .ro-panel.ro-cork #roRoom :is(.lb-verdict.lb-yes, .lb-verdict.lb-no, .lb-verdict.lb-same, .lb-verdict.lb-thin) { background: #2a3670; }
+html[data-theme="dark"] body #roomOverlay .ro-panel.ro-cork #roRoom .lb-verdict.lb-yes  { border-color: #7fd3a3; }
+html[data-theme="dark"] body #roomOverlay .ro-panel.ro-cork #roRoom .lb-verdict.lb-no   { border-color: #f59cbb; }
+html[data-theme="dark"] body #roomOverlay .ro-panel.ro-cork #roRoom .lb-verdict.lb-same { border-color: #a9bcf0; }
+html[data-theme="dark"] body #roomOverlay .ro-panel.ro-cork #roRoom .lb-verdict.lb-thin { border-color: #f0be8c; }
+html[data-theme="dark"] body #roomOverlay .ro-panel.ro-cork #roRoom .lb-verdict > strong,
+html[data-theme="dark"] body #roomOverlay .ro-panel.ro-cork #roRoom .lb-verdict .lb-num strong { color: #fff; }
+html[data-theme="dark"] body #roomOverlay .ro-panel.ro-cork #roRoom .lb-verdict p { color: #e8e9f5; }
+html[data-theme="dark"] body #roomOverlay .ro-panel.ro-cork #roRoom .lb-verdict .lb-num { background: rgba(255, 255, 255, .07); box-shadow: inset 0 0 0 1px rgba(255, 255, 255, .12); color: #e8e9f5; }
+html[data-theme="dark"] body #roomOverlay .ro-panel.ro-cork #roRoom :is(.nm-verd.nm-yes, .nm-verd.nm-no, .nm-verd.nm-mid) { background: #2a3670; color: #e8e9f5; }
+html[data-theme="dark"] body #roomOverlay .ro-panel.ro-cork #roRoom .nm-verd.nm-yes { border-left-color: #7fd3a3; }
+html[data-theme="dark"] body #roomOverlay .ro-panel.ro-cork #roRoom .nm-verd.nm-no  { border-left-color: #f59cbb; }
+html[data-theme="dark"] body #roomOverlay .ro-panel.ro-cork #roRoom .nm-verd.nm-mid { border-left-color: #c9cbe3; }
+html[data-theme="dark"] body #roomOverlay .ro-panel.ro-cork #roRoom .nm-verd strong { color: #fff; }
+html[data-theme="dark"] body #roomOverlay .ro-panel.ro-cork #roRoom .nm-d { color: #c9cbe3; }
+html[data-theme="dark"] body #roomOverlay .ro-panel.ro-cork #roRoom .lb-warn2 { background: #2a3670; border-color: rgba(255, 255, 255, .14); border-left-color: #e3b25c; }
+html[data-theme="dark"] body #roomOverlay .ro-panel.ro-cork #roRoom .lb-forgot { background: rgba(255, 255, 255, .06); box-shadow: inset 0 0 0 1px rgba(255, 255, 255, .12); }
+html[data-theme="dark"] body #roomOverlay .ro-panel.ro-cork #roRoom .lb-forgot p { color: #e8e9f5; }
+html[data-theme="dark"] body #roomOverlay .ro-panel.ro-cork #roRoom .ab-box { background: none; box-shadow: none; }
+html[data-theme="dark"] body #roomOverlay .ro-panel.ro-cork #roRoom .ab-h { color: #fff; }
+html[data-theme="dark"] body #roomOverlay .ro-panel.ro-cork #roRoom .ab-h .jr-sub { color: #c9cbe3; }
+html[data-theme="dark"] body #roomOverlay .ro-panel.ro-cork #roRoom :is(.cl-q, .cl-rt, .mb-q, .fl-t, .jr-card .jr-elabel) { color: #fff; }
+html[data-theme="dark"] body #roomOverlay .ro-panel.ro-cork #roRoom :is(.lb-kind, .mb-v, .mb-leg, .fl-d, .jr-card .jr-hint, .jr-card .wm-sign) { color: #c9cbe3 !important; }
+html[data-theme="dark"] body #roomOverlay .ro-panel.ro-cork #roRoom .jr-card details.ob-row > summary::after {
+  background-color: rgba(255, 255, 255, .1);
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23e3e5f5' stroke-width='2.6' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M6 9l6 6 6-6'/%3E%3C/svg%3E");
+}
+html[data-theme="dark"] body #roomOverlay .ro-panel.ro-cork #roRoom .mb-bar { background: rgba(255, 255, 255, .12); box-shadow: none; }
+html[data-theme="dark"] body #roomOverlay .ro-panel.ro-cork #roRoom .mb-row { border-bottom-color: rgba(255, 255, 255, .14); }
+html[data-theme="dark"] body #roomOverlay .ro-panel.ro-cork #roRoom .mb-row .mb-i.mb-yes { background: rgba(127, 211, 163, .18); color: #9fe3bc; }
+html[data-theme="dark"] body #roomOverlay .ro-panel.ro-cork #roRoom .mb-row .mb-i.mb-no  { background: rgba(245, 156, 187, .18); color: #ffc2d8; }
+html[data-theme="dark"] body #roomOverlay .ro-panel.ro-cork #roRoom .mb-row .mb-i.mb-mid { background: rgba(255, 255, 255, .12); color: #e3e5f5; }
+@media (prefers-reduced-motion: reduce) {
+  html body #roomOverlay .ro-panel.ro-cork #roRoom .jr-card details.ob-row > summary::after { transition: none; }
+}
+/* край 20.10 */
