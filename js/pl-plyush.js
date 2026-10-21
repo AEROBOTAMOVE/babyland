@@ -200,7 +200,8 @@
     'main > section p, main > section h3, main > section h4, main > section button, main > section .wk-title, ' +
     // 23.09: старите секции на началото — заглавия и редове, писани от JS (днес, седмица, въпроси)
     'main > section div, main > section span, main > section small, main > section b, main > section strong, main > section label, ' +
-    '#searchOverlay :is(div,span,p,li,b,small,button,h2,h3), .np-b, #plDv button, .sos-ov .sos-row, ' +
+    // 21.10 (отчетът pf21): в търсенето 🚨 и 📞 стояха в <strong>/<a> на спешния отговор — нямаше ги в списъка
+    '#searchOverlay :is(div,span,p,li,b,small,button,h2,h3,strong,a,em), .np-b, #plDv button, .sos-ov .sos-row, ' +
     // 29.09: разговорът с помощничката — мехурчетата ѝ бяха с голи емоджита (chat_mira.png).
     //   Обвиваме САМО първото емоджи във всеки текстов възел; текстът остава дума по дума същият.
     '.msg-bubble, .msg-bubble p, .msg-bubble li, .ask-q, .msg-t, ' +
@@ -221,11 +222,18 @@
     const мои = [];
     const възли = [];
     for (let в = б.firstChild; в; в = в.nextSibling) if (в.nodeType === 3 && в.nodeValue && ЕМО.test(в.nodeValue)) възли.push(в);
-    for (const в of възли) {
+    // 🧸 21.10 (отчетът pf21 на агента за профила/търсенето, pf21_diag2.js): обвиваше се само ПЪРВОТО емоджи
+    //   във всеки текстов възел — „💾 … 🌸“ оставяше второто голо. Сега остатъкът след всяко емоджи се връща в
+    //   опашката, докато в него има още. Без рисунка → прескачаме го и търсим по-нататък. Текстът — буква по буква същият.
+    //   ПЪТ НАЗАД: върни „for (const в of възли)“, „if (!м || !рис(м[0])) continue;“ и махни двата реда с „възли.push(ост|сл)“.
+    for (let к = 0; к < възли.length && к < 60; к++) {
+      const в = възли[к];
       const м = в.nodeValue.match(ЕМО);
-      if (!м || !рис(м[0])) continue;
+      if (!м) continue;
+      if (!рис(м[0])) { const ост = в.splitText(м.index + м[0].length); if (ост.nodeValue && ЕМО.test(ост.nodeValue)) възли.push(ост); continue; }
       const сл = в.splitText(м.index);
       сл.nodeValue = сл.nodeValue.slice(м[0].length);
+      if (сл.nodeValue && ЕМО.test(сл.nodeValue)) възли.push(сл);
       const с = document.createElement('span');
       с.className = 'pl-em'; с.setAttribute('aria-hidden', 'true'); с.textContent = м[0];
       б.insertBefore(с, сл);
