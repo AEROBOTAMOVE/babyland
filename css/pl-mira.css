@@ -293,3 +293,84 @@ html[data-theme="dark"] body #roomOverlay #roChatWrap[data-pl-mc] #roForm button
   html body #roomOverlay #roChatWrap[data-pl-mc] #roChat > .more-inline.pl-gel, html body #roomOverlay #roChatWrap[data-pl-mc] #roForm button:last-child:not(#roMic) { transition: none; }
 }
 html[data-theme="dark"] body #roomOverlay #roChatWrap[data-pl-mc] #roChat { scrollbar-color: rgba(255, 255, 255, .28) transparent; }
+
+/* ═══════════════════════════════════════════════════════════════════════════════
+   21.10 · ЧАТЪТ „ПО КОНЕЦ“ — светла И тъмна тема (агентът st21)
+   МЕРЕНО в тази сесия (dev/proba/sm21_plan.js, sm21_plan_diag.js; снимки snimki/sm21_pL_*_c*, sm21_pD_*_c*, sm21_dg_sos*):
+     1 · МЯСТОТО: на 390×844 заглавието „{име} е до теб“ + ролята заемат ~470 px — след въпроса отговорът
+         се вижда на парчета (тетрадката е ~320 px). След първия въпрос на мама заглавието става един ред
+         (както вече при ниските екрани ≤ 740 px, ред 252), ролята се прибира — разговорът получава ~130 px.
+     2 · ЧИПОВЕТЕ: текстът 12.5 px (style.css:1290); дългите се режеха (mega.css:496 max-width 72vw +
+         overflow hidden: „Стъпките: Не диша и не реагира (реаним“); лентата свършваше с отрязан чип без
+         знак, че продължава. → 14 px, до 2 реда, мек край вдясно като рафтовете в „Статии“.
+     3 · 112 В ОТГОВОРА: бледорозово хапче (#ffe3e3/#a5281c) със системно 📞 → червен гел като 112 в
+         статията (бяло върху #cc3643…#a8233a = 5.1–6.2:1) с бяла слушалка (js 21.10); „за душата“ — мека роза.
+     4 · НОЩ: етикетът „Нашият разговор“ — сливово #5a2c55 (тук ред 272); балончето на помощничката #2b3872
+         върху тетрадката #26336b — тъмносиньо върху тъмносиньо (разлика 1.1:1) → тетрадката по-тъмна.
+     5 · ДРЕБНО: часът под балончето 11.5 px → 12 px.
+   Обхват: само #roChatWrap[data-pl-mc]. ПЪТ НАЗАД: махни този блок (до „край 21.10“) и блока 21.10
+   в js/pl-mira.js. Копие преди: dev/proba/sm21_predi_pl-mira.css
+   ═══════════════════════════════════════════════════════════════════════════════ */
+
+/* 1 · след първия въпрос — заглавието на един ред, ролята се прибира */
+html body #roomOverlay #roChatWrap[data-pl-mc]:has(#roChat > .msg.user) .pl-mc-hero { padding-bottom: 22px; }
+html body #roomOverlay #roChatWrap[data-pl-mc]:has(#roChat > .msg.user) .pl-mc-t { font-size: 26px; }   /* 30 px стигаше до лицето на героя (снимка sm21_s1L_zdr_c2) */
+html body #roomOverlay #roChatWrap[data-pl-mc]:has(#roChat > .msg.user) .pl-mc-t > span { display: inline; }
+html body #roomOverlay #roChatWrap[data-pl-mc]:has(#roChat > .msg.user) .pl-mc-e { padding-right: 0; }
+html body #roomOverlay #roChatWrap[data-pl-mc]:has(#roChat > .msg.user) .pl-mc-e::after { display: none; }
+html body #roomOverlay #roChatWrap[data-pl-mc]:has(#roChat > .msg.user) .pl-mc-s { display: none; }
+html body #roomOverlay #roChatWrap[data-pl-mc]:has(#roChat > .msg.user) .pl-mc-hero::before { width: 280px; }
+
+/* 2 · чиповете: 14 px, до два реда, без рязане; мек край вдясно (лентата се превърта) */
+html body #roomOverlay #roChatWrap[data-pl-mc] #roChips {
+  align-items: center; padding: 10px 30px 2px 12px !important; scroll-padding-inline: 12px;
+  -webkit-mask-image: linear-gradient(90deg, #000 0, #000 calc(100% - 26px), transparent 100%);
+          mask-image: linear-gradient(90deg, #000 0, #000 calc(100% - 26px), transparent 100%);
+}
+html body #roomOverlay #roChatWrap[data-pl-mc] #roChips .ro-chip.ro-chip {
+  max-width: 290px; white-space: normal; overflow: visible; text-overflow: clip; text-align: left;
+  font-size: 14px; line-height: 1.25; padding: 9px 16px !important;
+}
+html body #roomOverlay #roChatWrap[data-pl-mc] #roChips .ro-chip > .pl-em { margin-right: .35em; }
+
+/* 3 · 112 в отговора — червен гел с бяла слушалка; „за душата“ — мека роза със сърце */
+html body #roomOverlay #roChatWrap[data-pl-mc] #roChat .msg-bubble a.ro-sos {
+  display: inline-flex; align-items: center; gap: 10px; min-height: 50px; margin: 2px 0 0; padding: 10px 22px 10px 16px;
+  border-radius: 999px; text-decoration: none; font: 800 16px/1.25 Nunito, Nunito-fallback, system-ui, sans-serif;
+}
+html body #roomOverlay #roChatWrap[data-pl-mc] #roChat .msg-bubble a.ro-sos:not(.ro-soul) {
+  background: #c02c3c linear-gradient(180deg, #cc3643 0%, #c02c3c 48%, #a8233a 100%) !important;
+  color: #fff !important; text-shadow: 0 1px 0 rgba(90, 10, 25, .35);
+  box-shadow: inset 0 1.5px 0 rgba(255, 255, 255, .45), inset 0 -3px 0 rgba(90, 10, 25, .22), 0 4px 0 #86192d, 0 10px 20px rgba(170, 30, 50, .28);
+}
+html body #roomOverlay #roChatWrap[data-pl-mc] #roChat .msg-bubble a.ro-sos:not(.ro-soul):active { transform: translateY(3px); box-shadow: inset 0 1.5px 0 rgba(255, 255, 255, .4), 0 1px 0 #86192d, 0 5px 12px rgba(170, 30, 50, .3); }
+html body #roomOverlay #roChatWrap[data-pl-mc] #roChat .msg-bubble a.ro-sos.ro-soul {
+  background: #fde6ef !important; color: #9e2f5f !important; box-shadow: inset 0 0 0 1.5px #f3c6d6, 0 2px 0 #eeb0c8;   /* 5.9:1 */
+}
+html body #roomOverlay #roChatWrap[data-pl-mc] #roChat .msg-bubble a.ro-sos > .pl-mc-ik {
+  flex: none; display: inline-block; width: 22px; height: 22px; overflow: hidden; font-size: 0; color: transparent;
+  background: currentColor; -webkit-mask: var(--mc-ik) center / contain no-repeat; mask: var(--mc-ik) center / contain no-repeat;
+}
+html body #roomOverlay #roChatWrap[data-pl-mc] #roChat .msg-bubble a.ro-sos:not(.ro-soul) > .pl-mc-ik { background: #fff; }
+html body #roomOverlay #roChatWrap[data-pl-mc] #roChat .msg-bubble a.ro-sos > .pl-mc-ik[data-ik="tel"] {
+  --mc-ik: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='black'%3E%3Cpath d='M6.6 3.2c.5-.4 1.3-.3 1.7.2l2.3 3c.4.5.3 1.2-.1 1.6l-1.4 1.3c.9 1.9 2.5 3.6 4.5 4.6l1.3-1.4c.4-.5 1.1-.5 1.6-.1l3 2.3c.5.4.6 1.2.2 1.7l-1.6 2c-.6.8-1.7 1.1-2.7.8C10 17.6 6.4 14 4.8 8.6c-.3-1 0-2.1.8-2.7z'/%3E%3C/svg%3E");
+}
+html body #roomOverlay #roChatWrap[data-pl-mc] #roChat .msg-bubble a.ro-sos > .pl-mc-ik[data-ik="heart"] {
+  --mc-ik: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='black'%3E%3Cpath d='M12 20.3s-7.4-4.5-9.2-8.8C1.5 8.2 3.6 4.6 7.1 4.6c2 0 3.5 1.1 4.9 2.9 1.4-1.8 2.9-2.9 4.9-2.9 3.5 0 5.6 3.6 4.3 6.9-1.8 4.3-9.2 8.8-9.2 8.8z'/%3E%3C/svg%3E");
+}
+html[data-theme="dark"] body #roomOverlay #roChatWrap[data-pl-mc] #roChat .msg-bubble a.ro-sos:not(.ro-soul) { box-shadow: inset 0 1.5px 0 rgba(255, 255, 255, .35), 0 4px 0 #5e1020, 0 10px 20px rgba(0, 0, 0, .4); }
+html[data-theme="dark"] body #roomOverlay #roChatWrap[data-pl-mc] #roChat .msg-bubble a.ro-sos.ro-soul { background: rgba(245, 156, 187, .16) !important; color: #ffd0e1 !important; box-shadow: inset 0 0 0 1.5px rgba(245, 156, 187, .45); }
+
+/* 4 · НОЩ: етикетът — нощно синьо с розов кант (не сливово); тетрадката по-тъмна от балончетата */
+html[data-theme="dark"] body #roomOverlay #roChatWrap[data-pl-mc] .pl-mc-tag {
+  background: #33428a; color: #fff; box-shadow: inset 0 0 0 1.5px rgba(245, 156, 187, .55), 0 2px 0 #18214a, 0 6px 14px rgba(0, 0, 0, .3);
+}
+html[data-theme="dark"] body #roomOverlay #roChatWrap[data-pl-mc] .pl-mc-book.pl-felt { background-color: #1c2556 !important; }
+
+/* 5 · часът — 12 px */
+html body #roomOverlay #roChatWrap[data-pl-mc] #roChat > .msg[data-pl-mc-t]::after { font-size: 12px; }
+
+@media (prefers-reduced-motion: reduce) {
+  html body #roomOverlay #roChatWrap[data-pl-mc] #roChat .msg-bubble a.ro-sos:active { transform: none; }
+}
+/* край 21.10 */

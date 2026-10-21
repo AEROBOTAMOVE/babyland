@@ -156,3 +156,46 @@
   if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', върви); else върви();
   window.BL_PL_MIRA = { сверка, добави, намери, профил, последно: () => последно, грешки };
 })();
+
+/* 21.10 · 112 И ТЕЛЕФОНИТЕ В ОТГОВОРА (агентът st21; мерено dev/proba/sm21_plan_diag.js, снимка snimki/sm21_dg_sos1):
+   „📞 Обади се на 112“ (a.ro-sos, helper.js:4010–4334) беше бледорозово хапче със системното 📞 —
+   js/pl-plyush.js обвива само собствените текстови възли на .msg-bubble, не и връзката вътре.
+   Тук водещото емоджи на всяка a.ro-sos отива в span.pl-mc-ik (textContent байт в байт същият;
+   при разлика — връщане) → css/pl-mira.css 21.10 рисува бяла слушалка (112) / сърце (телефонът „за душата“).
+   Нищо друго не се пипа: href, текстът и класовете на връзката остават. ПЪТ НАЗАД: махни този блок. */
+(function () {
+  'use strict';
+  if (window.BL_PL_MIRA21) return;
+  const ПРЕДНО = /^(\s*)(\p{Extended_Pictographic}(?:\u{FE0F}|\u{200D}\p{Extended_Pictographic}|\p{Emoji_Modifier}|\u{FE0F}\u{20E3})*)/u;
+  function обвий(а) {
+    if (а.querySelector(':scope > .pl-mc-ik')) return;
+    const в = а.firstChild;
+    if (!в || в.nodeType !== 3) return;
+    const м = в.nodeValue.match(ПРЕДНО);
+    if (!м) return;
+    const преди = а.textContent;
+    const сл = в.splitText(м[1].length);
+    сл.nodeValue = сл.nodeValue.slice(м[2].length);
+    const с = document.createElement('span');
+    с.className = 'pl-mc-ik'; с.setAttribute('aria-hidden', 'true'); с.textContent = м[2];
+    с.setAttribute('data-ik', /^(📞|☎)/u.test(м[2]) ? 'tel' : 'heart');
+    а.insertBefore(с, сл);
+    if (а.textContent !== преди) { а.replaceChild(document.createTextNode(м[2]), с); а.normalize(); }
+  }
+  let чака = false;
+  function сверка() {
+    if (чака) return; чака = true;
+    setTimeout(() => {
+      чака = false;
+      try { document.querySelectorAll('#roChat .msg-bubble a.ro-sos:not([data-pl-mc21])').forEach(а => { а.setAttribute('data-pl-mc21', '1'); обвий(а); }); } catch (e) {}
+    }, 60);
+  }
+  function върви() {
+    const ч = document.getElementById('roChat');
+    if (ч) new MutationObserver(сверка).observe(ч, { childList: true, subtree: true });
+    сверка();
+  }
+  if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', върви); else върви();
+  window.BL_PL_MIRA21 = { сверка };
+})();
+/* край 21.10 */

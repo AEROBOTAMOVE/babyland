@@ -381,5 +381,192 @@
     четец();
   }
   if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', върви); else върви();
-  window.BL_PL_STATII = { списък, четец };
+  // 21.10: + РАФТ/ТОН/статия за блока 21.10 по-долу (плюшът на „Виж също“). Беше: { списък, четец }
+  window.BL_PL_STATII = { списък, четец, РАФТ, ТОН, статия };
 })();
+
+/* 21.10 · ЗНАЦИТЕ В СТАТИИТЕ — плюш вместо голо емоджи, иконки в главата, пълното заглавие в стрелките
+   (агентът st21; мерено dev/proba/sm21_plan.js + sm21_mer.js, снимки snimki/sm21_pL_* / sm21_pD_*):
+     · стикерът на картата (.art-cemoji, articles.js:544) беше системно емоджи (💩 😴 🧿) — js/pl-plyush.js
+       не гледа #roArticles. Сега: познатото емоджи → клетката от листовете (същата таблица BL_PL_PLYUSH.К,
+       същото облекло като стил() там); непознатото (337 от 1615 статии, sm21_emo.js) → стикерът се скрива,
+       остава арката на рафта (плюш). Текстът на картата НЕ се пипа.
+     · „Виж също“ (.art-relb), „Питай помощничката“ (.art-ask), 🚨 в 112 (.art-112) — бутони/връзка, които
+       pl-plyush не обвива: емоджито отива в span.pl-em (textContent байт в байт същият) → плюш; непознатото
+       в „Виж също“ взима рисунката на рафта на ТАЗИ статия (както картата ѝ в списъка).
+     · 📎 до „Виж също“ и ℹ️ в бележката долу — линейни знаци (CSS), емоджито остава в текста, прозрачно.
+     · 🔊/⏹, 📤/✔, ☆/⭐ в главата (articles.js:337–363, reader.js:75,166) — data-pl-sa-ik по текста →
+       CSS рисува линейна иконка; aria-label-ите са си на тях. Състоянието следим с наблюдател.
+     · стрелките към съседната статия (reader.js:115–124) режеха заглавието на 22 знака („какв…“) — сега
+       „Предишна/Следваща статия“ + пълното заглавие (кликът е closure в reader.js — текстът не му трябва).
+   ПЪТ НАЗАД: махни този блок (до „край 21.10“) и върни реда window.BL_PL_STATII = { списък, четец }. */
+(function () {
+  'use strict';
+  if (window.BL_PL_STATII21) return;
+  const ТОН = { p: '#fde6ef', s: '#dfeafb', m: '#dff2e7', l: '#ece4f8', b: '#fff0d4', c: '#fde5d8' };
+  // листовете на РАФТ (pl-statii.js горе) → файла
+  const ЛИСТ_РАФТ = { a: 'ico-a', b: 'ico-b', c: 'ico-c', d: 'ico-d', e: 'ico-e', f: 'ico-f', g: 'ico-g', h: 'ico-h', t: 'statii-t', x: 'fig-a' };
+  const ЕМ = /\p{Extended_Pictographic}(?:\u{FE0F}|\u{200D}\p{Extended_Pictographic}|\p{Emoji_Modifier}|\u{FE0F}\u{20E3})*/u;
+  const ПРЕДНО = /^(\s*)(\p{Extended_Pictographic}(?:\u{FE0F}|\u{200D}\p{Extended_Pictographic}|\p{Emoji_Modifier}|\u{FE0F}\u{20E3})*)/u;
+  const П = () => window.BL_PL_PLYUSH || null;
+  const безЗнак = т => String(т || '').replace(/^[^\p{L}\p{N}]+/u, '').trim();
+
+  function рис(з) {
+    const п = П(); if (!п || !п.К || !з) return null;
+    if (п.К[з]) return п.К[з];
+    const без = з.split('️').join('');
+    return п.К[без] || п.К[без + '️'] || null;
+  }
+  // облеклото е същото като стил() в js/pl-plyush.js: клетка, пастел, прозрачен знак
+  function плюш(е, лист, ред, кол, тон, двуредов) {
+    const y = двуредов ? ред * 100 : ред * 100 / 3;
+    е.style.setProperty('background-image', 'url(img/art/' + лист + '.webp)', 'important');
+    е.style.setProperty('background-position', (кол * 100 / 3).toFixed(3) + '% ' + y.toFixed(3) + '%', 'important');
+    е.style.setProperty('background-size', двуредов ? '400% 200%' : '400% 400%', 'important');
+    е.style.setProperty('color', 'transparent', 'important');
+    е.style.setProperty('-webkit-text-fill-color', 'transparent', 'important');
+    е.style.setProperty('--pl-plt', ТОН[тон] || ТОН.p);
+    е.classList.add('pl-pl', двуредов ? 'pl-pl-x' : 'pl-pl-i');
+    е.dataset.plPl = '1';                                  // pl-plyush.js вече не го пипа
+  }
+  function плюшЕмоджи(е, з) {
+    const р = рис(з), п = П();
+    if (!р || !п || !п.ЛИСТ[р[0]]) return false;
+    плюш(е, п.ЛИСТ[р[0]], р[1], р[2], р[3], !!(п.ДВЕРЕДНИ && п.ДВЕРЕДНИ[р[0]]));
+    return true;
+  }
+  function плюшРафт(е, а) {
+    const Р = window.BL_PL_STATII && BL_PL_STATII.РАФТ;
+    const р = Р && а && а.cat ? Р[безЗнак(а.cat)] : null;
+    if (!р || !ЛИСТ_РАФТ[р[0]]) return false;
+    плюш(е, ЛИСТ_РАФТ[р[0]], р[1], р[2], р[3], р[0] === 'x');
+    return true;
+  }
+  // първото емоджи в СОБСТВЕН текстов възел → span (textContent остава байт в байт; при разлика — връщане)
+  function обвий(б, клас, самоОтпред) {
+    const наличен = б.querySelector(':scope > .' + клас.split(' ')[0]);
+    if (наличен) return наличен;
+    const преди = б.textContent;
+    for (let в = б.firstChild; в; в = в.nextSibling) {
+      if (в.nodeType !== 3 || !в.nodeValue) continue;
+      const м = самоОтпред ? в.nodeValue.match(ПРЕДНО) : в.nodeValue.match(ЕМ);
+      if (!м) { if (самоОтпред && в.nodeValue.trim()) return null; continue; }
+      const зн = самоОтпред ? м[2] : м[0];
+      const от = самоОтпред ? м[1].length : м.index;
+      const сл = в.splitText(от);
+      сл.nodeValue = сл.nodeValue.slice(зн.length);
+      const с = document.createElement('span');
+      с.className = клас; с.setAttribute('aria-hidden', 'true'); с.textContent = зн;
+      б.insertBefore(с, сл);
+      if (б.textContent !== преди) { б.replaceChild(document.createTextNode(зн), с); б.normalize(); return null; }
+      return с;
+    }
+    return null;
+  }
+
+  // ── РАФТЪТ: стикерите на картите ──
+  function карти() {
+    document.querySelectorAll('#roArticles .art-card > .art-cemoji:not([data-pl-sa21])').forEach(е => {
+      е.setAttribute('data-pl-sa21', '1');
+      const м = (е.textContent || '').trim().match(ЕМ);
+      if (!(м && плюшЕмоджи(е, м[0]))) { е.classList.add('pl-sa-bez'); return; }
+      // същата рисунка като арката (напр. 🧿 и рафтът „Бабини деветини“ — една клетка) → стикерът е повтор
+      const к = е.parentElement;
+      const лист = (к.className.match(/\bpl-sa-([a-hxt])\b/) || [])[1];
+      const числа = т => (String(т).match(/-?[\d.]+/g) || []).map(Number);   // „0.000% 100.000%“ и „0% 100%“ са едно и също
+      const а1 = числа(к.style.getPropertyValue('--pl-sa-pos')), а2 = числа(е.style.getPropertyValue('background-position'));
+      if (лист && а1.length === 2 && а2.length === 2 && Math.abs(а1[0] - а2[0]) < .5 && Math.abs(а1[1] - а2[1]) < .5 &&
+          е.style.getPropertyValue('background-image').indexOf('/' + ЛИСТ_РАФТ[лист] + '.webp') >= 0) е.classList.add('pl-sa-bez');
+    });
+  }
+
+  // ── ЧЕТЕЦЪТ ──
+  const ИК = { '🔊': 'spk', '⏹': 'stop', '⏹️': 'stop', '📤': 'share', '✔': 'ok', '✔️': 'ok', '☆': 'star', '⭐': 'star-on' };
+  function глава() {
+    ['artSpeak', 'artShare', 'artStar'].forEach(id => {
+      const б = document.getElementById(id); if (!б) return;
+      const ик = ИК[(б.textContent || '').trim()] || '';
+      if (ик && б.getAttribute('data-pl-sa-ik') !== ик) б.setAttribute('data-pl-sa-ik', ик);
+      else if (!ик && б.hasAttribute('data-pl-sa-ik')) б.removeAttribute('data-pl-sa-ik');   // непознат знак → видим текст
+    });
+  }
+  function съседна(т) {
+    // reader.js: '‹ ' + emoji + ' ' + кратко(title)  /  emoji + ' ' + кратко(title) + ' ›'; кратко = 22 знака + „…“
+    const назад = /^‹\s/.test(т), напред = /\s›$/.test(т);
+    if (!назад && !напред) return null;
+    let с = т.replace(/^‹\s+/, '').replace(/\s+›$/, '');
+    const м = с.match(ПРЕДНО);
+    const ем = м ? м[2] : '';
+    с = с.slice(м ? м[0].length : 0).trim();
+    const кр = с.replace(/…$/, '');
+    const текуща = (window.BL_ARTICLES_DATA || []).find(x => x && x.id === window._blCurArt);
+    const кандидати = (window.BL_ARTICLES_DATA || []).filter(x => x && typeof x.title === 'string' && x.title.slice(0, кр.length) === кр && (!ем || x.emoji === ем));
+    const а = кандидати.find(x => текуща && x.room === текуща.room) || кандидати[0] || null;
+    return { назад, ем, загл: а ? а.title : с, а };
+  }
+  function тяло() {
+    const т = document.getElementById('artBody'); if (!т) return;
+    // „Виж също“: емоджито на всяка статия → плюш; непознатото → рисунката на рафта ѝ
+    т.querySelectorAll('.art-relb:not([data-pl-sa21])').forEach(б => {
+      б.setAttribute('data-pl-sa21', '1');
+      const с = обвий(б, 'pl-em pl-sa-ik', true); if (!с) return;
+      const а = (window.BL_ARTICLES_DATA || []).find(x => x && x.id === б.getAttribute('data-rel'));
+      if (!плюшЕмоджи(с, с.textContent) && !плюшРафт(с, а)) с.classList.add('pl-sa-bez');
+    });
+    т.querySelectorAll('.art-relt:not([data-pl-sa21])').forEach(з => { з.setAttribute('data-pl-sa21', '1'); обвий(з, 'pl-sa-clip', false); });
+    т.querySelectorAll('.art-ask:not([data-pl-sa21])').forEach(б => {
+      б.setAttribute('data-pl-sa21', '1');
+      const с = обвий(б, 'pl-em pl-sa-ik', true); if (с && !плюшЕмоджи(с, с.textContent)) с.classList.add('pl-sa-bez');
+    });
+    т.querySelectorAll('.art-112:not([data-pl-sa21])').forEach(б => {
+      б.setAttribute('data-pl-sa21', '1');
+      const с = обвий(б, 'pl-em pl-sa-ik', true); if (с && !плюшЕмоджи(с, с.textContent)) с.classList.add('pl-sa-bez');
+    });
+    // подзаглавията (h5 — pl-plyush обвива само p/li/h2–h4) и бутоните на съдържанието (.art-toc-b):
+    //   познатото емоджи → плюш; непознатото остава както е (връщане на текста)
+    т.querySelectorAll(':scope > h5:not([data-pl-sa21]), .art-toc-b:not([data-pl-sa21])').forEach(е => {
+      е.setAttribute('data-pl-sa21', '1');
+      const с = обвий(е, 'pl-em pl-sa-ik', е.tagName !== 'H5');
+      if (с && !плюшЕмоджи(с, с.textContent)) { const р = с.parentNode; р.replaceChild(document.createTextNode(с.textContent), с); р.normalize(); }
+    });
+    // „📑 В тази статия“ — линеен знак „списък“ (📑 няма плюш в картата)
+    т.querySelectorAll('.art-toc-h:not([data-pl-sa21])').forEach(е => { е.setAttribute('data-pl-sa21', '1'); обвий(е, 'pl-sa-toc', true); });
+    // стрелките: икона + „Предишна/Следваща статия“ + пълното заглавие
+    т.querySelectorAll('.art-navb:not([data-pl-sa21])').forEach(б => {
+      б.setAttribute('data-pl-sa21', '1');
+      const и = съседна((б.textContent || '').trim()); if (!и) return;
+      б.textContent = '';
+      б.classList.add('pl-sa-nvb');
+      const ик = document.createElement('span'); ик.className = 'pl-em pl-sa-ik'; ик.setAttribute('aria-hidden', 'true'); ик.textContent = и.ем || '';
+      if (!(и.ем && плюшЕмоджи(ик, и.ем)) && !плюшРафт(ик, и.а)) ик.classList.add('pl-sa-bez');
+      const тх = document.createElement('span'); тх.className = 'pl-sa-nv';
+      const м = document.createElement('small'); м.textContent = и.назад ? 'Предишна статия' : 'Следваща статия';
+      const з = document.createElement('b'); з.textContent = и.загл;
+      тх.appendChild(м); тх.appendChild(з);
+      б.appendChild(ик); б.appendChild(тх);
+    });
+  }
+  // 🪤 #artDisc е един и същ <p>; articles.js:402 сменя textContent при всяка статия (и така маха span-а) —
+  //   затова без постоянен флаг: обвива се, щом няма .pl-sa-info (обвий() сам проверява)
+  function бележка() {
+    const д = document.querySelector('#artOverlay .art-disc');
+    if (д && д.firstChild) обвий(д, 'pl-sa-info', true);
+  }
+
+  let чака = false;
+  function сверка() {
+    if (чака) return; чака = true;
+    setTimeout(() => { чака = false; try { карти(); глава(); тяло(); бележка(); } catch (e) {} }, 50);
+  }
+  function върви() {
+    const ов = document.getElementById('roomOverlay');
+    if (ов) new MutationObserver(записи => { for (const з of записи) { const ц = з.target; if (ц && ц.nodeType === 1 && (ц.id === 'roArticles' || ц.closest('#roArticles'))) { сверка(); return; } } })
+      .observe(ов, { childList: true, subtree: true });
+    const арт = document.getElementById('artOverlay');
+    if (арт) new MutationObserver(сверка).observe(арт, { childList: true, subtree: true, attributes: true, attributeFilter: ['hidden'] });
+    сверка();
+  }
+  if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', върви); else върви();
+  window.BL_PL_STATII21 = { сверка, съседна };
+})();
+/* край 21.10 */

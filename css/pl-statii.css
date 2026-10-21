@@ -560,3 +560,151 @@ html body #roArticles .pl-sa-lupa::before {
 }
 html body #roArticles .pl-sa-lupa .art-search { padding-left: 50px; }
 @media (max-width: 360px) { html body #roArticles .pl-sa-lupa::before { left: 14px; } html body #roArticles .pl-sa-lupa .art-search { padding-left: 44px; } }
+
+/* ═══════════════════════════════════════════════════════════════════════════════
+   21.10 · РАФТЪТ И ЧЕТЕЦЪТ „ПО КОНЕЦ“ — светла И тъмна тема (агентът st21)
+   МЕРЕНО в тази сесия (dev/proba/sm21_plan.js + sm21_mer.js; снимки snimki/sm21_pL_* и sm21_pD_*):
+     1 · ГОЛИ ЕМОДЖИТА: стикерите на картите (💩 😴 🧿), „Виж също“ (🌡️ 🩺 🐣 🚸), 📎, 💬, 🚨 в 112, ℹ️ в
+         бележката, 🔊 и 📤 в главата, ⭐ на любимата — системни знаци (pl-plyush не гледа там). → js 21.10.
+     2 · ДРЕБНО: „A“ (малкият размер) 11 px; етикетите (#таг, „N мин четене“, рафтът · минутите) 12.5 px;
+         „натисни тук“ под 112 — 12.5 px; бележката долу 12.5 px.
+     3 · РЯЗАНО: стрелката към съседната статия „Сънят по месеци — какв… ›“ (reader.js:115 реже на 22
+         знака) → js 21.10 пише пълното заглавие; резюмето на картата — 2 реда (10 от 60 рязани) → цялото.
+     4 · НОЩ: лупата в търсачката — бял квадрат върху нощното поле; избраният рафт и избраното „A“ —
+         сливово #5a2c55 (pl-ui.css:197 / тук ред 499); #таговете — лилава мъгла #ddd2f7.
+     5 · СТАР СТИЛ: лентата на прогреса — розово→лилаво (#f59cbb→#c9b3ec); таговете — лавандула
+         #ece4f8/#5b4a8a. → роза→злато и крем със златен кант (като pl-instrumenti.css 20.10).
+     6 · ЗАСТЪПВАНЕ: плаващото балонче (.ro-fab, 61×76 в десния долен ъгъл, мерено) лежи върху края на
+         последната карта — рафтът получава място отдолу, за да се превърти над него.
+   Обхват: само #roArticles и #artOverlay. ПЪТ НАЗАД: махни този блок (до „край 21.10“) и блока 21.10
+   в js/pl-statii.js. Копие преди: dev/proba/sm21_predi_pl-statii.css
+   ═══════════════════════════════════════════════════════════════════════════════ */
+
+/* 1 · стикерът на картата — плюшено кръгче (js 21.10); непознатото емоджи — само арката */
+#roArticles .art-card[data-pl] .art-cemoji.pl-pl {
+  width: 30px; height: 30px; transform: translate(10px, 28px);
+  background-color: var(--pl-plt, #fde6ef) !important; background-repeat: no-repeat !important; background-blend-mode: multiply;
+  box-shadow: inset 0 0 0 2px #fff, 0 2px 0 var(--ui-edge-2, #dcc3ab), 0 3px 8px rgba(110, 76, 52, .18);
+}
+#roArticles .art-card[data-pl] .art-cemoji.pl-sa-bez { display: none; }
+html[data-theme="dark"] #roArticles .art-card[data-pl] .art-cemoji.pl-pl { box-shadow: inset 0 0 0 2px rgba(255, 255, 255, .9), 0 3px 8px rgba(0, 0, 0, .35); }
+
+/* 2 · дребното ≥ 13 px */
+#roArticles .pl-sa-meta { font-size: 13px; }
+#artOverlay .art-head .art-fsb.art-fs-s { font-size: 13px; }
+#artOverlay .art-head .art-fsb.art-fs-m { font-size: 16px; }
+#artOverlay .art-head .art-fsb.art-fs-l { font-size: 19px; }
+#artBody .art-tag, #artBody .art-read { font-size: 13px; }
+#artBody .art-112 span { font-size: 13px; }
+#artOverlay .art-disc { font-size: 13px; line-height: 1.45; }
+
+/* 3 · резюмето — цяло (с 2 реда се режеха по средата на изречението; с 3 — пак 25/40 в „Здраве“ и 33/40
+       в „Бременност“, мерено sm21_s1D.log; цялото е 2–6 реда) */
+#roArticles .art-card[data-pl] .art-csum { display: block; -webkit-line-clamp: unset; overflow: visible; }
+#roArticles .art-card[data-pl] { contain-intrinsic-size: auto 176px; }
+
+/* 6 · място под последната карта — плаващото балонче (.ro-fab) не закрива края ѝ */
+#roArticles { padding-bottom: 104px; }
+
+/* 5 · таговете — крем със златен кант; рафтът — същото, тъмносин текст; прогресът — роза→злато */
+#artBody .art-tag { background: #fffaf3; color: #5d596f; box-shadow: inset 0 0 0 1.5px #ecd6b8; }          /* 6.3:1 */
+#artBody .art-tag.pl-sa-cat { color: var(--pl-navy, #1d2a5c); box-shadow: inset 0 0 0 1.5px var(--ui-edge, #e9d6c3), 0 1.5px 0 var(--ui-edge-2, #dcc3ab); }
+#artOverlay .art-progfill { background: linear-gradient(90deg, #f59cbb, #e56d99 62%, #d9b98f); }
+#roArticles > .jr-privacy.pl-sa-empty::before { background-color: #fde6ef; }
+html[data-theme="dark"] #artBody .art-tag { background: rgba(255, 255, 255, .07); color: #e3e5f5; box-shadow: inset 0 0 0 1.5px rgba(227, 195, 156, .35); }
+html[data-theme="dark"] #artBody .art-tag.pl-sa-cat { background: #232f63; color: #fff; box-shadow: inset 0 0 0 1.5px rgba(255, 255, 255, .16); }
+
+/* 1 · главата: линейни иконки вместо 🔊/⏹, 📤/✔, ☆/⭐ (data-pl-sa-ik — js 21.10). Знакът остава в текста. */
+#artOverlay .art-head .ro-nav[data-pl-sa-ik] { position: relative; font-size: 0 !important; color: transparent !important; text-shadow: none !important; }
+#artOverlay .art-head .ro-nav[data-pl-sa-ik]::before {
+  content: ''; position: absolute; left: 50%; top: 50%; width: 22px; height: 22px; margin: -11px 0 0 -11px;
+  background: var(--pl-navy, #1d2a5c); pointer-events: none;
+  -webkit-mask: var(--sa-ik) center / contain no-repeat; mask: var(--sa-ik) center / contain no-repeat;
+}
+#artOverlay .art-head .ro-nav[data-pl-sa-ik="spk"]   { --sa-ik: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M4 9.5h3.2L12 5.6v12.8l-4.8-3.9H4z'/%3E%3Cpath d='M15.6 9.2a4 4 0 0 1 0 5.6M18.3 6.6a7.6 7.6 0 0 1 0 10.8'/%3E%3C/svg%3E"); }
+#artOverlay .art-head .ro-nav[data-pl-sa-ik="stop"]  { --sa-ik: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Crect x='6' y='6' width='12' height='12' rx='3' fill='black'/%3E%3C/svg%3E"); }
+#artOverlay .art-head .ro-nav[data-pl-sa-ik="share"] { --sa-ik: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M12 14.5V3.8M7.8 7.8 12 3.6l4.2 4.2'/%3E%3Cpath d='M6.5 11.5H6A1.5 1.5 0 0 0 4.5 13v5.5A1.5 1.5 0 0 0 6 20h12a1.5 1.5 0 0 0 1.5-1.5V13a1.5 1.5 0 0 0-1.5-1.5h-.5'/%3E%3C/svg%3E"); }
+#artOverlay .art-head .ro-nav[data-pl-sa-ik="ok"]    { --sa-ik: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='2.6' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M5 12.5l4.5 4.5L19 7.5'/%3E%3C/svg%3E"); }
+#artOverlay .art-head .ro-nav[data-pl-sa-ik="star"]  { --sa-ik: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='1.9' stroke-linejoin='round'%3E%3Cpath d='M12 3.6l2.5 5.2 5.7.8-4.1 4 1 5.6L12 16.5l-5.1 2.7 1-5.6-4.1-4 5.7-.8z'/%3E%3C/svg%3E"); }
+#artOverlay .art-head .ro-nav[data-pl-sa-ik="star-on"] { --sa-ik: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='black' stroke='black' stroke-width='1.9' stroke-linejoin='round'%3E%3Cpath d='M12 3.6l2.5 5.2 5.7.8-4.1 4 1 5.6L12 16.5l-5.1 2.7 1-5.6-4.1-4 5.7-.8z'/%3E%3C/svg%3E"); }
+#artOverlay .art-head .ro-nav[data-pl-sa-ik="star-on"]::before { background: #c8457a; }      /* любимата — розова (4.6:1 на филца) */
+#artOverlay .art-head .ro-nav[data-pl-sa-ik="ok"]::before { background: #2f6b48; }
+html[data-theme="dark"] #artOverlay .art-head .ro-nav[data-pl-sa-ik]::before { background: #fff; }
+html[data-theme="dark"] #artOverlay .art-head .ro-nav[data-pl-sa-ik="star-on"]::before { background: #ffb8d2; }
+html[data-theme="dark"] #artOverlay .art-head .ro-nav[data-pl-sa-ik="ok"]::before { background: #a6e3c4; }
+
+/* 1 · „Виж също“, стрелките, „Питай помощничката“, 112 — плюшеното кръгче (js 21.10) */
+#artBody .art-relb > .pl-em.pl-sa-ik {
+  flex: none; width: 34px !important; height: 34px !important; margin: 0 12px 0 -4px !important; vertical-align: 0 !important;
+  font-size: 16px; box-shadow: inset 0 0 0 2px #fff, 0 2px 0 var(--ui-edge-2, #dcc3ab), 0 3px 7px rgba(110, 76, 52, .14);
+}
+#artBody .pl-sa-ik.pl-sa-bez { display: none !important; }
+#artBody .art-ask > .pl-em.pl-sa-ik { width: 30px !important; height: 30px !important; margin: 0 10px 0 -4px !important; background-color: #fff !important; }
+#artBody .art-112 > span.pl-em.pl-sa-ik {
+  flex: none; flex-basis: auto; align-self: center; width: 30px !important; height: 30px !important; margin: 0 4px 0 -4px !important;
+  background-color: #fff !important; box-shadow: 0 1px 0 rgba(90, 10, 25, .35), 0 2px 6px rgba(90, 10, 25, .25);
+}
+/* стрелките към съседната статия: една под друга, икона + „Предишна/Следваща статия“ + пълното заглавие */
+#artBody .art-nav:has(> .pl-sa-nvb) { flex-direction: column; flex-wrap: nowrap; gap: 10px; }
+#artBody .art-navb.pl-sa-nvb {
+  display: flex; align-items: center; gap: 12px; width: 100%; min-width: 0; min-height: 64px; padding: 10px 44px 10px 14px;
+  position: relative; border-radius: 20px; text-align: left; line-height: 1.25;
+}
+#artBody .art-navb.pl-sa-nvb:not(.art-navr) { padding: 10px 14px 10px 44px; }
+#artBody .art-navb.pl-sa-nvb > .pl-em.pl-sa-ik { flex: none; width: 36px !important; height: 36px !important; margin: 0 !important; font-size: 17px; box-shadow: inset 0 0 0 2px #fff, 0 2px 0 var(--ui-edge-2, #dcc3ab); }
+#artBody .pl-sa-nv { display: flex; flex-direction: column; gap: 3px; min-width: 0; }
+#artBody .pl-sa-nv > small { font: 800 12px/1.2 Nunito, 'Nunito-fallback', system-ui, sans-serif; letter-spacing: .3px; color: #6a6682; }   /* 5.0:1 на филца */
+#artBody .pl-sa-nv > b { font-family: var(--sa-serif); font-size: 15.5px; font-weight: 700; color: var(--pl-navy, #1d2a5c); overflow-wrap: anywhere; }
+#artBody .art-navb.pl-sa-nvb::after {
+  content: ''; position: absolute; top: 50%; width: 16px; height: 16px; margin-top: -8px; background: #c8457a;
+  -webkit-mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='3' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M9 5l7 7-7 7'/%3E%3C/svg%3E") center / contain no-repeat;
+          mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='3' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M9 5l7 7-7 7'/%3E%3C/svg%3E") center / contain no-repeat;
+}
+#artBody .art-navb.pl-sa-nvb.art-navr::after { right: 16px; }
+#artBody .art-navb.pl-sa-nvb:not(.art-navr)::after { left: 16px; transform: scaleX(-1); }
+html[data-theme="dark"] #artBody .pl-sa-nv > small { color: #c9cbe3; }
+html[data-theme="dark"] #artBody .pl-sa-nv > b { color: #fff; }
+html[data-theme="dark"] #artBody .art-navb.pl-sa-nvb::after { background: #f59cbb; }
+html[data-theme="dark"] #artBody :is(.art-relb, .art-navb) > .pl-em.pl-sa-ik { box-shadow: inset 0 0 0 2px rgba(255, 255, 255, .9), 0 2px 6px rgba(0, 0, 0, .35); }
+
+/* 1 · 📎 до „Виж също“ и ℹ️ в бележката — линейни знаци; емоджито е прозрачно, остава за четеца */
+#artBody .art-relt > .pl-sa-clip, #artOverlay .art-disc > .pl-sa-info {
+  display: inline-block; vertical-align: -3px; overflow: hidden; font-size: 0 !important; color: transparent !important;
+  -webkit-mask: var(--sa-ik) center / contain no-repeat; mask: var(--sa-ik) center / contain no-repeat;
+}
+#artBody .art-relt > .pl-sa-clip {
+  width: 20px; height: 20px; margin-left: 6px; background: #c8457a;
+  --sa-ik: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M15.5 7.5l-6.4 6.4a1.8 1.8 0 0 0 2.5 2.5l6.9-6.9a3.6 3.6 0 0 0-5.1-5.1l-6.9 6.9a5.4 5.4 0 0 0 7.6 7.6l6-6'/%3E%3C/svg%3E");
+}
+#artOverlay .art-disc > .pl-sa-info {
+  width: 17px; height: 17px; margin-right: 6px; background: #6a6682;
+  --sa-ik: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='2.2' stroke-linecap='round'%3E%3Ccircle cx='12' cy='12' r='9'/%3E%3Cpath d='M12 11v5.5'/%3E%3Cpath d='M12 7.6h.01' stroke-width='3'/%3E%3C/svg%3E");
+}
+html[data-theme="dark"] #artBody .art-relt > .pl-sa-clip { background: #f59cbb; }
+html[data-theme="dark"] #artOverlay .art-disc > .pl-sa-info { background: #c9cbe3; }
+
+/* 4 · НОЩ: лупата — светла линейна (плюшената клетка е с бял фон → бял квадрат върху нощното поле) */
+html[data-theme="dark"] body #roArticles .pl-sa-lupa::before {
+  background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23e3e5f5' stroke-width='2.2' stroke-linecap='round'%3E%3Ccircle cx='10.5' cy='10.5' r='6.5'/%3E%3Cpath d='m15.5 15.5 5 5'/%3E%3C/svg%3E") center / 20px 20px no-repeat;
+}
+/* 4 · НОЩ: избраният рафт и избраното „A“ — нощно синьо с розов кант, не сливово */
+html[data-theme="dark"] body #roArticles .art-cat.pl-soft.pl-soft:is(.on, [aria-pressed="true"]) {
+  background-color: #33428a !important; border-color: rgba(245, 156, 187, .6) !important; color: #fff !important;
+  box-shadow: inset 0 0 0 1px rgba(245, 156, 187, .2), 0 2px 0 #18214a !important;
+}
+html[data-theme="dark"] body #artOverlay .art-fs .art-fsb.on { background: #33428a; border-color: rgba(245, 156, 187, .6); color: #fff; }
+
+/* 1 · 🚨 в подзаглавията и в бутоните на съдържанието — плюш (js 21.10); „📑 В тази статия“ — линеен знак */
+#artBody h5 > .pl-em.pl-sa-ik { width: 1.4em !important; height: 1.4em !important; margin: 0 .1em 0 .3em !important; vertical-align: -.28em !important; }
+#artBody .art-toc-b > .pl-em.pl-sa-ik { flex: none; width: 28px !important; height: 28px !important; margin: 0 8px 0 -6px !important; vertical-align: -8px !important; }
+#artBody .art-toc-sos > .pl-em.pl-sa-ik { background-color: #fff !important; }
+#artBody .art-toc-h > .pl-sa-toc {
+  display: inline-block; width: 18px; height: 18px; margin-right: 8px; vertical-align: -3px; overflow: hidden;
+  font-size: 0 !important; color: transparent !important; background: #c8457a;
+  -webkit-mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='2.2' stroke-linecap='round'%3E%3Cpath d='M9 6.5h11M9 12h11M9 17.5h11'/%3E%3Cpath d='M4.2 6.5h.01M4.2 12h.01M4.2 17.5h.01' stroke-width='3.2'/%3E%3C/svg%3E") center / contain no-repeat;
+          mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='2.2' stroke-linecap='round'%3E%3Cpath d='M9 6.5h11M9 12h11M9 17.5h11'/%3E%3Cpath d='M4.2 6.5h.01M4.2 12h.01M4.2 17.5h.01' stroke-width='3.2'/%3E%3C/svg%3E") center / contain no-repeat;
+}
+html[data-theme="dark"] #artBody .art-toc-h > .pl-sa-toc { background: #f59cbb; }
+/* етикетът „Предишна/Следваща статия“ — 13 px (беше 12, мерено st21_sled_L.log) */
+#artBody .pl-sa-nv > small { font-size: 13px; }
+/* край 21.10 */
