@@ -1,0 +1,18 @@
+
+  🃏 СЛИВАЧ НА КАРТИ[33m   [СУХО][0m
+  стаж: karti_zn2.json
+
+  🟡 карти, в които над 60% от ключовете носят пълен член — ЗА ЧЕТЕНЕ, не за отказ:
+     zn2-toy-na-pregledite   11/16
+     zn2-oshte-ne-go-chuvstvam11/16
+     zn2-sled-hapchetata     10/15
+     zn2-dokumenti-rodilno   10/16
+     zn2-toy-v-zalata        12/16
+     zn2-chanta-tatko        13/16
+
+  ── ПРИЕТИ: 33 ──
+      33  Бременност
+
+  [33mСУХО. За писане: node dev/slivach_karti.js --pishi[0m
+
+изход 0

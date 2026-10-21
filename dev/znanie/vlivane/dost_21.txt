@@ -1,0 +1,59 @@
+
+  🎯 ДОСТИЖИМОСТ ПО СОБСТВЕНОТО ЗАГЛАВИЕ · 1717 карти
+
+  🔴 карти, чието заглавие не намира НИЩО: 17
+     zn1d-detsko-speshno        „Детско спешно нощем“
+     zn1d-gabi-gora             „Гъбите от гората“
+     zn1d-levurda               „Левурда и дивата зеленина“
+     zn1d-voda-sled-yadene      „Колко да чака след ядене, преди да влезе в мор“
+     zn1b-den-3-4-meseca        „Примерен ден на 3–4 месеца“
+     zn1b-den-9-10-meseca       „Примерен ден на 9–10 месеца“
+     zn1b-den-2-godini          „Примерен ден на година и половина до две“
+     zn1b-dryamka-v-hola        „В хола денем, в спалнята нощем“
+     zn1b-lyuleene              „Люлеенето“
+     zn1b-tablici-za-san        „16 часа или 12“
+     zn1b-pushene-terasa        „Пуши само на терасата“
+     zn1b-svds-vazrast          „Кога минава най-рисковото време за внезапна см“
+     zn1b-pregledi-kalendar     „Колко пъти на лекар до 3 години“
+     zn1b-naddavane-mesec       „Качи малко този месец“
+     zn1b-percentil-3           „На 3-ти перцентил е“
+     zn1b-tazobedreni-pregled   „Тазобедрените стави“
+     zn1b-ochen-lekar           „Кога на очен лекар“
+
+  🟠 карти, чието заглавие отива при ДРУГА карта: 31
+     in-dom-po-stai           „Обезопасяване“ → in-bezopasnost
+     rz-ekran                 „Екраните“ → nr-ekranite-chestno
+     nia-sama                 „Сама съм“ → dn-samota
+     zim-suh-vazduh-nosle     „Сух въздух от парното и запушено н“ → sz-suh-vazduh
+     rz2-kula-pyzel           „Кубчета, кула и пъзел“ → w3-kubcheta-koi-vid
+     ema-sama                 „Сама съм“ → dn-samota
+     y2-smeseno-hranene       „Кърма и адаптирано заедно“ → zh-kurma-ili-adaptirano
+     zn1c-dve-zharoponizhavashti „Парацетамол и ибупрофен“ → zd-temperatura
+     zn1c-gel-za-venci        „Гел, таблетки и ракия за венците“ → lb-nikat-zabi
+     zn1c-alergichni-ochi     „Червени, сълзящи очи от алергия“ → zd-allerg
+     zn1a-plache-bez-salzi    „Плаче, но без нито една сълза“ → mb-cry
+     zn1a-razseyva-se         „Разсейва се и се върти, докато суч“ → lb3-kolastra
+     zn1a-mlyako-ne-idva      „Третият ден, а млякото още не е до“ → lb3-kolastra
+     zn1a-hrani-za-mlyako     „Чай, орехи и топло мляко за повече“ → mb-kolko-mliako
+     zn1a-dopiva-shishe       „Остана мляко в шишето“ → z8-nedopito-shishe
+     zn1d-bolnica-bezplatno   „Детето е в болница“ → zd-priemat-v-bolnica
+     zn1d-gramotevica         „Гръмотевица ни хвана навън с детет“ → zh-na-pat-hrana
+     zn1d-piratki             „Пиратките, бенгалският огън и дете“ → zd-temperatura
+     zn1d-vaksina-karlezhi    „Ваксината срещу кърлежовия енцефал“ → zd-vaksini
+     zn1d-kaska-glava         „Каска за плоската главичка“ → mb-head
+     zn1d-graf-iia            „На ехографията пише незряла става,“ → br-pregledi
+     zn1d-sinagis             „Синагис срещу RSV за недоносеното“ → nd-what
+     zn1b-gradusi-za-san      „16–20 или 20–22 градуса“ → zd-temperatura
+     zn1b-obikolnici-koshara  „Обиколници, възглавница и одеяло в“ → zd-bezopasen-son
+     zn1b-banya-razbuzhda     „Вечерната баня го разбужда, вместо“ → sn-zaspivane-samo
+     zn1b-refluks-naklon      „Плюе и има рефлукс“ → lb2-plyene
+     zn1b-baba-pravila-san    „Как да кажа на баба да не го слага“ → dn-pri-baba
+     zn1b-ostavyane-plach     „Вреди ли да го оставя да поплаче“ → mb-dushut
+     zn1b-vaksini-svds        „Ваксините и внезапната смърт“ → zd-vaksini
+     zn1b-petichka-bolesti    „Кръвта от петичката“ → nb-slagat-bebeto
+     zn1b-pasta-fluor         „Паста с флуор: колко ppm, кога гра“ → lb-parvi-zabi
+
+  ── 48 от 1717 карти (2.8%) не се намират по темата си ──
+
+  🔴 над прага (40)
+

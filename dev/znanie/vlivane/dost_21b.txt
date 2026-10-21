@@ -1,0 +1,67 @@
+
+  🎯 ДОСТИЖИМОСТ ПО СОБСТВЕНОТО ЗАГЛАВИЕ · 1781 карти
+
+  🔴 карти, чието заглавие не намира НИЩО: 23
+     zn1d-detsko-speshno        „Детско спешно нощем“
+     zn1d-gabi-gora             „Гъбите от гората“
+     zn1d-levurda               „Левурда и дивата зеленина“
+     zn1b-den-3-4-meseca        „Примерен ден на 3–4 месеца“
+     zn1b-den-9-10-meseca       „Примерен ден на 9–10 месеца“
+     zn1b-lyuleene              „Люлеенето“
+     zn1b-tablici-za-san        „16 часа или 12“
+     zn1b-pushene-terasa        „Пуши само на терасата“
+     zn1b-naddavane-mesec       „Качи малко този месец“
+     zn1b-percentil-3           „На 3-ти перцентил е“
+     zn1b-tazobedreni-pregled   „Тазобедрените стави“
+     zn1b-ochen-lekar           „Кога на очен лекар“
+     zn2-kafe-kofein            „Колко кафе на ден, докато си бременна“
+     zn2-riba-bremenna          „Рибата: колко пъти седмично и коя“
+     zn2-bilkovi-chayove        „Билковите чайове: кои и колко“
+     zn2-strahat-na-tatko       „Той се страхува и мълчи“
+     zn2-seks-po-grafik         „Когато близостта стане по график“
+     zn2-amh                    „Тестът АМХ: какво казва и какво не“
+     zn2-bleda-cherta           „Бледата втора черта“
+     zn2-izbor-bolnica          „Как да избереш болница и екип“
+     zn2-toy-v-zalata           „Как да ти помага той в залата“
+     zn6-krastnici              „Кръстниците: кой става кръстник и какво купува“
+     zn6-lab-pol-korem          „Остър корем“
+
+  🟠 карти, чието заглавие отива при ДРУГА карта: 33
+     in-dom-po-stai           „Обезопасяване“ → in-bezopasnost
+     rz-ekran                 „Екраните“ → nr-ekranite-chestno
+     nia-sama                 „Сама съм“ → dn-samota
+     zim-suh-vazduh-nosle     „Сух въздух от парното и запушено н“ → sz-suh-vazduh
+     rz2-kula-pyzel           „Кубчета, кула и пъзел“ → w3-kubcheta-koi-vid
+     ema-sama                 „Сама съм“ → dn-samota
+     y2-smeseno-hranene       „Кърма и адаптирано заедно“ → zh-kurma-ili-adaptirano
+     zn1c-dve-zharoponizhavashti „Парацетамол и ибупрофен“ → zd-temperatura
+     zn1c-alergichni-ochi     „Червени, сълзящи очи от алергия“ → zd-allerg
+     zn1a-dopiva-shishe       „Остана мляко в шишето“ → z8-nedopito-shishe
+     zn1d-bolnica-bezplatno   „Детето е в болница“ → zd-priemat-v-bolnica
+     zn1d-kaska-glava         „Каска за плоската главичка“ → mb-head
+     zn1d-sinagis             „Синагис срещу RSV за недоносеното“ → nd-what
+     zn1b-gradusi-za-san      „16–20 или 20–22 градуса“ → zd-temperatura
+     zn1b-refluks-naklon      „Плюе и има рефлукс“ → lb2-plyene
+     zn1b-vaksini-svds        „Ваксините и внезапната смърт“ → zd-vaksini
+     zn2-parvi-pregled        „Първият преглед: кога и какво да н“ → br-pregledi
+     zn2-lunarni-meseci       „Лунарните месеци в картата“ → nia-luna
+     zn2-test-zahar           „Тестът за захар: как минава сутрин“ → br-gestacionen-diabet
+     zn2-pol-na-bebeto        „Кога ще разберем пола и колко е си“ → br-pregledi
+     zn2-toy-na-pregledite    „Да дойде ли и той на прегледите“ → br-pregledi
+     zn2-hemoroidi            „Хемороидите и запекът в бременност“ → br-diskomfort
+     zn2-poza-i-lezhane       „Позата, краката нагоре и лубрикант“ → br-kramp
+     zn2-mazhat-vazrast       „Мъжът и възрастта: има ли часовник“ → nb-koy-e-s-men
+     zn2-dokumenti-rodilno    „Документите за родилното“ → in-dokumenti
+     zn6-parvo-zabche         „Първото зъбче: житото и сребърната“ → zd-teeth
+     zn6-yordanovden          „Йордановден и Ивановден: къпят ли “ → lb2-banya
+     zn6-3-mart-24-mai        „3 март и 24 май: как да ги обясня “ → rz-kazvam-golyamoto
+     zn6-knizhka-po-tema      „Книжка за братчето, гърнето, гради“ → rz-gyrne
+     zn6-zodia-pasva          „Зодията на бебето пасва точно“ → nia-zodia
+     zn6-lab-uroki            „Урочасано ли е? Похвалата, тфу-тфу“ → mb-cry
+     zn6-lab-parva-banya      „Монета, сол и мед в първата баня“ → mb-bath
+     zn6-lab-palnolunie       „Пълнолунието ражда ли повече бебет“ → nia-luna
+
+  ── 56 от 1781 карти (3.1%) не се намират по темата си ──
+
+  🔴 над прага (40)
+

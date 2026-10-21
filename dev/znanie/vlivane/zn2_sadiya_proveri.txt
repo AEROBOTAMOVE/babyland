@@ -1,0 +1,68 @@
+карти: 33 · статии: 33
+  zn2-kafe-kofein                 338 думи · 4 раздела · резюме 139 · 🥗 Хранене и лекарства
+  zn2-riba-bremenna               332 думи · 5 раздела · резюме 127 · 🥗 Хранене и лекарства
+  zn2-bilkovi-chayove             308 думи · 5 раздела · резюме 124 · 🥗 Хранене и лекарства
+  zn2-hapcheta-predi-da-razbera   316 думи · 6 раздела · резюме 135 · 🥗 Хранене и лекарства
+  zn2-kasata-plashta              326 думи · 5 раздела · резюме 130 · 🗓️ Триместри и прегледи
+  zn2-koy-me-vodi                 313 думи · 7 раздела · резюме 122 · 🗓️ Триместри и прегледи
+  zn2-parvi-pregled               342 думи · 6 раздела · резюме 121 · 🗓️ Триместри и прегледи
+  zn2-lunarni-meseci              317 думи · 6 раздела · резюме 141 · 🗓️ Триместри и прегледи
+  zn2-test-zahar                  321 думи · 6 раздела · резюме 138 · 🗓️ Триместри и прегледи
+  zn2-pol-na-bebeto               324 думи · 6 раздела · резюме 132 · 🗓️ Триместри и прегледи
+  zn2-toy-na-pregledite           305 думи · 6 раздела · резюме 126 · 🗓️ Триместри и прегледи
+  zn2-chuva-li-ni                 354 думи · 6 раздела · резюме 137 · 🗓️ Триместри и прегледи
+  zn2-sanishta-zabravyane         317 думи · 6 раздела · резюме 134 · 🗓️ Триместри и прегледи
+  zn2-oshte-ne-go-chuvstvam       315 думи · 6 раздела · резюме 133 · 🗓️ Триместри и прегледи
+  zn2-strahat-na-tatko            319 думи · 6 раздела · резюме 130 · 🗓️ Триместри и прегледи
+  zn2-hemoroidi                   309 думи · 6 раздела · резюме 125 · 🗓️ Триместри и прегледи
+  zn2-maychinstvo-bremenna        328 думи · 7 раздела · резюме 134 · 🗓️ Триместри и прегледи
+  zn2-sled-hapchetata             336 думи · 7 раздела · резюме 139 · 🗓️ Триместри и прегледи
+  zn2-poza-i-lezhane              338 думи · 6 раздела · резюме 121 · 🗓️ Триместри и прегледи
+  zn2-seks-po-grafik              336 думи · 7 раздела · резюме 141 · 🗓️ Триместри и прегледи
+  zn2-amh                         301 думи · 6 раздела · резюме 123 · 🗓️ Триместри и прегледи
+  zn2-mazhat-vazrast              335 думи · 6 раздела · резюме 125 · 🗓️ Триместри и прегледи
+  zn2-momche-ili-momiche          332 думи · 6 раздела · резюме 124 · 🗓️ Триместри и прегледи
+  zn2-dvete-sedmici               339 думи · 6 раздела · резюме 132 · 🗓️ Триместри и прегледи
+  zn2-ranni-priznaci              317 думи · 6 раздела · резюме 124 · 🗓️ Триместри и прегледи
+  zn2-bleda-cherta                324 думи · 7 раздела · резюме 137 · 🗓️ Триместри и прегледи
+  zn2-zakasnyava-otricatelen      321 думи · 6 раздела · резюме 125 · 🗓️ Триместри и прегледи
+  zn2-beta-ot-krav                328 думи · 6 раздела · резюме 128 · 🗓️ Триместри и прегледи
+  zn2-dokumenti-rodilno           356 думи · 6 раздела · резюме 142 · 🏥 Родилното и първите дни
+  zn2-izbor-bolnica               360 думи · 6 раздела · резюме 132 · 🏥 Родилното и първите дни
+  zn2-toy-v-zalata                371 думи · 9 раздела · резюме 119 · 👶 Раждането
+  zn2-chanta-tatko                305 думи · 6 раздела · резюме 141 · 🏥 Родилното и първите дни
+  zn2-pregledi-sled-razhdane      324 думи · 7 раздела · резюме 121 · 🏥 Родилното и първите дни
+  zn2-kafe-kofein                 core 113 · ключове 19 · чипове br-hranene,zn2-bilkovi-chayove,br-son
+  zn2-riba-bremenna               core 96 · ключове 17 · чипове z3-hranite-do-razhdaneto,br-hranene,br-vitamini
+  zn2-bilkovi-chayove             core 104 · ключове 18 · чипове zn2-kafe-kofein,nb-temperatu-lekarstva,br-toshnota
+  zn2-hapcheta-predi-da-razbera   core 94 · ключове 15 · чипове br-izvanmatochna,g3-pila-sam-predi-da-razbera,br-test
+  zn2-kasata-plashta              core 105 · ключове 17 · чипове br-pregledi,nb-skriningi-meri,br-bez-osigurovki
+  zn2-koy-me-vodi                 core 93 · ключове 17 · чипове zn2-kasata-plashta,br-bez-osigurovki,br-obmenna-karta
+  zn2-parvi-pregled               core 91 · ключове 15 · чипове zn2-koy-me-vodi,br-samo-ploden-sak,br-kravene-rano
+  zn2-lunarni-meseci              core 88 · ключове 13 · чипове br-sedmici,zn2-kasata-plashta,zn2-test-zahar
+  zn2-test-zahar                  core 100 · ключове 17 · чипове br-gestacionen-diabet,h7-zahar-izvan-kontrol,br-pregledi
+  zn2-pol-na-bebeto               core 99 · ключове 17 · чипове br-pregledi,nb-skriningi-meri,zn2-kasata-plashta
+  zn2-toy-na-pregledite           core 89 · ключове 16 · чипове br-partniore,br-koga-se-chuva-sarceto,zn2-chuva-li-ni
+  zn2-chuva-li-ni                 core 97 · ключове 16 · чипове br-dvijenia,zn2-oshte-ne-go-chuvstvam,br-broene-ritania
+  zn2-sanishta-zabravyane         core 80 · ключове 13 · чипове br-son,br-emocii,g3-umorata-v-parvite-meseci
+  zn2-oshte-ne-go-chuvstvam       core 88 · ключове 16 · чипове br-emocii,zn2-chuva-li-ni,br-dvijenia
+  zn2-strahat-na-tatko            core 85 · ключове 13 · чипове br-partniore,dn-tatko-depresia,zn2-toy-na-pregledite
+  zn2-hemoroidi                   core 85 · ключове 15 · чипове br-diskomfort,nb-anemiyata-bremennos,br-hranene
+  zn2-maychinstvo-bremenna        core 85 · ключове 15 · чипове lb-noi,br-pomoshti-marshrut,br-bolnichen-bremennost
+  zn2-sled-hapchetata             core 101 · ключове 15 · чипове br-predi-zachevane,br-plodnite-dni,zc-ne-stava
+  zn2-poza-i-lezhane              core 93 · ключове 16 · чипове br-plodnite-dni,zn2-seks-po-grafik,zc-ne-stava
+  zn2-seks-po-grafik              core 96 · ключове 15 · чипове br-plodnite-dni,zc-chakaneto,zc-ne-stava
+  zn2-amh                         core 87 · ключове 15 · чипове zc-ne-stava,br-izsledvaniya-zhenata,zc-invitro
+  zn2-mazhat-vazrast              core 86 · ключове 17 · чипове br-spermograma,zc-ne-stava,br-vazrast-40
+  zn2-momche-ili-momiche          core 93 · ключове 18 · чипове br-plodnite-dni,zn2-pol-na-bebeto,zc-chakaneto
+  zn2-dvete-sedmici               core 84 · ключове 15 · чипове br-test,zn2-ranni-priznaci,zc-chakaneto
+  zn2-ranni-priznaci              core 84 · ключове 16 · чипове br-test,g3-simptomite-gi-nyama,br-kravene-rano
+  zn2-bleda-cherta                core 91 · ключове 15 · чипове br-test,zn2-beta-ot-krav,z4-ranna-zaguba
+  zn2-zakasnyava-otricatelen      core 86 · ключове 13 · чипове br-test,zn2-beta-ot-krav,br-pkya-opiti
+  zn2-beta-ot-krav                core 102 · ключове 15 · чипове br-test,br-izvanmatochna,br-beta-hcg-visok
+  zn2-dokumenti-rodilno           core 104 · ключове 16 · чипове br-obmenna-karta,br-chanta,zn2-chanta-tatko
+  zn2-izbor-bolnica               core 99 · ключове 15 · чипове nb-parite-razhdanet,br-prava-rodilka,nb-koy-e-s-men
+  zn2-toy-v-zalata                core 106 · ключове 16 · чипове nb-koy-e-s-men,br-plan-razhdane,zn2-chanta-tatko
+  zn2-chanta-tatko                core 95 · ключове 16 · чипове br-chanta,zn2-dokumenti-rodilno,z3-pytyat-do-rodilnoto
+  zn2-pregledi-sled-razhdane      core 81 · ключове 14 · чипове mm-lohia,nia-shevove-dolu,nia-skrining
+🟢 чисто: 0 грешки

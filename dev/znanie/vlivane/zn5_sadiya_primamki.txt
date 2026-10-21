@@ -1,0 +1,16 @@
+примамки: 13 вкарани → 15 червени реда
+  zn5-kafe-i-sanyat · ДОЗА в core
+  zn5-dryamka-mama · 🚨 не е най-отпред във follow
+  zn5-noshtta-e-moya · главна буква в ключ: Главна Буква
+  zn5-hyrkam-sled-razhdane · ключ с 1 думи: апнея
+  zn5-nespokoyni-kraka · чип не е съществуваща карта (kb.js или сестра в стажа): nyama-takava-karta-xyz
+  zn5-neshto-za-san · права кавичка в tip
+  zn5-neshto-za-san · tip не започва с 💡
+  zn5-pet-stapki-dobre · латински ключове: 1 (2–3)
+  zn5-lehusa-40-dni · двусмислено „г“ до число в core
+  zn5-kafe-i-sanyat · здравна статия: последният ред не е „Записките не заменят преглед.“
+  zn5-dryamka-mama · разделът не е от договора за стая Жената в мен: 🦄 Несъществуващ
+  zn5-dryamka-mama · разделът го няма в lib/index.json за стая Жената в мен: 🦄 Несъществуващ
+  zn5-hyrkam-sled-razhdane · заглавието е като на картата
+  zn5-nespokoyni-kraka · резюме 201 знака
+  zn5-chas-za-trevogi · ред с 🚨 не започва с 🚨: - Важно: 🚨 При мисли да нараниш себе си или бебето звъни на

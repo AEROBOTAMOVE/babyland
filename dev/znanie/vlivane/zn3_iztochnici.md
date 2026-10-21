@@ -32,3 +32,12 @@
 - `zn3-linii-chuzhbina` · https://www.samaritans.org/how-we-can-help/contact-samaritan/ · https://www.telefonseelsorge.de/ · https://www.postpartum.net/get-help/psi-helpline/ · https://pandasfoundation.org.uk/ · ✅ 03 А54 · 833-852-6262 и чатът — [чет.] PSI/Telefonseelsorge · `19-chuzhbina/14`
 - `zn3-stolche-zakon` · https://lex.bg/bg/mobile/ldoc/2134649345 (ЗДвП чл. 137в, 133, 183) · https://news.lex.bg (18.08.2025) · https://sars.gov.bg/en/narachnik-na-shofyora/ · ✅ 01 №19; 02 А11, А12, А13; 04 47·9 · `12-praktika/03`
 - `zn3-pochivni-dni` · https://lex.bg/laws/ldoc/1594373121 (КТ чл. 154) · ✅ 03 В8; 04 43·2 (Великден 2026/2027), 43·1 (25.10.2026; 28.03.2027) · дните от седмицата — изчислено с `date` в тази сесия · `43-godinata/04`, `/10`, `/12`
+
+## Съдията (21.10.2026) — опората на поправките
+- `zn3-izdrazhka-minimum` (tip, статия „Пътят“) · СК чл. 127, ал. 1–2 — `16-specialni-patishta/05` (lex.bg, прочетено): районният съд утвърждава споразумението, то е изпълнително основание; иначе медиатор или съдът. „Две права“ — `16/04` (СК чл. 122, ал. 2; чл. 124, ал. 2; чл. 143).
+- `zn3-pomoshti-ednokratni-2026` (follow, статия) · отказът — пред административния съд, обичайно 14 дни: `09-prava/04` (egov.bg 1742; pravatami 02.10.2026).
+- `zn3-mesechni-2026` (статия) · без такса, произнасяне до 14 дни: `09-prava/04` (egov.bg 649).
+- `zn3-pochivni-dni` (карта) · 1 май 2027 = Велика събота, компенсацията не е проверена: `43-godinata/05` („следи решението на Министерския съвет“), 04 43·2. Дните от седмицата и Великден 2027 (2 май) — изчислени с node в тази сесия.
+- `zn3-otsastvie-izsledvania` (follow) · бележка в яслата / запис в НЗИС в градината: `46-yasla-gradina/04` (Нар. № 26, чл. 10; Нар. № 3, чл. 29).
+- `zn3-vrashtane-bg` (core) · ЗПУО чл. 9, ал. 1–2: `19-chuzhbina/13`.
+- `zn3-izsledvania-priem` (статия) · варицела „родените ОТ 1.01.2025“: `46-yasla-gradina/04` (Нар. № 15, ДВ бр. 3/2026), 01 №8.

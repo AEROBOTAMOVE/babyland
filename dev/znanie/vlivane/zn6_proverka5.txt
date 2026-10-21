@@ -1,0 +1,34 @@
+записани: карти 31 · статии 31
+  · zn6-babinden               core 116 · статия 400 · ключове 14
+  · zn6-krastnici              core 114 · статия 341 · ключове 14
+  · zn6-krashtene-dumi         core 112 · статия 320 · ключове 15
+  · zn6-darove-novorodeno      core 109 · статия 342 · ключове 14
+  · zn6-parvo-zabche           core 105 · статия 340 · ключове 13
+  · zn6-ime-na-dyado           core 110 · статия 329 · ключове 15
+  · zn6-imen-den               core 119 · статия 351 · ключове 13
+  · zn6-yordanovden            core 111 · статия 347 · ключове 12
+  · zn6-zagovezni              core 100 · статия 318 · ключове 12
+  · zn6-lazarovden             core 110 · статия 336 · ключове 12
+  · zn6-enyovden               core 104 · статия 323 · ключове 12
+  · zn6-kukeri                 core 102 · статия 324 · ключове 12
+  · zn6-3-mart-24-mai          core 108 · статия 338 · ключове 12
+  · zn6-badni-vecher           core 110 · статия 339 · ключове 12
+  · zn6-legenda-leka-nosht     core 103 · статия 380 · ключове 12
+  · zn6-bg-avtori              core 105 · статия 349 · ключове 12
+  · zn6-leka-nosht-deca        core 104 · статия 315 · ключове 12
+  · zn6-knizhka-po-tema        core 108 · статия 342 · ключове 12
+  · zn6-cennost-na-meseca      core 108 · статия 357 · ключове 12
+  · zn6-blagodarnost           core 101 · статия 355 · ключове 12
+  · zn6-gatanki                core 100 · статия 332 · ключове 12
+  · zn6-igri-ot-dvora          core 111 · статия 362 · ключове 12
+  · zn6-ogneniyat-kon          core 109 · статия 340 · ключове 12
+  · zn6-angelski-chisla        core  97 · статия 352 · ключове 12
+  · zn6-zodia-pasva            core 105 · статия 350 · ключове 13
+  · zn6-lab-amuleti            core 112 · статия 349 · ключове 12
+  · zn6-lab-uroki              core 113 · статия 362 · ключове 12
+  · zn6-lab-parva-banya        core 112 · статия 345 · ключове 12
+  · zn6-lab-pol-korem          core  99 · статия 319 · ключове 12
+  · zn6-lab-palnolunie         core  98 · статия 334 · ключове 12
+  · zn6-lab-zatamnenie         core 100 · статия 291 · ключове 12
+
+✅ всички правила минават (31 карти, 31 статии)

@@ -3,20 +3,23 @@
 // node dev/znanie/vlivane/zn1b_sadiya_pokazhi.js --prefix=zn1a   (само заглавията на картите с такъв префикс)
 const src = require('fs').readFileSync('js/kb.js', 'utf8');
 const Q = String.fromCharCode(39);
+const DQ = String.fromCharCode(34);
 function pick(blk, k) {
-  const i = blk.indexOf('\n      ' + k + ': ' + Q);
+  let q = Q, i = blk.indexOf('\n      ' + k + ': ' + Q);
+  if (i < 0) { q = DQ; i = blk.indexOf('\n      ' + k + ': ' + DQ); }
   if (i < 0) return '';
-  let j = i + ('\n      ' + k + ': ' + Q).length, out = '';
+  let j = i + ('\n      ' + k + ': ' + q).length, out = '';
   while (j < blk.length) {
     const c = blk[j];
     if (c === '\\') { out += blk[j + 1]; j += 2; continue; }
-    if (c === Q) break;
+    if (c === q) break;
     out += c; j++;
   }
   return out;
 }
 function blok(id) {
-  const i = src.indexOf('id: ' + Q + id + Q);
+  let i = src.indexOf('id: ' + Q + id + Q);
+  if (i < 0) i = src.indexOf('id: ' + DQ + id + DQ);
   if (i < 0) return null;
   const j = src.indexOf('\n    {', i + 10);
   return '\n      ' + src.slice(i, j > 0 ? j : i + 8000);

@@ -47,3 +47,13 @@
 - Цената на ехографията на тазобедрените стави и дали НЗОК я плаща (Б10 ⏳); флуорен лак и запечатване по НЗОК (37·13 ⏳).
 - Българска статистика за СВДС (няма намерен източник); текстовете на народните приспивни (несверени — затова само заглавия).
 - Поверията за съня (празна люлка, ножица, червен конец, лунна светлина) — [от паметта], стая „Лабораторията“, не са взети.
+
+## Добавено от съдията (21.10.2026) — опората на поправките
+- `zn1b-gradusi-za-san` · „над около 24 °C — един лек слой“ · `12-praktika/15` (AAP https://www.healthychildren.org/English/ages-stages/baby/diapers-clothing/Pages/Dressing-Your-Newborn.aspx); 112-редът — `05-san/07` „Кога към лекар“.
+- `zn1b-tazobedreni-pregled` · българските детски ортопеди: ехография 4–6 / 6–8 седмица — `36-diagnozi-0-3/08` (Puls.bg 18.06.2025 https://www.puls.bg/detsko-zdrave-c-38/displaziia-na-tazobedrenata-stava-v-krmacheska-vzrast-kak-se-protsedira-n-54444 и 16.09.2022 https://www.puls.bg/detsko-zdrave-c-38/profilaktichni-pregledi-pri-detski-ortoped-n-45026).
+- `zn1b-refluks-naklon` · червените флагове и 112 при отпуснато бебе — `36-diagnozi-0-3/02` „Кога към лекар“ (NHS, AAP).
+- `zn1b-pasta-fluor` · токсикологията 02 9154 233, денонощно и безплатно — `24-proverka/03` А3 ✏️ (МОСВ) и `00-PROTIVORECHIYA` №28.
+- `zn1b-lyuleene` · 112 при раздрусано бебе с необичайна сънливост/повръщане — `11-babini-devetini/05` (синдром на разтърсеното бебе), `39-bashtata/06`; „дори да изглежда добре — спешен кабинет“ — по живата `nm-kogato-izdarzhas`.
+- `zn1b-parvi-pregled-doma`, `zn1b-pregledi-kalendar` · 38 °C под 3 месеца → лекар веднага — `24-proverka/02` Б14 ✅; домашните грижи — „по страница на НЗОК от 31.10.2025“ (`37-pregledi-skrining/04` [отворено]).
+- `zn1b-sluhov-test-lipsva` · верниксът в ухото — `37-pregledi-skrining/02`.
+- `zn1b-zaspiva-na-gardata` (статията) · „без миризмата на мляко“ — `05-san/06` (практика: „миризмата на мляко засилва плача“).
