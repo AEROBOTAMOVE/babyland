@@ -1,0 +1,8 @@
+{
+  "name": "babyland",
+  "private": true,
+  "description": "Бейби Ленд · 21.10 · достъп: функциите в netlify/functions ползват само @netlify/database. Без \"type\": \"module\" — build.js и dev/ са CommonJS (require); функциите са .mjs.",
+  "dependencies": {
+    "@netlify/database": "^2.0.1"
+  }
+}

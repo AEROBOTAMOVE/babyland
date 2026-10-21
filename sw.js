@@ -1,5 +1,5 @@
 // Baby Land — service worker: кешира приложението за офлайн работа
-const CACHE = 'babyland-v873';
+const CACHE = 'babyland-v875';   // 21.10 · достъп: v873 → v874 · ПЪТ НАЗАД: sw.js.PREDI_DOSTAP
 const ASSETS = [
   '.',
   'index.html',
@@ -135,6 +135,8 @@ const ASSETS = [
   'css/pl-bebe.css',
   'js/pl-bebe.js',
   'css/pl-start.css',   // 21.10 · облакът „Baby Land“ горе на началото (старото + новото)
+  'css/pl-dostap.css',  // 21.10 · достъп: вратата, „Достъп“, изтекло, админ — офлайн също · ПЪТ НАЗАД: махни двата реда
+  'js/pl-dostap.js',    // 21.10 · достъп
   'css/pl-ui.css',
   'js/pl-ui.js',
   'js/store.js',
@@ -436,6 +438,9 @@ async function пренеси(нов, версии) {
       const стар = await caches.open(име);
       for (const req of await стар.keys()) {
         if (req.url.indexOf(ДОКЛАД) > -1) continue;   // докладът се пише наново
+        // 21.10 · достъп: стар SW (≤ v873) кешира и /api/me в прозореца на смяната — не пътува напред.
+        //   ПЪТ НАЗАД: махни реда.
+        if (апиАдрес(req.url)) { изхвърлени++; continue; }
         // 🧭 15.09: копия на страницата с ?go= / ?fbclid= не пътуват напред —
         //   страницата вече живее под ЕДИН ключ („."). В ASSETS няма безверсиен
         //   адрес с „?" (проверено: 161 адреса, 0 с въпросителна).
@@ -594,8 +599,23 @@ function пазиСтраницата(req, res) {
 function страницаОтКеша() {
   return caches.match('.').then(r => r || caches.match('index.html'));
 }
+// ═══════════════════════════════════════════════════════════════════════
+// 🔑 21.10 · достъп — /api/* НИКОГА през кеша
+//   Долу статичните са „кеш-първо“ и пазиУспешни пази всеки успешен GET. Без
+//   това изключение /api/me щеше да се запомни веднъж и после да идва ВЕЧНО от
+//   кеша: стар срок, „влязла“ след изход, изтекла след удължаване.
+//   Сега service worker-ът не отговаря на /api/* изобщо — браузърът пита
+//   мрежата направо (заглавките no-store + Vary: * идват от сървъра). Без мрежа
+//   js/pl-dostap.js решава по своя запис в localStorage, не по Cache Storage.
+//   ПЪТ НАЗАД: махни функцията и реда с нея в fetch (или sw.js.PREDI_DOSTAP).
+// ═══════════════════════════════════════════════════════════════════════
+function апиАдрес(url) {
+  try { return new URL(url).pathname.indexOf('/api/') === 0; } catch (e) { return false; }
+}
+
 self.addEventListener('fetch', (e) => {
   const req = e.request;
+  if (апиАдрес(req.url)) return;   // 21.10 · достъп: мрежа винаги, без кеш (виж апиАдрес горе)
   if (req.method !== 'GET') return;
   const навигация = req.mode === 'navigate' || req.destination === 'document';
 

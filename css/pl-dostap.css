@@ -1,0 +1,372 @@
+/* ═══════════════════════════════════════════════════════════════════════════════
+   🔑 ДОСТЪПЪТ НА МАМА · 21.10.2026 · строител Б (екраните) — облеклото на js/pl-dostap.js
+   Вратата (#blDostap), екранът след изтичане и „без връзка“ (същият #blDostap), картата
+   „Достъп“ в профила (.prof-overlay .bl-dc) и админ панелът (#blDostapAdmin).
+   Визията на стаите: кремав филц с шев (.pl-felt), серифни тъмносини заглавия, гел-розов главен
+   бутон (.pl-gel), филцови второстепенни (.pl-soft) — материалите са от css/pl-ui.css, тук няма
+   свой гел/филц. Плюшените иконки са клетки от img/art/ico-*.webp (както js/pl-plyush.js).
+   Нощ (html[data-theme="dark"]): тъмносини карти, бели заглавия, #c9cbe3 за вторичния текст.
+   Текст ≥ 13 px (етикети ≥ 12 px), пръст ≥ 44 px, контраст ≥ 4.5:1 (мерен с getComputedStyle).
+   Обхват: САМО #blDostap, #blDostapAdmin, .prof-overlay .bl-dc и класовете bl-dg-on/bl-adm-on на <html>.
+   🪤 url() тук е спрямо ФАЙЛА (css/) → ../img/…
+   ПЪТ НАЗАД: махни <link href="css/pl-dostap.css"> от index.html (заедно с js/pl-dostap.js).
+   ═══════════════════════════════════════════════════════════════════════════════ */
+
+/* 21.10 · достъп · докато вратата/админът са отгоре, страницата отдолу не се превърта. ПЪТ НАЗАД: махни този блок. */
+html.bl-dg-on body, html.bl-adm-on body { overflow: hidden !important; }
+
+/* ═══ 0 · ОБЩОТО: плюшена иконка в кръг, бадж, числата, скрит текст ═══ */
+#blDostap .bl-ic, #blDostapAdmin .bl-ic, .prof-overlay .bl-dc .bl-ic {
+  display: inline-block; flex: none; width: 42px; height: 42px; border-radius: 50%;
+  background-color: var(--bl-tint, #fde6ef); background-repeat: no-repeat; background-size: 400% 400%;
+  background-blend-mode: multiply;
+  box-shadow: inset 0 0 0 3px #fff, 0 2px 6px rgba(110, 76, 52, .14);
+}
+#blDostap .bl-ic-s { width: 32px; height: 32px; box-shadow: inset 0 0 0 2px #fff, 0 1px 3px rgba(110, 76, 52, .12); }
+html[data-theme="dark"] #blDostap .bl-ic, html[data-theme="dark"] #blDostapAdmin .bl-ic, html[data-theme="dark"] .prof-overlay .bl-dc .bl-ic {
+  background-color: #fff; background-blend-mode: normal; box-shadow: 0 0 0 2px rgba(255, 255, 255, .25);
+}
+#blDostap .bl-num, #blDostapAdmin .bl-num, .prof-overlay .bl-dc .bl-num { font-family: Nunito, 'Nunito-fallback', system-ui, sans-serif; font-variant-numeric: tabular-nums; }
+#blDostapAdmin .bl-sr { position: absolute !important; width: 1px; height: 1px; margin: -1px; padding: 0; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; border: 0; }
+
+.prof-overlay .bl-dc .bl-badge, #blDostapAdmin .bl-badge {
+  display: inline-flex; align-items: center; min-height: 26px; padding: 3px 11px; border-radius: 999px;
+  font: 800 13px/1.2 Nunito, 'Nunito-fallback', system-ui, sans-serif; letter-spacing: .1px; white-space: nowrap;
+}
+.prof-overlay .bl-dc .bl-b-proben, #blDostapAdmin .bl-b-proben { background: #fde6ef; color: #9e2f5f; }
+.prof-overlay .bl-dc .bl-b-active, #blDostapAdmin .bl-b-active { background: #dff2e7; color: #1f6b45; }
+.prof-overlay .bl-dc .bl-b-admin, #blDostapAdmin .bl-b-admin { background: #dfeafb; color: #1d2a5c; }
+.prof-overlay .bl-dc .bl-b-expired, #blDostapAdmin .bl-b-expired { background: #fff0d4; color: #7a4b00; }
+.prof-overlay .bl-dc .bl-b-locked, #blDostapAdmin .bl-b-locked { background: #ece4f8; color: #4b3a7a; }
+html[data-theme="dark"] .prof-overlay .bl-dc .bl-b-proben, html[data-theme="dark"] #blDostapAdmin .bl-b-proben { background: rgba(245, 156, 187, .2); color: #ffd6e5; }
+html[data-theme="dark"] .prof-overlay .bl-dc .bl-b-active, html[data-theme="dark"] #blDostapAdmin .bl-b-active { background: rgba(110, 200, 160, .2); color: #c4f2da; }
+html[data-theme="dark"] .prof-overlay .bl-dc .bl-b-admin, html[data-theme="dark"] #blDostapAdmin .bl-b-admin { background: rgba(160, 190, 255, .2); color: #dfe8ff; }
+html[data-theme="dark"] .prof-overlay .bl-dc .bl-b-expired, html[data-theme="dark"] #blDostapAdmin .bl-b-expired { background: rgba(246, 181, 107, .2); color: #ffe2b8; }
+html[data-theme="dark"] .prof-overlay .bl-dc .bl-b-locked, html[data-theme="dark"] #blDostapAdmin .bl-b-locked { background: rgba(190, 170, 240, .22); color: #e8e0ff; }
+
+/* ═══ 1 · ВРАТАТА / ИЗТЕКЛО / БЕЗ ВРЪЗКА — цял екран над всичко (под стартовия екран #blSplash) ═══ */
+#blDostap {
+  position: fixed; inset: 0; z-index: 2147482600;
+  overflow-x: hidden; overflow-y: auto; overscroll-behavior: contain; -webkit-overflow-scrolling: touch;
+  background: #fff8f2; color: var(--pl-ink, #3b3f5c);
+  font-family: Nunito, 'Nunito-fallback', system-ui, sans-serif; text-align: center;
+  outline: none; animation: blDgIn .35s ease both;
+}
+#blDostap[hidden] { display: none !important; }
+@keyframes blDgIn { from { opacity: 0; } to { opacity: 1; } }
+/* рисунката отгоре (бебето в балона) — същата като въведението; превърта се със съдържанието */
+#blDostap::before {
+  content: ''; position: absolute; left: 0; right: 0; top: 0; height: min(178vw, 820px); z-index: 0; pointer-events: none;
+  background: url(../img/art/welcome.webp) 50% 0 / cover no-repeat;
+  -webkit-mask-image: linear-gradient(180deg, #000 0, #000 55%, rgba(0, 0, 0, 0) 100%);
+  mask-image: linear-gradient(180deg, #000 0, #000 55%, rgba(0, 0, 0, 0) 100%);
+}
+@media (min-aspect-ratio: 3/4) { #blDostap::before { background-size: auto 100%; background-color: #fdf3ec; } }
+html[data-theme="dark"] #blDostap { background: #151a3c; color: #fff; }
+html[data-theme="dark"] #blDostap::before { background-image: url(../img/art/hero-night.webp); background-position: 50% 8%; }
+#blDostap .bl-dg-in {
+  position: relative; z-index: 1; max-width: 460px; margin: 0 auto;
+  padding: calc(min(76vw, 320px) + env(safe-area-inset-top, 0px)) 14px calc(28px + env(safe-area-inset-bottom, 0px));
+}
+#blDostap[data-vid="изтекло"] .bl-dg-in, #blDostap[data-vid="офлайн"] .bl-dg-in { padding-top: calc(min(60vw, 250px) + env(safe-area-inset-top, 0px)); }
+
+/* ✚ SOS · 112 — горе вдясно, ВИНАГИ видимо (както в профила, css/pl-profil.css · .pl-p112-mini) */
+#blDostap .bl-dg-112 {
+  position: fixed; z-index: 3; top: calc(env(safe-area-inset-top, 0px) + 12px); right: max(14px, calc(50% - 230px));
+  display: inline-flex; align-items: center; gap: 6px; min-height: 46px; padding: 0 16px 0 12px; border-radius: 999px;
+  background: #fff; border: 2px solid #d9535f; color: #b3261e; text-decoration: none;
+  font: 800 16px/1 Nunito, 'Nunito-fallback', system-ui, sans-serif; letter-spacing: .2px;
+  box-shadow: 0 2px 0 #eab0b6, 0 8px 18px rgba(200, 60, 60, .22);
+}
+#blDostap .bl-dg-112 > span { color: #d0312d; font-size: 17px; }
+#blDostap .bl-dg-112:active { transform: translateY(2px); }
+
+/* картата — филц с шев (.pl-felt) */
+#blDostap .bl-dg-card { padding: 24px 20px 20px; text-align: center; }
+#blDostap .bl-dg-card > * { position: relative; z-index: 1; }
+#blDostap .bl-dg-kick { margin: 0 0 4px; font: 800 13px/1.2 Nunito, 'Nunito-fallback', sans-serif; letter-spacing: .16em; text-transform: uppercase; color: #8a5f30; }
+#blDostap .bl-dg-t {
+  margin: 0 0 10px; font-family: var(--pl-serif, Georgia, 'Noto Serif', serif); font-weight: 700;
+  font-size: 34px; line-height: 1.12; letter-spacing: -.4px; color: var(--pl-navy, #1d2a5c);
+}
+#blDostap .bl-dg-t2 { font-size: 28px; }
+#blDostap .bl-dg-lead { margin: 0 auto 8px; max-width: 34ch; font-size: 16px; font-weight: 600; line-height: 1.5; color: #45425e; }
+#blDostap .bl-dg-small { margin: 0 auto 4px; max-width: 36ch; font-size: 13.5px; font-weight: 700; line-height: 1.45; color: #5d596f; }
+#blDostap .bl-dg-small b { color: var(--pl-navy, #1d2a5c); overflow-wrap: anywhere; }
+#blDostap .bl-dg-big-ic { display: block; margin: 4px auto 8px; }
+#blDostap .bl-dg-big-ic .bl-ic { width: 64px; height: 64px; }
+
+/* полетата — капсула: иконка в кръг · етикет · поле (като регистрацията в профила) */
+#blDostap .bl-dg-form { margin: 18px 0 0; display: grid; gap: 12px; text-align: left; }
+#blDostap .bl-dg-fld {
+  display: flex; align-items: center; gap: 12px; min-height: 66px; padding: 5px 8px 5px 9px;
+  background: #fff; border: 1.5px solid #ead8c6; border-radius: 22px;
+  box-shadow: inset 0 2px 4px rgba(110, 76, 52, .07), 0 1px 0 #fff; cursor: text;
+  transition: border-color .2s ease, box-shadow .2s ease;
+}
+#blDostap .bl-dg-fld:focus-within { border-color: #e48bb0; box-shadow: 0 0 0 4px rgba(217, 90, 142, .2), inset 0 2px 4px rgba(110, 76, 52, .07); }
+#blDostap .bl-dg-fb { flex: 1 1 auto; min-width: 0; display: flex; flex-direction: column; gap: 0; }
+#blDostap .bl-dg-l { font-size: 13px; font-weight: 800; color: #5d596f; letter-spacing: .1px; }
+#blDostap .bl-dg-fld input {
+  width: 100%; min-width: 0; min-height: 44px; margin: 0; padding: 0; border: 0; outline: none; background: transparent;
+  font: 700 17px/1.3 Nunito, 'Nunito-fallback', system-ui, sans-serif; color: var(--pl-navy, #1d2a5c);
+  -webkit-appearance: none; appearance: none; box-shadow: none;
+}
+#blDostap .bl-dg-fld input::placeholder { color: #8e8aa3; font-weight: 600; opacity: 1; }
+#blDostap .bl-dg-eye {
+  flex: none; min-width: 64px; min-height: 44px; padding: 0 10px; border: 0; border-radius: 14px; background: transparent;
+  font: 800 14px/1 Nunito, 'Nunito-fallback', sans-serif; color: #a92f63; cursor: pointer;
+}
+#blDostap .bl-dg-eye:active { background: rgba(229, 109, 153, .1); }
+#blDostap .bl-dg-err { margin: 0; padding: 10px 14px; border-radius: 14px; background: #fdecee; border: 1px solid #f3c0c6; color: #a1221b; font-size: 14.5px; font-weight: 700; line-height: 1.45; }
+#blDostap .bl-dg-err[hidden] { display: none; }
+#blDostap .bl-dg-cta {
+  width: 100%; min-height: 58px; margin: 4px 0 0; padding: 0 20px; border-radius: 999px; cursor: pointer;
+  font: 800 19px/1.2 Nunito, 'Nunito-fallback', system-ui, sans-serif; letter-spacing: .1px;
+}
+#blDostap .bl-dg-cta:disabled { filter: grayscale(.35) opacity(.8); cursor: progress; }
+#blDostap .bl-dg-cta2 {
+  display: flex; align-items: center; justify-content: center; gap: 10px; width: 100%; min-height: 58px; margin: 16px 0 0; padding: 0 18px;
+  border-radius: 999px; cursor: pointer; font: 800 17px/1.2 Nunito, 'Nunito-fallback', system-ui, sans-serif;
+}
+#blDostap .bl-dg-cta2 .bl-ic { width: 36px; height: 36px; }
+#blDostap .bl-dg-switch {
+  display: block; width: 100%; min-height: 48px; margin: 10px 0 0; padding: 6px 10px; border: 0; background: transparent; cursor: pointer;
+  font: 700 15.5px/1.35 Nunito, 'Nunito-fallback', system-ui, sans-serif; color: #5d596f;
+}
+#blDostap .bl-dg-switch b { color: #a92f63; text-decoration: underline; text-decoration-thickness: 1.5px; text-underline-offset: 3px; }
+#blDostap .bl-dg-note { margin: 10px 0 0; font-size: 14px; font-weight: 700; line-height: 1.45; color: #5d596f; }
+#blDostap .bl-dg-note:empty { display: none; }
+#blDostap .bl-dg-priv {
+  display: flex; align-items: center; gap: 10px; margin: 14px 0 0; padding: 14px 2px 0;
+  border-top: 1.5px dashed rgba(196, 160, 124, .55); text-align: left;
+  font-size: 13px; font-weight: 700; line-height: 1.45; color: #5d596f;
+}
+/* „Забравена парола?“ */
+#blDostap .bl-dg-forgot { margin: 4px 0 0; text-align: left; }
+#blDostap .bl-dg-forgot summary {
+  display: flex; align-items: center; justify-content: center; min-height: 44px; cursor: pointer; list-style: none;
+  font: 700 14.5px/1.3 Nunito, 'Nunito-fallback', sans-serif; color: #5d596f; text-decoration: underline; text-underline-offset: 3px;
+}
+#blDostap .bl-dg-forgot summary::-webkit-details-marker { display: none; }
+#blDostap .bl-dg-forgot p { margin: 4px 0 10px; font-size: 14px; font-weight: 600; line-height: 1.45; color: #45425e; text-align: center; }
+
+/* контактите — бели редове (иконка · име · адресът · ›). МЕРЕНО ds21_L: в 2 × 2 плочки адресите се рязаха
+   по средата („babyland.sal|e@gmail.com“) — редът на цялата ширина ги събира на един ред. */
+#blDostap .bl-kont, .prof-overlay .bl-dc .bl-kont { display: grid; grid-template-columns: minmax(0, 1fr); gap: 8px; margin: 16px 0 0; text-align: left; }
+#blDostap .bl-kont-b, .prof-overlay .bl-dc .bl-kont-b {
+  display: flex; align-items: center; gap: 12px; min-height: 62px; min-width: 0; padding: 8px 12px 8px 9px;
+  background: #fff; border: 1px solid rgba(214, 186, 158, .7); border-radius: 20px; text-decoration: none;
+  box-shadow: 0 2px 0 rgba(203, 176, 150, .55), 0 8px 18px rgba(110, 76, 52, .08);
+  color: var(--pl-navy, #1d2a5c); transition: transform .14s ease, box-shadow .14s ease;
+}
+#blDostap .bl-kont-b:active, .prof-overlay .bl-dc .bl-kont-b:active { transform: translateY(2px); box-shadow: 0 0 0 rgba(203, 176, 150, .55), 0 3px 8px rgba(110, 76, 52, .08); }
+#blDostap .bl-kont-t, .prof-overlay .bl-dc .bl-kont-t { flex: 1 1 auto; display: flex; flex-direction: column; min-width: 0; }
+#blDostap .bl-kont-t b, .prof-overlay .bl-dc .bl-kont-t b { font-family: var(--pl-serif, Georgia, 'Noto Serif', serif); font-size: 17px; font-weight: 700; line-height: 1.2; color: var(--pl-navy, #1d2a5c); }
+#blDostap .bl-kont-t small, .prof-overlay .bl-dc .bl-kont-t small { margin-top: 2px; font-size: 13.5px; font-weight: 700; line-height: 1.3; color: #5d596f; overflow-wrap: anywhere; }
+#blDostap .bl-kont-mini { margin-top: 0; }
+
+/* СОС — под картата: „Спешни номера“ и стаята „Здраве и SOS“ (филцови редове) */
+#blDostap .bl-dg-sos { display: grid; gap: 10px; margin: 16px 0 0; }
+#blDostap .bl-dg-row {
+  display: flex; align-items: center; gap: 12px; width: 100%; min-height: 68px; padding: 9px 12px 9px 10px;
+  border-radius: 22px; cursor: pointer; text-align: left;
+}
+#blDostap .bl-dg-rt { flex: 1 1 auto; min-width: 0; display: flex; flex-direction: column; }
+#blDostap .bl-dg-rt b { font-family: var(--pl-serif, Georgia, 'Noto Serif', serif); font-size: 17px; font-weight: 700; line-height: 1.2; color: var(--pl-navy, #1d2a5c); }
+#blDostap .bl-dg-rt small { margin-top: 3px; font-size: 13px; font-weight: 700; line-height: 1.3; color: #5d596f; }
+#blDostap .bl-dg-go, .prof-overlay .bl-dc .bl-dg-go { flex: none; width: 22px; text-align: center; font-size: 30px; line-height: 1; color: var(--pl-navy, #1d2a5c); }
+
+/* ── нощ ── */
+html[data-theme="dark"] #blDostap .bl-dg-kick { color: #e3c39c; }
+html[data-theme="dark"] #blDostap .bl-dg-t { color: #fff; }
+html[data-theme="dark"] #blDostap .bl-dg-lead { color: #e6e8f6; }
+html[data-theme="dark"] #blDostap .bl-dg-small, html[data-theme="dark"] #blDostap .bl-dg-note,
+html[data-theme="dark"] #blDostap .bl-dg-priv, html[data-theme="dark"] #blDostap .bl-dg-switch,
+html[data-theme="dark"] #blDostap .bl-dg-forgot summary, html[data-theme="dark"] #blDostap .bl-dg-l { color: #c9cbe3; }
+html[data-theme="dark"] #blDostap .bl-dg-small b, html[data-theme="dark"] #blDostap .bl-dg-forgot p { color: #fff; }
+html[data-theme="dark"] #blDostap .bl-dg-switch b, html[data-theme="dark"] #blDostap .bl-dg-eye { color: #f7a9c6; }
+html[data-theme="dark"] #blDostap .bl-dg-priv { border-top-color: rgba(255, 255, 255, .22); }
+html[data-theme="dark"] #blDostap .bl-dg-fld { background: rgba(255, 255, 255, .07); border-color: rgba(255, 255, 255, .2); box-shadow: none; }
+html[data-theme="dark"] #blDostap .bl-dg-fld:focus-within { border-color: #f59cbb; box-shadow: 0 0 0 4px rgba(245, 156, 187, .22); }
+html[data-theme="dark"] #blDostap .bl-dg-fld input { color: #fff; }
+html[data-theme="dark"] #blDostap .bl-dg-fld input::placeholder { color: #aab0d6; }
+html[data-theme="dark"] #blDostap .bl-dg-err { background: rgba(255, 180, 171, .12); border-color: rgba(255, 180, 171, .4); color: #ffc9c2; }
+html[data-theme="dark"] #blDostap .bl-kont-b, html[data-theme="dark"] .prof-overlay .bl-dc .bl-kont-b { background: #2e3c7a; border-color: rgba(255, 255, 255, .16); box-shadow: 0 2px 0 #18214a, 0 8px 18px rgba(0, 0, 0, .22); }
+html[data-theme="dark"] #blDostap .bl-kont-t b, html[data-theme="dark"] .prof-overlay .bl-dc .bl-kont-t b,
+html[data-theme="dark"] #blDostap .bl-dg-rt b, html[data-theme="dark"] #blDostap .bl-dg-go, html[data-theme="dark"] .prof-overlay .bl-dc .bl-dg-go { color: #fff; }
+html[data-theme="dark"] #blDostap .bl-kont-t small, html[data-theme="dark"] .prof-overlay .bl-dc .bl-kont-t small, html[data-theme="dark"] #blDostap .bl-dg-rt small { color: #c9cbe3; }
+
+/* ═══ 2 · КАРТАТА „ДОСТЪП“ В ПРОФИЛА (страница в тефтера на css/pl-profil.css) ═══ */
+.prof-overlay .bl-dc .bl-dc-st {
+  margin: 0; padding: 14px 16px 15px; text-align: left;
+  background: #fff; border: 1px solid rgba(214, 186, 158, .6); border-radius: 22px;
+  box-shadow: 0 2px 0 rgba(203, 176, 150, .5), 0 8px 18px rgba(110, 76, 52, .08);
+}
+.prof-overlay .bl-dc .bl-dc-big { margin: 10px 0 4px; font-family: var(--pl-serif, Georgia, 'Noto Serif', serif); font-size: 23px; font-weight: 700; line-height: 1.2; letter-spacing: -.2px; color: var(--pl-navy, #1d2a5c); }
+.prof-overlay .bl-dc .bl-dc-ln { margin: 2px 0 0; font-size: 15px; font-weight: 600; line-height: 1.45; color: #3b3f5c; }
+.prof-overlay .bl-dc .bl-dc-ln b { font-weight: 800; color: var(--pl-navy, #1d2a5c); }
+.prof-overlay .bl-dc .bl-dc-do { font-size: 13.5px; font-weight: 700; color: #5d596f; }
+.prof-overlay .bl-dc .bl-dc-kak { margin: 16px 0 0; }
+.prof-overlay .bl-dc .bl-dc-kh { margin: 0 0 4px; font-family: var(--pl-serif, Georgia, 'Noto Serif', serif); font-size: 17px; font-weight: 700; color: var(--pl-navy, #1d2a5c); }
+.prof-overlay .bl-dc .bl-dc-cena { margin: 0; font-size: 13.5px; font-weight: 600; line-height: 1.5; color: #5d596f; }
+.prof-overlay .bl-dc .bl-kont { margin-top: 12px; }
+.prof-overlay .bl-dc .bl-dc-b {
+  display: flex; align-items: center; gap: 12px; width: 100%; min-height: 64px; margin: 12px 0 0; padding: 8px 14px 8px 9px;
+  border-radius: 22px; cursor: pointer; text-align: left;
+  font: 800 17px/1.2 Nunito, 'Nunito-fallback', system-ui, sans-serif;
+}
+.prof-overlay .bl-dc .bl-dc-b > span:not(.bl-ic):not(.bl-dg-go) { flex: 1 1 auto; }
+.prof-overlay .bl-dc .bl-dc-adm .bl-ic { background-color: #fff; box-shadow: 0 2px 0 rgba(120, 20, 60, .25); }
+.prof-overlay .bl-dc .bl-dc-adm .bl-dg-go { color: #fff; }
+.prof-overlay .bl-dc .bl-dc-b:disabled { opacity: .75; cursor: progress; }
+.prof-overlay .bl-dc .bl-dc-st-off { margin: 10px 2px 0; font-size: 13.5px; font-weight: 700; line-height: 1.45; color: #7a4b00; }
+.prof-overlay .bl-dc .bl-dc-st-off:empty { display: none; }
+.prof-overlay .bl-dc .bl-dc-note { margin: 12px 2px 0; font-size: 13px; font-weight: 600; line-height: 1.5; color: #5d596f; }
+html[data-theme="dark"] .prof-overlay .bl-dc .bl-dc-st { background: #2e3c7a; border-color: rgba(255, 255, 255, .16); box-shadow: 0 2px 0 #18214a, 0 8px 18px rgba(0, 0, 0, .22); }
+html[data-theme="dark"] .prof-overlay .bl-dc .bl-dc-big, html[data-theme="dark"] .prof-overlay .bl-dc .bl-dc-kh,
+html[data-theme="dark"] .prof-overlay .bl-dc .bl-dc-ln, html[data-theme="dark"] .prof-overlay .bl-dc .bl-dc-ln b { color: #fff; }
+html[data-theme="dark"] .prof-overlay .bl-dc .bl-dc-do, html[data-theme="dark"] .prof-overlay .bl-dc .bl-dc-cena,
+html[data-theme="dark"] .prof-overlay .bl-dc .bl-dc-note { color: #d6d8ee; }
+html[data-theme="dark"] .prof-overlay .bl-dc .bl-dc-st-off { color: #ffe2b8; }
+
+/* ═══ 3 · АДМИН ПАНЕЛЪТ (#blDostapAdmin) — цял екран над профила ═══ */
+#blDostapAdmin {
+  position: fixed; inset: 0; z-index: 2147482400;
+  overflow-x: hidden; overflow-y: auto; overscroll-behavior: contain; -webkit-overflow-scrolling: touch;
+  background: #fbf3ea url(../img/art/felt.webp) 0 0 / 160px 160px; background-blend-mode: multiply;
+  color: var(--pl-ink, #3b3f5c); font-family: Nunito, 'Nunito-fallback', system-ui, sans-serif; outline: none;
+  animation: blDgIn .25s ease both;
+}
+#blDostapAdmin[hidden] { display: none !important; }
+#blDostapAdmin .bl-adm-in { max-width: 560px; margin: 0 auto; padding: 0 14px calc(40px + env(safe-area-inset-bottom, 0px)); }
+#blDostapAdmin .bl-adm-head {
+  position: sticky; top: 0; z-index: 3; display: flex; align-items: center; gap: 12px;
+  margin: 0 -14px; padding: calc(env(safe-area-inset-top, 0px) + 12px) 14px 12px;
+  background: rgba(251, 243, 234, .96); border-bottom: 1.5px dashed rgba(196, 160, 124, .55);
+}
+#blDostapAdmin .bl-adm-x { flex: none; width: 48px; height: 48px; padding: 0; border-radius: 50%; font-size: 22px; font-weight: 800; line-height: 1; cursor: pointer; }
+#blDostapAdmin .bl-adm-ht { flex: 1 1 auto; min-width: 0; }
+#blDostapAdmin .bl-adm-ref { font-size: 24px; }
+#blDostapAdmin .bl-adm-ht h2 { margin: 0; font-family: var(--pl-serif, Georgia, 'Noto Serif', serif); font-size: 26px; font-weight: 700; line-height: 1.15; color: var(--pl-navy, #1d2a5c); }
+#blDostapAdmin .bl-adm-ht p { margin: 2px 0 0; font-size: 13.5px; font-weight: 700; color: #5d596f; }
+
+#blDostapAdmin .bl-adm-tiles { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 8px; margin: 14px 0 0; }
+#blDostapAdmin .bl-adm-tile {
+  display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 2px; min-height: 76px; min-width: 0; padding: 8px 2px;
+  background: #fff; border: 1.5px solid rgba(214, 186, 158, .7); border-radius: 18px; cursor: pointer;
+  box-shadow: 0 2px 0 rgba(203, 176, 150, .55); color: var(--pl-navy, #1d2a5c);
+}
+#blDostapAdmin .bl-adm-tile b { font-size: 26px; font-weight: 800; line-height: 1.1; }
+#blDostapAdmin .bl-adm-tile span { max-width: 100%; font-size: 13px; font-weight: 700; letter-spacing: -.2px; color: #5d596f; white-space: nowrap; }
+#blDostapAdmin .bl-adm-tile.on { background: #fde6ef; border-color: #efa3c1; box-shadow: 0 2px 0 #e7a0bd; }
+#blDostapAdmin .bl-adm-tile.on span { color: #9e2f5f; }
+
+#blDostapAdmin .bl-adm-tools { margin: 14px 0 0; display: grid; gap: 10px; }
+#blDostapAdmin .bl-adm-q input {
+  width: 100%; min-height: 52px; padding: 0 18px; border-radius: 999px; border: 1.5px solid #e3cdb8; background: #fff;
+  font: 700 17px/1.2 Nunito, 'Nunito-fallback', sans-serif; color: var(--pl-navy, #1d2a5c); outline: none; -webkit-appearance: none; appearance: none;
+}
+#blDostapAdmin .bl-adm-q input::placeholder { color: #8e8aa3; font-weight: 600; opacity: 1; }
+#blDostapAdmin input:focus { border-color: #e48bb0; box-shadow: 0 0 0 4px rgba(217, 90, 142, .2); }
+#blDostapAdmin .bl-adm-tb, #blDostapAdmin .bl-adm-row { display: flex; flex-wrap: wrap; gap: 8px; }
+#blDostapAdmin .bl-adm-tb > button, #blDostapAdmin .bl-adm-row > button, #blDostapAdmin .bl-adm-inl > button {
+  min-height: 48px; padding: 0 18px; border-radius: 999px; cursor: pointer;
+  font: 800 15.5px/1.1 Nunito, 'Nunito-fallback', system-ui, sans-serif;
+}
+#blDostapAdmin .bl-adm-tb > .bl-adm-new { flex: 1 1 auto; }
+#blDostapAdmin button:disabled { opacity: .6; cursor: progress; }
+
+#blDostapAdmin .bl-adm-msg { margin: 12px 0 0; padding: 11px 14px; border-radius: 16px; background: #e9f6ee; border: 1px solid #bfe3cd; color: #1f6b45; font-size: 14.5px; font-weight: 700; line-height: 1.45; overflow-wrap: anywhere; }
+#blDostapAdmin .bl-adm-msg[hidden] { display: none; }
+#blDostapAdmin .bl-adm-msg-err { background: #fdecee; border-color: #f3c0c6; color: #a1221b; }
+
+#blDostapAdmin .bl-adm-form { margin: 12px 0 0; padding: 14px; display: grid; gap: 10px; background: #fff; border: 1.5px solid rgba(214, 186, 158, .7); border-radius: 22px; }
+#blDostapAdmin .bl-adm-fh { margin: 0; font-family: var(--pl-serif, Georgia, 'Noto Serif', serif); font-size: 19px; font-weight: 700; color: var(--pl-navy, #1d2a5c); }
+#blDostapAdmin .bl-adm-form label, #blDostapAdmin .bl-adm-inl label { display: flex; flex-direction: column; gap: 4px; min-width: 0; }
+#blDostapAdmin .bl-adm-form label > span, #blDostapAdmin .bl-adm-inl label > span:not(.bl-sr) { font-size: 13px; font-weight: 800; color: #5d596f; }
+#blDostapAdmin .bl-adm-form input, #blDostapAdmin .bl-adm-inl input {
+  width: 100%; min-height: 48px; padding: 0 12px; border-radius: 14px; border: 1.5px solid #e3cdb8; background: #fffdfb;
+  font: 700 16px/1.2 Nunito, 'Nunito-fallback', sans-serif; color: var(--pl-navy, #1d2a5c); outline: none;
+}
+
+#blDostapAdmin .bl-adm-list { margin: 12px 0 0; display: grid; gap: 10px; }
+#blDostapAdmin .bl-adm-empty { margin: 18px 0; text-align: center; font-size: 15px; font-weight: 700; color: #5d596f; }
+#blDostapAdmin .bl-adm-u { background: #fff; border: 1.5px solid rgba(214, 186, 158, .7); border-radius: 20px; box-shadow: 0 2px 0 rgba(203, 176, 150, .5), 0 8px 18px rgba(110, 76, 52, .07); overflow: hidden; }
+#blDostapAdmin .bl-adm-u.open { border-color: #efa3c1; }
+#blDostapAdmin .bl-adm-uh {
+  position: relative; display: block; width: 100%; min-height: 72px; margin: 0; padding: 12px 40px 12px 14px;
+  border: 0; background: transparent; text-align: left; cursor: pointer; color: var(--pl-navy, #1d2a5c); font: inherit;
+}
+#blDostapAdmin .bl-adm-ut { display: flex; flex-wrap: wrap; align-items: center; gap: 6px 8px; }
+#blDostapAdmin .bl-adm-ut b { font-size: 16px; font-weight: 800; line-height: 1.3; color: var(--pl-navy, #1d2a5c); overflow-wrap: anywhere; }
+#blDostapAdmin .bl-adm-ud { display: block; margin-top: 4px; font-size: 14px; font-weight: 700; line-height: 1.4; color: #3b3f5c; }
+#blDostapAdmin .bl-adm-ud2 { font-size: 13px; color: #5d596f; }
+#blDostapAdmin .bl-adm-chev { position: absolute; right: 12px; top: 50%; transform: translateY(-50%); font-size: 28px; line-height: 1; color: var(--pl-navy, #1d2a5c); }
+#blDostapAdmin .bl-adm-acts { padding: 4px 14px 14px; border-top: 1.5px dashed rgba(196, 160, 124, .55); display: grid; gap: 10px; }
+#blDostapAdmin .bl-adm-acts > .bl-adm-row:first-child, #blDostapAdmin .bl-adm-acts > .bl-adm-hint + .bl-adm-row { margin-top: 10px; }
+#blDostapAdmin .bl-adm-hint { margin: 10px 0 0; font-size: 13.5px; font-weight: 700; color: #1d2a5c; background: #dfeafb; border-radius: 12px; padding: 8px 12px; }
+#blDostapAdmin .bl-adm-inl { display: flex; align-items: flex-end; gap: 8px; margin: 0; }
+#blDostapAdmin .bl-adm-inl > button { flex: none; white-space: nowrap; }
+/* +1 месец · [N] · + дни — на един ред (МЕРЕНО ds21_L: полето за дни се разпъваше, „+ дни“ се чупеше на два реда) */
+#blDostapAdmin .bl-adm-ext { flex-wrap: nowrap; align-items: flex-end; }
+#blDostapAdmin .bl-adm-ext > button { flex: none; white-space: nowrap; }
+#blDostapAdmin .bl-adm-ext > .bl-adm-inl { flex: 1 1 auto; min-width: 0; justify-content: flex-end; }
+#blDostapAdmin .bl-adm-n { flex: 0 1 92px; min-width: 64px; }
+#blDostapAdmin .bl-adm-n input { width: 100%; text-align: center; }
+#blDostapAdmin .bl-adm-wide > label { flex: 1 1 auto; }
+#blDostapAdmin .bl-adm-del {
+  min-height: 48px; padding: 0 18px; border-radius: 999px; cursor: pointer;
+  background: #fff; border: 2px solid #d9535f; color: #b3261e;
+  font: 800 15.5px/1.1 Nunito, 'Nunito-fallback', system-ui, sans-serif; box-shadow: 0 2px 0 #eab0b6;
+}
+#blDostapAdmin .bl-adm-del2 { background: #b3261e; color: #fff; border-color: #b3261e; box-shadow: 0 2px 0 #7f1a15; }
+#blDostapAdmin .bl-adm-confirm { padding: 12px; border-radius: 16px; background: #fdecee; border: 1px solid #f3c0c6; }
+#blDostapAdmin .bl-adm-confirm p { margin: 0 0 10px; font-size: 14.5px; font-weight: 700; line-height: 1.45; color: #7a1d1d; overflow-wrap: anywhere; }
+
+/* ── нощ ── */
+html[data-theme="dark"] #blDostapAdmin { background-color: #151a3c; background-image: none; color: #fff; }
+html[data-theme="dark"] #blDostapAdmin .bl-adm-head { background: rgba(21, 26, 60, .96); border-bottom-color: rgba(255, 255, 255, .2); }
+html[data-theme="dark"] #blDostapAdmin .bl-adm-ht h2, html[data-theme="dark"] #blDostapAdmin .bl-adm-fh,
+html[data-theme="dark"] #blDostapAdmin .bl-adm-tile, html[data-theme="dark"] #blDostapAdmin .bl-adm-ut b,
+html[data-theme="dark"] #blDostapAdmin .bl-adm-chev, html[data-theme="dark"] #blDostapAdmin .bl-adm-uh { color: #fff; }
+html[data-theme="dark"] #blDostapAdmin .bl-adm-ht p, html[data-theme="dark"] #blDostapAdmin .bl-adm-tile span,
+html[data-theme="dark"] #blDostapAdmin .bl-adm-ud2, html[data-theme="dark"] #blDostapAdmin .bl-adm-empty,
+html[data-theme="dark"] #blDostapAdmin .bl-adm-form label > span, html[data-theme="dark"] #blDostapAdmin .bl-adm-inl label > span:not(.bl-sr) { color: #c9cbe3; }
+html[data-theme="dark"] #blDostapAdmin .bl-adm-ud { color: #e6e8f6; }
+html[data-theme="dark"] #blDostapAdmin .bl-adm-tile, html[data-theme="dark"] #blDostapAdmin .bl-adm-u,
+html[data-theme="dark"] #blDostapAdmin .bl-adm-form { background: #26336b; border-color: rgba(255, 255, 255, .16); box-shadow: 0 2px 0 #18214a; }
+html[data-theme="dark"] #blDostapAdmin .bl-adm-tile.on { background: #5a2c55; border-color: rgba(245, 156, 187, .6); }
+html[data-theme="dark"] #blDostapAdmin .bl-adm-tile.on span { color: #ffe1ec; }
+html[data-theme="dark"] #blDostapAdmin .bl-adm-u.open { border-color: rgba(245, 156, 187, .6); }
+html[data-theme="dark"] #blDostapAdmin .bl-adm-acts { border-top-color: rgba(255, 255, 255, .2); }
+html[data-theme="dark"] #blDostapAdmin .bl-adm-q input, html[data-theme="dark"] #blDostapAdmin .bl-adm-form input,
+html[data-theme="dark"] #blDostapAdmin .bl-adm-inl input { background: #1f2a5c; border-color: rgba(255, 255, 255, .22); color: #fff; color-scheme: dark; }
+html[data-theme="dark"] #blDostapAdmin .bl-adm-q input::placeholder { color: #aab0d6; }
+html[data-theme="dark"] #blDostapAdmin .bl-adm-msg { background: rgba(110, 200, 160, .14); border-color: rgba(110, 200, 160, .4); color: #c4f2da; }
+html[data-theme="dark"] #blDostapAdmin .bl-adm-msg-err { background: rgba(255, 180, 171, .12); border-color: rgba(255, 180, 171, .4); color: #ffc9c2; }
+html[data-theme="dark"] #blDostapAdmin .bl-adm-hint { background: rgba(160, 190, 255, .16); color: #dfe8ff; }
+html[data-theme="dark"] #blDostapAdmin .bl-adm-del { background: transparent; border-color: #ff8a80; color: #ffb4ab; box-shadow: none; }
+html[data-theme="dark"] #blDostapAdmin .bl-adm-del2 { background: #c62828; border-color: #c62828; color: #fff; }
+html[data-theme="dark"] #blDostapAdmin .bl-adm-confirm { background: rgba(255, 180, 171, .12); border-color: rgba(255, 180, 171, .4); }
+html[data-theme="dark"] #blDostapAdmin .bl-adm-confirm p { color: #ffd9d4; }
+
+@media (prefers-reduced-motion: reduce) { #blDostap, #blDostapAdmin { animation: none; } }
+/* край 21.10 · достъп */
+
+/* ═══ 21.10 · облакът (главната сесия) ═══
+   Собственикът не харесва 3D картината в началото — вратата, „изтекло“ и „офлайн“ вече са под пастелното небе на
+   стартовия екран (#blSplash, index.html), а горе стои живото векторно лого „Baby Land“ (клонинг на header.hero .logo-art,
+   js/pl-dostap.js рисувай()). ПЪТ НАЗАД: махни този блок и 4-те реда в рисувай(). */
+#blDostap::before {
+  background: linear-gradient(180deg, #fdf3f9 0%, #f3f2fc 45%, #fff8f2 100%) !important;
+  -webkit-mask-image: none !important; mask-image: none !important; height: 100% !important;
+}
+html[data-theme="dark"] #blDostap::before { background: linear-gradient(180deg, #1f1b3a 0%, #1b1f4a 50%, #151a3c 100%) !important; }
+#blDostap .bl-dg-in, #blDostap[data-vid="изтекло"] .bl-dg-in, #blDostap[data-vid="офлайн"] .bl-dg-in { padding-top: calc(env(safe-area-inset-top, 0px) + 64px) !important; }
+#blDostap .bl-dg-logo { margin: 0 auto 6px; width: min(280px, 74vw); }
+#blDostap .bl-dg-logo .logo-art { width: 100% !important; height: auto; display: block; }
+html[data-theme="dark"] #blDostap .bl-dg-logo .lg-cloud > path:first-child { fill: #ece8f7; stroke: #d9d1ee; }
+html[data-theme="dark"] #blDostap .bl-dg-logo .lg-baby, html[data-theme="dark"] #blDostap .bl-dg-logo .lg-land { stroke: #ece8f7; }
+html[data-theme="dark"] #blDostap .bl-dg-logo .lg-splash { opacity: .32; }
+/* край 21.10 · облакът */
