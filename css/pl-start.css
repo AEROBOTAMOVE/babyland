@@ -68,3 +68,15 @@ html[data-theme="dark"].pl-on header.hero .lg-baby,
 html[data-theme="dark"].pl-on header.hero .lg-land { stroke: #ece8f7; }
 html[data-theme="dark"].pl-on header.hero .lg-splash { opacity: .32; }
 html[data-theme="dark"].pl-on .pl-hero p { color: #cfc3e2; }
+
+/* ── 5 · „Днес“: силуетчето на бебето (rooms2.js bebeAva — сменя позата с месеците) става медальон ──
+   Беше голо розово човече 41×57 вляво от „Днес“ (снимка st21_dnes) — единственото нещо в стар стил в
+   картата. Функцията остава (позата по възрастта); само облеклото е като аватара на бебето горе (.pl-baby-av). */
+html.pl-on .td-top > .td-ava.bb-ava {
+  width: 52px; height: 52px; border-radius: 50%; display: grid; place-items: center; align-self: center;
+  background: radial-gradient(circle at 35% 30%, #fff 0, var(--pl-pink-soft, #fde6ef) 72%);
+  box-shadow: inset 0 0 0 3px #fff, 0 4px 12px rgba(170, 118, 118, .18);
+}
+html.pl-on .td-top > .td-ava.bb-ava > svg.bb-sil { width: 30px; height: auto; fill: #d9789b; }
+html[data-theme="dark"].pl-on .td-top > .td-ava.bb-ava { background: radial-gradient(circle at 35% 30%, #46498a 0, #2b3872 75%); box-shadow: inset 0 0 0 2px rgba(255, 255, 255, .22), 0 4px 12px rgba(0, 0, 0, .3); }
+html[data-theme="dark"].pl-on .td-top > .td-ava.bb-ava > svg.bb-sil { fill: #f59cbb; }
