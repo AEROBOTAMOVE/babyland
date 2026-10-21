@@ -544,4 +544,21 @@ html:not([data-theme="dark"]) body #roomOverlay .ro-panel #roRoom .sec-head .sec
 html:not([data-theme="dark"]) body #roomOverlay .ro-panel #roRoom .ml-big strong { color: #b83a72 !important; }
 html:not([data-theme="dark"]) body #roomOverlay .ro-panel #roRoom .fs-pane .fs-pt { opacity: 1 !important; color: #3b3f5c !important; }
 html:not([data-theme="dark"]) body #roomOverlay .ro-panel #roRoom .fd-grid .fd-card:not(.tried) { border-color: #ead8c7 !important; }
+/* 6 · група „Бременност / Жената / Дневник“ на одита:
+   а) денем банерът на стаята (img/art/stai/banner_*.webp, кремав фон; premium.css:930) оставаше като кремаво
+      петно върху картината на стаята в „Жената в мен“ (покрива чашата и ръцете) и в „Бременност“ (корема) —
+      снимка fa21_zhena_L_00. Нощем радиалната маска (premium.css:1521) го скрива. В тези две стаи — без банер денем;
+   б) нощем микрофонът в „Бременност“ и „Жената“ — по-силен селектор от стайните правила (кремав кръг под рисунката);
+   в) неактивните табове „Статии“/помощничката: 10.5px, 3.63:1 → 11.5px, мастило 5f5878;
+   г) „Записвай колкото често ИСКАШ…“ (Дневник на наддаването) нощем 4.28:1 → #c9cbe3. */
+html:not([data-theme="dark"]) body #roomOverlay .ro-panel.ro-rose #roRoom > .pl-rhero > img,
+html:not([data-theme="dark"]) body #roomOverlay .ro-panel.ro-peach #roRoom > .pl-rhero > img { display: none !important; }
+html[data-theme="dark"] body #roomOverlay .ro-panel .ask-mic.ask-mic.ask-mic.pl-pl { background-color: #fdf1e8 !important; border-color: rgba(255, 255, 255, .5) !important; }
+html body #roomOverlay #roTabs .st-seg .st-n.st-n { font-size: 11.5px !important; }
+html:not([data-theme="dark"]) body #roomOverlay #roTabs .st-seg:not(.on) { color: #5f5878 !important; }
+html[data-theme="dark"] body #roomOverlay .ro-panel #roRoom .pw-box p.jr-privacy { color: #c9cbe3 !important; opacity: 1 !important; }
+/* 7 · шапката на стаята нощем: ←/SOS/× стояха 12–14 px по-ниско от хапчето с табовете (мерено fa21_shapka.js:
+   нощем .ro-who е 88 px висок срещу 60 денем → шапката 116 срещу 88, а бутоните се центрират по нея).
+   Закотвени горе: денем остават на y = 22 (14 + 8), нощем се изравняват с табовете. */
+html body #roomOverlay .ro-panel .ro-head > .ro-nav { align-self: flex-start !important; margin-top: 8px !important; }
 /* край 21.10 · одит */

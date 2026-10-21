@@ -230,6 +230,10 @@ document.querySelectorAll('.bn-item').forEach(item => {
 const navIO = new IntersectionObserver((entries) => {
   entries.forEach(entry => {
     if (entry.isIntersecting && navMap.has(entry.target)) {
+      // 21.10 · финалният одит (fa21 начало): в новото начало (html.pl-on) старите секции #дневник и #стаите стоят
+      //   прибрани под „Още за Бейби Ленд“ — щом мама превърти дотам, светваше „Дневник“, а бутонът отваря стаята.
+      //   В новото начало лентата остава на „Начало“. ПЪТ НАЗАД: махни следващия ред.
+      if (document.documentElement.classList.contains('pl-on') && decodeURIComponent(navMap.get(entry.target).getAttribute('href') || '').slice(1) !== 'начало') return;
       document.querySelectorAll('.bn-item').forEach(i => i.classList.remove('bn-active'));
       navMap.get(entry.target).classList.add('bn-active');
     }

@@ -130,6 +130,8 @@
     //   кръгче, а съседните редове — плюшени. Вече нарисувани съседи по смисъл: лигавник → дрешката, плик → чантата,
     //   резервна закуска → гевречето, чашка → кутийката сок, прибор → приборите. ПЪТ НАЗАД: махни този ред.
     '🦺': ['b', 3, 3, 'p'], '🛍️': ['f', 3, 0, 'p'], '🍪': ['p', 3, 3, 'b'], '🥤': ['p', 0, 2, 'p'], '🍴': ['f', 1, 2, 'm'],
+    // 21.10 · одит, група „мама“: 🎭 в медала на „Коя си ти днес“ (Жената в мен) — голо → танцуващата жена 💃
+    '🎭': ['i', 0, 0, 'p'],
   };
   const ЛИСТ = { a: 'ico-a', b: 'ico-b', c: 'ico-c', d: 'ico-d', e: 'ico-e', f: 'ico-f', g: 'ico-g', h: 'ico-h', i: 'ico-i', j: 'ico-j', k: 'ico-k', l: 'ico-l', m2: 'ico-m', n: 'ico-n', o: 'ico-o', p: 'ico-p', q: 'ico-q', x: 'fig-a', t: 'statii-t', m: 'lica' };
   const ДВЕРЕДНИ = { x: 1, m: 1 };                       // листове 4×2 (другите са 4×4)
@@ -211,7 +213,9 @@
     '.msg-bubble, .msg-bubble p, .msg-bubble li, .ask-q, .msg-t, ' +
     // 29.09 МЕРЕНО (statia3): в четеното на статия оставаха системни емоджита (🚨 в кутията
     //   за внимание, ℹ️ долу). Обвиването пипа само собствените текстови възли — текстът остава.
-    '#artOverlay :is(p,li,h2,h3,h4,div,span,b,strong,small,em)';   // 🪤 мехурчето е .msg-bubble (helper.js:3789)
+    '#artOverlay :is(p,li,h2,h3,h4,div,span,b,strong,small,em), ' +
+    // 21.10 · финалният одит: ❤️ в долната бележка на всяка стая и 💜/❤️ във футъра на началото
+    '#roomOverlay .ro-panel > p.ro-disc, footer.footer p';   // 🪤 мехурчето е .msg-bubble (helper.js:3789)
   // 🪤 23.09 МЕРЕНО (den_nachalo): обвивах САМО водещо емоджи и пропуснах „Добро утро! 🌸“,
   //   „+ 🌡️ Мерих температура“, „А всъщност? 👀“ — 14 голи емоджита на началния екран.
   //   Сега се обвива ПЪРВОТО емоджи във всеки СВОЙ текстов възел, където и да стои.
@@ -262,7 +266,9 @@
   // ── 3 · едрата самотна емоджи-рисунка (цял елемент = едно емоджи, ≥20px) ──
   //  и секциите на началната страница (те се преобличат, не се крият — 23.09)
   const ЕДРИ = '#roRoom span, #roRoom i, #roRoom em, #roRoom strong, #plHome span, .prof-overlay span, .prof-overlay i, ' +
-    '#searchOverlay span, #plDv span, .rm-veil span, .rm-veil i, main > section span, main > section i';
+    '#searchOverlay span, #plDv span, .rm-veil span, .rm-veil i, main > section span, main > section i, ' +
+    // 21.10 · финалният одит (fa21 начало): небето на часа над облака (home.js:63–70) — ☀️ ☁️ 🕊️ 🌙 стояха голи
+    'header.hero .sky-layer .sk-sun, header.hero .sky-layer .sk-cloud, header.hero .sky-layer .sk-bird, header.hero .sky-layer .sk-moon';
   const БЕЗ = '#roChat, #artBody, .msg, .ask-badge, input, textarea, .pl-em';        // за ЕДРИТЕ
   const БЕЗ_ОБВИЙ = '.ask-badge, input, textarea, .pl-em';                            // за ОБВИВАНЕТО
   // ⏱️ 21.10 МЕРЕНО (tezhest.js --profil, ×4): едро() = 101 ms при старта — getComputedStyle ЕДИН ПО ЕДИН,

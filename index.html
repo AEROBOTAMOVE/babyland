@@ -41,7 +41,7 @@
      новото начало с празни кръгчета. Причината: новото начало го слага js/premium-home.js, 100-ият от 130 отложени
      скрипта. Сега от първия кадър стои облакът „Baby Land“ (векторен, вграден — нито един файл), а когато новото
      начало е подредено (html.pl-gl20) и плюшените знаци са там, облакът ОТЛИТА на мястото си горе в началото
-     (същото лого, header.hero), а фонът се топи. Ако нещо пропадне — 1,5 с след DOMContentLoaded, най-късно след 15 с. 112 се вижда през цялото време.
+     (същото лого, header.hero), а фонът се топи. Ако нещо пропадне — 1,5 с след DOMContentLoaded (таван 15 с след него, 60 с изобщо). 112 се вижда през цялото време.
      ПЪТ НАЗАД: махни <link> и <style> тук + #blSplash и скрипта след <body>. -->
 <link rel="preload" href="fonts/pacifico-400-latin.woff2" as="font" type="font/woff2" crossorigin>
 <style>
@@ -100,7 +100,7 @@ html[data-theme="dark"] #blSplash .bls-sos{color:#ffd0dc;background:rgba(255,255
 <link rel="stylesheet" href="css/anim.css?v=16">
 <link rel="stylesheet" href="css/tier.css?v=8">
 <link rel="stylesheet" href="css/premium.css?v=65">
-  <link rel="stylesheet" href="css/pl-ui.css?v=18">
+  <link rel="stylesheet" href="css/pl-ui.css?v=19">
   <link rel="stylesheet" href="css/pl-popravki.css?v=1">
   <link rel="stylesheet" href="css/pl-versiya.css?v=3">
   <link rel="stylesheet" href="css/pl-plyush.css?v=4">
@@ -129,7 +129,7 @@ html[data-theme="dark"] #blSplash .bls-sos{color:#ffd0dc;background:rgba(255,255
   <link rel="stylesheet" href="css/pl-profil.css?v=2">
   <link rel="stylesheet" href="css/pl-zdrave.css?v=3">
   <link rel="stylesheet" href="css/pl-bebe.css?v=4">
-  <link rel="stylesheet" href="css/pl-start.css?v=3">
+  <link rel="stylesheet" href="css/pl-start.css?v=4">
 <!-- 📶 силата на телефона: слага data-motion/data-quality ПРЕДИ рисуването.
      Нарочно БЕЗ defer и рано — с defer отметките идват след първото
      рисуване и екранът мигва. Файлът е 3 KB. -->
@@ -238,7 +238,11 @@ html[data-theme="dark"] #blSplash .bls-sos{color:#ffd0dc;background:rgba(255,255
     //   на 2,8 с и отдолу излизаше старата страница („Разгледай стаите“, „Вход“). Таванът 7 → 15 с по същата причина.
     if (домГотов && !R.classList.contains('pl-on')) { if (!домОт) домОт = Date.now(); } else домОт = 0;
     var безНово = домОт && Date.now() - домОт > 1500;
-    if ((подредено && знаци) || безНово || т > 15000) { причина = (подредено && знаци) ? 'ново' : безНово ? 'без-ново' : 'таван'; requestAnimationFrame(function () { requestAnimationFrame(прибери); }); return; }
+    // 🪤 21.10 ФИНАЛНИЯТ ОДИТ (fa21_let_L, машина под товар): таванът 15 с удари, ПРЕДИ отложените скриптове да минат —
+    //   облакът отлетя върху старата страница. Преди DOMContentLoaded старата страница е и безполезна (бутоните ѝ
+    //   още нямат слушатели), а стартовият екран държи 112. Затова таванът 15 с важи САМО след DOMContentLoaded;
+    //   преди него — краен предпазител 60 с (мрежата е увиснала).
+    if ((подредено && знаци) || безНово || (домГотов && т > 15000) || т > 60000) { причина = (подредено && знаци) ? 'ново' : безНово ? 'без-ново' : 'таван'; requestAnimationFrame(function () { requestAnimationFrame(прибери); }); return; }
     setTimeout(провери, 80);
   }
   провери();
@@ -1698,12 +1702,12 @@ html[data-theme="dark"] #blSplash .bls-sos{color:#ffd0dc;background:rgba(255,255
 <script src="js/hero.js?v=11" defer></script>
 <script src="js/crypto.js?v=2" defer></script>
 <script src="js/profile.js?v=28" defer></script>
-<script src="js/app.js?v=25" defer></script>
+<script src="js/app.js?v=26" defer></script>
 <script src="js/nav2.js?v=2" defer></script>
 <script src="js/premium-home.js?v=21" defer></script>
 <script src="js/premium-rooms.js?v=12" defer></script>
   <script src="js/pl-versiya.js?v=1" defer></script>
-  <script src="js/pl-plyush.js?v=45" defer></script>
+  <script src="js/pl-plyush.js?v=46" defer></script>
   <script src="js/pl-statii.js?v=5" defer></script>
   <script src="js/pl-mira.js?v=2" defer></script>
   <script src="js/pl-lab.js?v=1" defer></script>
