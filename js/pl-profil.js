@@ -328,6 +328,33 @@
     слой.appendChild(а);
   }
 
+  /* 21.10 · „💾“ в правния ред оставаше голо емоджи (pf21_mer.js: P.prof-legal). Причината е в общия
+     js/pl-plyush.js (обвий): обвива САМО ПЪРВОТО емоджи на текстовия възел — тук то е 🔒, а 💾 е второто.
+     Тук всяко следващо емоджи в същия възел се увива в <span class="pl-em"> (както прави pl-plyush.js) —
+     рисунката му слага самият pl-plyush.js (.pl-em е в неговите ЦЕЛИ; 💾 е в картата му). Текстът остава
+     буква по буква същият; увитото не се търси пак (само при разлика).
+     ПЪТ НАЗАД: махни този блок и реда с голиЕмоджи() в облечи(). */
+  const ЕМО2 = /\p{Extended_Pictographic}(?:️|‍\p{Extended_Pictographic}|\p{Emoji_Modifier}|️⃣)*/u;
+  function голиЕмоджи(е) {
+    const ход = document.createTreeWalker(е, NodeFilter.SHOW_TEXT);
+    const възли = [];
+    while (ход.nextNode()) {
+      const н = ход.currentNode;
+      if (н.parentElement && н.parentElement.closest('.pl-em, .pl-pl')) continue;
+      if (ЕМО2.test(н.nodeValue)) възли.push(н);
+    }
+    възли.forEach(н => {
+      const м = н.nodeValue.match(ЕМО2);
+      if (!м) return;
+      const знак = н.splitText(м.index); знак.splitText(м[0].length);
+      const с = document.createElement('span');
+      с.className = 'pl-em'; с.setAttribute('aria-hidden', 'true');
+      if (н.nodeValue.trim()) с.classList.add('pl-em-sled');     // преди него има текст (както pl-plyush.js)
+      знак.parentNode.insertBefore(с, знак); с.appendChild(знак);
+    });
+  }
+  /* край 21.10 */
+
   // ═══ ОБЛИЧАНЕТО ═══
   function облечи(кутия) {
     if (!кутия || !кутия.isConnected) return;
@@ -357,6 +384,7 @@
         if (б) главен(б);
       }
     });
+    кутия.querySelectorAll('.prof-legal').forEach(голиЕмоджи);   // 21.10 — ПЪТ НАЗАД: махни този ред
     визитка(кутия, т);
     спешно(т);
     спешноГоре(кутия.parentElement);

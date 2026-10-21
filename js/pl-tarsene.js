@@ -197,6 +197,38 @@
   const ПОДСКАЗКА = 'напр. не спи нощем';
   function подсказка() { if (вход && вход.placeholder !== ПОДСКАЗКА) вход.placeholder = ПОДСКАЗКА; }
 
+  /* 21.10 · ГОЛИТЕ ЕМОДЖИТА В БАЛОНЧЕТАТА (pf21_mer.js + pf21_diag2.js, мерено):
+     „Добро утро! 🌸“ (в <strong>), „Продължи с Вита 💚 →“ (второто емоджи в бутона), спешното
+     „… веднага. 🚨“ и „📞 Обади се на 112“ стояха като системни емоджита. Общият js/pl-plyush.js
+     обвива в #searchOverlay само div/span/p/li/b/small/button/h2/h3 (не strong и не a) и само
+     ПЪРВОТО емоджи на текстов възел. Тук всяко емоджи в отговорите/поздрава се увива в
+     <span class="pl-em"> — рисунката му слага самият pl-plyush.js (.pl-em е в неговите ЦЕЛИ).
+     Текстът (и спешният, и медицинският) остава буква по буква същият — само обвивка; всеки проход
+     увива по едно на възел и следващият вижда, че няма какво повече (само при разлика).
+     ПЪТ НАЗАД: махни този блок и реда с емоджита() в облечи(). */
+  const ЕМО2 = /\p{Extended_Pictographic}(?:️|‍\p{Extended_Pictographic}|\p{Emoji_Modifier}|️⃣)*/u;
+  function емоджита(кут) {
+    кут.querySelectorAll('.sf-answer, .sf-greet').forEach(з => {
+      const ход = document.createTreeWalker(з, NodeFilter.SHOW_TEXT);
+      const възли = [];
+      while (ход.nextNode()) {
+        const н = ход.currentNode;
+        if (н.parentElement && н.parentElement.closest('.pl-em, .pl-pl, .sf-ava, svg')) continue;
+        if (ЕМО2.test(н.nodeValue)) възли.push(н);
+      }
+      възли.forEach(н => {
+        const м = н.nodeValue.match(ЕМО2);
+        if (!м) return;
+        const знак = н.splitText(м.index); знак.splitText(м[0].length);
+        const с = document.createElement('span');
+        с.className = 'pl-em'; с.setAttribute('aria-hidden', 'true');
+        if (н.nodeValue.trim()) с.classList.add('pl-em-sled');
+        знак.parentNode.insertBefore(с, знак); с.appendChild(знак);
+      });
+    });
+  }
+  /* край 21.10 */
+
   // ═══ ОБЛИЧАНЕТО ═══
   let ов = null, панел = null, кут = null, лента = null, вход = null;
   function облечи() {
@@ -204,6 +236,7 @@
     подсказка();
     кут.querySelectorAll('.search-res:not([data-pl-ts])').forEach(ред);
     балонче(кут);
+    емоджита(кут);   // 21.10 — ПЪТ НАЗАД: махни този ред
     скорошни(кут, вход);
     филтри(лента, кут);
   }
@@ -254,6 +287,10 @@
       вход.dispatchEvent(new Event('input', { bubbles: true }));
       кут.scrollTop = 0;
     });
+    // 21.10 · нова дума = резултатите отначало. Мерено (pf21_predi_tars_*_3yabalka): след превъртане на
+    //   „температура“ и писане на „ябълка“ списъкът оставаше превъртян и първият ред („Ябълка · храна“)
+    //   беше скрит над края — search.js сменя съдържанието, но не и превъртането. ПЪТ НАЗАД: махни реда.
+    вход.addEventListener('input', () => { кут.scrollTop = 0; });
     атр(ов, 'data-pl-ts', '1');
     return true;
   }

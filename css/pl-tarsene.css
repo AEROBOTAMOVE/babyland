@@ -360,3 +360,34 @@ html[data-theme="dark"] body #searchTrigger[data-pl-ts] { background: #1b2554 !i
 @media (prefers-reduced-motion: reduce) {
   html body #searchOverlay[data-pl-ts] .search-res, #searchOverlay .pl-ts-112, html body #searchOverlay[data-pl-ts] #searchClose { transition: none; }
 }
+
+/* ═══════════════════════════════════════════════════════════════════════════════
+   21.10 · ТЪРСЕНЕТО „ПО КОНЕЦ“ — цели заглавия, плюш вместо системни емоджита, нощното 112
+   ПРЕГЛЕД (pf21, снимки pf21_predi_tars_* + мерки, dev/proba/pf21_mer.js и pf21_diag2.js):
+   · РЯЗАН ТЕКСТ: заглавията на резултатите бяха -webkit-line-clamp: 3 → „Болничен за гледане на болно
+     дете, справки в НОИ и платени…“, „Седалки за баня, ванички…“ (мерено scrollHeight 81 > 60). Мама не
+     вижда за какво е статията → цялото заглавие, без отрязване.
+   · ГОЛИ ЕМОДЖИТА в балончетата (🌸 💚 🚨 📞) → pl-tarsene.js ги увива в .pl-em (рисунката е от
+     pl-plyush.js); тук — само размерът им в реда и в червения/розовия гел.
+   · нощем „112“ горе вдясно стоеше бяло хапче (единственото светло петно на нощния екран) → като
+     „✚ 112“ на профила нощем (pl-profil.css): нощно синьо, розово-червен кант, светли цифри (≥ 7:1).
+   Всичко е под #searchOverlay; нищо не е вързано за html.bl-night.
+   ПЪТ НАЗАД: махни този блок. */
+
+/* ── цялото заглавие на резултата ── */
+html body #searchOverlay[data-pl-ts] .sr-label { display: block; -webkit-line-clamp: unset; line-clamp: none; overflow: visible; overflow-wrap: anywhere; }
+
+/* ── увитите емоджита в балончетата: плюшено кръгче в реда на текста ── */
+html body #searchOverlay[data-pl-ts] .sf-bub .pl-em { width: 1.6em; height: 1.6em; vertical-align: -.42em; }
+html body #searchOverlay[data-pl-ts] :is(.sf-more, .sf-112) .pl-em {
+  width: 26px; height: 26px; margin: -4px 8px -4px 0; vertical-align: middle;
+  background-color: #fff; box-shadow: 0 1px 0 rgba(120, 20, 60, .25); text-shadow: none;
+}
+html body #searchOverlay[data-pl-ts] :is(.sf-more, .sf-112) .pl-em.pl-em-sled { margin: -4px 4px -4px 6px !important; }
+
+/* ── нощното 112 горе вдясно ── */
+html[data-theme="dark"] #searchOverlay .pl-ts-112 {
+  background: #2e3c7a; border-color: rgba(255, 140, 150, .75); color: #ffc9cd;
+  box-shadow: 0 2px 0 #18214a, 0 8px 18px rgba(0, 0, 0, .3);
+}
+/* край 21.10 */

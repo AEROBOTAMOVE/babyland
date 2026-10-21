@@ -546,3 +546,75 @@ html[data-theme="dark"] .prof-overlay .pl-p112-mini > span { color: #ff9ea6; }
 @media (prefers-reduced-motion: reduce) {
   html .prof-overlay .pl-pv, html .prof-overlay .pl-row, html .prof-overlay .pl-p112, html .prof-overlay .pl-p112-mini { transition: none; }
 }
+
+/* ═══════════════════════════════════════════════════════════════════════════════
+   21.10 · ПРОФИЛЪТ „ПО КОНЕЦ“ — визитката, лицето под лентата, дребните букви, медальоните, 112 долу
+   ПРЕГЛЕД (pf21, снимки pf21_predi_prof_* + мерки с getComputedStyle, dev/proba/pf21_mer.js и pf21_diag_prof.js):
+   · ДУПКАТА горе в тефтера (≈110 px празен филц над „Днес при теб“) = визитката на бебето .pl-pv СТОЕШЕ
+     НЕВИДИМА: css/pl-poyava.css (мека поява на началото) ползва СЪЩОТО име на клас — `html.pl-poyava .pl-pv
+     { opacity: .001; transform: translateY(18px) scale(.988) }`, а pl-poyava.js слага .pl-vid само на своите
+     секции в <main>. Мерено: opacity 0.001, матрица (0.988 … 18). Тук — само в профила — визитката се вижда.
+   · лицето на мама стоеше под лентата-глава от css/pl-figuri.css (.prof-overlay::before, fixed, 72 px, z 6):
+     горната му половина беше скрита при скрол 0 (мерено: лицето y 12–84). Сваля се под лентата; тефтерът
+     не мърда (гербът е min-height 258 и съдържанието се събира).
+   · текст < 13 px: „днес“ капсулите, „дни подред“, целите, бележките, „добавя се за минутка“, 112 долу,
+     правният ред → 13–13.5 px; медальоните 11 → 12 px (етикет), числата в „В числа“ 11 → 12 px.
+   · заключените медальони: „?“ беше rgba(120,105,150,.55) върху лилаво (rooms.css:1536 — стар лилав стил),
+     нощем почти невидимо → мастило върху пясъчно / светло върху нощно, без сивия филтър.
+   · „💾“ в правния ред беше голо емоджи (общият pl-plyush.js обвива само ПЪРВОТО емоджи на възела) → pl-profil.js
+     увива и следващите в .pl-em, рисунката е от pl-plyush.js (текстът е същият).
+   · щемпелът на версията (общ css/pl-versiya.css) върху килима: 2.98:1 (светло) / 4.07:1 (тъмно) при 11.5 px →
+     тук, само в профила: мастило + кремав ореол / светло + нощен ореол, 12 px.
+   · розовият гел-ред „Свали резервно копие“: горният ред на бялото заглавие падаше върху светлата част на гела
+     (#f39bbb→#d95a8e) → същият материал, по-бърз преход (както pl-tarsene.css 🪤 за „Продължи с Вита“).
+   Всичко е под .prof-overlay; нищо не е вързано за html.bl-night.
+   ПЪТ НАЗАД: махни този блок. */
+
+/* ── визитката: видима (въпреки чуждия клас .pl-pv от pl-poyava.css) ── */
+html.pl-poyava .prof-overlay .pl-pv, html .prof-overlay .pl-pv {
+  opacity: 1; transform: none; will-change: auto; transition: transform .14s ease, box-shadow .14s ease; transition-delay: 0ms;
+}
+html.pl-poyava .prof-overlay .pl-pv:active, html .prof-overlay .pl-pv:active { transform: translateY(2px); }
+
+/* ── лицето под лентата-глава (лентата е 72 px; лицето тръгва от 64 px, където лентата вече е прозрачна) ── */
+html .prof-overlay .prof-hero:not(.prof-hero-guest) .prof-avbtn { margin-top: 52px; }
+html .prof-overlay .prof-hero:not(.prof-hero-guest) .prof-name { margin-top: 12px; }
+
+/* ── дребните букви → поне 13 px ── */
+html .prof-overlay .prof-tditem { font-size: 13px; padding: 6px 12px; }
+html .prof-overlay .prof-stl { font-size: 13px; }
+html .prof-overlay .prof-gmenu .prof-gadd { font-size: 13px; }
+html .prof-overlay .prof-fammid small { font-size: 13px; }
+html .prof-overlay .pl-p112 small { font-size: 13px; }
+html .prof-overlay .prof-legal { font-size: 13px; }
+html .prof-overlay .prof-warn { font-size: 13px; }
+html .prof-overlay .jr-privacy, html .prof-overlay .prof-card p.jr-privacy { font-size: 13.5px; }
+html .prof-overlay .prof-sl { font-size: 12px; }
+html .prof-overlay .prof-wlbl { font-size: 12.5px; }
+/* медальоните: етикетът 12 px; колоната остава 94 px — 4-тият медальон наднича отдясно (знак, че лентата се плъзга) */
+html .prof-overlay .prof-mn { font-size: 12px; line-height: 1.25; }
+
+/* ── заключените медальони: ясно „?“ в пясъчен кръг (не лилаво, не сиво-прозрачно) ── */
+html .prof-overlay .prof-medal.md-locked { opacity: 1; }
+html .prof-overlay .prof-medal.md-locked .prof-me { filter: none; opacity: 1; }
+html .prof-overlay .prof-medal.md-locked .prof-me::after {
+  color: #6a6682; font-family: Nunito, 'Nunito-fallback', system-ui, sans-serif; font-size: 17px; font-weight: 800;
+  background: #f3e9df; box-shadow: inset 0 0 0 1.5px #e6d3bf;
+}
+html[data-theme="dark"] .prof-overlay .prof-medal.md-locked .prof-me::after {
+  color: #e3e5f5; background: rgba(255, 255, 255, .13); box-shadow: inset 0 0 0 1.5px rgba(255, 255, 255, .22);
+}
+
+/* ── „💾“ в правния ред: pl-profil.js го увива в .pl-em, рисунката е от pl-plyush.js (тук нищо) ── */
+
+/* ── щемпелът на версията: четим и върху килима (само в профила; pl-versiya.css не се пипа) ── */
+html .prof-overlay > .pl-ver { font-size: 12px; color: #4f4b63; text-shadow: 0 0 4px #fffaf3, 0 0 10px #fffaf3, 0 0 18px rgba(255, 250, 243, .9); }
+html[data-theme="dark"] .prof-overlay > .pl-ver { color: #eef0fb; text-shadow: 0 0 4px #16204a, 0 0 10px #16204a, 0 0 18px rgba(22, 32, 74, .9); }
+
+/* ── „Свали резервно копие“: бялото заглавие стои върху тъмната роза (≥ #c8457a = 4.6:1), бликът — над него ── */
+html body .prof-overlay .pl-row.pl-gel.pl-gel {
+  background-image:
+    radial-gradient(120% 60% at 50% -14%, rgba(255, 255, 255, .5) 0, rgba(255, 255, 255, .12) 36%, rgba(255, 255, 255, 0) 50%),
+    linear-gradient(180deg, var(--ui-gel-top) 0%, var(--ui-gel-mid) 10%, var(--ui-gel) 24%, var(--ui-gel-bot) 100%) !important;
+}
+/* край 21.10 */
