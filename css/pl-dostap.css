@@ -370,3 +370,30 @@ html[data-theme="dark"] #blDostap .bl-dg-logo .lg-cloud > path:first-child { fil
 html[data-theme="dark"] #blDostap .bl-dg-logo .lg-baby, html[data-theme="dark"] #blDostap .bl-dg-logo .lg-land { stroke: #ece8f7; }
 html[data-theme="dark"] #blDostap .bl-dg-logo .lg-splash { opacity: .32; }
 /* край 21.10 · облакът */
+
+/* ═══ 21.10 · „Какво те чака вътре“ + „Първо разгледай“ + хапчето (главната сесия) ═══ ПЪТ НАЗАД: махни до „край витрина“ */
+#blDostap .bl-dg-skip { margin-top: 2px; }
+#blDostap .bl-dg-vit { margin-top: 14px; padding: 20px 18px 16px; text-align: left; }
+#blDostap .bl-dg-vit > * { position: relative; z-index: 1; }
+#blDostap .bl-dg-vit-t { margin: 0 0 12px; text-align: center; font-family: var(--pl-serif, Georgia, serif); font-weight: 700; font-size: 22px; color: var(--pl-navy, #1d2a5c); }
+#blDostap .bl-dg-vit-l { list-style: none; margin: 0; padding: 0; display: grid; gap: 10px; }
+#blDostap .bl-dg-vit-l li { display: flex; align-items: center; gap: 12px; min-height: 52px; padding: 8px 10px; border-radius: 18px; background: rgba(255, 255, 255, .72); box-shadow: inset 0 0 0 1px rgba(214, 186, 158, .45); }
+#blDostap .bl-dg-vit-l li .bl-ic { flex: none; width: 42px; height: 42px; }
+#blDostap .bl-dg-vit-l b { display: block; font-weight: 800; font-size: 15px; color: var(--pl-navy, #1d2a5c); line-height: 1.25; }
+#blDostap .bl-dg-vit-l small { display: block; font-size: 13px; line-height: 1.4; color: var(--pl-ink-soft, #5f5878); }
+html[data-theme="dark"] #blDostap .bl-dg-vit-t, html[data-theme="dark"] #blDostap .bl-dg-vit-l b { color: #fff; }
+html[data-theme="dark"] #blDostap .bl-dg-vit-l li { background: rgba(255, 255, 255, .06); box-shadow: inset 0 0 0 1px rgba(255, 255, 255, .12); }
+html[data-theme="dark"] #blDostap .bl-dg-vit-l small { color: #c9cbe3; }
+/* хапчето, докато мама разглежда без профил — горе в средата, над съдържанието, не пречи на SOS/темата */
+.bl-dg-pill {
+  position: fixed; z-index: 190; left: 50%; transform: translateX(-50%); top: calc(env(safe-area-inset-top, 0px) + 12px);
+  display: inline-flex; align-items: center; gap: 8px; min-height: 44px; padding: 0 16px; border: 0; border-radius: 999px; cursor: pointer;
+  background: linear-gradient(180deg, #c9447a, #a92f63); color: #fff; font: 700 14px/1 Nunito, 'Nunito-fallback', system-ui, sans-serif;
+  box-shadow: 0 3px 0 #8a2552, 0 8px 18px rgba(169, 47, 99, .3);
+}
+.bl-dg-pill b { font-weight: 800; }
+.bl-dg-pill, .bl-dg-pill b, .bl-dg-pill span { white-space: nowrap; }
+.bl-dg-pill span { opacity: .92; }
+.bl-dg-pill[hidden] { display: none !important; }
+html.bl-dg-on .bl-dg-pill, body:has(#roomOverlay:not([hidden])) .bl-dg-pill { display: none; }
+/* край витрина */

@@ -244,6 +244,25 @@
       '<a class="bl-kont-b" href="' + esc(href) + '"' + (к === 'email' ? '' : ' target="_blank" rel="noopener"') + ' data-k="' + к + '">' +
       икона(И[к]) + '<span class="bl-kont-t"><b>' + име + '</b><small>' + esc(под) + '</small></span><span class="bl-dg-go" aria-hidden="true">›</span></a>').join('') + '</div>';
   }
+  // ✨ 21.10 · „Какво те чака вътре“ (собственикът: „готино обяснение какво и как работи — не като поп-ъп, галантно в
+  //   началото“). Вградено под формата на вратата, превърта се с нея; числата са преброени (KB.entries, рафтът „265 статии“).
+  //   ПЪТ НАЗАД: махни витрина() и „(рег ? витрина() : '')“.
+  const ВИТРИНА = [
+    [['ico-i', 3, 2, '#fde5d8'], '9 вълшебни стаи', 'бременност, бебето, захранване, здраве, игри, дневник, жената в теб, инструменти, лаборатория'],
+    [['ico-i', 3, 1, '#fde6ef'], '9 помощнички', 'питаш с твои думи — денем и в 3 през нощта; отговарят спокойно и кратко'],
+    [['ico-h', 2, 0, '#dfeafb'], '1 900+ отговора и 265 статии', 'сверени с NHS, СЗО и българските наредби; без дози, без плашене'],
+    [['ico-a', 1, 0, '#fde6ef'], 'Денят на бебето', 'хранене, сън, пелени, растеж, зъбки, ваксините по българския календар'],
+    [['ico-f', 1, 3, '#fde6ef'], 'Дневник за теб', 'как си днес, снимка на деня, писма до бебето, медальончета'],
+    [['ico-a', 1, 1, '#dfeafb'], 'Нощен режим', 'тъмно и тихо за нощните хранения — само се включва'],
+    [['ico-n', 1, 1, '#dff2e7'], 'Работи и без интернет', 'записките остават на твоя телефон'],
+    [['ico-a', 3, 0, '#fde5d8'], 'SOS · 112 винаги на един допир', 'и спешните признаци — кога веднага към лекар'],
+  ];
+  function витрина() {
+    return '<section class="bl-dg-vit pl-felt" aria-labelledby="blDgVitT">' +
+      '<h3 class="bl-dg-vit-t" id="blDgVitT">Какво те чака вътре</h3>' +
+      '<ul class="bl-dg-vit-l">' + ВИТРИНА.map(([и, т, п]) => '<li>' + икона(и) + '<span><b>' + т + '</b><small>' + п + '</small></span></li>').join('') + '</ul>' +
+      '</section>';
+  }
   function вратаHtml() {
     const рег = вид === 'рег';
     return '<div class="bl-dg-card pl-felt">' +
@@ -265,11 +284,13 @@
       '</form>' +
       '<button type="button" class="bl-dg-switch" data-act="' + (рег ? 'вход-вид' : 'рег-вид') + '">' +
         (рег ? 'Вече имам профил · <b>Вход</b>' : 'Нямам профил · <b>' + дниПробни + ' дни безплатно</b>') + '</button>' +
+      // 21.10 · „Първо разгледай“ — без профил, само за това посещение (пази())
+      '<button type="button" class="bl-dg-switch bl-dg-skip" data-act="разгледай">Първо разгледай · <b>без профил</b></button>' +
       (рег ? '' :
         '<details class="bl-dg-forgot"><summary>Забравена парола?</summary>' +
         '<p>Пиши ни от имейла, с който си се регистрирала — ще ти дадем нова парола.</p>' + контактиHtml('bl-kont-mini') + '</details>') +
       '<p class="bl-dg-priv">' + икона(И.сърце, 'bl-ic-s') + '<span>Записките ти остават само на този телефон. При нас стоят само имейлът и датите на достъпа.</span></p>' +
-      '</div>' + sosРед();
+      '</div>' + (рег ? витрина() : '') + sosРед();
   }
   function изтеклоHtml() {
     const т = (съобщение || текстИзтекло(null)).trim();
@@ -344,6 +365,18 @@
     if (р && !р.hidden && р.getClientRects().length && /Здраве/.test((document.getElementById('roTitle') || {}).textContent || '')) return true;
     return false;
   }
+  // 21.10 · докато мама разглежда без профил — малко хапче горе „14 дни безплатно · Започни“ (не прозорец, не пречи)
+  function хапче(вкл) {
+    let х = document.getElementById('blDgPill');
+    if (!вкл) { if (х) х.hidden = true; return; }
+    if (!х) {
+      х = document.createElement('button'); х.type = 'button'; х.id = 'blDgPill'; х.className = 'bl-dg-pill';
+      х.innerHTML = '<b>' + дниПробни + ' дни безплатно</b><span>Започни ›</span>';
+      х.addEventListener('click', () => { try { sessionStorage.removeItem('bl_razgledai'); } catch (e) {} вид = 'рег'; рисувай(); пази(); });
+      document.body.appendChild(х);
+    }
+    if (х.hidden) х.hidden = false;
+  }
   let пазиТ = 0, видян = false;
   function пази() {
     clearTimeout(пазиТ);
@@ -354,7 +387,11 @@
       видян = false;
       return;
     }
-    const вижда = !пречи() && !сосОтворено();
+    // 21.10 · „Първо разгледай“ (собственикът: „може да разгледат — бутон пропусни“): само ПРЕДИ регистрация и само за това
+    //   посещение (sessionStorage) — при следващото отваряне вратата е пак тук. След изтичане няма пропускане.
+    const разглежда = режим === 'врата' && (() => { try { return sessionStorage.getItem('bl_razgledai') === '1'; } catch (e) { return false; } })();
+    хапче(разглежда);
+    const вижда = !пречи() && !сосОтворено() && !разглежда;
     if (к) {
       if (к.hidden === вижда) к.hidden = !вижда;
       if (вижда && !видян) { видян = true; try { к.scrollTop = 0; к.focus({ preventScroll: true }); } catch (e) {} }
@@ -397,6 +434,7 @@
       б.setAttribute('aria-label', покажи ? 'Скрий паролата' : 'Покажи паролата');
       return;
     }
+    if (д === 'разгледай') { try { sessionStorage.setItem('bl_razgledai', '1'); } catch (e) {} пази(); return; }
     if (д === 'сос') { отвориСОС(); return; }
     if (д === 'стая') { отвориСтаята(); return; }
     if (д === 'опитай' || д === 'провери') {
