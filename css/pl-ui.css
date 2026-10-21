@@ -501,3 +501,47 @@ html[data-theme="dark"] body .set-tgl.set-tgl.on, html[data-theme="dark"] body .
   box-shadow: inset 0 0 0 3px #8f2f61, inset 0 0 0 4.5px rgba(245, 156, 187, .5), 0 2px 0 #3d1430 !important;
 }
 /* край 21.10 */
+
+/* ═══ 21.10 · ФИНАЛНИЯТ ОДИТ (workflow babyland-final-audit, група „бебе/захранване/здраве“) ═══
+   ПЪТ НАЗАД: махни този блок (до „край 21.10 · одит“) и двете функции „стрелки“/„лупа“ в js/pl-ui.js. */
+/* 1 · нощем плюшеният микрофон беше тъмен знак върху тъмносиньо кръгче (§ 13 по-горе: background #2b3872) —
+   рисунката е тъмна, затова кръгчето под нея е кремаво, както лицата на помощничките в чата */
+html[data-theme="dark"] body .ask-mic.ask-mic.pl-pl, html[data-theme="dark"] body #roMic.pl-pl,
+html[data-theme="dark"] body .ro-mic.ro-mic.pl-pl, html[data-theme="dark"] body .nt-mic.nt-mic.pl-pl {
+  background-color: #fdf1e8 !important; border-color: rgba(255, 255, 255, .5) !important;
+}
+/* 2 · SOS в шапката на стаите: голото 🆘 (index.html #roSos) нощем се сливаше с тъмния кръг. Сега — ясен червен
+   бутон с бял надпис „SOS“ и в двете теми; aria-label и задържането за 112 (sos.js:206) не се пипат */
+html body #roomOverlay .ro-panel .ro-head #roSos.ro-sosbtn {
+  font-size: 0 !important; color: transparent !important;
+  background: linear-gradient(180deg, #e0485f, #b52a42) !important;
+  border: 1.5px solid rgba(255, 255, 255, .75) !important;
+  box-shadow: 0 3px 10px rgba(181, 42, 66, .35) !important;
+}
+html body #roomOverlay .ro-panel .ro-head #roSos.ro-sosbtn::before {
+  content: 'SOS'; font: 800 13px/1 Nunito, Nunito-fallback, system-ui, sans-serif; letter-spacing: .4px; color: #fff;
+}
+/* 3 · стрелките ⬅️ ➡️ в бутоните (напр. „Лява / Дясна“ гърда): плюшът няма рисунка, едната седеше в кръгче, другата
+   гола. Сега — чиста текстова стрелка в цвета на бутона (js/pl-ui.js „стрелки“; текстът на бутона е същият) */
+.pl-ar { display: inline-block; font-size: 0 !important; line-height: 1; vertical-align: -.05em; margin: 0 .15em; }
+.pl-ar::before { content: attr(data-ar); font: 800 18px/1 Nunito, Nunito-fallback, system-ui, sans-serif; color: currentColor; }
+/* 4 · „в стаята…“ — една и съща линейна лупа във всички стаи (js/pl-ui.js „лупа“ маха 🔍 от подсказката САМО
+   заедно с това правило; Захранване и Дневник имат свои, по-силни правила — остават) */
+html body #roomOverlay #roRoom .sec-nav .sec-find[data-pl-lupa] {
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%238d7f7a' stroke-width='2.1' stroke-linecap='round'%3E%3Ccircle cx='10.5' cy='10.5' r='6.5'/%3E%3Cpath d='M15.4 15.4L21 21'/%3E%3C/svg%3E") !important;
+  background-size: 22px 22px !important; background-position: 16px center !important; background-repeat: no-repeat !important;
+  padding-left: 48px !important;
+}
+html[data-theme="dark"] body #roomOverlay #roRoom .sec-nav .sec-find[data-pl-lupa] {
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23c9cbe3' stroke-width='2.1' stroke-linecap='round'%3E%3Ccircle cx='10.5' cy='10.5' r='6.5'/%3E%3Cpath d='M15.4 15.4L21 21'/%3E%3C/svg%3E") !important;
+}
+/* 5 · ниските от одита — МЕРЕНО на живо (dev/proba/fa21_kontrast_niski.js, светла тема):
+   брояч до заглавието в „Моето бебе“ 3.82:1 (#c24d7b) → #8e2350 като в другите стаи (7.08:1);
+   „Изпито днес“ — розово #e56ba4 върху крем ≈ 3:1 при 32px → #b83a72;
+   „Напъване · нормално“ — #5a5470 с прозрачност .86 → плътно мастило;
+   картичките на храните — лилав ръб #eae3f7 (стар стил) → топлата бежова линия. „Мокри/Каки“ — 5.16:1, не е дефект. */
+html:not([data-theme="dark"]) body #roomOverlay .ro-panel #roRoom .sec-head .sec-n.sec-n { color: #8e2350 !important; }
+html:not([data-theme="dark"]) body #roomOverlay .ro-panel #roRoom .ml-big strong { color: #b83a72 !important; }
+html:not([data-theme="dark"]) body #roomOverlay .ro-panel #roRoom .fs-pane .fs-pt { opacity: 1 !important; color: #3b3f5c !important; }
+html:not([data-theme="dark"]) body #roomOverlay .ro-panel #roRoom .fd-grid .fd-card:not(.tried) { border-color: #ead8c7 !important; }
+/* край 21.10 · одит */

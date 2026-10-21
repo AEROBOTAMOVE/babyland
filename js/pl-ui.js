@@ -23,6 +23,7 @@
     if (!п || п.nodeType !== 3) return;                          // започва с елемент — не пипаме
     const м = п.nodeValue.match(ЕМ);
     if (!м) return;
+    if (СТРЕЛКА.test(м[2])) return;                                // 21.10: стрелките ги прави стрелки() — без кръг
     const преди = б.textContent;
     const с = document.createElement('span');
     с.className = 'pl-em'; с.setAttribute('aria-hidden', 'true'); с.textContent = м[2];
@@ -32,7 +33,46 @@
     if (б.textContent !== преди) { console.warn('pl-ui: текстът на бутона се промени — връщам', преди); б.textContent = преди; return; }
     б.setAttribute('data-plem', '1');
   }
-  function мини(корен) { (корен || document).querySelectorAll(КЛАСОВЕ).forEach(обвий); }
+  // ➡️ 21.10 · ФИНАЛНИЯТ ОДИТ („Моето бебе“ → „Коя гърда е наред“): ⬅️ седеше в кремав кръг, ➡️ — гол, сини квадрати
+  //   върху гел-розово. Плюшът няма рисунка за стрелки, затова тук знакът влиза в <span class="pl-ar" data-ar="←">:
+  //   css/pl-ui.css крие системния знак и рисува чиста стрелка в цвета на бутона. textContent остава байт в байт
+  //   същият (знакът е в span-а) — иначе всичко се връща. ПЪТ НАЗАД: махни стрелки(), лупа() и реда в обвий().
+  const СТРЕЛКИ = { '⬅': '←', '➡': '→', '⬆': '↑', '⬇': '↓' };
+  const СТРЕЛКА = /[⬅➡⬆⬇]️?/u;
+  function стрелки(б) {
+    if (!СТРЕЛКА.test(б.textContent || '')) return;                // бърза проверка — повечето бутони нямат стрелка
+    const преди = б.textContent; const нови = [];
+    const w = document.createTreeWalker(б, NodeFilter.SHOW_TEXT); const възли = [];
+    for (let н = w.nextNode(); н; н = w.nextNode()) if (СТРЕЛКА.test(н.nodeValue || '') && !(н.parentElement && н.parentElement.classList.contains('pl-ar'))) възли.push(н);
+    for (let к = 0; к < възли.length && к < 8; к++) {
+      const н = възли[к]; const м = н.nodeValue.match(СТРЕЛКА); if (!м) continue;
+      const сл = н.splitText(м.index); сл.nodeValue = сл.nodeValue.slice(м[0].length);
+      const с = document.createElement('span'); с.className = 'pl-ar'; с.setAttribute('aria-hidden', 'true');
+      с.setAttribute('data-ar', СТРЕЛКИ[м[0][0]] || '→'); с.textContent = м[0];
+      сл.parentNode.insertBefore(с, сл); нови.push(с);
+      if (СТРЕЛКА.test(сл.nodeValue || '')) възли.push(сл);
+    }
+    if (!нови.length) return;
+    if (б.textContent !== преди) { нови.forEach(с => с.parentNode && с.parentNode.replaceChild(document.createTextNode(с.textContent), с)); return; }
+    б.setAttribute('data-plar', '1');
+  }
+  // 🔍 21.10 · „🔍 в стаята…“ (polish.js:79) — системна лупа в подсказката на 7 от 9 стаи (Захранване и Дневник имат
+  //   свои). Знакът пада САМО защото лупата е нарисувана в css/pl-ui.css „21.10 · одит“ (поуката от pl-hranene.js:434).
+  const ЛУПА_ЗНАК = /^\s*\u{1F50D}️?\s*/u;                  // „🔍“ с кода си — пазачът dev/emodzhi.js брои буквалните знаци
+  function лупа(корен) {
+    (корен || document).querySelectorAll('#roRoom .sec-nav .sec-find:not([data-pl-lupa]):not([data-pl-dn-lupa])').forEach(в => {
+      const п = в.placeholder || '';
+      if (!ЛУПА_ЗНАК.test(п)) return;
+      в.placeholder = п.replace(ЛУПА_ЗНАК, '');
+      в.setAttribute('data-pl-lupa', '1');
+    });
+  }
+  function мини(корен) {
+    const к = корен || document;
+    к.querySelectorAll(КЛАСОВЕ).forEach(обвий);
+    к.querySelectorAll('.jr-btn, .jr-chip, .ro-chip, .pl-soft, .pl-gel').forEach(стрелки);
+    лупа(к);
+  }
   let чака = false;
   function отложено() { if (чака) return; чака = true; setTimeout(() => { чака = false; мини(document); }, 60); }
   function върви() {
