@@ -1570,3 +1570,17 @@ html body .ph-date { max-width: none; min-width: 9.5em; }
 html:not([data-theme="dark"]) body .ask-live { font-size: 11.5px; color: #22675a; }
 html body #roomOverlay .ask-line { opacity: 1; }
 /* край 21.10 · втори проход */
+
+/* 🧸 21.10 · ЕДНА РИСУНКА В МЕДАЛА — навсякъде. Медалът на картата (.jr-medal) става плюшена рисунка, а вътре
+   плюшът обвиваше същото емоджи още веднъж (.pl-em) → два кръга един в друг, изместени. Намерено и поправено
+   поотделно в 4 стаи (Здраве, Захранване, Бременност, Моето бебе) — тук важи за всички. Вътрешното се скрива
+   визуално; буквата остава в textContent (стар код сравнява заглавия). ПЪТ НАЗАД: махни този блок. */
+html body #roomOverlay .jr-medal.pl-pl > .pl-em, html body #roomOverlay .pg20-fruit.pl-pl > .pl-em {
+  position: absolute !important; left: 0 !important; top: 0 !important;
+  width: 1px !important; height: 1px !important; min-width: 0 !important; min-height: 0 !important;
+  margin: 0 !important; padding: 0 !important; overflow: hidden !important;
+  clip-path: inset(50%) !important; opacity: 0 !important; pointer-events: none !important;
+  box-shadow: none !important; border: 0 !important;
+}
+html body #roomOverlay .jr-medal.pl-pl, html body #roomOverlay .pg20-fruit.pl-pl { position: relative; }
+/* край 21.10 · една рисунка */

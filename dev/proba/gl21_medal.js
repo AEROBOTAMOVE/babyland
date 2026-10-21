@@ -1,0 +1,1 @@
+(() => { const м = [...document.querySelectorAll('#roomOverlay .jr-medal')]; return { медали: м.length, плюшени: м.filter(e => e.classList.contains('pl-pl')).length, сВтори: м.filter(e => [...e.querySelectorAll('.pl-em')].some(x => x.getBoundingClientRect().width > 2)).length, видими: м.filter(e => e.getBoundingClientRect().width > 10).length }; })()
