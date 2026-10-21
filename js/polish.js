@@ -168,7 +168,11 @@
       save('bl_pins', p);
       if (window.BL_FX) BL_FX.buzz(8);
       // мигновено пренареждане: отвори наново стаята
-      if (window.MamaHelper) { MamaHelper.close(); MamaHelper.open(room); }
+      // 🔴 21.10 МЕРЕНО (агентът на „Дневник“): close() прави history.back(), а закъснелият popstate
+      //   (helper.js ~5656) скриваше току-що отворената стая — карфицата ЗАТВАРЯШЕ стаята (8 с overlay.hidden).
+      //   open() върху вече отворена стая сам прави replaceState и рисува наново — close() не трябва.
+      //   ПЪТ НАЗАД: върни „MamaHelper.close(); MamaHelper.open(room);“.
+      if (window.MamaHelper) MamaHelper.open(room);
     });
     title.appendChild(pin);
     // сгъване с докосване на заглавието

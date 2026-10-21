@@ -704,7 +704,9 @@ html[data-theme="dark"] body #roomOverlay .ro-lav .jr-card .pin-btn.on::before {
 
 /* ═══════════════════════════════════════════════════════════════════════════════
    06.10 · ТРЕТА ОБИКОЛКА — каквото още беше от стария свят или счупено.
-   МЕРЕНО в тази сесия (scratchpad/dn06_meri.js, 390×844, светло; снимки dn06_L_*/dn06_D_*):
+   МЕРЕНО в тази сесия (scratchpad/dn06_meri.js, 390×844, светло; снимки dn06_L_… и dn06_D_…):
+   (20.10: тук имената бяха със звездичка, последвана от наклонена черта — това затваряше
+    коментара по-рано и първото правило на §24 падаше; сега са с „…“.)
      · 2 заглавия с медальон ОТДЕЛНО на първия ред („Банка с идеи за разпускане“,
        „Сънят му × настроението ти“) — flex-wrap праща дългия текст на нов ред → дупка;
      · 3 подсказки по-дълги от полето (271>269, 299>281, 179>175 px при 15px) → рязан текст;
@@ -874,3 +876,226 @@ html[data-theme="dark"] body #roomOverlay .ro-lav .jr-stripin { color: #fff; }
 @media (prefers-reduced-motion: reduce) {
   html body #roomOverlay .ro-lav .jr-week .jr-day.today { animation: none !important; }
 }
+
+/* ═══════════════════════════════════════════════════════════════════════════════
+   20.10 · ЧЕТВЪРТА ОБИКОЛКА (dn20) — прегледът на блока 06.10 и довършването „по конец“.
+   МЕРЕНО в тази сесия (dev/proba/dn20_plan_*.js, 390×844 @2x; светло 11 ч., тъмно, светло в тих час 3 ч.):
+     · §24 НЕ РАБОТЕШЕ: в коментара на 06.10 звездичка + наклонена черта затваряше коментара по-рано,
+       остатъкът ставаше част от селектора на първото правило на §24 и браузърът го изхвърляше
+       (мерено: правилото липсва сред съвпадащите в document.styleSheets; display: flex от pl-ui.css)
+       → „Банка с идеи за разпускане“ и „Сънят му × настроението ти“ стояха ПОД медальона. Поправено
+       в самия коментар на 06.10 (бележка там) — правилото вече се чете.
+     · подсказката „Бележка (болежка, какво помогна…)“ = 288.3 px в поле 284 px → „)“ отрязана;
+     · празен <p class="jr-reply"> висок 22 px → дупка между чиповете и полето („Как е тялото днес?“);
+     · 3 чипа на 2 реда („Имам 30 мин“ сам долу: 101+109+109+2×8 > 324 px);
+     · залепени редове (0 px): чипове→лист („Капсули“, „Писма“), обяснение→лист („Подреди“, „Плачи“),
+       бележка→бутон („Годишникът“), бутон→ред и ред→ред („Ключалка“), разделител→бутон („Историята ни“);
+     · микрофонът на „Свободна страница“ — сам на ред вляво, като забравено копче;
+     · идеята от банката: иконката отделно, вторият ред се увиваше под нея;
+     · надписът след „СКЪСАЙ ГО!“ — лилаво rgb(107,82,168) (стар свят), нощем #c3b1ea; + голо 💜;
+     · голи системни емоджита в кръгчета: „⬇️ Запази като PDF“, „↩ Върни последното махнато“;
+     · медальончетата: една плочка вляво + дупка вдясно; надпис 10 px; нощем кафяво-лилава кутия;
+     · небето на „Съзвездието“ — патладжан #241f45 (mega.css:65);
+     · нощем патладжан: отговорът под личицата (#3d2f63), кръгът „Дишай“ (#3d2f63 / #6b3f72);
+     · дребно: етикетите на личицата 11 px, обясненията .jr-privacy 11.5 px, .cs-note / .ask-line /
+       .pl-dn-priv 12.5 px; броячът .sec-n 3.82:1 денем и 9.5 px нощем;
+     · нощем микрофонът в картата на Луна — черна плюшена рисунка, умножена върху синьо (не се вижда).
+   Всичко е под ключ „.ro-lav“ (панелът на дневника) — другите стаи не се пипат.
+   ПЪТ НАЗАД: махни този блок (до „край 20.10“). */
+
+/* ── 38 · ПОДСКАЗКАТА СЕ СЪБИРА: −2 px поле вдясно и −.15 px между буквите (33 знака ≈ −5 px) ── */
+html body #roomOverlay .ro-lav .jr-card input.jr-word { padding-right: 12px !important; }
+html body #roomOverlay .ro-lav .jr-card input.jr-word::placeholder { letter-spacing: -.15px; }
+
+/* ── 39 · ПРАЗНИЯТ ОТГОВОР НЕ ДЪРЖИ МЯСТО (появи ли се текст — заема си реда както преди) ── */
+html body #roomOverlay .ro-lav #roRoom .jr-card > p.jr-reply:empty { min-height: 0 !important; margin: 0 !important; padding: 0 !important; }
+
+/* ── 40 · ТРИ ЧИПА = ТРИ РАВНИ КОЛОНИ НА ЕДИН РЕД („Имам 5/15/30 мин“, „+5/+15/+30“,
+        „тежко/средно/добре“, „Сега/После/Пусни“) ── */
+html body #roomOverlay .ro-lav #roRoom .jr-card .jr-quick:has(> .jr-chip:nth-child(3):last-child) {
+  display: grid !important; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 8px !important;
+}
+html body #roomOverlay .ro-lav #roRoom .jr-card .jr-quick:has(> .jr-chip:nth-child(3):last-child) > .jr-chip {
+  width: auto !important; min-width: 0 !important; margin: 0 !important;
+  padding-left: 8px !important; padding-right: 8px !important; justify-content: center; white-space: nowrap;
+}
+
+/* ── 41 · ИДЕЯТА ОТ БАНКАТА — иконката отляво, текстът в своя колона ── */
+html body #roomOverlay .ro-lav .jr-relaxcard { display: flex; align-items: flex-start; gap: 11px; padding: 13px 16px 13px 14px; line-height: 1.45; text-align: left; }
+html body #roomOverlay .ro-lav .jr-relaxcard > .pl-em { flex: none; width: 30px !important; height: 30px !important; margin: -3px 0 0 !important; }
+
+/* ── 42 · ДЪХ МЕЖДУ РЕДОВЕТЕ (бяха 0 px) ── */
+html body #roomOverlay .ro-lav #roRoom .jr-card > .jr-quick + :is(textarea, input),
+html body #roomOverlay .ro-lav #roRoom .jr-card > p.jr-privacy + :is(textarea, .br-stage) { margin-top: 10px !important; }
+html body #roomOverlay .ro-lav #roRoom .jr-card > :is(p.cs-note, .rv-teaser, .jr-quick, p.jr-privacy) + .jr-btn { margin-top: 12px !important; }
+html body #roomOverlay .ro-lav #roRoom .jr-card > .jr-btn + p.jr-privacy,
+html body #roomOverlay .ro-lav #roRoom .jr-card > p.jr-privacy + p.jr-privacy,
+html body #roomOverlay .ro-lav #roRoom .jr-card > :is(.jr-addrow, .bg-grid, .dp-strip, .vc-list) + :is(.jr-wins, p.jr-privacy) { margin-top: 10px !important; }
+html body #roomOverlay .ro-lav #roRoom .rv-card .rv-teaser { text-align: center; }
+
+/* ── 43 · МИКРОФОНЪТ — вдясно, над десния ъгъл на листа, не сам ред вляво ──
+   (първо го застъпих с листа като стикер — на снимката горният ръб на листа минаваше ПРЕЗ копчето
+   и в двете теми, dn20_aL/aD_svobodna → без застъпване) */
+html body #roomOverlay .ro-lav #roRoom .jr-card > .nt-mic { margin: -2px 8px 8px auto !important; }
+
+/* ── 43а · БЕЗ САМОТНИ ДУМИ: заглавието се дели на равни редове („Сънят му × настроението / ти“ →
+        „Сънят му × / настроението ти“), подзаглавията и обясненията не оставят една дума/иконка сама ── */
+html body #roomOverlay .ro-lav #roRoom .jr-card > h4.jr-title { text-wrap: balance; }
+html body #roomOverlay .ro-lav #roRoom .jr-card :is(.jr-sub, p.jr-privacy, p.cs-note) { text-wrap: pretty; }
+/* „Съзвездието“: месецът беше „Октомври 2026 Г.“ (text-transform: capitalize хваща и „г.“) → само първата буква */
+html body #roomOverlay .ro-lav .cs-nav .cs-lbl { text-transform: none !important; display: inline-block; }   /* ::first-letter иска блок */
+html body #roomOverlay .ro-lav .cs-nav .cs-lbl::first-letter { text-transform: uppercase; }
+html body #roomOverlay .ro-lav .cs-box > p { margin-top: 10px; }
+/* стикерът НАКРАЯ на отговора („Мъничко слънце! 🌤️“, „Издишай… 💜“) — дъх след препинателния знак */
+html body #roomOverlay .ro-lav :is(.pl-dn-st, .jr-reply, .jr-after) > .pl-dn-em { margin-left: .18em; }
+/* плочките на кътчетата: „Съкровищницата“ = 107 px при 100 px място → опираше в шева (12.5 → 11.5 px, −.12 px; 12 px още опираше — dn20_fL_katcheta) */
+html body #roomOverlay .ro-lav .sec-nav .sec-chip { font-size: 11.5px !important; letter-spacing: -.12px !important; padding-left: 4px !important; padding-right: 4px !important; }
+
+/* ── 44 · „СКЪСАНО…“ — тъмна роза, не лилаво ── */
+html body #roomOverlay .ro-lav .jr-after { color: #a92f63 !important; }
+html[data-theme="dark"] body #roomOverlay .ro-lav .jr-after { color: #ffc9dd !important; }
+
+/* ── 45 · ГОЛОТО ЕМОДЖИ В КРЪГЧЕ, ДОРИСУВАНО ОТ js/pl-dnevnik.js (⬇️ / ↩ → подносът) ── */
+html body #roomOverlay .ro-lav .pl-em.pl-dn-em2 {
+  color: transparent !important; -webkit-text-fill-color: transparent; text-shadow: none !important;
+  background-repeat: no-repeat !important; background-blend-mode: multiply; background-color: var(--pl-plt, #fde6ef) !important;
+}
+
+/* ── 46 · МЕДАЛЬОНЧЕТАТА — филцови плочки с шев; една плочка стои в средата, не вляво с дупка ── */
+html body #roomOverlay .ro-lav .bg-grid:has(> .bg-badge:only-child) { grid-template-columns: minmax(0, 210px); justify-content: center; }
+html body #roomOverlay .ro-lav .bg-badge {
+  position: relative; border-radius: 20px !important;
+  background-color: #fffaf3 !important; background-image: var(--ui-felt) !important; background-size: 150px 150px !important; background-blend-mode: multiply !important;
+  border: 1px solid rgba(214, 186, 158, .62); box-shadow: 0 3px 0 rgba(198, 166, 134, .3), 0 10px 18px rgba(110, 76, 52, .1) !important;
+}
+html body #roomOverlay .ro-lav .bg-badge.got { background-color: #fff6e6 !important; border-color: rgba(217, 185, 143, .8); }
+html body #roomOverlay .ro-lav .bg-badge::after { content: ''; position: absolute; inset: 5px; border-radius: 15px; border: 1.5px dashed rgba(196, 160, 124, .5); pointer-events: none; }
+html body #roomOverlay .ro-lav .bg-badge strong { font-size: 13.5px !important; font-weight: 800; color: #1d2a5c !important; }
+html body #roomOverlay .ro-lav .bg-badge small { font-size: 11.5px !important; line-height: 1.35; color: #5d596f !important; }
+
+/* ── 47 · НЕБЕТО НА „СЪЗВЕЗДИЕТО“ — нощно синьо, не патладжан ── */
+html body #roomOverlay .ro-lav .cs-svg .cs-sky { fill: #1d2a5c; }
+
+/* ── 48 · ДРЕБНОТО ДА СЕ ЧЕТЕ: обясненията 13 px, етикетите ≥ 11.5 px, броячът по-тъмен ── */
+html body #roomOverlay .ro-lav #roRoom .jr-card :is(p.jr-privacy, p.cs-note) { font-size: 13px !important; line-height: 1.5; }
+html body #roomOverlay .ro-lav #roRoom .ask-card .ask-line,
+html body #roomOverlay .ro-lav #roRoom .pl-dn-priv { font-size: 13px; }
+html body #roomOverlay .ro-lav #roRoom .pl-dn-ml.pl-soft { font-size: 11.5px; }
+html body #roomOverlay .ro-lav #roRoom .jr-card .nl-idea { font-size: 13px !important; line-height: 1.45; }   /* „Не-списъкът“: идеите-бутони бяха 12.5 px */
+html body #roomOverlay .ro-lav #roRoom .sec-head .sec-n { font-size: 11.5px !important; color: #a92f63 !important; }
+@media (max-width: 370px) {
+  html body #roomOverlay .ro-lav #roRoom .pl-dn-ml.pl-soft { font-size: 11.5px; padding: 4px 5px; }
+}
+
+/* ── 49 · НОЩ (html[data-theme="dark"]) — без патладжан, плюшът в светъл кръг ── */
+html[data-theme="dark"] body #roomOverlay .ro-lav .pl-dn-st.is-reply { background-color: #2b3872; box-shadow: inset 0 0 0 1.5px rgba(245, 156, 187, .5), 0 2px 0 #18214a; }
+html[data-theme="dark"] body #roomOverlay .ro-lav .pl-dn-st.is-reply::before { background: #2b3872; }
+html[data-theme="dark"] body #roomOverlay .ro-lav .br-circle {
+  background-color: #2b3872;
+  background-image: radial-gradient(circle at 34% 26%, rgba(255, 255, 255, .2) 0, rgba(255, 255, 255, 0) 50%), radial-gradient(circle at 60% 110%, rgba(245, 156, 187, .38) 0, rgba(245, 156, 187, 0) 70%);
+}
+html[data-theme="dark"] body #roomOverlay .ro-lav .bg-badge,
+html[data-theme="dark"] body #roomOverlay .ro-lav .bg-badge.got {
+  background-color: #2b3872 !important; background-image: none !important;
+  border-color: rgba(227, 195, 156, .45); box-shadow: 0 3px 0 rgba(0, 0, 0, .3) !important;
+}
+html[data-theme="dark"] body #roomOverlay .ro-lav .bg-badge::after { border-color: rgba(255, 255, 255, .18); }
+html[data-theme="dark"] body #roomOverlay .ro-lav .bg-badge strong { color: #fff !important; }
+html[data-theme="dark"] body #roomOverlay .ro-lav .bg-badge small { color: #c9cbe3 !important; }
+html[data-theme="dark"] body #roomOverlay .ro-lav .cs-svg .cs-sky { fill: #131b45; }
+html[data-theme="dark"] body #roomOverlay .ro-lav .cs-svg { border-radius: 16px; box-shadow: 0 0 0 1px rgba(255, 255, 255, .14); }
+html[data-theme="dark"] body #roomOverlay .ro-lav #roRoom .sec-head .sec-n { color: #ffc9dd !important; }
+html[data-theme="dark"] body #roomOverlay .ro-lav .ask-card .ask-mic.ask-mic { background-color: #fff !important; background-blend-mode: normal !important; border-color: rgba(255, 255, 255, .85) !important; }
+/* избраното нощем — нощно синьо с розов ръб, не сливово #5a2c55 (§5 и §17 — видяно: dn20_sled_D_01 „Днес за теб“) */
+html[data-theme="dark"] body #roomOverlay .ro-lav .sec-nav .sec-chip.on,
+html[data-theme="dark"] body #roomOverlay .ro-lav .jr-wins .jr-win.on,
+html[data-theme="dark"] body #roomOverlay .ro-lav .jr-wins .jr-win[aria-pressed="true"],
+html[data-theme="dark"] body #roomOverlay .ro-lav .jr-wins .jr-win.done {
+  background-color: #2b3872 !important; border-color: rgba(245, 156, 187, .75) !important;
+  box-shadow: 0 0 0 2px rgba(245, 156, 187, .45), 0 3px 0 #18214a !important; color: #ffe6ef !important;
+}
+
+/* ── 50 · „ПУКНИ БАЛОНЧЕТО“ (#bubGame, само от дневника) — довършване на §35 ──
+   МЕРЕНО (dn20_gL_balon.jpg): горната лента „0 пукнати · 27 с“ се чупеше — „пукнати“ горе, „·“ долу
+   (flex + анонимни текстови парчета); краят — голи 🎈 😊 💜 (обвива ги js/pl-dnevnik.js „ДОРИСУВАНЕТО“). */
+html body #bubGame .bub-hud { white-space: nowrap; gap: 8px; padding: 6px 8px 6px 18px; font-variant-numeric: tabular-nums lining-nums; }
+/* кръгчето на стикера тук — общо с ключалката, виж §51 */
+html body #bubGame .bub-done :is(p, .jr-btn) > .pl-dn-em:not(:first-child) { margin-left: .2em; margin-right: 0; }
+html body #bubGame .bub-done p:first-child > .pl-dn-em:first-child { margin-left: 0; margin-right: .22em; }
+/* резултатът е ЧИСЛО — на Georgia „0 пукнати“ се чете „о пукнати“ (старинните цифри, видяно на снимка) → Nunito */
+html body #bubGame .bub-done p:first-child { font-family: Nunito, Nunito-fallback, system-ui, sans-serif !important; font-weight: 800; font-variant-numeric: lining-nums tabular-nums; }
+/* 🪤 БАЛОНЧЕТАТА НЕ ИЗЛИТАХА: css/touch.css:707 спира ВСЯКА анимация извън #roomOverlay, докато стая е
+   отворена (≤ 599 px), а #bubGame е дете на <body> → bubRise стоеше на първия кадър, балончетата чакаха
+   под екрана (мерено: top 851–871 px при екран 844, transform = identity след 3.3 с). css/pl-popravki.css
+   пуска наново четеца, търсенето, SOS… но не и играта на дневника → тук, само за #bubGame. */
+@media (max-width: 599px) {
+  html.ro-otvorena body > #bubGame.bub-overlay,
+  html.ro-otvorena body > #bubGame.bub-overlay * { animation-play-state: running !important; }
+}
+
+/* ── 51 · КЛЮЧАЛКАТА НА ДНЕВНИКА (#pinOverlay — само тя, по id; extras.js:862) ──
+   МЕРЕНО (dn20_iL_11_pinprozorec.jpg, СВЕТЛА тема): кутия-патладжан #2a2640 с бутони #383253,
+   Comfortaa (extras.css:76-88), голо 🔒 в заглавието — единственото тъмнолилаво нещо по пътя към дневника.
+   Сега: кремав филц с шев като картите, кръгли филцови копчета, златни точки (пълната — розова). */
+html body #pinOverlay.br-overlay { background: rgba(29, 42, 92, .45); overflow-y: auto; align-items: safe center; padding: 16px 0; box-sizing: border-box; }
+/* с отворен „изход“ (забравен ПИН) кутията ставаше 915 px при екран 844 → горе се режеше (снимка dn20_pL_izhod):
+   копчетата се свиват, а слоят вече се превърта (safe center не реже горния ръб) */
+html body #pinOverlay .pin-box:has(.pin-exit:not([hidden])) .pin-pad { grid-template-columns: repeat(3, 56px); gap: 8px 14px; }
+html body #pinOverlay .pin-box:has(.pin-exit:not([hidden])) .pin-pad button { width: 56px; height: 56px; font-size: 20px; }
+html body #pinOverlay .pin-box {
+  position: relative; width: min(340px, calc(100vw - 32px)); box-sizing: border-box; padding: 26px 20px 20px;
+  background-color: #fffaf3; background-image: var(--ui-felt); background-size: 160px 160px; background-blend-mode: multiply;
+  border: 1px solid rgba(214, 186, 158, .72); border-radius: 26px;
+  box-shadow: 0 4px 0 rgba(198, 166, 134, .35), 0 24px 48px rgba(29, 42, 92, .3);
+}
+html body #pinOverlay .pin-box::after { content: ''; position: absolute; inset: 7px; border-radius: 20px; border: 1.5px dashed rgba(196, 160, 124, .5); pointer-events: none; }
+html body #pinOverlay .pin-title { font-family: var(--pl-serif, Georgia, serif) !important; font-size: 20px !important; font-weight: 700; line-height: 1.25; color: #1d2a5c; margin: 0 0 16px; white-space: nowrap; }
+html body #pinOverlay .pin-dots span { width: 15px; height: 15px; background: #fff; box-shadow: inset 0 0 0 2px #d9b98f; }
+html body #pinOverlay .pin-dots span.f { background: #e56d99; box-shadow: inset 0 0 0 2px #c9447a; }
+html body #pinOverlay .pin-pad { grid-template-columns: repeat(3, 66px); gap: 12px 16px; }
+html body #pinOverlay .pin-pad button {
+  position: relative; z-index: 1; width: 66px; height: 66px; border-radius: 50%;
+  background-color: #fff; background-image: var(--ui-felt); background-size: 120px 120px; background-blend-mode: multiply;
+  border: 1px solid rgba(214, 186, 158, .72); box-shadow: 0 3px 0 rgba(198, 166, 134, .42), inset 0 2px 0 rgba(255, 255, 255, .9);
+  color: #1d2a5c; font-family: Nunito, Nunito-fallback, system-ui, sans-serif !important; font-size: 23px; font-weight: 800; font-variant-numeric: lining-nums;
+}
+html body #pinOverlay .pin-pad button:active { transform: translateY(2px); box-shadow: 0 1px 0 rgba(198, 166, 134, .42); }
+html body #pinOverlay .pin-pad button:focus-visible { outline: 3px solid #b8376f; outline-offset: 2px; }
+html body #pinOverlay .pin-msg { color: #a92f63; font-size: 13.5px; font-weight: 800; min-height: 1.2em; }
+html body #pinOverlay .pin-forgot { color: #1d2a5c; font-weight: 800; }
+html body #pinOverlay .pin-exit { position: relative; z-index: 1; }
+html body #pinOverlay .pin-exit p { color: #3b3f5c; font-size: 13.5px; }
+html body #pinOverlay :is(.jr-chip, .jr-btn) { position: relative; z-index: 1; }
+html body #pinOverlay .pl-dn-em,
+html body #bubGame .pl-dn-em {
+  display: inline-grid; width: 1.6em; height: 1.6em; margin: -.3em .2em -.3em 0; vertical-align: -.36em;
+  border-radius: 50%; color: transparent !important; -webkit-text-fill-color: transparent; text-shadow: none !important;
+  background-repeat: no-repeat !important; background-blend-mode: multiply; background-color: var(--pl-plt, #fde6ef);
+  box-shadow: inset 0 0 0 1.5px rgba(255, 255, 255, .9), 0 2px 6px rgba(110, 76, 52, .2);
+}
+html[data-theme="dark"] body #pinOverlay.br-overlay { background: rgba(8, 12, 32, .72); }
+html[data-theme="dark"] body #pinOverlay .pin-box { background-color: rgba(31, 43, 92, .97); background-image: none; border-color: rgba(255, 255, 255, .14); box-shadow: 0 24px 48px rgba(0, 0, 0, .5); }
+html[data-theme="dark"] body #pinOverlay .pin-box::after { border-color: rgba(255, 255, 255, .16); }
+html[data-theme="dark"] body #pinOverlay .pin-title { color: #fff; }
+html[data-theme="dark"] body #pinOverlay .pin-dots span { background: #1d2757; box-shadow: inset 0 0 0 2px rgba(227, 195, 156, .65); }
+html[data-theme="dark"] body #pinOverlay .pin-dots span.f { background: #f59cbb; box-shadow: none; }
+html[data-theme="dark"] body #pinOverlay .pin-pad button { background-color: #2b3872; background-image: none; border-color: rgba(255, 255, 255, .16); box-shadow: 0 3px 0 #18214a; color: #fff; }
+html[data-theme="dark"] body #pinOverlay .pin-msg { color: #ffc9dd; }
+html[data-theme="dark"] body #pinOverlay .pin-forgot { color: #c9cbe3; }
+html[data-theme="dark"] body #pinOverlay .pin-exit p { color: #e8e9f5; }
+@media (prefers-reduced-motion: reduce) { html body #pinOverlay .pin-pad button:active { transform: none; } }
+
+/* ── 52 · ТЪРСАЧКАТА — линейна лупа вместо системното 🔍 (знакът го маха js/pl-dnevnik.js само щом това е тук) ── */
+html body #roomOverlay .ro-lav .sec-nav .sec-find[data-pl-dn-lupa] {
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%238d7f7a' stroke-width='2.1' stroke-linecap='round'%3E%3Ccircle cx='10.5' cy='10.5' r='6.5'/%3E%3Cpath d='M15.4 15.4L21 21'/%3E%3C/svg%3E"), var(--ui-felt) !important;
+  background-size: 22px 22px, 150px 150px !important; background-position: 16px center, 0 0 !important;
+  background-repeat: no-repeat, repeat !important; background-blend-mode: normal, multiply !important;
+  padding-left: 46px !important;
+}
+html[data-theme="dark"] body #roomOverlay .ro-lav .sec-nav .sec-find[data-pl-dn-lupa] {
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23c9cbe3' stroke-width='2.1' stroke-linecap='round'%3E%3Ccircle cx='10.5' cy='10.5' r='6.5'/%3E%3Cpath d='M15.4 15.4L21 21'/%3E%3C/svg%3E") !important;
+  background-size: 22px 22px !important; background-position: 16px center !important; background-repeat: no-repeat !important; background-blend-mode: normal !important;
+}
+/* ── 53 · СЕДМИЦАТА: плочките бяха 39 px широки (< 40 за пръст, obikolka dn20_sled_L) → по-тесни пролуки ── */
+html body #roomOverlay .ro-lav .jr-week { gap: 4px !important; }
+/* край 20.10 */

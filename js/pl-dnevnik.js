@@ -510,5 +510,117 @@
     мини();
   }
   if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', върви); else върви();
-  window.BL_PL_DN_SVET = { мини, грешки };
+  // 20.10: + рис, боядисай, обвий — ползва ги блокът „20.10 · ДОРИСУВАНЕТО“ отдолу (беше { мини, грешки })
+  window.BL_PL_DN_SVET = { мини, грешки, рис, боядисай, обвий };
 })();
+
+/* ═══════════════════════════════════════════════════════════════════════════════
+   20.10 · ДОРИСУВАНЕТО (dn20) — две голи емоджита и един надпис, който се пише наново.
+   МЕРЕНО в тази сесия (dev/proba/dn20_plan_mer2.js, стая „Дневник на мама“):
+     · .pl-em с data-pl-pl="0" — pl-plyush.js обви емоджито, но рисунка няма → системно емоджи в
+       бяло кръгче: „⬇️ Запази като PDF“ (Годишникът), „↩ Върни последното махнато“ (Не-списъкът).
+       Връзват се към ВЕЧЕ нарисуваната клетка от ДОРИСУВКА горе (подносът) — нова картинка няма.
+     · „Скъсано. Отиде си завинаги. Издишай… 💜“ (.jr-after, rooms.js:600) се пише с textContent
+       след всяко скъсване → голо 💜; обвиването горе е еднократно (dataset.plDnW) и не го хваща.
+       Тук: при НОВ текст флагът се сваля и същото обвий() минава пак (текстът буква по буква същият).
+   Нищо не се записва (няма setItem/removeItem). Пише се само при разлика → без вечен кръг.
+   ПЪТ НАЗАД: махни този блок; в горния върни реда window.BL_PL_DN_SVET = { мини, грешки }.
+   ═══════════════════════════════════════════════════════════════════════════════ */
+(function () {
+  'use strict';
+  if (window.BL_PL_DN20) return;
+  const грешки = [];
+  const СТАЯ = '#roomOverlay .ro-panel.ro-lav';
+  function дорисувай(корен) {
+    const С = window.BL_PL_DN_SVET; if (!С || !С.рис || !С.боядисай) return;
+    корен.querySelectorAll('.pl-em[data-pl-pl="0"]:not([data-pl-dn-d])').forEach(е => {
+      е.dataset.plDnD = '1';
+      const р = С.рис((е.textContent || '').trim());
+      if (р && С.боядисай(е, р)) е.classList.add('pl-dn-em2');
+    });
+  }
+  // ✍️ надписите, които се пишат наново с textContent: „Скъсано…💜“ (.jr-after), отговорът под личицата
+  //   на картата (.jr-reply, rooms.js:221 живДума — „Мъничко слънце! 🌤️“) и огледалото му в тефтера
+  //   горе (.pl-dn-st). Тефтерът е извън обвий() (там „.pl-dn“ е изключено) → тук същото, на ръка.
+  const ЕМО = /\p{Extended_Pictographic}(?:️|‍\p{Extended_Pictographic}|\p{Emoji_Modifier}|️⃣)*/u;
+  function обвийТук(е, С) {
+    const преди = е.textContent;
+    const мои = [];
+    for (const в of [...е.childNodes]) {
+      if (в.nodeType !== 3 || !в.nodeValue) continue;
+      const м = в.nodeValue.match(ЕМО); const р = м && С.рис(м[0]);
+      if (!р) continue;
+      const сл = в.splitText(м.index); сл.nodeValue = сл.nodeValue.slice(м[0].length);
+      const и = document.createElement('i'); и.className = 'pl-dn-em'; и.setAttribute('aria-hidden', 'true'); и.dataset.pl = '1'; и.textContent = м[0];
+      е.insertBefore(и, сл); мои.push([и, р]);
+    }
+    if (!мои.length) return;
+    if (е.textContent !== преди) { for (const [и] of мои) и.replaceWith(document.createTextNode(и.textContent)); е.normalize(); return; }   // чисто назад
+    for (const [и, р] of мои) { if (!С.боядисай(и, р)) и.classList.remove('pl-dn-em'); }
+  }
+  function надписи(корен) {
+    const С = window.BL_PL_DN_SVET; if (!С || !С.обвий || !С.рис) return;
+    корен.querySelectorAll('.jr-after, .jr-card > .jr-reply, .pl-dn-st').forEach(е => {
+      const т = е.textContent || '';
+      if (е.dataset.plDnT === т) return;                    // същият текст → нищо
+      е.dataset.plDnT = т;
+      if (!т.trim() || е.querySelector('.pl-dn-em')) return;
+      if (е.closest('.pl-dn')) { обвийТук(е, С); return; }
+      delete е.dataset.plDnW;
+      С.обвий(е);
+    });
+  }
+  // 🔍 търсачката в стаята: „🔍 в стаята…“ (polish.js:79) — системна лупа в плейсхолдъра (видяно: dn20_sled_L_01).
+  //   Знакът пада САМО защото лупата е нарисувана в css/pl-dnevnik.css §52 ([data-pl-dn-lupa]) — поуката
+  //   от pl-hranene.js:434: без готова рисунка знакът остава. Думите не се пипат.
+  function лупа(корен) {
+    корен.querySelectorAll('.sec-nav .sec-find:not([data-pl-dn-lupa])').forEach(в => {
+      const п = в.placeholder || '';
+      if (!/^\s*🔍️?\s*/u.test(п)) return;
+      в.placeholder = п.replace(/^\s*🔍️?\s*/u, '');
+      в.setAttribute('data-pl-dn-lupa', '1');
+    });
+  }
+  function мини() {
+    document.querySelectorAll(СТАЯ).forEach(стая => { дорисувай(стая); надписи(стая); лупа(стая); });
+  }
+  // 🎈 „Пукни балончето“ (#bubGame, extras2.js:338) живее в <body>, извън стаята, и се пуска САМО от
+  //   дневника. Краят му („🎈 N пукнати балончета!“, „По-леко ли е? 😊“, „Готово 💜“) — голи емоджита
+  //   (мерено: dn20_gL_balon_kray.jpg). Обвиват се със същото обвий(); стилът — css/pl-dnevnik.css §50.
+  //   🔒 Ключалката на дневника (#pinOverlay, extras.js:862 pinAsk) — също в <body>; заглавието
+  //   „🔒 Дневникът е заключен“ се пише с textContent при всяко питане → при нов текст — наново.
+  function балонче() {
+    const С = window.BL_PL_DN_SVET;
+    if (!С || !С.обвий) return;
+    const цели = [];
+    const о = document.getElementById('bubGame'); if (о) цели.push(...о.querySelectorAll('.bub-done p, .bub-done .jr-btn'));
+    const п = document.getElementById('pinOverlay'); if (п) цели.push(...п.querySelectorAll('.pin-title'));
+    цели.forEach(е => {
+      const т = е.textContent || '';
+      if (е.dataset.plDnT === т) return;
+      е.dataset.plDnT = т;
+      if (!т.trim() || е.querySelector('.pl-dn-em')) return;
+      delete е.dataset.plDnW;
+      С.обвий(е);
+    });
+  }
+  let чака = false;
+  function отложено() { if (чака) return; чака = true; setTimeout(() => { чака = false; try { мини(); } catch (ex) { грешки.push(String((ex && ex.message) || ex)); } }, 60); }
+  let чакаБ = false;
+  function отложеноБ() { if (чакаБ) return; чакаБ = true; setTimeout(() => { чакаБ = false; try { балонче(); } catch (ex) { грешки.push(String((ex && ex.message) || ex)); } }, 60); }
+  function върви() {
+    const ов = document.getElementById('roomOverlay');
+    if (!ов) return;
+    new MutationObserver(отложено).observe(ов, { childList: true, subtree: true, attributes: true, attributeFilter: ['class', 'hidden'] });
+    мини();
+    // #bubGame се ражда при първото „Играй!“, #pinOverlay — при първото питане за ПИН →
+    //   гледаме само преките деца на <body> (рядко се менят) и закачаме наблюдател на всеки от двата
+    const гледам = new Set();
+    const закачи = () => { ['bubGame', 'pinOverlay'].forEach(id => { const о = document.getElementById(id); if (о && !гледам.has(о)) { гледам.add(о); new MutationObserver(отложеноБ).observe(о, { childList: true, subtree: true }); отложеноБ(); } }); };
+    new MutationObserver(закачи).observe(document.body, { childList: true });
+    закачи();
+  }
+  if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', върви); else върви();
+  window.BL_PL_DN20 = { мини, грешки };
+})();
+/* край 20.10 */
