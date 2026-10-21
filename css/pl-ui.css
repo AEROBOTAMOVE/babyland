@@ -487,3 +487,17 @@ html body .pl-em.pl-em-sled { margin-left: .2em !important; margin-right: -.06em
    (15 бутона). Иконката е квадрат; бутонът си остава 40×40 (touch.css).
    ПЪТ НАЗАД: махни това правило. */
 html body .jr-x > .pl-em.pl-pl { width: 24px !important; height: 24px !important; min-width: 0 !important; margin: 0 !important; flex: none !important; }
+
+/* ═══ 21.10 · НОЩЕМ ИЗБРАНОТО Е ДЪЛБОКА РОЗА, НЕ СЛИВА ═══
+   Отчетите на визуалните агенти (20.10) посочиха общ дефект в този файл (§ 6 ред ~197, § 13 ред ~425):
+   избраният чип/превключвател нощем беше #5a2c55 — кафеникава слива, извън палитрата (нощта е тъмносиньо
+   + розови акценти). Сега: дълбока роза, бял текст (бяло върху #8f2f61 ≈ 7,6:1), розов ръб — личи
+   кое е избрано, без да свети. Същите селектори като по-горе (§ 6 и § 13), затова този блок ги бие.
+   ПЪТ НАЗАД: махни този блок (до „край 21.10“). */
+html[data-theme="dark"] body .pl-soft.pl-soft.on, html[data-theme="dark"] body .pl-soft.pl-soft[aria-pressed="true"], html[data-theme="dark"] body .pl-soft.pl-soft[aria-selected="true"],
+html[data-theme="dark"] body .jr-chip.jr-chip.on, html[data-theme="dark"] body .jr-chip.jr-chip[aria-pressed="true"], html[data-theme="dark"] body .wt-o.wt-o.on,
+html[data-theme="dark"] body .set-tgl.set-tgl.on, html[data-theme="dark"] body .onb-sexbtn.onb-sexbtn.on, html[data-theme="dark"] body .bb-sexbtn.bb-sexbtn.on {
+  background-color: #8f2f61 !important; border-color: rgba(245, 156, 187, .75) !important; color: #fff !important;
+  box-shadow: inset 0 0 0 3px #8f2f61, inset 0 0 0 4.5px rgba(245, 156, 187, .5), 0 2px 0 #3d1430 !important;
+}
+/* край 21.10 */
