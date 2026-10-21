@@ -253,19 +253,36 @@
     '#searchOverlay span, #plDv span, .rm-veil span, .rm-veil i, main > section span, main > section i';
   const БЕЗ = '#roChat, #artBody, .msg, .ask-badge, input, textarea, .pl-em';        // за ЕДРИТЕ
   const БЕЗ_ОБВИЙ = '.ask-badge, input, textarea, .pl-em';                            // за ОБВИВАНЕТО
-  function едро(е) {
-    if (е.dataset.plPl || е.children.length) return;
+  // ⏱️ 21.10 МЕРЕНО (tezhest.js --profil, ×4): едро() = 101 ms при старта — getComputedStyle ЕДИН ПО ЕДИН,
+  //   между писанията (чети → пиши → чети: всяко четене след писане преизчислява стила на страницата), и
+  //   отказаните (шрифт < 20px) се мереха пак при всяка промяна в DOM-а. Сега: първо всички проверки без
+  //   мерене, после ВСИЧКИ четения, накрая ВСИЧКИ писания; отказаният се помни по текст + клас.
+  //   ПЪТ НАЗАД: върни едро() с getComputedStyle вътре и „к.querySelectorAll(ЕДРИ).forEach(едро)“ в мини().
+  const ЕДРИ_МАЛКИ = new WeakMap();
+  function едроКандидат(е) {
+    if (е.dataset.plPl || е.children.length) return null;
     const т = (е.textContent || '').trim();
-    if (!т || т.length > 8) return;
+    if (!т || т.length > 8) return null;
+    if (ЕДРИ_МАЛКИ.get(е) === т + '|' + е.className) return null;
     const м = т.match(/^(\p{Extended_Pictographic}(?:️|‍\p{Extended_Pictographic}|\p{Emoji_Modifier}|️⃣)*)$/u);
     const р = м && рис(м[1]);
-    if (!р) return;
-    if (е.closest(БЕЗ)) return;
-    const фс = parseFloat(getComputedStyle(е).fontSize) || 0;
-    if (фс < 20) return;
-    е.dataset.plPl = '1'; стил(е, р);
-    е.style.width = Math.round(фс * 1.25) + 'px'; е.style.height = Math.round(фс * 1.25) + 'px'; е.style.display = 'inline-block';
+    if (!р) return null;
+    if (е.closest(БЕЗ)) return null;
+    return [е, р, т];
   }
+  function едри(списък) {
+    const за = [];
+    for (const е of списък) { const к = едроКандидат(е); if (к) за.push(к); }
+    if (!за.length) return;
+    const размери = за.map(([е]) => parseFloat(getComputedStyle(е).fontSize) || 0);   // фаза 1 · само четем
+    за.forEach(([е, р, т], i) => {                                                     // фаза 2 · само пишем
+      const фс = размери[i];
+      if (фс < 20) { ЕДРИ_МАЛКИ.set(е, т + '|' + е.className); return; }
+      е.dataset.plPl = '1'; стил(е, р);
+      е.style.width = Math.round(фс * 1.25) + 'px'; е.style.height = Math.round(фс * 1.25) + 'px'; е.style.display = 'inline-block';
+    });
+  }
+  function едро(е) { едри([е]); }
 
   // ── 4 · емоджито, нарисувано В SVG (<text>) ─────────────────────────────────
   //  HTML обвиването не стига дотам. Слагаме рисунката като <image> с clipPath точно
@@ -341,7 +358,7 @@
     if (к.querySelectorAll) {
       к.querySelectorAll(ЦЕЛИ).forEach(плюш);
       к.querySelectorAll(ОБВИЙ).forEach(обвий);
-      к.querySelectorAll(ЕДРИ).forEach(едро);
+      едри(к.querySelectorAll(ЕДРИ));
       свгЕмоджи(к);
     }
     if (к.matches && к.matches(ЦЕЛИ)) плюш(к);

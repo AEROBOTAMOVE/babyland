@@ -185,7 +185,14 @@
         <strong class="d24-t">${d.t} · ${String(d.h).padStart(2, '0')}:00</strong>
         <p class="d24-s">${d.s}</p>
         <button class="d24-go" type="button">Влез в „${d.room}“ →</button>`;
-      body.classList.remove('d24-out', 'd24-in'); void body.offsetWidth; body.classList.add('d24-in');
+      // ⚡ 21.10 МЕРЕНО (tezhest.js --profil, ×4): „void body.offsetWidth“ подреждаше ЦЯЛАТА страница насред
+      //   зареждането — 289 ms собствено време тук, само за да тръгне отначало една анимация. Сега: първия път
+      //   класът просто се слага (няма какво да се рестартира); после — в следващия кадър, без принудително
+      //   подреждане. ПЪТ НАЗАД: върни „body.classList.remove('d24-out', 'd24-in'); void body.offsetWidth; body.classList.add('d24-in');“
+      const бешеВ = body.classList.contains('d24-in') || body.classList.contains('d24-out');
+      body.classList.remove('d24-out', 'd24-in');
+      if (!бешеВ) body.classList.add('d24-in');
+      else requestAnimationFrame(() => requestAnimationFrame(() => body.classList.add('d24-in')));
       body.querySelector('.d24-go').addEventListener('click', () => { if (window.MamaHelper) MamaHelper.open(d.room); });
     }
     function show(i, byUser) {
@@ -499,7 +506,10 @@
       line.style.minHeight = максимум + 'px';
     }
     line.style.minHeight = '';
-    резервирайМясто();
+    // ⚡ 21.10 МЕРЕНО (tezhest.js --profil, ×4): мерането на всяка дума = 101 ms принудително подреждане насред
+    //   зареждането. В новото начало (css/pl-start.css) надписът е скрит — там не се мери; иначе — в кадъра след
+    //   рисуването, не посред скриптовете. ПЪТ НАЗАД: върни голото „резервирайМясто();“.
+    requestAnimationFrame(() => { if (!document.documentElement.classList.contains('pl-on')) резервирайМясто(); });
     let преоразмер;
     window.addEventListener('resize', () => {
       clearTimeout(преоразмер);
@@ -537,7 +547,9 @@
     // а 0.15s преход отгоре само добавяше изоставане.
     // ПЪТ НАЗАД: върни двата реда на style.width/style.left и двата `transition`
     // реда в css/home.css (.scrollfly-trail и .scrollfly-b).
-    let ticking = false, W = bar.clientWidth || innerWidth;
+    // ⚡ 21.10: широчината се мери при първия скрол, не при раждането (bar.clientWidth тук = 67 ms
+    //   принудително подреждане при старта, ×4). ПЪТ НАЗАД: върни „W = bar.clientWidth || innerWidth“ тук.
+    let ticking = false, W = 0;
     // широчината се чете при смяна на екрана, НЕ на всеки кадър — иначе
     // самото четене принуждава подредба и печалбата се губи
     addEventListener('resize', () => { W = bar.clientWidth || innerWidth; }, { passive: true });
@@ -545,6 +557,7 @@
       if (ticking) return;
       ticking = true;
       requestAnimationFrame(() => {
+        if (!W) W = bar.clientWidth || innerWidth;
         const max = document.documentElement.scrollHeight - innerHeight;
         const p = max > 0 ? Math.min(1, scrollY / max) : 0;
         trail.style.transform = 'scaleX(' + p + ')';
