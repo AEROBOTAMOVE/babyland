@@ -159,7 +159,10 @@
     }
     if (s.slice(нач).trim()) части.push(s.slice(нач).trim());
     const сл = [];
-    части.forEach(ч => { if (сл.length && ч.length < 12) сл[сл.length - 1] += ' ' + ч; else сл.push(ч); });
+    // 20.10 (видяно на снимка ig20_C3_l_v): „„Кой е това?“ — възторг гарантиран.“ ставаше две стъпки и третата
+    //   започваше с тире („— възторг гарантиран.“). Част, която почва с тире, е продължение → лепи се към предната.
+    //   ПЪТ НАЗАД: махни „|| /^[—–]/.test(ч)“.
+    части.forEach(ч => { if (сл.length && (ч.length < 12 || /^[—–]/.test(ч))) сл[сл.length - 1] += ' ' + ч; else сл.push(ч); });
     while (сл.length > 3) { const п = сл.pop(); сл[сл.length - 1] += ' ' + п; }
     return сл.length ? сл : [s];
   }
@@ -412,8 +415,36 @@
         const ок2 = единРед([...е.querySelectorAll('.pl-ig-drawer span')], 0.88);
         if (ок1 && ок2) е.setAttribute('data-pl-fit', ключ);
       }
+      плюшG5(стая);
     });
     if (лист && !лист.hidden && !игри) затвориЛист(false);
+  }
+
+  /* 20.10 · „Играта за 5 минути“ (rooms7.js:114): емоджито пред името на играта (🧣 и др.) няма плюшена
+     рисунка в pl-plyush.js → стоеше голо, цветно емоджи (ловецът ig20_B0 го хвана: P.g5-t „🧣 Кърпата изчезва“).
+     Обвиваме САМО него в <span class="pl-ig-g5e"> с фигурка, подбрана по името на играта (ФИГУРИ по-горе);
+     емоджито остава вътре, прозрачно → textContent е байт в байт същият. Ако pl-plyush вече го е обвил
+     (първото дете не е текст) — не пипаме. „🎲 Друга игра“ сменя кутията → нов .g5-t → пак тук (наблюдателят).
+     ПЪТ НАЗАД: махни тази функция и реда „плюшG5(стая);“ в сложи(). */
+  const ЕМ_НАЧАЛО = /^(\s*)(\p{Extended_Pictographic}(?:\uFE0F|\u200D\p{Extended_Pictographic}|\p{Emoji_Modifier})*)/u;
+  function плюшG5(стая) {
+    стая.querySelectorAll('.g5-t:not([data-ig20])').forEach(р => {
+      р.setAttribute('data-ig20', '1');
+      const в = р.firstChild;
+      if (!в || в.nodeType !== 3) return;
+      const м = в.nodeValue.match(ЕМ_НАЧАЛО);
+      if (!м) return;
+      const име = в.nodeValue.slice(м[0].length);
+      const ф = фигура(име, 0, null);
+      const с = document.createElement('span');
+      с.className = 'pl-ig-g5e pl-ig-i';
+      с.setAttribute('aria-hidden', 'true');
+      с.setAttribute('style', ико(ф[0], ф[1], ф[2]));
+      с.textContent = м[2];
+      в.nodeValue = име;
+      р.insertBefore(с, в);
+      if (м[1]) р.insertBefore(document.createTextNode(м[1]), с);
+    });
   }
 
   // ═══════════ 📒 ЛИСТЪТ НА ИГРАТА (реф. 12) ═══════════
@@ -470,6 +501,11 @@
       else if (д === 'fav') любима();
       else if (д === 'done') направихме();
     });
+    // 20.10 · при плъзгане бутоните ✕ и SOS 112 висят над текста (снимка ig20_C3_l_v: „SOS 112“ легна върху
+    //   хапчето „Игра заедно“) → щом листът е превъртян, под лентата светва меко кремаво було (css/pl-igri.css).
+    //   Само клас, само при смяна. ПЪТ НАЗАД: махни този слушател.
+    const лс = в.querySelector('.pl-ig-sheet');
+    лс.addEventListener('scroll', () => { const да = лс.scrollTop > 40; if (лс.classList.contains('is-scrolled') !== да) лс.classList.toggle('is-scrolled', да); }, { passive: true });
     document.body.appendChild(в);
     return в;
   }

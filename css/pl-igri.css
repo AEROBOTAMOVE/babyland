@@ -648,3 +648,160 @@ html[data-theme="dark"] #roomOverlay .ro-panel.ro-sun #roRoom .rg-mine { backgro
 html[data-theme="dark"] body #roomOverlay .ro-panel.ro-sun #roRoom .rg-mark.rg-mark { border-color: rgba(255, 179, 207, .85) !important; }
 html[data-theme="dark"] #roomOverlay .ro-panel.ro-sun #roRoom .rh-hero .pg20-do { background: rgba(227, 195, 156, .12) !important; border-color: rgba(227, 195, 156, .4) !important; color: #f3e6cc; }
 /* /06.10 */
+
+/* 20.10 · ДОВЪРШВАНЕ НА КАРТИТЕ (ig20) — видяно на снимки snimki/ig20_B0_l_*, ig20_B0_d_* и мерено (ig20_dom.js):
+   · „Кога обикновено“: „обикновено 2-4 м.“ ту на реда, ту под него (nowrap) → винаги под името, редовете са еднакви.
+   · „Кога да се допитам“ (.sg-now) и „Първите книжки“ (.bk-now): маркерът „сега“ беше старото #f7a8cb (mega.css:868, :1014).
+   · „Първите книжки“ (.bk-past): opacity .5 (mega.css:1015) → текстът под 4.5:1; сега е тих, но четим.
+   · „Играта за 5 минути“: часовникът беше лилав #b9a7e0 (mega.css:849), а празният пазеше 31px дупка под бутоните.
+   · „От каквото имам вкъщи“ (.lb-warn2): жълта кутия с ръб rgba(255,193,7) → кехлибарената бележка на pl-lab.css:384.
+   · „Двуезичното дете“ (details.cm-row) и „Игрите на баба“ (details.bg-game): голото черно ▶, сиви/бели редове, нощем
+     патладжан #342f4e / #241f38 → кремав ред: иконка · име · мека стрелка (езикът на pl-hranene.css „4e“, но с flex —
+     ако някое емоджи няма рисунка, текстът пак не се свива в колоната на иконката).
+   · Големият бутон лепнеше за реда над него (мерено 0px: „Дай ни идея!“, „Разкажи ми приказка“, „Запиши (до 120 сек)“, „Игрите са…“).
+   · Нощем флагът за лекаря, бележката на „Този месец“ и предупреждението бяха СИВИ (злато .13 върху синьо = сиво) →
+     синьо платно + златен кант. Нощем редовете бяха тъмен патладжан #262138 (dark.css) → синьо #2b3872.
+   · Нощем календарчето в датите („Първите пъти“) беше черно върху синьо → color-scheme: dark (само в тази стая).
+   ПЪТ НАЗАД: махни този блок. */
+
+/* ── 📊 лентите: диапазонът винаги на свой ред ── */
+html body #roomOverlay .ro-panel.ro-sun #roRoom .rg-n small { display: block; margin-top: 2px; white-space: normal; }
+
+/* ── „сега“ в „Кога да се допитам“ и „Първите книжки“: розов филц като отметнатото умение ── */
+html body #roomOverlay .ro-panel.ro-sun #roRoom .jr-card :is(.sg-row, .bk-row) {
+  border: 1px solid #f1e4d9 !important; border-radius: 16px !important;
+  box-shadow: 0 2px 0 rgba(214, 186, 158, .3) !important;
+}
+html body #roomOverlay .ro-panel.ro-sun #roRoom .jr-card :is(.sg-row.sg-now, .bk-row.bk-now) {
+  background-color: #fff2f7 !important; border-color: rgba(217, 116, 157, .5) !important;
+  box-shadow: 0 2px 0 rgba(231, 160, 189, .42), 0 6px 14px rgba(217, 90, 142, .08) !important;
+}
+html body #roomOverlay .ro-panel.ro-sun #roRoom .jr-card .bk-row.bk-past { opacity: 1; background-color: transparent !important; border-style: dashed !important; box-shadow: none !important; }
+html body #roomOverlay .ro-panel.ro-sun #roRoom .jr-card .bk-row.bk-past :is(strong, small) { color: #6a6682; opacity: 1; }
+html body #roomOverlay .ro-panel.ro-sun #roRoom .jr-card .bk-row.bk-past .bk-e { filter: saturate(.55); opacity: .8; }
+
+/* ── ⏱️ часовникът на „Играта за 5 минути“: тъмносини цифри на Nunito; празен — без дупка ── */
+html body #roomOverlay .ro-panel.ro-sun #roRoom .g5-clock {
+  font-family: Nunito, Nunito-fallback, system-ui, sans-serif; font-weight: 800; font-variant-numeric: tabular-nums lining-nums;
+  color: var(--pl-navy, #1d2a5c); line-height: 1.3;
+}
+html body #roomOverlay .ro-panel.ro-sun #roRoom .g5-clock:empty { min-height: 0; margin: 0; }
+/* емоджито пред името на играта (🧣…) няма плюшена рисунка → js/pl-igri.js го обвива в .pl-ig-g5e (фигурка по името) */
+html body #roomOverlay .ro-panel.ro-sun #roRoom .g5-t .pl-ig-g5e {
+  display: inline-block; width: 34px; height: 34px; margin: -6px 6px -6px 0; vertical-align: middle;
+  border-radius: 50%; background-color: #fff7ef; box-shadow: 0 0 0 2px #fff, 0 2px 6px rgba(110, 76, 52, .18);
+  color: transparent; -webkit-text-fill-color: transparent; overflow: hidden; font-size: 0; mix-blend-mode: normal; background-blend-mode: multiply;
+}
+
+/* ── ⚠️ „От каквото имам вкъщи“: кехлибарена бележка (внимание), не жълта кутия ── */
+html body #roomOverlay .ro-panel.ro-sun #roRoom .lb-warn2 {
+  margin: 12px 0; padding: 12px 14px; border-radius: 16px;
+  background: #fff6e6; border: 1px solid #f0d9a8; border-left: 4px solid #e3b25c;
+  font-size: 13.5px; font-weight: 700; line-height: 1.55; color: var(--pl-ink, #3b3f5c);
+}
+
+/* ── 🗣️👵 разгъващите се редове: иконка · име · мека стрелка ── */
+html body #roomOverlay .ro-panel.ro-sun #roRoom .jr-card :is(details.cm-row, details.bg-game) {
+  margin: 0 0 8px; padding: 0 14px 0 12px !important;
+  background-color: #fffdf9 !important; background-image: none !important;
+  border: 1px solid #f1e4d9 !important; border-radius: 18px !important;
+  box-shadow: 0 2px 0 rgba(214, 186, 158, .38), 0 6px 14px rgba(110, 76, 52, .06) !important;
+}
+html body #roomOverlay .ro-panel.ro-sun #roRoom .jr-card :is(details.cm-row, details.bg-game) > summary {
+  list-style: none; display: flex; align-items: center; gap: 11px;
+  min-height: 54px; padding: 9px 0 !important; box-sizing: border-box;
+  font-family: Nunito, Nunito-fallback, system-ui, sans-serif !important; font-size: 15px !important; font-weight: 800 !important;
+  line-height: 1.3; color: var(--pl-navy, #1d2a5c) !important; cursor: pointer;
+}
+html body #roomOverlay .ro-panel.ro-sun #roRoom .jr-card :is(details.cm-row, details.bg-game) > summary::-webkit-details-marker { display: none; }
+html body #roomOverlay .ro-panel.ro-sun #roRoom .jr-card :is(details.cm-row, details.bg-game) > summary::marker { content: ''; }
+html body #roomOverlay .ro-panel.ro-sun #roRoom .jr-card :is(details.cm-row, details.bg-game) > summary > .pl-em.pl-pl { flex: none; width: 34px !important; height: 34px !important; margin: 0 !important; }
+html body #roomOverlay .ro-panel.ro-sun #roRoom .jr-card :is(details.cm-row, details.bg-game) > summary::after {
+  content: ''; flex: none; margin-left: auto; width: 28px; height: 28px; border-radius: 50%;
+  background: rgba(196, 160, 124, .16) url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%237a6a5c' stroke-width='2.6' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M6 9l6 6 6-6'/%3E%3C/svg%3E") center / 14px 14px no-repeat;
+  transition: transform .25s ease;
+}
+html body #roomOverlay .ro-panel.ro-sun #roRoom .jr-card :is(details.cm-row, details.bg-game)[open] > summary::after { transform: rotate(180deg); }
+html body #roomOverlay .ro-panel.ro-sun #roRoom .jr-card :is(details.cm-row, details.bg-game) > p { margin: 0 0 12px; font-size: 14px; font-weight: 600; line-height: 1.55; color: var(--pl-ink, #3b3f5c); }
+html body #roomOverlay .ro-panel.ro-sun #roRoom .jr-card details.bg-game > p.bg-why { padding: 9px 12px; border-radius: 14px; background: #fff8ec; border: 1px solid #ecd6b8; font-size: 13.5px; color: #5d4a3a; }
+
+/* ── дребният текст (мерено ig20_mer.js, по getComputedStyle): бележките .jr-privacy бяха 11.5px (15 бр.),
+   чиповете .jr-chip 12.5px (63 бр.), плочките на „Сподели споменче“ .shm-btn 12px → 13.5px, както
+   „Захранване“ (pl-hranene.css:1076/1081) — една и съща мярка в стаите. Етикетите .jr-sub (11.5) остават. ── */
+html body #roomOverlay .ro-panel.ro-sun #roRoom .jr-card .jr-privacy { font-size: 13.5px !important; line-height: 1.5; }
+html body #roomOverlay .ro-panel.ro-sun #roRoom .jr-card :is(.jr-chip, .shm-btn) { font-size: 13.5px !important; }
+
+/* ── броячът на раздела (.sec-n: #c24d7b върху #fde6ef = 3.82:1, нощем 9.5px — мерено ig20_mer.js) и „на линия“
+   в картата на помощничката (.ask-live нощем 10.5px) — същите мерки като pl-hranene.css:688/:1079 и pl-bremennost.css:408 ── */
+html body #roomOverlay .ro-panel.ro-sun #roRoom .sec-head .sec-n {
+  font-family: Nunito, 'Nunito-fallback', system-ui, sans-serif !important;
+  font-size: 12px !important; font-weight: 800 !important; padding: 2px 8px !important;
+  background: #fde6ef !important; color: #8e2350 !important;      /* 7.08:1 */
+}
+html[data-theme="dark"] body #roomOverlay .ro-panel.ro-sun #roRoom .sec-head .sec-n { background: #4a2a44 !important; color: #ffd0e1 !important; }
+html body #roomOverlay .ro-panel.ro-sun #roRoom :is(.ask-live, .ask-live .dot) { font-size: 11.5px !important; }
+
+/* ── 👵 „Баба каза…“: записаните редове имаха лилав ръб отляво rgba(141,120,216,.5) (rooms.css:1501) → златна черта ── */
+html body #roomOverlay .ro-panel.ro-sun #roRoom .bm-row { border-left: 3px solid #e3c39c; }
+html[data-theme="dark"] body #roomOverlay .ro-panel.ro-sun #roRoom .bm-row { border-left-color: rgba(240, 210, 137, .6); }
+
+/* ── „Приказка за лека нощ ✨“: нощем звездичката падаше на отделен ред под заглавието (снимка ig20_sled_D_05).
+   Мерено (ig20_pre_title.js): мястото е 270px, денем текстът е 188px и влиза с 2px резерв, нощем е 192px → не влиза.
+   Звездичката след текста става 22px и с 3px по-близо: 192+9+22 = 223 + медал 43 ≤ 270. ── */
+html body #roomOverlay .ro-panel.ro-sun #roRoom .jr-card > h4.jr-title > .pl-em.pl-em-sled { width: 22px !important; height: 22px !important; margin-left: -3px !important; flex: none; }
+
+/* ── банерът: снимката с играчките (img/art/stai/banner_igri.webp, premium.css:930) е на кремав студиен фон и
+   в ТАЗИ стая той ляга като бледо правоъгълно петно точно върху лицето на бебето от сцената (снимки ig20_top_l_v,
+   ig20_top2_l_v, мерено: IMG 137,113 235×239). 🪤 mix-blend-mode: multiply НЕ помогна (снимка ig20_top3_l_v — стаята е
+   свой слой, снимката няма с какво да се смеси). Затова маската: играчките са в долните ~35–85% от снимката, горната
+   кремава третина (там е лицето) гасне. Хоризонталната маска е като в premium.css. САМО денем: нощем premium.css:1525
+   (21.10) слага своя овална маска „нощна лампа“ с mask-composite: add — с моите два слоя ръбовете ставаха твърди
+   (снимка ig20_top4_d_v), затова нощта е на тяхното правило. ── */
+html:not([data-theme="dark"]) body #roomOverlay .ro-panel.ro-sun #roRoom > .pl-rhero > img {
+  -webkit-mask-image: linear-gradient(90deg, transparent 0, #000 28%, #000 88%, transparent 100%), linear-gradient(180deg, transparent 0, transparent 26%, #000 50%, #000 86%, transparent 100%);
+  mask-image: linear-gradient(90deg, transparent 0, #000 28%, #000 88%, transparent 100%), linear-gradient(180deg, transparent 0, transparent 26%, #000 50%, #000 86%, transparent 100%);
+}
+
+/* ── големият бутон не лепне за реда над него ── */
+html body #roomOverlay .ro-panel.ro-sun #roRoom .jr-card :is(.jr-quick, .cs-note) + .jr-btn { margin-top: 14px !important; }
+
+/* ── 🌙 нощ ── */
+html[data-theme="dark"] body #roomOverlay .ro-panel.ro-sun #roRoom .jr-card :is(.sg-row, .bk-row, .g5-box, details.cm-row, details.bg-game) {
+  background-color: #2b3872 !important; background-image: none !important; border-color: rgba(255, 255, 255, .14) !important;
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, .08), 0 2px 0 #18214a !important;
+}
+html[data-theme="dark"] body #roomOverlay .ro-panel.ro-sun #roRoom .jr-card :is(.sg-row.sg-now, .bk-row.bk-now) { background-color: #3a3f84 !important; border-color: rgba(245, 156, 187, .7) !important; }
+html[data-theme="dark"] body #roomOverlay .ro-panel.ro-sun #roRoom .jr-card .bk-row.bk-past { background-color: transparent !important; box-shadow: none !important; border-color: rgba(255, 255, 255, .22) !important; }
+html[data-theme="dark"] body #roomOverlay .ro-panel.ro-sun #roRoom .jr-card .bk-row.bk-past :is(strong, small) { color: #c9cbe3; }
+html[data-theme="dark"] body #roomOverlay .ro-panel.ro-sun #roRoom .g5-clock { color: #fff; }
+html[data-theme="dark"] body #roomOverlay .ro-panel.ro-sun #roRoom .g5-t .pl-ig-g5e { background-color: #fff; box-shadow: 0 2px 6px rgba(0, 0, 0, .35); }
+html[data-theme="dark"] body #roomOverlay .ro-panel.ro-sun #roRoom .jr-card :is(details.cm-row, details.bg-game) > summary { color: #fff !important; }
+html[data-theme="dark"] body #roomOverlay .ro-panel.ro-sun #roRoom .jr-card :is(details.cm-row, details.bg-game) > summary::after {
+  background-color: rgba(255, 255, 255, .12);
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23d8d4e6' stroke-width='2.6' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M6 9l6 6 6-6'/%3E%3C/svg%3E");
+}
+html[data-theme="dark"] body #roomOverlay .ro-panel.ro-sun #roRoom .jr-card :is(details.cm-row, details.bg-game) > p { color: #e3e5f5; }
+html[data-theme="dark"] body #roomOverlay .ro-panel.ro-sun #roRoom .jr-card details.bg-game > p.bg-why { background: #222d63; border-color: rgba(240, 210, 137, .45); color: #f3e6cc; }
+/* бележките-злато нощем: синьо платно + златен кант (06.10 даваше rgba(227,195,156,.13) → сиво) */
+html[data-theme="dark"] body #roomOverlay .ro-panel.ro-sun #roRoom :is(.dv-flag, .rh-hero .pg20-do, .lb-warn2) {
+  background: linear-gradient(180deg, #34427f 0, #2b3872 100%) !important;
+  border: 1px solid rgba(240, 210, 137, .6) !important;
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, .08), 0 0 0 3px rgba(240, 210, 137, .07) !important;
+  color: #f6e6c4;
+}
+html[data-theme="dark"] body #roomOverlay .ro-panel.ro-sun #roRoom .dv-flag.dv-flag-soon { background: #26336b !important; border-style: dashed !important; box-shadow: none !important; }
+html[data-theme="dark"] body #roomOverlay .ro-panel.ro-sun #roRoom .jr-card .lb-warn2.lb-warn2 { border-left: 4px solid #e3b25c !important; }   /* :is() горе е (0,2,0) → тук двоен клас */
+html[data-theme="dark"] body #roomOverlay .ro-panel.ro-sun #roRoom input[type="date"] { color-scheme: dark; }
+/* ── 📒 листът на играта: превъртян ли е, под ✕ и SOS 112 има меко було (класът .is-scrolled — js/pl-igri.js) ── */
+.pl-ig-bar::before {
+  content: ''; position: absolute; left: 0; right: 0; top: 0; bottom: -22px; z-index: -1; pointer-events: none;
+  opacity: 0; transition: opacity .22s ease;
+  background: linear-gradient(180deg, rgba(255, 250, 244, .97) 0, rgba(255, 250, 244, .9) 62%, rgba(255, 250, 244, 0) 100%);
+}
+.pl-ig-sheet.is-scrolled .pl-ig-bar::before { opacity: 1; }
+html[data-theme="dark"] .pl-ig-bar::before { background: linear-gradient(180deg, rgba(27, 37, 84, .97) 0, rgba(27, 37, 84, .9) 62%, rgba(27, 37, 84, 0) 100%); }
+@media (prefers-reduced-motion: reduce) {
+  html body #roomOverlay .ro-panel.ro-sun #roRoom .jr-card :is(details.cm-row, details.bg-game) > summary::after { transition: none; }
+  .pl-ig-bar::before { transition: none; }
+}
+/* край 20.10 */
