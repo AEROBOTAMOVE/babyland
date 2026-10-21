@@ -1,0 +1,235 @@
+✅ „колко кафета мога на ден бременна“  nb-temperatu-lekarstva → zn2-kafe-kofein
+✅ „може ли кафе в бременността“  br-hranene → zn2-kafe-kofein
+·  „безкофеиново кафе бременна“  br-hranene → br-hranene
+✅ „пия кола и енергийна напитка бременна“  ТИШИНА → zn2-kafe-kofein
+✅ „колко риба мога да ям бременна“  br-hranene → zn2-riba-bremenna
+✅ „риба тон консерва бременна“  ТИШИНА → zn2-riba-bremenna
+✅ „сьомга бременност може ли“  nb-temperatu-lekarstva → zn2-riba-bremenna
+✅ „суши бременна“  ТИШИНА → zn2-riba-bremenna
+·  „яйца рохки бременна“  br-hranene → br-hranene
+·  „домашна майонеза бременна“  ТИШИНА → ТИШИНА
+✅ „билкови чайове бременна кои може“  nb-temperatu-lekarstva → zn2-bilkovi-chayove
+✅ „лайка бременност“  ТИШИНА → zn2-bilkovi-chayove
+✅ „чай от мента бременна“  ТИШИНА → zn2-bilkovi-chayove
+·  „хемороиди в бременността“  br-diskomfort → br-diskomfort
+✅ „запек бременна какво да правя“  br-diskomfort → zn2-hemoroidi
+✅ „кървя когато ходя по голяма нужда бременна“  ТИШИНА → zn2-hemoroidi
+·  „желязото ме запича“  y5-zhelyazo-umora → y5-zhelyazo-umora
+✅ „тест за захар как се прави“  ТИШИНА → zn2-test-zahar
+✅ „обременяване с глюкоза бременна“  br-gestacionen-diabet → zn2-test-zahar
+✅ „трябва ли да съм гладна за теста за захар“  ТИШИНА → zn2-test-zahar
+✅ „колко ехографии плаща касата“  br-pregledi → zn2-kasata-plashta
+✅ „безплатни прегледи бременна нзок“  ТИШИНА → zn2-kasata-plashta
+·  „направление за ехография бременна“  br-pregledi → br-pregledi
+✅ „лунарни месеци в картата“  nia-luna → zn2-lunarni-meseci
+✅ „какво е лунарен месец“  nia-luna → zn2-lunarni-meseci
+✅ „личният лекар или гинеколог ме води“  ТИШИНА → zn2-koy-me-vodi
+✅ „кой води бременността“  ТИШИНА → zn2-koy-me-vodi
+✅ „плащам ли такса бременна“  ТИШИНА → zn2-kasata-plashta
+·  „изследвания които не са безплатни бременност“  br-toksoplazmoza → br-toksoplazmoza
+·  „маникюр гел лак бременна“  br-boya-sauna-vana → br-boya-sauna-vana
+·  „кремове с ретинол бременна“  ТИШИНА → ТИШИНА
+·  „кола маска бременна“  br-boya-sauna-vana → br-boya-sauna-vana
+·  „слънце и плаж бременна“  zd-slance → zd-slance
+✅ „странни сънища бременна“  ТИШИНА → zn2-sanishta-zabravyane
+✅ „забравям всичко бременна“  nd-zabravyam → zn2-sanishta-zabravyane
+✅ „бейби брейн“  ТИШИНА → zn2-sanishta-zabravyane
+·  „не се харесвам с корема“  nia-ogledalo → nia-ogledalo
+✅ „не чувствам нищо към бебето в корема“  dn-radost → zn2-oshte-ne-go-chuvstvam
+✅ „как да се свържа с бебето докато съм бременна“  ТИШИНА → zn2-oshte-ne-go-chuvstvam
+✅ „какви документи да взема в родилното“  pt-planat → zn2-dokumenti-rodilno
+·  „личната карта и епикризата за раждане“  nb-denyat-izpisvane → nb-denyat-izpisvane
+✅ „как да избера болница за раждане“  ТИШИНА → zn2-izbor-bolnica
+✅ „как да избера лекар за раждането“  ТИШИНА → zn2-izbor-bolnica
+·  „курс за бременни“  br-plan-razhdane → br-plan-razhdane
+·  „училище за родители“  ТИШИНА → ТИШИНА
+·  „стволови клетки от пъпна връв“  nb-koga-rezhat-vrav → nb-koga-rezhat-vrav
+·  „да запазя ли кръвта от пъпната връв“  nb-koga-rezhat-vrav → nb-koga-rezhat-vrav
+·  „колко дни се кърви след раждане“  ТИШИНА → ТИШИНА
+·  „кога идва млякото“  lb3-kolastra → lb3-kolastra
+·  „първото ходене по голяма нужда след раждане“  br-sled-sekcio-razhdane → br-sled-sekcio-razhdane
+·  „шевовете след раждане как да ги мия“  nia-shevove-dolu → nia-shevove-dolu
+✅ „преглед след раждане на 6 седмица“  ТИШИНА → zn2-pregledi-sled-razhdane
+·  „кога ще разберем пола“  br-pregledi → br-pregledi
+✅ „колко сигурен е полът на ехографа“  br-pregledi → zn2-pol-na-bebeto
+✅ „ехографът каза момиче а излезе момче“  br-pregledi → zn2-pol-na-bebeto
+·  „белег от желание“  mm-sechenie → mm-sechenie
+·  „киселини значи космато бебе“  br-diskomfort → br-diskomfort
+·  „вдигам ръце над главата и връвта“  br-preeklampsia-znaci → br-preeklampsia-znaci
+✅ „колко често да правим секс за бебе“  br-seks-bezopasno → zn2-seks-po-grafik
+✅ „всеки ден секс за забременяване“  ТИШИНА → zn2-seks-po-grafik
+·  „слуз като белтък овулация“  br-oteci → br-oteci
+·  „как да разбера че имам овулация“  ТИШИНА → ТИШИНА
+·  „базална температура как се мери“  zd-temperatura → zd-temperatura
+✅ „поза за зачеване“  ТИШИНА → zn2-poza-i-lezhane
+✅ „краката нагоре след секс“  br-kramp → zn2-poza-i-lezhane
+✅ „лубрикант пречи ли на зачеването“  nw-seksat-sled → zn2-poza-i-lezhane
+✅ „спрях хапчетата кога ще забременея“  br-psihiatrichni-lekarstva → zn2-sled-hapchetata
+✅ „след противозачатъчни колко време“  pp-kontracepcia → zn2-sled-hapchetata
+✅ „махнах спиралата кога може бебе“  br-pytuvane → zn2-sled-hapchetata
+✅ „забременях докато пия хапчета“  br-psihiatrichni-lekarstva → zn2-hapcheta-predi-da-razbera
+✅ „амх изследване“  ТИШИНА → zn2-amh
+✅ „яйчников резерв“  ТИШИНА → zn2-amh
+·  „замразяване на яйцеклетки“  ТИШИНА → ТИШИНА
+✅ „мъжът е на 45 има ли значение“  nb-koy-e-s-men → zn2-mazhat-vazrast
+·  „колко дни след секс да направя тест“  br-test → br-test
+✅ „бледа втора черта“  ТИШИНА → zn2-bleda-cherta
+·  „слаба втора чертичка на теста“  br-test → br-test
+✅ „отрицателен тест а нямам цикъл“  pp-cikyl → zn2-zakasnyava-otricatelen
+✅ „закъснява ми а тестът е отрицателен“  ТИШИНА → zn2-zakasnyava-otricatelen
+✅ „бета хчг от кръв кога“  br-beta-hcg-visok → zn2-beta-ot-krav
+✅ „бета се удвоява ли“  ТИШИНА → zn2-beta-ot-krav
+·  „фалшиво положителен тест“  br-test → br-test
+✅ „ранни признаци на бременност“  br-test → zn2-ranni-priznaci
+✅ „как да разбера че съм бременна преди теста“  br-test → zn2-ranni-priznaci
+✅ „имплантационно кървене“  ТИШИНА → zn2-ranni-priznaci
+·  „как да сметна термина“  br-sedmici → br-sedmici
+·  „кога ще родя калкулатор“  br-strah-razhdane → br-strah-razhdane
+·  „колко точен е терминът“  br-sedmici → br-sedmici
+✅ „кога първи преглед при гинеколог след положителен тест“  br-test → zn2-parvi-pregled
+✅ „регистрация на бременността“  ТИШИНА → zn2-koy-me-vodi
+✅ „как да се регистрирам като бременна“  ТИШИНА → zn2-koy-me-vodi
+✅ „как да заченем момче“  ТИШИНА → zn2-momche-ili-momiche
+✅ „диета за момиче“  br-hranene → zn2-momche-ili-momiche
+✅ „китайски календар пол“  ТИШИНА → zn2-momche-ili-momiche
+✅ „двете седмици чакане“  ТИШИНА → zn2-dvete-sedmici
+✅ „симптоми след овулация бременна ли съм“  br-test → zn2-dvete-sedmici
+·  „пак ми дойде цикълът“  pp-cikyl → pp-cikyl
+✅ „секс по график омръзна ни“  ТИШИНА → zn2-seks-po-grafik
+·  „отпусни се и ще стане“  ТИШИНА → ТИШИНА
+·  „кога ще ни зарадвате“  ТИШИНА → ТИШИНА
+✅ „трябва ли мъжът ми да идва на прегледите“  br-pregledi → zn2-toy-na-pregledite
+✅ „бебето чува ли гласа на татко“  mb-sluh → zn2-chuva-li-ni
+✅ „кога бебето чува в корема“  ТИШИНА → zn2-chuva-li-ni
+·  „мъжът ми се страхува от раждането“  br-strah-razhdane → br-strah-razhdane
+·  „да присъства ли мъжът ми на раждането“  nb-koy-e-s-men → nb-koy-e-s-men
+✅ „какво да вземе таткото в болницата“  br-chanta → zn2-chanta-tatko
+✅ „как да помогне мъжът ми в залата“  nb-koy-e-s-men → zn2-toy-v-zalata
+·  „може ли татко на секцио“  nb-koy-e-s-men → nb-koy-e-s-men
+·  „бременна съм и кърмя“  mb-bremenna-kurmi → mb-bremenna-kurmi
+·  „кърмене по време на бременност“  mb-kolko-mliako → mb-kolko-mliako
+✅ „забременях по време на майчинството“  ТИШИНА → zn2-maychinstvo-bremenna
+✅ „бременна на майчинство какво става с парите“  br-diskomfort → zn2-maychinstvo-bremenna
+·  „бременна с близнаци колко прегледа“  br-pregledi → br-pregledi
+·  „ин витро и работа отпуск“  zc-invitro → zc-invitro
+·  „шанс за успех ин витро“  zc-invitro → zc-invitro
+·  „трансфер на ембрион какво да правя след“  ТИШИНА → ТИШИНА
+·  „колко кила да кача“  br-telo → br-telo
+·  „колко вода да пия бременна“  zh-voda → zh-voda
+·  „йод бременност“  ТИШИНА → ТИШИНА
+·  „витамин д бременна“  br-vitamini → br-vitamini
+·  „черен дроб бременна“  ТИШИНА → ТИШИНА
+·  „сирене бременна“  br-hranene → br-hranene
+·  „болки в кръста бременна“  br-diskomfort → br-diskomfort
+·  „безсъние бременна“  br-son → br-son
+·  „главоболие бременна“  br-oteci → br-oteci
+·  „бебето хълца в корема“  zd-hulcane → zd-hulcane
+·  „пъпът ми изпъкна“  ТИШИНА → ТИШИНА
+·  „изпускам се като кихна бременна“  ТИШИНА → ТИШИНА
+·  „упражнения кегел бременна“  br-dvizhenie → br-dvizhenie
+·  „масаж на перинеума“  nb-rezhat-dolu → nb-rezhat-dolu
+·  „колан за бременни“  ТИШИНА → ТИШИНА
+·  „обувки на ток бременна“  ТИШИНА → ТИШИНА
+·  „мога ли да спя по корем“  br-son → br-son
+·  „самолет бременна“  br-pytuvane → br-pytuvane
+·  „куче и бременност“  ТИШИНА → ТИШИНА
+·  „боядисване на стаята бременна“  ТИШИНА → ТИШИНА
+·  „почистващи препарати бременна“  br-podgotovka-dom → br-podgotovka-dom
+·  „нипт тест“  nb-skriningi-meri → nb-skriningi-meri
+·  „амниоцентеза“  nb-skriningi-meri → nb-skriningi-meri
+·  „морфологична ехография какво гледат“  br-pregledi → br-pregledi
+·  „3d ехография безопасна ли е“  br-pregledi → br-pregledi
+·  „ктг какво е“  nb-monitorat-dvizhenie → nb-monitorat-dvizhenie
+·  „доплер ехография бременна“  z3-izostavane-rastezh → z3-izostavane-rastezh
+·  „кървене от носа бременна“  ТИШИНА → ТИШИНА
+·  „кървят ми венците бременна“  nb-zabolekar-bremennos → nb-zabolekar-bremennos
+·  „сърби ме коремът“  br-kozha → br-kozha
+·  „обрив по корема бременна“  zd-rash2 → zd-rash2
+·  „настинка бременна“  nb-temperatu-lekarstva → nb-temperatu-lekarstva
+·  „кашлица бременна“  zd-cough → zd-cough
+·  „стомашен вирус бременна“  zd-stomashen-virus → zd-stomashen-virus
+·  „диария бременна“  zd-diarr → zd-diarr
+·  „грип бременна“  nb-temperatu-lekarstva → nb-temperatu-lekarstva
+·  „слюнка много бременна“  ТИШИНА → ТИШИНА
+·  „кога да купувам бебешките неща“  ТИШИНА → ТИШИНА
+·  „име на бебето“  ТИШИНА → ТИШИНА
+·  „болнични бременна“  br-bliznaci-razlichno → br-bliznaci-razlichno
+✅ „kolko kafeta na den bremenna“  br-hranene → zn2-kafe-kofein
+·  „kakvo da qm bremenna“  br-hranene → br-hranene
+·  „по колко кафета на ден може бременна“  br-hranene → br-hranene
+✅ „пия по три кафета бременна съм“  ТИШИНА → zn2-kafe-kofein
+✅ „енергийни напитки в бременност“  ТИШИНА → zn2-kafe-kofein
+✅ „може ли тон от консерва като съм бременна“  nb-temperatu-lekarstva → zn2-riba-bremenna
+✅ „скумрия колко пъти седмично бременна“  ТИШИНА → zn2-riba-bremenna
+✅ „ядох суши бременна съм“  br-toksoplazmoza → zn2-riba-bremenna
+✅ „пия лайка всяка вечер бременна“  z3-guglene-3-noshtta → zn2-bilkovi-chayove
+·  „може ли чай от резене като съм бременна“  nb-temperatu-lekarstva → nb-temperatu-lekarstva
+✅ „пелин чай бременност“  ТИШИНА → zn2-bilkovi-chayove
+✅ „пиех хапчета и се оказах бременна“  ТИШИНА → zn2-hapcheta-predi-da-razbera
+✅ „бременна съм а пих противозачатъчни“  pp-kontracepcia → zn2-hapcheta-predi-da-razbera
+✅ „какво е безплатно по каса за бременни“  ТИШИНА → zn2-kasata-plashta
+✅ „колко ехографии ми се полагат“  lb-noi → zn2-kasata-plashta
+✅ „взеха ми пари за кръвта бременна“  in-budget → zn2-kasata-plashta
+✅ „трябва ли направление за гинеколога като съм бременна“  in-napravlenie → zn2-koy-me-vodi
+✅ „как става регистрацията на бременна“  br-diskomfort → zn2-koy-me-vodi
+✅ „личният лекар ли ще ме води“  ТИШИНА → zn2-koy-me-vodi
+✅ „кога е първият преглед“  br-pregledi → zn2-parvi-pregled
+✅ „какво да взема на първия преглед при гинеколога“  br-chanta → zn2-parvi-pregled
+✅ „пети лунарен месец кои седмици са“  nia-luna → zn2-lunarni-meseci
+✅ „в картата пише лунарен месец“  nia-luna → zn2-lunarni-meseci
+✅ „как се прави тестът с глюкоза“  br-gestacionen-diabet → zn2-test-zahar
+✅ „колко време се стои за захарната крива“  ТИШИНА → zn2-test-zahar
+✅ „на 12 седмица видяха ли пола“  ТИШИНА → zn2-pol-na-bebeto
+✅ „колко точно е момче на ехографа“  br-pregledi → zn2-pol-na-bebeto
+✅ „може ли да дойде мъжът ми на прегледа“  nb-koy-e-s-men → zn2-toy-na-pregledite
+✅ „мъжът ми иска да дойде на ехографията“  br-pregledi → zn2-toy-na-pregledite
+✅ „от кога бебето чува гласа ми“  ТИШИНА → zn2-chuva-li-ni
+✅ „да чета ли приказки на корема“  ТИШИНА → zn2-chuva-li-ni
+✅ „сънувам кошмари всяка нощ бременна“  z3-guglene-3-noshtta → zn2-sanishta-zabravyane
+✅ „станах много разсеяна откакто съм бременна“  ТИШИНА → zn2-sanishta-zabravyane
+·  „не изпитвам нищо към бебето“  dn-nyama-vrazka → dn-nyama-vrazka
+✅ „бременна съм и не чувствам бебето като мое“  g3-bebeto-sleze-nadolu-8 → zn2-oshte-ne-go-chuvstvam
+✅ „мъжът ми се страхува да стане баща“  nb-koy-e-s-men → zn2-strahat-na-tatko
+·  „мъжът ми се затвори в себе си“  dn-partnior → dn-partnior
+✅ „имам хемороиди бременна“  br-diskomfort → zn2-hemoroidi
+·  „запек в бременността“  br-diskomfort → br-diskomfort
+✅ „бременна съм пак докато съм в майчинство“  ТИШИНА → zn2-maychinstvo-bremenna
+✅ „какво майчинство ще взема за второто“  ТИШИНА → zn2-maychinstvo-bremenna
+✅ „кога ще забременея след хапчета“  br-psihiatrichni-lekarstva → zn2-sled-hapchetata
+✅ „свалих спиралата и искаме бебе“  pp-kontracepcia → zn2-sled-hapchetata
+✅ „има ли поза да забременея по-бързо“  ТИШИНА → zn2-poza-i-lezhane
+✅ „трябва ли да лежа с краката нагоре“  br-kramp → zn2-poza-i-lezhane
+✅ „лубрикант когато опитваме за бебе“  nw-seksat-sled → zn2-poza-i-lezhane
+✅ „правим секс по график и ни писна“  br-seks-bezopasno → zn2-seks-po-grafik
+✅ „колко често да правим секс за да забременея“  br-seks-bezopasno → zn2-seks-po-grafik
+✅ „амх ми е нисък“  ТИШИНА → zn2-amh
+✅ „какво показва амх“  ТИШИНА → zn2-amh
+✅ „мъжът ми е на 48 можем ли да имаме бебе“  nia-strah-ot-nego → zn2-mazhat-vazrast
+✅ „възрастта на мъжа има ли значение“  ТИШИНА → zn2-mazhat-vazrast
+✅ „как да стане момче“  ТИШИНА → zn2-momche-ili-momiche
+·  „искам момиче как да стане“  ТИШИНА → ТИШИНА
+✅ „как да издържа чакането до теста“  ТИШИНА → zn2-dvete-sedmici
+✅ „болят ме гърдите след овулация“  g3-gardite-v-parvite-meseci → zn2-dvete-sedmici
+✅ „ранни симптоми на бременност“  br-test → zn2-ranni-priznaci
+✅ „пмс ли е или бременност“  ТИШИНА → zn2-ranni-priznaci
+✅ „едва видима втора черта“  ТИШИНА → zn2-bleda-cherta
+✅ „тестът е с бледа линия“  nb-streptoko-grupa → zn2-bleda-cherta
+✅ „закъснява ми цикъла и тестът е отрицателен“  pp-cikyl → zn2-zakasnyava-otricatelen
+✅ „седмица закъснение а тестът е отрицателен“  ТИШИНА → zn2-zakasnyava-otricatelen
+✅ „бета хчг се удвоява ли нормално“  ТИШИНА → zn2-beta-ot-krav
+✅ „пуснах бета от кръв“  br-beta-hcg-visok → zn2-beta-ot-krav
+✅ „какви документи трябват за раждането“  br-chanta → zn2-dokumenti-rodilno
+✅ „трябва ли декларация за припознаване“  in-izdrazhka-bashta → zn2-dokumenti-rodilno
+✅ „как да избера болница да родя“  ТИШИНА → zn2-izbor-bolnica
+·  „трябва ли да плащам за избор на екип“  nb-parite-razhdanet → nb-parite-razhdanet
+✅ „какво да прави мъжът ми по време на раждането“  nb-koy-e-s-men → zn2-toy-v-zalata
+✅ „как партньорът помага при раждане“  nia-partnior → zn2-toy-v-zalata
+✅ „какво да си вземе мъжът ми за родилното“  nb-koy-e-s-men → zn2-chanta-tatko
+✅ „какво трябва на татко в болницата“  ТИШИНА → zn2-chanta-tatko
+✅ „прегледите след раждане безплатни ли са“  br-pregledi → zn2-pregledi-sled-razhdane
+✅ „кога е прегледът след раждането“  br-pregledi → zn2-pregledi-sled-razhdane
+✅ „kolko kafeta moga bremenna“  nb-temperatu-lekarstva → zn2-kafe-kofein
+✅ „test za zahar kak se pravi“  ТИШИНА → zn2-test-zahar
+✅ „bleda vtora cherta“  ТИШИНА → zn2-bleda-cherta
+
+карти в стажа: 33 · ключ1/ключN хванати: 66/66 · чужди/контролни въпроси: 405 · мръднали: 0

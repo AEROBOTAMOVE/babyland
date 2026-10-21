@@ -1,0 +1,20 @@
+
+  🃏 СЛИВАЧ НА КАРТИ[33m   [СУХО][0m
+  стаж: karti_zn6.json
+
+  🟡 карти, в които над 60% от ключовете носят пълен член — ЗА ЧЕТЕНЕ, не за отказ:
+     zn6-parvo-zabche        10/13
+     zn6-kukeri              9/12
+     zn6-knizhka-po-tema     9/12
+     zn6-zodia-pasva         10/13
+     zn6-lab-amuleti         8/12
+     zn6-lab-parva-banya     8/12
+
+  ── ПРИЕТИ: 31 ──
+      14  Развитие и игри
+       8  Моето бебе
+       6  Лабораторията
+       3  Жената в мен
+
+  [33mСУХО. За писане: node dev/slivach_karti.js --pishi[0m
+

@@ -1,0 +1,25 @@
+добавени ключове: 36
+   zh-mlechni: +4
+   zh-riba-yaice: +3
+   zh-hliab: +2
+   zh-bobovi: +2
+   z7-rastitelen-beltak: +1
+   zh-meso: +3
+   zh5-zeleno: +1
+   x6-bg-kuhnya: +3
+   zh-hladilnik: +2
+   x6-yadki-forma: +2
+   w2-snaks-ot-rafta: +3
+   z7-ribata-kostite: +1
+   zh-kolbasi: +2
+   zh5-zakuska: +2
+   zh-sladko: +2
+   x6-den-godinka: +2
+   zh5-parvi-sedem-dni: +1
+
+── РАВНОСМЕТКА ──
+  ключът вади СВОЯТА карта: 36/36
+  корпус 1698 изречения · сменена карта при 0
+
+(само мярка · за запис: --pishi)
+изход 0

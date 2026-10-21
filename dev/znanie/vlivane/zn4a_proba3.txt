@@ -1,0 +1,276 @@
+✅ „попара за бебе“  mst-selo-hranyat → zn4a-popara
+·  „попара със сирене на 9 месеца“  zh-mlechni → zh-mlechni
+✅ „може ли попара на годинка“  zh-mlechni → zn4a-popara
+✅ „палачинки за бебе без захар“  lb-med-sol → zn4a-palachinki
+✅ „мекици на дете“  ТИШИНА → zn4a-palachinki
+✅ „палачинки на 10 месеца“  ТИШИНА → zn4a-palachinki
+✅ „баница на годинка“  ТИШИНА → zn4a-banica-zakuska
+·  „може ли баница на 1 година“  prz-banica → prz-banica
+✅ „зелник на дете“  ТИШИНА → zn4a-banica-zakuska
+✅ „млечен ориз за бебе“  zh-kashi → zn4a-mlechen-oriz
+✅ „грис на 8 месеца“  zh-kashi → zn4a-mlechen-oriz
+✅ „качамак за бебе“  ТИШИНА → zn4a-mlechen-oriz
+✅ „кюфтенца на пара за бебе“  ТИШИНА → zn4a-kyuftentsa
+✅ „кюфтета на фурна за дете“  ТИШИНА → zn4a-kyuftentsa
+✅ „колко голямо кюфтенце за блв“  ТИШИНА → zn4a-kyuftentsa
+✅ „супа топчета без сол“  lb-med-sol → zn4a-supa-topcheta
+✅ „супа топчета на 9 месеца“  ТИШИНА → zn4a-supa-topcheta
+·  „мусака за бебе“  x6-bg-kuhnya → x6-bg-kuhnya
+·  „пълнени чушки на 1 година“  ТИШИНА → ТИШИНА
+·  „сарми на 2 години“  ТИШИНА → ТИШИНА
+·  „шкембе чорба на дете“  ТИШИНА → ТИШИНА
+·  „таратор на 1 година“  ТИШИНА → ТИШИНА
+·  „таратор за дете с чесън“  zh-supa → zh-supa
+·  „как да изкиснем сиренето“  ТИШИНА → ТИШИНА
+·  „сирене на 8 месеца солено ли е“  lb-med-sol → lb-med-sol
+·  „обезсолено сирене за бебе“  zh-mlechni → zh-mlechni
+·  „кашкавал на 10 месеца“  ТИШИНА → ТИШИНА
+·  „топено сирене на бебе“  zh-mlechni → zh-mlechni
+✅ „лютеница на дете“  ТИШИНА → zn4a-lyutenica-tarshiya
+✅ „туршия на 2 години“  ТИШИНА → zn4a-lyutenica-tarshiya
+✅ „кисело зеле на дете“  ТИШИНА → zn4a-lyutenica-tarshiya
+✅ „маслини на малко дете“  ТИШИНА → zn4a-lyutenica-tarshiya
+✅ „руска салата на дете“  ТИШИНА → zn4a-ruska-salata
+✅ „майонеза на 1 година“  ТИШИНА → zn4a-ruska-salata
+·  „шопска салата за дете“  x6-surovi-zelenchuci → x6-surovi-zelenchuci
+✅ „кебапче на 2 години“  ТИШИНА → zn4a-kyuftentsa
+·  „кървавица на дете“  ТИШИНА → ТИШИНА
+·  „суджук на дете“  ТИШИНА → ТИШИНА
+·  „козунак на 1 година“  ТИШИНА → ТИШИНА
+·  „баклава на дете“  ТИШИНА → ТИШИНА
+·  „дадох фъстъци веднъж и сега какво“  zah-alergeni → zah-alergeni
+✅ „колко често да давам яйце след първия път“  zah-alergeni → zn4a-alergen-redovno
+✅ „алергенът трябва ли да се дава редовно“  zah-alergeni → zn4a-alergen-redovno
+·  „обрив след яйце“  zah-alergeni → zah-alergeni
+·  „червено около устата след храна“  lb-davene → lb-davene
+·  „повърна след яйце“  zah-alergeni → zah-alergeni
+·  „подпухна след фъстъци“  zah-alergeni → zah-alergeni
+✅ „има екзема кога фъстъци“  zah-alergeni → zn4a-ekzema-fastak
+✅ „висок риск за алергия към фъстъци“  zah-alergeni → zn4a-ekzema-fastak
+·  „как да дам яйце първи път“  zah-alergeni → zah-alergeni
+·  „фъстъчено масло първи път как“  zah-alergeni → zah-alergeni
+·  „колко фъстъчено масло първия път“  zah-alergeni → zah-alergeni
+✅ „първо мляко или храна“  mb-kolko-mliako → zn4a-mlyako-ili-lazhica
+✅ „кърмя преди или след пюрето“  zh-parvo → zn4a-mlyako-ili-lazhica
+✅ „храна преди гърдата или след“  zh-milk-qty → zn4a-mlyako-ili-lazhica
+·  „нова храна при ваксина“  zd-vaksini → zd-vaksini
+✅ „нова храна когато е болен“  zh-bolen-ne-yade → zn4a-nova-hrana-bolen
+·  „нова храна на път“  zh-na-pat-hrana → zh-na-pat-hrana
+·  „на адаптирано сме кога захранване“  zh-koga-start → zh-koga-start
+·  „захранване при бебе на формула по-рано ли“  zh-koga-start → zh-koga-start
+·  „недоносено кога захранване“  zh-koga-start → zh-koga-start
+·  „коригирана възраст захранване“  nd-korr → nd-korr
+·  „пакетчета с плод нормални ли са“  ТИШИНА → ТИШИНА
+·  „смуче от пакетчето“  mb-kolko-mliako → mb-kolko-mliako
+·  „пюре от пауч всеки ден“  zh-parvo → zh-parvo
+·  „пюре при баба парченца вкъщи“  zh-blw → zh-blw
+·  „в яслата с лъжица вкъщи блв“  in-gradina → in-gradina
+·  „без зъби как ще дъвче“  zh-prasti-hrana → zh-prasti-hrana
+·  „няма зъби може ли парчета“  ТИШИНА → ТИШИНА
+·  „грозде как се реже“  zh-opasni → zh-opasni
+·  „как да режа кренвирша“  zh-kolbasi → zh-kolbasi
+✅ „как да нарежа ябълка за бебе“  ТИШИНА → zn4a-kak-se-reje
+✅ „домати чери на бебе“  ТИШИНА → zn4a-kak-se-reje
+✅ „царевица на плажа“  ТИШИНА → zn4a-plazh-semki
+·  „бонбони на кръщене“  zh-sladko → zh-sladko
+·  „пълзи с храна в устата“  rz-palzene → rz-palzene
+✅ „айран на годинка“  ТИШИНА → zn4a-ayran-boza
+✅ „боза на 2 години“  ТИШИНА → zn4a-ayran-boza
+✅ „компот за бебе“  ТИШИНА → zn4a-ayran-boza
+✅ „кока-кола на малко дете“  zh-opasni → zn4a-kafe-kola
+✅ „фанта на дете“  ТИШИНА → zn4a-kafe-kola
+·  „шоколадово мляко на дете“  zh-sladko → zh-sladko
+✅ „дадох му солено“  lb-med-sol → zn4a-veche-soleno
+✅ „щипка сол няма вреда“  lb-med-sol → zn4a-veche-soleno
+✅ „яде от нашата храна със сол“  lb-med-sol → zn4a-veche-soleno
+·  „вегета на 1 година“  ТИШИНА → ТИШИНА
+·  „кубче за супата на бебе“  ТИШИНА → ТИШИНА
+·  „какво да яде при диария“  zd-diarr → zd-diarr
+·  „оризова вода при диария“  zh-voda → zh-voda
+·  „морковена супа при разстройство“  zd-diarr → zd-diarr
+✅ „колко месо е в бурканчето“  zh-meso → zn4a-meso-burkanche
+·  „без добавена захар вярно ли е“  zh-skrita-sol → zh-skrita-sol
+·  „от кога е това пюре“  zh-parvo → zh-parvo
+·  „детски чай от магазина“  ТИШИНА → ТИШИНА
+·  „гранулиран чай за бебе“  zh-chay → zh-chay
+·  „чай с бисквита за закуска“  zh5-zakuska → zh5-zakuska
+✅ „бисквита в чая като баба“  ТИШИНА → zn4a-hapka-za-mama
+✅ „пухкаво дете здраво ли е“  ТИШИНА → zn4a-puhkavo
+✅ „много е дебеличко бебето“  ТИШИНА → zn4a-puhkavo
+✅ „хапка за мама работи ли“  ТИШИНА → zn4a-hapka-za-mama
+✅ „една лъжичка за мама една за татко“  ТИШИНА → zn4a-hapka-za-mama
+✅ „гладът е най-добрият готвач“  ТИШИНА → zn4a-hapka-za-mama
+✅ „да го оставя ли гладно“  mb-dushut → zn4a-hapka-za-mama
+·  „шише с чай в леглото“  ТИШИНА → ТИШИНА
+·  „заспива с шише сок“  zh-mahni-shishe → zh-mahni-shishe
+·  „черен дроб на бебе“  zh-meso → zh-meso
+·  „пилешки дроб за анемия“  zh-meso → zh-meso
+·  „орехи за ума“  ТИШИНА → ТИШИНА
+·  „орехи на 2 години“  ТИШИНА → ТИШИНА
+✅ „кафе с мляко на дете“  mb-kolko-mliako → zn4a-kafe-kola
+✅ „капучино на дете“  ТИШИНА → zn4a-kafe-kola
+✅ „сурово яйце със захар“  zah-alergeni → zn4a-surovo-yaice
+✅ „гоголмогол на дете“  ТИШИНА → zn4a-surovo-yaice
+✅ „сладко в киселото мляко“  mb-kolko-mliako → zn4a-kiselo-sladko
+✅ „кисело мляко със захар“  zh-cowmilk → zn4a-kiselo-sladko
+✅ „лютеница от буркан на баба“  ТИШИНА → zn4a-zimnina
+✅ „зимнината на дете“  ТИШИНА → zn4a-zimnina
+✅ „издут буркан“  ТИШИНА → zn4a-zimnina
+✅ „червен боб колко да се вари“  ТИШИНА → zn4a-cherven-bob
+✅ „боб в бавен готвач“  ТИШИНА → zn4a-cherven-bob
+·  „евтино меню за дете“  zh-menu → zh-menu
+·  „с малко пари как да храня детето“  in-budget → in-budget
+·  „бъдни вечер с бебе какво да яде“  ТИШИНА → ТИШИНА
+·  „постна трапеза дете“  ТИШИНА → ТИШИНА
+·  „червени яйца на дете“  ТИШИНА → ТИШИНА
+·  „колко стоят боядисаните яйца“  ТИШИНА → ТИШИНА
+·  „дроб сърма на дете“  ТИШИНА → ТИШИНА
+·  „меню за рожден ден на 2 години“  zh-menu → zh-menu
+·  „какво да сготвя за детски рожден ден“  zh-menu → zh-menu
+✅ „примерен ден на 8 месеца“  ТИШИНА → zn4a-den-8-9-meseca
+·  „режим на хранене на 10 месеца“  zh-kolko-pati-den → zh-kolko-pati-den
+·  „меню за седмица за 8 месеца“  zh-menu → zh-menu
+✅ „меню за 2 годишно дете за седмица“  zh-menu → zn4a-sedmica-2-3-g
+·  „меню за 1 годишно“  zh-menu → zh-menu
+·  „какво да питам в яслата за храната“  in-gradina → in-gradina
+✅ „менюто на яслата къде е“  in-gradina → zn4a-yasla-naredba
+✅ „омега 3 за бебе“  ТИШИНА → zn4a-ribeno-maslo
+✅ „рибено масло на дете“  y1-multivitamin-bezopasnost → zn4a-ribeno-maslo
+·  „йодирана сол за дете“  lb-med-sol → lb-med-sol
+·  „риба тон на дете колко“  zah-alergeni → zah-alergeni
+·  „живак в рибата“  zah-alergeni → zah-alergeni
+·  „колко глутен на 6 месеца“  zah-alergeni → zah-alergeni
+·  „глутен от кога“  zah-alergeni → zah-alergeni
+·  „броколи на бебе“  ТИШИНА → ТИШИНА
+·  „първо горчиви зеленчуци“  zh-parvo → zh-parvo
+·  „кога да се притеснявам че не яде“  gz-kysno-govor → gz-kysno-govor
+·  „не наддава дали е от храната“  zh-weight → zh-weight
+✅ „да го насилвам ли да яде“  ТИШИНА → zn4a-hapka-za-mama
+✅ „баба го храни насила“  zh-opasni → zn4a-hapka-za-mama
+·  „кой час за първо хранене“  ТИШИНА → ТИШИНА
+·  „сутрин или обяд първата храна“  zh-parvo → zh-parvo
+·  „акото стана зелено след спанак“  zh-akoto → zh-akoto
+·  „червено в акото след цвекло“  zh-plodove → zh-plodove
+·  „хрупкавици които се разтапят“  ТИШИНА → ТИШИНА
+·  „бебешки бисквити нормални ли са“  ТИШИНА → ТИШИНА
+·  „свинско на бебе“  ТИШИНА → ТИШИНА
+·  „заешко на бебе“  ТИШИНА → ТИШИНА
+·  „пилешко или телешко първо“  zh-meso → zh-meso
+·  „овесена каша или оризова“  zh-kashi → zh-kashi
+·  „каша с мляко или с вода“  zh-kashi → zh-kashi
+·  „хляб на 7 месеца“  ТИШИНА → ТИШИНА
+·  „макарони от кога“  ТИШИНА → ТИШИНА
+·  „кисело мляко от кога“  zh-cowmilk → zh-cowmilk
+·  „извара на 6 месеца“  ТИШИНА → ТИШИНА
+·  „яйца с домати за дете“  ТИШИНА → ТИШИНА
+·  „омлет за бебе“  ТИШИНА → ТИШИНА
+·  „леща на 7 месеца“  ТИШИНА → ТИШИНА
+·  „хумус на бебе“  ТИШИНА → ТИШИНА
+·  „риба на фурна за бебе“  z7-ribata-kostite → z7-ribata-kostite
+·  „пъстърва на бебе“  ТИШИНА → ТИШИНА
+✅ „тиква на фурна за бебе“  ТИШИНА → zn4a-desert-bez-zahar
+✅ „печена ябълка за бебе“  ТИШИНА → zn4a-desert-bez-zahar
+·  „пилешка супа за бебе“  zh-supa → zh-supa
+·  „яхния за бебе“  ТИШИНА → ТИШИНА
+·  „закуска за дете 2 години“  zh-hliab → zh-hliab
+·  „вечеря за 1 годишно“  ТИШИНА → ТИШИНА
+·  „следобедна закуска за дете“  zh-hliab → zh-hliab
+·  „колко стои отворено бурканче“  v1-hrana-signali → v1-hrana-signali
+·  „затоплям ли бурканчето“  zh-himia → zh-himia
+·  „остатък от вчера на бебе“  ТИШИНА → ТИШИНА
+·  „ориз от вчера на дете“  zh-kashi → zh-kashi
+·  „замразено пюре колко стои“  zh-parvo → zh-parvo
+·  „кубчета пюре във фризера“  zh-parvo → zh-parvo
+✅ „храня го преди или след гърдата“  zh-milk-qty → zn4a-mlyako-ili-lazhica
+✅ „първо мляко или първо каша на 8 месеца“  zh-kashi → zn4a-mlyako-ili-lazhica
+·  „след пюрето иска пак гърдата нормално ли е“  zh-parvo → zh-parvo
+✅ „примерен ден на 9 месеца какво яде“  ТИШИНА → zn4a-den-8-9-meseca
+✅ „меню за бебе на 8 месеца“  zh-menu → zn4a-den-8-9-meseca
+·  „колко пъти яде на 9 месеца и кога мляко“  zh-kolko-pati-den → zh-kolko-pati-den
+✅ „как да нарежа ябълка за бебе“  ТИШИНА → zn4a-kak-se-reje
+✅ „може ли царевица на 1 година“  w2-snaks-ot-rafta → zn4a-kak-se-reje
+✅ „сирене на кубчета може ли на бебе“  w3-kubcheta-koi-vid → zn4a-kak-se-reje
+✅ „колко често да давам яйце след като го въведох“  zah-alergeni → zn4a-alergen-redovno
+✅ „спряхме фъстъченото масло за месец да почвам ли отначало“  zah-alergeni → zn4a-alergen-redovno
+✅ „изплюва яйцето алергия ли е“  zah-alergeni → zn4a-alergen-redovno
+✅ „има екзема кога да дам фъстъци“  zah-alergeni → zn4a-ekzema-fastak
+✅ „тежка екзема и фъстъчено масло“  zah-alergeni → zn4a-ekzema-fastak
+✅ „алергия към яйце може ли фъстъци“  zah-alergeni → zn4a-ekzema-fastak
+✅ „яде от нашата супа със сол лошо ли е“  lb-med-sol → zn4a-veche-soleno
+✅ „баба му даде солено сирене“  lb-med-sol → zn4a-veche-soleno
+✅ „щипка сол на годинка може ли“  lb-med-sol → zn4a-veche-soleno
+✅ „хапка за мама работи ли“  ТИШИНА → zn4a-hapka-za-mama
+✅ „гладът е най-добрият готвач вярно ли е“  ema-nauka → zn4a-hapka-za-mama
+✅ „баба го храни насила с лъжицата“  zh-opasni → zn4a-hapka-za-mama
+✅ „попара за бебе от кога“  mst-selo-hranyat → zn4a-popara
+·  „попара със сирене на 9 месеца“  zh-mlechni → zh-mlechni
+✅ „как се прави попара за дете без сол“  lb-med-sol → zn4a-popara
+✅ „палачинки без захар за бебе“  lb-med-sol → zn4a-palachinki
+✅ „мекици на годинка може ли“  ТИШИНА → zn4a-palachinki
+✅ „с какво да намажа палачинката на бебето“  ТИШИНА → zn4a-palachinki
+✅ „кюфтенца на пара за бебе рецепта“  y3-lekarstva-kasa → zn4a-kyuftentsa
+✅ „кебапче на 2 години може ли“  y1-fastfood → zn4a-kyuftentsa
+✅ „кайма от магазина за бебе“  ТИШИНА → zn4a-kyuftentsa
+✅ „супа топчета за бебе без сол“  lb-med-sol → zn4a-supa-topcheta
+✅ „застройка с яйце на 10 месеца“  zah-alergeni → zn4a-supa-topcheta
+✅ „вегета в супата на бебе“  ТИШИНА → zn4a-supa-topcheta
+✅ „млечен ориз за бебе без захар“  zh-kashi → zn4a-mlechen-oriz
+✅ „качамак за бебе на 10 месеца“  ТИШИНА → zn4a-mlechen-oriz
+✅ „грис на 8 месеца може ли“  zh-kashi → zn4a-mlechen-oriz
+✅ „баница на годинка може ли“  prz-banica → zn4a-banica-zakuska
+✅ „баница от фурната за закуска на детето“  zh5-zakuska → zn4a-banica-zakuska
+✅ „зелник на дете“  ТИШИНА → zn4a-banica-zakuska
+✅ „печена тиква за бебе“  ТИШИНА → zn4a-desert-bez-zahar
+✅ „десерт без захар за бебе“  lb-med-sol → zn4a-desert-bez-zahar
+✅ „тиква с орехи на дете“  pz-koledna-trapeza → zn4a-desert-bez-zahar
+✅ „не яде кисело мляко без захар“  zh-cowmilk → zn4a-kiselo-sladko
+✅ „сладко в киселото мляко на годинка“  mb-kolko-mliako → zn4a-kiselo-sladko
+✅ „мед в киселото мляко“  lb-med-sol → zn4a-kiselo-sladko
+✅ „меню за 2 годишно дете“  zh-menu → zn4a-sedmica-2-3-g
+✅ „какво да сготвя за двегодишно за седмицата“  zh-menu → zn4a-sedmica-2-3-g
+✅ „идеи за вечеря на дете 2 години“  zh-menu → zn4a-sedmica-2-3-g
+✅ „болен е да спра ли захранването“  zh-koga-start → zn4a-nova-hrana-bolen
+✅ „нова храна при температура“  zd-temperatura → zn4a-nova-hrana-bolen
+✅ „има диария давам ли нова храна“  w2-hapka-za-tishina → zn4a-nova-hrana-bolen
+✅ „айран на годинка“  ТИШИНА → zn4a-ayran-boza
+✅ „боза на 2 години“  ТИШИНА → zn4a-ayran-boza
+✅ „компот за бебе без захар“  lb-med-sol → zn4a-ayran-boza
+✅ „кафе с мляко на дете“  mb-kolko-mliako → zn4a-kafe-kola
+✅ „кола на 2 годишно“  ТИШИНА → zn4a-kafe-kola
+✅ „айс тий за дете може ли“  zh-obshta-masa → zn4a-kafe-kola
+✅ „колко месо има в бурканчето“  zh-meso → zn4a-meso-burkanche
+✅ „телешко със зеленчуци бурканче колко месо“  zh-meso → zn4a-meso-burkanche
+✅ „бурканче с месо стига ли“  ТИШИНА → zn4a-meso-burkanche
+✅ „каша с мед за бебе“  zh-kashi → zn4a-kasha-s-med
+✅ „бебешка каша с мед преди година“  zh-kashi → zn4a-kasha-s-med
+✅ „мед в бисквитите на бебето“  lb-med-sol → zn4a-kasha-s-med
+✅ „семки на дете на колко години“  ТИШИНА → zn4a-plazh-semki
+✅ „царевица на плажа за дете“  ТИШИНА → zn4a-plazh-semki
+✅ „праскова на бебе“  ТИШИНА → zn4a-plazh-semki
+✅ „гоголмогол на дете“  ТИШИНА → zn4a-surovo-yaice
+✅ „сурово яйце със захар за гърлото“  zah-alergeni → zn4a-surovo-yaice
+✅ „домашна майонеза за дете“  ТИШИНА → zn4a-surovo-yaice
+✅ „руска салата на дете“  ТИШИНА → zn4a-ruska-salata
+✅ „майонеза на 1 година“  ТИШИНА → zn4a-ruska-salata
+✅ „картофена салата за дете“  x6-surovi-zelenchuci → zn4a-ruska-salata
+✅ „лютеница на дете“  ТИШИНА → zn4a-lyutenica-tarshiya
+✅ „туршия на 2 години“  ТИШИНА → zn4a-lyutenica-tarshiya
+✅ „маслини на малко дете“  ТИШИНА → zn4a-lyutenica-tarshiya
+✅ „пухкаво дете здраво ли е“  ТИШИНА → zn4a-puhkavo
+✅ „много е дебеличко бебето“  ТИШИНА → zn4a-puhkavo
+✅ „баба казва че е слабичко“  ema-babini → zn4a-puhkavo
+✅ „рибено масло на дете“  y1-multivitamin-bezopasnost → zn4a-ribeno-maslo
+✅ „омега 3 за бебе“  ТИШИНА → zn4a-ribeno-maslo
+✅ „рибено масло и витамин д заедно“  lb2-vitamind → zn4a-ribeno-maslo
+✅ „какво казва наредбата за яслите за храната“  in-gradina → zn4a-yasla-naredba
+✅ „дават ли пържено в яслата“  in-gradina → zn4a-yasla-naredba
+✅ „менюто на яслата къде е“  in-gradina → zn4a-yasla-naredba
+✅ „червен боб колко да се вари“  ТИШИНА → zn4a-cherven-bob
+✅ „боб в бавен готвач“  ТИШИНА → zn4a-cherven-bob
+✅ „накисване на боб“  ТИШИНА → zn4a-cherven-bob
+✅ „издут буркан“  ТИШИНА → zn4a-zimnina
+✅ „лютеница от буркан на баба за детето“  ТИШИНА → zn4a-zimnina
+✅ „домашни буркани за дете“  zh-selo → zn4a-zimnina
+
+карти в стажа: 30 · ключ1/ключN хванати: 60/60 · чужди/контролни въпроси: 373 · мръднали: 0
+изход 0

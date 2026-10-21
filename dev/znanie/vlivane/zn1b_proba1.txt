@@ -1,0 +1,63 @@
+✅ „какъв режим да направя на бебе на 3 месеца“  ТИШИНА → zn1b-den-3-4-meseca
+❌ „режим на 4 месечно бебе по часове“  sn-ritam-den → sn-ritam-den   (чаках zn1b-den-3-4-meseca)
+✅ „примерен режим на 6 месеца“  ТИШИНА → zn1b-den-6-meseca
+✅ „режим на 6 месеца с часове и храна“  ТИШИНА → zn1b-den-6-meseca
+✅ „режим на 9 месеца“  ТИШИНА → zn1b-den-9-10-meseca
+❌ „в колко часа е сутрешната дрямка на 10 месеца“  mb5-driamki → mb5-driamki   (чаках zn1b-den-9-10-meseca)
+❌ „режим за годинка с две дрямки“  ТИШИНА → zn1b-den-3-4-meseca   (чаках zn1b-den-godinka)
+❌ „режим на 13 месечно бебе“  ТИШИНА → ТИШИНА   (чаках zn1b-den-godinka)
+✅ „режим на 2 години“  ТИШИНА → zn1b-den-2-godini
+✅ „режим на година и половина с една дрямка“  mb5-driamki → zn1b-den-2-godini
+❌ „в една книга пише 16 часа сън в друга 12“  zd-son2 → zd-son2   (чаках zn1b-tablici-za-san)
+✅ „моето спи само 11 часа общо нормално ли е“  ТИШИНА → zn1b-tablici-za-san
+❌ „къпя го вечер и после е като пружина“  lb2-banya → lb2-banya   (чаках zn1b-banya-razbuzhda)
+✅ „банята го разбужда вместо да го успокои“  mb-cry → zn1b-banya-razbuzhda
+✅ „люлеенето вредно ли е за бебето“  ТИШИНА → zn1b-lyuleene
+✅ „заспива само като го люлея“  nm-kogato-izdarzhas → zn1b-lyuleene
+❌ „вредно ли е да го оставя да плаче“  sn-zaspivane-samo → sn-zaspivane-samo   (чаках zn1b-ostavyane-plach)
+✅ „сън тренинг вреди ли на привързаността“  zd-son2 → zn1b-ostavyane-plach
+✅ „защо не бамперки в кошарата“  in-koshara → zn1b-obikolnici-koshara
+✅ „кога може възглавница на бебето“  zd-bezopasen-son → zn1b-obikolnici-koshara
+✅ „кога минава опасността от внезапна смърт“  ТИШИНА → zn1b-svds-vazrast
+✅ „до кога е рискът от свдс“  ТИШИНА → zn1b-svds-vazrast
+✅ „ваксините причиняват ли внезапна смърт“  zd-vaksini → zn1b-vaksini-svds
+✅ „ваксина и свдс има ли връзка“  zd-vaksini → zn1b-vaksini-svds
+✅ „мъжът пуши на терасата вреди ли на бебето“  dn-partnior → zn1b-pushene-terasa
+✅ „цигари около бебето навън“  nm-lekarstva-kafe → zn1b-pushene-terasa
+✅ „в блока е 24 градуса парното е силно“  zd-temperatura → zn1b-gradusi-za-san
+✅ „колко градуса за сън на бебе 16 или 20“  zd-temperatura → zn1b-gradusi-za-san
+❌ „може ли бебето да спи в хола“  ТИШИНА → ТИШИНА   (чаках zn1b-dryamka-v-hola)
+❌ „дрямката в хола става ли“  mb5-driamki → mb5-driamki   (чаках zn1b-dryamka-v-hola)
+✅ „български приспивни песни“  rz-muzika → zn1b-prispivni-bg
+✅ „народна приспивна песен за бебе“  muz-prispivna-pesen → zn1b-prispivni-bg
+✅ „свекърва го слага на корем да спи“  ema-babini → zn1b-baba-pravila-san
+✅ „как да обясня на баба че трябва по гръб“  ТИШИНА → zn1b-baba-pravila-san
+✅ „рефлукс да го повдигна ли да спи“  lb-davene → zn1b-refluks-naklon
+✅ „да спи с повдигната глава защото плюе“  lb2-plyene → zn1b-refluks-naklon
+✅ „заспива само на цицата“  nm-kogato-izdarzhas → zn1b-zaspiva-na-gardata
+✅ „без цица не заспива какво да правя“  mb-kolko-mliako → zn1b-zaspiva-na-gardata
+✅ „какви болести изследват от петичката“  lb-skrining → zn1b-petichka-bolesti
+✅ „скрининг за муковисцидоза у нас“  lb-skrining → zn1b-petichka-bolesti
+✅ „не ми се обадиха за петичката“  nb-slagat-bebeto → zn1b-petichka-obazhdane
+✅ „обадиха се за повторна проба на петичката“  nb-slagat-bebeto → zn1b-petichka-obazhdane
+✅ „кога е първият преглед след изписване“  br-pregledi → zn1b-parvi-pregled-doma
+✅ „идва ли личният лекар вкъщи след раждането“  mst-gosti-son → zn1b-parvi-pregled-doma
+❌ „колко пъти се ходи на профилактичен преглед до 3 години“  in-profilaktika → in-profilaktika   (чаках zn1b-pregledi-kalendar)
+✅ „колко прегледа се полагат по нзок на бебе“  br-pregledi → zn1b-pregledi-kalendar
+✅ „кръвна картина на 6 месеца задължителна ли е“  ТИШИНА → zn1b-izsledvaniya-6-12
+✅ „ехография на бъбречетата на 6 месеца“  br-pregledi → zn1b-izsledvaniya-6-12
+❌ „задължителна ли е ехографията на тазобедрените стави“  br-pregledi → br-pregledi   (чаках zn1b-tazobedreni-pregled)
+✅ „кога се гледат тазобедрените стави“  ТИШИНА → zn1b-tazobedreni-pregled
+❌ „кога да заведа бебето на очен лекар“  ТИШИНА → ТИШИНА   (чаках zn1b-ochen-lekar)
+✅ „очен преглед на 6 месеца по каса ли е“  ТИШИНА → zn1b-ochen-lekar
+✅ „не са ни направили слуховия тест в родилното“  mb-sluh → zn1b-sluhov-test-lipsva
+✅ „слухов скрининг по нзок ли е“  lb-skrining → zn1b-sluhov-test-lipsva
+✅ „на 3 перцентил е лошо ли е“  ТИШИНА → zn1b-percentil-3
+✅ „какво значи перцентил на теглото“  mb-rastej → zn1b-percentil-3
+❌ „качи само 300 грама за месец“  mb-rastej → mb-rastej   (чаках zn1b-naddavane-mesec)
+✅ „не наддава този месец на 9 месеца“  zh-weight → zn1b-naddavane-mesec
+✅ „с флуор или без флуор паста за бебе“  lb-parvi-zabi → zn1b-pasta-fluor
+❌ „колко паста за зъби на годинка“  lb-parvi-zabi → lb-parvi-zabi   (чаках zn1b-pasta-fluor)
+🟡 ключN:zn1b-banya-razbuzhda  „kapane predi san“ → ТИШИНА
+
+карти в стажа: 30 · въпроси към целта: 46/60 · ключ1/ключN хванати: 59/60 · чужди/контролни въпроси: 955 · мръднали: 0

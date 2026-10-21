@@ -1,0 +1,20 @@
+
+  🃏 СЛИВАЧ НА КАРТИ[33m   [СУХО][0m
+  стаж: karti_zn3.json
+
+  🟡 карти, в които над 60% от ключовете носят пълен член — ЗА ЧЕТЕНЕ, не за отказ:
+     zn3-vtora-godina-2026   10/15
+     zn3-pomoshti-ednokratni-20268/13
+     zn3-tatko-sled-6-mesec  8/13
+
+  ── ПРИЕТИ: 25 ──
+      25  Инструменти
+
+  [31m── ОТКАЗАНИ: 4 ──[0m
+     🔴 zn3-rabota-polovinata     1 ключа ВЕЧЕ са на друга карта: „работа по време на майчинство"→lb-noi[90m  [karti_zn3.json][0m
+     🔴 zn3-maychinstvo-smetka    1 ключа ВЕЧЕ са на друга карта: „колко ще получавам по майчинство"→lb-noi[90m  [karti_zn3.json][0m
+     🔴 zn3-danachno-dekemvri     1 ключа ВЕЧЕ са на друга карта: „връщане на данък за дете"→in-danachno[90m  [karti_zn3.json][0m
+     🔴 zn3-osinovyavane-otpusk   1 ключа ВЕЧЕ са на друга карта: „отпуск при осиновяване"→in-osinovyavane-red[90m  [karti_zn3.json][0m
+
+  [33mСУХО. За писане: node dev/slivach_karti.js --pishi[0m
+

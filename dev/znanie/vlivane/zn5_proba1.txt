@@ -1,0 +1,85 @@
+·  „бебето спи а аз не мога да заспя“  dn-budya-se-predi → dn-budya-se-predi
+·  „лягам и се въртя с часове“  rz-autizam → rz-autizam
+·  „безсъние при майка с бебе“  br-son → br-son
+·  „до колко часа мога да пия кафе“  nm-lekarstva-kafe → nm-lekarstva-kafe
+·  „чаша вино за по-добър сън“  nm-lekarstva-kafe → nm-lekarstva-kafe
+·  „вечерям късно и не мога да заспя“  ТИШИНА → ТИШИНА
+✅ „да дремя ли през деня“  ТИШИНА → zn5-dryamka-mama
+·  „дрямката през деня вредна ли е“  ТИШИНА → ТИШИНА
+✅ „единственото ми време е нощем и стоя до късно“  ТИШИНА → zn5-noshtta-e-moya
+✅ „не мога да се откъсна от телефона вечер“  rz-ekran → zn5-noshtta-e-moya
+✅ „хъркам откакто родих“  zd-hyrkane-son → zn5-hyrkam-sled-razhdane
+✅ „мъжът ми казва че спирам да дишам насън“  pt-revnuva-bebeto → zn5-hyrkam-sled-razhdane
+·  „събуждам се с главоболие и съм уморена“  nia-glavobolie → nia-glavobolie
+✅ „краката ми не мирясват вечер“  br-kramp → zn5-nespokoyni-kraka
+✅ „мравучкане в краката нощем след раждане“  br-kramp → zn5-nespokoyni-kraka
+✅ „мога ли да пия нещо за сън докато кърмя“  nia-otslabvane-kurmene → zn5-neshto-za-san
+✅ „мелатонин докато кърмя“  nia-otslabvane-kurmene → zn5-neshto-za-san
+✅ „как да се успокоя за 5 минути“  ТИШИНА → zn5-dishane-pet-minuti
+✅ „дихателно упражнение при стрес“  br-dvizhenie → zn5-dishane-pet-minuti
+✅ „мислите не ми дават мира“  ТИШИНА → zn5-chas-za-trevogi
+✅ „как да спра да се притеснявам за всичко“  gz-kysno-govor → zn5-chas-za-trevogi
+·  „тревожа се нощем за най-лошото“  ТИШИНА → ТИШИНА
+·  „как да се чувствам по-добре като майка“  nia-koya → nia-koya
+✅ „нещо малко за доброто настроение“  ТИШИНА → zn5-pet-stapki-dobre
+✅ „сърцето ми прескача от стрес ли е“  ТИШИНА → zn5-stres-ili-tyaloto
+✅ „замайва ме от нерви ли е“  ТИШИНА → zn5-stres-ili-tyaloto
+✅ „какво да ям като нямам време“  wm-nyama-vreme → zn5-chiniya-bez-recepta
+✅ „здравословна чиния за кърмачка“  mb-kolko-mliako → zn5-chiniya-bez-recepta
+✅ „замразените зеленчуци полезни ли са“  zh-parvo → zn5-chiniya-bez-recepta
+✅ „как се чете етикетът на храната“  ТИШИНА → zn5-sol-zahar-etiket
+✅ „колко захар е много на 100 грама“  lb-med-sol → zn5-sol-zahar-etiket
+✅ „колко сол на ден е нормално“  lb-med-sol → zn5-sol-zahar-etiket
+✅ „колко вода да пия на ден“  zh-voda → zn5-voda-za-mama
+✅ „пия малко вода и ме боли главата“  zh-voda → zn5-voda-za-mama
+✅ „кой слънцезащитен крем да ползвам“  zd-slance → zn5-slance-za-mama
+·  „бенката ми се промени“  g3j-benkata-potamnya-ot-bremennostta → g3j-benkata-potamnya-ot-bremennostta
+·  „колко крем да сложа на лицето за слънце“  zd-slance → zd-slance
+✅ „пъпки по брадичката преди цикъл“  zd-rash2 → zn5-papki-na-30
+✅ „акне на 30 нормално ли е“  ТИШИНА → zn5-papki-na-30
+·  „венците ми кървят като си мия зъбите“  nia-zybi → nia-zybi
+·  „лош дъх и подути венци“  lb-nikat-zabi → lb-nikat-zabi
+·  „коя паста за зъби е най-добра“  lb-parvi-zabi → lb-parvi-zabi
+✅ „рамото ме боли от носенето“  ТИШИНА → zn5-ramo-i-vrat
+✅ „вратът ме боли от кърменето“  mb-kolko-mliako → zn5-ramo-i-vrat
+·  „изтръпват ми пръстите нощем след раждането“  nia-kitka → nia-kitka
+·  „мравучкане в ръцете докато кърмя“  nia-kitka → nia-kitka
+✅ „стриите след раждането ще изчезнат ли“  br-strii → zn5-strii-sled-razhdane
+✅ „лазер за стрии докато кърмя“  br-strii → zn5-strii-sled-razhdane
+✅ „преди цикъл съм друг човек“  pp-cikyl → zn5-pms
+✅ „пмс какво помага“  ТИШИНА → zn5-pms
+✅ „подуване и сълзливост преди цикъл“  zd-allerg → zn5-pms
+·  „колко трябва да се движа на седмица“  nb-monitorat-dvizhenie → nb-monitorat-dvizhenie
+·  „10 минути движение стигат ли“  br-dvizhenie → br-dvizhenie
+✅ „след тичане ми тежи отдолу“  ТИШИНА → zn5-svetofar-trenirovka
+✅ „кога да спра тренировката“  ТИШИНА → zn5-svetofar-trenirovka
+✅ „имам ли право на гъвкаво работно време като майка“  nia-koya → zn5-rabotno-vreme
+·  „мога ли да работя на половин ден след майчинството“  nia-svoi-pari → nia-svoi-pari
+·  „нощна смяна с дете до 6 години“  ТИШИНА → ТИШИНА
+✅ „шефът ми пише в неделя трябва ли да отговарям“  ТИШИНА → zn5-rabotno-vreme
+✅ „критикуват ме най-много близките“  ТИШИНА → zn5-kritikuvat-blizkite
+✅ „всички имат мнение как да го гледам“  ТИШИНА → zn5-kritikuvat-blizkite
+✅ „изгоряла съм като майка“  ТИШИНА → zn5-izgoryala-mayka
+·  „писна ми от всичко и ме е срам“  w6-tarpenie-kam-golyamoto → w6-tarpenie-kam-golyamoto
+✅ „родителско прегаряне има ли такова нещо“  ТИШИНА → zn5-izgoryala-mayka
+·  „как да открадна малко сън с бебето“  zd-son2 → zd-son2
+·  „спя но не се чувствам отпочинала“  ТИШИНА → ТИШИНА
+✅ „какво е лехуса“  ТИШИНА → zn5-lehusa-40-dni
+✅ „защо 40 дни след раждане не се излиза“  ТИШИНА → zn5-lehusa-40-dni
+✅ „какво се прави на 40-ия ден след раждането“  ТИШИНА → zn5-lehusa-40-dni
+✅ „баба гледа детето всеки ден няма ли да се изтощи“  pt-deteto-vizhda → zn5-baba-gleda-mnogo
+✅ „полезно ли е на баба да гледа внука“  ТИШИНА → zn5-baba-gleda-mnogo
+✅ „всички деца са при баба а моето го гледам аз“  rz-sravnenie → zn5-gledam-go-sama
+✅ „колко деца гледат баби в българия“  ТИШИНА → zn5-gledam-go-sama
+·  „мъжът ми не застава между мен и майка си“  dn-partnior → dn-partnior
+✅ „свекърва ми се чувства изоставена“  nia-svekarva → zn5-sblizhavane-svekarva
+✅ „мъжът ми играе твърде грубо с детето“  dn-partnior → zn5-tatko-grubo
+✅ „може ли татко да подхвърля бебето“  ТИШИНА → zn5-tatko-grubo
+·  „детето побеснява когато баща му се прибере“  y8-sama-ot-nachaloto → y8-sama-ot-nachaloto
+·  „мъжът ми почти не говори на бебето“  gz-kysno-govor → gz-kysno-govor
+·  „как да накарам мъжа си да говори с бебето“  ТИШИНА → ТИШИНА
+·  „мъжът ми се промени откакто стана баща“  ema-obarnali → ema-obarnali
+✅ „пада ли тестостеронът на бащите“  ТИШИНА → zn5-tatko-se-promenya
+🟡 ключN:zn5-tatko-govori  „mazhat mi malchi“ → ТИШИНА
+
+карти в стажа: 29 · ключ1/ключN хванати: 57/58 · чужди/контролни въпроси: 715 · мръднали: 0

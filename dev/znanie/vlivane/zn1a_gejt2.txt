@@ -1,0 +1,23 @@
+
+  🃏 СЛИВАЧ НА КАРТИ[33m   [СУХО][0m
+  стаж: karti_zn1a.json
+
+  🟡 карти, в които над 60% от ключовете носят пълен член — ЗА ЧЕТЕНЕ, не за отказ:
+     zn1a-urati-pelena       10/14
+     zn1a-cherveno-oko       11/13
+     zn1a-mramorna-kozha     8/13
+     zn1a-tochici-nebce      9/13
+     zn1a-ne-zasukva         10/13
+     zn1a-razseyva-se        8/13
+     zn1a-mlyako-ne-idva     8/13
+     zn1a-zarna-grizha       8/13
+     zn1a-nedopita-kurma     8/12
+     zn1a-chasti-pompa       9/12
+     zn1a-dopiva-shishe      8/12
+     zn1a-pupche-spirt       10/12
+
+  ── ПРИЕТИ: 24 ──
+      24  Моето бебе
+
+  [33mСУХО. За писане: node dev/slivach_karti.js --pishi[0m
+

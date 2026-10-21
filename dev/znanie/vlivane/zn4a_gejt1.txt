@@ -1,0 +1,18 @@
+
+  🃏 СЛИВАЧ НА КАРТИ[33m   [СУХО][0m
+  стаж: karti_zn4a.json
+
+  🟡 карти, в които над 60% от ключовете носят пълен член — ЗА ЧЕТЕНЕ, не за отказ:
+     zn4a-alergen-redovno    10/15
+     zn4a-banica-zakuska     9/14
+     zn4a-kafe-kola          10/15
+     zn4a-plazh-semki        8/13
+     zn4a-ruska-salata       8/12
+     zn4a-yasla-naredba      11/13
+
+  ── ПРИЕТИ: 30 ──
+      30  Захранване
+
+  [33mСУХО. За писане: node dev/slivach_karti.js --pishi[0m
+
+изход 0

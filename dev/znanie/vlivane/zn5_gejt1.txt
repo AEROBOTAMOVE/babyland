@@ -1,0 +1,17 @@
+
+  🃏 СЛИВАЧ НА КАРТИ[33m   [СУХО][0m
+  стаж: karti_zn5.json
+
+  🟡 карти, в които над 60% от ключовете носят пълен член — ЗА ЧЕТЕНЕ, не за отказ:
+     zn5-nespokoyni-kraka    8/12
+     zn5-ramo-i-vrat         8/12
+     zn5-kritikuvat-blizkite 8/12
+     zn5-tatko-govori        9/14
+     zn5-tatko-se-promenya   10/13
+
+  ── ПРИЕТИ: 29 ──
+      21  Жената в мен
+       8  Дневник на мама
+
+  [33mСУХО. За писане: node dev/slivach_karti.js --pishi[0m
+

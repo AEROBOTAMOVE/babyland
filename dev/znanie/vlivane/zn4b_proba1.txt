@@ -1,0 +1,73 @@
+✅ „детето ме лъже на 4 години какво да правя“  rz-udrya → zn4b-lazhe-ili-fantazira
+❌ „казва че не го е направил а го видях“  ТИШИНА → ТИШИНА   (чаках zn4b-lazhe-ili-fantazira)
+✅ „на 3 години измисля си истории постоянно“  ТИШИНА → zn4b-lazhe-ili-fantazira
+✅ „казва лоши думи на 4 години“  rz-parvi-dumi → zn4b-loshi-dumi
+✅ „казва кака и пишки и се смее“  ТИШИНА → zn4b-loshi-dumi
+✅ „научи грозна дума от градината“  nia-ogledalo → zn4b-loshi-dumi
+✅ „отговаря ми нахално на 5 години“  ТИШИНА → zn4b-tros-5-godini
+❌ „тросва се когато му кажа нещо“  ТИШИНА → ТИШИНА   (чаках zn4b-tros-5-godini)
+✅ „играе на война с пистолети“  ТИШИНА → zn4b-igra-na-voyna
+✅ „прави пистолет от пръчка и стреля“  ТИШИНА → zn4b-igra-na-voyna
+✅ „не иска да каже извинявай на детето“  ТИШИНА → zn4b-izvinyavay
+❌ „да го карам ли да се извини веднага“  ТИШИНА → ТИШИНА   (чаках zn4b-izvinyavay)
+✅ „мамо и ти ли ще умреш“  ТИШИНА → zn4b-i-ti-li-shte-umresh
+❌ „пита ме дали ще умра“  ТИШИНА → ТИШИНА   (чаках zn4b-i-ti-li-shte-umresh)
+✅ „страх го е от доктора“  ТИШИНА → zn4b-strah-ot-doktora
+✅ „пищи при лекаря и не дава да го прегледат“  ТИШИНА → zn4b-strah-ot-doktora
+❌ „на 4 години е и не спира“  ТИШИНА → ТИШИНА   (чаках zn4b-buen-na-4)
+✅ „в градината казаха че е хиперактивен на 5“  in-gradina → zn4b-buen-na-4
+✅ „да подрежем ли юздичката за да проговори“  ТИШИНА → zn4b-yuzdichka
+❌ „казаха ни да подрежем езика“  ТИШИНА → ТИШИНА   (чаках zn4b-yuzdichka)
+✅ „да му говоря ли на бебешки“  ig-rech → zn4b-bebeshki-dumi
+✅ „бебешки думи или истинските да казвам“  ig-rech → zn4b-bebeshki-dumi
+❌ „колко трябва да се движи детето на ден“  nb-monitorat-dvizhenie → nb-monitorat-dvizhenie   (чаках zn4b-dvizhenie-na-den)
+✅ „колко движение на 2 годишно“  br-dvizhenie → zn4b-dvizhenie-na-den
+❌ „колко време може да стои в количката“  in-stroller → in-stroller   (чаках zn4b-vazano-v-kolichkata)
+❌ „много седи в столчето лошо ли е“  ТИШИНА → ТИШИНА   (чаках zn4b-vazano-v-kolichkata)
+✅ „седи като буквата w на пода“  ТИШИНА → zn4b-w-sedene
+✅ „w седене вредно ли е“  ТИШИНА → zn4b-w-sedene
+✅ „на какъв спорт да го запиша на 4“  br-dvizhenie → zn4b-sport-3-6
+✅ „от колко години футбол за деца“  ТИШИНА → zn4b-sport-3-6
+✅ „може ли да кара колело на тротоара“  rz-kolelo-kaska → zn4b-kolelo-po-zakon
+✅ „електрическа тротинетка на 12 години може ли“  rz-kolelo-kaska → zn4b-kolelo-po-zakon
+✅ „катери се високо на площадката“  ТИШИНА → zn4b-kateri-se
+✅ „да му казвам ли слез оттам“  ТИШИНА → zn4b-kateri-se
+✅ „не обича да тича с другите“  ТИШИНА → zn4b-spokoyno-dete
+✅ „много спокойно дете не иска да играе навън“  y9-navan-vsyako-vreme → zn4b-spokoyno-dete
+✅ „стикери за гърнето работят ли“  rz-gyrne → zn4b-stikeri-garne
+✅ „метод три дни без памперс“  rz-gyrne → zn4b-stikeri-garne
+✅ „не иска да ходи на градина“  in-gradina → zn4b-ne-iska-gradina
+✅ „всяка сутрин казва няма да ходя на градина“  in-gradina → zn4b-ne-iska-gradina
+✅ „как да говоря с възпитателката“  ТИШИНА → zn4b-vazpitatelkata
+✅ „какво да кажа на учителката в градината“  rz-losho-otnoshenie-yasla → zn4b-vazpitatelkata
+✅ „готово ли е за първи клас“  ТИШИНА → zn4b-gotov-za-parvi-klas
+❌ „на 6 или на 7 в училище“  ТИШИНА → ТИШИНА   (чаках zn4b-gotov-za-parvi-klas)
+✅ „тръшка се когато му взема таблета“  rz-inat-2g → zn4b-tablet-trashkane
+✅ „пищи като спра телевизора“  rz-ekran → zn4b-tablet-trashkane
+❌ „аз съм много на телефона пред детето“  rz-ekran → rz-ekran   (чаках zn4b-mama-na-telefona)
+✅ „детето ми казва остави телефона“  rz-ekran → zn4b-mama-na-telefona
+✅ „образователни игри на таблета полезни ли са“  rz-ekran → zn4b-obrazovatelni-prilozheniya
+✅ „приложения за учене на букви“  ТИШИНА → zn4b-obrazovatelni-prilozheniya
+✅ „болно е и скучае вкъщи“  nia-priklyuchenia → zn4b-bolno-skuchae
+❌ „с какво да го занимавам като има температура“  rz-igri → rz-igri   (чаках zn4b-bolno-skuchae)
+✅ „тихи игри преди сън“  zd-son2 → zn4b-tihi-igri-vecher
+✅ „какво да играем вечер преди лягане“  rz-igri → zn4b-tihi-igri-vecher
+✅ „тесто за игра домашно безопасно ли е“  ig-senzorni → zn4b-testo-za-igra
+✅ „солено тесто с дете“  rz-molivche → zn4b-testo-za-igra
+✅ „есенни игри навън с дете“  rz-cvetove-broene → zn4b-esen-navan
+✅ „събира кестени в парка“  ТИШИНА → zn4b-esen-navan
+❌ „какво може да прави сам на 4 години“  ТИШИНА → ТИШИНА   (чаках zn4b-sam-i-zadalzheniya)
+✅ „задължения за дете на 5 години“  ТИШИНА → zn4b-sam-i-zadalzheniya
+✅ „развитие на 3 години“  ТИШИНА → zn4b-na-3-godini
+❌ „какво трябва да може на 3 години“  ТИШИНА → ТИШИНА   (чаках zn4b-na-3-godini)
+✅ „какво прави детето на 4 години“  ТИШИНА → zn4b-na-4-godini
+✅ „4 години и не рисува човек“  ТИШИНА → zn4b-na-4-godini
+❌ „детето на 5 години какво трябва да може“  rz-molivche → rz-molivche   (чаках zn4b-na-5-godini)
+✅ „на 5 не знае буквите“  ТИШИНА → zn4b-na-5-godini
+✅ „как да мие ръцете детето“  ТИШИНА → zn4b-miene-na-race
+✅ „дезинфектант за ръце на дете“  mb-otpusnato → zn4b-miene-na-race
+✅ „пудра за дете вредна ли е“  ТИШИНА → zn4b-detska-kozmetika
+✅ „детска козметика коя да купя“  lb2-banya → zn4b-detska-kozmetika
+🟡 ключN:zn4b-sam-i-zadalzheniya  „zadalzheniya za dete“ → ТИШИНА
+
+карти в стажа: 34 · въпроси към целта: 55/70 · ключ1/ключN хванати: 67/68 · чужди/контролни въпроси: 841 · мръднали: 0

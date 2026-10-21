@@ -1,0 +1,63 @@
+🔴 zn4a-mlyako-ili-lazhica    core 112  ключ дума-брой „давам ли първо шише ако е гладен“ 7
+🔴 zn4a-den-8-9-meseca        core 113  ключ дума-брой „какво да му дам за вечеря на 9 месеца“ 9
+✅ zn4a-kak-se-reje           core 117
+🔴 zn4a-alergen-redovno       core 109  ключ дума-брой „алергенът трябва ли да се дава редовно“ 7
+🔴 zn4a-veche-soleno          core 106  ключ дума-брой „как да му върна вкуса без сол“ 7 · ключ дума-брой „солено ли е да яде от нашето“ 7
+🔴 zn4a-hapka-za-mama         core 105  ключ дума-брой „една лъжичка за мама една за татко“ 7
+🔴 zn4a-popara                core 121  ЗАЕТ „попара за бебе“ → mst-selo-hranyat
+✅ zn4a-palachinki            core 118
+✅ zn4a-kyuftentsa            core 106
+🔴 zn4a-supa-topcheta         core 119  ключ дума-брой „кисело мляко в супата на 9 месеца“ 7
+✅ zn4a-mlechen-oriz          core 113
+✅ zn4a-banica-zakuska        core 107
+🔴 zn4a-desert-bez-zahar      core 113  ключ дума-брой „какво сладко да му дам без захар“ 7
+🔴 zn4a-kiselo-sladko         core 102  ключ дума-брой „как да го накарам да яде кисело мляко“ 8 · ключ дума-брой „кисело мляко без захар не го яде“ 7
+🔴 zn4a-sedmica-2-3-g         core 109  ключ дума-брой „меню за седмица за 2 годишно дете“ 7 · ключ дума-брой „идеи за обяд за дете 2 години“ 7 · ключ дума-брой „идеи за вечеря на дете 2 години“ 7
+✅ zn4a-nova-hrana-bolen      core 102
+🔴 zn4a-ayran-boza            core 109  ЗАЕТ „айран за дете“ → y1-kiselo-mlyako-rafta · в чужд стаж „айран за дете“ → y1-kiselo-mlyako-rafta
+✅ zn4a-kafe-kola             core 107
+🔴 zn4a-meso-burkanche        core 111  ключ дума-брой „зеленчуци с телешко или телешко със зеленчуци“ 7
+🔴 zn4a-kasha-s-med           core 98  ключ дума-брой „каша с мед и мляко от кутия“ 7
+✅ zn4a-ekzema-fastak         core 104
+✅ zn4a-plazh-semki           core 96
+✅ zn4a-surovo-yaice          core 101
+✅ zn4a-ruska-salata          core 106
+✅ zn4a-lyutenica-tarshiya    core 104
+🔴 zn4a-puhkavo               core 109  ключ дума-брой „слабичко е баба казва да яде повече“ 7
+🔴 zn4a-ribeno-maslo          core 108  ЗАЕТ „омега 3 за дете“ → z7-ribata-kostite · в чужд стаж „омега 3 за дете“ → z7-ribata-kostite
+🔴 zn4a-yasla-naredba         core 113  ключ дума-брой „какво да питам в яслата за храната“ 7
+🔴 zn4a-cherven-bob           core 106  ключ дума-брой „боб на бебе колко да се вари“ 7
+✅ zn4a-zimnina               core 111
+карти: 30 · с бележки: 17
+✅ zn4a-mlyako-ili-lazhica    думи 348
+✅ zn4a-den-8-9-meseca        думи 330
+✅ zn4a-kak-se-reje           думи 366
+✅ zn4a-alergen-redovno       думи 304
+✅ zn4a-veche-soleno          думи 302
+✅ zn4a-hapka-za-mama         думи 343
+✅ zn4a-popara                думи 284
+✅ zn4a-palachinki            думи 283
+✅ zn4a-kyuftentsa            думи 317
+✅ zn4a-supa-topcheta         думи 309
+✅ zn4a-mlechen-oriz          думи 283
+✅ zn4a-banica-zakuska        думи 274
+✅ zn4a-desert-bez-zahar      думи 299
+✅ zn4a-kiselo-sladko         думи 281
+✅ zn4a-sedmica-2-3-g         думи 312
+✅ zn4a-nova-hrana-bolen      думи 287
+✅ zn4a-ayran-boza            думи 276
+✅ zn4a-kafe-kola             думи 303
+✅ zn4a-meso-burkanche        думи 296
+✅ zn4a-kasha-s-med           думи 283
+✅ zn4a-ekzema-fastak         думи 325
+✅ zn4a-plazh-semki           думи 313
+✅ zn4a-surovo-yaice          думи 294
+✅ zn4a-ruska-salata          думи 282
+✅ zn4a-lyutenica-tarshiya    думи 278
+✅ zn4a-puhkavo               думи 297
+✅ zn4a-ribeno-maslo          думи 286
+✅ zn4a-yasla-naredba         думи 306
+✅ zn4a-cherven-bob           думи 286
+✅ zn4a-zimnina               думи 293
+статии: 30 · с бележки: 0
+изход 0

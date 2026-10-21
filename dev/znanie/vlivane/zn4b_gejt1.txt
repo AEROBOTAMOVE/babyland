@@ -1,0 +1,18 @@
+
+  🃏 СЛИВАЧ НА КАРТИ[33m   [СУХО][0m
+  стаж: karti_zn4b.json
+
+  🟡 карти, в които над 60% от ключовете носят пълен член — ЗА ЧЕТЕНЕ, не за отказ:
+     zn4b-vazano-v-kolichkata8/12
+     zn4b-vazpitatelkata     10/12
+     zn4b-tablet-trashkane   10/12
+
+  ── ПРИЕТИ: 33 ──
+      31  Развитие и игри
+       2  Моето бебе
+
+  [31m── ОТКАЗАНИ: 1 ──[0m
+     🔴 zn4b-gotov-za-parvi-klas  чип към несъществуваща карта: zn3-gradina-zadalzhitelna (не гърми — изчезва)[90m  [karti_zn4b.json][0m
+
+  [33mСУХО. За писане: node dev/slivach_karti.js --pishi[0m
+

@@ -1,0 +1,191 @@
+✅ „може ли називин на бебе“  ТИШИНА → zn1c-kapki-za-otpushvane
+✅ „капки за отпушване на нос за 2 годишно“  ТИШИНА → zn1c-kapki-za-otpushvane
+✅ „спрей за нос за малко дете колко дни“  ТИШИНА → zn1c-kapki-za-otpushvane
+✅ „оксиметазолин на дете“  ТИШИНА → zn1c-kapki-za-otpushvane
+✅ „otrivin za dete“  ТИШИНА → zn1c-kapki-za-otpushvane
+·  „сироп за кашлица за 2 годишно“  zd-cough → zd-cough
+·  „какъв сироп за суха кашлица на дете“  zd-cough → zd-cough
+✅ „отхрачващ сироп за бебе“  ema-kakvo-ne → zn1c-siropi-za-kashlica
+✅ „помагат ли сиропите за кашлица“  zd-cough → zn1c-siropi-za-kashlica
+✅ „умкалор на 2 годишно“  ТИШИНА → zn1c-siropi-za-kashlica
+✅ „мед за кашлица на 2 години“  zd-cough → zn1c-med-za-kashlica
+✅ „колко мед за кашлица преди сън“  zd-cough → zn1c-med-za-kashlica
+·  „мед с лимон за дете при кашлица“  zd-cough → zd-cough
+✅ „мед за кашлица на 10 месеца“  zd-cough → zn1c-med-za-kashlica
+✅ „може ли парацетамол и нурофен заедно“  zd-temperatura → zn1c-dve-zharoponizhavashti
+✅ „да редувам ли нурофен и парацетамол“  zd-temperatura → zn1c-dve-zharoponizhavashti
+✅ „не пада температурата да дам ли и другото лекарство“  zd-temp2 → zn1c-dve-zharoponizhavashti
+✅ „колко часа между парацетамол и ибупрофен“  zd-temperatura → zn1c-dve-zharoponizhavashti
+·  „с какво да меря сиропа“  ema-kakvo-ne → ema-kakvo-ne
+·  „спринцовка или лъжичка за сироп“  ema-kakvo-ne → ema-kakvo-ne
+·  „изгубих мерителната лъжичка на сиропа“  nia-koya → nia-koya
+·  „трябва ли да се разклаща сиропа“  ema-kakvo-ne → ema-kakvo-ne
+·  „мога ли да дам сиропа на батко му“  ema-kakvo-ne → ema-kakvo-ne
+·  „лекарството на по-голямото дете за малкото“  x3-zdravna-podgotovka → x3-zdravna-podgotovka
+·  „детски таблетки разтворени за бебе“  rz-ekran → rz-ekran
+·  „повръща всичко как да го напоя“  zd-vomit → zd-vomit
+·  „може ли кока кола при повръщане“  zd-vomit → zd-vomit
+·  „рехидратиращ разтвор за бебе“  zd-obezvodnyavane-izprevari → zd-obezvodnyavane-izprevari
+·  „регидрон на дете“  ТИШИНА → ТИШИНА
+·  „лекарство за спиране на диария за дете“  zd-diarr → zd-diarr
+·  „може ли имодиум на дете“  zd-satresenie → zd-satresenie
+·  „смекта за бебе“  ТИШИНА → ТИШИНА
+·  „цинк при диария“  zd-diarr → zd-diarr
+✅ „кога може на ясла след повръщане“  in-gradina → zn1c-zarazno-li-e-oshte
+·  „колко дни вкъщи след стомашен вирус“  lb-gradina-bolno → lb-gradina-bolno
+✅ „кога на ясла след шарка“  in-gradina → zn1c-zarazno-li-e-oshte
+·  „конюнктивит и ясла“  zd-konyunktivit → zd-konyunktivit
+·  „скарлатина кога на градина“  lb-gradina-bolno → lb-gradina-bolno
+·  „ръка крак уста ясла“  zd-raka-krak-usta → zd-raka-krak-usta
+✅ „пета болест ясла“  in-gradina → zn1c-zarazno-li-e-oshte
+✅ „заразно ли е още след антибиотика“  lb-gradina-bolno → zn1c-zarazno-li-e-oshte
+✅ „хремаво е да го ваксинирам ли“  zd-vaksini → zn1c-vaksina-bolno-dete
+✅ „има лека хрема а утре е ваксината“  zd-nastinka → zn1c-vaksina-bolno-dete
+✅ „на антибиотик е може ли ваксина“  zd-vaksini → zn1c-vaksina-bolno-dete
+✅ „болно е отлагаме ли ваксината“  zd-vaksini → zn1c-vaksina-bolno-dete
+✅ „пропуснахме ваксината какво сега“  zd-vaksini → zn1c-propusnata-vaksina
+✅ „закъсняхме с ваксината с месец“  zd-vaksini → zn1c-propusnata-vaksina
+·  „започва ли се отначало ако пропуснем ваксина“  zd-vaksini → zd-vaksini
+✅ „две ваксини в един ден много ли е“  zd-vaksini → zn1c-dve-vaksini-den
+✅ „може ли две инжекции наведнъж на бебе“  ТИШИНА → zn1c-dve-vaksini-den
+✅ „колко време между ваксините“  zd-vaksini → zn1c-dve-vaksini-den
+✅ „менингококова ваксина да правя ли“  zd-vaksini → zn1c-platenite-vaksini
+✅ „менингококова б или acwy“  ТИШИНА → zn1c-platenite-vaksini
+✅ „колко струва менингококовата ваксина“  zd-vaksini → zn1c-platenite-vaksini
+✅ „кои ваксини са платени“  zd-vaksini → zn1c-platenite-vaksini
+✅ „гел за зъбки кой е добър“  zd-teeth → zn1c-gel-za-venci
+✅ „може ли гел с лидокаин за зъбите“  ТИШИНА → zn1c-gel-za-venci
+✅ „хомеопатични таблетки за зъбки“  zd-teeth → zn1c-gel-za-venci
+✅ „бели топчета с дупчица по кожата“  mb-skin → zn1c-moluskum
+✅ „молускум при дете“  ТИШИНА → zn1c-moluskum
+✅ „водни брадавички по детето“  ТИШИНА → zn1c-moluskum
+✅ „перлени пъпчици по корема“  zd-rash2 → zn1c-moluskum
+·  „може ли аспирин на дете“  zd-grip → zd-grip
+·  „аспирин за температура на 3 години“  zd-temperatura → zd-temperatura
+✅ „трепери с температура да го завия ли“  zd-temperatura → zn1c-trepere-temperatura
+✅ „има втрисане и висока температура“  zd-temperatura → zn1c-trepere-temperatura
+✅ „безплатен ли е зъболекарят за деца“  ТИШИНА → zn1c-zabolekar-kasa
+✅ „зъболекар по здравна каса за дете“  lb-parvi-zabi → zn1c-zabolekar-kasa
+✅ „колко пломби безплатно по нзок“  ТИШИНА → zn1c-zabolekar-kasa
+·  „може ли да оближа залъгалката“  lb2-zalagalka → lb2-zalagalka
+·  „пробвам храната с неговата лъжичка“  ТИШИНА → ТИШИНА
+·  „кашля вече месец“  zd-cough → zd-cough
+·  „кашлица след вирус три седмици“  zd-cough → zd-cough
+·  „олио в ухото при болка“  zd-ear → zd-ear
+✅ „капки за уши без лекар“  ТИШИНА → zn1c-ushi-izchakvane
+✅ „антибиотик за ухо или да изчакаме“  zd-ear → zn1c-ushi-izchakvane
+·  „пара при круп“  zd-krup → zd-krup
+·  „инхалация над тенджера“  zd-inhalator-kak → zd-inhalator-kak
+·  „пудра за подсичане“  mb-intim-podsichane → mb-intim-podsichane
+·  „нишесте на дупето“  ТИШИНА → ТИШИНА
+·  „зехтин за корички на главата“  zd-seboreen-korichki → zd-seboreen-korichki
+·  „червени точици по новороденото първите дни“  zd-rash2 → zd-rash2
+✅ „колко дни е заразна хремата“  zd-nastinka → zn1c-zarazno-li-e-oshte
+·  „колко трае настинката при дете“  zd-nastinka → zd-nastinka
+✅ „мехлем за разтриване на гърдите при кашлица“  zd-cough → zn1c-siropi-za-kashlica
+✅ „лекарство за простуда за 3 годишно“  ema-kakvo-ne → zn1c-siropi-za-kashlica
+·  „антихистамин за сърбеж при шарка“  ns-obrivna-bolest → ns-obrivna-bolest
+·  „пета болест бременна“  ТИШИНА → ТИШИНА
+·  „ръка крак уста бременна“  zd-raka-krak-usta → zd-raka-krak-usta
+✅ „алергичен конюнктивит заразен ли е“  zd-allerg → zn1c-alergichni-ochi
+·  „тест с чашата за обрив“  zd-rash2 → zd-rash2
+·  „кърмя ли като има стомашен вирус“  zd-stomashen-virus → zd-stomashen-virus
+·  „сухари за зъбки“  zd-teeth → zd-teeth
+✅ „пастили за гърло за дете“  ТИШИНА → zn1c-pastili-garlo
+✅ „спрей за гърло на 2 години“  ТИШИНА → zn1c-pastili-garlo
+✅ „гаргара за дете“  ТИШИНА → zn1c-pastili-garlo
+·  „ваксина за кърлежи на дете“  zd-vaksini → zd-vaksini
+✅ „тампонче с ракия за зъбите“  ТИШИНА → zn1c-gel-za-venci
+·  „бучка на крачето след ваксината“  zd-sled-vaksina → zd-sled-vaksina
+·  „безплатна грипна ваксина за дете“  zd-grip → zd-grip
+·  „кога се маха гризалката от хладилника“  zh-kashi → zh-kashi
+·  „трябва ли да спре да ходи на ясла с хрема“  in-gradina → in-gradina
+·  „бяло петно на сливиците на бебе“  ns-boli-garloto → ns-boli-garloto
+·  „бебето е болно и не иска да суче“  nm-vecher-iska → nm-vecher-iska
+·  „бебето има хрема и температура 38 на 5 месеца“  zd-temperatura → zd-temperatura
+·  „термометър за чело верен ли е“  ТИШИНА → ТИШИНА
+·  „кой термометър да купя за бебе“  lb2-banya → lb2-banya
+·  „може ли да къпя детето с температура“  zd-temperatura → zd-temperatura
+·  „спи много при температура да го будя ли“  zd-temperatura → zd-temperatura
+·  „детето не иска да пие при температура“  zd-temperatura → zd-temperatura
+·  „сополи с кръв“  zd-nastinka → zd-nastinka
+·  „запушен нос само нощем“  zd-nastinka → zd-nastinka
+·  „хрема от две седмици“  zd-nastinka → zd-nastinka
+·  „болно гърло без температура“  ns-boli-garloto → ns-boli-garloto
+·  „ухото го боли нощем“  zd-ear → zd-ear
+✅ „лекарят каза да изчакаме с антибиотика за ухото“  zd-ear → zn1c-ushi-izchakvane
+·  „диария след антибиотик“  zd-diarr → zd-diarr
+✅ „в яслата има шарка“  ns-obrivna-bolest → zn1c-sharka-v-yaslata
+✅ „детето беше с дете с шарка“  ns-obrivna-bolest → zn1c-sharka-v-yaslata
+✅ „инкубационен период на шарката“  ns-obrivna-bolest → zn1c-sharka-v-yaslata
+✅ „ваксина срещу шарка след контакт“  zd-vaksini → zn1c-sharka-v-yaslata
+·  „в групата има скарлатина“  zd-skarlatina → zd-skarlatina
+·  „в групата има ръка крак уста“  zd-raka-krak-usta → zd-raka-krak-usta
+·  „мия ли венците преди да има зъби“  lb-nikat-zabi → lb-nikat-zabi
+·  „бебето гълта пастата“  lb-parvi-zabi → lb-parvi-zabi
+·  „пропуснах витамин д три дни“  lb2-vitamind → lb2-vitamind
+·  „рибено масло и витамин д заедно“  lb2-vitamind → lb2-vitamind
+·  „трябва ли витамин д на адаптирано мляко“  lb2-vitamind → lb2-vitamind
+·  „ротавирусна ваксина безплатна ли е“  w1-rotavirus-vaksina → w1-rotavirus-vaksina
+·  „ротавирусна на 4 месеца късно ли е“  zd-stomashen-virus → zd-stomashen-virus
+·  „профилактично парацетамол преди ваксина“  zd-vaksini → zd-vaksini
+✅ „сложиха ни друга марка ваксина“  zd-vaksini → zn1c-ime-na-vaksinata
+·  „лекарство за имунитет за дете“  x3-zdravna-podgotovka → x3-zdravna-podgotovka
+·  „студени ръце и крака и висока температура“  zim-studeno-priznaci → zim-studeno-priznaci
+·  „мокри кърпи при температура“  zd-temperatura → zd-temperatura
+✅ „тракат му зъбите и гори“  zd-temperatura → zn1c-trepere-temperatura
+·  „вцепени се и не реагира при температура“  zd-temperatura → zd-temperatura
+·  „зелени сополи трябва ли антибиотик“  zd-antibiotik-ne-pomaga → zd-antibiotik-ne-pomaga
+·  „може ли да излизаме навън с хрема“  zd-nastinka → zd-nastinka
+✅ „капки за очи без рецепта за дете“  mb-oci → zn1c-alergichni-ochi
+·  „детето се роди със зъбче“  zd-teeth → zd-teeth
+·  „болно ли е детето от зъбите или от вирус“  zd-nastinka → zd-nastinka
+·  „червени бузки от зъби“  zd-rash2 → zd-rash2
+·  „кои зъби никнат най-болезнено“  zd-teeth → zd-teeth
+✅ „кога излизат кучешките зъби“  zd-teeth → zn1c-red-na-zabite
+✅ „изследване за паразити за градина“  in-gradina → zn1c-izsledvane-paraziti
+·  „стъпало под краката за ака“  br-kramp → br-kramp
+·  „колко фибри за запек на дете“  zd-zapek → zd-zapek
+·  „слива при запек на годинка“  zd-zapek → zd-zapek
+·  „детето има глисти“  ns-vashki-ostrici → ns-vashki-ostrici
+·  „лекарство за глисти без изследване“  ns-vashki-ostrici → ns-vashki-ostrici
+·  „лямблии симптоми“  ТИШИНА → ТИШИНА
+·  „мирише на ацетон и повръща“  zd-vomit → zd-vomit
+·  „алергия към ваксина“  zd-vaksini → zd-vaksini
+✅ „менингит ваксина“  zd-vaksini → zn1c-platenite-vaksini
+✅ „бексеро“  ТИШИНА → zn1c-platenite-vaksini
+✅ „нименрикс“  ТИШИНА → zn1c-platenite-vaksini
+·  „пневмококова ваксина колко дози“  zd-vaksini → zd-vaksini
+✅ „хексацима или инфанрикс“  ТИШИНА → zn1c-ime-na-vaksinata
+✅ „молускум заразен ли е“  ТИШИНА → zn1c-moluskum
+✅ „топчета с вдлъбнатина в средата“  ТИШИНА → zn1c-moluskum
+·  „брадавички по ръцете на детето“  ТИШИНА → ТИШИНА
+✅ „какво да му дам за болно гърло на 2 години“  ns-boli-garloto → zn1c-pastili-garlo
+✅ „близалка за гърло“  zh-sladko → zn1c-pastili-garlo
+✅ „ледче за гърлото на дете“  ТИШИНА → zn1c-pastili-garlo
+·  „капки за нос за запушен нос на годинка“  zd-nastinka → zd-nastinka
+✅ „спрей за отпушване на носа“  ТИШИНА → zn1c-kapki-za-otpushvane
+✅ „зависим ли е носът от спрея“  ТИШИНА → zn1c-kapki-za-otpushvane
+✅ „нурофен и панадол на смени“  ТИШИНА → zn1c-dve-zharoponizhavashti
+·  „аспирин при грип“  zd-grip → zd-grip
+✅ „безплатен ли е прегледът при зъболекар за дете“  br-pregledi → zn1c-zabolekar-kasa
+✅ „пломба на млечен зъб по каса“  ТИШИНА → zn1c-zabolekar-kasa
+✅ „вадене на млечен зъб безплатно“  ТИШИНА → zn1c-zabolekar-kasa
+✅ „детски зъболекар с договор с касата“  lb-parvi-zabi → zn1c-zabolekar-kasa
+✅ „бензокаин за бебе“  ТИШИНА → zn1c-gel-za-venci
+✅ „гел за зъби от аптеката“  ТИШИНА → zn1c-gel-za-venci
+✅ „ракия на венците“  lb-nikat-zabi → zn1c-gel-za-venci
+✅ „заразно ли е още“  lb-gradina-bolno → zn1c-zarazno-li-e-oshte
+✅ „колко дни е заразна шарката“  ns-obrivna-bolest → zn1c-zarazno-li-e-oshte
+✅ „колко време е заразна скарлатината“  zd-skarlatina → zn1c-zarazno-li-e-oshte
+✅ „розеола ясла“  ns-obrivna-bolest → zn1c-zarazno-li-e-oshte
+✅ „морбили колко дни вкъщи“  lb-gradina-bolno → zn1c-zarazno-li-e-oshte
+✅ „отхрачващо за дете“  ТИШИНА → zn1c-siropi-za-kashlica
+✅ „сироп за суха кашлица нощем“  zd-cough → zn1c-siropi-za-kashlica
+✅ „билков сироп за кашлица за дете“  zd-cough → zn1c-siropi-za-kashlica
+·  „мехлем звездичка на бебе“  nia-zodia → nia-zodia
+✅ „лекарства за настинка без рецепта за дете“  zd-nastinka → zn1c-siropi-za-kashlica
+✅ „колко лъжички мед за кашлица“  zd-cough → zn1c-med-za-kashlica
+✅ „мед на 1 година за кашлица“  zd-cough → zn1c-med-za-kashlica
+
+карти в стажа: 20 · ключ1/ключN хванати: 40/40 · чужди/контролни въпроси: 537 · мръднали: 0
