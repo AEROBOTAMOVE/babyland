@@ -475,6 +475,30 @@
       п.insertBefore(и, п.firstChild);
       п.setAttribute('data-plhr', 'em');
     });
+    /* 20.10 · голото емоджи в началото на редовете-отметки („Хранене навън“, „Първият път с прибор“) …
+       МЕРЕНО (dev/proba/hr20_kL.log, „голи_емоджи“): .ut-n „🦺🛍🍪🥤🍴🥂“ — плюшът няма рисунка за тях
+       и стояха голи насред текста, а съседните редове имаха плюшено кръгче → редът „скачаше“.
+       Знакът НЕ се маха и НЕ се сменя: само се слага в свой <span class="pl-hr-ue">, за да седне
+       в същото пастелно кръгче като плюшените (css/pl-hranene.css „20.10“). Плюшените (.pl-em) не се
+       пипат; знак, за който плюшът ИМА рисунка, се оставя на плюша (той идва след нас).
+       Пише САМО при разлика (data-plhr="ue") — наблюдателят не се върти.
+       ПЪТ НАЗАД: махни този блок (до „край 20.10“) — следващото прерисуване на картите връща текста. */
+    const ПЛ = (window.BL_PL_PLYUSH && window.BL_PL_PLYUSH.К) || {};
+    стая.querySelectorAll('.jr-win > .ut-n').forEach(у => {
+      if (у.getAttribute('data-plhr') === 'ue') return;
+      const пръв = у.firstChild;
+      if (!пръв || пръв.nodeType !== 3) return;
+      const м = пръв.nodeValue.match(/^\s*(\p{Extended_Pictographic}(?:️|‍\p{Extended_Pictographic})*)\s*/u);
+      if (!м) return;
+      if (ПЛ[м[1]] || ПЛ[м[1].replace(/️/g, '')] || ПЛ[м[1] + '️']) return;   // плюшът ще го нарисува
+      пръв.nodeValue = пръв.nodeValue.slice(м[0].length);
+      const з = document.createElement('span');
+      з.className = 'pl-hr-ue';
+      з.textContent = м[1];
+      у.insertBefore(з, у.firstChild);
+      у.setAttribute('data-plhr', 'ue');
+    });
+    /* край 20.10 */
   }
 
   function сложи() {

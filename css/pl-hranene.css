@@ -301,43 +301,53 @@ html body .pl-hr .pl-hr-mi {   /* материалът е .pl-soft */
 }
 @keyframes plHrSpot { 50% { outline-color: rgba(229, 109, 153, .25); } }
 
-/* ═══ НОЩ (21:00–7:00): нощно синьо, кожата — тъмносиня със златен шев, иконките на бял кръг ═══ */
-:is(html[data-theme="dark"],html.bl-night) .pl-hr {
+/* ═══ НОЩ (21:00–7:00): нощно синьо, кожата — тъмносиня със златен шев, иконките на бял кръг ═══
+   🔴 20.10 (hr20 · МЕРЕНО в 02:05, светла тема, getComputedStyle — dev/proba/hr20_kL.log):
+      всичките 64 нощни реда в този файл бяха `:is(html[data-theme="dark"], html.bl-night)`.
+      html.bl-night НЕ е тъмната тема — това са тихите часове 23:00–06:00 (js/night.js:26-31)
+      върху СВЕТЛИТЕ кремави карти. Резултат: „Нашето меню“ бяло върху крем 1.04:1, „Опитани/
+      Любими/Бележки“ 1.04:1, подзаглавията .jr-sub 1.23:1, редовете (.tk-row/.jr-win/.fd-card/
+      .rp-card/.al-row/полетата) — тъмносини кутии в кремава карта с тъмен текст 1.66:1,
+      заглавието на раздела .sec-head тъмносиньо върху тъмносиньо 1.29:1.
+      Сега нощните редове са САМО html[data-theme="dark"] (64 реда, sed, специфичността е същата 0,1,1).
+      ПЪТ НАЗАД за тази поправка: копието отпреди е dev/proba/hr20_predi_pl-hranene.css —
+      или замени `html[data-theme="dark"]` в нощните редове обратно с `:is(html[data-theme="dark"], html.bl-night)`. */
+html[data-theme="dark"] .pl-hr {
   color: #e3e5f5;
   --hr-navy: #fff;
   --hr-soft: #c9cbe3;
   --hr-wood: linear-gradient(180deg, #45539a 0, #3a4786 32%, #2f3b76 36%, #27316a 100%);
 }
-:is(html[data-theme="dark"],html.bl-night) .pl-hr-book {
+html[data-theme="dark"] .pl-hr-book {
   background: linear-gradient(180deg, #34427f 0, #28346b 100%);
   box-shadow: inset 0 0 0 1.5px rgba(240, 210, 137, .5), 0 18px 34px rgba(0, 0, 0, .38);
 }
-:is(html[data-theme="dark"],html.bl-night) .pl-hr-book::before { border-color: rgba(240, 210, 137, .45); }
-:is(html[data-theme="dark"],html.bl-night) .pl-hr-book::after { background: repeating-linear-gradient(180deg, #3d4a8a 0 1.6px, #222c5e 1.6px 3.2px); box-shadow: none; }
-:is(html[data-theme="dark"],html.bl-night) body .pl-hr .pl-hr-sheet.pl-felt { box-shadow: 0 3px 0 #18214a, 0 6px 14px rgba(0, 0, 0, .3) !important; }
-:is(html[data-theme="dark"],html.bl-night) .pl-hr-fl, :is(html[data-theme="dark"],html.bl-night) .pl-hr-lf { mix-blend-mode: normal; border-radius: 50%; background-color: #fff; box-shadow: 0 2px 6px rgba(0, 0, 0, .3); }
-:is(html[data-theme="dark"],html.bl-night) .pl-hr-lf { display: none; }
-:is(html[data-theme="dark"],html.bl-night) .pl-hr-hs { stroke: #f59cbb; }
-:is(html[data-theme="dark"],html.bl-night) .pl-hr-d > i { background: #ffb8d2; }
-:is(html[data-theme="dark"],html.bl-night) .pl-hr-d.is-today > i { background: #fff; }
-:is(html[data-theme="dark"],html.bl-night) .pl-hr-d[aria-pressed="true"]::after { border-color: #f59cbb; }
-:is(html[data-theme="dark"],html.bl-night) .pl-hr-body::before { background: linear-gradient(90deg, rgba(0, 0, 0, 0) 0, rgba(0, 0, 0, .18) 42%, rgba(0, 0, 0, .34) 50%, rgba(0, 0, 0, .18) 58%, rgba(0, 0, 0, 0) 100%); }
-:is(html[data-theme="dark"],html.bl-night) .pl-hr-dish { background: rgba(255, 255, 255, .07); box-shadow: inset 0 0 0 1.5px rgba(255, 255, 255, .14), 0 2px 0 #18214a; }
-:is(html[data-theme="dark"],html.bl-night) .pl-hr-dish::after { border-color: rgba(255, 255, 255, .2); }
-:is(html[data-theme="dark"],html.bl-night) .pl-hr-photo { filter: brightness(.9); box-shadow: 0 0 0 3px rgba(255, 255, 255, .85), 0 3px 8px rgba(0, 0, 0, .3); }
-:is(html[data-theme="dark"],html.bl-night) .pl-hr-ti, :is(html[data-theme="dark"],html.bl-night) .pl-hr-mico,
-:is(html[data-theme="dark"],html.bl-night) .pl-hr-t.t-опитани .pl-hr-ti, :is(html[data-theme="dark"],html.bl-night) .pl-hr-t.t-любими .pl-hr-ti, :is(html[data-theme="dark"],html.bl-night) .pl-hr-t.t-бележки .pl-hr-ti,
-:is(html[data-theme="dark"],html.bl-night) .pl-hr-mi .pl-hr-mico { background-color: #fff; box-shadow: 0 2px 6px rgba(0, 0, 0, .3); }
-:is(html[data-theme="dark"],html.bl-night) .pl-hr-x, :is(html[data-theme="dark"],html.bl-night) .pl-hr-inv { color: #ffb8d2; }
-:is(html[data-theme="dark"],html.bl-night) .pl-hr-dome { box-shadow: inset 0 0 0 5px rgba(255, 255, 255, .14), inset 0 0 0 6.5px rgba(240, 210, 137, .32), 0 8px 16px rgba(0, 0, 0, .3); }
-:is(html[data-theme="dark"],html.bl-night) .pl-hr-dome::before { opacity: .35; }
-:is(html[data-theme="dark"],html.bl-night) .pl-hr-a.t-храни .pl-hr-dome { background: linear-gradient(180deg, rgba(229, 109, 153, .38), rgba(229, 109, 153, .18)); }
-:is(html[data-theme="dark"],html.bl-night) .pl-hr-a.t-рецепти .pl-hr-dome { background: linear-gradient(180deg, rgba(240, 200, 150, .32), rgba(240, 200, 150, .14)); }
-:is(html[data-theme="dark"],html.bl-night) .pl-hr-a.t-дневник .pl-hr-dome { background: linear-gradient(180deg, rgba(110, 200, 160, .34), rgba(110, 200, 160, .15)); }
-:is(html[data-theme="dark"],html.bl-night) .pl-hr-ai { width: 66px; height: 66px; margin-top: -14px; mix-blend-mode: normal; border-radius: 50%; background-color: #fff; box-shadow: 0 4px 12px rgba(0, 0, 0, .25); }
-:is(html[data-theme="dark"],html.bl-night) .pl-hr-al { background: #2a376f; box-shadow: inset 0 0 0 1.5px rgba(240, 210, 137, .4), 0 3px 6px rgba(0, 0, 0, .3); }
-:is(html[data-theme="dark"],html.bl-night) .pl-hr-shelf::after { box-shadow: 0 9px 14px rgba(0, 0, 0, .32), inset 0 1.5px 0 rgba(240, 210, 137, .4); }
-:is(html[data-theme="dark"],html.bl-night) #roRoom [data-pl-hr-spot] { outline-color: #f59cbb !important; }
+html[data-theme="dark"] .pl-hr-book::before { border-color: rgba(240, 210, 137, .45); }
+html[data-theme="dark"] .pl-hr-book::after { background: repeating-linear-gradient(180deg, #3d4a8a 0 1.6px, #222c5e 1.6px 3.2px); box-shadow: none; }
+html[data-theme="dark"] body .pl-hr .pl-hr-sheet.pl-felt { box-shadow: 0 3px 0 #18214a, 0 6px 14px rgba(0, 0, 0, .3) !important; }
+html[data-theme="dark"] .pl-hr-fl, html[data-theme="dark"] .pl-hr-lf { mix-blend-mode: normal; border-radius: 50%; background-color: #fff; box-shadow: 0 2px 6px rgba(0, 0, 0, .3); }
+html[data-theme="dark"] .pl-hr-lf { display: none; }
+html[data-theme="dark"] .pl-hr-hs { stroke: #f59cbb; }
+html[data-theme="dark"] .pl-hr-d > i { background: #ffb8d2; }
+html[data-theme="dark"] .pl-hr-d.is-today > i { background: #fff; }
+html[data-theme="dark"] .pl-hr-d[aria-pressed="true"]::after { border-color: #f59cbb; }
+html[data-theme="dark"] .pl-hr-body::before { background: linear-gradient(90deg, rgba(0, 0, 0, 0) 0, rgba(0, 0, 0, .18) 42%, rgba(0, 0, 0, .34) 50%, rgba(0, 0, 0, .18) 58%, rgba(0, 0, 0, 0) 100%); }
+html[data-theme="dark"] .pl-hr-dish { background: rgba(255, 255, 255, .07); box-shadow: inset 0 0 0 1.5px rgba(255, 255, 255, .14), 0 2px 0 #18214a; }
+html[data-theme="dark"] .pl-hr-dish::after { border-color: rgba(255, 255, 255, .2); }
+html[data-theme="dark"] .pl-hr-photo { filter: brightness(.9); box-shadow: 0 0 0 3px rgba(255, 255, 255, .85), 0 3px 8px rgba(0, 0, 0, .3); }
+html[data-theme="dark"] .pl-hr-ti, html[data-theme="dark"] .pl-hr-mico,
+html[data-theme="dark"] .pl-hr-t.t-опитани .pl-hr-ti, html[data-theme="dark"] .pl-hr-t.t-любими .pl-hr-ti, html[data-theme="dark"] .pl-hr-t.t-бележки .pl-hr-ti,
+html[data-theme="dark"] .pl-hr-mi .pl-hr-mico { background-color: #fff; box-shadow: 0 2px 6px rgba(0, 0, 0, .3); }
+html[data-theme="dark"] .pl-hr-x, html[data-theme="dark"] .pl-hr-inv { color: #ffb8d2; }
+html[data-theme="dark"] .pl-hr-dome { box-shadow: inset 0 0 0 5px rgba(255, 255, 255, .14), inset 0 0 0 6.5px rgba(240, 210, 137, .32), 0 8px 16px rgba(0, 0, 0, .3); }
+html[data-theme="dark"] .pl-hr-dome::before { opacity: .35; }
+html[data-theme="dark"] .pl-hr-a.t-храни .pl-hr-dome { background: linear-gradient(180deg, rgba(229, 109, 153, .38), rgba(229, 109, 153, .18)); }
+html[data-theme="dark"] .pl-hr-a.t-рецепти .pl-hr-dome { background: linear-gradient(180deg, rgba(240, 200, 150, .32), rgba(240, 200, 150, .14)); }
+html[data-theme="dark"] .pl-hr-a.t-дневник .pl-hr-dome { background: linear-gradient(180deg, rgba(110, 200, 160, .34), rgba(110, 200, 160, .15)); }
+html[data-theme="dark"] .pl-hr-ai { width: 66px; height: 66px; margin-top: -14px; mix-blend-mode: normal; border-radius: 50%; background-color: #fff; box-shadow: 0 4px 12px rgba(0, 0, 0, .25); }
+html[data-theme="dark"] .pl-hr-al { background: #2a376f; box-shadow: inset 0 0 0 1.5px rgba(240, 210, 137, .4), 0 3px 6px rgba(0, 0, 0, .3); }
+html[data-theme="dark"] .pl-hr-shelf::after { box-shadow: 0 9px 14px rgba(0, 0, 0, .32), inset 0 1.5px 0 rgba(240, 210, 137, .4); }
+html[data-theme="dark"] #roRoom [data-pl-hr-spot] { outline-color: #f59cbb !important; }
 
 @media (prefers-reduced-motion: reduce) {
   .pl-hr-a, .pl-hr-cta b::before, .pl-hr-cta b::after { transition: none; }
@@ -591,12 +601,12 @@ html body #roomOverlay .ro-panel.ro-carrot #roRoom .al-e     { animation: plHrPo
   html body #roomOverlay .ro-panel.ro-carrot #roRoom :is(.sec-chip, .tk-row, .rp-card) { transition: none !important; }
 }
 
-/* ── 12.9 НОЩ · и двете: html[data-theme="dark"] (app.js:33) И html.bl-night ──
+/* ── 12.9 НОЩ · html[data-theme="dark"] (app.js:33) — 20.10: БЕЗ html.bl-night (виж „НОЩ“ горе) ──
    🪤 Капан 2: тъмната тема на приложението е data-theme, тихите часове са .bl-night.
    Кремавият филц върху нощно синьо би дал нечетим екран — затова тук филцът е
    тъмносин, шевът — светъл, а плюшените кръгчета стават БЕЛИ (знакът иска светла
    основа, за да се чете). */
-:is(html[data-theme="dark"], html.bl-night) body #roomOverlay .ro-panel.ro-carrot #roRoom .sec-nav .sec-find {
+html[data-theme="dark"] body #roomOverlay .ro-panel.ro-carrot #roRoom .sec-nav .sec-find {
   background-color: #26336b !important;
   background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23c9cbe3' stroke-width='2.1' stroke-linecap='round'%3E%3Ccircle cx='10.5' cy='10.5' r='6.5'/%3E%3Cpath d='M15.4 15.4L21 21'/%3E%3C/svg%3E") !important;
   background-size: 22px 22px !important;
@@ -607,8 +617,8 @@ html body #roomOverlay .ro-panel.ro-carrot #roRoom .al-e     { animation: plHrPo
   box-shadow: inset 0 1px 0 rgba(255, 255, 255, .08) !important;
   color: #f1f2fb !important;
 }
-:is(html[data-theme="dark"], html.bl-night) body #roomOverlay .ro-panel.ro-carrot #roRoom .sec-nav .sec-find::placeholder { color: #c9cbe3 !important; }
-:is(html[data-theme="dark"], html.bl-night) body #roomOverlay .ro-panel.ro-carrot #roRoom input[data-plhr-ic="kosh"] {
+html[data-theme="dark"] body #roomOverlay .ro-panel.ro-carrot #roRoom .sec-nav .sec-find::placeholder { color: #c9cbe3 !important; }
+html[data-theme="dark"] body #roomOverlay .ro-panel.ro-carrot #roRoom input[data-plhr-ic="kosh"] {
   background-color: #26336b !important;
   background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23c9cbe3' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M3 9h18l-1.7 9.2a2 2 0 0 1-2 1.8H6.7a2 2 0 0 1-2-1.8z'/%3E%3Cpath d='M8.5 9 11 3.5M15.5 9 13 3.5'/%3E%3Cpath d='M9.5 13v3M14.5 13v3'/%3E%3C/svg%3E") !important;
   background-size: 22px 22px !important;
@@ -619,29 +629,29 @@ html body #roomOverlay .ro-panel.ro-carrot #roRoom .al-e     { animation: plHrPo
   box-shadow: inset 0 1px 0 rgba(255, 255, 255, .08) !important;
   color: #f1f2fb !important;
 }
-:is(html[data-theme="dark"], html.bl-night) body #roomOverlay .ro-panel.ro-carrot #roRoom .sec-nav .sec-chip[data-pl],
-:is(html[data-theme="dark"], html.bl-night) body #roomOverlay .ro-panel.ro-carrot #roRoom .tk-row,
-:is(html[data-theme="dark"], html.bl-night) body #roomOverlay .ro-panel.ro-carrot #roRoom .fd-card,
-:is(html[data-theme="dark"], html.bl-night) body #roomOverlay .ro-panel.ro-carrot #roRoom .rp-card {
+html[data-theme="dark"] body #roomOverlay .ro-panel.ro-carrot #roRoom .sec-nav .sec-chip[data-pl],
+html[data-theme="dark"] body #roomOverlay .ro-panel.ro-carrot #roRoom .tk-row,
+html[data-theme="dark"] body #roomOverlay .ro-panel.ro-carrot #roRoom .fd-card,
+html[data-theme="dark"] body #roomOverlay .ro-panel.ro-carrot #roRoom .rp-card {
   background-color: #26336b !important;
   background-image: none !important;
   border-color: rgba(255, 255, 255, .15) !important;
   box-shadow: inset 0 1px 0 rgba(255, 255, 255, .08), 0 4px 10px rgba(0, 0, 0, .3) !important;
 }
-:is(html[data-theme="dark"], html.bl-night) body #roomOverlay .ro-panel.ro-carrot #roRoom .tk-row.tk-yes,
-:is(html[data-theme="dark"], html.bl-night) body #roomOverlay .ro-panel.ro-carrot #roRoom .fd-card.tried { background-color: #2c4a52 !important; }
-:is(html[data-theme="dark"], html.bl-night) body #roomOverlay .ro-panel.ro-carrot #roRoom .sec-nav .sec-chip[data-pl]::after,
-:is(html[data-theme="dark"], html.bl-night) body #roomOverlay .ro-panel.ro-carrot #roRoom .tk-row::after,
-:is(html[data-theme="dark"], html.bl-night) body #roomOverlay .ro-panel.ro-carrot #roRoom .fd-card::after,
-:is(html[data-theme="dark"], html.bl-night) body #roomOverlay .ro-panel.ro-carrot #roRoom .rp-card::after { border-color: rgba(255, 255, 255, .22); }
+html[data-theme="dark"] body #roomOverlay .ro-panel.ro-carrot #roRoom .tk-row.tk-yes,
+html[data-theme="dark"] body #roomOverlay .ro-panel.ro-carrot #roRoom .fd-card.tried { background-color: #2c4a52 !important; }
+html[data-theme="dark"] body #roomOverlay .ro-panel.ro-carrot #roRoom .sec-nav .sec-chip[data-pl]::after,
+html[data-theme="dark"] body #roomOverlay .ro-panel.ro-carrot #roRoom .tk-row::after,
+html[data-theme="dark"] body #roomOverlay .ro-panel.ro-carrot #roRoom .fd-card::after,
+html[data-theme="dark"] body #roomOverlay .ro-panel.ro-carrot #roRoom .rp-card::after { border-color: rgba(255, 255, 255, .22); }
 /* заглавията и надписите — бели (проверено с пиксели, не с getComputedStyle) */
-:is(html[data-theme="dark"], html.bl-night) body #roomOverlay .ro-panel.ro-carrot #roRoom .sec-chip .pl-tl,
-:is(html[data-theme="dark"], html.bl-night) body #roomOverlay .ro-panel.ro-carrot #roRoom .tk-row .tk-t,
-:is(html[data-theme="dark"], html.bl-night) body #roomOverlay .ro-panel.ro-carrot #roRoom .fd-name,
-:is(html[data-theme="dark"], html.bl-night) body #roomOverlay .ro-panel.ro-carrot #roRoom .rp-top strong { color: #fff !important; }
-:is(html[data-theme="dark"], html.bl-night) body #roomOverlay .ro-panel.ro-carrot #roRoom .tk-row .tk-t small { color: #c9cbe3 !important; }
+html[data-theme="dark"] body #roomOverlay .ro-panel.ro-carrot #roRoom .sec-chip .pl-tl,
+html[data-theme="dark"] body #roomOverlay .ro-panel.ro-carrot #roRoom .tk-row .tk-t,
+html[data-theme="dark"] body #roomOverlay .ro-panel.ro-carrot #roRoom .fd-name,
+html[data-theme="dark"] body #roomOverlay .ro-panel.ro-carrot #roRoom .rp-top strong { color: #fff !important; }
+html[data-theme="dark"] body #roomOverlay .ro-panel.ro-carrot #roRoom .tk-row .tk-t small { color: #c9cbe3 !important; }
 /* кръгчетата с иконките: бели, за да се чете знакът върху тях нощем */
-:is(html[data-theme="dark"], html.bl-night) body #roomOverlay .ro-panel.ro-carrot #roRoom :is(.fd-emoji, .al-e, .rp-e, .fs-emo) {
+html[data-theme="dark"] body #roomOverlay .ro-panel.ro-carrot #roRoom :is(.fd-emoji, .al-e, .rp-e, .fs-emo) {
   background-color: #fff !important; background-image: none !important;
   box-shadow: 0 2px 6px rgba(0, 0, 0, .35) !important;
 }
@@ -684,12 +694,12 @@ html body #roomOverlay .ro-panel.ro-carrot #roRoom .jr-btn {
   color: #fff !important;
   box-shadow: 0 8px 18px rgba(168, 49, 96, .3), inset 0 1px 0 rgba(255, 255, 255, .28) !important;
 }
-:is(html[data-theme="dark"], html.bl-night) body #roomOverlay .ro-panel.ro-carrot #roRoom .jr-sub { color: #d9d6e8 !important; opacity: 1 !important; }
-:is(html[data-theme="dark"], html.bl-night) body #roomOverlay .ro-panel.ro-carrot #roRoom .sec-head {
+html[data-theme="dark"] body #roomOverlay .ro-panel.ro-carrot #roRoom .jr-sub { color: #d9d6e8 !important; opacity: 1 !important; }
+html[data-theme="dark"] body #roomOverlay .ro-panel.ro-carrot #roRoom .sec-head {
   background-color: rgba(38, 51, 107, .96); background-image: none;
   box-shadow: inset 0 0 0 1px rgba(255, 255, 255, .16), 0 3px 8px rgba(0, 0, 0, .3);
 }
-:is(html[data-theme="dark"], html.bl-night) body #roomOverlay .ro-panel.ro-carrot #roRoom .sec-head .sec-n { background: #4a2a44 !important; color: #ffd0e1 !important; }
+html[data-theme="dark"] body #roomOverlay .ro-panel.ro-carrot #roRoom .sec-head .sec-n { background: #4a2a44 !important; color: #ffd0e1 !important; }
 
 /* ── 12.11 ЧЕТИМОСТ · цената на филца ─────────────────────────────────────────
    🪤 ЧЕСТНО: тези три надписа бяха ОПРАВЕНИ преди мен върху БЯЛ фон
@@ -709,11 +719,11 @@ html body #roomOverlay .ro-panel.ro-carrot #roRoom .rp-from { color: #a82b5c !im
 html body #roomOverlay .ro-panel.ro-carrot #roRoom .fd-how,
 html body #roomOverlay .ro-panel.ro-carrot #roRoom .rp-ing { color: #55506b !important; }
 /* нощем филцът е тъмносин — там същите надписи искат светли, не тъмни */
-:is(html[data-theme="dark"], html.bl-night) body #roomOverlay .ro-panel.ro-carrot #roRoom .fd-tap { color: #c9c3dd !important; }
-:is(html[data-theme="dark"], html.bl-night) body #roomOverlay .ro-panel.ro-carrot #roRoom .fd-from,
-:is(html[data-theme="dark"], html.bl-night) body #roomOverlay .ro-panel.ro-carrot #roRoom .rp-from { color: #ffb0cd !important; }
-:is(html[data-theme="dark"], html.bl-night) body #roomOverlay .ro-panel.ro-carrot #roRoom .fd-how,
-:is(html[data-theme="dark"], html.bl-night) body #roomOverlay .ro-panel.ro-carrot #roRoom .rp-ing { color: #d4d1e4 !important; }
+html[data-theme="dark"] body #roomOverlay .ro-panel.ro-carrot #roRoom .fd-tap { color: #c9c3dd !important; }
+html[data-theme="dark"] body #roomOverlay .ro-panel.ro-carrot #roRoom .fd-from,
+html[data-theme="dark"] body #roomOverlay .ro-panel.ro-carrot #roRoom .rp-from { color: #ffb0cd !important; }
+html[data-theme="dark"] body #roomOverlay .ro-panel.ro-carrot #roRoom .fd-how,
+html[data-theme="dark"] body #roomOverlay .ro-panel.ro-carrot #roRoom .rp-ing { color: #d4d1e4 !important; }
 
 /* ── 12.3c редовете-бутони (.jr-win) и .cm-row ────────────────────────────────
    🪤 ИЗМЕРЕНО след първия кръг: плоските панели паднаха от 78 на 33, но останаха
@@ -741,12 +751,12 @@ html body #roomOverlay .ro-panel.ro-carrot #roRoom .jr-card :is(button.jr-win, d
 /* редът вътре в реда (.jr-winbtn) няма свой шев — иначе два шева един в друг */
 html body #roomOverlay .ro-panel.ro-carrot #roRoom .jr-win .jr-winbtn::after { display: none; }
 
-:is(html[data-theme="dark"], html.bl-night) body #roomOverlay .ro-panel.ro-carrot #roRoom .jr-card :is(button.jr-win, div.jr-win, .cm-row:not(.ob-row)) {
+html[data-theme="dark"] body #roomOverlay .ro-panel.ro-carrot #roRoom .jr-card :is(button.jr-win, div.jr-win, .cm-row:not(.ob-row)) {
   background-color: #26336b !important; background-image: none !important;
   box-shadow: inset 0 1px 0 rgba(255, 255, 255, .08), 0 3px 8px rgba(0, 0, 0, .28) !important;
 }
-:is(html[data-theme="dark"], html.bl-night) body #roomOverlay .ro-panel.ro-carrot #roRoom .jr-card :is(button.jr-win, div.jr-win, .cm-row:not(.ob-row))::after { border-color: rgba(255, 255, 255, .2); }
-:is(html[data-theme="dark"], html.bl-night) body #roomOverlay .ro-panel.ro-carrot #roRoom .jr-card :is(button.jr-win, div.jr-win).done { background-color: #2c4a52 !important; }
+html[data-theme="dark"] body #roomOverlay .ro-panel.ro-carrot #roRoom .jr-card :is(button.jr-win, div.jr-win, .cm-row:not(.ob-row))::after { border-color: rgba(255, 255, 255, .2); }
+html[data-theme="dark"] body #roomOverlay .ro-panel.ro-carrot #roRoom .jr-card :is(button.jr-win, div.jr-win).done { background-color: #2c4a52 !important; }
 
 /* ── 12.12 последните плоски: .al-row, .jr-word, и стрелките .fs-arrow ────────
    Мерено след втория кръг (wf3_hranene_inv2.js): плоските паднаха 78 → 14.
@@ -795,16 +805,336 @@ html body #roomOverlay .ro-panel.ro-carrot #roRoom .fs-arrow::before {
   mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='2.6' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M6 9l6 6 6-6'/%3E%3C/svg%3E") center / contain no-repeat;
 }
 
-:is(html[data-theme="dark"], html.bl-night) body #roomOverlay .ro-panel.ro-carrot #roRoom .al-row {
+html[data-theme="dark"] body #roomOverlay .ro-panel.ro-carrot #roRoom .al-row {
   background-color: #26336b !important; background-image: none !important;
   box-shadow: inset 0 1px 0 rgba(255, 255, 255, .08), 0 3px 8px rgba(0, 0, 0, .28) !important;
 }
-:is(html[data-theme="dark"], html.bl-night) body #roomOverlay .ro-panel.ro-carrot #roRoom .al-row::after { border-color: rgba(255, 255, 255, .2); }
-:is(html[data-theme="dark"], html.bl-night) body #roomOverlay .ro-panel.ro-carrot #roRoom .jr-word:not([data-plhr-ic]),
-:is(html[data-theme="dark"], html.bl-night) body #roomOverlay .ro-panel.ro-carrot #roRoom .ask-inp {
+html[data-theme="dark"] body #roomOverlay .ro-panel.ro-carrot #roRoom .al-row::after { border-color: rgba(255, 255, 255, .2); }
+html[data-theme="dark"] body #roomOverlay .ro-panel.ro-carrot #roRoom .jr-word:not([data-plhr-ic]),
+html[data-theme="dark"] body #roomOverlay .ro-panel.ro-carrot #roRoom .ask-inp {
   background-color: #26336b !important; background-image: none !important;
   border-color: rgba(255, 255, 255, .16) !important; color: #f1f2fb !important;
   box-shadow: inset 0 1px 0 rgba(255, 255, 255, .08) !important;
 }
-:is(html[data-theme="dark"], html.bl-night) body #roomOverlay .ro-panel.ro-carrot #roRoom .fs-arrow { background: rgba(255, 255, 255, .12) !important; }
-:is(html[data-theme="dark"], html.bl-night) body #roomOverlay .ro-panel.ro-carrot #roRoom .fs-arrow::before { background: #d8d4e6; }
+html[data-theme="dark"] body #roomOverlay .ro-panel.ro-carrot #roRoom .fs-arrow { background: rgba(255, 255, 255, .12) !important; }
+html[data-theme="dark"] body #roomOverlay .ro-panel.ro-carrot #roRoom .fs-arrow::before { background: #d8d4e6; }
+
+/* ═══════════════════════════════════════════════════════════════════════════════
+   20.10 · ДОВЪРШВАНЕ ДО ПРЕМИУМ — картите под „Нашето меню“ (агент hr20)
+   Мерено ПРЕДИ (dev/proba/hr20_kL.log + hr20_k2L.log, getComputedStyle; снимки snimki/hr20_kL_*.png,
+   hr20_k2L_*.png, hr20_predi_L/D_*.jpg; DOM — hr20_dump.log):
+     1 · ДВОЙНА РИСУНКА: pl-plyush.js рисува И обвивката (.jr-medal / .pg20-fruit), И вложеното .pl-em →
+         медальонът на ВСЯКА карта — два кръга един върху друг; лъжицата в „Днес на масата“ — кръг 83px
+         в кръг 66px, излиза през ръба на картата. Иконките на храните/рецептите/алергените —
+         пастелно кръгче на плюша, изместено върху филцовото кръгче от 12.4.
+     2 · ЗАГЛАВИЕТО ПОД МЕДАЛА („Готови ли сме за захранване?“, „Къде се крият солта и захарта“,
+         „Какво искам да го попитам“): h4 е flex-wrap и анонимният текст пада на свой ред.
+     3 · ИКОНКАТА НА ЯГОДАТА в „Виж кое е подходящо…“ (i.pl-hr-em от js/pl-hranene.js) — 0×18px:
+         рисунка без размер, т.е. невидима (за нея нямаше CSS).
+     4 · РЕДОВЕ, КОИТО СЕ РАЗПАДАТ: „Порцията с очи“ — иконката сама на ред, „Белтъчина (месо, риба,
+         боб)“ на 3 реда в тясна колона; „Фризерът“ — голо ▶, сиви плоски кутии с празни дупки;
+         „Сол и захар“ — второ кръгче 17px след името и голо 🍬; алергените — 38px иконка в 30px колона
+         (текстът лепне за кръга); „В ресторант · на гости“ — голо ▶ и 18px розов текст на 2 реда.
+     5 · СТАР СТИЛ: лилавата дъга (stroke #e8e2f0, rooms3.js:1229) и лилавата лента на таблицата BLW
+         (rooms.css:1425 rgba(125,107,189,.08)); „сол + захар“ — лилав ред (rooms.css:1416).
+     6 · СЪСТОЯНИЯ БЕЗ ВИД: 👍/👎 на триковете (.tk-b[aria-pressed]) нямат натиснат вид (pl-ui.css:83 е
+         само за .on); отказаният трик (.tk-no) — opacity .5 на целия ред (mega.css:954) → текст под 4.5:1.
+     7 · ДРЕБЕН ТЕКСТ (< 13px, етикети < 11.5): .mn-day 10px, .fd-tap 10px, .ask-live 10.5px, .fd-from 11,
+         .fd-how 11, .rp-from 11, .ut-n small 11 (+ opacity .6), .jr-privacy 11.5, .fd-agenote 11.5,
+         .fz-s 11.5, .rp-ing 12, .hs-t 12, .ask-chip 12, „Това е алерген…“ 12, таблицата BLW 12.5 и др.
+     8 · ДРЕБНИ ЦЕЛИ/ДЕТАЙЛИ: „+“ в Алергия-паспорта — 13px знак; бутонът „Направи картичката“ лепне за
+         полето; кръгчетата за отметка .jr-check 22px, бледи; клетките на менюто — плоски, без кант.
+   Обхват: САМО .ro-panel.ro-carrot (стаята „Захранване“); нощ = САМО html[data-theme="dark"].
+   ПЪТ НАЗАД: махни този блок (до „край 20.10“). Копие на файла отпреди: dev/proba/hr20_predi_pl-hranene.css
+   ═══════════════════════════════════════════════════════════════════════════════ */
+
+/* ── 1 · една рисунка: вложеното копие се скрива (емоджито остава в textContent) ── */
+html body #roomOverlay .ro-panel.ro-carrot #roRoom :is(.jr-medal, .pg20-fruit).pl-pl > .pl-em.pl-pl { display: none !important; }
+html body #roomOverlay .ro-panel.ro-carrot #roRoom .pg20-fruit.pl-pl { flex: none; margin: 0 4px 0 0; }
+/* иконката в кръгла обвивка (.fd-emoji/.rp-e/.al-e/.fs-emo/.hs-e): кръгът е на ПЛЮША, обвивката е само място */
+html body #roomOverlay .ro-panel.ro-carrot #roRoom :is(.fd-emoji, .rp-e, .al-e, .fs-emo, .hs-e):has(> .pl-em.pl-pl) {
+  background: none !important; box-shadow: none !important;
+}
+html body #roomOverlay .ro-panel.ro-carrot #roRoom :is(.fd-emoji, .rp-e, .al-e, .fs-emo, .hs-e) > .pl-em.pl-pl {
+  width: 100% !important; height: 100% !important; margin: 0 !important; vertical-align: 0 !important;
+  box-shadow: inset 0 0 0 2.5px #fff, 0 2px 5px rgba(150, 105, 60, .2) !important;
+}
+
+/* ── 2 · заглавието: медал | текст (пречупва се в своята колона), подзаглавието на цял ред ── */
+html body #roomOverlay .ro-panel.ro-carrot #roRoom .jr-card > h4.jr-title:has(> .jr-medal) {
+  display: grid !important; grid-template-columns: auto minmax(0, 1fr); align-items: center; column-gap: 10px; row-gap: 3px;
+}
+html body #roomOverlay .ro-panel.ro-carrot #roRoom .jr-card > h4.jr-title:has(> .jr-medal) > .jr-medal { grid-column: 1; margin: 0 !important; }
+html body #roomOverlay .ro-panel.ro-carrot #roRoom .jr-card > h4.jr-title:has(> .jr-medal) > .jr-sub { grid-column: 1 / -1; }
+
+/* ── 3 · ягодата пред „Виж кое е подходящо…“ — 30px плюшено кръгче (рисунката идва от JS) ── */
+html body #roomOverlay .ro-panel.ro-carrot #roRoom .pg20-do[data-plhr="em"] { display: flex; align-items: center; gap: 10px; }
+html body #roomOverlay .ro-panel.ro-carrot #roRoom .pl-hr-em {
+  flex: none; display: inline-block; width: 30px; height: 30px; border-radius: 50%;
+  background-color: #fde6ef; background-repeat: no-repeat; background-size: 400% 400%; background-blend-mode: multiply;
+  box-shadow: inset 0 0 0 1.5px rgba(255, 255, 255, .9), 0 2px 5px rgba(110, 76, 52, .14);
+}
+
+/* ── 4a · „Порцията с очи“: иконка вляво, името отгоре, мярката под него ── */
+html body #roomOverlay .ro-panel.ro-carrot #roRoom .pt-row {
+  position: relative; display: block !important;
+  margin-top: 8px; padding: 11px 14px 11px 62px !important; min-height: 62px;
+  border-radius: 16px !important;
+  background-color: #fffaf3 !important; background-image: var(--ui-felt) !important; background-size: 160px 160px !important; background-blend-mode: multiply !important;
+  box-shadow: inset 0 2px 0 rgba(255, 255, 255, .9), 0 3px 8px rgba(110, 76, 52, .11) !important;
+}
+html body #roomOverlay .ro-panel.ro-carrot #roRoom .pt-row::after {
+  content: ''; position: absolute; inset: 5px; border-radius: 11px; pointer-events: none; border: 1.3px dashed rgba(196, 160, 124, .42);
+}
+html body #roomOverlay .ro-panel.ro-carrot #roRoom .pt-k { display: block; font-size: 14.5px; font-weight: 800; line-height: 1.3; color: var(--pl-navy, #1d2a5c); }
+html body #roomOverlay .ro-panel.ro-carrot #roRoom .pt-k > .pl-em.pl-pl {
+  position: absolute; left: 13px; top: 50%; width: 38px !important; height: 38px !important; margin: -19px 0 0 !important;
+  box-shadow: inset 0 0 0 2.5px #fff, 0 2px 5px rgba(150, 105, 60, .2) !important;
+}
+html body #roomOverlay .ro-panel.ro-carrot #roRoom .pt-m { display: block; margin-top: 2px; text-align: left !important; opacity: 1 !important; font-size: 13.5px; font-weight: 600; line-height: 1.35; color: #5d596f; }
+
+/* ── 4b · „Фризерът“: иконка | име + срок отдолу | мека стрелка; без голото ▶ ── */
+html body #roomOverlay .ro-panel.ro-carrot #roRoom .fz-row {
+  position: relative; margin-top: 8px; padding: 4px 12px !important;
+  border: 0 !important; border-radius: 16px !important;
+  background-color: #fffaf3 !important; background-image: var(--ui-felt) !important; background-size: 160px 160px !important; background-blend-mode: multiply !important;
+  box-shadow: inset 0 2px 0 rgba(255, 255, 255, .9), 0 3px 8px rgba(110, 76, 52, .11) !important;
+}
+html body #roomOverlay .ro-panel.ro-carrot #roRoom .fz-row::after {
+  content: ''; position: absolute; inset: 5px; border-radius: 11px; pointer-events: none; border: 1.3px dashed rgba(196, 160, 124, .42);
+}
+html body #roomOverlay .ro-panel.ro-carrot #roRoom .fz-row > summary {
+  list-style: none; display: grid; grid-template-columns: 38px minmax(0, 1fr) 26px; column-gap: 12px; row-gap: 1px; align-items: center;
+  font-size: 15px; font-weight: 800; line-height: 1.25; color: var(--pl-navy, #1d2a5c);
+}
+html body #roomOverlay .ro-panel.ro-carrot #roRoom .fz-row > summary::-webkit-details-marker { display: none; }
+html body #roomOverlay .ro-panel.ro-carrot #roRoom .fz-row > summary > .pl-em.pl-pl {
+  grid-column: 1; grid-row: 1 / span 2; width: 38px !important; height: 38px !important; margin: 0 !important;
+  box-shadow: inset 0 0 0 2.5px #fff, 0 2px 5px rgba(150, 105, 60, .2) !important;
+}
+html body #roomOverlay .ro-panel.ro-carrot #roRoom .fz-row > summary > .fz-s { grid-column: 2; grid-row: 2; font-size: 13px; font-weight: 600; opacity: 1; color: #5d596f; line-height: 1.35; }
+html body #roomOverlay .ro-panel.ro-carrot #roRoom .fz-row > summary::after {
+  content: ''; grid-column: 3; grid-row: 1 / span 2; justify-self: end; width: 26px; height: 26px; border-radius: 50%;
+  background: rgba(196, 160, 124, .16) url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%237a6a5c' stroke-width='2.6' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M6 9l6 6 6-6'/%3E%3C/svg%3E") center / 14px 14px no-repeat;
+  transition: transform .25s ease;
+}
+html body #roomOverlay .ro-panel.ro-carrot #roRoom .fz-row[open] > summary::after { transform: rotate(180deg); }
+html body #roomOverlay .ro-panel.ro-carrot #roRoom .fz-row > .fz-b { margin: 2px 0 10px 50px !important; font-size: 13.5px; line-height: 1.5; color: #3b3f5c; }
+
+/* ── 4c · „Къде се крият солта и захарта“: филцови редове по смисъл; знакът сол/захар → етикет ── */
+html body #roomOverlay .ro-panel.ro-carrot #roRoom .hs-row {
+  position: relative; align-items: center !important; gap: 12px !important;
+  padding: 11px 14px 11px 12px !important; border-radius: 16px !important;
+  background-color: #fffaf3 !important; background-image: var(--ui-felt) !important; background-size: 160px 160px !important; background-blend-mode: multiply !important;
+  box-shadow: inset 0 2px 0 rgba(255, 255, 255, .9), 0 3px 8px rgba(110, 76, 52, .11) !important;
+}
+html body #roomOverlay .ro-panel.ro-carrot #roRoom .hs-row.hs-salt { background-color: #eef4fb !important; }
+html body #roomOverlay .ro-panel.ro-carrot #roRoom .hs-row.hs-sugar { background-color: #fdeef3 !important; }
+html body #roomOverlay .ro-panel.ro-carrot #roRoom .hs-row.hs-both { background-color: #fcf1e2 !important; }
+html body #roomOverlay .ro-panel.ro-carrot #roRoom .hs-row::after {
+  content: ''; position: absolute; inset: 5px; border-radius: 11px; pointer-events: none; border: 1.3px dashed rgba(196, 160, 124, .42);
+}
+html body #roomOverlay .ro-panel.ro-carrot #roRoom .hs-e {
+  display: inline-grid; place-items: center; flex: none !important; width: 40px; height: 40px; border-radius: 50%;
+  background: #fff; box-shadow: inset 0 0 0 2.5px #fff, 0 2px 5px rgba(150, 105, 60, .2); font-size: 21px; line-height: 1;
+}
+html body #roomOverlay .ro-panel.ro-carrot #roRoom .hs-n { display: flex; flex-wrap: wrap; align-items: center; gap: 4px 8px; margin: 0 0 3px !important; font-size: 14.5px !important; font-weight: 800; color: var(--pl-navy, #1d2a5c); }
+html body #roomOverlay .ro-panel.ro-carrot #roRoom .hs-t { font-size: 13.5px !important; line-height: 1.45; opacity: 1 !important; color: #4f4b63; }
+/* знакът (🧂 / 🍬 / 🧂🍬) остава в DOM-а, но се показва като етикет с дума — 🍬 нямаше рисунка и стоеше голо */
+html body #roomOverlay .ro-panel.ro-carrot #roRoom .hs-n > small { font-size: 0 !important; line-height: 0; display: inline-flex; }
+html body #roomOverlay .ro-panel.ro-carrot #roRoom .hs-n > small > * { display: none !important; }
+html body #roomOverlay .ro-panel.ro-carrot #roRoom .hs-n > small::after {
+  font-size: 11.5px; line-height: 1; font-weight: 800; letter-spacing: .2px; padding: 4px 8px; border-radius: 999px;
+  font-family: Nunito, 'Nunito-fallback', system-ui, sans-serif;
+}
+html body #roomOverlay .ro-panel.ro-carrot #roRoom .hs-salt .hs-n > small::after { content: 'сол'; color: #2f5683; background: #dce8f6; }
+html body #roomOverlay .ro-panel.ro-carrot #roRoom .hs-sugar .hs-n > small::after { content: 'захар'; color: #9e2f5f; background: #fbdce7; }
+html body #roomOverlay .ro-panel.ro-carrot #roRoom .hs-both .hs-n > small::after { content: 'сол + захар'; color: #7a4f12; background: #f5e2c4; }
+html body #roomOverlay .ro-panel.ro-carrot #roRoom .lb-kind { font-size: 13.5px !important; line-height: 1.5; }
+
+/* ── 4d · алергените: 40px иконка в 40px колона, дистанция до текста, името — получерно ── */
+html body #roomOverlay .ro-panel.ro-carrot #roRoom .al-row {
+  grid-template-columns: 40px minmax(0, 1fr) auto !important; column-gap: 12px !important; align-items: center !important;
+  padding: 10px 14px 10px 12px !important;
+}
+html body #roomOverlay .ro-panel.ro-carrot #roRoom .al-row .al-e { width: 40px !important; height: 40px !important; }
+/* отбелязаният алерген (aria-pressed, rooms8.js) — мек зелен филц, както отметнатите редове; беше като неотбелязания */
+html body #roomOverlay .ro-panel.ro-carrot #roRoom .al-row[aria-pressed="true"] { background-color: #eaf6ec !important; }
+html body #roomOverlay .ro-panel.ro-carrot #roRoom .al-row[aria-pressed="true"]::after { border-color: rgba(120, 170, 130, .55); }
+html[data-theme="dark"] body #roomOverlay .ro-panel.ro-carrot #roRoom .al-row[aria-pressed="true"] { background-color: #2c4a52 !important; }
+html body #roomOverlay .ro-panel.ro-carrot #roRoom .al-n { font-size: 15px; font-weight: 800; line-height: 1.3; color: var(--pl-navy, #1d2a5c); text-align: left; }
+html body #roomOverlay .ro-panel.ro-carrot #roRoom .al-n small { display: inline-block; margin-top: 2px; font-size: 13px !important; font-weight: 600; line-height: 1.4; opacity: 1 !important; color: #5d596f; }
+
+/* ── 4e · „В ресторант · на гости“ (details.cm-row): без голото ▶, ред с иконка и мека стрелка ── */
+html body #roomOverlay .ro-panel.ro-carrot #roRoom .jr-card details.cm-row > summary {
+  list-style: none; display: grid; grid-template-columns: 34px minmax(0, 1fr) 26px; column-gap: 10px; align-items: center;
+  min-height: 48px; font-family: Nunito, 'Nunito-fallback', system-ui, sans-serif !important; font-size: 15px !important; font-weight: 800 !important;
+  line-height: 1.3; color: var(--pl-navy, #1d2a5c) !important; cursor: pointer;
+}
+html body #roomOverlay .ro-panel.ro-carrot #roRoom .jr-card details.cm-row > summary::-webkit-details-marker { display: none; }
+html body #roomOverlay .ro-panel.ro-carrot #roRoom .jr-card details.cm-row > summary > .pl-em.pl-pl { grid-column: 1; width: 34px !important; height: 34px !important; margin: 0 !important; }
+html body #roomOverlay .ro-panel.ro-carrot #roRoom .jr-card details.cm-row > summary::after {
+  content: ''; grid-column: 3; justify-self: end; width: 26px; height: 26px; border-radius: 50%;
+  background: rgba(196, 160, 124, .16) url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%237a6a5c' stroke-width='2.6' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M6 9l6 6 6-6'/%3E%3C/svg%3E") center / 14px 14px no-repeat;
+  transition: transform .25s ease;
+}
+html body #roomOverlay .ro-panel.ro-carrot #roRoom .jr-card details.cm-row[open] > summary::after { transform: rotate(180deg); }
+html body #roomOverlay .ro-panel.ro-carrot #roRoom .jr-card details.cm-row > p { font-size: 13.5px; line-height: 1.5; color: #3b3f5c; }
+
+/* ── 4f · редовете-отметки (.jr-win > .ut-n): иконка в кръгче отляво, име, обяснение отдолу ── */
+html body #roomOverlay .ro-panel.ro-carrot #roRoom .jr-win > .ut-n {
+  display: grid; grid-template-columns: 34px minmax(0, 1fr); column-gap: 10px; align-items: center; min-width: 0; text-align: left;
+  font-size: 15px; font-weight: 800; line-height: 1.3; color: var(--pl-navy, #1d2a5c);
+}
+html body #roomOverlay .ro-panel.ro-carrot #roRoom .jr-win > .ut-n > :is(.pl-em, .pl-hr-ue) {
+  grid-column: 1; grid-row: 1 / span 2; width: 34px !important; height: 34px !important; margin: 0 !important; vertical-align: 0 !important;
+}
+html body #roomOverlay .ro-panel.ro-carrot #roRoom .jr-win > .ut-n > .pl-hr-ue {
+  display: inline-grid; place-items: center; border-radius: 50%; font-size: 18px; line-height: 1; font-weight: 400;
+  background: #fde6ef; box-shadow: inset 0 0 0 1.5px rgba(255, 255, 255, .9), 0 2px 5px rgba(110, 76, 52, .14);
+}
+html body #roomOverlay .ro-panel.ro-carrot #roRoom .jr-win > .ut-n > small {
+  grid-column: 2; display: block; margin-top: 2px; font-size: 13px !important; font-weight: 600 !important; line-height: 1.4; opacity: 1 !important; color: #5d596f;
+}
+/* текстът без иконка (ако някой ред няма знак) — пак в една колона */
+html body #roomOverlay .ro-panel.ro-carrot #roRoom .jr-win > .ut-n:not(:has(> .pl-em, > .pl-hr-ue)) { grid-template-columns: minmax(0, 1fr); }
+html body #roomOverlay .ro-panel.ro-carrot #roRoom .jr-win > .ut-n:not(:has(> .pl-em, > .pl-hr-ue)) > small { grid-column: 1; }
+/* кръгчето за отметка: 26px, ясен златист кант; отметнатото — зелено */
+html body #roomOverlay .ro-panel.ro-carrot #roRoom .jr-win > .jr-check {
+  flex: none; width: 26px !important; height: 26px !important; border-radius: 50% !important;
+  background: #fff !important; box-shadow: inset 0 0 0 2px #c9a57a, 0 1px 2px rgba(110, 76, 52, .15) !important;
+}
+html body #roomOverlay .ro-panel.ro-carrot #roRoom .jr-win.done > .jr-check {
+  background: #3d9c78 !important; color: #fff !important; box-shadow: inset 0 0 0 2px #2f8565, 0 1px 2px rgba(20, 80, 60, .25) !important;
+  display: inline-grid !important; place-items: center; font-size: 14px; font-weight: 900;
+}
+
+/* ── 6 · триковете: 👍/👎 по-едри и с натиснат вид; отказаният трик — тих, но четлив ── */
+html body #roomOverlay .ro-panel.ro-carrot #roRoom .tk-b.tk-b { width: 46px; height: 46px; padding: 0 !important; display: inline-grid; place-items: center; border-radius: 14px !important; }
+html body #roomOverlay .ro-panel.ro-carrot #roRoom .tk-b > .pl-em.pl-pl { width: 34px !important; height: 34px !important; vertical-align: 0 !important; }
+html body #roomOverlay .ro-panel.ro-carrot #roRoom .tk-btns .tk-b:first-child[aria-pressed="true"] {
+  background-color: #dff2e7 !important; border-color: #8cc5a3 !important;
+  box-shadow: inset 0 0 0 3px #dff2e7, inset 0 0 0 4.5px rgba(61, 156, 120, .45), 0 2px 0 #9fd0b3 !important;
+}
+html body #roomOverlay .ro-panel.ro-carrot #roRoom .tk-btns .tk-b:last-child[aria-pressed="true"] {
+  background-color: var(--ui-pick, #fde6ef) !important; border-color: var(--ui-pick-edge, #ef9fbf) !important;
+  box-shadow: inset 0 0 0 3px var(--ui-pick, #fde6ef), inset 0 0 0 4.5px rgba(217, 90, 142, .35), 0 2px 0 #e7a0bd !important;
+}
+html body #roomOverlay .ro-panel.ro-carrot #roRoom .tk-row.tk-no { opacity: 1 !important; background-color: #f6efe7 !important; }
+html body #roomOverlay .ro-panel.ro-carrot #roRoom .tk-row.tk-no .tk-t { color: #5d596f !important; }
+
+/* ── 5 · дъгата — кремаво-златист празен път вместо лилаво; таблицата BLW — топла, без лилава лента ── */
+html body #roomOverlay .ro-panel.ro-carrot #roRoom .rb-arc:not(.rb-on) { stroke: #eedfcc; }
+html body #roomOverlay .ro-panel.ro-carrot #roRoom .rb-count { font-size: 13.5px !important; }
+html body #roomOverlay .ro-panel.ro-carrot #roRoom .bw-table { font-size: 13.5px !important; border-collapse: separate; border-spacing: 0; border-radius: 16px; overflow: hidden; box-shadow: inset 0 0 0 1px #f1e4d9; background: #fffdf9; }
+html body #roomOverlay .ro-panel.ro-carrot #roRoom .bw-table td { padding: 10px 12px !important; line-height: 1.45; color: #3b3f5c; border-bottom: 1px dashed rgba(196, 160, 124, .45) !important; }
+html body #roomOverlay .ro-panel.ro-carrot #roRoom .bw-table tr:last-child td { border-bottom: 0 !important; }
+html body #roomOverlay .ro-panel.ro-carrot #roRoom .bw-table tr:not(.bw-head) td:first-child { border-right: 1px dashed rgba(196, 160, 124, .45) !important; }
+html body #roomOverlay .ro-panel.ro-carrot #roRoom .bw-head td {
+  background: #fbefe1 !important; font-family: var(--pl-serif, Georgia, serif); font-size: 16px !important; font-weight: 700 !important; color: var(--pl-navy, #1d2a5c);
+  vertical-align: middle !important;
+}
+html body #roomOverlay .ro-panel.ro-carrot #roRoom .bw-head td > .pl-em.pl-pl { width: 30px !important; height: 30px !important; margin-right: 6px; vertical-align: middle !important; }
+html body #roomOverlay .ro-panel.ro-carrot #roRoom .bw-head td { line-height: 30px !important; }
+html body #roomOverlay .ro-panel.ro-carrot #roRoom .bw-same {
+  position: relative; font-size: 13.5px !important; line-height: 1.5 !important; padding: 12px 14px !important; border-radius: 16px !important;
+  background-color: #fffaf3 !important; background-image: var(--ui-felt) !important; background-size: 160px 160px !important; background-blend-mode: multiply !important;
+  box-shadow: inset 0 2px 0 rgba(255, 255, 255, .9), 0 3px 8px rgba(110, 76, 52, .11) !important; border: 0 !important;
+}
+html body #roomOverlay .ro-panel.ro-carrot #roRoom .bw-same > p { margin: 0 0 6px !important; }
+html body #roomOverlay .ro-panel.ro-carrot #roRoom .bw-same > p:has(> .pl-em) { display: grid; grid-template-columns: 26px minmax(0, 1fr); column-gap: 10px; align-items: start; }
+html body #roomOverlay .ro-panel.ro-carrot #roRoom .bw-same > p > .pl-em.pl-pl { width: 26px !important; height: 26px !important; margin: 0 !important; vertical-align: 0 !important; }
+html body #roomOverlay .ro-panel.ro-carrot #roRoom .bw-same strong { font-size: 14.5px; color: var(--pl-navy, #1d2a5c); }
+
+/* ── 4g · правилото на алергените (.al-rule, mega.css:934): розов лист с мек кант, не лилаво нощем ── */
+html body #roomOverlay .ro-panel.ro-carrot #roRoom .al-rule {
+  font-size: 13.5px !important; line-height: 1.55; padding: 11px 14px !important; border-radius: 16px !important;
+  background: #fdf1f5 !important; border: 1px solid #f3cbd9 !important; color: #3b3f5c;
+}
+html[data-theme="dark"] body #roomOverlay .ro-panel.ro-carrot #roRoom .al-rule { background: rgba(229, 109, 153, .13) !important; border-color: rgba(245, 156, 187, .38) !important; color: #f1f2fb !important; }
+html[data-theme="dark"] body #roomOverlay .ro-panel.ro-carrot #roRoom .fd-alrgchk > input[type="checkbox"] { color-scheme: dark; }
+
+/* ── 8 · менюто по дни: филцови клетки с кант; денят 12.5px ── */
+html body #roomOverlay .ro-panel.ro-carrot #roRoom .mn-cell:not(.today):not(.sel):not(.on) {
+  background-color: #fffaf3 !important; background-image: var(--ui-felt) !important; background-size: 160px 160px !important; background-blend-mode: multiply !important;
+  box-shadow: inset 0 0 0 1px #efdccf, 0 2px 0 #efe0cb !important;
+}
+html body #roomOverlay .ro-panel.ro-carrot #roRoom .mn-day { font-size: 12.5px !important; font-weight: 800 !important; color: #5d596f; }
+html body #roomOverlay .ro-panel.ro-carrot #roRoom .mn-val { font-size: 15px; font-weight: 800; color: #a8386a; }
+
+/* ── 8 · Алергия-паспорт: „+“ с истински размер, бутонът не лепне за полето; отметката „алерген“ ── */
+html body #roomOverlay .ro-panel.ro-carrot #roRoom .jr-addrow > .jr-chip[aria-label^="Добави алергена"] { font-size: 22px !important; font-weight: 800 !important; color: #9e2f5f !important; min-width: 48px; }
+html body #roomOverlay .ro-panel.ro-carrot #roRoom .jr-addrow + .jr-btn { margin-top: 12px !important; }
+html body #roomOverlay .ro-panel.ro-carrot #roRoom .fd-alrgchk { display: flex; align-items: flex-start; gap: 10px; font-size: 13.5px !important; line-height: 1.45; color: #3b3f5c; }
+html body #roomOverlay .ro-panel.ro-carrot #roRoom .fd-alrgchk > input[type="checkbox"] { flex: none; width: 24px; height: 24px; margin: 0; accent-color: #c8457a; }
+html body #roomOverlay .ro-panel.ro-carrot #roRoom .fd-alrgchk > span { font-size: 13.5px !important; }
+
+/* ── 7 · дребният текст до мярката (≥ 13px, етикетите ≥ 11.5px) ── */
+html body #roomOverlay .ro-panel.ro-carrot #roRoom .pl-hr-ds,
+html body #roomOverlay .ro-panel.ro-carrot #roRoom .pl-hr-inv,
+html body #roomOverlay .ro-panel.ro-carrot #roRoom .pl-hr-note { font-size: 13px; }
+html body #roomOverlay .ro-panel.ro-carrot #roRoom .jr-privacy { font-size: 13.5px !important; line-height: 1.5; }
+html body #roomOverlay .ro-panel.ro-carrot #roRoom .ask-line,
+html body #roomOverlay .ro-panel.ro-carrot #roRoom .ask-chip { font-size: 13px !important; }
+html body #roomOverlay .ro-panel.ro-carrot #roRoom .ask-live { font-size: 11.5px !important; color: #1f6b5a !important; }
+html body #roomOverlay .ro-panel.ro-carrot #roRoom .ask-live .dot { font-size: 11.5px !important; color: #1f6b5a !important; }
+html body #roomOverlay .ro-panel.ro-carrot #roRoom .jr-chip { font-size: 13.5px !important; }
+html body #roomOverlay .ro-panel.ro-carrot #roRoom .fd-agenote { font-size: 13px !important; }
+html body #roomOverlay .ro-panel.ro-carrot #roRoom .fd-agenote strong { font-size: inherit !important; }
+html body #roomOverlay .ro-panel.ro-carrot #roRoom :is(.fd-from, .rp-from) { font-size: 12px !important; }
+html body #roomOverlay .ro-panel.ro-carrot #roRoom .fd-how { font-size: 13px !important; line-height: 1.4; }
+html body #roomOverlay .ro-panel.ro-carrot #roRoom .fd-tap { font-size: 12px !important; }
+html body #roomOverlay .ro-panel.ro-carrot #roRoom .rp-ing { font-size: 13px !important; }
+html body #roomOverlay .ro-panel.ro-carrot #roRoom .jr-hint { font-size: 13.5px !important; }
+html body #roomOverlay .ro-panel.ro-carrot #roRoom .fs-steps { font-size: 14px !important; }
+
+/* ═══ НОЩ (само html[data-theme="dark"]) — същите части в нощно синьо ═══ */
+html[data-theme="dark"] body #roomOverlay .ro-panel.ro-carrot #roRoom :is(.fd-emoji, .rp-e, .al-e, .fs-emo, .hs-e) > .pl-em.pl-pl,
+html[data-theme="dark"] body #roomOverlay .ro-panel.ro-carrot #roRoom .pt-k > .pl-em.pl-pl,
+html[data-theme="dark"] body #roomOverlay .ro-panel.ro-carrot #roRoom .fz-row > summary > .pl-em.pl-pl { box-shadow: inset 0 0 0 2px rgba(255, 255, 255, .85), 0 2px 6px rgba(0, 0, 0, .35) !important; }
+html[data-theme="dark"] body #roomOverlay .ro-panel.ro-carrot #roRoom :is(.pt-row, .fz-row, .hs-row, .bw-same) {
+  background-color: #26336b !important; background-image: none !important;
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, .08), 0 3px 8px rgba(0, 0, 0, .28) !important;
+}
+html[data-theme="dark"] body #roomOverlay .ro-panel.ro-carrot #roRoom .hs-row.hs-salt { background-color: #24386e !important; }
+html[data-theme="dark"] body #roomOverlay .ro-panel.ro-carrot #roRoom .hs-row.hs-sugar { background-color: #3a2f68 !important; }
+html[data-theme="dark"] body #roomOverlay .ro-panel.ro-carrot #roRoom .hs-row.hs-both { background-color: #3a3b62 !important; }
+html[data-theme="dark"] body #roomOverlay .ro-panel.ro-carrot #roRoom :is(.pt-row, .fz-row, .hs-row)::after { border-color: rgba(255, 255, 255, .2); }
+html[data-theme="dark"] body #roomOverlay .ro-panel.ro-carrot #roRoom :is(.pt-k, .fz-row > summary, .hs-n, .al-n, .jr-win > .ut-n, .bw-same strong, .jr-card details.cm-row > summary) { color: #fff !important; }
+html[data-theme="dark"] body #roomOverlay .ro-panel.ro-carrot #roRoom :is(.pt-m, .fz-s, .hs-t, .al-n small, .jr-win > .ut-n > small, .mn-day) { color: #c9cbe3 !important; }
+html[data-theme="dark"] body #roomOverlay .ro-panel.ro-carrot #roRoom :is(.fz-b, .jr-card details.cm-row > p, .bw-table td, .fd-alrgchk, .bw-same) { color: #e3e5f5 !important; }
+html[data-theme="dark"] body #roomOverlay .ro-panel.ro-carrot #roRoom :is(.fz-row > summary, .jr-card details.cm-row > summary)::after {
+  background-color: rgba(255, 255, 255, .12);
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23d8d4e6' stroke-width='2.6' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M6 9l6 6 6-6'/%3E%3C/svg%3E");
+}
+html[data-theme="dark"] body #roomOverlay .ro-panel.ro-carrot #roRoom .hs-e { background: #fff; box-shadow: 0 2px 6px rgba(0, 0, 0, .35); }
+html[data-theme="dark"] body #roomOverlay .ro-panel.ro-carrot #roRoom .hs-salt .hs-n > small::after { color: #dbe8fb; background: rgba(120, 165, 225, .28); }
+html[data-theme="dark"] body #roomOverlay .ro-panel.ro-carrot #roRoom .hs-sugar .hs-n > small::after { color: #ffd0e1; background: rgba(229, 109, 153, .3); }
+html[data-theme="dark"] body #roomOverlay .ro-panel.ro-carrot #roRoom .hs-both .hs-n > small::after { color: #f6dfb8; background: rgba(227, 195, 156, .26); }
+html[data-theme="dark"] body #roomOverlay .ro-panel.ro-carrot #roRoom .jr-win:not(.done) > .jr-check { background: rgba(255, 255, 255, .08) !important; box-shadow: inset 0 0 0 2px rgba(240, 210, 137, .65) !important; }
+html[data-theme="dark"] body #roomOverlay .ro-panel.ro-carrot #roRoom .tk-row.tk-no { background-color: #222c5c !important; }
+html[data-theme="dark"] body #roomOverlay .ro-panel.ro-carrot #roRoom .tk-row.tk-no .tk-t { color: #c9cbe3 !important; }
+html[data-theme="dark"] body #roomOverlay .ro-panel.ro-carrot #roRoom .tk-btns .tk-b:first-child[aria-pressed="true"] { background-color: #2c5a52 !important; border-color: #6fc4a0 !important; box-shadow: inset 0 0 0 1.5px #6fc4a0 !important; }
+html[data-theme="dark"] body #roomOverlay .ro-panel.ro-carrot #roRoom .tk-btns .tk-b:last-child[aria-pressed="true"] { background-color: #4a2a52 !important; border-color: #f59cbb !important; box-shadow: inset 0 0 0 1.5px #f59cbb !important; }
+html[data-theme="dark"] body #roomOverlay .ro-panel.ro-carrot #roRoom .rb-arc:not(.rb-on) { stroke: #34437f; }
+html[data-theme="dark"] body #roomOverlay .ro-panel.ro-carrot #roRoom .bw-table { background: #26336b; box-shadow: inset 0 0 0 1px rgba(255, 255, 255, .14); }
+html[data-theme="dark"] body #roomOverlay .ro-panel.ro-carrot #roRoom .bw-table td { border-color: rgba(255, 255, 255, .16) !important; }
+html[data-theme="dark"] body #roomOverlay .ro-panel.ro-carrot #roRoom .bw-head td { background: #2f3d7a !important; color: #fff !important; }
+html[data-theme="dark"] body #roomOverlay .ro-panel.ro-carrot #roRoom .mn-cell:not(.today):not(.sel):not(.on) {
+  background-color: #26336b !important; background-image: none !important; box-shadow: inset 0 0 0 1px rgba(255, 255, 255, .14) !important;
+}
+html[data-theme="dark"] body #roomOverlay .ro-panel.ro-carrot #roRoom .mn-val { color: #ffb8d2; }
+/* днешната клетка нощем беше почти черна (mega.css:515) — розов отблясък с пръстена ѝ */
+html[data-theme="dark"] body #roomOverlay .ro-panel.ro-carrot #roRoom .mn-cell.today { background-color: rgba(229, 109, 153, .2) !important; background-image: none !important; }
+/* „Виж кое е подходящо…“ нощем: сиво-кафява кутия → златист отблясък (както pl-igri.css/pl-bebe.css) */
+html[data-theme="dark"] body #roomOverlay .ro-panel.ro-carrot #roRoom .rh-hero .pg20-do { background: rgba(227, 195, 156, .12) !important; border-color: rgba(227, 195, 156, .4) !important; color: #f3e6cc !important; }
+html[data-theme="dark"] body #roomOverlay .ro-panel.ro-carrot #roRoom .jr-addrow > .jr-chip[aria-label^="Добави алергена"] { color: #ffd0e1 !important; }
+html[data-theme="dark"] body #roomOverlay .ro-panel.ro-carrot #roRoom .ask-live,
+html[data-theme="dark"] body #roomOverlay .ro-panel.ro-carrot #roRoom .ask-live .dot { color: #8fe0c2 !important; }
+html[data-theme="dark"] body #roomOverlay .ro-panel.ro-carrot #roRoom .pl-hr-em { box-shadow: 0 2px 6px rgba(0, 0, 0, .35); }
+html[data-theme="dark"] body #roomOverlay .ro-panel.ro-carrot #roRoom .jr-win > .ut-n > .pl-hr-ue { box-shadow: 0 2px 6px rgba(0, 0, 0, .35); }
+
+@media (prefers-reduced-motion: reduce) {
+  html body #roomOverlay .ro-panel.ro-carrot #roRoom :is(.fz-row > summary, .jr-card details.cm-row > summary)::after { transition: none; }
+}
+/* край 20.10 */
