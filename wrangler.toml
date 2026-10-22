@@ -1,0 +1,42 @@
+# ═══════════════════════════════════════════════════════════════════════
+# Бейби Ленд · Cloudflare Workers (Static Assets + D1) · 22.10.2026
+#
+# ЕДИН Worker: /api/* → worker/index.mjs (регистрация, вход, админ; база D1)
+#              всичко друго → статичните файлове от dist/ (сглобява ги node build.js)
+# Сглобяването: Workers Builds → Build command = "node build.js", Deploy command = "npx wrangler deploy".
+# Обяснението за собственика: CLOUDFLARE_README_BG.md.
+# ПЪТ НАЗАД: махни този файл, worker/ и migrations/; Netlify версията е в dev/_netlify_staro/.
+# ═══════════════════════════════════════════════════════════════════════
+name = "babyland"
+main = "worker/index.mjs"
+compatibility_date = "2026-10-01"
+# scrypt/randomBytes/timingSafeEqual/createHash от node:crypto (worker/lib/core.mjs) — под nodejs_compat.
+compatibility_flags = ["nodejs_compat"]
+# Променливите, зададени в таблото (ADMIN_EMAILS), да НЕ се трият при всеки deploy.
+keep_vars = true
+
+[assets]
+directory = "./dist"
+binding = "ASSETS"
+# Worker-ът тръгва ПЪРВИ само за /api/* → /api/* никога не връща index.html.
+run_worker_first = ["/api/*"]
+# Приложението е ЕДНА страница (както беше «/* /index.html 200» на Netlify): адрес без файл → index.html.
+#   Липсващ .js/.css с разширение НЕ става HTML 200 — Worker-ът го връща 404 (worker/index.mjs).
+not_found_handling = "single-page-application"
+# "none": /index.html се сервира с 200, без 307 към "/" (по подразбиране auto-trailing-slash го пренасочва).
+#   sw.js тегли 'index.html' и отказва пренасочен отговор → без това губи картата на ?v= версиите.
+#   "/" пак дава index.html (през not_found_handling). ПЪТ НАЗАД: махни реда.
+html_handling = "none"
+
+[[d1_databases]]
+binding = "DB"
+database_name = "babyland"
+database_id = "ЗАМЕНИ_С_ID"
+migrations_dir = "migrations"
+
+# ADMIN_EMAILS — по желание, в Cloudflare → Worker → Settings → Variables and Secrets
+#   (тук нарочно няма [vars]; keep_vars горе пази стойността от таблото при deploy).
+#   aaeromove@gmail.com е администратор и без нея (worker/lib/admins.mjs).
+
+[observability]
+enabled = true

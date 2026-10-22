@@ -1,6 +1,6 @@
 // 🧪 21.10 · достъп · ЛОКАЛНИЯТ СЪРВЪР С /api ЗА ПРОБИТЕ
 // Сервира статичните файлове от корена (като dev/proba/server.js, без кеш) И пуска /api/* през
-// makeApi (netlify/functions/_lib/api.mjs) — СЪЩИЯТ код като на Netlify, но хранилището е В ПАМЕТТА
+// makeApi (worker/lib/api.mjs) — СЪЩИЯТ код като на Cloudflare, но хранилището е В ПАМЕТТА
 // (repo.mjs · makeRepoVPamet): всяко пускане почва празно, нищо не се пише на диска, нищо не излиза навън.
 // Админ: aaeromove@gmail.com (admins.mjs) + --admin=… по желание.
 //
@@ -25,7 +25,7 @@ const ПОРТ = Number(арг.find(a => /^\d+$/.test(a)) || 8914);
 const стойност = (име) => { const a = арг.find(x => x.startsWith('--' + име + '=')); return a ? a.slice(име.length + 3) : null; };
 const ПРОЕКТ = path.resolve(__dirname, '..', '..');
 const КОРЕН = path.join(ПРОЕКТ, арг.includes('--dist') ? 'dist' : '');
-const LIB = path.join(ПРОЕКТ, 'netlify', 'functions', '_lib');
+const LIB = path.join(ПРОЕКТ, 'worker', 'lib');   // 22.10 · Cloudflare: логиката се премести от netlify/functions/_lib/ · ПЪТ НАЗАД: dev/_netlify_staro/server_api.js
 const ВИД = { '.html': 'text/html; charset=utf-8', '.js': 'text/javascript; charset=utf-8', '.mjs': 'text/javascript; charset=utf-8',
   '.css': 'text/css; charset=utf-8', '.json': 'application/json; charset=utf-8', '.webmanifest': 'application/manifest+json',
   '.svg': 'image/svg+xml', '.png': 'image/png', '.jpg': 'image/jpeg', '.jpeg': 'image/jpeg', '.webp': 'image/webp',

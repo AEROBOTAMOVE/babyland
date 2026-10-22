@@ -41,7 +41,10 @@ function netlifyПравила() {
       if (i > 0) правила.push({ път, име: р.slice(0, i).trim(), стойност: р.slice(i + 1).trim() });
     }
   }
-  const toml = fs.readFileSync('netlify.toml', 'utf8');
+  // 22.10 · Cloudflare · netlify.toml го няма — правилата му за /js/* /lib/* /css/* са вече в HEADERS на build.js
+  //   (dist/_headers, който Cloudflare чете). Появи ли се пак — чете се както преди.
+  //   ПЪТ НАЗАД: dev/_netlify_staro/dzhamp_pazach.js
+  const toml = fs.existsSync('netlify.toml') ? fs.readFileSync('netlify.toml', 'utf8') : '';
   const Р = /for\s*=\s*"([^"]+)"[\s\S]*?Cache-Control\s*=\s*"([^"]+)"/g;
   let m;
   while ((m = Р.exec(toml))) правила.push({ път: m[1], име: 'Cache-Control', стойност: m[2] });

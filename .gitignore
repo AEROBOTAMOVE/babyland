@@ -47,3 +47,7 @@ dev/proba/razpyani.json
 
 # 🚦 20.10 опашката на пробите (slot.js) — временни слотове
 dev/proba/.sloti/
+
+# 22.10 · Cloudflare · местните файлове на wrangler (wrangler dev / d1 --local) — не са изходен код
+.wrangler/
+node_modules/

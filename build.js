@@ -8,7 +8,7 @@
 //
 // НУЛА ЗАВИСИМОСТИ. Пуска се с обикновен node, без npm install.
 //
-// ПУСКАНЕ:  node build.js            ← dist/ за Netlify (така го пуска Netlify)
+// ПУСКАНЕ:  node build.js            ← dist/ за Cloudflare (22.10; до тогава Netlify) — Workers Builds го пуска така
 //           node build.js --dzhamp   ← + dist-dzhamp/ и babyland-dzhamp.zip за Джъмп.бг
 // ПРОВЕРКА: node build.js --proveri   (сглобява и СВЕРЯВА, без да пише)
 // ПЪТ НАЗАД: dist/ и dist-dzhamp/ се трият изцяло и се сглобяват наново.
@@ -118,6 +118,18 @@ const HEADERS = [
   '/icons/*',
   '  Cache-Control: public, max-age=31536000, immutable',
   '',
+  // 22.10 · Cloudflare · /js/* /lib/* /css/* бяха в [[headers]] на netlify.toml — Cloudflare чете само
+  //   dist/_headers, затова са тук (същите стойности; dev/dzhamp_pazach.js ги сверява с .htaccess на Джъмп).
+  //   ПЪТ НАЗАД: махни трите блока и върни netlify.toml от dev/_netlify_staro/.
+  '/js/*',
+  '  Cache-Control: public, max-age=604800',
+  '',
+  '/lib/*',
+  '  Cache-Control: public, max-age=604800',
+  '',
+  '/css/*',
+  '  Cache-Control: public, max-age=604800',
+  '',
   '/*',
   '  X-Content-Type-Options: nosniff',
   '  Referrer-Policy: no-referrer',
@@ -128,6 +140,12 @@ const HEADERS = [
 // Приложението е ЕДНА страница. Пренасочването важи само когато няма файл
 // на този път — тоест липсващ ресурс пак си остава 404 и не се крие.
 const REDIRECTS = '/*    /index.html   200\n';
+// 22.10 · Cloudflare · dist/_redirects ВЕЧЕ НЕ СЕ ПИШЕ. На Workers Static Assets еднастраничното поведение е
+//   not_found_handling = "single-page-application" в wrangler.toml; „/* → /index.html 200“ в _redirects там е
+//   излишно (Pages го отхвърляше като безкраен цикъл). /api/* го поема Worker-ът (run_worker_first), а липсващ
+//   .js/.css Worker-ът връща 404, не HTML (worker/index.mjs). REDIRECTS остава само като документ.
+//   ПЪТ НАЗАД: ПИШИ_REDIRECTS = true.
+const ПИШИ_REDIRECTS = false;
 
 // ═══════════════════════════════════════════════════════════════════════
 // 🇧🇬 ДЖЪМП.БГ (15.09.2026) — LiteSpeed + cPanel
@@ -334,7 +352,7 @@ function сглобиВ(изход, заNetlify) {
   for (const д of ПАПКИ) копирай(path.join(КОРЕН, д), path.join(изход, д));
   if (заNetlify) {
     fs.writeFileSync(path.join(изход, '_headers'), HEADERS);
-    fs.writeFileSync(path.join(изход, '_redirects'), REDIRECTS);
+    if (ПИШИ_REDIRECTS) fs.writeFileSync(path.join(изход, '_redirects'), REDIRECTS);   // 22.10 · Cloudflare (виж ПИШИ_REDIRECTS)
   } else {
     for (const [име, текст] of Object.entries(htaccessФайлове())) fs.writeFileSync(path.join(изход, име), текст);
   }
@@ -388,7 +406,7 @@ function главна() {
   const липсват = липсващи(САМО_ПРОВЕРКА ? КОРЕН : ИЗХОД);
 
   console.log('');
-  console.log('📦 ПАКЕТ ЗА NETLIFY');
+  console.log('📦 ПАКЕТ ЗА CLOUDFLARE (dist/ → [assets] в wrangler.toml)');
   console.log('   включени: ' + план.join(' · '));
   if (!САМО_ПРОВЕРКА) {
     const р = размер(ИЗХОД);

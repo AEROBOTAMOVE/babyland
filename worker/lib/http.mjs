@@ -1,6 +1,7 @@
 /* Бейби Ленд · HTTP помощници (JSON отговори, бисквитката, CSRF пазачът)
    21.10 · достъп · пренесено от AERO клиент (_lib/http.mjs); бисквитката е «bl_s».
-   ПЪТ НАЗАД: файлът е нов — махни папката netlify/. */
+   22.10 · Cloudflare · преместено от netlify/functions/_lib/ без промяна.
+   ПЪТ НАЗАД: копието отпреди 22.10 е в dev/_netlify_staro/netlify/functions/_lib/. */
 import { COOKIE_NAME, SESSION_DAYS, MSG } from "./core.mjs";
 
 /* Vary: * — Cache API (caches.put) отказва такъв отговор по спецификацията. sw.js на приложението е «кеш-първо»

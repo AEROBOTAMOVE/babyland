@@ -5,7 +5,8 @@
    /api/me, админ списък, админ действия, CSV файлът, дневникът на админа.
    Базата (repo), списъкът с администратори и часовникът се подават отвън,
    затова целият поток се тества локално без Postgres (dev/proba/test_dostap.mjs).
-   ПЪТ НАЗАД: файлът е нов — махни папката netlify/.
+   22.10 · Cloudflare · преместено от netlify/functions/_lib/ — логиката е СЪЩАТА байт в байт; вика го worker/index.mjs.
+   ПЪТ НАЗАД: копието отпреди 22.10 е в dev/_netlify_staro/netlify/functions/_lib/.
 
    ДОГОВОРЪТ (същият произход, бисквитка HttpOnly «bl_s», JSON, no-store):
      POST /api/register  {email, password} → 200 {ok, user, kontakti, cena_eur, access_days, msg} + Set-Cookie · 409 · 400 · 429
@@ -332,7 +333,7 @@ export function makeApi({ repo, adminEmails, now = () => new Date() }) {
     return json(200, { ok: true, zapisi, broi: zapisi.length, max: ADMIN_LOG_MAX, now: n.toISOString() });
   });
 
-  /* пътищата — за локалния сървър (dev/proba/server_api.js); на Netlify всеки файл в netlify/functions/ носи своя config.path */
+  /* пътищата — по тях worker/index.mjs (Cloudflare) и dev/proba/server_api.js / server_cf.js избират функцията */
   const PATISHTA = {
     "/api/register": register,
     "/api/login": login,

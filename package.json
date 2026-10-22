@@ -1,8 +1,5 @@
 {
   "name": "babyland",
   "private": true,
-  "description": "Бейби Ленд · 21.10 · достъп: функциите в netlify/functions ползват само @netlify/database. Без \"type\": \"module\" — build.js и dev/ са CommonJS (require); функциите са .mjs.",
-  "dependencies": {
-    "@netlify/database": "^2.0.1"
-  }
+  "description": "Бейби Ленд · 22.10 · Cloudflare Workers (worker/index.mjs + D1, виж wrangler.toml и CLOUDFLARE_README_BG.md). Без \"type\": \"module\" — build.js и dev/ са CommonJS (require); worker/ е .mjs. Без зависимости: Workers Builds пуска node build.js, после npx wrangler deploy. ПЪТ НАЗАД (Netlify): dev/_netlify_staro/package.json."
 }
