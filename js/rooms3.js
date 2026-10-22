@@ -1690,7 +1690,7 @@
       btn.addEventListener('click', () => {
         const n = inp.value.trim(), t = parseFloat(amt.value);
         if (!n) { nudge(btn, 'За какво събирате? Напиши го с твои думи. 🐷', inp); return; }
-        if (isNaN(t)) { nudge(btn, 'Напиши и колко лева са нужни (само число). 🐷', amt); return; }
+        if (isNaN(t)) { nudge(btn, 'Напиши и колко евро са нужни (само число). 🐷', amt); return; }
         if (t <= 0) { nudge(btn, 'Сумата трябва да е над нула. 🐷', amt); return; }
         clearHint(btn);
         // 🔴 25.08: при паднал запис картата се пресъздаваше празна и двете

@@ -561,4 +561,7 @@ html[data-theme="dark"] body #roomOverlay .ro-panel #roRoom .pw-box p.jr-privacy
    нощем .ro-who е 88 px висок срещу 60 денем → шапката 116 срещу 88, а бутоните се центрират по нея).
    Закотвени горе: денем остават на y = 22 (14 + 8), нощем се изравняват с табовете. */
 html body #roomOverlay .ro-panel .ro-head > .ro-nav { align-self: flex-start !important; margin-top: 8px !important; }
+/* 8 · 22.10 проверката „като майка“ (fp22): балонът #roFab (долу вдясно) покриваше последните „+“/микрофон в стаите —
+   място под съдържанието, за да може всеки бутон да се избута над балона (докато превърташ, балонът избледнява — pl-zhivo.js). */
+html body #roomOverlay .ro-panel #roRoom { padding-bottom: 120px !important; }
 /* край 21.10 · одит */

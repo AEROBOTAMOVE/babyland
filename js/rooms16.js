@@ -200,8 +200,8 @@
       });
       кг.appendChild(b);
     });
-    const сума = el('input', 'jr-word'); сума.type = 'number'; сума.min = 0; сума.placeholder = 'лв…'; сума.style.maxWidth = '90px';
-    сума.setAttribute('aria-label', 'Колко лева');
+    const сума = el('input', 'jr-word'); сума.type = 'number'; сума.min = 0; сума.placeholder = '€…'; /* 22.10 · евро (беше 'лв…') */ сума.style.maxWidth = '90px';
+    сума.setAttribute('aria-label', 'Колко евро');
     const доб = el('button', 'jr-chip', '+'); доб.type = 'button';
     доб.setAttribute('aria-label', 'Добави разхода');
     // 👆 12.08 (ИЗМЕРЕНО): „+“ излизаше 36×42 — .jr-chip носи височина, но не и
@@ -304,7 +304,7 @@
     };
     const пиши = () => {
       const v = parseFloat(сума.value);
-      if (isNaN(v) || v <= 0) { кажи('Напиши колко лева — само число, по-голямо от нула.', true); сума.focus(); return; }
+      if (isNaN(v) || v <= 0) { кажи('Напиши колко евро — само число, по-голямо от нула.', true); сума.focus(); return; }
       if (v > ТАВАН) { кажи('Толкова голямо число не мога да запиша — провери дали не е паднал един нул. (до ' + ТАВАН + ' лв на запис)', true); сума.select(); сума.focus(); return; }
       const данни = load('bl_spend', []);
       const име = (КАТ.find(k => k.id === катИзбор) || {}).н || '';
