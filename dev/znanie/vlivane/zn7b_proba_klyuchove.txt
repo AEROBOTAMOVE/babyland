@@ -1,0 +1,18 @@
+🚦 опашка: всички 2 слота „mozak“ са заети — чакам
+🚦 слот mozak-1 след 23 с чакане
+✅ „минах термина“  br-sedmici → br-prenosvane-indukcia
+✅ „мина ми термина“  br-sedmici → br-prenosvane-indukcia
+✅ „преминах термина“  br-sedmici → br-prenosvane-indukcia
+✅ „ваксина рсв бременна“  nd-nastinki → br-vaksini
+✅ „рсв ваксина бременност“  nd-nastinki → br-vaksini
+✅ „ваксина срещу рсв бременна“  nd-nastinki → br-vaksini
+✅ „коклюш ваксина бременност“  zd-vaksini → br-vaksini
+✅ „ваксина срещу коклюш бременност“  zd-vaksini → br-vaksini
+✅ „слезе ли ми коремът“  ТИШИНА → g3-bebeto-sleze-nadolu
+✅ „слезе ми коремът“  ТИШИНА → g3-bebeto-sleze-nadolu
+✅ „коремът ми слезе“  ТИШИНА → g3-bebeto-sleze-nadolu
+✅ „слезе ли ми корема“  ТИШИНА → g3-bebeto-sleze-nadolu
+✅ „45 дни преди термина“  br-sedmici → br-bolnichen-bremennost
+✅ „болничен 45 дни преди термина“  br-sedmici → br-bolnichen-bremennost
+
+предложени 14 · стигат до своята карта 14 · вече заети 0 · проверени чужди (първите 4 ключа на „Бременност“) 912 · мръднали 0

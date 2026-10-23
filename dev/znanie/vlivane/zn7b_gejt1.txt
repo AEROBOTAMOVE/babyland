@@ -1,0 +1,14 @@
+
+  🃏 СЛИВАЧ НА КАРТИ[33m   [СУХО][0m
+  стаж: karti_zn7b.json
+
+  ── ПРИЕТИ: 8 ──
+       8  Бременност
+
+  [31m── ОТКАЗАНИ: 3 ──[0m
+     🔴 zn7b-sedmica-37-38        4 ключа ВЕЧЕ са на друга карта: „на 37 седмица съм"→br-sedmici, „в 37 седмица съм"→br-sedmici, „на 38 седмица съм"→br-sedmici[90m  [karti_zn7b.json][0m
+     🔴 zn7b-sedmica-39-40        4 ключа ВЕЧЕ са на друга карта: „на 39 седмица съм"→br-sedmici, „в 39 седмица съм"→br-sedmici, „на 40 седмица съм"→br-sedmici[90m  [karti_zn7b.json][0m
+     🔴 zn7b-sedmica-41-42        2 ключа ВЕЧЕ са на друга карта: „на 41 седмица съм"→br-sedmici, „в 41 седмица съм"→br-sedmici[90m  [karti_zn7b.json][0m
+
+  [33mСУХО. За писане: node dev/slivach_karti.js --pishi[0m
+

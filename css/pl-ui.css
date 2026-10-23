@@ -565,3 +565,71 @@ html body #roomOverlay .ro-panel .ro-head > .ro-nav { align-self: flex-start !im
    място под съдържанието, за да може всеки бутон да се избута над балона (докато превърташ, балонът избледнява — pl-zhivo.js). */
 html body #roomOverlay .ro-panel #roRoom { padding-bottom: 120px !important; }
 /* край 21.10 · одит */
+
+/* ═══ 16 · 22.10 ЗНАНИЕТО НА ЕДИН ДОПИР — „Тази седмица“ · „Този месец“ · „След раждането“ ═══
+   Картата е от js/pl-statii.js (блок 22.10); стаите я слагат: Бременност — първа в .pl-br (под банера),
+   Развитие и игри — под „Нашият етап“, Жената в мен — под медальона. Една рисунка навсякъде.
+   Материалът: панелът е .pl-felt (§ 8), „Прочети цялото“ е .pl-soft (§ 2) — четенето е тихо действие;
+   гелът в тези стаи остава за записите. Медальонът: златен пръстен, числото на Nunito (Georgia има
+   старинни цифри — „10“ се чете „1о“). Без анимации: картата идва с блока си.
+   КОНТРАСТ (изчислен по WCAG 2.1, scratchpad kontrast.js, спрямо крема #fffaf3, нощем спрямо #26336b):
+     етикетът #b43a6b → 5.4:1 (12px/800); заглавието #1d2a5c → 13.1:1; текстът #3b3f5c → 9.9:1;
+     числото #b43a6b върху бяло → 5.6:1; „седмица“ #6b5a4e → 6.6:1; бележката #6b5a4e → 6.3:1.
+     нощем: етикетът #ffc2d8 → 7.9:1; заглавието #fff → 11.9:1; текстът #e3e5f5 → 9.5:1;
+     числото #ffd6e5 върху #1b2554 → 11.1:1; стрелката #ffc2d8 върху бутона #2b3872 → 7.3:1.
+   ПЪТ НАЗАД: махни този раздел (до „край 22.10“) — без него картите са гол текст, нищо не се чупи. */
+html body .pl-zn.pl-zn {
+  flex: none; display: flex; flex-direction: column; gap: 11px;
+  padding: 16px 16px 15px;
+  font-family: Nunito, Nunito-fallback, system-ui, sans-serif; color: var(--pl-ink, #3b3f5c); text-align: left;
+}
+.pl-zn > * { position: relative; z-index: 1; }           /* над шева (::after на .pl-felt) */
+.pl-zn-top { display: flex; align-items: center; gap: 13px; }
+.pl-zn-medal {
+  flex: none; width: 60px; height: 60px; border-radius: 50%;
+  display: flex; flex-direction: column; align-items: center; justify-content: center;
+  background: radial-gradient(circle at 50% 30%, #fff 0, #fff 55%, #fdf3e6 100%);
+  box-shadow: 0 0 0 2.5px #fff, 0 0 0 4.5px #d9b46a, 0 0 0 5.5px rgba(169, 122, 38, .35), 0 6px 12px rgba(169, 122, 38, .22);
+  margin: 4px 2px 4px 4px;
+}
+.pl-zn-medal b {
+  font-family: Nunito, Nunito-fallback, system-ui, sans-serif; font-weight: 900; font-size: 23px; line-height: 1;
+  font-variant-numeric: lining-nums tabular-nums; letter-spacing: -.3px; color: #b43a6b;
+}
+.pl-zn-medal small { margin-top: 3px; font-size: 9.5px; font-weight: 800; line-height: 1; letter-spacing: .2px; color: #6b5a4e; }
+.pl-zn-hd { min-width: 0; display: flex; flex-direction: column; gap: 3px; }
+.pl-zn-eye { font-size: 12px; font-weight: 800; line-height: 1.2; letter-spacing: .6px; text-transform: uppercase; color: #b43a6b; }
+.pl-zn-t {
+  margin: 0; font-family: var(--pl-serif, Georgia, serif); font-weight: 700; font-size: 18.5px; line-height: 1.22;
+  letter-spacing: -.2px; color: var(--pl-navy, #1d2a5c); text-wrap: balance; overflow-wrap: anywhere;
+}
+.pl-zn-note { font-style: normal; font-size: 12px; font-weight: 700; line-height: 1.25; color: #6b5a4e; }
+.pl-zn-txt, .pl-zn-more p { margin: 0; font-size: 14.5px; font-weight: 600; line-height: 1.5; color: var(--pl-ink, #3b3f5c); }
+.pl-zn-more { display: flex; flex-direction: column; gap: 9px; }
+.pl-zn-more[hidden] { display: none; }
+.pl-zn-more p.pl-zn-tip {
+  padding: 10px 12px; border-radius: 16px;
+  background: rgba(253, 230, 239, .55); box-shadow: inset 0 0 0 1px rgba(239, 163, 193, .45);
+}
+.pl-zn-more p.pl-zn-tip::before { content: '✨ '; }
+html body .pl-zn .pl-zn-go.pl-zn-go {
+  align-self: flex-start; display: inline-flex; align-items: center; gap: 4px;
+  min-height: 44px; margin: 1px 0 0; padding: 0 12px 0 18px; border-radius: 999px;
+  font-family: Nunito, Nunito-fallback, system-ui, sans-serif; font-size: 15.5px; font-weight: 800; line-height: 1;
+  cursor: pointer; -webkit-tap-highlight-color: transparent;
+}
+.pl-zn-go svg { display: block; width: 18px; height: 18px; flex: none; color: #b43a6b; }
+.pl-zn-go[aria-expanded="true"] svg { transform: rotate(-90deg); }
+.pl-zn-go:focus-visible { outline: 3px solid #d0508a; outline-offset: 3px; }
+.pl-zn-sr { position: absolute !important; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); clip-path: inset(50%); white-space: nowrap; }
+/* нощ: филцът и бутонът са нощни от § 8; медальонът става тъмносин със златен пръстен */
+html[data-theme="dark"] body .pl-zn.pl-zn { color: #e3e5f5; }
+html[data-theme="dark"] .pl-zn-medal { background: radial-gradient(circle at 50% 30%, #24306a 0, #1b2554 100%); box-shadow: 0 0 0 2.5px #1b2554, 0 0 0 4.5px #e6c27a, 0 6px 14px rgba(0, 0, 0, .35); }
+html[data-theme="dark"] .pl-zn-medal b { color: #ffd6e5; }
+html[data-theme="dark"] .pl-zn-medal small, html[data-theme="dark"] .pl-zn-note { color: #d0d3ea; }
+html[data-theme="dark"] .pl-zn-eye { color: #ffc2d8; }
+html[data-theme="dark"] .pl-zn-t { color: #fff; }
+html[data-theme="dark"] .pl-zn-txt, html[data-theme="dark"] .pl-zn-more p { color: #e3e5f5; }
+html[data-theme="dark"] .pl-zn-more p.pl-zn-tip { background: rgba(255, 255, 255, .07); box-shadow: inset 0 0 0 1px rgba(245, 156, 187, .35); }
+html[data-theme="dark"] .pl-zn-go svg { color: #ffc2d8; }
+/* край 22.10 */

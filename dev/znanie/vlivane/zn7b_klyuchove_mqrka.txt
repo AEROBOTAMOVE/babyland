@@ -1,0 +1,15 @@
+добавени ключове: 21
+   br-prenosvane-indukcia: +3
+   br-vaksini: +5
+   g3-bebeto-sleze-nadolu: +4
+   br-bolnichen-bremennost: +2
+   h7-kravene-kasno: +1
+   br-kozha: +1
+   br-holestaza: +2
+   br-otoci-krak: +3
+
+── РАВНОСМЕТКА ──
+  ключът вади СВОЯТА карта: 21/21
+  корпус 1698 изречения · сменена карта при 0
+
+(само мярка · за запис: --pishi)

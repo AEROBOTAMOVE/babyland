@@ -1076,7 +1076,7 @@
         .map(f => (f && f.n) || f).filter(Boolean);
       return [...new Set(tried.concat(custom))];
     };
-    const days = ['пон', 'вт', 'ср', 'четв', 'пет', 'съб', 'нед'];
+    const days = ['пон', 'вт', 'ср', 'чет', 'пет', 'съб', 'нед'];
     const mon = (() => { const d = new Date(); const day = (d.getDay() + 6) % 7; d.setDate(d.getDate() - day); return d; })();
     const grid = el('div', 'mn-grid');
     // 👆 12.08 (мерено в 375px телефон): mega.css дава `repeat(auto-fit,

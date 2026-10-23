@@ -1,0 +1,107 @@
+✅ ТЕСТ „вече съм 21 седмица какво трябва да направя“  ТИШИНА → zn7b-sedmica-21-22
+✅ ТЕСТ „какво става с бебето в 22 седмица“  ТИШИНА → zn7b-sedmica-21-22
+✅ ТЕСТ „na 22 sedmica sam kakvo da ochakvam“  ТИШИНА → zn7b-sedmica-21-22
+✅ ТЕСТ „23 седмица съм и искам да знам какво се случва“  ТИШИНА → zn7b-sedmica-23-24
+✅ ТЕСТ „бременна съм в 24 седмица какво следва“  ТИШИНА → zn7b-sedmica-23-24
+✅ ТЕСТ „na 23 sedmica sam kak e bebeto“  ТИШИНА → zn7b-sedmica-23-24
+✅ ТЕСТ „на 25 седмица съм как е бебето“  ТИШИНА → zn7b-sedmica-25-26
+✅ ТЕСТ „26 гс какво трябва да направя“  ТИШИНА → zn7b-sedmica-25-26
+✅ ТЕСТ „26 sedmica sam kakvo da pravya“  ТИШИНА → zn7b-sedmica-25-26
+✅ ТЕСТ „28 седмица какво ме чака“  ТИШИНА → zn7b-sedmica-27-28
+✅ ТЕСТ „аз съм в 27 седмица какво е важно“  ТИШИНА → zn7b-sedmica-27-28
+✅ ТЕСТ „na 28 sedmica sam kakvo trqbva da znam“  ТИШИНА → zn7b-sedmica-27-28
+✅ ТЕСТ „в 29-та седмица съм какво се случва“  ТИШИНА → zn7b-sedmica-29-30
+✅ ТЕСТ „30 г.с. какво става с бебето“  ТИШИНА → zn7b-sedmica-29-30
+✅ ТЕСТ „na 30 sedmica sam vizhda li veche bebeto“  ТИШИНА → zn7b-sedmica-29-30
+✅ ТЕСТ „31 седмица бременна какво да очаквам“  ТИШИНА → zn7b-sedmica-31-32
+✅ ТЕСТ „какво се случва с бебето на 32 седмица“  nd-what → zn7b-sedmica-31-32
+✅ ТЕСТ „32 sedmica sam kakvo da napravya“  ТИШИНА → zn7b-sedmica-31-32
+✅ ТЕСТ „вече съм 33 седмица какво трябва да направя“  ТИШИНА → zn7b-sedmica-33-34
+✅ ТЕСТ „34 гс излизам ли в болничен“  ТИШИНА → zn7b-sedmica-33-34
+✅ ТЕСТ „na 34 sedmica sam kakvo predstoi“  ТИШИНА → zn7b-sedmica-33-34
+✅ ТЕСТ „на 35 седмици съм какво трябва да е готово“  ТИШИНА → zn7b-sedmica-35-36
+✅ ТЕСТ „36-та седмица какво ми трябва за родилното“  ТИШИНА → zn7b-sedmica-35-36
+✅ ТЕСТ „36 sedmica sam kakvo da ochakvam“  ТИШИНА → zn7b-sedmica-35-36
+✅ ТЕСТ „37 седмица съм какво следва“  ТИШИНА → zn7b-sedmica-37-38
+✅ ТЕСТ „в 38-ма седмица съм какво да очаквам“  zd-temperatura → zn7b-sedmica-37-38
+✅ ТЕСТ „na 37 sedmica sam mozhe li da rodya“  ТИШИНА → zn7b-sedmica-37-38
+✅ ТЕСТ „на 39 седмица съм и чакам“  zd-temperatura → zn7b-sedmica-39-40
+✅ ТЕСТ „40 седмица съм и още нищо“  ТИШИНА → zn7b-sedmica-39-40
+✅ ТЕСТ „na 40 sedmica sam i nishto“  ТИШИНА → zn7b-sedmica-39-40
+✅ ТЕСТ „вече съм 41 седмица какво правят“  br-prenosvane-indukcia → zn7b-sedmica-41-42
+✅ ТЕСТ „42 седмица бременна какво следва“  br-prenosvane-indukcia → zn7b-sedmica-41-42
+✅ ТЕСТ „na 41 sedmica sam oshte ne sam rodila“  br-prenosvane-indukcia → zn7b-sedmica-41-42
+🔴 КРАЖБА [br-sedmici] „на 37 седмица съм“  br-sedmici → zn7b-sedmica-37-38
+🔴 КРАЖБА [br-sedmici] „на 38 седмица съм“  br-sedmici → zn7b-sedmica-37-38
+🔴 КРАЖБА [br-sedmici] „на 39 седмица съм“  br-sedmici → zn7b-sedmica-39-40
+🔴 КРАЖБА [br-sedmici] „на 40 седмица съм“  br-sedmici → zn7b-sedmica-39-40
+🔴 КРАЖБА [br-sedmici] „на 41 седмица съм“  br-sedmici → zn7b-sedmica-41-42
+ℹ️ ДНЕС „на 21 седмица съм какво става с бебето“  ТИШИНА → zn7b-sedmica-21-22
+ℹ️ ДНЕС „22 седмица бременност“  ТИШИНА → zn7b-sedmica-21-22
+ℹ️ ДНЕС „на 23 седмица съм“  ТИШИНА → zn7b-sedmica-23-24
+ℹ️ ДНЕС „24 гс какво трябва да направя“  ТИШИНА → zn7b-sedmica-23-24
+ℹ️ ДНЕС „25 седмица какво става“  ТИШИНА → zn7b-sedmica-25-26
+ℹ️ ДНЕС „бременна в 26 седмица“  ТИШИНА → zn7b-sedmica-25-26
+ℹ️ ДНЕС „на 27 седмица съм какво да правя“  ТИШИНА → zn7b-sedmica-27-28
+ℹ️ ДНЕС „28 та седмица“  ТИШИНА → zn7b-sedmica-27-28
+ℹ️ ДНЕС „na 29 sedmica sam“  ТИШИНА → zn7b-sedmica-29-30
+ℹ️ ДНЕС „в 30 седмица съм“  ТИШИНА → zn7b-sedmica-29-30
+ℹ️ ДНЕС „31 седмица съм“  ТИШИНА → zn7b-sedmica-31-32
+ℹ️ ДНЕС „какво става в 32 седмица“  ТИШИНА → zn7b-sedmica-31-32
+ℹ️ ДНЕС „на 33 седмица съм“  ТИШИНА → zn7b-sedmica-33-34
+ℹ️ ДНЕС „34 седмица бременност болничен“  br-bliznaci-razlichno → zn7b-sedmica-33-34
+ℹ️ ДНЕС „на 35 седмица съм“  ТИШИНА → zn7b-sedmica-35-36
+ℹ️ ДНЕС „36 седмица какво става“  ТИШИНА → zn7b-sedmica-35-36
+ℹ️ ДНЕС „на 37 седмица съм“  br-sedmici → zn7b-sedmica-37-38
+ℹ️ ДНЕС „38 гс“  zd-temperatura → zn7b-sedmica-37-38
+ℹ️ ДНЕС „на 39 седмица съм“  br-sedmici → zn7b-sedmica-39-40
+ℹ️ ДНЕС „40 седмица и нищо“  ТИШИНА → zn7b-sedmica-39-40
+ℹ️ ДНЕС „на 40 седмица съм и нищо“  br-sedmici → zn7b-sedmica-39-40
+ℹ️ ДНЕС „41 седмица още не съм родила“  nia-bremenna-za-men → zn7b-sedmica-41-42
+ℹ️ ДНЕС „42 седмица бременност“  br-prenosvane-indukcia → zn7b-sedmica-41-42
+ℹ️ ДНЕС „вече съм 33 седмица какво трябва да направя“  ТИШИНА → zn7b-sedmica-33-34
+ℹ️ ДНЕС „na 38 sedmica sam kakvo da ochakvam“  zd-temperatura → zn7b-sedmica-37-38
+ℹ️ ДНЕС „жизнеспособно ли е бебето на 24 седмици“  ТИШИНА → zn7b-sedmica-23-24
+ℹ️ ДНЕС „кога бебето отваря очи в корема“  mb-oci → zn7b-sedmica-25-26
+ℹ️ ДНЕС „началото на третия триместър“  ТИШИНА → zn7b-sedmica-27-28
+ℹ️ ДНЕС „34 седмица болничен“  ТИШИНА → zn7b-sedmica-33-34
+ℹ️ ДНЕС „37 седмица може ли да родя“  ТИШИНА → zn7b-sedmica-37-38
+ℹ️ ДНЕС „на термин съм и нищо“  br-sedmici → zn7b-sedmica-39-40
+ℹ️ ДНЕС „чакам да се роди и нищо“  zn5-izgoryala-mayka → zn7b-sedmica-39-40
+ℹ️ ДНЕС „41 седмица още не съм родила“  nia-bremenna-za-men → zn7b-sedmica-41-42
+ℹ️ ДНЕС „на 21 седмици съм“  ТИШИНА → zn7b-sedmica-21-22
+ℹ️ ДНЕС „21 г с“  ТИШИНА → zn7b-sedmica-21-22
+ℹ️ ДНЕС „21-ва седмица“  ТИШИНА → zn7b-sedmica-21-22
+ℹ️ ДНЕС „27-ма седмица съм“  ТИШИНА → zn7b-sedmica-27-28
+🩺 СИМПТОМ „на 30 седмица съм и ме боли кръста“  ТИШИНА → zn7b-sedmica-29-30
+🩺 СИМПТОМ „32 седмица съм и имам киселини“  br-diskomfort → zn7b-sedmica-31-32
+🩺 СИМПТОМ „на 25 седмица съм и ми отичат краката“  br-kramp → br-kramp
+🩺 СИМПТОМ „на 36 седмица съм и ми изтекоха води“  br-kontrakcii → br-kontrakcii
+🩺 СИМПТОМ „на 28 седмица съм и бебето не мърда“  nb-dvizheniy-tvoyata → nb-dvizheniy-tvoyata
+🩺 СИМПТОМ „34 седмица съм и коремът се стяга“  br-brekston → br-brekston
+🩺 СИМПТОМ „на 38 седмица съм и ми излезе тапата“  br-vodi-tapa → br-vodi-tapa
+🩺 СИМПТОМ „на 24 седмица съм и кървя“  ТИШИНА → zn7b-sedmica-23-24
+🩺 СИМПТОМ „31 седмица съм и ме сърбят дланите“  ТИШИНА → zn7b-sedmica-31-32
+🩺 СИМПТОМ „на 22 седмица съм и имам хемороиди“  nia-hemoroidi → zn7b-sedmica-21-22
+🩺 СИМПТОМ „на 33 седмица съм и бебето е седнало“  br-sedalishtno → br-sedalishtno
+🩺 СИМПТОМ „на 39 седмица съм и имам контракции“  br-sedmici → br-sedmici
+🩺 СИМПТОМ „на 27 седмица съм и не мога да спя“  br-son-pozi → br-son-pozi
+🩺 СИМПТОМ „на 35 седмица съм и ме боли главата и виждам мушици“  br-preeklampsia-znaci → br-preeklampsia-znaci
+🩺 СИМПТОМ „на 40 седмица съм и имам температура“  br-sedmici → br-sedmici
+🩺 СИМПТОМ „на 29 седмица съм и имам задух“  nb-zaduh-sarcebien → zn7b-sedmica-29-30
+🩺 СИМПТОМ „на 23 седмица съм и ме боли кръста“  ТИШИНА → zn7b-sedmica-23-24
+🩺 СИМПТОМ „30 седмица съм и ми излиза коластра“  ТИШИНА → zn7b-sedmica-29-30
+🩺 СИМПТОМ „на 26 седмица съм и имам крампи нощем“  br-kramp → zn7b-sedmica-25-26
+🩺 СИМПТОМ „на 32 седмица съм и се задъхвам“  nb-zaduh-sarcebien → nb-zaduh-sarcebien
+🩺 СИМПТОМ „на 34 седмица съм и пикая постоянно“  ТИШИНА → zn7b-sedmica-33-34
+🩺 СИМПТОМ „на 37 седмица съм и ме боли срамната кост“  br-sedmici → zn7b-sedmica-37-38
+🩺 СИМПТОМ „на 21 седмица съм и имам стрии“  br-strii → zn7b-sedmica-21-22
+🩺 СИМПТОМ „на 24 седмица съм кога е тестът за захар“  br-test → br-test
+🩺 СИМПТОМ „на 36 седмица съм какво да има в чантата“  ТИШИНА → zn7b-sedmica-35-36
+🩺 СИМПТОМ „на 33 седмица съм и бебето е с главата нагоре“  br-sedalishtno → br-sedalishtno
+🩺 СИМПТОМ „на 28 седмица съм резус отрицателна“  nb-rezus-otricatel → nb-rezus-otricatel
+🩺 СИМПТОМ „на 35 седмица съм и ми отичат ръцете“  ТИШИНА → zn7b-sedmica-35-36
+🩺 СИМПТОМ „на 31 седмица съм и ме сърби коремът“  zd-atopichen-dermatit → zd-atopichen-dermatit
+🩺 СИМПТОМ „на 38 седмица съм и имам течение“  br-sedmici → br-sedmici
+
+карти 11 · ТЕСТ 33/33 · ключове към своята карта 530/530 · чужди/контролни проверени 949 · КРАЖБИ 5 · днешни въпроси мръднали 37 · седмица+симптом при мен 14/30

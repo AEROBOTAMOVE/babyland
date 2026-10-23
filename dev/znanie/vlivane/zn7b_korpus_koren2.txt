@@ -1,0 +1,12 @@
+ХИПОТЕЗА корен v2 · без стажа
+корпус 1698 изречения · сменени 8
+   ⚠️ korpus350 [VUPROS] болки след цезарово  : mm-sechenie -> br-diskomfort
+   ⚠️ korpus350 [SPESHNO] докато кърмех заспах отгоре му и се събудих а той беше под мен  : w1-pak-se-vloshi -> lb3-kolastra
+   ⚠️ korpus350 [NEVINNO] акото е нормално на цвят вече не е зелено  : lb2-aki-cvetove -> -
+   ⚠️ korpus350 [NEVINNO] като беше бебе получи фебрилен гърч сега е на четири и е добре  : w1-pak-se-vloshi -> lb-febrilen
+   ⚠️ korpus_nevinni [NEVINNO] акото е нормално на цвят вече не е зелено  : lb2-aki-cvetove -> -
+   ⚠️ korpus_nevinni [NEVINNO] като беше бебе получи фебрилен гърч сега е на четири и е добре  : w1-pak-se-vloshi -> lb-febrilen
+   ⚠️ korpus_speshni [SPESHNO] докато кърмех заспах отгоре му и се събудих а той беше под мен  : w1-pak-se-vloshi -> lb3-kolastra
+   ⚠️ korpus_hipoteza [SPESHNO] педиатърът каза да чакаме но детето получи гърч  : lb-febrilen -> -
+ключове 5914 · своята карта: днес 5894 · с кръпката 5893 · сменени 1
+   🔴 br-chanta „какви документи за родилното“ [Бременност]  br-chanta -> zn2-dokumenti-rodilno

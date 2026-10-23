@@ -1,0 +1,149 @@
+✅ ТЕСТ „синът ми навърши годинка какво е нормално да прави“  rz-kukli → zn8b-godinka
+🔴 ТЕСТ „дъщеря ми е на 12 месеца какви неща вече трябва да умее“  nia-strah-ot-nego → nia-strah-ot-nego   (чака zn8b-godinka)
+✅ ТЕСТ „bebeto stana na godinka kakvo trqbva da umee“  ТИШИНА → zn8b-godinka
+✅ ТЕСТ „малкият е на 14 месеца какво е нормално да може“  ТИШИНА → zn8b-13-15-meseca
+🔴 ТЕСТ „на година и 3 месеца е какво се очаква да прави“  ТИШИНА → ТИШИНА   (чака zn8b-13-15-meseca)
+✅ ТЕСТ „deteto e na 13 meseca kakvo e normalno da pravi“  rz-palzene → zn8b-13-15-meseca
+✅ ТЕСТ „дъщеря ми е на година и половина какво е нормално да умее“  ТИШИНА → zn8b-16-18-meseca
+🔴 ТЕСТ „на 17 месеца е какво се очаква от него“  ТИШИНА → ТИШИНА   (чака zn8b-16-18-meseca)
+✅ ТЕСТ „sinat mi e na 18 meseca kakvo trqbva da umee“  ТИШИНА → zn8b-16-18-meseca
+✅ ТЕСТ „какво е нормално да прави на 21 месеца“  ТИШИНА → zn8b-19-24-meseca
+🔴 ТЕСТ „малката е на година и 10 месеца какво трябва да умее“  ТИШИНА → ТИШИНА   (чака zn8b-19-24-meseca)
+🔴 ТЕСТ „deteto e na 22 meseca kakvo e normalno“  rz-palzene → rz-palzene   (чака zn8b-19-24-meseca)
+✅ ТЕСТ „синът ми навърши 2 години какво е нормално да може“  rz-kukli → zn8b-2-3-godini
+✅ ТЕСТ „на две години и половина какви умения трябва да има“  nia-cv → zn8b-2-3-godini
+✅ ТЕСТ „dete na 2 godinki kakvo trqbva da znae“  gz-kysno-govor → zn8b-2-3-godini
+✅ ТЕСТ „синът ми е на 3 години и половина какво е нормално да прави“  rz-kukli → zn8b-3-4-godini
+✅ ТЕСТ „дъщеря ми навърши три години какво се очаква да може вече“  ТИШИНА → zn8b-3-4-godini
+✅ ТЕСТ „deteto e na 3 godini kakvo e normalno da moje“  rz-palzene → zn8b-3-4-godini
+✅ ТЕСТ „малкият е на 4 годинки какво трябва да умее“  ТИШИНА → zn8b-4-5-godini
+✅ ТЕСТ „на четири години и половина какво е нормално да може детето“  zn4b-na-4-godini → zn8b-4-5-godini
+✅ ТЕСТ „sinat mi e na 4 godini kakvo e normalno da moje“  ТИШИНА → zn8b-4-5-godini
+✅ ТЕСТ „дъщеря ми е на 5 години какво е нормално да умее“  ТИШИНА → zn8b-5-6-godini
+✅ ТЕСТ „детето е почти на 6 години какво трябва да може“  gz-kysno-govor → zn8b-5-6-godini
+✅ ТЕСТ „на пет години и половина какво трябва да може едно дете“  rz-hiperaktiven → zn8b-5-6-godini
+✅ ТЕСТ2 „какво трябва да може едно дете на годинка“  rz-hiperaktiven → zn8b-godinka
+✅ ТЕСТ2 „бебето ми стана на 1 година какво трябва да умее вече“  ТИШИНА → zn8b-godinka
+✅ ТЕСТ2 „на 13 месеца какво трябва да прави детето“  g3r-garne-nakraynik-i-gashtichki-kakvo → zn8b-13-15-meseca
+✅ ТЕСТ2 „какво може дете на 15 месеца“  rz-molivche → zn8b-13-15-meseca
+✅ ТЕСТ2 „deteto mi e na 16 meseca kakvo trqbva da moje“  g3r-garne-nakraynik-i-gashtichki-kakvo → zn8b-16-18-meseca
+✅ ТЕСТ2 „на година и половина какво е нормално да прави“  ТИШИНА → zn8b-16-18-meseca
+🔴 ТЕСТ2 „какво трябва да умее дете на 20 месеца“  ТИШИНА → ТИШИНА   (чака zn8b-19-24-meseca)
+✅ ТЕСТ2 „синът ми е на 23 месеца какво е нормално да може“  rz-kukli → zn8b-19-24-meseca
+✅ ТЕСТ2 „на 2 години и половина какво трябва да може“  ТИШИНА → zn8b-2-3-godini
+🔴 ТЕСТ2 „dete na 30 meseca kakvo moje“  rz-molivche → rz-molivche   (чака zn8b-2-3-godini)
+✅ ТЕСТ-КЛ „синът ми е на 3 години какво е нормално да може“  rz-kukli → zn8b-3-4-godini
+✅ ТЕСТ-КЛ „тригодишно дете какво трябва да умее“  zn4b-na-3-godini → zn4b-na-3-godini
+✅ ТЕСТ-КЛ „deteto e na 3 godinki kakvo trqbva da moje“  rz-sravnenie → zn8b-3-4-godini
+✅ ТЕСТ-КЛ „detето e na 4 godini kakvo trqbva da znae“  ТИШИНА → zn4b-na-4-godini
+🔴 ТЕСТ-КЛ „на 4 години е какво е нормално да прави“  ТИШИНА → ТИШИНА   (чака zn8b-4-5-godini)
+✅ ТЕСТ-КЛ „четиригодишно дете какво трябва да умее“  zn4b-na-4-godini → zn4b-na-4-godini
+✅ ТЕСТ-КЛ „дъщеря ми е на 5 години какво се очаква да може“  ТИШИНА → zn8b-5-6-godini
+✅ ТЕСТ-КЛ „петгодишно дете какво трябва да може“  zn4b-na-5-godini → zn4b-na-5-godini
+🔴 ТЕСТ-КЛ „dete na 5 godini kakvo e normalno da moje“  rz-palzene → zn8b-5-6-godini   (чака zn4b-na-5-godini)
+🔴 ТЕСТ-КЛ „на 6 години е какво трябва да знае преди училище“  ТИШИНА → ТИШИНА   (чака zn4b-gotov-za-parvi-klas)
+✅ ТЕСТ-КЛ „шестгодишно дете какво е нормално да може“  rz-palzene → zn4b-gotov-za-parvi-klas
+✅ ТЕСТ-КЛ „deteto e na 6 godini kakvo trqbva da znae“  gz-kysno-govor → zn4b-gotov-za-parvi-klas
+✅ СТРАЖ „какво може дете на 12 месеца да яде“  zh-obshta-masa → zh-obshta-masa
+✅ СТРАЖ „какво може да яде дете на годинка“  zh-obshta-masa → zh-obshta-masa
+✅ СТРАЖ „на 18 месеца какво трябва да яде“  ТИШИНА → ТИШИНА
+✅ СТРАЖ „на 2 години какво трябва да яде“  ТИШИНА → ТИШИНА
+✅ СТРАЖ „колко трябва да спи на 18 месеца“  mb-san → mb-san
+✅ СТРАЖ „на 20 месеца колко думи трябва да казва“  rz-govor → rz-govor
+✅ СТРАЖ „какви играчки за дете на 15 месеца“  rz-igri → rz-igri
+✅ СТРАЖ „на 2 години не говори какво да правя“  rz-govor → rz-govor
+✅ СТРАЖ „какво може да пие дете на 1 година“  ТИШИНА → ТИШИНА
+✅ СТРАЖ „на 14 месеца какво трябва да тежи“  ТИШИНА → ТИШИНА
+✅ СТРАЖ „на година и половина колко мляко трябва да пие“  mb-kolko-mliako → mb-kolko-mliako
+✅ СТРАЖ „какво трябва да може на 2 години с гърнето“  rz-gyrne → rz-gyrne
+✅ СТРАЖ „на 3 години какво трябва да яде“  ТИШИНА → ТИШИНА
+✅ СТРАЖ „може ли дете на 2 години да яде мед“  lb-med-sol → lb-med-sol
+✅ СТРАЖ „колко трябва да спи дете на 4 години“  mb-san → mb-san
+✅ СТРАЖ „на 5 години какво се очаква в градината“  in-gradina → in-gradina
+✅ СТРАЖ „какво може да яде дете на 4 години“  zh-obshta-masa → zh-obshta-masa
+✅ СТРАЖ „на 3 години не говори“  rz-govor → rz-govor
+✅ СТРАЖ „на 4 години заеква“  gz-zapva-razvoyno → gz-zapva-razvoyno
+✅ СТРАЖ „на 5 години още се напишква нощем“  ТИШИНА → ТИШИНА
+✅ СТРАЖ „колко часа екран на 4 години“  rz-ekran → rz-ekran
+✅ СТРАЖ „кога е втората доза варицела“  zn9-varicela-zadalzhitelna → zn9-varicela-zadalzhitelna
+✅ СТРАЖ „ваксина на 6 години“  zn9-vaksini-4-6-7-godini → zn9-vaksini-4-6-7-godini
+✅ СТРАЖ „кога е задължителна детската градина“  in-gradina → in-gradina
+✅ СТРАЖ „на 6 или на 7 години в първи клас“  ТИШИНА → ТИШИНА
+✅ СТРАЖ „4 години и не рисува човек“  zn4b-na-4-godini → zn4b-na-4-godini
+✅ СТРАЖ „на 5 не знае буквите“  zn4b-na-5-godini → zn4b-na-5-godini
+✅ СТРАЖ „тригодишно дете какво трябва да може“  zn4b-na-3-godini → zn4b-na-3-godini
+✅ СТРАЖ „колко може дете на 5 години да гледа телевизия“  rz-ekran → rz-ekran
+🔴 СТРАЖ „какво се очаква от дете на 4 години в градината“  sn-sled-diagnoza-autizam → zn8b-4-5-godini
+✅ СТРАЖ „профилактичен преглед на 3 години какво включва“  in-profilaktika → in-profilaktika
+✅ СТРАЖ „какви играчки за дете на 3 години“  zn4b-na-3-godini → zn4b-na-3-godini
+·  ВЪПР „какво трябва да може на една година“  ТИШИНА → zn8b-godinka → zn8b-godinka
+·  ВЪПР „детето навърши годинка какво трябва да може“  sf-chuzhdo-kuche → zn8b-godinka → zn8b-godinka
+·  ВЪПР „какво прави дете на годинка“  ТИШИНА → zn8b-godinka → zn8b-godinka
+·  ВЪПР „развитие на 12 месеца“  ТИШИНА → zn8b-godinka → zn8b-godinka
+·  ВЪПР „kakvo trqbva da moje na 1 godina“  g3r-garne-nakraynik-i-gashtichki-kakvo → zn8b-godinka → zn8b-godinka
+·  ВЪПР „какво трябва да може на 13 месеца“  g3r-garne-nakraynik-i-gashtichki-kakvo → zn8b-13-15-meseca → zn8b-13-15-meseca
+·  ВЪПР „какво прави дете на 14 месеца“  ТИШИНА → ТИШИНА → ТИШИНА
+·  ВЪПР „развитие на 15 месеца“  ТИШИНА → zn8b-13-15-meseca → zn8b-13-15-meseca
+·  ВЪПР „на 14 месеца какво да очаквам“  ТИШИНА → zn8b-13-15-meseca → zn8b-13-15-meseca
+·  ВЪПР „детето е на година и половина какво трябва да може“  ТИШИНА → zn8b-16-18-meseca → zn8b-16-18-meseca
+·  ВЪПР „какво може дете на 18 месеца“  rz-molivche → zn8b-16-18-meseca → zn8b-16-18-meseca
+·  ВЪПР „развитие на 17 месеца“  ТИШИНА → zn8b-16-18-meseca → zn8b-16-18-meseca
+·  ВЪПР „на 16 месеца какво трябва да прави“  g3r-garne-nakraynik-i-gashtichki-kakvo → zn8b-16-18-meseca → zn8b-16-18-meseca
+·  ВЪПР „какво трябва да може на 20 месеца“  g3r-garne-nakraynik-i-gashtichki-kakvo → zn8b-19-24-meseca → zn8b-19-24-meseca
+·  ВЪПР „развитие на 22 месеца“  ТИШИНА → zn8b-19-24-meseca → zn8b-19-24-meseca
+·  ВЪПР „какво прави дете на 23 месеца“  ТИШИНА → zn8b-19-24-meseca → zn8b-19-24-meseca
+·  ВЪПР „на 21 месеца какво да очаквам“  ТИШИНА → zn8b-19-24-meseca → zn8b-19-24-meseca
+·  ВЪПР „какво трябва да може на 2 години“  rz2-ticha-skacha → rz2-ticha-skacha → rz2-ticha-skacha
+·  ВЪПР „двегодишно дете какво трябва да може“  gz-kysno-govor → zn8b-2-3-godini → zn8b-2-3-godini
+·  ВЪПР „какво трябва да може на две години и половина“  ТИШИНА → zn8b-2-3-godini → zn8b-2-3-godini
+·  ВЪПР „развитие на 30 месеца“  ТИШИНА → zn8b-2-3-godini → zn8b-2-3-godini
+·  ВЪПР „детето е на 2 години какво трябва да може“  rz-sravnenie → zn8b-2-3-godini → zn8b-2-3-godini
+·  ВЪПР „какво трябва да може на 3 години“  g3r-garne-nakraynik-i-gashtichki-kakvo → zn8b-3-4-godini → zn8b-3-4-godini
+·  ВЪПР „тригодишно дете какво трябва да може“  zn4b-na-3-godini → zn4b-na-3-godini → zn4b-na-3-godini
+·  ВЪПР „детето е на 3 години какво трябва да може“  zn4b-na-3-godini → zn4b-na-3-godini → zn4b-na-3-godini
+·  ВЪПР „какво трябва да може на 4 години“  g3r-garne-nakraynik-i-gashtichki-kakvo → zn8b-4-5-godini → zn8b-4-5-godini
+·  ВЪПР „четиригодишно дете какво знае“  zn4b-na-4-godini → zn4b-na-4-godini → zn4b-na-4-godini
+·  ВЪПР „detето e na 4 godini kakvo trqbva da znae“  ТИШИНА → ТИШИНА → zn4b-na-4-godini
+·  ВЪПР „какво трябва да може на 5 години“  g3r-garne-nakraynik-i-gashtichki-kakvo → zn8b-5-6-godini → zn8b-5-6-godini
+·  ВЪПР „петгодишно дете какво трябва да знае“  zn4b-na-5-godini → zn4b-na-5-godini → zn4b-na-5-godini
+·  ВЪПР „какво трябва да може на 6 години“  g3r-garne-nakraynik-i-gashtichki-kakvo → g3r-garne-nakraynik-i-gashtichki-kakvo → g3r-garne-nakraynik-i-gashtichki-kakvo
+·  ВЪПР „шестгодишно дете какво трябва да може“  ТИШИНА → zn8b-5-6-godini → zn4b-gotov-za-parvi-klas
+·  ВЪПР „на 2 години не говори“  rz-govor → rz-govor → rz-govor
+·  ВЪПР „на година и половина още не говори“  rz-govor → rz-govor → rz-govor
+·  ВЪПР „на 15 месеца още не ходи“  rz-prohojdane → rz-prohojdane → rz-prohojdane
+·  ВЪПР „колко спи на година и половина“  sn-kolko-1-3g → sn-kolko-1-3g → sn-kolko-1-3g
+·  ВЪПР „тръшка се на 2 години“  rz-inat-2g → rz-inat-2g → rz-inat-2g
+·  ВЪПР „кога тръгва на гърне“  rz-prohojdane → rz-prohojdane → rz-prohojdane
+·  ВЪПР „колко думи на 18 месеца“  rz-govor → rz-govor → rz-govor
+·  ВЪПР „игри за дете на година и половина“  igr-dvanaiset-osemnaiset → igr-dvanaiset-osemnaiset → igr-dvanaiset-osemnaiset
+↪  ВЪПР2 „какво трябва да може на 3 години“  g3r-garne-nakraynik-i-gashtichki-kakvo → zn8b-3-4-godini → zn8b-3-4-godini
+↪  ВЪПР2 „детето е на 3 години и половина какво трябва да може“  ТИШИНА → zn8b-3-4-godini → zn8b-3-4-godini
+·  ВЪПР2 „тригодишно дете какво трябва да може“  zn4b-na-3-godini → zn4b-na-3-godini → zn4b-na-3-godini
+·  ВЪПР2 „развитие на 3 години“  zn4b-na-3-godini → zn4b-na-3-godini → zn4b-na-3-godini
+·  ВЪПР2 „кога рисува кръг“  zn4b-na-3-godini → zn4b-na-3-godini → zn4b-na-3-godini
+↪  ВЪПР2 „какво трябва да може на 4 години“  g3r-garne-nakraynik-i-gashtichki-kakvo → zn8b-4-5-godini → zn8b-4-5-godini
+·  ВЪПР2 „на 4 години е какво е нормално да прави“  ТИШИНА → ТИШИНА → ТИШИНА
+·  ВЪПР2 „4 години и не рисува човек“  zn4b-na-4-godini → zn4b-na-4-godini → zn4b-na-4-godini
+·  ВЪПР2 „четиригодишно дете какво знае“  zn4b-na-4-godini → zn4b-na-4-godini → zn4b-na-4-godini
+·  ВЪПР2 „какво може на 4 години“  zn4b-na-4-godini → zn4b-na-4-godini → zn4b-na-4-godini
+↪  ВЪПР2 „какво трябва да може на 5 години“  g3r-garne-nakraynik-i-gashtichki-kakvo → zn8b-5-6-godini → zn8b-5-6-godini
+·  ВЪПР2 „на 5 не знае буквите“  zn4b-na-5-godini → zn4b-na-5-godini → zn4b-na-5-godini
+·  ВЪПР2 „петгодишно дете какво трябва да знае“  zn4b-na-5-godini → zn4b-na-5-godini → zn4b-na-5-godini
+↪  ВЪПР2 „dete na 5 godini kakvo e normalno da moje“  rz-palzene → zn8b-5-6-godini → zn8b-5-6-godini
+·  ВЪПР2 „какво трябва да може на 6 години“  g3r-garne-nakraynik-i-gashtichki-kakvo → g3r-garne-nakraynik-i-gashtichki-kakvo → g3r-garne-nakraynik-i-gashtichki-kakvo
+·  ВЪПР2 „колко трябва да спи дете на 4 години“  mb-san → mb-san → mb-san
+·  ВЪПР2 „на 3 години какво трябва да яде“  ТИШИНА → ТИШИНА → ТИШИНА
+·  ВЪПР2 „на 5 години какво се очаква в градината“  in-gradina → in-gradina → in-gradina
+·  ВЪПР2 „кога е втората доза варицела“  zn9-varicela-zadalzhitelna → zn9-varicela-zadalzhitelna → zn9-varicela-zadalzhitelna
+·  ВЪПР2 „ваксина на 6 години“  zn9-vaksini-4-6-7-godini → zn9-vaksini-4-6-7-godini → zn9-vaksini-4-6-7-godini
+·  ВЪПР2 „кога е задължителна детската градина“  in-gradina → in-gradina → in-gradina
+·  ВЪПР2 „на 6 или на 7 години в първи клас“  ТИШИНА → ТИШИНА → ТИШИНА
+·  ВЪПР2 „на 3 години не говори“  rz-govor → rz-govor → rz-govor
+·  ВЪПР2 „на 4 години заеква“  gz-zapva-razvoyno → gz-zapva-razvoyno → gz-zapva-razvoyno
+·  ВЪПР2 „на 5 години още се напишква нощем“  ТИШИНА → ТИШИНА → ТИШИНА
+·  ВЪПР2 „колко часа екран на 4 години“  rz-ekran → rz-ekran → rz-ekran
+·  ВЪПР2 „профилактичен преглед на 3 години какво включва“  in-profilaktika → in-profilaktika → in-profilaktika
+·  ВЪПР2 „на 3 години кога без памперс“  rz-gyrne → rz-gyrne → rz-gyrne
+·  ВЪПР2 „проверка на зрението на 5 години“  mb-oci → mb-oci → mb-oci
+
+карти: 8 · тест: 19/24 · тест2: 8/10 · стражи, отклонени към мои/предложени карти: 1/32 · тест на предложените ключове: 9/12 · мои ключове към своята карта: 536/536 (с предложенията: 536/536) · чужди ключове и контрол: 5574 · мръднали от картите: 0 · мръднали от предложените ключове: 0

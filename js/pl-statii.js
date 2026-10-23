@@ -570,3 +570,178 @@
   window.BL_PL_STATII21 = { сверка, съседна };
 })();
 /* край 21.10 */
+
+/* ═══════════════════════════════════════════════════════════════════════════════
+   22.10 · ЗНАНИЕТО НА ЕДИН ДОПИР — „Тази седмица“ (Бременност), „Този месец“ (Развитие и игри),
+   „След раждането“ (Жената в мен)
+   Новите карти на базата (js/kb.js → KB.entries: zn7a/zn7b-sedmica-*, zn8a-mesec-*, zn8b-*,
+   zn7a-sled-razhdane-*) се виждаха само в чата. Тук е ЕДНАТА им рисунка; стаите (pl-bremennost.js,
+   pl-igri.js, pl-zamama.js) казват само КОЯ карта и с какъв етикет:
+     · заглавието — частта след „:“ е голямото заглавие (числото е в медальона, етикетът — над него);
+     · началото на core — цели изречения до ~240 знака (1–3): думите са на картата, тук няма нито едно;
+     · „Прочети цялото“ → статията ѝ (полето lib), по пътя на рафта: BL_LIB.init() → BL_ARTICLES.open
+       (както lab.js:476). Няма ли статия или библиотеката не дойде — останалото от картата се разгръща
+       на място, без прозорец; второ докосване го прибира.
+   Няма ли картата в KB (вливат се на части) → null: стаята не рисува нищо — без грешка, без празна кутия.
+   Нищо не записва. Материалите са общите (.pl-felt, .pl-soft), видът — css/pl-ui.css § 16.
+   ПЪТ НАЗАД: махни този блок (до „край 22.10“) — стаите питат за window.BL_PL_ZN и без него мълчат.
+   ═══════════════════════════════════════════════════════════════════════════════ */
+(function () {
+  'use strict';
+  if (window.BL_PL_ZN) return;
+  const esc = т => String(т == null ? '' : т).replace(/[&<>"']/g, з => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[з]));
+
+  // ── коя карта: id-тата са на картите на главната сесия (dev/nahodki/karti_zn7a, 7b, 8a, 8b) ──
+  const ИД = {
+    // 1–4 е една карта, после по двойки 5-6 … 41-42 (до 19-20 са zn7a, от 21-22 — zn7b)
+    седмица(w) {
+      if (!(w >= 1 && w <= 42)) return null;
+      if (w <= 4) return 'zn7a-sedmica-1-4';
+      const от = w % 2 ? w : w - 1;
+      return (от <= 19 ? 'zn7a' : 'zn7b') + '-sedmica-' + от + '-' + (от + 1);
+    },
+    // цели месеци (ym от BL_AGE): 0–11 по месец, 12 годинка, после етапите до 6 години
+    месец(м) {
+      if (!(м >= 0) || м >= 72) return null;
+      if (м < 12) return 'zn8a-mesec-' + Math.floor(м);
+      if (м < 13) return 'zn8b-godinka';
+      if (м < 16) return 'zn8b-13-15-meseca';
+      if (м < 19) return 'zn8b-16-18-meseca';
+      if (м < 24) return 'zn8b-19-24-meseca';
+      const г = Math.floor(м / 12);
+      return 'zn8b-' + г + '-' + (г + 1) + '-godini';
+    },
+    // дни от раждането: 1-ва седмица, 2-ра, 3–4, 5–6
+    следРаждане(д) {
+      if (!(д >= 0) || д >= 42) return null;
+      return 'zn7a-sled-razhdane-' + (д < 7 ? '1' : д < 14 ? '2' : д < 28 ? '3-4' : '5-6');
+    }
+  };
+
+  // помним само НАМЕРЕНИТЕ: „няма я“ се пита наново (~1900 записа — под милисекунда), за да се появи
+  //   картата, ако базата се долее, докато страницата е отворена
+  const пам = new Map();
+  function запис(ид) {
+    if (!ид) return null;
+    if (пам.has(ид)) return пам.get(ид);
+    const К = window.KB || window.BL_KB;
+    if (!К || !Array.isArray(К.entries)) return null;
+    const е = К.entries.find(х => х && х.id === ид);
+    if (!е || !е.title || !е.core) return null;
+    пам.set(ид, е);
+    return е;
+  }
+
+  // ── изреченията: край е . ! ? … и главна буква (или „ « () след интервала; съкращенията не режат ──
+  //   Цифра след точката НЕ започва изречение („ок. 3 см“) — по-добре две слепени, отколкото разрязано.
+  const СЪКР = /(?:^|[\s(„])(?:напр|т\.е|т\.нар|т\.н|вкл|ок|д-р|проф|бл|чл|ал)\.$/i;
+  function изречения(т) {
+    const s = String(т || '').replace(/\s+/g, ' ').trim();
+    const out = []; let от = 0, м;
+    const re = /[.!?…]+[“”»")]*\s+(?=[„"«(А-ЯA-Z])/g;
+    while ((м = re.exec(s))) {
+      if (СЪКР.test(s.slice(от, м.index + 1))) continue;
+      out.push(s.slice(от, м.index + м[0].trimEnd().length).trim());
+      от = м.index + м[0].length;
+    }
+    if (от < s.length) out.push(s.slice(от).trim());
+    return out.filter(Boolean);
+  }
+  // мерено върху 44-те карти (dev/nahodki/karti_zn7a/7b/8a/8b): първите 2 изречения са 170–441 знака.
+  //   На живо (375 px) 263 знака = 7 реда — тежко. С прага 240: 1/2/3 изречения в 14/25/5 карти,
+  //   медиана 192 знака ≈ 5 реда; дългото изречение-списък („на 9 месеца…“, 332) стои само.
+  //   23.10: начало под 120 знака („Между две и три години…“ — 74) е тъничко → взима още едно, ако общо остава ≤ ТАВАН.
+  //   ТАВАН 250, не 300: на живо 283 знака („след термина“) = 8 реда; 232 = 6 реда (375 px).
+  const ПРАГ = 240, КЪСО = 120, ТАВАН = 250;
+  function колко(и) {
+    let n = 1, дълж = (и[0] || '').length;
+    while (n < 3 && n < и.length && дълж + 1 + и[n].length <= ПРАГ) { дълж += 1 + и[n].length; n++; }
+    if (дълж < КЪСО && n < и.length && дълж + 1 + и[n].length <= ТАВАН) n++;
+    return n;
+  }
+  // 23.10 · на живо: „на 9 месеца…“ е ЕДНО изречение-списък от 332 знака = 8 реда на 375 px — стена.
+  //   Над ТАВАН-а показваме до последната запетая преди 220 знака + „…“; при разгръщане на място — цялото.
+  function начало(и) {
+    const n = колко(и), цяло = и.slice(0, n).join(' ');
+    let кратко = цяло;
+    if (цяло.length > ТАВАН) { const з = цяло.lastIndexOf(', ', 220); if (з > КЪСО) кратко = цяло.slice(0, з) + '…'; }
+    return { n, цяло, кратко };
+  }
+  // главната буква е първата БУКВА — „„ма-ма-ма“ и стеснение“ → „„Ма-ма-ма“ и стеснение“ (23.10, две заглавия)
+  const главна = т => т ? т.replace(/^([„"«(\s]*)(\p{L})/u, (_, п, б) => п + б.toUpperCase()) : т;
+  const СТРЕЛКА = '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M9.5 5.5 16 12l-6.5 6.5" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/></svg>';
+  let брой = 0;
+
+  // ── о = { ид, етикет, число, мярка, четец?, бележка?, клас? } → <article> или null ──
+  function карта(о) {
+    const з = запис(о && о.ид);
+    if (!з) return null;
+    const изр = изречения(з.core);
+    if (!изр.length) return null;
+    const нач = начало(изр), n = нач.n;
+    const ч = String(з.title).split(/:\s+/);
+    const загл = ч.length > 1 ? главна(ч.slice(1).join(': ')) : String(з.title);
+    const hid = 'plZn' + (++брой);
+    const к = document.createElement('article');
+    к.className = 'pl-zn pl-felt' + (о.клас ? ' ' + о.клас : '');
+    к.setAttribute('data-zn', з.id);
+    к.setAttribute('aria-labelledby', hid);
+    к.innerHTML =
+      '<div class="pl-zn-top">' +
+        '<span class="pl-zn-medal" aria-hidden="true"><b>' + esc(о.число) + '</b><small>' + esc(о.мярка) + '</small></span>' +
+        '<div class="pl-zn-hd">' +
+          '<small class="pl-zn-eye">' + esc(о.етикет) + (о.четец ? '<span class="pl-zn-sr"> · ' + esc(о.четец) + '</span>' : '') + '</small>' +
+          '<h3 class="pl-zn-t" id="' + hid + '">' + esc(загл) + '</h3>' +
+          (о.бележка ? '<em class="pl-zn-note">' + esc(о.бележка) + '</em>' : '') +
+        '</div>' +
+      '</div>' +
+      '<p class="pl-zn-txt">' + esc(нач.кратко) + '</p>' +
+      '<div class="pl-zn-more" hidden></div>' +
+      '<button type="button" class="pl-zn-go pl-soft"><span>Прочети цялото</span>' + СТРЕЛКА + '<span class="pl-zn-sr">: ' + esc(загл) + '</span></button>';
+    const б = к.querySelector('.pl-zn-go');
+    // делегираните слушания на блоковете (pl-br, pl-ig, pl-zm) не познават бутона — минава през тях без действие
+    б.addEventListener('click', () => {
+      if (window.BL_FX && BL_FX.buzz) BL_FX.buzz(6);
+      if (б.getAttribute('aria-expanded') === 'true') { сгъни(к, б, нач.кратко); return; }
+      const lib = Array.isArray(з.lib) ? з.lib[0] : з.lib;
+      const има = () => !!lib && (window.BL_ARTICLES_DATA || []).some(х => х && х.id === lib);
+      const пусни = () => {
+        if (има() && window.BL_ARTICLES && BL_ARTICLES.open) BL_ARTICLES.open(lib);
+        else разгъни(к, б, з, изр.slice(n), нач.цяло);
+      };
+      if (lib && window.BL_LIB && BL_LIB.init) BL_LIB.init().then(пусни, пусни).catch(е => console.error('[pl-zn] статията не се отвори', е));
+      else пусни();
+    });
+    return к;
+  }
+
+  // ── без статия: останалото от картата — на място, по две изречения на абзац, съветът отделно ──
+  function разгъни(к, б, з, ост, цяло) {
+    const м = к.querySelector('.pl-zn-more');
+    if (!м) return;
+    if (!м.childElementCount) {
+      let h = '';
+      for (let i = 0; i < ост.length; i += 2) h += '<p>' + esc(ост.slice(i, i + 2).join(' ')) + '</p>';
+      if (з.tip) h += '<p class="pl-zn-tip">' + esc(з.tip) + '</p>';
+      if (!h && !цяло) return;
+      м.innerHTML = h;
+    }
+    const т = к.querySelector('.pl-zn-txt');
+    if (т && цяло && т.textContent !== цяло) т.textContent = цяло;       // отрязаното начало — цялото
+    м.hidden = false;
+    б.setAttribute('aria-expanded', 'true');
+    б.firstChild.textContent = 'Прибери';
+  }
+  function сгъни(к, б, кратко) {
+    const м = к.querySelector('.pl-zn-more');
+    if (м) м.hidden = true;
+    const т = к.querySelector('.pl-zn-txt');
+    if (т && кратко && т.textContent !== кратко) т.textContent = кратко;
+    б.setAttribute('aria-expanded', 'false');
+    б.firstChild.textContent = 'Прочети цялото';
+  }
+
+  // колко/начало/главна са навън за пробата (тя вика ТОЗИ код, не свое копие)
+  window.BL_PL_ZN = { ид: ИД, има: ид => !!запис(ид), запис, карта, изречения, колко, начало, главна };
+})();
+/* край 22.10 */

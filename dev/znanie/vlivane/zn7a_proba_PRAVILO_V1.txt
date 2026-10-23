@@ -1,0 +1,186 @@
+карти в стажа: 13 · живи карти: 1910
+── (1) ТЕСТЪТ zn7a_test.json ──
+✅ „мисля че съм бременна в 4 седмица какво да правя първо“  ТИШИНА → zn7a-sedmica-1-4
+✅ „бременна съм от 4 седмици какво се случва вътре“  ТИШИНА → zn7a-sedmica-1-4
+✅ „na 4 sedmica sam kakvo se sluchva“  ТИШИНА → zn7a-sedmica-1-4
+✅ „6 седмица бременност ли е това когато се чува сърцето“  nb-zaduh-sarcebien → zn7a-sedmica-5-6
+🔴 „в 5 седмица съм вече и ми е странно“  nb-epiduraln-pravi → nb-epiduraln-pravi   (чака zn7a-sedmica-5-6)
+✅ „na 6 sedmica sam kakvo e normalno“  ТИШИНА → zn7a-sedmica-5-6
+✅ „8 седмица съм какво развива бебето сега“  ТИШИНА → zn7a-sedmica-7-8
+✅ „какво става в 7 седмица с мен и бебето“  ТИШИНА → zn7a-sedmica-7-8
+✅ „na 8 sedmica sam kakvo trqbva da napravq“  ТИШИНА → zn7a-sedmica-7-8
+✅ „10 седмица бременност какво трябва да знам“  ТИШИНА → zn7a-sedmica-9-10
+✅ „бременна в 9 седмица какво се случва с бебето“  ТИШИНА → zn7a-sedmica-9-10
+✅ „na 10 sedmica sam kakvo stava“  ТИШИНА → zn7a-sedmica-9-10
+🔴 „12 седмица съм какви прегледи ме чакат“  br-pregledi → br-pregledi   (чака zn7a-sedmica-11-12)
+✅ „в 11 седмица съм какво е бебето вече“  ТИШИНА → zn7a-sedmica-11-12
+✅ „na 12 sedmica sam kakvo e vajno“  ТИШИНА → zn7a-sedmica-11-12
+✅ „14 седмица бременност какво се променя“  ema-obarnali → zn7a-sedmica-13-14
+✅ „13 седмица какво става с бебето и с мен“  br-sedalishtno → zn7a-sedmica-13-14
+✅ „na 14 sedmica sam“  ТИШИНА → zn7a-sedmica-13-14
+✅ „16 седмица съм вече какво е нормално“  ТИШИНА → zn7a-sedmica-15-16
+✅ „какво става в 15 седмица“  ТИШИНА → zn7a-sedmica-15-16
+✅ „na 16 sedmica sam kakvo e normalno“  ТИШИНА → zn7a-sedmica-15-16
+✅ „18 седмица бременност какво се случва“  ТИШИНА → zn7a-sedmica-17-18
+✅ „в 17 седмица съм и се чудя какво прави бебето“  ТИШИНА → zn7a-sedmica-17-18
+✅ „na 18 sedmica sam kakvo stava s bebeto“  ТИШИНА → zn7a-sedmica-17-18
+✅ „20 седмица съм вече и се чудя какво прави бебето“  ТИШИНА → zn7a-sedmica-19-20
+✅ „какво става в 19 седмица с бебето“  ТИШИНА → zn7a-sedmica-19-20
+✅ „na 20 sedmica sam kakvo stava s bebeto“  ТИШИНА → zn7a-sedmica-19-20
+✅ „родих преди седмица и не знам кое е нормално“  nia-lipsva → zn7a-sled-razhdane-1
+✅ „първата седмица след раждането какво трябва да знам“  zh5-parvi-sedem-dni → zn7a-sled-razhdane-1
+✅ „rodih predi sedmica kakvo e normalno“  nia-lipsva → zn7a-sled-razhdane-1
+✅ „родих преди 2 седмици как трябва да се чувствам“  nw-sekcio-sram → zn7a-sled-razhdane-2
+✅ „втората седмица след раждането какво е нормално“  nw-beybi-blus → zn7a-sled-razhdane-2
+✅ „rodih predi 2 sedmici“  ТИШИНА → zn7a-sled-razhdane-2
+✅ „3 седмици след раждането какво да очаквам“  ТИШИНА → zn7a-sled-razhdane-3-4
+✅ „родих преди 4 седмици кое е нормално“  nia-lipsva → zn7a-sled-razhdane-3-4
+✅ „rodih predi 3 sedmici kakvo trqbva da znam“  ТИШИНА → zn7a-sled-razhdane-3-4
+✅ „6 седмици след раждането какво следва“  ТИШИНА → zn7a-sled-razhdane-5-6
+✅ „на 5 седмица след раждането съм какво да направя“  ТИШИНА → zn7a-sled-razhdane-5-6
+✅ „rodih predi 6 sedmici“  ТИШИНА → zn7a-sled-razhdane-5-6
+тест: 37/39 вадят своята карта
+
+── (2) zn7a_vaprosi.json преди → след ──
+✅ „на 4 седмица съм какво става“  ТИШИНА → zn7a-sedmica-1-4
+✅ „3 седмица бременност какво се случва“  ТИШИНА → zn7a-sedmica-1-4
+✅ „току що разбрах на 4 седмица съм какво да правя“  ТИШИНА → zn7a-sedmica-1-4
+✅ „на 5 седмица съм какво става с бебето“  ТИШИНА → zn7a-sedmica-5-6
+✅ „6 седмица бременност“  ТИШИНА → zn7a-sedmica-5-6
+✅ „в 6 седмица съм нормално ли е“  ТИШИНА → zn7a-sedmica-5-6
+✅ „на 7 седмица съм какво става“  ТИШИНА → zn7a-sedmica-7-8
+✅ „8 седмица бременност какво се развива“  ТИШИНА → zn7a-sedmica-7-8
+✅ „на 8 седмица съм“  ТИШИНА → zn7a-sedmica-7-8
+✅ „на 9 седмица съм какво става с бебето“  ТИШИНА → zn7a-sedmica-9-10
+✅ „10 седмица бременност“  ТИШИНА → zn7a-sedmica-9-10
+✅ „10 та седмица какво трябва да направя“  ТИШИНА → zn7a-sedmica-9-10
+✅ „на 11 седмица съм какво става“  ТИШИНА → zn7a-sedmica-11-12
+✅ „12 седмица бременност какво се прави“  ТИШИНА → zn7a-sedmica-11-12
+✅ „на 12 седмица съм“  ТИШИНА → zn7a-sedmica-11-12
+✅ „на 13 седмица съм какво става с бебето“  ТИШИНА → zn7a-sedmica-13-14
+✅ „14 седмица бременност“  ТИШИНА → zn7a-sedmica-13-14
+✅ „в 14 седмица съм“  ТИШИНА → zn7a-sedmica-13-14
+✅ „на 15 седмица съм какво става“  ТИШИНА → zn7a-sedmica-15-16
+✅ „16 седмица бременност какво е нормално“  ТИШИНА → zn7a-sedmica-15-16
+✅ „na 16 sedmica sam“  ТИШИНА → zn7a-sedmica-15-16
+✅ „на 17 седмица съм какво става с бебето“  ТИШИНА → zn7a-sedmica-17-18
+✅ „18 седмица бременност“  ТИШИНА → zn7a-sedmica-17-18
+✅ „на 18 седмица съм“  ТИШИНА → zn7a-sedmica-17-18
+✅ „на 20 седмица съм какво става с бебето“  ТИШИНА → zn7a-sedmica-19-20
+✅ „19 седмица бременност“  ТИШИНА → zn7a-sedmica-19-20
+✅ „20 гс“  ТИШИНА → zn7a-sedmica-19-20
+✅ „морфологията на 20 седмица“  ТИШИНА → zn7a-sedmica-19-20
+✅ „родих преди седмица какво е нормално“  nia-lipsva → zn7a-sled-razhdane-1
+✅ „първата седмица след раждането“  zh5-parvi-sedem-dni → zn7a-sled-razhdane-1
+✅ „1 седмица след раждането“  ТИШИНА → zn7a-sled-razhdane-1
+✅ „2 седмица след раждането“  ТИШИНА → zn7a-sled-razhdane-2
+✅ „родих преди 2 седмици“  ТИШИНА → zn7a-sled-razhdane-2
+✅ „3 седмици след раждането“  ТИШИНА → zn7a-sled-razhdane-3-4
+✅ „родих преди 4 седмици“  ТИШИНА → zn7a-sled-razhdane-3-4
+✅ „5 седмица след раждането“  ТИШИНА → zn7a-sled-razhdane-5-6
+✅ „6 седмици след раждането“  ТИШИНА → zn7a-sled-razhdane-5-6
+✅ „родих преди 6 седмици какво трябва да направя“  ТИШИНА → zn7a-sled-razhdane-5-6
+·  „кога спира кървенето след раждане“  mm-lohia → mm-lohia
+·  „кога е прегледът след раждане“  zn2-pregledi-sled-razhdane → zn2-pregledi-sled-razhdane
+✅ „какво се гледа на 6 седмици след раждане“  ТИШИНА → zn7a-sled-razhdane-5-6
+·  „кога мога да забременея след раждане“  nw-karmeneto-predpazva → nw-karmeneto-predpazva
+
+── (3) седмица + друга тема (↪ = мръдна към моя карта) ──
+·  [Бременност] „на 8 седмица съм и ми се гади много“  br-toshnota → br-toshnota
+↪  [Бременност] „на 20 седмица съм и ме боли кръста“  ТИШИНА → zn7a-sedmica-19-20
+·  [Бременност] „на 6 седмица съм и имам кафяво течение“  br-kravene-rano → br-kravene-rano
+·  [Бременност] „на 12 седмица съм и имам киселини“  br-diskomfort → br-diskomfort
+·  [Бременност] „в 16 седмица съм и ме сърби кожата“  zd-atopichen-dermatit → zd-atopichen-dermatit
+·  [Бременност] „на 14 седмица съм и ми кървят венците“  nb-zabolekar-bremennos → nb-zabolekar-bremennos
+·  [Бременност] „на 18 седмица съм мога ли да летя“  br-pytuvane → br-pytuvane
+·  [Бременност] „на 10 седмица съм мога ли да пия кафе“  zn2-kafe-kofein → zn2-kafe-kofein
+·  [Бременност] „на 5 седмица съм и имам температура“  zd-temperatura → zd-temperatura
+·  [Бременност] „на 19 седмица съм и не усещам движения“  br-dvijenia → br-dvijenia
+↪  [Бременност] „на 7 седмица съм и кървя“  ТИШИНА → zn7a-sedmica-7-8
+·  [Бременност] „на 9 седмица съм и ме боли коремът“  g3-bebeto-sleze-nadolu-8 → g3-bebeto-sleze-nadolu-8
+·  [Бременност] „на 13 седмица съм мога ли да боядисам косата“  br-boya-sauna-vana → br-boya-sauna-vana
+↪  [Бременност] „на 11 седмица съм и ми се вие свят“  ТИШИНА → zn7a-sedmica-11-12
+·  [Бременност] „на 17 седмица съм и ме боли главата“  br-preeklampsia-znaci → br-preeklampsia-znaci
+↪  [Бременност] „на 15 седмица съм мога ли да правя секс“  ТИШИНА → zn7a-sedmica-15-16
+·  [Жената в мен] „2 седмици след раждането ме боли шева“  nia-simfiza-sled-razhdane → nia-simfiza-sled-razhdane
+↪  [Жената в мен] „родих преди 3 седмици и ми пада косата“  pp-kosopad → zn7a-sled-razhdane-3-4
+·  [Жената в мен] „6 седмици след раждането кога мога да правя секс“  nw-seksat-sled → nw-seksat-sled
+↪  [Жената в мен] „родих преди седмица и гърдите ми са твърди като камък“  lb-mastit → zn7a-sled-razhdane-1
+·  [Жената в мен] „4 седмици след раждането плача постоянно“  nw-beybi-blus → nw-beybi-blus
+↪  [Жената в мен] „родих преди 5 дни и имам температура“  zd-temperatura → zn7a-sled-razhdane-1
+↪  [Жената в мен] „родих преди 2 седмици и кървя силно“  ТИШИНА → zn7a-sled-razhdane-2
+·  [Жената в мен] „5 седмици след раждането кога идва цикъла“  pp-cikyl → pp-cikyl
+↪  [Жената в мен] „месец след раждането кога мога да спортувам“  br-dvizhenie → zn7a-sled-razhdane-3-4
+↪  [Жената в мен] „месец след раждането може ли да забременея“  y5-diastaza-kakvo-vredi → zn7a-sled-razhdane-3-4
+↪  [Моето бебе] „бебето е на 4 седмица какво става“  ТИШИНА → zn7a-sedmica-1-4
+·  [Моето бебе] „бебето ми е на 2 седмици и плаче вечер“  mb-colic → mb-colic
+·  [Здраве и SOS] „на 6 седмици е бебето кога са ваксините“  zd-vaksini → zd-vaksini
+·  [Моето бебе] „бебето е на 3 седмици“  ema-mesetsi → ema-mesetsi
+↪  [Бременност] „средата на бременността какво да купя“  br-kakvo-nosi → zn7a-sedmica-19-20
+↪  [Моето бебе] „първите дни след раждането вкъщи с бебето“  ТИШИНА → zn7a-sled-razhdane-1
+·  [Бременност] „на 8 седмица съм и ми се гади много“  br-toshnota → br-toshnota
+↪  [Бременност] „8 седмица бременност ми се гади много“  br-toshnota → zn7a-sedmica-7-8
+↪  [Бременност] „бременна в 8 седмица ми се гади много“  br-toshnota → zn7a-sedmica-7-8
+·  [Бременност] „8 гс ми се гади много“  br-toshnota → br-toshnota
+·  [Бременност] „8 та седмица ми се гади много“  br-toshnota → br-toshnota
+·  [Бременност] „на 12 седмица съм и имам киселини“  br-diskomfort → br-diskomfort
+↪  [Бременност] „12 седмица бременност имам киселини“  br-diskomfort → zn7a-sedmica-11-12
+↪  [Бременност] „бременна в 12 седмица имам киселини“  br-diskomfort → zn7a-sedmica-11-12
+·  [Бременност] „12 гс имам киселини“  br-diskomfort → br-diskomfort
+·  [Бременност] „12 та седмица имам киселини“  br-diskomfort → br-diskomfort
+·  [Бременност] „на 18 седмица съм и мога ли да летя“  br-pytuvane → br-pytuvane
+↪  [Бременност] „18 седмица бременност мога ли да летя“  br-pytuvane → zn7a-sedmica-17-18
+↪  [Бременност] „бременна в 18 седмица мога ли да летя“  br-pytuvane → zn7a-sedmica-17-18
+·  [Бременност] „18 гс мога ли да летя“  br-pytuvane → br-pytuvane
+·  [Бременност] „18 та седмица мога ли да летя“  br-pytuvane → br-pytuvane
+·  [Бременност] „на 13 седмица съм и мога ли да се боядисам“  br-podgotovka-dom → br-podgotovka-dom
+↪  [Бременност] „13 седмица бременност мога ли да се боядисам“  br-podgotovka-dom → zn7a-sedmica-13-14
+↪  [Бременност] „бременна в 13 седмица мога ли да се боядисам“  br-podgotovka-dom → zn7a-sedmica-13-14
+·  [Бременност] „13 гс мога ли да се боядисам“  br-podgotovka-dom → br-podgotovka-dom
+·  [Бременност] „13 та седмица мога ли да се боядисам“  br-podgotovka-dom → br-podgotovka-dom
+·  [Бременност] „на 19 седмица съм и не усещам движения“  br-dvijenia → br-dvijenia
+↪  [Бременност] „19 седмица бременност не усещам движения“  br-dvijenia → zn7a-sedmica-19-20
+↪  [Бременност] „бременна в 19 седмица не усещам движения“  br-dvijenia → zn7a-sedmica-19-20
+·  [Бременност] „19 гс не усещам движения“  br-dvijenia → br-dvijenia
+·  [Бременност] „19 та седмица не усещам движения“  br-dvijenia → br-dvijenia
+·  [Бременност] „на 17 седмица съм и ме боли главата“  br-preeklampsia-znaci → br-preeklampsia-znaci
+↪  [Бременност] „17 седмица бременност ме боли главата“  br-diskomfort → zn7a-sedmica-17-18
+↪  [Бременност] „бременна в 17 седмица ме боли главата“  br-diskomfort → zn7a-sedmica-17-18
+·  [Бременност] „17 гс ме боли главата“  br-preeklampsia-znaci → br-preeklampsia-znaci
+·  [Бременност] „17 та седмица ме боли главата“  br-preeklampsia-znaci → br-preeklampsia-znaci
+·  [Бременност] „на 6 седмица съм и имам кафяво течение“  br-kravene-rano → br-kravene-rano
+↪  [Бременност] „6 седмица бременност имам кафяво течение“  nb-techeniet-gabichkit → zn7a-sedmica-5-6
+↪  [Бременност] „бременна в 6 седмица имам кафяво течение“  nb-techeniet-gabichkit → zn7a-sedmica-5-6
+·  [Бременност] „6 гс имам кафяво течение“  nb-techeniet-gabichkit → nb-techeniet-gabichkit
+·  [Бременност] „6 та седмица имам кафяво течение“  br-kravene-rano → br-kravene-rano
+·  [Бременност] „на 10 седмица съм и мога ли да пия кафе“  zn2-kafe-kofein → zn2-kafe-kofein
+↪  [Бременност] „10 седмица бременност мога ли да пия кафе“  nb-temperatu-lekarstva → zn7a-sedmica-9-10
+↪  [Бременност] „бременна в 10 седмица мога ли да пия кафе“  br-hranene → zn7a-sedmica-9-10
+·  [Бременност] „10 гс мога ли да пия кафе“  zn2-kafe-kofein → zn2-kafe-kofein
+·  [Бременност] „10 та седмица мога ли да пия кафе“  zn2-kafe-kofein → zn2-kafe-kofein
+·  [Бременност] „na 8 sedmica sam i mi se gadi“  br-toshnota → br-toshnota
+·  [Бременност] „na 18 sedmica sam moga li da letq“  br-pytuvane → br-pytuvane
+·  [Бременност] „na 13 sedmica sam moga li da se boqdisam“  br-podgotovka-dom → br-podgotovka-dom
+·  [Бременност] „na 19 sedmica sam i ne useshtam dvijeniq“  br-dvijenia → br-dvijenia
+↪  [Бременност] „на 8 седмица съм“  ТИШИНА → zn7a-sedmica-7-8
+↪  [Бременност] „в 12 седмица съм“  ТИШИНА → zn7a-sedmica-11-12
+↪  [Бременност] „16 седмица съм“  ТИШИНА → zn7a-sedmica-15-16
+↪  [Бременност] „бременна в 20 седмица“  ТИШИНА → zn7a-sedmica-19-20
+↪  [Бременност] „8 седмица бременност“  ТИШИНА → zn7a-sedmica-7-8
+↪  [Бременност] „na 16 sedmica sam“  ТИШИНА → zn7a-sedmica-15-16
+↪  [Бременност] „14 гс“  ТИШИНА → zn7a-sedmica-13-14
+↪  [Жената в мен] „родих преди 2 седмици“  ТИШИНА → zn7a-sled-razhdane-2
+↪  [Жената в мен] „3 седмици след раждането“  ТИШИНА → zn7a-sled-razhdane-3-4
+↪  [Жената в мен] „родих преди седмица“  ТИШИНА → zn7a-sled-razhdane-1
+↪  [Жената в мен] „родих преди 2 седмици и ме боли шева“  ТИШИНА → zn7a-sled-razhdane-2
+·  [Жената в мен] „3 седмици след раждането ми пада косата“  pp-kosopad → pp-kosopad
+↪  [Жената в мен] „родих преди 4 седмици и плача постоянно“  nw-beybi-blus → zn7a-sled-razhdane-3-4
+↪  [Жената в мен] „родих преди седмица и ме болят зърната“  lb-boli-kurmene → zn7a-sled-razhdane-1
+·  [Жената в мен] „2 седмици след раждането кървя силно“  zn5-svetofar-trenirovka → zn5-svetofar-trenirovka
+·  [Жената в мен] „6 седмици след раждането кога мога да правя секс“  nw-seksat-sled → nw-seksat-sled
+↪  [Жената в мен] „родих преди 5 седмици кога идва цикълът“  br-pytuvane → zn7a-sled-razhdane-5-6
+
+── (4) чужди ключове (филтрирани): проверени 3765 · мръднали 1 ──
+🔴 [Жената в мен] nw-tyaloto-sled ключ „шест седмици след раждане“  nw-tyaloto-sled → zn7a-sled-razhdane-5-6
+
+══ ОБОБЩЕНИЕ: тест 37/39 · седмица+тема мръднали 43/93 · чужди ключове мръднали 1/3765 · контрол мръднали 0/15

@@ -1,0 +1,14 @@
+добавени ключове: 14
+   h7-kravene-kasno: +2
+   nb-temperatu-lekarstva: +2
+   nb-techeniet-gabichkit: +2
+   nb-zaduh-sarcebien: +2
+   zn2-hemoroidi: +2
+   br-diskomfort: +2
+   br-chesto-toaletna: +2
+
+── РАВНОСМЕТКА ──
+  ключът вади СВОЯТА карта: 15/15
+  корпус 1698 изречения · сменена карта при 0
+
+(само мярка · за запис: --pishi)

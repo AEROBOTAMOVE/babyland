@@ -1,0 +1,74 @@
+карти в пясъчника след кръпката: 1915 (преди 1903) · мои намерени: 12/12
+
+── (1) ТЕСТ zn8a_test.json ──
+❌ „какво може едно новородено през първия месец“  rz-edna-godina-igri → rz-edna-godina-igri   (чаках zn8a-mesec-0)
+✅ „развитието на новороденото през първите седмици“  ТИШИНА → zn8a-mesec-0
+✅ „kakvo pravi novorodenoto bebe“  ТИШИНА → zn8a-mesec-0
+❌ „малкият стана на 1 месец какво трябва да може вече“  ТИШИНА → ТИШИНА   (чаках zn8a-mesec-1)
+❌ „какво да очаквам от бебе на месец“  ТИШИНА → ТИШИНА   (чаках zn8a-mesec-1)
+✅ „bebeto e na 1 mesec kakvo trqbva da moje“  g3r-garne-nakraynik-i-gashtichki-kakvo → zn8a-mesec-1
+❌ „дъщеря ми е на 2 месеца какво трябва да може“  ТИШИНА → ТИШИНА   (чаках zn8a-mesec-2)
+❌ „какво умее бебе на два месеца“  ТИШИНА → ТИШИНА   (чаках zn8a-mesec-2)
+✅ „na 2 meseca kakvo da ochakvam“  ТИШИНА → zn8a-mesec-2
+✅ „малката е на 3 месеца какво трябва да прави“  g3r-garne-nakraynik-i-gashtichki-kakvo → zn8a-mesec-3
+✅ „развитие на бебе на 3 месеца“  ТИШИНА → zn8a-mesec-3
+✅ „3 mesechno bebe kakvo pravi“  ТИШИНА → zn8a-mesec-3
+❌ „синът ми е на 4 месеца какво трябва да може“  ТИШИНА → ТИШИНА   (чаках zn8a-mesec-4)
+❌ „какво да очаквам на 4 месеца от бебето“  ТИШИНА → ТИШИНА   (чаках zn8a-mesec-4)
+✅ „razvitie na bebe na 4 meseca“  ТИШИНА → zn8a-mesec-4
+✅ „бебето е на 5 месеца какво трябва да прави“  g3r-garne-nakraynik-i-gashtichki-kakvo → zn8a-mesec-5
+❌ „петмесечно бебе какво може“  ТИШИНА → ТИШИНА   (чаках zn8a-mesec-5)
+✅ „kakvo moje bebe na 5 meseca“  ТИШИНА → zn8a-mesec-5
+❌ „стана на 6 месеца какво трябва да може вече“  ТИШИНА → ТИШИНА   (чаках zn8a-mesec-6)
+✅ „развитието на шестмесечно бебе“  ТИШИНА → zn8a-mesec-6
+❌ „bebe na 6 meseca kakvo pravi“  ТИШИНА → ТИШИНА   (чаках zn8a-mesec-6)
+❌ „малката стана на 7 месеца какво би трябвало да прави“  ТИШИНА → ТИШИНА   (чаках zn8a-mesec-7)
+❌ „седеммесечно бебе какво умее“  ТИШИНА → ТИШИНА   (чаках zn8a-mesec-7)
+❌ „7 mesechno bebe kakvo trqbva da moje“  g3r-garne-nakraynik-i-gashtichki-kakvo → g3r-garne-nakraynik-i-gashtichki-kakvo   (чаках zn8a-mesec-7)
+✅ „на 8 месеца какво трябва да може бебето“  g3r-garne-nakraynik-i-gashtichki-kakvo → zn8a-mesec-8
+❌ „осеммесечното ми бебе какво трябва да прави“  ТИШИНА → ТИШИНА   (чаках zn8a-mesec-8)
+❌ „kakvo da ochakvam na 8 meseca“  ТИШИНА → ТИШИНА   (чаках zn8a-mesec-8)
+✅ „bebeto e na 9 meseca kakvo da ochakvam“  ТИШИНА → zn8a-mesec-9
+❌ „какво трябва да умее на 9 месеца“  ТИШИНА → ТИШИНА   (чаках zn8a-mesec-9)
+✅ „деветмесечно бебе развитие“  ТИШИНА → zn8a-mesec-9
+✅ „малкият е на 10 месеца какво трябва да може“  g3r-garne-nakraynik-i-gashtichki-kakvo → zn8a-mesec-10
+❌ „развитие на 10 месечно бебе“  ТИШИНА → ТИШИНА   (чаках zn8a-mesec-10)
+❌ „kakvo moje bebeto na 10 meseca“  ТИШИНА → ТИШИНА   (чаках zn8a-mesec-10)
+✅ „на 11 месеца какво трябва да прави детето“  g3r-garne-nakraynik-i-gashtichki-kakvo → zn8a-mesec-11
+✅ „какво прави бебе на единайсет месеца“  ТИШИНА → zn8a-mesec-11
+✅ „bebe na 11 meseca kakvo trqbva da moje“  g3r-garne-nakraynik-i-gashtichki-kakvo → zn8a-mesec-11
+ТЕСТ: 18/36
+от „Моето бебе“: 16/36
+   „какво може едно новородено през първия месец“ → x1-dve-deca-edna-staya
+   „малкият стана на 1 месец какво трябва да може вече“ → ТИШИНА
+   „какво да очаквам от бебе на месец“ → ТИШИНА
+   „дъщеря ми е на 2 месеца какво трябва да може“ → ТИШИНА
+   „какво умее бебе на два месеца“ → ТИШИНА
+   „синът ми е на 4 месеца какво трябва да може“ → ТИШИНА
+   „какво да очаквам на 4 месеца от бебето“ → ТИШИНА
+   „петмесечно бебе какво може“ → ТИШИНА
+   „стана на 6 месеца какво трябва да може вече“ → ТИШИНА
+   „развитието на шестмесечно бебе“ → ТИШИНА
+   „bebe na 6 meseca kakvo pravi“ → ТИШИНА
+   „малката стана на 7 месеца какво би трябвало да прави“ → ТИШИНА
+   „седеммесечно бебе какво умее“ → ТИШИНА
+   „7 mesechno bebe kakvo trqbva da moje“ → g3r-garne-nakraynik-i-gashtichki-kakvo
+   „осеммесечното ми бебе какво трябва да прави“ → ТИШИНА
+   „kakvo da ochakvam na 8 meseca“ → ТИШИНА
+   „какво трябва да умее на 9 месеца“ → ТИШИНА
+   „деветмесечно бебе развитие“ → ТИШИНА
+   „развитие на 10 месечно бебе“ → ТИШИНА
+   „kakvo moje bebeto na 10 meseca“ → ТИШИНА
+
+── (2) МОИТЕ КЛЮЧОВЕ ──
+🟡 zn8a-mesec-2 „kakvo pravi bebe na 2 meseca“ → rz-bebe-1-3-meseca
+🟡 zn8a-mesec-3 „kakvo pravi bebe na 3 meseca“ → igr-nula-tri-meseca
+🟡 zn8a-mesec-9 „kakvo pravi bebe na 9 meseca“ → igr-devet-dvanaiset
+🟡 zn8a-mesec-10 „kakvo pravi bebe na 10 meseca“ → igr-devet-dvanaiset
+ключове към своята карта: 218/222
+
+── (3) КРАЖБИ ──
+(нито една)
+чужди/контролни въпроси: 3849 · мръднали: 0
+
+ОБОБЩЕНИЕ · тест 18/36 · ключове 218/222 · мръднали 0/3849

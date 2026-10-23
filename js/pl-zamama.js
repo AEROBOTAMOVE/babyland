@@ -303,7 +303,27 @@
   const текст = (е, т) => { if (е && е.textContent !== т) е.textContent = т; };
   const атр = (е, и, т) => { if (!е) return; if (т == null) { if (е.hasAttribute(и)) е.removeAttribute(и); } else if (е.getAttribute(и) !== т) е.setAttribute(и, т); };
   const клас = (е, к, да) => { if (е && е.classList.contains(к) !== !!да) е.classList.toggle(к, !!да); };
+  // 22.10 · „След раждането“ — до 6 седмици от bl_baby.birth: седмичната карта на базата (zn7a-sled-razhdane-*,
+  //   room „Жената в мен“) веднага под медальона. Седмицата е по ИСТИНСКИТЕ дни (BL_AGE().totalDays) — тялото
+  //   на мама не брои коригирано. Рисунката е в js/pl-statii.js (блок 22.10); няма ли картата в KB — нищо.
+  //   Пише само при разлика (data-zn + числото). ПЪТ НАЗАД: махни тази функция и реда „следРаждане(с)“ в обнови().
+  function следРаждане(с) {
+    const З = window.BL_PL_ZN;
+    const б = чети('bl_baby', {});
+    const а = З && б && б.birth && window.BL_AGE ? window.BL_AGE(б.birth) : null;
+    const ид = а ? З.ид.следРаждане(а.totalDays) : null;
+    const седм = а ? Math.floor(а.totalDays / 7) + 1 : 0;
+    const стара = с.querySelector(':scope > .pl-zn');
+    if (стара && стара.getAttribute('data-zn') === ид && стара.getAttribute('data-n') === String(седм)) return;
+    const нова = ид ? З.карта({ ид, етикет: 'След раждането', число: седм, мярка: 'седмица', четец: (window.BL_REDNA ? BL_REDNA(седм) : седм) + ' седмица' }) : null;
+    if (стара) стара.remove();
+    if (!нова) return;
+    нова.setAttribute('data-n', String(седм));
+    const медал = с.querySelector(':scope > .pl-zm-medal');
+    if (медал) медал.after(нова); else с.insertBefore(нова, с.firstChild);
+  }
   function обнови(с) {
+    следРаждане(с);
     текст(с.querySelector('.pl-zm-date'), датаДнес());
     const n = вода();
     const в = с.querySelector('[data-zm-plan="voda"]');

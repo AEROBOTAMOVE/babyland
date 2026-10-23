@@ -1,0 +1,98 @@
+✅ ТЕСТ „на 4 години е и ме пита кой е левски“  mb-bath → zn10-levski-za-dete
+🔴 ТЕСТ „kak da obyasnya na deteto za levski“  rz-kazvam-golyamoto → rz-kazvam-golyamoto   (чака zn10-levski-za-dete)
+🔴 ТЕСТ „какво да кажа на детето за ботев“  rz-ne-slusha → rz-ne-slusha   (чака zn10-botev-2-yuni)
+✅ ТЕСТ „детето се стряска от сирените на 2 юни“  lb2-treperene → zn10-botev-2-yuni
+🔴 ТЕСТ „как да му разкажа за хан аспарух“  ТИШИНА → ТИШИНА   (чака zn10-asparuh-za-dete)
+🔴 ТЕСТ „otkade sa doshli balgarite za dete“  ТИШИНА → ТИШИНА   (чака zn10-asparuh-za-dete)
+✅ ТЕСТ „защо знамето е бяло зелено и червено“  zd-rash2 → zn10-zname-gerb-himn
+🔴 ТЕСТ „какво е гербът на българия за дете“  rz-dvuezichie → rz-dvuezichie   (чака zn10-zname-gerb-himn)
+🔴 ТЕСТ „кога да започна да уча детето на азбуката“  zh-koga-start → zh-koga-start   (чака zn10-bukvite-kirilica)
+🔴 ТЕСТ „kak da nauchim deteto na bukvite“  ТИШИНА → ТИШИНА   (чака zn10-bukvite-kirilica)
+🔴 ТЕСТ „разкажи ми за крали марко за детето“  ТИШИНА → ТИШИНА   (чака zn10-hitar-petar-krali-marko)
+🔴 ТЕСТ „hitar petar za kolko godini e“  ТИШИНА → ТИШИНА   (чака zn10-hitar-petar-krali-marko)
+🔴 ТЕСТ „как се избира кой да гони на гоненица“  ТИШИНА → ТИШИНА   (чака zn10-broilki)
+🔴 ТЕСТ „broilka za krienica“  ТИШИНА → ТИШИНА   (чака zn10-broilki)
+🔴 ТЕСТ „вредно ли е да му казвам пиленце“  ТИШИНА → ТИШИНА   (чака zn10-galeni-dumi)
+🔴 ТЕСТ „свекърва ми му вика чедо какво значи“  nia-svekarva → nia-svekarva   (чака zn10-galeni-dumi)
+🔴 ТЕСТ „детето се плаши от самодиви как да разказвам“  rz2-novi-strahove → rz2-novi-strahove   (чака zn10-samodivi-zmeyove)
+🔴 ТЕСТ „prikazka za zmey za 5 godishno“  ТИШИНА → ТИШИНА   (чака zn10-samodivi-zmeyove)
+✅ ТЕСТ „кога може бебето за първи път на църква“  ТИШИНА → zn10-cherkva-s-bebe
+🔴 ТЕСТ „кърмя ли бебето преди причастието“  mb-kolko-mliako → mb-kolko-mliako   (чака zn10-cherkva-s-bebe)
+🔴 ТЕСТ „как да възпитам детето да помага на другите“  rz-losho-otnoshenie-yasla → rz-losho-otnoshenie-yasla   (чака zn10-dobrota-spodelyane)
+🔴 ТЕСТ „давам му бонбон като помогне добре ли е“  zh-sladko → zh-sladko   (чака zn10-dobrota-spodelyane)
+🔴 ТЕСТ „как да го науча да не ме лъже и да казва истината“  zn4b-lazhe-ili-fantazira → zn4b-lazhe-ili-fantazira   (чака zn10-chestnost-smelost)
+🔴 ТЕСТ „детето е плашливо как да стане по смело“  ТИШИНА → ТИШИНА   (чака zn10-chestnost-smelost)
+🔴 ТЕСТ „какви въпроси да задам на баба за миналото“  ТИШИНА → ТИШИНА   (чака zn10-istoriyata-na-baba)
+✅ ТЕСТ „kak da zapisha spomenite na baba“  dn-pisane → zn10-istoriyata-na-baba
+·  ВЪПР „как да обясня на детето кой е левски“  rz-kazvam-golyamoto → zn10-levski-za-dete → zn10-levski-za-dete
+·  ВЪПР „пита защо са убили левски“  ТИШИНА → zn10-levski-za-dete → zn10-levski-za-dete
+·  ВЪПР „какво да правим на 19 февруари с детето“  ТИШИНА → zn10-levski-za-dete → zn10-levski-za-dete
+·  ВЪПР „levski za deca“  ТИШИНА → zn10-levski-za-dete → zn10-levski-za-dete
+·  ВЪПР „кой е христо ботев за дете“  ТИШИНА → zn10-botev-2-yuni → zn10-botev-2-yuni
+·  ВЪПР „защо на 2 юни свирят сирени“  ТИШИНА → ТИШИНА → ТИШИНА
+·  ВЪПР „детето се плаши от сирените на 2 юни“  rz2-novi-strahove → zn10-botev-2-yuni → zn10-botev-2-yuni
+·  ВЪПР „кой е хан аспарух за деца“  ТИШИНА → zn10-asparuh-za-dete → zn10-asparuh-za-dete
+·  ВЪПР „как да обясня на дете откъде идват българите“  rz-otkade-bebetata → zn10-asparuh-za-dete → zn10-asparuh-za-dete
+·  ВЪПР „кога е основана българия за дете“  rz-dvuezichie → zn10-asparuh-za-dete → zn10-asparuh-za-dete
+·  ВЪПР „какво значат цветовете на знамето“  ТИШИНА → zn10-zname-gerb-himn → zn10-zname-gerb-himn
+·  ВЪПР „защо на герба има лъв“  ТИШИНА → zn10-zname-gerb-himn → zn10-zname-gerb-himn
+·  ВЪПР „как се казва химнът на българия“  ТИШИНА → zn10-zname-gerb-himn → zn10-zname-gerb-himn
+·  ВЪПР „защо стоим прави на химна“  ТИШИНА → zn10-zname-gerb-himn → zn10-zname-gerb-himn
+·  ВЪПР „как да науча детето на буквите“  ТИШИНА → zn10-bukvite-kirilica → zn10-bukvite-kirilica
+·  ВЪПР „бъ или б как да му казвам буквите“  ТИШИНА → ТИШИНА → ТИШИНА
+·  ВЪПР „с коя буква да започнем азбуката“  ТИШИНА → zn10-bukvite-kirilica → zn10-bukvite-kirilica
+·  ВЪПР „игри с букви за 5 годишно“  ТИШИНА → zn10-bukvite-kirilica → zn10-bukvite-kirilica
+·  ВЪПР „кои са българските народни приказки“  zn6-legenda-leka-nosht → zn6-legenda-leka-nosht → zn6-bg-avtori
+·  ВЪПР „народна приказка за 3 годишно“  zn6-legenda-leka-nosht → zn6-legenda-leka-nosht → zn6-legenda-leka-nosht
+·  ВЪПР „приказката с ряпата как беше“  ТИШИНА → ТИШИНА → ТИШИНА
+·  ВЪПР „коя приказка да му чета на 2 години“  y9-knijka-v-dvizhenie → y9-knijka-v-dvizhenie → y9-knijka-v-dvizhenie
+·  ВЪПР „кой е хитър петър“  ТИШИНА → zn10-hitar-petar-krali-marko → zn10-hitar-petar-krali-marko
+·  ВЪПР „приказка за крали марко за деца“  ТИШИНА → zn10-hitar-petar-krali-marko → zn10-hitar-petar-krali-marko
+·  ВЪПР „кога да чета хитър петър на детето“  kn-kak-se-chete → zn10-hitar-petar-krali-marko → zn10-hitar-petar-krali-marko
+·  ВЪПР „броилки за деца“  ТИШИНА → zn10-broilki → zn10-broilki
+·  ВЪПР „как се брои кой да жуми на криеница“  ТИШИНА → zn10-broilki → zn10-broilki
+·  ВЪПР „ала баланица цялата“  ТИШИНА → zn10-broilki → zn10-broilki
+·  ВЪПР „детето научи груба броилка“  rz-ne-slusha → zn10-broilki → zn10-broilki
+·  ВЪПР „игри с пръстчета за бебе“  rz-hvat → rz-hvat → gv-pesnichki-s-dvizhenia
+·  ВЪПР „тука баба тука дядо игра“  rz-drugi-pravila → rz-drugi-pravila → rz-drugi-pravila
+·  ВЪПР „иде козата рогата“  ТИШИНА → ТИШИНА → ТИШИНА
+·  ВЪПР „колко да го гъделичкам“  ТИШИНА → ТИШИНА → ТИШИНА
+·  ВЪПР „благословия за бебе“  ТИШИНА → ТИШИНА → zn6-krashtene-dumi
+·  ВЪПР „какво да пожелая на новородено“  zn6-krashtene-dumi → zn6-krashtene-dumi → zn6-krashtene-dumi
+·  ВЪПР „какво се казва като видиш бебето за първи път“  zn6-krashtene-dumi → zn6-krashtene-dumi → zn6-krashtene-dumi
+·  ВЪПР „пожелание за прощъпулник“  nd-proshtapulnik → nd-proshtapulnik → nd-proshtapulnik
+·  ВЪПР „да му говоря ли с умалителни“  zn4b-bebeshki-dumi → zn4b-bebeshki-dumi → zn4b-bebeshki-dumi
+·  ВЪПР „казвам му слънчице и пиленце вредно ли е“  ТИШИНА → ТИШИНА → ТИШИНА
+·  ВЪПР „какво значи чедо“  ТИШИНА → zn10-galeni-dumi → zn10-galeni-dumi
+·  ВЪПР „мамино момче или мамин син“  ТИШИНА → zn10-galeni-dumi → zn10-galeni-dumi
+·  ВЪПР „как да му разкажа за самодивите да не се плаши“  ТИШИНА → zn10-samodivi-zmeyove → zn10-samodivi-zmeyove
+·  ВЪПР „плаши се от змея в приказката“  ТИШИНА → zn10-samodivi-zmeyove → zn10-samodivi-zmeyove
+·  ВЪПР „какво е таласъм“  ТИШИНА → zn10-samodivi-zmeyove → zn10-samodivi-zmeyove
+·  ВЪПР „от коя възраст се разказват змейове“  x3-ski-shejna → zn10-samodivi-zmeyove → zn10-samodivi-zmeyove
+·  ВЪПР „кога да заведа бебето на църква за първи път“  ТИШИНА → zn10-cherkva-s-bebe → zn10-cherkva-s-bebe
+·  ВЪПР „как се причастява бебе“  ТИШИНА → zn10-cherkva-s-bebe → zn10-cherkva-s-bebe
+·  ВЪПР „да кърмя ли преди причастие“  mb-kolko-mliako → zn10-cherkva-s-bebe → zn10-cherkva-s-bebe
+·  ВЪПР „може ли количка в църквата“  in-stroller → zn10-cherkva-s-bebe → zn10-cherkva-s-bebe
+·  ВЪПР „как да науча детето да е добро“  ТИШИНА → zn10-dobrota-spodelyane → zn10-dobrota-spodelyane
+·  ВЪПР „да му давам ли награда като помага“  ТИШИНА → zn10-dobrota-spodelyane → zn10-dobrota-spodelyane
+·  ВЪПР „добри дела с дете 4 години“  ТИШИНА → zn10-dobrota-spodelyane → zn10-dobrota-spodelyane
+·  ВЪПР „не иска да дава играчките си“  rz-spodelyane → rz-spodelyane → rz-spodelyane
+·  ВЪПР „как да науча детето да казва истината“  rz-ne-slusha → zn10-chestnost-smelost → zn10-chestnost-smelost
+·  ВЪПР „да му чета ли лъжливото овчарче“  ТИШИНА → zn10-chestnost-smelost → zn10-chestnost-smelost
+·  ВЪПР „страхливо е как да го направя по смело“  ТИШИНА → zn10-chestnost-smelost → zn10-chestnost-smelost
+·  ВЪПР „не смее да каже на другото дете спри“  ТИШИНА → ТИШИНА → ТИШИНА
+·  ВЪПР „какво да питам баба за детството ѝ“  ТИШИНА → zn10-istoriyata-na-baba → zn10-istoriyata-na-baba
+·  ВЪПР „как да запиша спомените на баба“  dn-pisane → zn10-istoriyata-na-baba → zn10-istoriyata-na-baba
+·  ВЪПР „как да направя семейно дърво“  ТИШИНА → zn10-istoriyata-na-baba → zn10-istoriyata-na-baba
+·  ВЪПР „vaprosi za baba intervyu“  ТИШИНА → zn10-istoriyata-na-baba → zn10-istoriyata-na-baba
+✅ ПРЕДЛ „благословия за бебе“ → zn6-krashtene-dumi
+✅ ПРЕДЛ „благословия за новородено“ → zn6-krashtene-dumi
+✅ ПРЕДЛ „кои са българските народни приказки“ → zn6-bg-avtori
+✅ ПРЕДЛ „български народни приказки за деца“ → zn6-bg-avtori
+✅ ПРЕДЛ „игри с пръстчета за бебе“ → gv-pesnichki-s-dvizhenia
+✅ ПРЕДЛ „игри с ръчички и пръстчета“ → gv-pesnichki-s-dvizhenia
+🟡 КЛЮЧ „cherkva s bebe“ на zn10-cherkva-s-bebe → ТИШИНА
+
+── ТЕСТ: 5/26 · КЛЮЧОВЕ към своята карта: 182/183 · КРАЖБИ: 0 от 8376 живи ключа · КОНТРОЛ мръднали: 0 ──
+
+[изход 0]
