@@ -625,9 +625,14 @@ html:not([data-theme="dark"]) #todaySection .td-chips button, html:not([data-the
    ПЪТ НАЗАД: върни `background: #fdf3ec url(../img/art/welcome.webp) center top / cover no-repeat` и align-items: flex-end. */
 .tour-ov {
   background: linear-gradient(180deg, #fff6f0 0%, #fdeef0 52%, #f8e9f4 100%) !important;
-  display: flex !important; align-items: center !important; justify-content: center !important;
+  display: flex !important; align-items: flex-start !important; justify-content: center !important;
   padding: calc(18px + env(safe-area-inset-top, 0px)) 14px calc(18px + env(safe-area-inset-bottom, 0px)) !important;
+  /* 24.10 · мерено (nachalo_kadri.js --w/--h): на 320×568 логото излизаше над ръба, а хоризонтално (667×375)
+     бутонът „Напред“ беше под ръба БЕЗ превъртане (оверлеят е fixed, тялото е overflow:hidden) — недостижим.
+     Сега: центриране с auto полета (при преливане нищо не се реже горе) + превъртане, само когато не се побира. */
+  overflow-y: auto !important; overscroll-behavior: contain; -webkit-overflow-scrolling: touch;
 }
+.tour-ov > .tour-card { margin-top: auto !important; margin-bottom: auto !important; }
 .tour-ov::before {         /* мека светлина отдолу, за да се чете текстът */
   content: ''; position: absolute; inset: 0; pointer-events: none;
   background: linear-gradient(180deg, transparent 38%, rgba(255, 248, 242, .55) 58%, rgba(255, 248, 242, .92) 100%);
@@ -690,6 +695,21 @@ html:not([data-theme="dark"]) #todaySection .td-chips button, html:not([data-the
 .pl-tt-i b::before, .pl-tt-i b::after { content: ''; position: absolute; top: 50%; width: 6px; height: 6px; margin-top: -3px; border-radius: 50%; background: #d8b46a; box-shadow: inset 0 1px 0 #f3dfa8; }
 .pl-tt-i b::before { left: 5px; } .pl-tt-i b::after { right: 5px; }
 .tour-ov.pl-tour-1 .tour-dots { margin: 4px 0 8px !important; }
+/* тесен екран (320 px): трите плочки не се побираха — „Всеки ден“ излизаше вдясно (кадър mal24_se1) */
+@media (max-width: 360px) {
+  .pl-tt { gap: 4px; }
+  .pl-tt-i i { width: 70px; height: 70px; }
+  .pl-tt-i b { padding: 4px 11px; font-size: 12px; margin-top: -10px; }
+  .pl-tt-i b::before { left: 3px; } .pl-tt-i b::after { right: 3px; }
+}
+/* телефон хоризонтално (височина ≤ 480): заглавието на един ред, плочките по-малки — да се побере без превъртане */
+@media (max-height: 480px) and (orientation: landscape) {
+  .tour-ov.pl-tour-1 .tour-card h3 { font-size: 30px !important; margin-bottom: 4px !important; }
+  .tour-ov.pl-tour-1 .tour-card p { font-size: 13.5px !important; line-height: 1.4 !important; }
+  .pl-tt { margin: 8px 0 6px; } .pl-tt-i i { width: 56px; height: 56px; } .pl-tt-i b { font-size: 12px; padding: 3px 11px; margin-top: -9px; }
+  .tour-ov.pl-tour-1 .tour-next { min-height: 46px !important; }
+  .tour-ov .tour-skip { margin-top: 4px !important; }
+}
 
 /* ═══════════════════════════════════════════════════════════════════════════
    🎈 24.10 · ЖИВОТО НАЧАЛО — „Добре дошла у дома“ без рисунката, оживено с код (js/premium-home.js · обиколка)
@@ -735,6 +755,8 @@ html:not([data-theme="dark"]) #todaySection .td-chips button, html:not([data-the
 /* живото лого — влиза с отскок, после частите му дишат сами (style.css: облак, балон, личице, очи) */
 .tour-ov.pl-tour-1 .tour-balloon { display: none !important; }   /* балонът е в логото */
 .pl-tlogo { width: min(270px, 70vw); margin: -6px auto 2px; transform-origin: 50% 70%; }
+/* логото следва и височината: 844 → 270 px · 667 → 213 · 568 → 182 · хоризонтално 375 → 120 (svh — без лентата на браузъра) */
+.pl-tlogo { width: min(270px, 70vw, 32vh); width: min(270px, 70vw, 32svh); }
 .tour-ov.pl-tgo .pl-tlogo {
   animation: plTlIn 1.15s cubic-bezier(.3, 1.5, .55, 1) .12s both, plTlBreath 6s ease-in-out 1.4s infinite; }
 .pl-tlogo-svg { width: 100%; height: auto; display: block; overflow: visible; }

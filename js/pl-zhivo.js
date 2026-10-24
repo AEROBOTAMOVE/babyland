@@ -111,3 +111,150 @@
   if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', върви); else върви();
   window.BL_PL_ZHIVO = { стая, начало };
 })();
+
+// ── 24.10 · влят от js/pl-otklik.js (сесия-помощник): таванът е 180 заявки (dev/byudzhet.js), а бяха 179 ──
+/* ═══════════════════════════════════════════════════════════════════════════════
+   👆 ОТКЛИКЪТ · js (24.10.2026) — видът и защо е тук: блокът „ОТКЛИКЪТ“ в края на css/pl-zhivo.css
+   Три неща, които CSS сам не може:
+     1) НАТИСК: допирът свива бутона/чипа/плочката до .96 (110 ms), пускането го връща с лек
+        отскок (1.02 → 1, ~280 ms). Анимира се САМО отделното свойство `scale` през WAAPI —
+        така се събира с потъването translateY от pl-ui.css :active и не пипа нито transition-а,
+        нито CSS анимациите на елемента (иначе чип с вход chipIn би го изиграл наново).
+        Голямото се свива по-малко (плочка .975, карта .99) — иначе „скача“.
+     2) ВХОД ПО РЕД: премиум блокът под банера получава .pl-otk-vliza САМО при първата си поява
+        в стаята и го губи след 1 с по таймер (не по animationend — скрит таб не праща кадри).
+        Прерисуване на блока после не мига.
+     3) ИСКРИ: при успешен запис приложението вика BL_FX.cheer (99 места). Ако банерът наистина
+        се е показал (в тежък ден fx.js мълчи — и ние) и до 1,5 с преди това е натиснат бутон в
+        стаята — от него хвръкват 8 частици (сърца, звезди, точици), ≤ 600 ms. Само в стаите:
+        на началото — само натискът, без нови неща.
+   „По-малко движение“ → нищо от трите. Нищо не записва, нищо не чете от паметта.
+   ПЪТ НАЗАД: махни блока „ОТКЛИКЪТ“ (оттук до края) тук и в края на css/pl-zhivo.css.
+   ═══════════════════════════════════════════════════════════════════════════════ */
+(function () {
+  'use strict';
+  if (window.BL_PL_OTKLIK) return;
+  const тихо = () => { try { return matchMedia('(prefers-reduced-motion: reduce)').matches; } catch (e) { return true; } };
+  const МОЖЕ = !!(Element.prototype.animate && window.CSS && CSS.supports && CSS.supports('scale', '1'));
+
+  // ═══ 1. НАТИСКЪТ ═══
+  const ЦЕЛ = 'button, [role="button"], [role="tab"], a.jr-btn, .jr-chip, .ro-chip, .sec-chip';
+  // стартовият екран, „Добре дошла у дома“ (обиколката) и първото въвеждане имат свое движение — не ги пипаме
+  const НЕ = '#blSplash, .tour-ov, #onbOverlay';
+  let натиснат = null, свиване = null, таймер = 0;
+  const последен = { е: null, т: 0 };
+  function колко(е) {
+    const р = е.getBoundingClientRect();
+    if (р.width > 340 || р.height > 160) return 0.99;
+    if (р.width > 220 || р.height > 90) return 0.975;
+    return 0.96;
+  }
+  function долу(ев) {
+    if (ев.button > 0 || !ев.target || !ев.target.closest) return;
+    const е = ев.target.closest(ЦЕЛ);
+    if (!е || е.disabled || е.getAttribute('aria-disabled') === 'true' || е.closest(НЕ)) return;
+    последен.е = е; последен.т = Date.now();
+    if (!МОЖЕ || тихо()) return;
+    горе();
+    натиснат = е;
+    const к = колко(е); е._plOtkK = к;
+    try { свиване = е.animate([{ scale: 1 }, { scale: к }], { duration: 110, easing: 'cubic-bezier(.3, .7, .4, 1)', fill: 'forwards' }); } catch (e) { свиване = null; }
+    clearTimeout(таймер); таймер = setTimeout(горе, 1500);      // задържан пръст — не стоим свити вечно
+  }
+  function горе() {
+    const е = натиснат; if (!е) return;
+    натиснат = null; clearTimeout(таймер);
+    let от = е._plOtkK || 0.96;
+    try { const с = parseFloat(getComputedStyle(е).scale); if (с > 0 && с <= 1) от = с; } catch (e) {}
+    if (свиване) { try { свиване.cancel(); } catch (e) {} свиване = null; }
+    if (!е.isConnected) return;
+    const връх = 1 + (1 - от) * 0.5;                            // .96 → 1.02, .99 → 1.005
+    try { е.animate([{ scale: от }, { scale: връх, offset: 0.55 }, { scale: 1 }], { duration: 280, easing: 'ease-out' }); } catch (e) {}
+  }
+  document.addEventListener('pointerdown', долу, { passive: true, capture: true });
+  ['pointerup', 'pointercancel', 'dragstart'].forEach(и => document.addEventListener(и, горе, { passive: true, capture: true }));
+  window.addEventListener('blur', горе);
+  // клавиатурата: Enter/интервал по бутон — същото усещане
+  document.addEventListener('keydown', ев => { if ((ев.key === 'Enter' || ев.key === ' ') && !ев.repeat && ев.target && ев.target.matches && ев.target.matches(ЦЕЛ)) долу({ target: ев.target, button: 0 }); }, true);
+  document.addEventListener('keyup', ев => { if (ев.key === 'Enter' || ев.key === ' ') горе(); }, true);
+
+  // ═══ 2. ВХОД ПО РЕД — първата поява на премиум блока ═══
+  const БЛОКОВЕ = ['pl-br', 'pl-ig', 'pl-zm', 'pl-dn', 'pl-hr', 'pl-in', 'pl-lb', 'pl-zd'];
+  const БЛОК = БЛОКОВЕ.map(к => '#roRoom > .' + к).join(', ');
+  function новБлок(е) {
+    if (!е || е._plOtk) return;
+    е._plOtk = 1;                                                // всеки елемент — веднъж
+    if (тихо()) return;
+    е.classList.add('pl-otk-vliza');
+    setTimeout(() => е.classList.remove('pl-otk-vliza'), 1000);
+  }
+  // 🪤 24.10 (МЕРЕНО в пробата): блокът не идва винаги като пряко дете в #roRoom — стаята се сглобява и
+  //   после се закача цяла. Затова всяко добавено поддърво се оглежда за блоковете вътре в него.
+  function пази() {
+    const ов = document.getElementById('roomOverlay');
+    if (!ов) return false;
+    new MutationObserver(сп => {
+      for (const з of сп) for (const н of з.addedNodes) {
+        if (н.nodeType !== 1) continue;
+        if (н.matches(БЛОК)) новБлок(н);
+        else if (н.firstElementChild) н.querySelectorAll(БЛОК).forEach(новБлок);
+      }
+    }).observe(ов, { childList: true, subtree: true });
+    return true;
+  }
+
+  // ═══ 3. ИСКРИТЕ ═══
+  // [dx, dy, вид] — сърце (s), звезди (z), точици; ветрило нагоре, без да покрива бутона
+  const ПОСОКИ = [[-36, -40, 's'], [0, -58, 'z'], [36, -42, ''], [-22, -24, ''], [24, -26, 'z'], [-8, -46, ''], [14, -50, 's'], [44, -18, '']];
+  function искри(е) {
+    const ов = document.getElementById('roomOverlay');
+    if (!ов || ов.hidden || !ов.contains(е) || !е.isConnected) return;
+    const р = е.getBoundingClientRect(); if (!р.width) return;
+    const x = р.left + р.width / 2, y = р.top + Math.min(р.height / 2, 18);
+    const с = document.createElement('div'); с.className = 'pl-otk-sloy'; с.setAttribute('aria-hidden', 'true');
+    ПОСОКИ.forEach(([dx, dy, вид], i) => {
+      const ч = document.createElement('i'); ч.className = 'pl-otk-i' + (вид ? ' ' + вид : '');
+      ч.style.left = x + 'px'; ч.style.top = y + 'px';
+      с.appendChild(ч);
+      const завъртане = (i % 2 ? 1 : -1) * (14 + i * 6);
+      try {
+        // кривата е по отсечки: полетът е бърз и меко спира, избледняването е чак в последната отсечка
+        //   (с една обща крива частиците гаснеха още в средата — кадрите 24.10)
+        ч.animate([
+          { translate: '0 0', scale: 0.5, rotate: '0deg', opacity: 1, easing: 'cubic-bezier(.2, .8, .3, 1)' },
+          { translate: (dx * 0.75) + 'px ' + (dy * 0.75) + 'px', scale: 1.05, opacity: 1, offset: 0.55, easing: 'ease-in' },
+          { translate: dx + 'px ' + (dy - 8) + 'px', scale: 0.8, rotate: завъртане + 'deg', opacity: 0 }
+        ], { duration: 470 + i * 4, delay: i * 12, easing: 'linear', fill: 'both' });   // последната: 582 ms
+      } catch (e) {}
+    });
+    ов.appendChild(с);
+    setTimeout(() => с.remove(), 760);                           // таймер, не animationend — скрит таб не засяда
+  }
+  function обвийCheer() {
+    const F = window.BL_FX; if (!F || typeof F.cheer !== 'function' || F.cheer._plOtk) return !!(F && F.cheer && F.cheer._plOtk);
+    const стар = F.cheer;
+    const нов = function () {
+      const преди = document.querySelectorAll('.fx-cheer').length;
+      const р = стар.apply(this, arguments);
+      try {
+        const показан = document.querySelectorAll('.fx-cheer').length > преди;   // тежък ден / „по-малко движение“ → fx.js мълчи
+        if (показан && !тихо() && последен.е && Date.now() - последен.т < 1500) искри(последен.е);
+      } catch (e) {}
+      return р;
+    };
+    нов._plOtk = 1;
+    F.cheer = нов;
+    return true;
+  }
+
+  function върви() {
+    let опит = 0, пазя = false, обвих = false;            // всяко веднъж — иначе по наблюдател на опит
+    (function чакай() {
+      if (!пазя) пазя = пази();
+      if (!обвих) обвих = обвийCheer();
+      if ((!пазя || !обвих) && ++опит < 40) setTimeout(чакай, 250);
+    })();
+  }
+  if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', върви); else върви();
+  window.BL_PL_OTKLIK = { искри, колко };
+})();

@@ -107,3 +107,95 @@ html[data-theme="dark"].pl-on #plScene::before { background: linear-gradient(180
   }
 }
 /* край 20.10 */
+
+/* ── 24.10 · влят от css/pl-otklik.css (сесия-помощник): таванът е 180 заявки (dev/byudzhet.js), а бяха 179 ── */
+/* ═══════════════════════════════════════════════════════════════════════════════
+   👆 ОТКЛИКЪТ · живи микроанимации в стаите (24.10.2026) — двойката е блокът „ОТКЛИКЪТ“ в края на js/pl-zhivo.js
+   Собственикът: „анимации с код навсякъде, където можеш да бодеш“.
+   Какво вече мърдаше и НЕ се дублира (прочетено 24.10):
+     · картите .jr-card в стаята влизат в дълбочина (anim.css rmxDepthInL/R) — не ги пипам;
+     · вълничката при допир (anim.js .bl-ripple) и потъването при :active (pl-ui.css translateY) — остават;
+       тук се добавя само МАЩАБ през отделното свойство `scale` (js), което се събира с тях;
+     · сцената, светлинките, проблясъкът (pl-zhivo.css), изплуването на началото (pl-poyava.css);
+     · „Моето бебе“ (.pl-bb) си има свои влизания (pl-bebe.css) — не е в списъка долу.
+   Какво цъфваше рязко и е тук:
+     1) премиум блоковете под банера (.pl-br .pl-ig .pl-zm .pl-dn .pl-hr .pl-in .pl-lb .pl-zd) —
+        картите им влизат една след друга (50 ms, до 8), само при ПЪРВАТА поява на блока
+        (js слага .pl-otk-vliza за 1 с и го маха с таймер — прерисуване не мига, скрит таб не засяда);
+     2) мехурчето на помощничката: беше msgIn ОТ opacity 0 (style.css) — сега от .4, с лек отскок;
+     3) чиповете под отговора: също бяха от opacity 0 (style.css .ro-chip msgIn) — сега от .5, по ред;
+     4) „Прочети цялото“ без статия (pl-statii.js, .pl-zn-more) — абзаците се разгръщат меко;
+     5) искрите при успешен запис (js, BL_FX.cheer) — видът им е тук.
+   ЗАКОНИТЕ: само transform/opacity (отделните `translate`/`scale` — не чупят чужд transform);
+   нищо не тръгва от opacity 0 (най-ниско .4); „по-малко движение“ → нищо; без картинки и текст.
+   ПЪТ НАЗАД: махни блока „ОТКЛИКЪТ“ (оттук до края) тук и в края на js/pl-zhivo.js.
+   ═══════════════════════════════════════════════════════════════════════════════ */
+
+/* стъпката не се наследява — иначе вложените елементи биха взели закъснението на родителя си */
+@property --otk-d { syntax: '<time>'; inherits: false; initial-value: 0ms; }
+#roRoom > .pl-otk-vliza > :first-child, #roChips .ro-chip:first-child, .pl-zn-more > :first-child { --otk-d: 0ms; }
+
+@media (prefers-reduced-motion: no-preference) {
+
+  /* ── 1 · премиум блоковете: картите им влизат по ред ──
+     🪤 24.10 (МЕРЕНО в пробата): закъснението беше в отделни правила — а :not() вдига тежестта на
+     главното и краткото `animation` нулираше delay-а (второто дете влизаше на 0 s). Сега стъпката е
+     променлива (--otk-d) вътре в самото `animation` — тежестта няма значение. */
+  html body #roRoom > .pl-otk-vliza > :nth-child(-n+8):not([data-pl-hr-spot]) {
+    animation: plOtkVliza .46s cubic-bezier(.22, 1, .36, 1) var(--otk-d, 0ms) backwards;
+  }
+  #roRoom > .pl-otk-vliza > :nth-child(2) { --otk-d: 50ms; }
+  #roRoom > .pl-otk-vliza > :nth-child(3) { --otk-d: 100ms; }
+  #roRoom > .pl-otk-vliza > :nth-child(4) { --otk-d: 150ms; }
+  #roRoom > .pl-otk-vliza > :nth-child(5) { --otk-d: 200ms; }
+  #roRoom > .pl-otk-vliza > :nth-child(6) { --otk-d: 250ms; }
+  #roRoom > .pl-otk-vliza > :nth-child(7) { --otk-d: 300ms; }
+  #roRoom > .pl-otk-vliza > :nth-child(8) { --otk-d: 350ms; }
+
+  /* ── 2 · мехурчето: помощничката отляво, мама отдясно — всяко расте от своя ъгъл ── */
+  html body #roomOverlay #roChat .msg.bot .msg-bubble {
+    transform-origin: 0 100%;
+    animation: plOtkMehur .28s cubic-bezier(.34, 1.45, .64, 1) both;
+  }
+  html body #roomOverlay #roChat .msg.user .msg-bubble {
+    transform-origin: 100% 100%;
+    animation: plOtkMehur .22s cubic-bezier(.3, 1.25, .6, 1) both;
+  }
+
+  /* ── 3 · чиповете под отговора — по ред, като подадени с ръка ── */
+  html body #roomOverlay #roChips .ro-chip { animation: plOtkChip .3s cubic-bezier(.3, 1.35, .6, 1) var(--otk-d, 0ms) both; }
+  #roChips .ro-chip:nth-child(2) { --otk-d: 45ms; }
+  #roChips .ro-chip:nth-child(3) { --otk-d: 90ms; }
+  #roChips .ro-chip:nth-child(4) { --otk-d: 135ms; }
+  #roChips .ro-chip:nth-child(n+5) { --otk-d: 180ms; }
+
+  /* ── 4 · разгънатото на място („Прочети цялото“ без статия) ── */
+  html body .pl-zn-more:not([hidden]) > * { animation: plOtkVliza .38s cubic-bezier(.22, 1, .36, 1) var(--otk-d, 0ms) backwards; }
+  .pl-zn-more > :nth-child(2) { --otk-d: 45ms; }
+  .pl-zn-more > :nth-child(3) { --otk-d: 90ms; }
+  .pl-zn-more > :nth-child(n+4) { --otk-d: 135ms; }
+}
+
+@keyframes plOtkVliza { from { opacity: .55; translate: 0 12px; scale: .985; } }
+@keyframes plOtkMehur { from { opacity: .4; translate: 0 8px; scale: .92; } }
+@keyframes plOtkChip  { from { opacity: .5; translate: 0 6px; scale: .94; } }
+
+/* ── 5 · искрите при успешен запис — слоят и частиците (движението е от js, WAAPI) ──
+   Слоят е вътре в #roomOverlay: под 600 px touch.css спира CSS анимациите на всичко извън стаята,
+   а WAAPI анимациите не слушат animation-play-state — затова движението е от js. */
+.pl-otk-sloy { position: fixed; inset: 0; pointer-events: none; z-index: 140; overflow: hidden; }
+/* 24.10 (кадрите): 9 px точици се губеха над гел бутона → по-едри, с неподвижен ореол (drop-shadow не се анимира) */
+.pl-otk-i {
+  position: absolute; left: 0; top: 0; width: 10px; height: 10px; margin: -5px 0 0 -5px;
+  border-radius: 50%; background: #ec6f9f; pointer-events: none;
+  filter: drop-shadow(0 0 3px rgba(255, 255, 255, .9)) drop-shadow(0 1px 2px rgba(200, 69, 122, .35));
+}
+.pl-otk-i.z { background: #eeb43a; clip-path: polygon(50% 0, 62% 38%, 100% 50%, 62% 62%, 50% 100%, 38% 62%, 0 50%, 38% 38%); width: 15px; height: 15px; margin: -7.5px 0 0 -7.5px; border-radius: 0; filter: none; }
+.pl-otk-i.s {
+  width: 18px; height: 16px; margin: -8px 0 0 -9px; border-radius: 0; background: #d94882; filter: none;
+  clip-path: path('M9 16C9 16 0 10.6 0 4.9C0 2.1 2.2 0 4.8 0C6.6 0 8.1 1 9 2.4C9.9 1 11.4 0 13.2 0C15.8 0 18 2.1 18 4.9C18 10.6 9 16 9 16Z');
+}
+html[data-theme="dark"] .pl-otk-i { background: #ffc2d8; filter: drop-shadow(0 0 4px rgba(255, 194, 216, .55)); }
+html[data-theme="dark"] .pl-otk-i.z { background: #ffe9a8; filter: none; }
+html[data-theme="dark"] .pl-otk-i.s { background: #f59cbb; filter: none; }
+@media (prefers-reduced-motion: reduce) { .pl-otk-sloy { display: none !important; } }

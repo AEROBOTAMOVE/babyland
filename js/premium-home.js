@@ -301,6 +301,9 @@
         const с = извор.cloneNode(true); с.removeAttribute('role'); с.removeAttribute('aria-label'); с.setAttribute('class', 'pl-tlogo-svg');
         о.appendChild(с);
         const з = к.querySelector('h3'); к.insertBefore(о, з || к.firstChild);
+        // фокусът на „Напред“ (home.js) превърташе оверлея надолу, преди логото да дойде — на нисък екран
+        //   се отваряше с отрязан връх (кадър mal24b_land). Четенето почва отгоре.
+        ов.scrollTop = 0;
       }
     } else if (!първа && лого) лого.remove();
     // хореографията тръгва, когато стартовият екран (#blSplash) си е отишъл — иначе се изиграва ПОД него —
