@@ -24,7 +24,7 @@
     radial-gradient(circle at 62% 100%, #36448c 0 26px, transparent 27px),
     radial-gradient(circle at 86% 100%, #313f85 0 20px, transparent 21px);
 }
-@keyframes plSanIn { from { opacity: 0; transform: translateY(10px) scale(.98); } to { opacity: 1; transform: none; } }
+@keyframes plSanIn { from { opacity: .4; transform: translateY(10px) scale(.98); } /* 24.10: от .4 (скрит таб) */ to { opacity: 1; transform: none; } }
 
 .pl-san-art { grid-area: art; position: relative; width: 96px; height: 96px; border-radius: 50%;
   background: radial-gradient(circle at 50% 45%, #fff9ea 0, #fbeecb 58%, #f2d99c 100%);

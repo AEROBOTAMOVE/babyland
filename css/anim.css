@@ -87,8 +87,12 @@
 
 /* .sec-chip — единствената безжизнена пипаема повърхност: досега без
    влизане/натиск. Мек вход + натискът горе. */
+/* 24.10 · ЗАКОНЪТ ЗА СКРИТИЯ ТАБ: входовете на СЪДЪРЖАНИЕ (чипове, глави, медали, отговори, карти) тръгват
+   от opacity .4, не от 0 — скрит/спрян таб замразява анимацията на първия кадър и съдържанието оставаше
+   невидимо. Декоративните (искри, блясъкът, пулсът на SOS, печатът на прехода) остават от 0.
+   ПЪТ НАЗАД: върни „opacity: 0“ / „--rmx-inO: 0“ в редовете с бележка „24.10“. */
 @keyframes chipInSoft {
-  from { opacity: 0; transform: translateY(6px); }
+  from { opacity: .4; transform: translateY(6px); }   /* 24.10: от .4 */
   to   { opacity: 1; transform: none; }
 }
 .sec-nav .sec-chip {
@@ -117,7 +121,7 @@
 
 /* Заглавията на секциите се „сглобяват", а разделителят се тегли. */
 @keyframes secHeadIn {
-  from { opacity: 0; transform: translateX(-6px); }
+  from { opacity: .4; transform: translateX(-6px); }   /* 24.10: от .4 */
   to   { opacity: 1; transform: none; }
 }
 .sec-head {
@@ -137,7 +141,7 @@
 
 /* Общ „скок" — преизползван за медальон, палец, чекин. Спринг, веднъж. */
 @keyframes medalPop {
-  from { opacity: 0; transform: scale(.6); }
+  from { opacity: .4; transform: scale(.6); }   /* 24.10: от .4 */
   60%  { opacity: 1; }
   to   { opacity: 1; transform: scale(1); }
 }
@@ -156,7 +160,7 @@
 
 /* Отговорът / „✓ Запазено" влиза меко — емоционалният момент на успеха. */
 @keyframes replyFade {
-  from { opacity: 0; transform: translateY(4px); }
+  from { opacity: .4; transform: translateY(4px); }   /* 24.10: от .4 */
   to   { opacity: 1; transform: none; }
 }
 .bl-rp-in { animation: replyFade var(--bl-t-soft) var(--bl-ease-soft); }
@@ -167,7 +171,7 @@
    съдържанието изплува меко. polish.js слага .just-open и я маха на
    animationend. Заглавието НЕ мърда — то е котвата. */
 @keyframes revealSoft {
-  from { opacity: 0; transform: translateY(8px); }
+  from { opacity: .4; transform: translateY(8px); }   /* 24.10: от .4 */
   to   { opacity: 1; transform: none; }
 }
 .jr-card.just-open > *:not(.jr-title) {
@@ -218,7 +222,7 @@
    [ревю-major] keyframe-ът е ПРЕИМЕНУВАН на avaIn — msgIn вече съществува в
    style.css:1228 и движи самите чат-балони; съвпадащото име ги чупеше. */
 @keyframes avaIn {
-  from { opacity: 0; transform: translateY(6px) scale(.9); }
+  from { opacity: .4; transform: translateY(6px) scale(.9); }   /* 24.10: от .4 */
   to   { opacity: 1; transform: none; }
 }
 .msg-ava { animation: avaIn var(--bl-t-soft) var(--bl-ease-soft) backwards; }
@@ -249,7 +253,7 @@
 .pg20-ms.bloom:nth-of-type(4) { animation-delay: .65s; }
 .pg20-ms.bloom:nth-of-type(5) { animation-delay: .8s; }
 .pg20-ms.bloom:nth-of-type(6) { animation-delay: .95s; }
-@keyframes msBloom { from { opacity: 0; } to { opacity: 1; } }
+@keyframes msBloom { from { opacity: .4; } to { opacity: 1; } }   /* 24.10: от .4 */
 
 
 /* ═══════════ 🌈 ДЪГАТА НА СЕДМИЦАТА СЕ ЧЕРТАЕ (проход 1 тема 7) ═══════════
@@ -286,7 +290,7 @@
 .tmp-out { transition: background-color var(--bl-t-soft) ease, border-color var(--bl-t-soft) ease, color var(--bl-t-soft) ease; }
 .tmp-out.tv-pop { animation: tvPop .4s var(--bl-ease-spring); }
 @keyframes tvPop {
-  from { opacity: .35; transform: scale(.96); }
+  from { opacity: .4; transform: scale(.96); }   /* 24.10: беше .35 */
   to   { opacity: 1;   transform: none; }
 }
 
@@ -444,12 +448,12 @@
   position: relative; z-index: 1;   /* над аврората (rmx-aurora z-index:0) */
 }
 @keyframes rmxDepthInL {
-  0%   { --rmx-inO: 0; --rmx-inY: 26px; --rmx-inZ: -140px; --rmx-inRx: 8deg; --rmx-inRy: -5deg; }
+  0%   { --rmx-inO: .4; --rmx-inY: 26px; --rmx-inZ: -140px; --rmx-inRx: 8deg; --rmx-inRy: -5deg; }
   60%  { --rmx-inO: 1; }
   100% { --rmx-inO: 1; --rmx-inY: 0px;  --rmx-inZ: 0px;    --rmx-inRx: 0deg; --rmx-inRy: 0deg; }
 }
 @keyframes rmxDepthInR {
-  0%   { --rmx-inO: 0; --rmx-inY: 26px; --rmx-inZ: -140px; --rmx-inRx: 8deg; --rmx-inRy: 5deg; }
+  0%   { --rmx-inO: .4; --rmx-inY: 26px; --rmx-inZ: -140px; --rmx-inRx: 8deg; --rmx-inRy: 5deg; }
   60%  { --rmx-inO: 1; }
   100% { --rmx-inO: 1; --rmx-inY: 0px;  --rmx-inZ: 0px;    --rmx-inRx: 0deg; --rmx-inRy: 0deg; }
 }
@@ -457,11 +461,14 @@
 #roRoom > .jr-card:nth-child(even) { animation-name: rmxDepthInR; }
 #roRoom > .jr-card:nth-child(5) { animation-delay: .26s; }
 #roRoom > .jr-card:nth-child(n+6) { animation-delay: .3s; }
+/* 24.10 (МЕРЕНО, karti_proba): редът вече го има — polish.js stagger() слага на всяка .card-in
+   style.animationDelay = i × 45 ms (inline, бие горните). Затова тук НЕ се добавя втори ред;
+   поправката е само началото на входа: от opacity .4 (rmxDepthInL/R, rmxHeroDepthIn). */
 /* героят изгрява по-дълбоко и застава НАПРЕД (базата остава за плаването A4) */
 #roRoom > .jr-card.rh-hero,
 #roRoom > .jr-card.pg20-hero { --rmx-tz-base: 24px; animation-name: rmxHeroDepthIn; animation-duration: .7s; }
 @keyframes rmxHeroDepthIn {
-  0%   { --rmx-inO: 0; --rmx-inY: 30px; --rmx-inZ: -180px; --rmx-inRx: 10deg; }
+  0%   { --rmx-inO: .4; --rmx-inY: 30px; --rmx-inZ: -180px; --rmx-inRx: 10deg; }
   70%  { --rmx-inO: 1; --rmx-inY: -3px; --rmx-inZ: 8px;     --rmx-inRx: -1deg; }
   100% { --rmx-inO: 1; --rmx-inY: 0px;  --rmx-inZ: 0px;     --rmx-inRx: 0deg; }
 }
@@ -753,6 +760,6 @@
   animation: героятВлиза 0.7s var(--bl-ease-out) both;
 }
 @keyframes героятВлиза {
-  from { opacity: 0; transform: translateY(36px) rotate(-1.2deg); }
+  from { opacity: .4; transform: translateY(36px) rotate(-1.2deg); }   /* 24.10: от .4 */
   to   { opacity: 1; transform: none; }
 }

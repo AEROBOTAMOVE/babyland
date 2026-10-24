@@ -290,7 +290,7 @@ html[data-theme="dark"] #roRoom .pl-zd button:focus-visible, html[data-theme="da
 #roomOverlay .ro-panel.ro-green #roRoom .fa-chip:nth-child(5) { animation-delay: 240ms; }
 #roomOverlay .ro-panel.ro-green #roRoom .fa-chip:nth-child(6) { animation-delay: 300ms; }
 #roomOverlay .ro-panel.ro-green #roRoom .fa-chip:nth-child(7) { animation-delay: 360ms; }
-@keyframes plZdSyada { from { transform: translateY(9px) scale(.97); opacity: 0; } to { transform: none; opacity: 1; } }
+@keyframes plZdSyada { from { transform: translateY(9px) scale(.97); opacity: .4; } /* 24.10: от .4 (скрит таб) */ to { transform: none; opacity: 1; } }
 
 /* ── 5 · КЪДЕ СЕ МЕРИ ТЕМПЕРАТУРАТА — меки ленти, ключът е плюшен термометър ── */
 #roomOverlay .ro-panel.ro-green #roRoom .th-row {

@@ -53,7 +53,9 @@ html[data-theme="dark"] .prof-overlay .bl-dc .bl-b-locked, html[data-theme="dark
   outline: none; animation: blDgIn .35s ease both;
 }
 #blDostap[hidden] { display: none !important; }
-@keyframes blDgIn { from { opacity: 0; } to { opacity: 1; } }
+/* 24.10 · от .4, не от 0: вратата е цял екран над всичко — замръзне ли на първия кадър (спрян таб), щеше да е
+   НЕВИДИМ слой, който спира всеки допир. ПЪТ НАЗАД: върни „opacity: 0“. */
+@keyframes blDgIn { from { opacity: .4; } to { opacity: 1; } }
 /* рисунката отгоре (бебето в балона) — същата като въведението; превърта се със съдържанието */
 #blDostap::before {
   content: ''; position: absolute; left: 0; right: 0; top: 0; height: min(178vw, 820px); z-index: 0; pointer-events: none;

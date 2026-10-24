@@ -594,7 +594,7 @@ html body #roomOverlay .ro-panel.ro-carrot #roRoom .rp-card { transition: box-sh
 html body #roomOverlay .ro-panel.ro-carrot #roRoom .fd-emoji { animation: plHrPop .44s cubic-bezier(.34, 1.4, .5, 1) 1 backwards; }
 html body #roomOverlay .ro-panel.ro-carrot #roRoom .rp-e     { animation: plHrPop .52s cubic-bezier(.34, 1.4, .5, 1) 1 backwards; }
 html body #roomOverlay .ro-panel.ro-carrot #roRoom .al-e     { animation: plHrPop .60s cubic-bezier(.34, 1.4, .5, 1) 1 backwards; }
-@keyframes plHrPop { from { transform: scale(.72); opacity: 0; } to { transform: none; opacity: 1; } }
+@keyframes plHrPop { from { transform: scale(.72); opacity: .4; } /* 24.10: от .4 (скрит таб) */ to { transform: none; opacity: 1; } }
 
 @media (prefers-reduced-motion: reduce) {
   html body #roomOverlay .ro-panel.ro-carrot #roRoom :is(.fd-emoji, .rp-e, .al-e) { animation: none !important; }

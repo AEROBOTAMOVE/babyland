@@ -362,14 +362,14 @@
    Всичко се гаси от @media (prefers-reduced-motion: reduce) най-долу. */
 
 /* — A · влизането — */
-@keyframes plBbIn     { from { opacity: 0; transform: translateY(-9px) scale(.965); } }
-@keyframes plBbShelf  { from { opacity: 0; transform: translateY(-16px); } }
-@keyframes plBbPlaque { 0% { opacity: 0; transform: translateX(-50%) translateY(-10px) rotate(-4deg); } 62% { transform: translateX(-50%) translateY(0) rotate(1.6deg); } }
-@keyframes plBbArch   { from { opacity: 0; transform: translateY(20px); } }
-@keyframes plBbPop    { 0% { opacity: 0; transform: scale(.25); } 64% { transform: scale(1.12); } }
-@keyframes plBbUp     { from { opacity: 0; transform: translateY(12px); } }
-@keyframes plBbRow    { from { opacity: 0; transform: translateX(-12px); } }
-@keyframes plBbTile   { from { opacity: 0; transform: translateY(20px) scale(.97); } }
+@keyframes plBbIn     { from { opacity: .4; transform: translateY(-9px) scale(.965); } /* 24.10: от .4 (скрит таб) */ }
+@keyframes plBbShelf  { from { opacity: .4; transform: translateY(-16px); } /* 24.10: от .4 (скрит таб) */ }
+@keyframes plBbPlaque { 0% { opacity: .4; transform: translateX(-50%) translateY(-10px) rotate(-4deg); } /* 24.10: от .4 (скрит таб) */ 62% { transform: translateX(-50%) translateY(0) rotate(1.6deg); } }
+@keyframes plBbArch   { from { opacity: .4; transform: translateY(20px); } /* 24.10: от .4 (скрит таб) */ }
+@keyframes plBbPop    { 0% { opacity: .4; transform: scale(.25); } /* 24.10: от .4 (скрит таб) */ 64% { transform: scale(1.12); } }
+@keyframes plBbUp     { from { opacity: .4; transform: translateY(12px); } /* 24.10: от .4 (скрит таб) */ }
+@keyframes plBbRow    { from { opacity: .4; transform: translateX(-12px); } /* 24.10: от .4 (скрит таб) */ }
+@keyframes plBbTile   { from { opacity: .4; transform: translateY(20px) scale(.97); } /* 24.10: от .4 (скрит таб) */ }
 
 .pl-bb-id     { animation: plBbIn .56s cubic-bezier(.22, 1, .36, 1) both; }
 .pl-bb-shelf  { animation: plBbShelf .68s cubic-bezier(.22, 1, .36, 1) .06s both; }

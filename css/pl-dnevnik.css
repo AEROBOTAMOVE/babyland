@@ -369,11 +369,11 @@ html body #roomOverlay .ro-lav .jr-wins .jr-win.done > .jr-check::after {
 
 /* ── 4 · ДВИЖЕНИЕТО — меко, с РАЗЛИЧЕН ритъм на съседните редове, НУЛА безкрайни ──
    (безкрайна анимация извън екрана яде ток; тук всяка се пуска по веднъж) */
-@keyframes plDnLegna { from { opacity: 0; transform: translateY(9px); } to { opacity: 1; transform: none; } }
+@keyframes plDnLegna { from { opacity: .4; transform: translateY(9px); } /* 24.10: от .4 (скрит таб) */ to { opacity: 1; transform: none; } }
 html body #roomOverlay .ro-lav .jr-wins .jr-win { animation: plDnLegna .5s cubic-bezier(.22, .9, .3, 1) backwards; }
 html body #roomOverlay .ro-lav .jr-wins .jr-win:nth-child(odd) { animation-duration: .58s; animation-delay: .05s; }
 html body #roomOverlay .ro-lav .jr-wins .jr-win:nth-child(even) { animation-duration: .44s; animation-delay: .12s; }
-@keyframes plDnList { from { opacity: 0; transform: translateY(6px) rotate(-.4deg); } to { opacity: 1; transform: none; } }
+@keyframes plDnList { from { opacity: .4; transform: translateY(6px) rotate(-.4deg); } /* 24.10: от .4 (скрит таб) */ to { opacity: 1; transform: none; } }
 html body #roomOverlay .ro-lav .jr-card textarea.jr-paper { animation: plDnList .62s ease-out .06s backwards; }
 
 /* ── 5 · НОЩ (тъмната тема на приложението) ── */
@@ -590,14 +590,14 @@ html body #roomOverlay .ro-lav .jr-privacy > .pl-dn-em { width: 1.5em; height: 1
    rooms.css:2143 върти ckBreath 4.6s infinite на петте личица и ckBeat 1.6s infinite на
    избраното. Тук личицата идват веднъж (с различен ритъм от съседа) и подскачат веднъж
    при избор. Нула безкрайни анимации в тази стая. */
-@keyframes plDnLiceIdva { from { opacity: 0; transform: translateY(7px) scale(.86); } 70% { transform: translateY(0) scale(1.05); } to { opacity: 1; transform: none; } }
+@keyframes plDnLiceIdva { from { opacity: .4; transform: translateY(7px) scale(.86); } /* 24.10: от .4 (скрит таб) */ 70% { transform: translateY(0) scale(1.05); } to { opacity: 1; transform: none; } }
 @keyframes plDnLicePop  { 0% { transform: scale(1); } 45% { transform: scale(1.14); } 100% { transform: scale(1.06); } }
 html body #roomOverlay .ro-lav .ck-st .ck-e { animation: plDnLiceIdva .5s cubic-bezier(.22, .9, .3, 1) backwards !important; }
 html body #roomOverlay .ro-lav .ck-st:nth-of-type(odd) .ck-e { animation-duration: .58s !important; animation-delay: .04s !important; }
 html body #roomOverlay .ro-lav .ck-st:nth-of-type(even) .ck-e { animation-duration: .44s !important; animation-delay: .13s !important; }
 html body #roomOverlay .ro-lav .ck-st.picked .ck-e { animation: plDnLicePop .42s cubic-bezier(.3, 1.5, .5, 1) forwards !important; }
 /* плочките лягат веднъж, с редуващ се ритъм (не всички наведнъж — така се усеща ръка) */
-@keyframes plDnPlochka { from { opacity: 0; transform: translateY(8px) rotate(-.5deg); } to { opacity: 1; transform: none; } }
+@keyframes plDnPlochka { from { opacity: .4; transform: translateY(8px) rotate(-.5deg); } /* 24.10: от .4 (скрит таб) */ to { opacity: 1; transform: none; } }
 html body #roomOverlay .ro-lav .sec-nav .sec-chip { animation: plDnPlochka .5s cubic-bezier(.22, .9, .3, 1) backwards; }
 html body #roomOverlay .ro-lav .sec-nav .sec-chip:nth-child(3n+1) { animation-delay: .02s; animation-duration: .52s; }
 html body #roomOverlay .ro-lav .sec-nav .sec-chip:nth-child(3n+2) { animation-delay: .09s; animation-duration: .44s; }

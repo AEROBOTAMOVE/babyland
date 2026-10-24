@@ -601,8 +601,12 @@ h1, h2, h3 { font-family: 'Comfortaa', 'Comfortaa-fallback', 'Nunito', sans-seri
   color: var(--pink-deep);
 }
 .mood-reply.pop { animation: replyPop 0.5s var(--bl-ease-spring); }
+/* 24.10 · ЗАКОНЪТ ЗА СКРИТИЯ ТАБ: входовете на съдържание в този файл (отговорът, прозорците, панелът на
+   стаята, мехурчетата, картите на въвеждането, банерът „Браво“) тръгват от opacity .4, не от 0 — спрян таб
+   замразява първия кадър. Демо сцените (ph*, mc*, chipIn в .play), искрите и пулсът остават от 0.
+   ПЪТ НАЗАД: върни „opacity: 0“ в редовете с бележка „24.10“. */
 @keyframes replyPop {
-  0%   { opacity: 0; transform: translateY(14px) scale(0.9); }
+  0%   { opacity: .4; transform: translateY(14px) scale(0.9); }   /* 24.10: от .4 */
   100% { opacity: 1; transform: translateY(0)    scale(1); }
 }
 
@@ -1082,7 +1086,7 @@ h1, h2, h3 { font-family: 'Comfortaa', 'Comfortaa-fallback', 'Nunito', sans-seri
   animation: modalPop 0.45s var(--bl-ease-spring);
 }
 @keyframes modalPop {
-  from { opacity: 0; transform: scale(0.7) translateY(30px); }
+  from { opacity: .4; transform: scale(0.7) translateY(30px); }   /* 24.10: от .4 */
   to   { opacity: 1; transform: scale(1)   translateY(0); }
 }
 .modal-emoji { font-size: 56px; display: block; margin-bottom: 12px; animation: wobble 2.4s ease-in-out infinite; }
@@ -1151,7 +1155,7 @@ h1, h2, h3 { font-family: 'Comfortaa', 'Comfortaa-fallback', 'Nunito', sans-seri
   .ro-panel { height: min(88vh, 760px); border-radius: 30px; box-shadow: 0 40px 90px rgba(60, 50, 90, 0.45); }
 }
 @keyframes roIn {
-  from { opacity: 0; transform: translateY(46px) scale(0.96); }
+  from { opacity: .4; transform: translateY(46px) scale(0.96); }   /* 24.10: от .4 (и .tour-card, .rv-panel, .sos-panel) */
   to   { opacity: 1; transform: translateY(0) scale(1); }
 }
 
@@ -1250,7 +1254,7 @@ h1, h2, h3 { font-family: 'Comfortaa', 'Comfortaa-fallback', 'Nunito', sans-seri
   box-shadow: 0 4px 14px rgba(229, 107, 164, 0.32);
 }
 @keyframes msgIn {
-  from { opacity: 0; transform: translateY(10px) scale(0.96); }
+  from { opacity: .4; transform: translateY(10px) scale(0.96); }   /* 24.10: от .4 */
   to   { opacity: 1; transform: translateY(0) scale(1); }
 }
 
@@ -1360,7 +1364,7 @@ h1, h2, h3 { font-family: 'Comfortaa', 'Comfortaa-fallback', 'Nunito', sans-seri
 .bb-sil { fill: var(--pink); filter: drop-shadow(0 2px 4px rgba(229,107,164,.28)); }
 .bb-ava { transform-origin: bottom center; }
 .bb-ava-pop .bb-sil { animation: bbSilPop .7s var(--bl-ease-spring); transform-box: fill-box; transform-origin: bottom center; }
-@keyframes bbSilPop { 0% { transform: scale(.4); opacity: .3; } 60% { transform: scale(1.15); opacity: 1; } 100% { transform: scale(1); } }
+@keyframes bbSilPop { 0% { transform: scale(.4); opacity: .4; }   /* 24.10: беше .3 */ 60% { transform: scale(1.15); opacity: 1; } 100% { transform: scale(1); } }
 [data-theme="dark"] .bb-sil { fill: #f291bd; }
 @media (prefers-reduced-motion: reduce) { .bb-ava-pop .bb-sil { animation: none; } }
 .td-hello { font-family: 'Comfortaa', 'Comfortaa-fallback', sans-serif; font-size: 15px; font-weight: 700; color: var(--pink-deep); }
@@ -1413,7 +1417,7 @@ h1, h2, h3 { font-family: 'Comfortaa', 'Comfortaa-fallback', 'Nunito', sans-seri
   box-shadow: 0 34px 80px rgba(60,50,90,0.42);
   animation: onbIn 0.5s cubic-bezier(0.34,1.4,0.64,1);
 }
-@keyframes onbIn { from { opacity: 0; transform: translateY(40px) scale(0.94); } to { opacity: 1; transform: none; } }
+@keyframes onbIn { from { opacity: .4; transform: translateY(40px) scale(0.94); } to { opacity: 1; transform: none; } }   /* 24.10: от .4 */
 .onb-ava { display: inline-block; width: 52px; height: 66px; animation: roAvaFloat 4s ease-in-out infinite; }
 .onb-ava svg { width: 100%; height: auto; display: block; }
 .onb-title { font-family: 'Comfortaa', 'Comfortaa-fallback', sans-serif; font-size: 23px; color: var(--pink-deep); margin: 6px 0 8px; }
@@ -1470,7 +1474,7 @@ h1, h2, h3 { font-family: 'Comfortaa', 'Comfortaa-fallback', 'Nunito', sans-seri
   animation: fxCheer 2.4s ease forwards;
 }
 @keyframes fxCheer {
-  0% { opacity: 0; transform: translateX(-50%) translateY(24px) scale(0.8); }
+  0% { opacity: .4; transform: translateX(-50%) translateY(24px) scale(0.8); }   /* 24.10: от .4 (краят си остава 0 — банерът изчезва) */
   12%, 80% { opacity: 1; transform: translateX(-50%) translateY(0) scale(1); }
   100% { opacity: 0; transform: translateX(-50%) translateY(-16px) scale(1); }
 }

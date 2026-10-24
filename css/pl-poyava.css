@@ -33,7 +33,7 @@ html.pl-poyava .pl-pv-d.pl-vid { opacity: 1; transform: none; }
 html.pl-poyava .pl-pv.pl-vid > .section-title,
 html.pl-poyava .pl-pv.pl-vid > h2,
 html.pl-poyava .pl-pv.pl-vid > h3 { animation: plPvT .7s cubic-bezier(.2, .9, .3, 1) both; animation-delay: .12s; }
-@keyframes plPvT { from { opacity: 0; transform: translateY(8px); letter-spacing: .02em; } to { opacity: 1; transform: none; } }
+@keyframes plPvT { from { opacity: .4; transform: translateY(8px); letter-spacing: .02em; } /* 24.10: от .4 (скрит таб) */ to { opacity: 1; transform: none; } }
 
 /* мама е на телефон и бърза: щом е стигнала веднъж, повече не се крие (.pl-vid остава) */
 @media (prefers-reduced-motion: reduce) {
