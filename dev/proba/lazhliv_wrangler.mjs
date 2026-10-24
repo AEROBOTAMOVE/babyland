@@ -24,6 +24,12 @@ if (a[0] === "d1" && a[1] === "create") {
   console.log("✅ Successfully created DB '" + a[2] + "'\n[[d1_databases]]\nbinding = \"DB\"\ndatabase_name = \"" + a[2] + "\"\ndatabase_id = \"" + uuid + "\"");
   process.exit(0);
 }
+if (a[0] === "d1" && a[1] === "export") {
+  if (s.exportPada) { console.log("✘ [ERROR] export failed: database is busy"); process.exit(1); }
+  const i = a.indexOf("--output");
+  fs.writeFileSync(a[i + 1], "-- фалшив износ на " + a[2] + "\nCREATE TABLE IF NOT EXISTS users (id INTEGER PRIMARY KEY);\nINSERT INTO users VALUES (1);\n");
+  console.log("🌀 Exporting SQL to " + a[i + 1] + "\n✅ Done"); process.exit(0);
+}
 if (a[0] === "d1" && a[1] === "migrations" && a[2] === "apply") {
   if (s.migr) { console.log("✅ No migrations to apply!"); process.exit(0); }
   s.migr = true; zapishi(); console.log("Migrations to be applied: 0001_create-auth.sql, 0002_create-admin-log.sql\n✅ Applied 2 migrations"); process.exit(0);

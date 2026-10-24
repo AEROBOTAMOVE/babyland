@@ -24,12 +24,14 @@ function pusni(ime, sast, toml, otgovori) {
   const dir = path.join(PAPKA, ime); fs.mkdirSync(dir);
   const T = path.join(dir, "wrangler.toml"); fs.writeFileSync(T, toml);
   const S = path.join(dir, "sast.json"); fs.writeFileSync(S, JSON.stringify(sast));
+  const BK = path.join(dir, "backup");
   const r = spawnSync(process.execPath, [path.join(KOREN, "kachi.mjs")], {
     cwd: KOREN, encoding: "utf8", input: otgovori || "",
-    env: { ...process.env, KACHI_WRANGLER: path.join(KOREN, "dev/proba/lazhliv_wrangler.mjs"), KACHI_SAST: S, KACHI_TOML: T, KACHI_BUILD: BUILD, KACHI_PROBA: PROBA },
+    env: { ...process.env, KACHI_WRANGLER: path.join(KOREN, "dev/proba/lazhliv_wrangler.mjs"), KACHI_SAST: S, KACHI_TOML: T, KACHI_BUILD: BUILD, KACHI_PROBA: PROBA, KACHI_BACKUP: BK },
   });
   const log = fs.existsSync(S + ".log") ? fs.readFileSync(S + ".log", "utf8") : "";
-  return { kod: r.status, out: (r.stdout || "") + (r.stderr || ""), toml: fs.readFileSync(T, "utf8"), predi: fs.existsSync(T + ".predi"), log };
+  const kopia = fs.existsSync(BK) ? fs.readdirSync(BK).filter((f) => /^babyland_\d{4}-\d\d-\d\d_\d\d-\d\d\.sql$/.test(f)) : [];
+  return { kod: r.status, out: (r.stdout || "") + (r.stderr || ""), toml: fs.readFileSync(T, "utf8"), predi: fs.existsSync(T + ".predi"), log, kopia };
 }
 let dobri = 0, vsichki = 0;
 const ocakvai = (ime, da) => { vsichki++; if (da) dobri++; console.log((da ? "  ✓ " : "  ✗ ") + ime); };
@@ -42,6 +44,7 @@ ocakvai("изход 0 и „ГОТОВО · адрес https://babyland.aaeromov
 ocakvai("влезе (login) и създаде базата", /wrangler login/.test(A.log) && /d1 create babyland/.test(A.log));
 ocakvai("id-то е в wrangler.toml, ЗАМЕНИ_С_ID го няма, копието .predi е направено", A.toml.includes(ID) && !A.toml.includes("ЗАМЕНИ_С_ID") && A.predi);
 ocakvai("ADMIN_EMAILS не е пипан (Enter = само aaeromove)", !/secret put/.test(A.log));
+ocakvai("нова база → без резервно копие („не трябва“), без d1 export", !/d1 export/.test(A.log) && A.kopia.length === 0 && /резервно копие — не трябва/.test(A.out));
 
 console.log("═══ Б · базата я има ═══");
 const tomlSId = TOML_IZVOR.replace("ЗАМЕНИ_С_ID", ID);
@@ -52,6 +55,15 @@ ocakvai("без login и без create", !/wrangler login/.test(B.log) && !/d1 c
 ocakvai("wrangler.toml е същият, копие .predi не е правено", B.toml === tomlSId && !B.predi);
 ocakvai("ADMIN_EMAILS отиде през stdin; стойността е само на реда, където собственикът я пише (не в изхода на wrangler, не в лога)",
   /secret put ADMIN_EMAILS/.test(B.log) && /✓ ADMIN_EMAILS/.test(B.out) && B.out.split("drug@abv.bg").length - 1 === 1 && !B.log.includes("drug@abv.bg"));
+
+ocakvai("базата я има → резервно копие backup/babyland_<дата_час>.sql ПРЕДИ таблиците",
+  B.kopia.length === 1 && /✓ резервно копие на данните · backup\/babyland_/.test(B.out) && B.log.indexOf("d1 export") > -1 && B.log.indexOf("d1 export") < B.log.indexOf("migrations apply"));
+
+console.log("═══ Г · резервното копие пада ═══");
+const G = pusni("G", { vlyazal: true, bazi: [{ name: "babyland", uuid: ID }], deployPada: false, exportPada: true, tayni: [], migr: true }, tomlSId, "\n");
+pokazhi(G);
+ocakvai("изход 1 и „СПРЯНО · резервно копие …“", G.kod === 1 && /СПРЯНО · резервно копие/.test(G.out));
+ocakvai("без копие НЕ се пипат таблиците и не се качва", !/migrations apply/.test(G.log) && !/^wrangler deploy$/m.test(G.log));
 
 console.log("═══ В · deploy пада ═══");
 const V = pusni("V", { vlyazal: true, bazi: [{ name: "babyland", uuid: ID }], deployPada: true, tayni: [], migr: true }, tomlSId, "\n");

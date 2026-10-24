@@ -4,13 +4,15 @@
      2 · базата      — npx wrangler d1 list --json → «babyland» я има: взема id-то · няма я: npx wrangler d1 create babyland
                        → id-то отива в wrangler.toml на мястото на ЗАМЕНИ_С_ID (копие wrangler.toml.predi); истинско id не се пипа
      3 · сглобяване  — node dev/proba/test_dostap_cf.mjs (достъпът, без мрежа) → node build.js («пакетът е пълен»)
+                       → ако базата я е имало: npx wrangler d1 export babyland --remote → backup/babyland_<дата_час>.sql
                        → npx wrangler d1 migrations apply babyland --remote (0001, 0002)
      4 · качване     — npx wrangler deploy → адресът *.workers.dev
      5 · по желание  — ADMIN_EMAILS (още администратори; Enter = само aaeromove@gmail.com, той е в кода).
                        Други тайни Бейби Ленд НЯМА: worker-ът ползва само DB, ASSETS и по желание ADMIN_EMAILS.
                        Стойността отива в «wrangler secret put» през stdin и НЕ се печата никъде.
      6 · проверка    — node dev/proba/proba_sled_kachvane.mjs <адреса> → «ГОТОВО · адрес … · проверка N/N»
-   Пътят назад: wrangler.toml.predi (копието отпреди id-то) и «npx wrangler rollback» (предишното качване).
+   Пътят назад: wrangler.toml.predi (копието отпреди id-то), «npx wrangler rollback» (предишното качване) и за данните
+   backup/*.sql («npx wrangler d1 execute babyland --remote --file backup/<файла>»).
    За пробите без интернет (dev/proba/proba_kachi.mjs): KACHI_WRANGLER = файл .mjs вместо «npx wrangler», KACHI_TOML = друг
    wrangler.toml, KACHI_BUILD / KACHI_TEST / KACHI_PROBA = друг скрипт вместо build.js / test_dostap_cf.mjs / proba_sled_kachvane.mjs. */
 import fs from "node:fs";
@@ -24,6 +26,7 @@ const TOML = pat("KACHI_TOML", "wrangler.toml");
 const BUILD = pat("KACHI_BUILD", "build.js");
 const TEST = pat("KACHI_TEST", "dev/proba/test_dostap_cf.mjs");
 const PROBA = pat("KACHI_PROBA", "dev/proba/proba_sled_kachvane.mjs");
+const BACKUP = pat("KACHI_BACKUP", "backup");
 const MOK = process.env.KACHI_WRANGLER ? path.resolve(process.env.KACHI_WRANGLER) : "";
 const BAZA = "babyland";
 const UUID = /[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}/i;
@@ -106,6 +109,7 @@ try { const j = JSON.parse(l.out.slice(l.out.indexOf("["), l.out.lastIndexOf("]"
 catch (e) { spri("базата", "отговорът на «d1 list --json» не е JSON", l.out); }
 const nameri = spisak.find((d) => d && d.name === BAZA);
 let id = nameri ? String(nameri.uuid || nameri.id || "") : "";
+const bazataBeshe = !!id;   // имало ли е база преди това пускане → в нея може да има майки → резервно копие преди таблиците
 if (UUID.test(vToml)) {
   if (id && id.toLowerCase() !== vToml.toLowerCase()) spri("базата", "wrangler.toml сочи " + vToml + ", а в акаунта «" + BAZA + "» е " + id + " — не пипам; оправи ръчно");
   if (!id) spri("базата", "wrangler.toml сочи " + vToml + ", но в акаунта няма база «" + BAZA + "» — друг акаунт ли е влязъл?");
@@ -137,6 +141,16 @@ red("    ✓ достъпът (без мрежа) · " + tm[1] + "/" + tm[2]);
 const s = node(BUILD);
 if (s.kod !== 0 || !/пакетът е пълен/.test(s.out)) spri("сглобяване", "build.js не завърши с „пакетът е пълен“", s.out);
 red("    ✓ сглобено (" + ((s.out.match(/dist\/: (\d+) файла/) || [])[1] || "?") + " файла)");
+/* пътят назад за ДАННИТЕ: базата я е имало → цялото ѝ съдържание в backup/ ПРЕДИ таблиците (backup/ не е в сайта и в git) */
+if (bazataBeshe) {
+  const sega = new Date(), dd = (n) => String(n).padStart(2, "0");
+  const ime = BAZA + "_" + sega.getFullYear() + "-" + dd(sega.getMonth() + 1) + "-" + dd(sega.getDate()) + "_" + dd(sega.getHours()) + "-" + dd(sega.getMinutes()) + ".sql";
+  fs.mkdirSync(BACKUP, { recursive: true });
+  const kade = path.join(BACKUP, ime);
+  const ex = wrangler(["d1", "export", BAZA, "--remote", "--output", kade]);
+  if (ex.kod !== 0 || !fs.existsSync(kade)) spri("резервно копие", "«wrangler d1 export " + BAZA + "» не мина — без копие не продължавам", ex.out);
+  red("    ✓ резервно копие на данните · backup/" + ime + " (" + (fs.statSync(kade).size < 1024 ? fs.statSync(kade).size + " Б" : Math.round(fs.statSync(kade).size / 1024) + " КБ") + ")");
+} else red("    · резервно копие — не трябва (базата е нова, празна)");
 const mg = wrangler(["d1", "migrations", "apply", BAZA, "--remote"], { vhod: "y\n" });
 if (mg.kod !== 0) spri("таблиците", "«wrangler d1 migrations apply " + BAZA + " --remote» не мина", mg.out);
 red("    ✓ таблиците (" + (/No migrations to apply/i.test(mg.out) ? "нищо ново" : "0001, 0002") + ")");

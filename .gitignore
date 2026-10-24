@@ -51,3 +51,6 @@ dev/proba/.sloti/
 # 22.10 · Cloudflare · местните файлове на wrangler (wrangler dev / d1 --local) — не са изходен код
 .wrangler/
 node_modules/
+
+# 24.10 · резервните копия на базата (kachi.mjs, d1 export) — данни на майките, НЕ в git и НЕ в сайта
+backup/
