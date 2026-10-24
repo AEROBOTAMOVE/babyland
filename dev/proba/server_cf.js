@@ -82,7 +82,11 @@ function прочетиТяло(req, таван = 65536) {
 
 async function главна() {
   const внеси = ф => import(pathToFileURL(path.join(ПРОЕКТ, ф)).href);
-  const { makeWorker } = await внеси('worker/index.mjs');
+  // 24.10 · BL_WORKER_BUNDLE = пакетът, който wrangler наистина качва („wrangler deploy --dry-run --outdir X“ → X/index.js),
+  //   вместо изходния worker/index.mjs — за да се мери СЪЩИЯТ код, който отива в Cloudflare (esbuild, глобален обхват).
+  const { makeWorker } = process.env.BL_WORKER_BUNDLE
+    ? await import(pathToFileURL(path.resolve(process.env.BL_WORKER_BUNDLE)).href)
+    : await внеси('worker/index.mjs');
   const { makeD1, prilozhiMigracii } = await внеси('dev/proba/d1_shim.mjs');
   const DB = makeD1();
   const миграции = await prilozhiMigracii(DB);
