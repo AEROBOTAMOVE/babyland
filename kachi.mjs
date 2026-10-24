@@ -11,7 +11,7 @@
                        Други тайни Бейби Ленд НЯМА: worker-ът ползва само DB, ASSETS и по желание ADMIN_EMAILS.
                        Стойността отива в «wrangler secret put» през stdin и НЕ се печата никъде.
      6 · проверка    — node dev/proba/proba_sled_kachvane.mjs <адреса> → «ГОТОВО · адрес … · проверка N/N»
-   wrangler е ЗАКОВАН на @4: wrangler 3 отказва `run_worker_first = ["/api/*"]` (масивът е от wrangler 4) — мерено 24.10
+   wrangler е ЗАКОВАН на @4.152.0 (пробваната версия): wrangler 3 отказва `run_worker_first = ["/api/*"]` (масивът е от wrangler 4) — мерено 24.10
    (3.114.17 → „Expected "assets.run_worker_first" to be of type boolean“; 4.152.0 → сухото качване минава).
    Пътят назад: wrangler.toml.predi (копието отпреди id-то), «npx wrangler rollback» (предишното качване) и за данните
    backup/*.sql («npx wrangler d1 execute babyland --remote --file backup/<файла>»).
@@ -55,7 +55,7 @@ if (!MOK) {
 function wrangler(args, o = {}) {
   const r = MOK
     ? spawnSync(process.execPath, [MOK, ...args], { cwd: TUK, input: o.vhod, encoding: "utf8", stdio: o.vidim ? "inherit" : "pipe", env: process.env })
-    : spawnSync(NPX, ["--yes", "wrangler@4", ...args], { cwd: TUK, input: o.vhod, encoding: "utf8", stdio: o.vidim ? "inherit" : "pipe", shell: process.platform === "win32", env: process.env });
+    : spawnSync(NPX, ["--yes", "wrangler@4.152.0", ...args], { cwd: TUK, input: o.vhod, encoding: "utf8", stdio: o.vidim ? "inherit" : "pipe", shell: process.platform === "win32", env: process.env });
   if (r.error) return { kod: -1, out: String(r.error.message || r.error) };
   return { kod: r.status === null ? -1 : r.status, out: (r.stdout || "") + (r.stderr || "") };
 }

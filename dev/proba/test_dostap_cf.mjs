@@ -18,7 +18,10 @@ const core = await внеси("core.mjs");
 const { CSV_ZAGLAVIE } = await внеси("api.mjs");
 const { makeRepo, makeRepoVPamet } = await внеси("repo.mjs");
 const { ADMINS } = await внеси("admins.mjs");
-const { makeWorker } = await import(pathToFileURL(join(КОРЕН, "worker", "index.mjs")).href);
+// 24.10 · BL_WORKER_BUNDLE = сглобеният пакет на wrangler („deploy --dry-run --outdir X“ → X/index.js) вместо изворите
+const { makeWorker } = await import(process.env.BL_WORKER_BUNDLE
+  ? pathToFileURL(process.env.BL_WORKER_BUNDLE).href
+  : pathToFileURL(join(КОРЕН, "worker", "index.mjs")).href);
 
 const ДЕН = 86400000;
 const АДМИН = "aaeromove@gmail.com";
