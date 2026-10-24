@@ -297,6 +297,15 @@
     небеСпряно = трябва;
   }
   document.addEventListener('visibilitychange', сверинебе);
+  // ⏱️ 24.10 (dev/proba/lag_proba.js, процесор ×4): наблюдателят е микрозадача — тичаше ВЪТРЕ в натиска на стая,
+  //   преди първия кадър, и покрито() (getComputedStyle + getBoundingClientRect) насилваше подреждане на цялата
+  //   нова стая (137 ms). Небето спира кадър по-късно — зад вече нарисуван панел, никой не го вижда; четенето там
+  //   е почти безплатно (подреждането вече е готово). ПЪТ НАЗАД: наблюдателят пак да вика сверинебе направо.
+  var чакаНебе = false;
+  function сверинебеСлед() {
+    if (чакаНебе) return; чакаНебе = true;
+    requestAnimationFrame(function () { setTimeout(function () { чакаНебе = false; сверинебе(); }, 0); });
+  }
   // стаята се отваря и затваря през същия бутон-щрак; един наблюдател върху
   // атрибута `hidden` е по-евтин от таймер и не пропуска програмни отваряния
   function закачи() {
@@ -304,7 +313,7 @@
       var о = document.getElementById(ПОКРИВАЩИ[i]);
       if (о && !о.__blНебе) {
         о.__blНебе = 1;
-        new MutationObserver(сверинебе).observe(о, { attributes: true, attributeFilter: ['hidden', 'style', 'class'] });
+        new MutationObserver(сверинебеСлед).observe(о, { attributes: true, attributeFilter: ['hidden', 'style', 'class'] });
       }
     }
     сверинебе();

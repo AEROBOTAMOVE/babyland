@@ -141,7 +141,8 @@
         '<span class="pl-li-t"><b>' + esc(x.ч) + '</b><small>' + esc(x.име) + '</small></span>' +
       '</span>').join('<i class="pl-li-d" aria-hidden="true"></i>');
   }
-  function отвори(стая) { try { if (window.MamaHelper && MamaHelper.open) MamaHelper.open(стая); } catch (e) {} }
+  // ⏱️ 24.10: натискът показва панела веднага, съдържанието идва кадър по-късно (helper.js · BL_OTVORI_BARZO)
+  function отвори(стая) { try { if (window.BL_OTVORI_BARZO) BL_OTVORI_BARZO(стая); else if (window.MamaHelper && MamaHelper.open) MamaHelper.open(стая); } catch (e) {} }
   // 🪤 22.09: беше getElementById('plus-btn') — а бутонът е <button class="plus-btn"> в #blPlus (polish.js:314),
   //   без id. „Добави момент“ не правеше НИЩО от етап 1 насам; хванато при сверката с референцията.
   function добави() { const б = document.querySelector('#blPlus .plus-btn') || document.querySelector('.plus-btn'); if (б) б.click(); }

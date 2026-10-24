@@ -475,6 +475,10 @@
       })(стартЧас);
     }
     window.BL_HERO = { летиДо, видим: () => {
+      // ⏱️ 24.10 (lag_proba.js): в новото начало старият свят е скрит (pl-start.css: html.pl-on … .land-frame
+      //   display:none) — видим() винаги е false, а мерението насилваше подреждане ВЪВ ВСЕКИ натиск на стая
+      //   (113 ms при процесор ×4, обвивката на MamaHelper.open долу) и на всеки 600 ms в цикъла на пилота.
+      if (document.documentElement.classList.contains('pl-on')) return false;
       const r = frame.getBoundingClientRect();
       return r.bottom > 60 && r.top < window.innerHeight - 60;
     } };

@@ -165,12 +165,14 @@ function makeBurst(card) {
 }
 
 // ── Стаите → взрив + отваряне на стаята с Помощника на мама ──
+// ⏱️ 24.10 (собственикът: „лаг като се натискат стаите“): стаята чакаше 380 ms, докато искрите се изиграят, и чак
+//   тогава започваше да се строи. Сега панелът се показва веднага (helper.js · BL_OTVORI_BARZO), искрите тръгват
+//   под него. ПЪТ НАЗАД: върни setTimeout(…, reducedMotion ? 0 : 380) около отварянето.
 document.querySelectorAll('.room-card').forEach(card => {
   card.addEventListener('click', () => {
     if (!reducedMotion) makeBurst(card);
-    setTimeout(() => {
-      if (window.MamaHelper) MamaHelper.open(card.dataset.room);
-    }, reducedMotion ? 0 : 380);
+    if (window.BL_OTVORI_BARZO) BL_OTVORI_BARZO(card.dataset.room);
+    else if (window.MamaHelper) MamaHelper.open(card.dataset.room);
   });
 });
 
@@ -245,7 +247,7 @@ navMap.forEach((_, section) => navIO.observe(section));
 document.querySelectorAll('[data-room]').forEach(item => {
   if (item.classList.contains('room-card') || item.classList.contains('td-chip')) return; // те имат собствена логика
   item.addEventListener('click', (e) => {
-    if (window.MamaHelper) { e.preventDefault(); MamaHelper.open(item.dataset.room); }
+    if (window.MamaHelper) { e.preventDefault(); if (window.BL_OTVORI_BARZO) BL_OTVORI_BARZO(item.dataset.room); else MamaHelper.open(item.dataset.room); }
   });
 });
 

@@ -3884,6 +3884,17 @@ function findEntry(text, room, exclude) {
     return `<svg viewBox="0 0 60 96" class="ro-balloon"><use href="#balloonShape"/></svg><span class="ro-badge">${badge}</span>`;
   }
 
+  // ⏱️ 24.10 ЛАГЪТ ПРИ ОТВАРЯНЕ НА СТАЯ (dev/proba/lag_proba.js, процесор ×4): натискът беше ЕДИН кадър от 1,4 s —
+  //   699 ms в open(), от тях 518 ms НАСИЛЕНО подреждане. Главният виновник: `chat.scrollTop = chat.scrollHeight`
+  //   веднага след строежа на стаята (typing ≈ 365 ms) — четенето на scrollHeight подреждаше целия панел вътре в
+  //   натиска, а после браузърът го подреждаше пак за рисуването. Превъртането до дъното вече е в следващия кадър,
+  //   веднъж за кадъра (поредица съобщения + чипове = едно превъртане). ПЪТ НАЗАД: тялото на кДъното() → синхронно.
+  let кДънотоЧака = false;
+  function кДъното() {
+    if (кДънотоЧака) return; кДънотоЧака = true;
+    requestAnimationFrame(() => { кДънотоЧака = false; const c = $('roChat'); if (c) c.scrollTop = c.scrollHeight; });
+  }
+
   function addMsg(who, html) {
     const chat = $('roChat');
     const row = el('div', 'msg ' + who);
@@ -3892,7 +3903,8 @@ function findEntry(text, room, exclude) {
       row.appendChild(el('span', 'msg-ava', avatarSvg(p.badge)));
       const ava = $('roAvatar'); // радостен подскок при всеки отговор
       if (ava) {
-        ava.classList.remove('hop'); void ava.offsetWidth; ava.classList.add('hop');
+        // (беше `void ava.offsetWidth` — насилен стил на целия панел при всяко съобщение; кадър по-късно рестартира същото)
+        ava.classList.remove('hop'); requestAnimationFrame(() => ava.classList.add('hop'));
         setTimeout(() => ava.classList.remove('hop'), 600); // да не задушава „talking“
       }
     }
@@ -3909,7 +3921,7 @@ function findEntry(text, room, exclude) {
       row.appendChild(el('div', 'msg-bubble', html));
     }
     chat.appendChild(row);
-    chat.scrollTop = chat.scrollHeight;
+    кДъното();
     return row;
   }
 
@@ -3924,7 +3936,7 @@ function findEntry(text, room, exclude) {
     още.type = 'button';
     още.addEventListener('click', () => { още.remove(); addMsg('bot', отрязано); });
     $('roChat').appendChild(още);
-    $('roChat').scrollTop = $('roChat').scrollHeight;
+    кДъното();
   }
 
   function typing(on) {
@@ -3940,7 +3952,7 @@ function findEntry(text, room, exclude) {
       t.appendChild(el('span', 'msg-ava', avatarSvg(p.badge)));
       t.appendChild(el('div', 'msg-bubble typing', '<span></span><span></span><span></span>'));
       chat.appendChild(t);
-      chat.scrollTop = chat.scrollHeight;
+      кДъното();
     } else if (t) t.remove();
   }
 
@@ -3951,9 +3963,9 @@ function findEntry(text, room, exclude) {
     //   чиповете идват СЛЕД това и смачкват чата с ~44 px. Ако мама е била на дъното,
     //   връщаме я там, след като чиповете заемат мястото си.
     const чат = $('roChat');
-    if (чат && чат.scrollHeight - чат.scrollTop - чат.clientHeight < 80) {
-      requestAnimationFrame(() => { чат.scrollTop = чат.scrollHeight; });
-    }
+    // 24.10: чака ли вече превъртане до дъното (току-що добавено съобщение) — то ще мине и след чиповете;
+    //   иначе проверката (тя чете размери = подреждане) само когато наистина няма какво друго да превърти
+    if (чат && (кДънотоЧака || чат.scrollHeight - чат.scrollTop - чат.clientHeight < 80)) кДъното();
     box.innerHTML = '';
     (list || []).forEach(item => {
       const label = typeof item === 'string'
@@ -4952,7 +4964,7 @@ function findEntry(text, room, exclude) {
           // „дай ми всичко“ и пак получава три изречения, без да разбере.
           още.addEventListener('click', () => { още.remove(); addMsg('bot', тихо(останало)); спасиОтрязаното(); if (fact) addMsg('bot', fact); });
           $('roChat').appendChild(още);
-          $('roChat').scrollTop = $('roChat').scrollHeight;
+          кДъното();
         } else {
           // ЕДИН балон: същина + трик + личен факт, разделени с празен ред
           let тяло = entry.core;
@@ -5036,7 +5048,7 @@ function findEntry(text, room, exclude) {
     dn.addEventListener('click', () => done(-1));
     row.appendChild(up); row.appendChild(dn);
     chat.appendChild(row);
-    chat.scrollTop = chat.scrollHeight;
+    кДъното();
   }
 
   function ask(text, forcedId) {
@@ -5559,6 +5571,48 @@ function findEntry(text, room, exclude) {
   //   Свеж изпит на 120 въпроса: 25 от тях свършват с врата вместо отговор.
   //   Вторият незадължителен параметър пренася въпроса и стаята отговаря
   //   сама, с гласа на своята помощничка.
+  // ⏱️ 24.10 ОБВИВКАТА — собственикът: „усеща се лаг като се натискат стаите“. Мерено (dev/proba/lag_trace.js,
+  //   процесор ×4): стаята е ~2000 елемента / 1249 обекта за подреждане — строежът и подреждането ѝ (~0,4–0,5 s на
+  //   телефон) стояха ПРЕДИ първия кадър, а дотогава екранът стоеше неподвижен. Сега при натиск (BL_OTVORI_BARZO)
+  //   панелът се показва ВЕДНАГА: цветът, банерът и името на помощничката, табовете, празна стая със скелет — и
+  //   плъзгането навътре тръгва (transform → композиторът, не чака главната нишка). Истинското open() идва в следващия
+  //   кадър, повтаря същите евтини стъпки и строи съдържанието. Заключеният дневник НЕ получава обвивка (ПИН-ът е пръв).
+  //   Програмните отваряния (MamaHelper.open направо) са както досега — синхронни.
+  //   ПЪТ НАЗАД: в BL_OTVORI_BARZO викай MamaHelper.open(стая) направо.
+  let обвитаСтая = null;
+  function обвивка(room) {
+    const p = PERSONAS[room], ov = $('roomOverlay');
+    if (!p || !ov || !ov.hidden) return false;
+    if (room === 'Дневник на мама' && window.BL_PIN && BL_PIN.has && BL_PIN.has() && !(BL_PIN.unlocked && BL_PIN.unlocked())) return false;
+    ov.querySelector('.ro-panel').className = 'ro-panel ' + p.cls;
+    mountBanner(room); обвитаСтая = room;
+    $('roAvatar').innerHTML = avatarSvg(p.badge);
+    $('roName').textContent = p.name;
+    $('roSub').textContent = 'Помощникът на мама · ' + p.role;
+    $('roTitle').textContent = room;
+    $('roChat').innerHTML = ''; $('roChips').innerHTML = ''; $('roArticles').innerHTML = '';
+    const feats = window.ROOM_FEATURES && window.ROOM_FEATURES[room];
+    $('roRoom').innerHTML = ''; if (feats) skeleton($('roRoom'));
+    $('roNote').hidden = !!feats;
+    // табовете на ТАЗИ стая (иначе за миг стоят тези на предишната) — без setTab (той насилва подреждане)
+    const първи = buildTabs(room, p);
+    Object.keys(CONTENT).forEach(k => { $(CONTENT[k]).hidden = k !== първи; });
+    $('roTabs').querySelectorAll('.ro-tab').forEach(b => b.classList.toggle('on', b.dataset.tab === първи));
+    ov.hidden = false;
+    document.body.style.overflow = 'hidden';
+    document.documentElement.classList.add('ro-otvorena');
+    return true;
+  }
+  let бързоЧака = false;
+  window.BL_OTVORI_BARZO = function (стая) {
+    if (!window.MamaHelper || !MamaHelper.open) return;
+    if (бързоЧака) return;                       // двоен допир — една стая
+    let обвита = false; try { обвита = обвивка(стая); } catch (e) { обвита = false; }
+    if (!обвита) { MamaHelper.open(стая); return; }   // заключено / вече отворено → както досега
+    бързоЧака = true;
+    requestAnimationFrame(() => setTimeout(() => { бързоЧака = false; MamaHelper.open(стая); }, 0));
+  };
+
   function open(room, пренесен) {
     const p = PERSONAS[room];
     if (!p) return;
@@ -5577,7 +5631,8 @@ function findEntry(text, room, exclude) {
 
     const ov = $('roomOverlay');
     ov.querySelector('.ro-panel').className = 'ro-panel ' + p.cls;
-    mountBanner(room);
+    if (обвитаСтая === room && $('roBanner') && $('roBanner').firstChild) обвитаСтая = null;   // обвивката вече го сложи
+    else { обвитаСтая = null; mountBanner(room); }
     mountFab(p);
     watchShrink();
     $('roAvatar').innerHTML = avatarSvg(p.badge);
@@ -5629,7 +5684,8 @@ function findEntry(text, room, exclude) {
     // не полето, за да не изскача клавиатурата на телефона)
     roФокусПреди = document.activeElement;
     document.addEventListener('keydown', roTrap);
-    setTimeout(() => { try { $('roClose').focus({ preventScroll: true }); } catch (e) {} }, 50);
+    // 24.10: след първото рисуване (беше setTimeout 50 — фокусът насилваше подреждане на новата стая преди кадъра)
+    requestAnimationFrame(() => setTimeout(() => { try { $('roClose').focus({ preventScroll: true }); } catch (e) {} }, 0));
     // 12.10.5: заглавието на страницата казва къде е мама (и в историята)
     document.title = room + ' · Помощникът на мама';
     // 12.10.6: „назад“ на телефона затваря СТАЯТА, не изхвърля от приложението.

@@ -59,7 +59,8 @@
     // app.js вече е закачил click с ПЪРВОНАЧАЛНАТА стая в closure-а —
     // затова прихващам в capture фаза и отварям правилната.
     б.addEventListener('click', ev => {
-      if (window.MamaHelper) { ev.preventDefault(); ev.stopImmediatePropagation(); MamaHelper.open(б.dataset.room); }
+      // 24.10: панелът веднага, съдържанието кадър по-късно (helper.js · BL_OTVORI_BARZO)
+      if (window.MamaHelper) { ev.preventDefault(); ev.stopImmediatePropagation(); if (window.BL_OTVORI_BARZO) BL_OTVORI_BARZO(б.dataset.room); else MamaHelper.open(б.dataset.room); }
     }, true);
   }
 
@@ -78,7 +79,7 @@
     слой.addEventListener('click', e => { if (e.target === слой) махни(); });
     слой.querySelectorAll('.np-b').forEach(b => b.addEventListener('click', () => {
       махни();
-      if (window.MamaHelper) MamaHelper.open(b.dataset.r);
+      if (window.BL_OTVORI_BARZO) BL_OTVORI_BARZO(b.dataset.r); else if (window.MamaHelper) MamaHelper.open(b.dataset.r);
     }));
     document.addEventListener('keydown', function изход(e) {
       if (e.key === 'Escape') { махни(); document.removeEventListener('keydown', изход); }
