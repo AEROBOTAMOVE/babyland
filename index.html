@@ -100,7 +100,7 @@ html[data-theme="dark"] #blSplash .bls-sos{color:#ffd0dc;background:rgba(255,255
 <link rel="stylesheet" href="css/touch.css?v=33">
 <link rel="stylesheet" href="css/anim.css?v=16">
 <link rel="stylesheet" href="css/tier.css?v=8">
-<link rel="stylesheet" href="css/premium.css?v=67">
+<link rel="stylesheet" href="css/premium.css?v=68">
   <link rel="stylesheet" href="css/pl-ui.css?v=21">
   <link rel="stylesheet" href="css/pl-popravki.css?v=1">
   <link rel="stylesheet" href="css/pl-versiya.css?v=3">
@@ -222,7 +222,10 @@ html[data-theme="dark"] #blSplash .bls-sos{color:#ffd0dc;background:rgba(255,255
     //   Под товар наблюдателят на premium-home.js закъсняваше и логото още го нямаше (запис nach24b: облакът се стопи,
     //   празно небе 0,5 с) — затова тук обиколката се подрежда веднага, преди мерене.
     try { if (window.BL_PREMIUM_HOME && BL_PREMIUM_HOME.обиколка) BL_PREMIUM_HOME.обиколка(); } catch (e) {}
-    var тЛ = document.querySelector('.tour-ov .pl-tlogo-svg'), тР = тЛ && тЛ.getBoundingClientRect();
+    var тЛ = document.querySelector('.tour-ov .pl-tlogo-svg');
+    //   входна анимация на картата (стар css/кеш) → мерим СЛЕДЕН кадър, не междинния (преглед 24.10: кацаше 15–40 px ниско)
+    try { var к0 = тЛ && тЛ.closest('.tour-card'); if (к0 && к0.getAnimations) к0.getAnimations().forEach(function (а) { а.finish(); }); } catch (e) {}
+    var тР = тЛ && тЛ.getBoundingClientRect();
     var къмТура = !!(тР && тР.width > 60 && тР.bottom > 0);
     if (къмТура) { цел = тЛ; var ов0 = тЛ.closest('.tour-ov'); if (ов0) ов0.classList.add('pl-tland'); }
     var рЦ = цел && цел.getBoundingClientRect(), рМ = мое && мое.getBoundingClientRect();
@@ -235,7 +238,7 @@ html[data-theme="dark"] #blSplash .bls-sos{color:#ffd0dc;background:rgba(255,255
         ((рЦ.top + рЦ.height / 2) - (рМ.top + рМ.height / 2)).toFixed(1) + 'px) scale(' + (рЦ.width / рМ.width).toFixed(4) + ')';
     } else { S.style.transition = 'opacity .45s ease'; S.style.opacity = '0'; }
     S.classList.add('bls-off');
-    window.BL_SPLASH = { лети: !!лети, прозорец: прозорец, тур: къмТура, мс: Date.now() - т0, при: Date.now(), причина: причина };   // за пробите (dev/proba/filmova.js)
+    window.BL_SPLASH = { лети: !!лети, прозорец: прозорец, тур: къмТура, цел: рЦ ? [Math.round(рЦ.top), Math.round(рЦ.width)] : null, мс: Date.now() - т0, при: Date.now(), причина: причина };   // за пробите (dev/proba/filmova.js)
     setTimeout(махни, лети ? 760 : 480);
   }
   function провери() {
@@ -1719,7 +1722,7 @@ html[data-theme="dark"] #blSplash .bls-sos{color:#ffd0dc;background:rgba(255,255
 <script src="js/profile.js?v=28" defer></script>
 <script src="js/app.js?v=26" defer></script>
 <script src="js/nav2.js?v=2" defer></script>
-<script src="js/premium-home.js?v=23" defer></script>
+<script src="js/premium-home.js?v=24" defer></script>
 <script src="js/premium-rooms.js?v=12" defer></script>
   <script src="js/pl-versiya.js?v=1" defer></script>
   <script src="js/pl-plyush.js?v=46" defer></script>

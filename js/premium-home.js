@@ -272,6 +272,7 @@
     const ов = document.querySelector('.tour-ov');
     // обиколката е веднъж в живота: минала ли е и я няма — наблюдателят спира (иначе буди при всяка промяна)
     if (!ов) { let минала = null; try { минала = localStorage.getItem('bl_tour_done'); } catch (e) {} if (минала && набТур) { набТур.disconnect(); набТур = null; } return; }
+    пазиТура(ов);
     const т = ов.querySelector('.tour-dots > span'); const първа = !!(т && т.classList.contains('on'));
     if (ов.classList.contains('pl-tour-1') !== първа) ов.classList.toggle('pl-tour-1', първа);
     const к = ов.querySelector('.tour-card'); if (!к) return;
@@ -316,6 +317,13 @@
     }
   }
   document.addEventListener('visibilitychange', () => { if (!document.hidden) обиколка(); });
+  document.documentElement.classList.add('pl-tura');   // css: скриването на старата стъпка 1 важи само щом този скрипт върви
+  // преглед 24.10: „Напред“ (home.js draw) пренаписва целия .tour-ov → небето и .pl-tour-1 изчезваха за 40+ ms (мигане,
+  //   стъпка 2 без вид). Собствен наблюдател на самия оверлей, без отлагане: микрозадача — преди следващото рисуване.
+  function пазиТура(ов) {
+    if (!ов || ов._plНаб) return; ов._plНаб = true;
+    new MutationObserver(обиколка).observe(ов, { childList: true });
+  }
   let чакаТ = false;
   let набТур = new MutationObserver(() => { if (чакаТ) return; чакаТ = true; setTimeout(() => { чакаТ = false; обиколка(); }, 40); });
   набТур.observe(document.documentElement, { childList: true, subtree: true });

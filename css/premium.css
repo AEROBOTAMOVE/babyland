@@ -748,7 +748,17 @@ html:not([data-theme="dark"]) #todaySection .td-chips button, html:not([data-the
 @keyframes plTsS { 0%, 100% { opacity: 0; transform: scale(.4) rotate(0); } 45% { opacity: .95; transform: scale(1.15) rotate(45deg); } 60% { opacity: .7; transform: scale(1) rotate(60deg); } }
 /* първата стъпка е скрита, докато premium-home.js не сложи .pl-tour-1 — иначе за миг се вижда старият вид
    (бяла карта с емоджи; видяно в кадъра nach24_04). Без :has() (стар браузър) — както преди. */
-.tour-ov:has(.tour-dots > span:first-child.on):not(.pl-tour-1) .tour-card { opacity: 0 !important; }
+/* преглед 24.10: само когато premium-home.js наистина върви (html.pl-tura) — паднал скрипт не оставя картата невидима */
+html.pl-tura .tour-ov:has(.tour-dots > span:first-child.on):not(.pl-tour-1) .tour-card { opacity: 0 !important; }
+/* преглед 24.10: roIn (home.css) местеше картата 15–40 px, докато облакът мери целта → кацаше ниско и логото подскачаше.
+   Първата стъпка си има своя хореография — входът на картата не трябва. */
+.tour-ov.pl-tour-1 .tour-card { animation: none !important; }
+/* докато облакът лети (≈0,76 с), турът под него не приема допир — „пропусни“/„Напред“ щяха да махнат целта */
+html.bls-fly .tour-ov { pointer-events: none !important; }
+/* тъмна тема: клонингът носи СЪЩИТЕ цветове като облака на стартовия екран (index.html) — без скок при кацането */
+html[data-theme="dark"] .pl-tlogo .lg-cloud > path:first-child { fill: #ece8f7; stroke: #d9d1ee; }
+html[data-theme="dark"] .pl-tlogo .lg-baby, html[data-theme="dark"] .pl-tlogo .lg-land { stroke: #ece8f7; }
+html[data-theme="dark"] .pl-tlogo .lg-splash { opacity: .32; }
 /* облакът от стартовия екран каца ТОЧНО тук (index.html · прибери → .pl-tland): логото не пада отгоре, а е там */
 .tour-ov.pl-tgo.pl-tland .pl-tlogo { animation: plTlBreath 6s ease-in-out .6s infinite; }
 .tour-ov.pl-tour-1.pl-tland:not(.pl-tgo) .pl-tlogo { opacity: 1; }
@@ -793,7 +803,9 @@ html:not([data-theme="dark"]) #todaySection .td-chips button, html:not([data-the
 .tour-ov.pl-tour-1:not(.pl-tgo) .pl-tt-i, .tour-ov.pl-tour-1:not(.pl-tgo) .tour-dots, .tour-ov.pl-tour-1:not(.pl-tgo) .tour-next { opacity: 0; }
 /* крайният кадър — наложен (js: .pl-tdone 2,6 s след старта), каквото и да е станало с анимациите */
 .tour-ov.pl-tdone.pl-tour-1 .tour-card h3, .tour-ov.pl-tdone.pl-tour-1 .tour-card p, .tour-ov.pl-tdone.pl-tour-1 .pl-tt-i,
-.tour-ov.pl-tdone.pl-tour-1 .tour-dots, .tour-ov.pl-tdone.pl-tour-1 .tour-next { opacity: 1 !important; animation: none !important; transform: none !important; }
+.tour-ov.pl-tdone.pl-tour-1 .tour-dots, .tour-ov.pl-tdone.pl-tour-1 .tour-next { opacity: 1 !important; animation: none !important; }
+/* (преглед 24.10: беше и transform:none !important — изяждаше потъването на „Напред“ при натиск, pl-ui.css :active;
+   animation:none стига, за да падне анимираният transform) */
 .tour-ov.pl-tdone .pl-tlogo { opacity: 1 !important; animation: plTlBreath 6s ease-in-out infinite !important; }
 @keyframes plTUp { from { opacity: 0; transform: translate3d(0, 14px, 0); } to { opacity: 1; transform: none; } }
 @keyframes plTPop { 0% { opacity: 0; transform: scale(.55) translate3d(0, 12px, 0); } 70% { opacity: 1; transform: scale(1.06); } 100% { opacity: 1; transform: none; } }
@@ -806,6 +818,8 @@ html[data-theme="dark"] .pl-ts-a { opacity: .35; }
   .pl-ts-s { opacity: .55; } .pl-ts-c { display: none; }
   .tour-ov.pl-tour-1 .pl-tlogo, .tour-ov.pl-tour-1 .tour-card h3, .tour-ov.pl-tour-1 .tour-card p, .tour-ov.pl-tour-1 .pl-tt-i,
   .tour-ov.pl-tour-1 .tour-dots, .tour-ov.pl-tour-1 .tour-next { opacity: 1 !important; }
+  /* преглед 24.10: .pl-tdone пускаше вечното дишане с !important (0,3,0) и биеше тихия режим — тук същата тежест, по-късно */
+  .tour-ov.pl-tdone .pl-tlogo { animation: none !important; }
 }
 
 /* ═══════════════════════════════════════════════════════════════════════════

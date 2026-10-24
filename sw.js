@@ -1,5 +1,5 @@
 // Baby Land — service worker: кешира приложението за офлайн работа
-const CACHE = 'babyland-v888';   // 21.10 · достъп: v873 → v874 · ПЪТ НАЗАД: sw.js.PREDI_DOSTAP
+const CACHE = 'babyland-v889';   // 21.10 · достъп: v873 → v874 · ПЪТ НАЗАД: sw.js.PREDI_DOSTAP
 const ASSETS = [
   '.',
   'index.html',
