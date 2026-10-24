@@ -620,10 +620,13 @@ html:not([data-theme="dark"]) #todaySection .td-chips button, html:not([data-the
    рисунката (бебе в балон над облаците), стъклена карта отдолу, сериф, розово.
    Стъпките и текстовете са на home.js — тук се сменя само видът.
    ═══════════════════════════════════════════════════════════════════════════ */
+/* 🔴 24.10 · собственикът: „на първия екран Добре дошла не искам тая огромна ненужна снимка на балона и бебето —
+   както беше преди“. Рисунката welcome.webp е махната: мек крем → розово (като облачния старт), съдържанието в средата.
+   ПЪТ НАЗАД: върни `background: #fdf3ec url(../img/art/welcome.webp) center top / cover no-repeat` и align-items: flex-end. */
 .tour-ov {
-  background: #fdf3ec url(../img/art/welcome.webp) center top / cover no-repeat !important;
-  display: flex !important; align-items: flex-end !important; justify-content: center !important;
-  padding: 0 14px calc(18px + env(safe-area-inset-bottom, 0px)) !important;
+  background: linear-gradient(180deg, #fff6f0 0%, #fdeef0 52%, #f8e9f4 100%) !important;
+  display: flex !important; align-items: center !important; justify-content: center !important;
+  padding: calc(18px + env(safe-area-inset-top, 0px)) 14px calc(18px + env(safe-area-inset-bottom, 0px)) !important;
 }
 .tour-ov::before {         /* мека светлина отдолу, за да се чете текстът */
   content: ''; position: absolute; inset: 0; pointer-events: none;
@@ -637,7 +640,10 @@ html:not([data-theme="dark"]) #todaySection .td-chips button, html:not([data-the
   box-shadow: 0 18px 44px rgba(150, 100, 110, .22) !important;
   padding: 22px 20px 16px !important; text-align: center;
 }
-.tour-ov .tour-balloon { display: none !important; }    /* балонът вече е в рисунката */
+/* 24.10: рисунката я няма → малкото балонче се връща (както беше преди) — в потока НАД заглавието,
+   не абсолютно: на първата стъпка картата е без отстъп и балончето падаше върху „дошла“ (видяно на живо). */
+.tour-ov .tour-balloon { display: block !important; position: relative !important; top: auto !important; left: auto !important;
+  transform: none !important; width: 46px; margin: 0 auto 10px; }
 .tour-ov .tour-card h3 {
   font-family: var(--pl-serif) !important; font-weight: 700 !important; font-size: 28px !important;
   line-height: 1.12 !important; color: var(--pl-navy) !important; letter-spacing: -.3px; margin: 4px 0 8px !important;
@@ -684,6 +690,101 @@ html:not([data-theme="dark"]) #todaySection .td-chips button, html:not([data-the
 .pl-tt-i b::before, .pl-tt-i b::after { content: ''; position: absolute; top: 50%; width: 6px; height: 6px; margin-top: -3px; border-radius: 50%; background: #d8b46a; box-shadow: inset 0 1px 0 #f3dfa8; }
 .pl-tt-i b::before { left: 5px; } .pl-tt-i b::after { right: 5px; }
 .tour-ov.pl-tour-1 .tour-dots { margin: 4px 0 8px !important; }
+
+/* ═══════════════════════════════════════════════════════════════════════════
+   🎈 24.10 · ЖИВОТО НАЧАЛО — „Добре дошла у дома“ без рисунката, оживено с код (js/premium-home.js · обиколка)
+   Режисура (законите на JMATION, сведени до уеб): ЕДИН материал — мекият облак на логото; ЕДНА светлина —
+   горе вляво, топла; ЕДИН ритъм — дишане ~6 s. Кукичка до 1,2 s: логото пада с отскок (подготовка → удар →
+   презасилване → покой), заглавието изплува, плочките изскачат по ред. Нищо не стои неподвижно повече от 0,7 s:
+   небето плува, искриците светят, бутонът диша. Само transform/opacity. Намалено движение → един подреден кадър.
+   ПЪТ НАЗАД: махни този блок и блока „24.10“ в js/premium-home.js.
+   ═══════════════════════════════════════════════════════════════════════════ */
+.tour-ov .tour-card { z-index: 1; }
+.pl-tsky { position: absolute; inset: 0; overflow: hidden; pointer-events: none; z-index: 0; }
+/* акварелните петна (като тези в логото) — бавно плуват */
+.pl-ts-a { position: absolute; border-radius: 50%; filter: blur(2px); opacity: .75; will-change: transform; }
+.pl-ts-a.a1 { width: 120vw; height: 70vw; left: -40vw; top: -18vw; background: radial-gradient(closest-side, rgba(246, 183, 213, .55), rgba(246, 183, 213, 0)); animation: plTsA1 19s ease-in-out infinite alternate; }
+.pl-ts-a.a2 { width: 110vw; height: 80vw; right: -45vw; top: 18vh; background: radial-gradient(closest-side, rgba(168, 205, 240, .5), rgba(168, 205, 240, 0)); animation: plTsA2 23s ease-in-out infinite alternate; }
+.pl-ts-a.a3 { width: 120vw; height: 70vw; left: -30vw; bottom: -20vw; background: radial-gradient(closest-side, rgba(174, 227, 207, .45), rgba(174, 227, 207, 0)); animation: plTsA3 21s ease-in-out infinite alternate; }
+@keyframes plTsA1 { to { transform: translate3d(14vw, 6vh, 0) scale(1.08); } }
+@keyframes plTsA2 { to { transform: translate3d(-16vw, -5vh, 0) scale(1.1); } }
+@keyframes plTsA3 { to { transform: translate3d(12vw, -4vh, 0) scale(1.06); } }
+/* меките облачета — три бели пухчета, всяко от три кръга (box-shadow), прелитат бавно отляво надясно */
+.pl-ts-c { position: absolute; left: -30vw; width: 56px; height: 22px; border-radius: 22px; background: #fff; opacity: .78;
+  box-shadow: 16px -12px 0 6px #fff, 38px -6px 0 2px #fff; filter: drop-shadow(0 6px 10px rgba(180, 140, 170, .16)); will-change: transform; }
+.pl-ts-c.c1 { top: 12vh; animation: plTsC 38s linear infinite; animation-delay: -6s; }
+.pl-ts-c.c2 { top: 30vh; transform: scale(.7); animation: plTsC 52s linear infinite; animation-delay: -30s; opacity: .6; }
+.pl-ts-c.c3 { top: 64vh; transform: scale(.85); animation: plTsC 46s linear infinite; animation-delay: -18s; opacity: .55; }
+@keyframes plTsC { from { translate: 0 0; } to { translate: 160vw 0; } }
+/* искриците — малки звездички в ъглите, светват една след друга */
+.pl-ts-s { position: absolute; width: 10px; height: 10px; opacity: 0; will-change: transform, opacity;
+  background: radial-gradient(circle, #fff 0 28%, rgba(255, 255, 255, 0) 30%),
+    conic-gradient(from 45deg, transparent 0 20%, rgba(242, 169, 204, .95) 22% 28%, transparent 30% 45%, rgba(242, 169, 204, .95) 47% 53%, transparent 55% 70%, rgba(242, 169, 204, .95) 72% 78%, transparent 80% 95%, rgba(242, 169, 204, .95) 97%);
+  border-radius: 50%; animation: plTsS 3.6s ease-in-out infinite; }
+.pl-ts-s.s1 { left: 12%; top: 14%; } .pl-ts-s.s2 { left: 84%; top: 10%; animation-delay: -.9s; }
+.pl-ts-s.s3 { left: 6%;  top: 44%; animation-delay: -2.1s; } .pl-ts-s.s4 { left: 92%; top: 38%; animation-delay: -1.5s; }
+.pl-ts-s.s5 { left: 18%; top: 78%; animation-delay: -2.7s; } .pl-ts-s.s6 { left: 80%; top: 74%; animation-delay: -.4s; }
+.pl-ts-s.s7 { left: 50%; top: 6%;  animation-delay: -3.1s; } .pl-ts-s.s8 { left: 64%; top: 88%; animation-delay: -1.2s; }
+@keyframes plTsS { 0%, 100% { opacity: 0; transform: scale(.4) rotate(0); } 45% { opacity: .95; transform: scale(1.15) rotate(45deg); } 60% { opacity: .7; transform: scale(1) rotate(60deg); } }
+/* първата стъпка е скрита, докато premium-home.js не сложи .pl-tour-1 — иначе за миг се вижда старият вид
+   (бяла карта с емоджи; видяно в кадъра nach24_04). Без :has() (стар браузър) — както преди. */
+.tour-ov:has(.tour-dots > span:first-child.on):not(.pl-tour-1) .tour-card { opacity: 0 !important; }
+/* облакът от стартовия екран каца ТОЧНО тук (index.html · прибери → .pl-tland): логото не пада отгоре, а е там */
+.tour-ov.pl-tgo.pl-tland .pl-tlogo { animation: plTlBreath 6s ease-in-out .6s infinite; }
+.tour-ov.pl-tour-1.pl-tland:not(.pl-tgo) .pl-tlogo { opacity: 1; }
+/* живото лого — влиза с отскок, после частите му дишат сами (style.css: облак, балон, личице, очи) */
+.tour-ov.pl-tour-1 .tour-balloon { display: none !important; }   /* балонът е в логото */
+.pl-tlogo { width: min(270px, 70vw); margin: -6px auto 2px; transform-origin: 50% 70%; }
+.tour-ov.pl-tgo .pl-tlogo {
+  animation: plTlIn 1.15s cubic-bezier(.3, 1.5, .55, 1) .12s both, plTlBreath 6s ease-in-out 1.4s infinite; }
+.pl-tlogo-svg { width: 100%; height: auto; display: block; overflow: visible; }
+@keyframes plTlIn {
+  0% { opacity: 0; transform: translate3d(0, -46px, 0) scale(.62) rotate(-6deg); }
+  55% { opacity: 1; transform: translate3d(0, 6px, 0) scale(1.06, .96) rotate(1.5deg); }   /* удар: сплескване */
+  75% { transform: translate3d(0, -3px, 0) scale(.98, 1.03) rotate(-.6deg); }              /* отскок: разтягане */
+  100% { opacity: 1; transform: none; }
+}
+@keyframes plTlBreath { 0%, 100% { transform: none; } 50% { transform: translate3d(0, -4px, 0) scale(1.012); } }
+/* текстът изплува след логото; плочките изскачат по ред; бутонът влиза последен и диша */
+.tour-ov.pl-tgo.pl-tour-1 .tour-card h3 { animation: plTUp .7s cubic-bezier(.2, .9, .3, 1) .45s both; }
+.tour-ov.pl-tgo.pl-tour-1 .tour-card p { animation: plTUp .7s cubic-bezier(.2, .9, .3, 1) .6s both; }
+.tour-ov.pl-tgo.pl-tour-1 .pl-tt-i { animation: plTPop .65s cubic-bezier(.34, 1.6, .64, 1) both; }
+.tour-ov.pl-tour-1 .pl-tt-i:nth-child(1) { animation-delay: .78s; }
+.tour-ov.pl-tour-1 .pl-tt-i:nth-child(2) { animation-delay: .9s; }
+.tour-ov.pl-tour-1 .pl-tt-i:nth-child(3) { animation-delay: 1.02s; }
+.tour-ov.pl-tgo.pl-tour-1 .tour-dots { animation: plTUp .5s ease 1.1s both; }
+.tour-ov.pl-tour-1 .tour-next { position: relative; }
+.tour-ov.pl-tgo.pl-tour-1 .tour-next { animation: plTUp .6s cubic-bezier(.2, .9, .3, 1) 1.18s both; }
+/* кацнало от стартовия екран — логото вече е там, отскокът не се играе: текстът тръгва веднага след него
+   (запис nach24d: иначе логото стоеше само ~1 s) */
+.tour-ov.pl-tgo.pl-tland.pl-tour-1 .tour-card h3 { animation-delay: .05s; }
+.tour-ov.pl-tgo.pl-tland.pl-tour-1 .tour-card p { animation-delay: .2s; }
+.tour-ov.pl-tland.pl-tour-1 .pl-tt-i:nth-child(1) { animation-delay: .36s; }
+.tour-ov.pl-tland.pl-tour-1 .pl-tt-i:nth-child(2) { animation-delay: .48s; }
+.tour-ov.pl-tland.pl-tour-1 .pl-tt-i:nth-child(3) { animation-delay: .6s; }
+.tour-ov.pl-tgo.pl-tland.pl-tour-1 .tour-dots { animation-delay: .7s; }
+.tour-ov.pl-tgo.pl-tland.pl-tour-1 .tour-next { animation-delay: .76s; }
+.tour-ov.pl-tour-1 .tour-next::after { content: ''; position: absolute; inset: -4px; border-radius: inherit; pointer-events: none;
+  box-shadow: 0 0 0 0 rgba(229, 109, 153, .45), 0 0 24px 4px rgba(229, 109, 153, .35); opacity: 0; animation: plTGlow 3s ease-in-out 2s infinite; }
+/* докато стартовият екран е отгоре — подготвеният кадър (пуснат е само с клас от premium-home.js) */
+.tour-ov.pl-tour-1:not(.pl-tgo) .pl-tlogo, .tour-ov.pl-tour-1:not(.pl-tgo) .tour-card h3, .tour-ov.pl-tour-1:not(.pl-tgo) .tour-card p,
+.tour-ov.pl-tour-1:not(.pl-tgo) .pl-tt-i, .tour-ov.pl-tour-1:not(.pl-tgo) .tour-dots, .tour-ov.pl-tour-1:not(.pl-tgo) .tour-next { opacity: 0; }
+/* крайният кадър — наложен (js: .pl-tdone 2,6 s след старта), каквото и да е станало с анимациите */
+.tour-ov.pl-tdone.pl-tour-1 .tour-card h3, .tour-ov.pl-tdone.pl-tour-1 .tour-card p, .tour-ov.pl-tdone.pl-tour-1 .pl-tt-i,
+.tour-ov.pl-tdone.pl-tour-1 .tour-dots, .tour-ov.pl-tdone.pl-tour-1 .tour-next { opacity: 1 !important; animation: none !important; transform: none !important; }
+.tour-ov.pl-tdone .pl-tlogo { opacity: 1 !important; animation: plTlBreath 6s ease-in-out infinite !important; }
+@keyframes plTUp { from { opacity: 0; transform: translate3d(0, 14px, 0); } to { opacity: 1; transform: none; } }
+@keyframes plTPop { 0% { opacity: 0; transform: scale(.55) translate3d(0, 12px, 0); } 70% { opacity: 1; transform: scale(1.06); } 100% { opacity: 1; transform: none; } }
+@keyframes plTGlow { 0%, 100% { opacity: 0; } 50% { opacity: 1; } }
+html[data-theme="dark"] .pl-ts-c { background: #e9e4f6; box-shadow: 16px -12px 0 6px #e9e4f6, 38px -6px 0 2px #e9e4f6; opacity: .22; }
+html[data-theme="dark"] .pl-ts-a { opacity: .35; }
+@media (prefers-reduced-motion: reduce) {
+  .pl-tsky *, .pl-tlogo, .tour-ov.pl-tour-1 .tour-card h3, .tour-ov.pl-tour-1 .tour-card p, .tour-ov.pl-tour-1 .pl-tt-i,
+  .tour-ov.pl-tour-1 .tour-dots, .tour-ov.pl-tour-1 .tour-next, .tour-ov.pl-tour-1 .tour-next::after { animation: none !important; }
+  .pl-ts-s { opacity: .55; } .pl-ts-c { display: none; }
+  .tour-ov.pl-tour-1 .pl-tlogo, .tour-ov.pl-tour-1 .tour-card h3, .tour-ov.pl-tour-1 .tour-card p, .tour-ov.pl-tour-1 .pl-tt-i,
+  .tour-ov.pl-tour-1 .tour-dots, .tour-ov.pl-tour-1 .tour-next { opacity: 1 !important; }
+}
 
 /* ═══════════════════════════════════════════════════════════════════════════
    🖼️ БАНЕРЪТ НА СТАЯТА (js/premium-rooms.js) — рисунка отдясно, серифно заглавие

@@ -1,5 +1,5 @@
 // Baby Land — service worker: кешира приложението за офлайн работа
-const CACHE = 'babyland-v886';   // 21.10 · достъп: v873 → v874 · ПЪТ НАЗАД: sw.js.PREDI_DOSTAP
+const CACHE = 'babyland-v887';   // 21.10 · достъп: v873 → v874 · ПЪТ НАЗАД: sw.js.PREDI_DOSTAP
 const ASSETS = [
   '.',
   'index.html',
@@ -253,7 +253,6 @@ const ASSETS = [
   'manifest.webmanifest',
   'img/logo.png',
   'img/art/hero-home.webp',
-  'img/art/welcome.webp',
   'img/art/rb-preg.webp',
   'img/art/rb-baby.webp',
   'img/art/rb-feed.webp',

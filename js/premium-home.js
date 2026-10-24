@@ -281,14 +281,45 @@
       р.innerHTML = ПЛОЧКИ.map(([н, л, ред, кол]) => '<span class="pl-tt-i"><i style="background-image:url(img/art/' + л + '.webp);background-position:' + (кол * 100 / 3) + '% ' + (ред * 100 / 3) + '%"></i><b>' + н + '</b></span>').join('');
       const точки = к.querySelector('.tour-dots'); к.insertBefore(р, точки || null);
     } else if (!първа && има) има.remove();
+    // 🎈 24.10 · собственикът: „началото, дето махна — оправи го на изрод, анимации с код“. Голямата рисунка
+    //   (welcome.webp) я няма; вместо нея ЖИВОТО лого „Baby Land“ — клонинг на векторното лого горе в началото
+    //   (header.hero .logo-art: облак, балон, личице; частите му вече плуват/мигат от style.css), което влиза с
+    //   отскок, и небе от код отзад (css/premium.css § „ЖИВОТО НАЧАЛО“). Нула файлове, само transform/opacity.
+    //   Няма ли лого горе (стара страница) — нищо не се слага и остава малкото балонче. ПЪТ НАЗАД: махни този блок.
+    if (!ов.querySelector(':scope > .pl-tsky')) {
+      const н = document.createElement('div'); н.className = 'pl-tsky'; н.setAttribute('aria-hidden', 'true');
+      н.innerHTML = '<i class="pl-ts-a a1"></i><i class="pl-ts-a a2"></i><i class="pl-ts-a a3"></i>' +
+        '<i class="pl-ts-c c1"></i><i class="pl-ts-c c2"></i><i class="pl-ts-c c3"></i>' +
+        [1, 2, 3, 4, 5, 6, 7, 8].map(i => '<i class="pl-ts-s s' + i + '"></i>').join('');
+      ов.insertBefore(н, ов.firstChild);
+    }
+    const лого = к.querySelector(':scope > .pl-tlogo');
+    if (първа && !лого) {
+      const извор = document.querySelector('header.hero .logo-art');
+      if (извор) {
+        const о = document.createElement('div'); о.className = 'pl-tlogo'; о.setAttribute('aria-hidden', 'true');
+        const с = извор.cloneNode(true); с.removeAttribute('role'); с.removeAttribute('aria-label'); с.setAttribute('class', 'pl-tlogo-svg');
+        о.appendChild(с);
+        const з = к.querySelector('h3'); к.insertBefore(о, з || к.firstChild);
+      }
+    } else if (!първа && лого) лого.remove();
+    // хореографията тръгва, когато стартовият екран (#blSplash) си е отишъл — иначе се изиграва ПОД него —
+    //   и САМО при видима страница: анимация, родена в скрит таб, замръзва на нулевия кадър (видяно на живо:
+    //   document.hidden → заглавието стоеше с opacity 0). 2,6 s след старта .pl-tdone налага крайния кадър
+    //   независимо от анимациите — основният кадър не се доставя от анимация (zhiv-sait § 3.1).
+    if (!ов.classList.contains('pl-tgo') && !document.getElementById('blSplash') && !document.hidden) {
+      ов.classList.add('pl-tgo');
+      setTimeout(() => ов.classList.add('pl-tdone'), 2600);
+    }
   }
+  document.addEventListener('visibilitychange', () => { if (!document.hidden) обиколка(); });
   let чакаТ = false;
   let набТур = new MutationObserver(() => { if (чакаТ) return; чакаТ = true; setTimeout(() => { чакаТ = false; обиколка(); }, 40); });
   набТур.observe(document.documentElement, { childList: true, subtree: true });
 
   if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', сложи); else сложи();
   document.addEventListener('visibilitychange', () => { if (!document.hidden) опресни(); });
-  window.BL_PREMIUM_HOME = { опресни, денят };
+  window.BL_PREMIUM_HOME = { опресни, денят, обиколка };   // обиколка ← index.html · прибери (облакът каца в логото)
 })();
 
 /* ═══════════════════════════════════════════════════════════════════════════════

@@ -69,6 +69,7 @@
 #blSplash.bls-off{pointer-events:none}
 #blSplash.bls-off::before,#blSplash.bls-off .bls-rest,#blSplash.bls-off .bls-sos{opacity:0}
 html.bls-fly header.hero .logo-art{visibility:hidden}
+html.bls-fly .tour-ov.pl-tland .pl-tlogo{visibility:hidden}
 @keyframes blsBob{0%,100%{transform:translateY(0)}50%{transform:translateY(-4px)}}
 @keyframes blsBal{0%,100%{transform:translateY(0) rotate(-2.4deg)}50%{transform:translateY(-14px) rotate(2.8deg)}}
 @keyframes blsFace{0%,100%{transform:rotate(-2deg)}50%{transform:rotate(2.4deg)}}
@@ -99,7 +100,7 @@ html[data-theme="dark"] #blSplash .bls-sos{color:#ffd0dc;background:rgba(255,255
 <link rel="stylesheet" href="css/touch.css?v=33">
 <link rel="stylesheet" href="css/anim.css?v=16">
 <link rel="stylesheet" href="css/tier.css?v=8">
-<link rel="stylesheet" href="css/premium.css?v=65">
+<link rel="stylesheet" href="css/premium.css?v=66">
   <link rel="stylesheet" href="css/pl-ui.css?v=21">
   <link rel="stylesheet" href="css/pl-popravki.css?v=1">
   <link rel="stylesheet" href="css/pl-versiya.css?v=3">
@@ -130,7 +131,7 @@ html[data-theme="dark"] #blSplash .bls-sos{color:#ffd0dc;background:rgba(255,255
   <link rel="stylesheet" href="css/pl-zdrave.css?v=3">
   <link rel="stylesheet" href="css/pl-bebe.css?v=4">
   <link rel="stylesheet" href="css/pl-start.css?v=4">
-  <link rel="stylesheet" href="css/pl-dostap.css?v=4"><!-- 21.10 · достъп: врата, „Достъп“, изтекло, админ · ПЪТ НАЗАД: махни този ред (и index.html.PREDI_DOSTAP) -->
+  <link rel="stylesheet" href="css/pl-dostap.css?v=5"><!-- 21.10 · достъп: врата, „Достъп“, изтекло, админ · ПЪТ НАЗАД: махни този ред (и index.html.PREDI_DOSTAP) -->
 <!-- 📶 силата на телефона: слага data-motion/data-quality ПРЕДИ рисуването.
      Нарочно БЕЗ defer и рано — с defer отметките идват след първото
      рисуване и екранът мигва. Файлът е 3 KB. -->
@@ -205,18 +206,28 @@ html[data-theme="dark"] #blSplash .bls-sos{color:#ffd0dc;background:rgba(255,255
   var R = document.documentElement, т0 = Date.now(), готовоОт = 0, домОт = 0, свършено = false, домГотов = false, причина = '';
   document.addEventListener('DOMContentLoaded', function () { домГотов = true; });
   var тихо = false; try { тихо = matchMedia('(prefers-reduced-motion: reduce)').matches; } catch (e) {}
+  var първо = false; try { първо = !localStorage.getItem('bl_tour_done'); } catch (e) {}
   // 🔤 „Baby Land“ е на Pacifico: в първия кадър той още не е зареден и надписът излизаше с резервен шрифт, после
   //   подскачаше (запис letene.js, let21_k00). Надписът се показва, щом шрифтът е готов — най-късно след 0,9 с.
   var шрифт = function () { S.classList.add('bls-f'); };
   try { if (document.fonts && document.fonts.load) { document.fonts.load('97px Pacifico', 'Baby Land').then(шрифт, шрифт); setTimeout(шрифт, 900); } else шрифт(); } catch (e) { шрифт(); }
-  function махни() { if (S.parentNode) S.parentNode.removeChild(S); R.classList.remove('bls-fly'); }
+  function махни() { if (S.parentNode) S.parentNode.removeChild(S); R.classList.remove('bls-fly');
+    try { if (window.BL_PREMIUM_HOME && BL_PREMIUM_HOME.обиколка) BL_PREMIUM_HOME.обиколка(); } catch (e) {} }   // текстът на тура тръгва веднага
   function прибери() {
     if (свършено) return; свършено = true;
     // облакът отлита на мястото на същото лого горе в началото (header.hero, css/pl-start.css)
     var цел = document.querySelector('header.hero .logo-art'), мое = S.querySelector('.bls-logo');
+    // 🎈 24.10 · първо посещение: „Добре дошла у дома“ носи СЪЩОТО живо лого (js/premium-home.js · .pl-tlogo) —
+    //   облакът каца точно на него (една непрекъсната линия вместо две логота). ПЪТ НАЗАД: махни тези 3 реда.
+    //   Под товар наблюдателят на premium-home.js закъсняваше и логото още го нямаше (запис nach24b: облакът се стопи,
+    //   празно небе 0,5 с) — затова тук обиколката се подрежда веднага, преди мерене.
+    try { if (window.BL_PREMIUM_HOME && BL_PREMIUM_HOME.обиколка) BL_PREMIUM_HOME.обиколка(); } catch (e) {}
+    var тЛ = document.querySelector('.tour-ov .pl-tlogo-svg'), тР = тЛ && тЛ.getBoundingClientRect();
+    var къмТура = !!(тР && тР.width > 60 && тР.bottom > 0);
+    if (къмТура) { цел = тЛ; var ов0 = тЛ.closest('.tour-ov'); if (ов0) ов0.classList.add('pl-tland'); }
     var рЦ = цел && цел.getBoundingClientRect(), рМ = мое && мое.getBoundingClientRect();
     // отворен прозорец (обиколка, въпрос) — облакът не минава над него, а се топи с фона
-    var прозорец = false; try { var пр = document.querySelectorAll('.md-veil, .tour-ov, [role="dialog"]'); for (var i = 0; i < пр.length; i++) if (!S.contains(пр[i]) && пр[i].getClientRects().length) прозорец = true; } catch (e) {}
+    var прозорец = false; if (!къмТура) try { var пр = document.querySelectorAll('.md-veil, .tour-ov, [role="dialog"]'); for (var i = 0; i < пр.length; i++) if (!S.contains(пр[i]) && пр[i].getClientRects().length) прозорец = true; } catch (e) {}
     var лети = !тихо && !прозорец && рЦ && рМ && рЦ.width > 60 && рЦ.bottom > 0 && рМ.width > 0;
     if (лети) {
       R.classList.add('bls-fly');
@@ -224,7 +235,7 @@ html[data-theme="dark"] #blSplash .bls-sos{color:#ffd0dc;background:rgba(255,255
         ((рЦ.top + рЦ.height / 2) - (рМ.top + рМ.height / 2)).toFixed(1) + 'px) scale(' + (рЦ.width / рМ.width).toFixed(4) + ')';
     } else { S.style.transition = 'opacity .45s ease'; S.style.opacity = '0'; }
     S.classList.add('bls-off');
-    window.BL_SPLASH = { лети: !!лети, прозорец: прозорец, мс: Date.now() - т0, при: Date.now(), причина: причина };   // за пробите (dev/proba/filmova.js)
+    window.BL_SPLASH = { лети: !!лети, прозорец: прозорец, тур: къмТура, мс: Date.now() - т0, при: Date.now(), причина: причина };   // за пробите (dev/proba/filmova.js)
     setTimeout(махни, лети ? 760 : 480);
   }
   function провери() {
@@ -243,7 +254,10 @@ html[data-theme="dark"] #blSplash .bls-sos{color:#ffd0dc;background:rgba(255,255
     //   облакът отлетя върху старата страница. Преди DOMContentLoaded старата страница е и безполезна (бутоните ѝ
     //   още нямат слушатели), а стартовият екран държи 112. Затова таванът 15 с важи САМО след DOMContentLoaded;
     //   преди него — краен предпазител 60 с (мрежата е увиснала).
-    if ((подредено && знаци) || безНово || (домГотов && т > 15000) || т > 60000) { причина = (подредено && знаци) ? 'ново' : безНово ? 'без-ново' : 'таван'; requestAnimationFrame(function () { requestAnimationFrame(прибери); }); return; }
+    // 🎈 24.10 първо посещение: обиколката се ражда на DOMContentLoaded (home.js · mountTour) — дотогава облакът чака,
+    //   за да кацне в логото ѝ (запис nach24f: прибра се на 1,4 с, турът дойде на 1,7 с, облакът отлетя към скритото лого).
+    var чакаТура = !домГотов && първо;
+    if ((подредено && знаци && !чакаТура) || безНово || (домГотов && т > 15000) || т > 60000) { причина = (подредено && знаци) ? 'ново' : безНово ? 'без-ново' : 'таван'; requestAnimationFrame(function () { requestAnimationFrame(прибери); }); return; }
     setTimeout(провери, 80);
   }
   провери();
@@ -1705,7 +1719,7 @@ html[data-theme="dark"] #blSplash .bls-sos{color:#ffd0dc;background:rgba(255,255
 <script src="js/profile.js?v=28" defer></script>
 <script src="js/app.js?v=26" defer></script>
 <script src="js/nav2.js?v=2" defer></script>
-<script src="js/premium-home.js?v=21" defer></script>
+<script src="js/premium-home.js?v=22" defer></script>
 <script src="js/premium-rooms.js?v=12" defer></script>
   <script src="js/pl-versiya.js?v=1" defer></script>
   <script src="js/pl-plyush.js?v=46" defer></script>

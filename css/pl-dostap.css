@@ -64,11 +64,17 @@ html[data-theme="dark"] .prof-overlay .bl-dc .bl-b-locked, html[data-theme="dark
 @media (min-aspect-ratio: 3/4) { #blDostap::before { background-size: auto 100%; background-color: #fdf3ec; } }
 html[data-theme="dark"] #blDostap { background: #151a3c; color: #fff; }
 html[data-theme="dark"] #blDostap::before { background-image: url(../img/art/hero-night.webp); background-position: 50% 8%; }
+/* 🔴 24.10 · собственикът: без огромната рисунка (балонът с бебето) на първите екрани — и тук, на вратата.
+   Рисунката отгоре не се рисува, а мястото, пазено за нея (до 320 px), се свива до въздух под SOS бутона.
+   ПЪТ НАЗАД: махни тези три правила. */
+#blDostap::before { content: none !important; }
+#blDostap { background: linear-gradient(180deg, #fff6f0 0%, #fdeef0 60%, #fff8f2 100%); }
+html[data-theme="dark"] #blDostap { background: #151a3c; }
 #blDostap .bl-dg-in {
   position: relative; z-index: 1; max-width: 460px; margin: 0 auto;
-  padding: calc(min(76vw, 320px) + env(safe-area-inset-top, 0px)) 14px calc(28px + env(safe-area-inset-bottom, 0px));
+  padding: calc(64px + env(safe-area-inset-top, 0px)) 14px calc(28px + env(safe-area-inset-bottom, 0px));
 }
-#blDostap[data-vid="изтекло"] .bl-dg-in, #blDostap[data-vid="офлайн"] .bl-dg-in { padding-top: calc(min(60vw, 250px) + env(safe-area-inset-top, 0px)); }
+#blDostap[data-vid="изтекло"] .bl-dg-in, #blDostap[data-vid="офлайн"] .bl-dg-in { padding-top: calc(64px + env(safe-area-inset-top, 0px)); }
 
 /* ✚ SOS · 112 — горе вдясно, ВИНАГИ видимо (както в профила, css/pl-profil.css · .pl-p112-mini) */
 #blDostap .bl-dg-112 {
