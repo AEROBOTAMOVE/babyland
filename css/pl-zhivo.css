@@ -199,3 +199,56 @@ html[data-theme="dark"] .pl-otk-i { background: #ffc2d8; filter: drop-shadow(0 0
 html[data-theme="dark"] .pl-otk-i.z { background: #ffe9a8; filter: none; }
 html[data-theme="dark"] .pl-otk-i.s { background: #f59cbb; filter: none; }
 @media (prefers-reduced-motion: reduce) { .pl-otk-sloy { display: none !important; } }
+
+/* ═══════════════════════════════════════════════════════════════════════════════
+   🌱 ЖИВОТ 2 · 27.10 — още движение с код там, където още нямаше (двойката е блокът „ЖИВОТ 2“ в js/pl-zhivo.js)
+   Прочетено преди писане и НЕ дублирано: картите в стаята (anim.css rmxDepthIn + polish.js 45 ms), вълничката
+   (anim.js), ОТКЛИКЪТ горе (натиск, вход по ред, мехурчета, искри), прозорците .md-veil (пружина в rooms.css),
+   листовете pl-dv / pl-ig / pl-hr, лентите .bg-fill / .gl-fill (вече scaleX), живите числа (pl-chislo), търсенето.
+   Законите (JMATION + zhiv-sait): подготовка → удар → презасилване; без избледняване — новото идва ОТ посоката;
+   само transform/opacity (отделните translate/scale — не чупят чужд transform); съдържание от opacity ≥ .4;
+   js не чете размери; „по-малко движение“ → нищо.
+     1) смяна на таба (Стаята / Статии / Попитай) — съдържанието влиза от посоката на новия таб;
+     2) профилът и четецът на статии — пружина (бяха плоско изплуване от opacity 0);
+     3) отметките (чекбокс, role=checkbox) — удар .82 → презасилване 1.14 → 1 (js, WAAPI);
+     4) пълнежите .nm-fill .st-fill .sp-fill .sc-fill .rg-fill — растат от лявото, само при първата поява;
+     5) числата data-cnt в стаята — лек отскок, щом отброяването спре (js);
+     6) долната лента — чертичката на новата активна идва от страната на старата; нощем хапчето подскача;
+     7) празните състояния — бавно дишане (5,2 s, 1,2 %).
+   ПЪТ НАЗАД: махни блока „ЖИВОТ 2“ (оттук до края) тук и в края на js/pl-zhivo.js.
+   ═══════════════════════════════════════════════════════════════════════════════ */
+@media (prefers-reduced-motion: no-preference) {
+  /* 1 · табовете: js слага data-zh2-pos (r = новият е вдясно) за 600 ms; .ro-anim е класът, който setTab рестартира */
+  html body #roomOverlay .ro-panel[data-zh2-pos="r"] .ro-anim { animation: plZh2OtD .38s cubic-bezier(.3, 1.22, .5, 1) both; }
+  html body #roomOverlay .ro-panel[data-zh2-pos="l"] .ro-anim { animation: plZh2OtL .38s cubic-bezier(.3, 1.22, .5, 1) both; }
+
+  /* 2 · профилът и четецът: пердето от .4, листът — подготовка (по-ниско и по-малко) → удар → презасилване */
+  html body .prof-overlay { animation: plZh2Perde .24s ease-out both; }
+  html body .prof-overlay .prof-box,
+  html body .art-panel { animation: plZh2List .48s cubic-bezier(.3, 1.3, .45, 1) both; }
+
+  /* 4 · пълнежите: класът е от js за 1 s (таймер — крайният кадър е наложен и при спрян таб) */
+  html body .pl-zh2-puln { transform-origin: 0 50%; animation: plZh2Puln .72s cubic-bezier(.2, .9, .25, 1) both; }
+
+  /* 6 · долната лента */
+  html:not([data-theme="dark"]) body .bottom-nav .bn-item.bn-active[data-zh2-ot="l"]::after { animation: plZh2TochkaL .4s cubic-bezier(.3, 1.4, .5, 1) both; }
+  html:not([data-theme="dark"]) body .bottom-nav .bn-item.bn-active[data-zh2-ot="r"]::after { animation: plZh2TochkaR .4s cubic-bezier(.3, 1.4, .5, 1) both; }
+  html[data-theme="dark"] body .bottom-nav .bn-item.bn-active[data-zh2-ot] { animation: plZh2Hapche .38s cubic-bezier(.3, 1.5, .5, 1) both; }
+
+  /* 7 · празните състояния — дишат бавно; първият кадър е покоят (замръзне ли — нищо не личи) */
+  html body :is(.pl-br-empty, .pl-in-empty, .pl-sa-empty, .rv-empty, .sos-empty, .bb-empty) { animation: plZh2Dish 5.2s ease-in-out infinite; }
+}
+/* 5 · числата: transform не важи за inline елемент — само span-овете с data-cnt в стаята стават inline-block
+   (числото не се пречупва, тоест редът не се мести) */
+#roomOverlay span[data-cnt] { display: inline-block; }
+
+@keyframes plZh2OtD     { from { opacity: .5; translate: 34px 0; } }
+@keyframes plZh2OtL     { from { opacity: .5; translate: -34px 0; } }
+@keyframes plZh2Perde   { from { opacity: .4; } }
+@keyframes plZh2List    { 0% { opacity: .5; translate: 0 30px; scale: .955; } 55% { opacity: 1; } }
+@keyframes plZh2Puln    { 0% { scale: .06 1; } 72% { scale: 1.012 1; } 100% { scale: 1 1; } }
+@keyframes plZh2TochkaL { from { translate: -30px 0; scale: .35 1; } }
+@keyframes plZh2TochkaR { from { translate: 30px 0; scale: .35 1; } }
+@keyframes plZh2Hapche  { 0% { scale: .9; } 60% { scale: 1.06; } 100% { scale: 1; } }
+@keyframes plZh2Dish    { 0%, 100% { scale: 1; translate: 0 0; } 50% { scale: 1.012; translate: 0 -1.5px; } }
+/* край ЖИВОТ 2 */

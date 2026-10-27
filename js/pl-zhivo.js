@@ -258,3 +258,140 @@
   if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', върви); else върви();
   window.BL_PL_OTKLIK = { искри, колко };
 })();
+
+/* ═══════════════════════════════════════════════════════════════════════════════
+   🌱 ЖИВОТ 2 · js (27.10) — видът и защо е тук: блокът „ЖИВОТ 2“ в края на css/pl-zhivo.css
+   Само делегирано слушане, WAAPI върху отделното `scale` и класове с таймер. НИЩО не чете размери
+   (getBoundingClientRect / offset* / scroll*) — посоките са по реда в DOM, не по пиксели.
+     1) табове: клик по [data-tab] в #roTabs (capture — преди setTab в helper.js) → панелът получава
+        data-zh2-pos (r/l) за 600 ms; после махаме и .ro-anim, иначе смяната на името би пуснала
+        roFade наново (от opacity 0) — тоест мигане;
+     3) отметки: след клика (setTimeout 0 — промяната вече е станала), ако е ОТМЕТНАТО → удар/презасилване
+        на кутийката (вътрешния „box“/„chk“; без такъв — по-кротко на целия ред);
+     4) пълнежи: наблюдател на #roomOverlay → новият пълнеж носи .pl-zh2-puln 1 s (таймер, не animationend);
+     5) числата: обвивка на BL_FX.countUp → 680 ms след старта (fx.js брои 650 ms) лек отскок, само в стаята;
+     6) долната лента: наблюдател на class в .bottom-nav → новата активна носи data-zh2-ot (посоката) 500 ms.
+   „По-малко движение“ → нищо. ПЪТ НАЗАД: махни блока (оттук до края) тук и в края на css/pl-zhivo.css.
+   ═══════════════════════════════════════════════════════════════════════════════ */
+(function () {
+  'use strict';
+  if (window.BL_PL_ZHIVOT2) return;
+  const тихо = () => { try { return matchMedia('(prefers-reduced-motion: reduce)').matches; } catch (e) { return true; } };
+  const МОЖЕ = !!(Element.prototype.animate && window.CSS && CSS.supports && CSS.supports('scale', '1'));
+
+  // ═══ 1. ТАБОВЕТЕ — от посоката на новия ═══
+  const СЪДЪРЖАНИЕ = ['roRoom', 'roArticles', 'roChatWrap'];
+  document.addEventListener('click', ев => {
+    const б = ев.target && ев.target.closest ? ев.target.closest('#roTabs [data-tab]') : null;
+    if (!б || тихо()) return;
+    const ред = [...б.parentElement.children];
+    const стар = ред.findIndex(х => х.classList.contains('on')), нов = ред.indexOf(б);
+    if (стар < 0 || нов < 0 || нов === стар) return;
+    const п = б.closest('.ro-panel') || document.querySelector('#roomOverlay .ro-panel');
+    if (!п) return;
+    п.dataset.zh2Pos = нов > стар ? 'r' : 'l';
+    clearTimeout(п._zh2T);
+    п._zh2T = setTimeout(() => {
+      delete п.dataset.zh2Pos;
+      СЪДЪРЖАНИЕ.forEach(ид => { const е = document.getElementById(ид); if (е) е.classList.remove('ro-anim'); });
+    }, 600);
+  }, true);
+
+  // ═══ 3. ОТМЕТКИТЕ — удар и презасилване ═══
+  const ОТМЕТКА = 'input[type="checkbox"], [role="checkbox"], [role="switch"]';
+  document.addEventListener('click', ев => {
+    if (!МОЖЕ || тихо() || !ев.target || !ев.target.closest) return;
+    const цел = ев.target.closest(ОТМЕТКА);          // клик по <label> праща свой клик по полето — хваща се там
+    if (!цел) return;
+    setTimeout(() => {
+      if (!цел.isConnected) return;
+      const да = цел.matches('input') ? цел.checked : (цел.getAttribute('aria-checked') === 'true');
+      if (!да) return;
+      const кутия = цел.matches('input') ? цел : цел.querySelector('[class*="box"], [class*="chk"], [class*="check"]');
+      try {
+        if (кутия) кутия.animate([{ scale: 1 }, { scale: 0.82, offset: 0.3 }, { scale: 1.14, offset: 0.65 }, { scale: 1 }], { duration: 340, easing: 'ease-out' });
+        else цел.animate([{ scale: 1 }, { scale: 0.97, offset: 0.3 }, { scale: 1.025, offset: 0.65 }, { scale: 1 }], { duration: 320, easing: 'ease-out' });
+      } catch (e) {}
+    }, 0);
+  });
+
+  // ═══ 4. ПЪЛНЕЖИТЕ — растат от лявото при първата поява ═══
+  const ПЪЛНЕЖ = '.nm-fill, .st-fill, .sp-fill, .sc-fill, .rg-fill';
+  function пълни(е) {
+    if (е._zh2) return; е._zh2 = 1;
+    if (тихо()) return;
+    е.classList.add('pl-zh2-puln');
+    setTimeout(() => е.classList.remove('pl-zh2-puln'), 1000);
+  }
+  function пази() {
+    const ов = document.getElementById('roomOverlay');
+    if (!ов) return false;
+    new MutationObserver(сп => {
+      for (const з of сп) for (const н of з.addedNodes) {
+        if (н.nodeType !== 1) continue;
+        if (н.matches(ПЪЛНЕЖ)) пълни(н);
+        else if (н.firstElementChild) н.querySelectorAll(ПЪЛНЕЖ).forEach(пълни);
+      }
+    }).observe(ов, { childList: true, subtree: true });
+    return true;
+  }
+
+  // ═══ 5. ЧИСЛАТА — отскок, щом отброяването спре ═══
+  function обвийБроене() {
+    const F = window.BL_FX;
+    if (!F || typeof F.countUp !== 'function') return false;
+    if (F.countUp._zh2) return true;
+    const стар = F.countUp;
+    const нов = function (обхват) {
+      const р = стар.apply(this, arguments);
+      try {
+        if (МОЖЕ && !тихо()) {
+          const ов = document.getElementById('roomOverlay');
+          (обхват || document).querySelectorAll('span[data-cnt]').forEach(с => {
+            if (!ов || !ов.contains(с) || (с._zh2 && Date.now() - с._zh2 < 1500)) return;
+            с._zh2 = Date.now();
+            setTimeout(() => {
+              if (с.isConnected) { try { с.animate([{ scale: 1 }, { scale: 1.16, offset: 0.45 }, { scale: 0.97, offset: 0.75 }, { scale: 1 }], { duration: 320, easing: 'ease-out' }); } catch (e) {} }
+            }, 680);
+          });
+        }
+      } catch (e) {}
+      return р;
+    };
+    нов._zh2 = 1;
+    F.countUp = нов;
+    return true;
+  }
+
+  // ═══ 6. ДОЛНАТА ЛЕНТА — точката идва от страната на старата ═══
+  function лента() {
+    const л = document.querySelector('.bottom-nav');
+    if (!л) return false;
+    const активна = () => [...л.querySelectorAll('.bn-item')].findIndex(х => х.classList.contains('bn-active'));
+    let пред = активна();
+    new MutationObserver(сп => {
+      const ред = [...л.querySelectorAll('.bn-item')];
+      const сега = ред.findIndex(х => х.classList.contains('bn-active'));
+      if (сега >= 0 && пред >= 0 && сега !== пред && !тихо() && сп.some(з => з.target === ред[сега])) {
+        const е = ред[сега];
+        е.dataset.zh2Ot = сега > пред ? 'l' : 'r';           // отдясно на старата → идва отляво
+        clearTimeout(е._zh2T); е._zh2T = setTimeout(() => { delete е.dataset.zh2Ot; }, 500);
+      }
+      if (сега >= 0) пред = сега;
+    }).observe(л, { attributes: true, attributeFilter: ['class'], subtree: true });
+    return true;
+  }
+
+  function върви() {
+    let опит = 0, а = false, б = false, в = false;          // всяко веднъж — иначе по наблюдател на опит
+    (function чакай() {
+      if (!а) а = пази();
+      if (!б) б = обвийБроене();
+      if (!в) в = лента();
+      if ((!а || !б || !в) && ++опит < 40) setTimeout(чакай, 250);
+    })();
+  }
+  if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', върви); else върви();
+  window.BL_PL_ZHIVOT2 = { пълни };
+})();
+/* край ЖИВОТ 2 */
