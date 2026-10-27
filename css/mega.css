@@ -1118,3 +1118,107 @@
    падаше на 4.20:1. Един тон по-наситено червено — бутонът си остава
    червен, подредът става четим. Измерено, не преценено. */
 .sos-big { background: linear-gradient(135deg, #cf3f37, #a92f3a); }
+
+/* ═══════════ 📚 АЛБУМИТЕ (27.10, js/photos.js) ═══════════
+   Цял екран над стаята (z 300), под печатния оверлей (z 400).
+   Движението почва от opacity .4 (законът за скрития таб), reduce = неподвижно. */
+.alb-peek { display: flex; gap: 6px; margin: 8px 0 2px; }
+.alb-peek:empty { display: none; }
+.alb-peek img { width: 64px; height: 64px; object-fit: cover; border-radius: 14px; box-shadow: var(--pl-shadow-sm); }
+.alb-ov { position: fixed; inset: 0; z-index: 300; display: flex; flex-direction: column; background: var(--pl-cream, #fff8f2); color: var(--pl-ink, #3b3f5c); }
+.alb-ov[hidden] { display: none; }
+html.alb-otvoreni body { overflow: hidden; }
+/* самият прозорец НЕ се движи (замръзнало translateY оставяше процеп към стаята, а opacity — стаята прозираше; albumi_proba, снимки 1 и 3).
+   Движи се съдържанието вътре в плътната повърхност. */
+@keyframes albIn { from { transform: translateY(18px) scale(.985); } to { transform: none; } }
+.alb-top { display: flex; align-items: center; gap: 8px; padding: calc(10px + env(safe-area-inset-top)) 12px 10px; background: var(--pl-card, #fffdfb); border-bottom: 1px solid var(--pl-line, #f1e4d9); }
+.alb-h { flex: 1; min-width: 0; margin: 0; font-family: var(--pl-serif); font-size: 19px; color: var(--pl-navy, #1d2a5c); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.alb-ic { flex: none; width: 44px; height: 44px; display: grid; place-items: center; border: 0; border-radius: 50%; background: var(--pl-pink-soft, #fde6ef); color: var(--pl-navy, #1d2a5c); font: inherit; font-size: 20px; font-weight: 800; cursor: pointer; transition: transform .15s; }
+.alb-ic:active { transform: scale(.9); }
+.alb-ic[hidden] { display: none; }
+.alb-body { flex: 1; min-height: 0; width: 100%; max-width: 820px; margin: 0 auto; box-sizing: border-box; overflow-y: auto; overscroll-behavior: contain; padding: 14px 14px calc(24px + env(safe-area-inset-bottom)); animation: albIn .34s cubic-bezier(.2, .9, .3, 1.12); }
+.alb-seg { display: flex; flex-wrap: wrap; gap: 6px; margin: 4px 0 12px; }
+.alb-sg { min-height: 40px; padding: 0 14px; border: 1.5px solid var(--pl-line, #f1e4d9); border-radius: 999px; background: var(--pl-card, #fffdfb); color: var(--pl-ink, #3b3f5c); font: inherit; font-size: 13px; font-weight: 800; cursor: pointer; transition: background .18s, color .18s, transform .15s; }
+.alb-sg:active { transform: scale(.95); }
+.alb-sg.on { background: var(--pl-navy, #1d2a5c); border-color: var(--pl-navy, #1d2a5c); color: #fff; }
+.alb-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(148px, 1fr)); gap: 14px 12px; }
+.alb-tile { display: flex; flex-direction: column; gap: 2px; padding: 8px 8px 10px; border: 0; border-radius: var(--pl-radius, 22px); background: var(--pl-card, #fffdfb); box-shadow: var(--pl-shadow-sm); color: var(--pl-ink, #3b3f5c); font: inherit; text-align: left; cursor: pointer; transition: transform .18s; animation: albTile .42s cubic-bezier(.2, .9, .3, 1.2) both; }
+.alb-tile:nth-child(2) { animation-delay: .04s; }
+.alb-tile:nth-child(3) { animation-delay: .08s; }
+.alb-tile:nth-child(4) { animation-delay: .12s; }
+.alb-tile:nth-child(n+5) { animation-delay: .16s; }
+.alb-tile:active { transform: scale(.97); }
+@keyframes albTile { from { opacity: .4; transform: translateY(10px) scale(.96); } to { opacity: 1; transform: none; } }
+/* купчинка снимки: две цветни „снимки“ зад корицата */
+.alb-cov { position: relative; display: block; aspect-ratio: 1; margin: 8px 8px 0 0; border-radius: 16px; overflow: hidden; background: var(--pl-peach, #fde5d8); box-shadow: 5px -5px 0 -1px var(--pl-lilac, #ece4f8), 10px -10px 0 -3px var(--pl-pink-soft, #fde6ef); }
+.alb-cov img { display: block; width: 100%; height: 100%; object-fit: cover; }
+.alb-tile strong { margin-top: 6px; font-size: 14px; color: var(--pl-navy, #1d2a5c); }
+.alb-tile small { font-size: 12px; color: var(--pl-ink-soft, #6a6682); }
+.alb-day { margin-bottom: 14px; }
+.alb-day h4 { margin: 0 0 8px; font-family: var(--pl-serif); font-size: 16px; color: var(--pl-navy, #1d2a5c); }
+.alb-day-row { display: flex; gap: 12px; overflow-x: auto; padding: 4px 2px 8px; scroll-snap-type: x mandatory; }
+.alb-day-it { flex: none; width: 118px; padding: 6px 6px 8px; border: 0; border-radius: 12px; background: #fff; box-shadow: var(--pl-shadow-sm); font: inherit; cursor: pointer; scroll-snap-align: start; transform: rotate(-1.5deg); }
+.alb-day-it:nth-child(even) { transform: rotate(1.5deg); }
+.alb-day-it img { display: block; width: 106px; height: 106px; object-fit: cover; border-radius: 8px; }
+/* преглед 27.10: розовото на бяло беше 3,0:1 — #b8326a е 5,7:1 (12px текст иска 4,5) */
+.alb-day-it span { display: block; margin-top: 5px; font-size: 12px; font-weight: 800; color: #b8326a; }
+.alb-sub { margin: 0 0 10px; font-weight: 700; color: var(--pl-ink-soft, #6a6682); }
+.alb-act { display: flex; flex-wrap: wrap; gap: 8px; }
+.alb-act .jr-btn { min-height: 44px; }
+.alb-msg { min-height: 1.2em; margin: 6px 0 0; font-weight: 700; color: var(--pl-navy, #1d2a5c); }
+.alb-note, .alb-empty { font-size: 13px; line-height: 1.5; color: var(--pl-ink-soft, #6a6682); }
+.alb-empty { grid-column: 1 / -1; padding: 30px 10px; font-size: 15px; text-align: center; }
+.alb-ph { display: grid; grid-template-columns: repeat(auto-fill, minmax(104px, 1fr)); gap: 6px; margin-top: 12px; }
+.alb-pc { position: relative; aspect-ratio: 1; padding: 0; border: 0; border-radius: 12px; overflow: hidden; background: var(--pl-peach, #fde5d8); cursor: pointer; transition: transform .15s; }
+.alb-pc:active { transform: scale(.95); }
+.alb-pc img { display: block; width: 100%; height: 100%; object-fit: cover; }
+.alb-hrt { position: absolute; top: 5px; right: 5px; font-size: 15px; filter: drop-shadow(0 1px 2px rgba(0, 0, 0, .3)); }
+.alb-cap { position: absolute; left: 0; right: 0; bottom: 0; padding: 14px 6px 5px; font-size: 11px; font-weight: 700; color: #fff; text-align: left; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; background: linear-gradient(transparent, rgba(20, 15, 40, .65)); }
+/* снимката на цял екран */
+.alb-lb { position: absolute; inset: 0; z-index: 2; display: flex; flex-direction: column; background: #15111f; color: #f4eefc; }
+.alb-lb[hidden] { display: none; }
+
+.alb-lb-top { display: flex; align-items: center; justify-content: space-between; padding: calc(10px + env(safe-area-inset-top)) 12px 6px; }
+.alb-lb-n { font-weight: 800; opacity: .8; }
+.alb-lb .alb-ic { background: rgba(255, 255, 255, .12); color: #fff; }
+.alb-lb-st { flex: 1; min-height: 0; display: flex; align-items: center; gap: 6px; padding: 0 6px; touch-action: pan-y pinch-zoom; user-select: none; -webkit-user-select: none; }
+.alb-lb-img { -webkit-user-drag: none; }
+.alb-lb-img { flex: 1; min-width: 0; width: 100%; height: 100%; object-fit: contain; animation: albPh .3s cubic-bezier(.2, .9, .3, 1.1); }
+@keyframes albPh { from { transform: scale(.94); } to { transform: none; } }
+.alb-lb-info { width: 100%; max-width: 720px; margin: 0 auto; box-sizing: border-box; padding: 10px 14px calc(14px + env(safe-area-inset-bottom)); }
+.alb-lb-d { margin: 0; font-size: 13px; opacity: .75; }
+.alb-lb-t { margin: 4px 0 0; font-family: var(--pl-serif); font-size: 18px; }
+.alb-lb-t:empty { display: none; }
+.alb-lb-ed { display: flex; gap: 6px; margin-top: 8px; }
+.alb-lb-ed[hidden] { display: none; }
+.alb-lb-ed input { flex: 1; min-width: 0; min-height: 44px; padding: 0 12px; border: 0; border-radius: 12px; font: inherit; font-size: 16px; }
+.alb-lb-act { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 10px; }
+.alb-lb-act .jr-chip, .alb-lb-ok { min-height: 44px; background: rgba(255, 255, 255, .12); border-color: transparent; color: #fff; }
+.alb-lb-act .jr-chip[hidden] { display: none; }
+.alb-fav[aria-pressed="true"] { background: rgba(229, 109, 153, .38); }
+.alb-lb-msg { min-height: 1.2em; margin: 8px 0 0; font-weight: 700; color: #ffd6e6; }
+/* фотокнигата — през печатния оверлей; на хартия всяка двойка е отделна страница */
+.alb-book .alb-bk-cover { padding: 10px 0 18px; text-align: center; }
+.alb-book .alb-bk-cover img { width: 100%; max-height: 150mm; object-fit: cover; border-radius: 14px; }
+.alb-book .alb-bk-cover p { margin: 12px 0 0; font-family: var(--pl-serif); font-size: 20px; color: var(--pl-navy, #1d2a5c); }
+.alb-book .alb-bk-pg { display: grid; gap: 14px; margin: 14px 0; }
+.alb-book figure { margin: 0; text-align: center; }
+.alb-book figure img { width: 100%; max-height: 118mm; object-fit: contain; border-radius: 10px; background: #faf6f2; }
+.alb-book figcaption { margin-top: 5px; font-size: 13px; color: #6a6682; }
+@media print {
+  .alb-book .alb-bk-cover, .alb-book .alb-bk-pg { break-inside: avoid; break-after: page; page-break-after: always; }
+  .alb-book .alb-bk-pg:last-of-type { break-after: auto; page-break-after: auto; }
+}
+[data-theme="dark"] .alb-ov { background: #1a1628; color: #ece8f5; }
+[data-theme="dark"] .alb-top, [data-theme="dark"] .alb-tile, [data-theme="dark"] .alb-sg { background: #241f38; border-color: #3a3355; color: #ece8f5; }
+[data-theme="dark"] .alb-h, [data-theme="dark"] .alb-tile strong, [data-theme="dark"] .alb-day h4, [data-theme="dark"] .alb-msg { color: #f3eefc; }
+[data-theme="dark"] .alb-sg.on { background: #c3b1ea; border-color: #c3b1ea; color: #1a1628; }
+[data-theme="dark"] .alb-ic { background: #3a3355; color: #f3eefc; }
+[data-theme="dark"] .alb-day-it { background: #2f2a48; }
+[data-theme="dark"] .alb-day-it span { color: #ff9cc2; }  /* 7,0:1 на #2f2a48 */
+[data-theme="dark"] .alb-cov { box-shadow: 5px -5px 0 -1px #3a3355, 10px -10px 0 -3px #4a3550; }
+[data-theme="dark"] .alb-tile small, [data-theme="dark"] .alb-note, [data-theme="dark"] .alb-empty, [data-theme="dark"] .alb-sub { color: #b9b0d4; }
+@media (prefers-reduced-motion: reduce) {
+  .alb-body, .alb-tile, .alb-lb-img { animation: none; }
+  .alb-day-it, .alb-day-it:nth-child(even) { transform: none; }
+}

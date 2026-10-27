@@ -469,3 +469,325 @@
 
   window.BL_EXPR = { photoListCard, voiceCard, printOverlay, shrinkImage, card, esc };
 })();
+
+// ═══════════════════════════════════════════════════════════
+// 🖼️ ФИЗИЧЕСКИЯТ СПОМЕН (27.10.2026) — картинки за хартия и за телефона
+// картичка (10×15 / квадрат / сторис) · колаж (2–9 снимки) · плакат „Първата година“ (до 12)
+// 🔒 Снимките НЕ излизат от телефона: локален canvas → Blob → „Сподели/Запази“ или
+//    изтегляне — винаги тръгнало от натиск на мама. Нищо не се качва никъде.
+// 📏 iOS не рисува платно над 16 777 216 пиксела (остава празно, без грешка) —
+//    най-голямото тук е 2400×3200 = 7,7 млн; платно() смалява всичко над тавана.
+// 🎨 Цветовете са токените на css/premium.css (--pl-*), шрифтовете — Nunito на
+//    приложението и серифът на заглавията (--pl-serif). Нов цвят няма.
+// ПЪТ НАЗАД: махни този IIFE (викачът е js/photos.js през window.BL_FIZ).
+// ═══════════════════════════════════════════════════════════
+(function () {
+  'use strict';
+
+  const Ц = {
+    крем: '#fff8f2', хартия: '#fffdfb', линия: '#f1e4d9', нави: '#1d2a5c', сиво: '#6a6682', роза: '#e56d99',
+    розаМека: '#fde6ef', небе: '#dfeafb', мента: '#dff2e7', люляк: '#ece4f8', масло: '#fff0d4', праскова: '#fde5d8', градина: '#e3efe0'
+  };
+  const ТОНОВЕ = [Ц.розаМека, Ц.праскова, Ц.люляк, Ц.небе, Ц.мента, Ц.масло, Ц.градина];
+  const СЕРИФ = "Georgia, 'Noto Serif', 'Droid Serif', 'Times New Roman', serif";
+  const НУНИТО = "'Nunito', 'Nunito-fallback', sans-serif";
+  const шрифт = (тегло, семейство) => px => тегло + ' ' + Math.round(px) + 'px ' + семейство;
+  const ЗАГЛАВЕН = шрифт(700, СЕРИФ), ДЕБЕЛ = шрифт(800, НУНИТО), ПЛЪТЕН = шрифт(700, НУНИТО);
+  const ТАВАН = 16777216;
+  const ЛОГО = '🎈 Бейби Ленд';
+  const НЯМА = 'Снимката не се отваря — пробвай с друга. 😕';
+  const хеш = т => { let h = 2166136261; for (const з of String(т || '')) h = Math.imul(h ^ з.codePointAt(0), 16777619); return h >>> 0; };
+
+  // шрифтовете са локални (fonts/), но canvas не чака @font-face сам — без това пише със системния
+  function шрифтове() {
+    try {
+      if (!document.fonts || !document.fonts.load) return Promise.resolve();
+      const п = Promise.all(['700', '800'].map(т => document.fonts.load(т + " 40px 'Nunito'", 'Бейби Ленд').catch(() => {})));
+      return Promise.race([п, new Promise(r => setTimeout(r, 2500))]);
+    } catch (e) { return Promise.resolve(); }
+  }
+
+  // една снимка → {img, w, h, надпис} или null: повредена или липсваща се пропуска, не гърми
+  function зареди(с) {
+    return new Promise(готово => {
+      const src = typeof с === 'string' ? с : с && с.img;
+      if (!src || typeof src !== 'string') return готово(null);
+      const img = new Image();
+      let свършено = false;
+      const край = v => { if (свършено) return; свършено = true; clearTimeout(т); готово(v); };
+      const т = setTimeout(() => край(null), 8000);
+      img.onload = () => край(img.naturalWidth && img.naturalHeight ? { img, w: img.naturalWidth, h: img.naturalHeight, надпис: с && с.надпис ? String(с.надпис).trim() : '' } : null);
+      img.onerror = () => край(null);
+      img.src = src;
+    });
+  }
+  // зареждаме малко повече, за да има с какво да запълним мястото на пропуснатите
+  async function снимките(списък, макс) {
+    const вход = (Array.isArray(списък) ? списък : [списък]).filter(Boolean).slice(0, макс * 2);
+    return (await Promise.all(вход.map(зареди))).filter(Boolean).slice(0, макс);
+  }
+
+  function платно(w, h) {
+    const k = w * h > ТАВАН ? Math.sqrt(ТАВАН / (w * h)) : 1;
+    const c = document.createElement('canvas');
+    c.width = Math.floor(w * k); c.height = Math.floor(h * k);
+    const x = c.getContext('2d');
+    x.imageSmoothingEnabled = true; x.imageSmoothingQuality = 'high';
+    if (k < 1) x.scale(k, k);   // рисуваме в пълните мерки, платното е по-малко
+    return { c, x };
+  }
+
+  // JPEG .92; iOS държи паметта на платното, докато не го смалиш до 0 — затова освободи()
+  function вБлоб(c) {
+    return new Promise((ok, не) => {
+      const освободи = () => { c.width = 0; c.height = 0; };
+      const резерва = () => {
+        try {
+          const д = c.toDataURL('image/jpeg', 0.92); освободи();
+          const б = atob(д.split(',')[1] || '');
+          if (б.length < 100) throw new Error('празно');
+          const м = new Uint8Array(б.length); for (let i = 0; i < б.length; i++) м[i] = б.charCodeAt(i);
+          ok(new Blob([м], { type: 'image/jpeg' }));
+        } catch (e) { освободи(); не(new Error('Картинката не се получи — пробвай с по-малко снимки. 😕')); }
+      };
+      try { c.toBlob(b => { if (b && b.size) { освободи(); ok(b); } else резерва(); }, 'image/jpeg', 0.92); } catch (e) { резерва(); }
+    });
+  }
+
+  function обла(x, a, b, w, h, r) {
+    r = Math.max(0, Math.min(r, w / 2, h / 2));
+    x.beginPath(); x.moveTo(a + r, b);
+    x.arcTo(a + w, b, a + w, b + h, r); x.arcTo(a + w, b + h, a, b + h, r);
+    x.arcTo(a, b + h, a, b, r); x.arcTo(a, b, a + w, b, r); x.closePath();
+  }
+  // object-fit: cover, изрязано леко нагоре — лицата по-често са в горната половина
+  function покрий(x, с, a, b, w, h, r) {
+    const k = Math.max(w / с.w, h / с.h), sw = w / k, sh = h / k;
+    x.save(); обла(x, a, b, w, h, r); x.clip();
+    x.drawImage(с.img, (с.w - sw) / 2, (с.h - sh) * 0.4, sw, sh, a, b, w, h);
+    x.restore();
+  }
+  // пастелен фон + меки петна; едно и също заглавие → едни и същи цветове и места
+  function фон(x, w, h, семе) {
+    const г = x.createLinearGradient(0, 0, w * 0.4, h);
+    г.addColorStop(0, Ц.крем); г.addColorStop(1, ТОНОВЕ[семе % ТОНОВЕ.length]);
+    x.fillStyle = г; x.fillRect(0, 0, w, h);
+    let s = семе || 7; const сл = () => (s = (Math.imul(s, 1664525) + 1013904223) >>> 0) / 4294967296;
+    const м = Math.min(w, h);
+    for (let i = 0; i < 8; i++) {
+      x.globalAlpha = 0.45 + сл() * 0.4;
+      x.fillStyle = ТОНОВЕ[(семе + i * 3) % ТОНОВЕ.length];
+      x.beginPath(); x.arc(сл() * w, сл() * h, м * (0.05 + сл() * 0.12), 0, Math.PI * 2); x.fill();
+    }
+    x.globalAlpha = 1;
+  }
+  // белият паспарту лист с мека сянка (--pl-shadow) и линия --pl-line
+  function паспарту(x, a, b, w, h, r, м) {
+    x.save();
+    x.shadowColor = 'rgba(170, 118, 118, .2)'; x.shadowBlur = м * 0.04; x.shadowOffsetY = м * 0.012;
+    x.fillStyle = Ц.хартия; обла(x, a, b, w, h, r); x.fill();
+    x.restore();
+    x.lineWidth = Math.max(1.5, м * 0.002); x.strokeStyle = Ц.линия; обла(x, a, b, w, h, r); x.stroke();
+  }
+
+  // „\n“ е задължителен нов ред; чупим само на обикновен интервал (неразделимият държи датата цяла)
+  function редове(x, текст, шир) {
+    const р = [];
+    for (const абзац of String(текст).split('\n')) {
+      let ред = '';
+      for (const д of абзац.trim().split(/[ \t]+/)) {
+        const п = ред ? ред + ' ' + д : д;
+        if (!ред || x.measureText(п).width <= шир) ред = п; else { р.push(ред); ред = д; }
+      }
+      if (ред) р.push(ред);
+    }
+    return р;
+  }
+  function съкрати(x, ред, шир) {
+    if (x.measureText(ред).width <= шир) return ред;
+    // по знак, не по UTF-16 единица — иначе емоджито се цепи наполовина и излиза „�…“
+    const з = Array.from(ред);
+    while (з.length > 1 && x.measureText(з.join('') + '…').width > шир) з.pop();
+    return з.join('').trimEnd() + '…';
+  }
+  // най-едрият размер (от → до), при който текстът влиза в ширината и в „макс“ реда; иначе „…“
+  function вмести(x, текст, шир, макс, от, до, ш) {
+    for (let px = от; ; px = Math.max(до, px * 0.93)) {
+      x.font = ш(px);
+      const р = редове(x, текст, шир);
+      if ((р.length <= макс && р.every(л => x.measureText(л).width <= шир)) || px <= до) {
+        let крайни = р.slice(0, макс);
+        // равни редове („Първата година / на Алекс“, не „Първата година на / Алекс“): стесняваме, докато броят им стои
+        if (р.length > 1 && р.length <= макс) for (let ш2 = шир * 0.96; ш2 > шир * 0.4; ш2 *= 0.96) { const б = редове(x, текст, ш2); if (б.length !== р.length) break; крайни = б; }
+        if (р.length > макс) крайни[макс - 1] += ' ' + р.slice(макс).join(' ');
+        return { px, р: крайни.map(л => съкрати(x, л, шир)) };
+      }
+    }
+  }
+  // блоковете: {т, ш, цв, макс, от, до, лх, над, черта}; ако не влизат във височината — всички по-дребно
+  function подреди(x, блокове, шир, вис) {
+    const пълни = блокове.filter(б => б.т && String(б.т).trim());
+    for (let к = 1; ; к *= 0.9) {
+      let общо = 0;
+      const сп = пълни.map(б => {
+        const в = вмести(x, б.т, шир, б.макс, б.от * к, б.до * к, б.ш);
+        const бл = Object.assign({}, б, в, { над: (б.над || 0) * к, вис: в.р.length * в.px * б.лх });
+        общо += бл.над + бл.вис; return бл;
+      });
+      if (общо <= вис || к < 0.5) return { сп, общо };
+    }
+  }
+  function рисувай(x, сп, xx, y, подр) {
+    x.textAlign = подр; x.textBaseline = 'middle';
+    for (const б of сп) {
+      if (б.черта && б.над) {   // розовата чертичка над заглавието (като .pl-heart)
+        const дш = б.px * 0.6, дв = Math.max(4, б.px * 0.06);
+        x.fillStyle = Ц.роза; обла(x, подр === 'center' ? xx - дш / 2 : xx, y + б.над * 0.2, дш, дв, дв / 2); x.fill();
+      }
+      y += б.над;
+      x.font = б.ш(б.px); x.fillStyle = б.цв;
+      б.р.forEach((л, i) => x.fillText(л, xx, y + б.px * б.лх * (i + 0.5)));
+      y += б.вис;
+    }
+    return y;
+  }
+  function лого(x, xx, y, px, подр) {
+    x.save(); x.globalAlpha = 0.72; x.font = ПЛЪТЕН(px); x.fillStyle = Ц.сиво; x.textAlign = подр; x.textBaseline = 'middle';
+    x.fillText(ЛОГО, xx, y); x.restore();
+  }
+  function датата(д) {
+    if (д === false || д === '') return '';
+    if (typeof д === 'string' && !/^\d{4}-\d\d-\d\d/.test(д)) return д;   // вече готов текст
+    const т = д == null ? new Date() : new Date(д);
+    return isNaN(т) ? '' : т.toLocaleDateString('bg-BG', { day: 'numeric', month: 'long', year: 'numeric' }).replace(/ /g, ' ');
+  }
+
+  // ── 🃏 картичка: снимката голяма + „3 месеца“, името, датата ──
+  // opts {заглавие, подзаглавие, име, дата?, формат: '10x15'|'kv'|'storis'}
+  // 10x15 → 1800×1200 за легнала снимка, 1200×1800 за изправена; kv 1080²; storis 1080×1920
+  const КАРТИЧКИ = {
+    '10x15': { мат: [48, 48, 1104, 1704, 54], сн: [102, 102, 996, 1150, 36], зона: [102, 1288, 996, 394], подр: 'center', лого: [600, 1712, 30],
+      з: [128, 64, 2], п: [54, 36, 2], м: [40, 30, 2], над: [34, 18, 16] },
+    легнала: { мат: [48, 48, 1704, 1104, 54], сн: [102, 102, 1150, 996, 36], зона: [1312, 102, 380, 930], подр: 'left', лого: [1312, 1083, 30],
+      з: [120, 64, 3], п: [50, 34, 3], м: [38, 28, 3], над: [40, 24, 20] },
+    kv: { мат: [40, 40, 1000, 1000, 48], сн: [84, 84, 912, 610, 32], зона: [84, 720, 912, 259], подр: 'center', лого: [540, 1007, 26],
+      з: [96, 52, 1], п: [44, 30, 1], м: [34, 26, 1], над: [26, 12, 10] },
+    // сторис: текстът стои над полето за отговор на Инстаграм (долните ~200 px)
+    storis: { мат: [56, 110, 968, 1700, 48], сн: [104, 158, 872, 1120, 32], зона: [104, 1310, 872, 420], подр: 'center', лого: [540, 1770, 28],
+      з: [124, 64, 2], п: [52, 34, 2], м: [38, 28, 2], над: [34, 18, 14] }
+  };
+  async function картичка(снимка, opts) {
+    opts = opts || {};
+    const [, [с]] = await Promise.all([шрифтове(), снимките([снимка], 1)]);
+    if (!с) throw new Error(НЯМА);
+    const ф = opts.формат === 'kv' || opts.формат === 'storis' ? opts.формат : '10x15';
+    const легнала = ф === '10x15' && с.w > с.h * 1.05;
+    const [w, h] = ф === 'kv' ? [1080, 1080] : ф === 'storis' ? [1080, 1920] : легнала ? [1800, 1200] : [1200, 1800];
+    const Р = КАРТИЧКИ[легнала ? 'легнала' : ф];
+    const { c, x } = платно(w, h);
+    фон(x, w, h, хеш(opts.заглавие));
+    паспарту(x, ...Р.мат, Math.min(w, h));
+    покрий(x, с, ...Р.сн);
+    // в тясната колона на легналата името и датата са на два реда; иначе „Алекс · 20 януари 2026 г.“
+    const мета = [opts.име, датата(opts.дата)].map(т => String(т || '').trim()).filter(Boolean).join(легнала ? '\n' : ' · ');
+    const [зх, зу, зш, зв] = Р.зона;
+    const { сп, общо } = подреди(x, [
+      { т: opts.заглавие, ш: ЗАГЛАВЕН, цв: Ц.нави, от: Р.з[0], до: Р.з[1], макс: Р.з[2], лх: 1.08, над: Р.над[0], черта: true },
+      { т: opts.подзаглавие, ш: ДЕБЕЛ, цв: Ц.роза, от: Р.п[0], до: Р.п[1], макс: Р.п[2], лх: 1.25, над: Р.над[1] },
+      { т: мета, ш: ПЛЪТЕН, цв: Ц.сиво, от: Р.м[0], до: Р.м[1], макс: Р.м[2], лх: 1.3, над: Р.над[2] }
+    ], зш, зв);
+    рисувай(x, сп, Р.подр === 'center' ? зх + зш / 2 : зх, зу + (зв - общо) / 2, Р.подр);
+    лого(x, ...Р.лого, Р.подр);
+    return вБлоб(c);
+  }
+
+  // ── 🧩 колаж: 2–9 снимки в мрежа, заглавие отгоре („октомври 2026“); 2160×2160 ──
+  const РЕДОВЕ = { 1: [1], 2: [2], 3: [1, 2], 4: [2, 2], 5: [2, 3], 6: [3, 3], 7: [2, 3, 2], 8: [3, 2, 3], 9: [3, 3, 3] };
+  async function колаж(снимки, opts) {
+    opts = opts || {};
+    const [, сн] = await Promise.all([шрифтове(), снимките(снимки, 9)]);
+    if (!сн.length) throw new Error(НЯМА);
+    const W = 2160, { c, x } = платно(W, W);
+    фон(x, W, W, хеш(opts.заглавие) + 3);
+    паспарту(x, 64, 64, 2032, 2032, 90, W);
+    const { сп, общо } = подреди(x, [
+      { т: opts.заглавие, ш: ЗАГЛАВЕН, цв: Ц.нави, от: 150, до: 80, макс: 1, лх: 1.1, над: 50, черта: true },
+      { т: opts.подзаглавие, ш: ДЕБЕЛ, цв: Ц.роза, от: 64, до: 40, макс: 1, лх: 1.3, над: 12 }
+    ], 1840, 330);
+    рисувай(x, сп, W / 2, 128, 'center');
+    const g = 26, gx = 128, gw = 1904, gy = 128 + (общо ? общо + 40 : 0), gh = 1990 - gy;
+    const ред = РЕДОВЕ[сн.length], rh = (gh - g * (ред.length - 1)) / ред.length;
+    let i = 0;
+    ред.forEach((бр, р) => {
+      const cw = (gw - g * (бр - 1)) / бр;
+      for (let k = 0; k < бр; k++, i++) покрий(x, сн[i], gx + k * (cw + g), gy + р * (rh + g), cw, rh, 34);
+    });
+    лого(x, W / 2, 2048, 36, 'center');
+    return вБлоб(c);
+  }
+
+  // ── 🗓️ плакат „Първата година на {име}“: до 12 снимки 3×4, надпис под всяка; 2400×3200 ──
+  // opts {име, година?, заглавие?, подзаглавие?}; снимка.надпис → „1 месец“, „2 месеца“…
+  async function плакат(снимки, opts) {
+    opts = opts || {};
+    const [, сн] = await Promise.all([шрифтове(), снимките(снимки, 12)]);
+    if (!сн.length) throw new Error(НЯМА);
+    const W = 2400, H = 3200, { c, x } = платно(W, H);
+    const име = String(opts.име || '').trim(), семе = хеш(име) + 5;
+    const година = opts.година === false ? '' : String(opts.година != null && opts.година !== '' ? opts.година : new Date().getFullYear());
+    фон(x, W, H, семе);
+    паспарту(x, 72, 72, 2256, 3056, 100, W);
+    const { сп, общо } = подреди(x, [
+      { т: opts.заглавие || ('Първата година' + (име ? ' на ' + име : '')), ш: ЗАГЛАВЕН, цв: Ц.нави, от: 168, до: 96, макс: 2, лх: 1.08, над: 56, черта: true },
+      { т: година, ш: ДЕБЕЛ, цв: Ц.роза, от: 84, до: 56, макс: 1, лх: 1.3, над: 12 },
+      { т: opts.подзаглавие, ш: ПЛЪТЕН, цв: Ц.сиво, от: 54, до: 38, макс: 2, лх: 1.3, над: 8 }
+    ], 1980, 560);
+    рисувай(x, сп, W / 2, 160, 'center');
+    const g = 44, gx = 160, gw = 2080, cw = (gw - 2 * g) / 3, gy0 = 160 + общо + 60, gh = 3002 - gy0;
+    const брРедове = Math.ceil(сн.length / 3);
+    const th = Math.min((gh - g * (брРедове - 1)) / брРедове, cw * 1.15);
+    const gy = gy0 + (gh - (брРедове * th + (брРедове - 1) * g)) / 2;
+    const tp = 18, ca = сн.some(с => с.надпис) ? 92 : 0;
+    сн.forEach((с, i) => {
+      const р = Math.floor(i / 3), бр = Math.min(3, сн.length - р * 3);
+      const tx = gx + (gw - (бр * cw + (бр - 1) * g)) / 2 + (i % 3) * (cw + g), ty = gy + р * (th + g);
+      x.fillStyle = ТОНОВЕ[(семе + i) % ТОНОВЕ.length]; обла(x, tx, ty, cw, th, 36); x.fill();
+      покрий(x, с, tx + tp, ty + tp, cw - 2 * tp, th - 2 * tp - ca, 24);
+      if (ca && с.надпис) {
+        const в = вмести(x, с.надпис, cw - 2 * tp - 16, 1, 46, 30, ДЕБЕЛ);
+        x.font = ДЕБЕЛ(в.px); x.fillStyle = Ц.нави; x.textAlign = 'center'; x.textBaseline = 'middle';
+        x.fillText(в.р[0], tx + cw / 2, ty + th - tp - ca / 2 + 2);
+      }
+    });
+    лого(x, W / 2, 3072, 40, 'center');
+    return вБлоб(c);
+  }
+
+  // ── 💾 запази: „Сподели → Запази снимка“ (iPhone/Android), иначе изтегляне ──
+  // 'share' | 'download' | 'abort' (мама се отказа) | false. share иска жив натиск: ако е изтекъл
+  // (NotAllowedError), минаваме към изтеглянето, вместо да мълчим.
+  // 🔎 преглед 27.10: на компютър (Windows Chrome/Edge) системното „Сподели“ няма „Запази“ —
+  //   там сваляме направо. Телефонът и таблетът (пръст) минават през „Сподели → Запази снимка“.
+  async function запази(blob, име) {
+    if (!blob) return false;
+    let n = String(име || '').replace(/[\\/:*?"<>|\u0000-\u001f]+/g, ' ').replace(/\s+/g, ' ').trim() || 'Бейби Ленд';
+    if (!/\.jpe?g$/i.test(n)) n += '.jpg';
+    const компютър = !!(window.matchMedia && matchMedia('(hover: hover) and (pointer: fine)').matches);
+    try {
+      const f = new File([blob], n, { type: blob.type || 'image/jpeg', lastModified: Date.now() });
+      if (!компютър && navigator.canShare && navigator.share && navigator.canShare({ files: [f] })) {
+        try { await navigator.share({ files: [f] }); return 'share'; }
+        catch (e) { if (e && e.name === 'AbortError') return 'abort'; }
+      }
+    } catch (e) {}
+    try {
+      const u = URL.createObjectURL(blob);
+      const a = document.createElement('a'); a.href = u; a.download = n; a.rel = 'noopener'; a.style.display = 'none';
+      document.body.appendChild(a); a.click(); a.remove();
+      setTimeout(() => { try { URL.revokeObjectURL(u); } catch (e) {} }, 60000);
+      return 'download';
+    } catch (e) { return false; }
+  }
+
+  window.BL_FIZ = { картичка, колаж, плакат, запази };
+})();

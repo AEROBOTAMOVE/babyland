@@ -25,7 +25,7 @@
     { име: '📖 Дневник и записки', e: '📖', keys: ['bl_journal', 'bl_notes_', 'bl_draft_'] },
     // 🔴 11.08 (обиколка „данните на майката“, ИЗМЕРЕНО): bl_rash (снимките на
     //    обрива, за лекаря) липсваше от всички категории. Виж и „Друго“ по-долу.
-    { име: '📸 Снимки и рисунки', e: '📸', keys: ['bl_photos', 'bl_dayphoto', 'bl_bump', 'bl_art', 'bl_art_months', 'bl_food_faces', 'bl_rash'] },
+    { име: '📸 Снимки и рисунки', e: '📸', keys: ['bl_photos', 'bl_dayphoto', 'bl_bump', 'bl_art', 'bl_art_months', 'bl_food_faces', 'bl_rash', 'bl_alb_meta'] },
     { име: '🎙️ Гласови и звукови', e: '🎙️', keys: ['bl_voice', 'bl_voice_diary', 'bl_voice_womb', 'bl_voice_songs', 'bl_lull_rec', 'bl_baby_sounds'] },
     { име: '💌 Писма и капсули', e: '💌', keys: ['bl_capsules', 'bl_letters', 'bl_wm_letters', 'bl_moonwish'] },
     // 🔴 г13/16: bl_pump (помпенето) и bl_feedlog (храненията) не бяха в НИТО ЕДНА

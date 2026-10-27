@@ -17,14 +17,16 @@ const пауза = ms => new Promise(r => setTimeout(r, ms));
   const ch = spawn('C:/Program Files/Google/Chrome/Application/chrome.exe', ['--headless=new', '--remote-debugging-port=' + ПОРТ, '--user-data-dir=' + ПРОФИЛ, '--no-first-run', '--window-size=390,844', 'about:blank'], { stdio: 'ignore' });
   let цел; for (let i = 0; i < 80 && !цел; i++) { await пауза(300); try { цел = (await (await fetch('http://127.0.0.1:' + ПОРТ + '/json/list')).json()).find(t => t.type === 'page'); } catch (e) {} }
   const ws = new WebSocket(цел.webSocketDebuggerUrl); await new Promise(r => { ws.onopen = r; });
-  let n = 0; const ч = new Map(); let грешкиСега = [];
+  let n = 0; const ч = new Map(); let грешкиСега = []; let избори = 0;
   const send = (m, p) => new Promise(r => { const i = ++n; ч.set(i, r); ws.send(JSON.stringify({ id: i, method: m, params: p || {} })); });
   ws.onmessage = e => { const м = JSON.parse(e.data); if (м.id && ч.has(м.id)) { ч.get(м.id)(м); ч.delete(м.id); }
     if (м.method === 'Runtime.exceptionThrown') грешкиСега.push((м.params.exceptionDetails.exception && м.params.exceptionDetails.exception.description || м.params.exceptionDetails.text).split('\n').slice(0, 2).join(' ⟵ '));
-    if (м.method === 'Page.javascriptDialogOpening') send('Page.handleJavaScriptDialog', { accept: false }); };
+    if (м.method === 'Page.javascriptDialogOpening') send('Page.handleJavaScriptDialog', { accept: false });
+    // 🪞 27.10: „+8 с.“ отваря избора на файл — без промяна в DOM пробата го броеше за мъртъв
+    if (м.method === 'Page.fileChooserOpened') избори++; };
   const изр = async x => { const р = await send('Runtime.evaluate', { expression: x, returnByValue: true, awaitPromise: true }); if (р.result && р.result.exceptionDetails) return null; return р.result && р.result.result ? р.result.result.value : null; };
   const esc = async () => { await send('Input.dispatchKeyEvent', { type: 'keyDown', key: 'Escape', code: 'Escape', windowsVirtualKeyCode: 27 }); await send('Input.dispatchKeyEvent', { type: 'keyUp', key: 'Escape', code: 'Escape', windowsVirtualKeyCode: 27 }); };
-  await send('Page.enable'); await send('Runtime.enable');
+  await send('Page.enable'); await send('Runtime.enable'); await send('Page.setInterceptFileChooserDialog', { enabled: true });
   await send('Emulation.setDeviceMetricsOverride', { width: 390, height: 844, deviceScaleFactor: 2, mobile: true });
   // външни прозорци и сваляния — не
   await send('Page.addScriptToEvaluateOnNewDocument', { source: 'window.open = function () { window.__otvoreni = (window.__otvoreni || 0) + 1; return null; };' });
@@ -98,13 +100,14 @@ const пауза = ms => new Promise(r => setTimeout(r, ms));
       //   на натиска. Прозорецът за кадрите почва СЛЕД като превъртането улегне, точно преди натиска.
       await пауза(500);
       const т1 = await изр('performance.now()'); преди.т = т1; преди.k = await изр('__bt.кадри.length');
-      const м0 = await изр('__bt.мут');
-      await изр(`(() => { const е = document.querySelector('[data-bt="${б.id}"]'); if (е) е.click(); return 1; })()`);
+      const м0 = await изр('__bt.мут'); const и0 = избори;
+      // userGesture — като пръст: без него браузърът тихо спира избора на файл
+      await send('Runtime.evaluate', { expression: `(() => { const е = document.querySelector('[data-bt="${б.id}"]'); if (е) е.click(); return 1; })()`, userGesture: true });
       await пауза(450);
       const след = JSON.parse(await изр(`JSON.stringify({ м: __bt.мут, h: location.href, ф: document.activeElement && (document.activeElement.id || document.activeElement.className || document.activeElement.tagName), о: window.__otvoreni || 0, кадри: __bt.кадри.slice(${преди.k}).filter(к => к.т > ${преди.т}).map(к => Math.round(к.д)), защо: (__bt.кадри.slice(${преди.k}).filter(к => к.т > ${преди.т}).sort((a, b) => b.д - a.д)[0] || {}) })`));
       рез.натиснати++;
-      const жив = (след.м - м0) > 0 || след.h !== преди.h || след.ф !== преди.ф || след.о > преди.о;
-      if (жив) рез.живи++; else рез.мъртви.push(б.текст + ' [' + б.таг + (б.клас ? '.' + б.клас : '') + ']');
+      const жив = (след.м - м0) > 0 || след.h !== преди.h || след.ф !== преди.ф || след.о > преди.о || избори > и0;
+      if (жив) рез.живи++; else рез.мъртви.push(б.текст + ' [' + б.таг + (б.клас ? '.' + б.клас : '') + '] · сгънати ' + (await изр(`(() => { const е = document.querySelector('[data-bt="${б.id}"]'); const к = е && е.closest('.card, .jr-card, section'); return е ? (к ? к.className.slice(0, 60) : 'без карта') + ' · ' + document.querySelectorAll('[data-bt="${б.id}"]').length : 'няма го'; })()`)));
       if (грешкиСега.length) рез.грешки.push(б.текст + ' → ' + грешкиСега[0]);
       const макс = Math.max(0, ...след.кадри); if (макс > 150) рез.тежки.push(б.текст + ' ' + макс + 'ms (рисуване ' + (след.защо.рис || '?') + ' · ' + (след.защо.скр || 'без скрипт') + ')');
     }

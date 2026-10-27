@@ -387,8 +387,7 @@
   setInterval(() => { if (!document.hidden && document.querySelector('#roRoom > .pl-zm')) отложено(); }, 60000);
   document.addEventListener('visibilitychange', () => { if (!document.hidden) отложено(); });
   window.addEventListener('storage', е => { if (!е.key || е.key === 'bl_water' || е.key === 'bl_wins') отложено(); });
-  if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', върви); else върви();
-  window.BL_PL_ZAMAMA = { сложи, пъти: () => пъти };
+  // (стартът е най-долу — 27.10)
 
   /* 06.10 · два дребни DOM щриха за вида (логиката на картите не се пипа):
      · белиПлюсове — бутоните „+“ (18 в стаята, мерено) получават класа .pl-zm-plus, за да ги облече
@@ -463,4 +462,11 @@
       зн.parentNode.replaceChild(с, зн); с.appendChild(зн);
     });
   }
+
+  // 🔴 27.10 (staya_proba, ИЗМЕРЕНО): стартът стоеше по-горе — defer скриптът върви при readyState
+  //   'interactive', значи върви() → сложи() → зодии() тръгваше синхронно, ПРЕДИ `const ЗНАК` и
+  //   `const ЕМО_ГЛ` отгоре да са изпълнени. Отворена „Жената в мен“ при зареждане → ReferenceError.
+  //   ПЪТ НАЗАД: върни двата реда след слушателя за 'storage'.
+  if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', върви); else върви();
+  window.BL_PL_ZAMAMA = { сложи, пъти: () => пъти };
 })();
