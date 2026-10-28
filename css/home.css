@@ -123,8 +123,13 @@ header.hero.sky-night .tagline em { color: #f7a8cb; }
 .d24-body.d24-in .d24-t  { animation: d24Up 0.5s  cubic-bezier(0.22, 1.3, 0.36, 1) 0.07s backwards; }
 .d24-body.d24-in .d24-s  { animation: d24Up 0.5s  cubic-bezier(0.22, 1.3, 0.36, 1) 0.14s backwards; }
 .d24-body.d24-in .d24-go { animation: d24Up 0.55s cubic-bezier(0.22, 1.3, 0.36, 1) 0.22s backwards; }
-@keyframes d24Up  { from { opacity: 0; transform: translateY(12px); } }
-@keyframes d24Pop { 0% { opacity: 0; transform: scale(0.4) rotate(-8deg); } 62% { transform: scale(1.12) rotate(2deg); } 100% { opacity: 1; transform: none; } }
+/* 27.10 · ЗАКОНЪТ ЗА СКРИТИЯ ТАБ (комит 25f85ec): входовете на СЪДЪРЖАНИЕ в този файл (картата „Нашият ден“ —
+   емоджи, заглавие, текст, бутон; въртящата се дума в лозунга) тръгват от opacity .4, не от 0 — роден в скрит
+   таб/headless входът замръзва на първия кадър. Декоративното (небето, слънцето, деленията и стрелката на
+   циферблата, листата на мрежата, „муркането“) остава от 0.
+   ПЪТ НАЗАД: върни „opacity: 0“ в редовете с бележка „27.10“. */
+@keyframes d24Up  { from { opacity: .4; transform: translateY(12px); } /* 27.10: от .4 (скрит таб) */ }
+@keyframes d24Pop { 0% { opacity: .4; transform: scale(0.4) rotate(-8deg); } /* 27.10: от .4 (скрит таб) */ 62% { transform: scale(1.12) rotate(2deg); } 100% { opacity: 1; transform: none; } }
 
 /* ── 🌌 П5 Н1: небесното колело — небе в циферблата + светила на орбита ── */
 .d24-skyc { opacity: 0; transition: opacity 1.1s ease; }
@@ -250,7 +255,7 @@ header.hero.sky-night .btn-sos { background: rgba(60, 40, 60, 0.6) !important; c
 }
 .flip-word.out { opacity: 0; transform: translateY(-10px) rotate(-2deg); }
 .flip-word.in { animation: flipIn 0.45s var(--bl-ease-spring); }
-@keyframes flipIn { from { opacity: 0; transform: translateY(12px) rotate(2deg); } to { opacity: 1; transform: none; } }
+@keyframes flipIn { from { opacity: .4; transform: translateY(12px) rotate(2deg); } /* 27.10: от .4 (скрит таб) */ to { opacity: 1; transform: none; } }
 header.hero.sky-night .hero-flip { color: #ece8f5; }
 
 /* ── 🎈 скрол-балончето ── */

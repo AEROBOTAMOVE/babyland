@@ -36,7 +36,9 @@
 }
 [data-theme="dark"] .lb-done { background: linear-gradient(135deg, #2c3f2a, #24331f); border-color: #4f7048; }
 .lb-done small { opacity: 0.7; }
-@keyframes lbPop { 0% { transform: scale(0.94); opacity: 0; } 100% { transform: scale(1); opacity: 1; } }
+/* 27.10 · ЗАКОНЪТ ЗА СКРИТИЯ ТАБ (комит 25f85ec): резултатът/присъдата е съдържание → входът тръгва от opacity .4,
+   не от 0 (роден в скрит таб/headless замръзва на първия кадър). ПЪТ НАЗАД: върни „opacity: 0“. */
+@keyframes lbPop { 0% { transform: scale(0.94); opacity: .4; } /* 27.10: от .4 (скрит таб) */ 100% { transform: scale(1); opacity: 1; } }
 
 /* лентата с вечерите */
 .lb-bar { display: flex; gap: 5px; margin: 10px 0; }

@@ -147,7 +147,9 @@
         </div>
         ${бел.tip ? `<p class="pg20-do">✨ <strong>${гв === w ? 'Тази седмица' : 'През тази седмица'}:</strong> ${esc(бел.tip)}</p>` : ''}`;
       if (anim && !matchMedia('(prefers-reduced-motion: reduce)').matches) {
-        swap.style.opacity = '0'; swap.style.transform = 'translateY(4px)';
+        // 27.10 · ЗАКОНЪТ ЗА СКРИТИЯ ТАБ (25f85ec): requestAnimationFrame в скрит таб/headless не тръгва → седмицата
+        //   стоеше на 0. Сега тръгва от .4. ПЪТ НАЗАД: върни '0'.
+        swap.style.opacity = '.4'; swap.style.transform = 'translateY(4px)';
         requestAnimationFrame(() => { swap.style.opacity = ''; swap.style.transform = ''; });
       }
     }

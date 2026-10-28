@@ -91,8 +91,14 @@
 .jr-card:nth-child(2) { animation-delay: 0.07s; }
 .jr-card:nth-child(3) { animation-delay: 0.14s; }
 .jr-card:nth-child(4) { animation-delay: 0.21s; }
+/* 27.10 · ЗАКОНЪТ ЗА СКРИТИЯ ТАБ (комит 25f85ec): входовете на СЪДЪРЖАНИЕ в този файл (картите jrIn, четецът на
+   статии artIn, смяната на таба roFade, точката „бебето е тук“, дните на седмицата) тръгват от opacity .4, не от 0 —
+   роден в скрит таб/headless входът замръзва на първия кадър. Прозорците .md-veil/.np-veil/.rm-veil са ЦЯЛ ЕКРАН:
+   „.on“ идва в requestAnimationFrame, който в скрит таб не тръгва → стояха НЕВИДИМ слой над всичко; сега стоят на .4.
+   Декоративното (светкавицата pbFlash, прегръдката ckHug, искрите) остава от 0.
+   ПЪТ НАЗАД: върни „opacity: 0“ в редовете с бележка „27.10“. */
 @keyframes jrIn {
-  from { opacity: 0; transform: translateY(18px); }
+  from { opacity: .4; transform: translateY(18px); }   /* 27.10: от .4 (скрит таб) */
   to   { opacity: 1; transform: translateY(0); }
 }
 .jr-title {
@@ -592,7 +598,7 @@
   animation: artIn 0.4s var(--bl-ease-out);
 }
 @media (min-width: 660px) { .art-panel { height: min(90vh, 820px); border-radius: 28px; box-shadow: 0 40px 90px rgba(60,50,90,0.45); } }
-@keyframes artIn { from { opacity: 0; transform: translateY(40px) scale(0.97); } to { opacity: 1; transform: none; } }
+@keyframes artIn { from { opacity: .4; transform: translateY(40px) scale(0.97); } /* 27.10: от .4 (скрит таб) */ to { opacity: 1; transform: none; } }
 .art-head { display: flex; align-items: center; gap: 12px; padding: 14px 16px; background: linear-gradient(135deg, #eae3f7, #f0eaf9); }
 .art-htitle { font-family: 'Comfortaa', 'Comfortaa-fallback', sans-serif; font-weight: 700; font-size: 15px; color: var(--ink); flex: 1; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
 .art-body { flex: 1; min-height: 0; overflow-y: auto; padding: 20px 20px 8px; overscroll-behavior: contain; }
@@ -711,7 +717,7 @@
 
 /* плавен преход при смяна на таб */
 .ro-anim { animation: roFade 0.34s var(--bl-ease-out); }
-@keyframes roFade { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: none; } }
+@keyframes roFade { from { opacity: .4; transform: translateY(10px); } /* 27.10: от .4 (скрит таб) */ to { opacity: 1; transform: none; } }
 
 /* красиви празни състояния */
 .bb-empty {
@@ -1514,7 +1520,7 @@
 .md-veil { position: fixed; inset: 0; z-index: 9600; display: flex;
   align-items: center; justify-content: center; padding: 20px;
   background: rgba(30,20,45,.55); backdrop-filter: blur(4px);
-  opacity: 0; transition: opacity .26s ease; }
+  opacity: .4; transition: opacity .26s ease; }   /* 27.10: от .4 — цял екран (скрит таб) */
 .md-veil.on { opacity: 1; }
 .md-box { max-width: 330px; width: 100%; text-align: center; padding: 26px 22px 22px;
   border-radius: 22px; background: var(--card, #fff); color: var(--ink, #3b2f4a);
@@ -1758,7 +1764,7 @@ body:has(#onbOverlay:not([hidden])) .bo-bar.on { transform: none; }
 .np-veil { position: fixed; inset: 0; z-index: 9550; display: flex;
   align-items: flex-end; justify-content: center; padding: 0 10px 78px;
   background: rgba(30,20,45,.5); backdrop-filter: blur(4px);
-  opacity: 0; transition: opacity .22s ease; }
+  opacity: .4; transition: opacity .22s ease; }   /* 27.10: от .4 — цял екран (скрит таб) */
 .np-veil.on { opacity: 1; }
 .np-box { width: 100%; max-width: 420px; padding: 16px 14px 18px; border-radius: 22px;
   background: var(--card, #fff); color: var(--ink, #3b2f4a);
@@ -1899,7 +1905,7 @@ body:has(#onbOverlay:not([hidden])) .bo-bar.on { transform: none; }
 .rm-veil { position: fixed; inset: 0; z-index: 9560; display: flex;
   align-items: flex-end; justify-content: center; padding: 0;
   background: rgba(30,20,45,.52); backdrop-filter: blur(4px);
-  opacity: 0; transition: opacity .22s ease; }
+  opacity: .4; transition: opacity .22s ease; }   /* 27.10: от .4 — цял екран (скрит таб) */
 .rm-veil.on { opacity: 1; }
 .rm-box { width: 100%; max-width: 460px; max-height: 82vh; display: flex; flex-direction: column;
   padding: 14px 14px 10px; border-radius: 22px 22px 0 0;
@@ -2110,7 +2116,7 @@ body:has(#onbOverlay:not([hidden])) .bo-bar.on { transform: none; }
 
 /* проход 4 (вълна 4): точката „бебето е тук" на кривата пулсва веднъж при смятане */
 .bb-now { transform-box: fill-box; transform-origin: center; animation: bbNow .7s var(--bl-ease-spring); }
-@keyframes bbNow { 0% { transform: scale(0.4); opacity: 0; } 55% { transform: scale(1.18); opacity: 1; } 100% { transform: scale(1); } }
+@keyframes bbNow { 0% { transform: scale(0.4); opacity: .4; } /* 27.10: от .4 (скрит таб) */ 55% { transform: scale(1.18); opacity: 1; } 100% { transform: scale(1); } }
 @media (prefers-reduced-motion: reduce) { .bb-now { animation: none; } }
 /* проход 4 [28]: надпис при тап на точка от кривата */
 .bb-charttip { text-align: center; font-size: 13px; font-weight: 800; color: var(--pink-deep);
@@ -2200,7 +2206,7 @@ body:has(#onbOverlay:not([hidden])) .bo-bar.on { transform: none; }
 .jr-week .jr-day:nth-child(5) { animation-delay: .28s; }
 .jr-week .jr-day:nth-child(6) { animation-delay: .34s; }
 .jr-week .jr-day:nth-child(7) { animation-delay: .40s; }
-@keyframes jrDayIn { from { opacity: 0; transform: scale(.5) translateY(6px); } }
+@keyframes jrDayIn { from { opacity: .4; transform: scale(.5) translateY(6px); } /* 27.10: от .4 (скрит таб) */ }
 @media (prefers-reduced-motion: reduce) { .jr-week .jr-day { animation: none; } }
 .jr-week .jr-day:active { transform: scale(0.9); }
 .jr-day.ck-d0 { background: #ece7f8; }

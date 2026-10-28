@@ -40,7 +40,9 @@
   const покой = () => { try { return matchMedia('(prefers-reduced-motion: reduce)').matches; } catch (e) { return false; } };
   const пулс = n => {
     if (!n || покой()) return;
-    n.style.transition = 'none'; n.style.opacity = '0'; n.style.transform = 'translateY(4px)';
+    // 27.10 · ЗАКОНЪТ ЗА СКРИТИЯ ТАБ (25f85ec): requestAnimationFrame в скрит таб/headless не тръгва → отговорът
+    //   стоеше на 0. Сега пулсът тръгва от .4. ПЪТ НАЗАД: върни '0'.
+    n.style.transition = 'none'; n.style.opacity = '.4'; n.style.transform = 'translateY(4px)';
     requestAnimationFrame(() => {
       n.style.transition = 'opacity .18s ease, transform .18s ease';
       n.style.opacity = ''; n.style.transform = '';

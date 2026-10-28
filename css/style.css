@@ -321,8 +321,12 @@ h1, h2, h3 { font-family: 'Comfortaa', 'Comfortaa-fallback', 'Nunito', sans-seri
   60%      { transform: scale(1.2); }
 }
 
+/* 27.10 · ЗАКОНЪТ ЗА СКРИТИЯ ТАБ (комит 25f85ec), ПРЕХОДЪТ: .reveal е скрит още от CSS-а, а .shown идва от
+   IntersectionObserver (store.js) или от requestAnimationFrame (app.js:13 — „Днес“). В скрит таб/headless нито
+   едното тръгва, а роден там преход замръзва на първия кадър → заглавията, картите на стаите и „Днес“ стояха
+   на 0. Сега чакат на .4. ПЪТ НАЗАД: върни „opacity: 0“ в двата реда с бележка „27.10“. */
 .reveal {
-  opacity: 0;
+  opacity: .4;   /* 27.10: от .4 (скрит таб) */
   transform: translateY(36px) rotate(-1.2deg);
   transition: opacity 0.7s ease, transform 0.7s var(--bl-ease-out);
 }
@@ -375,7 +379,7 @@ h1, h2, h3 { font-family: 'Comfortaa', 'Comfortaa-fallback', 'Nunito', sans-seri
 .room-card:hover, .room-card:focus-visible { --ty: -10px; }
 .room-card:active { --ty: -4px; }
 /* картите имат собствен вход + 3D наклон (надделява над .reveal.shown) */
-.room-card.reveal { opacity: 0; transform: perspective(1000px) translateY(36px) rotate(-1.2deg); }
+.room-card.reveal { opacity: .4; transform: perspective(1000px) translateY(36px) rotate(-1.2deg); }   /* 27.10: от .4 (скрит таб) */
 .room-card.reveal.shown {
   opacity: 1;
   transform: perspective(1000px) rotateX(var(--rx, 0deg)) rotateY(var(--ry, 0deg)) translateY(var(--ty, 0px));

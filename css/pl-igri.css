@@ -254,7 +254,9 @@
 }
 .pl-ig-sheet:focus { outline: none; }
 /* 🪤 преход, НЕ анимация: touch.css:708 спира animation-play-state извън #roomOverlay и листът замръзваше невидим */
-.pl-ig-sheet.is-from { transform: translateY(40px); opacity: 0; transition: none; }
+/* 27.10 · ЗАКОНЪТ ЗА СКРИТИЯ ТАБ (комит 25f85ec): и ПРЕХОДЪТ, роден в скрит таб/headless, замръзва на първия кадър —
+   листът (цял екран) стоеше на 0. Сега тръгва от .4. ПЪТ НАЗАД: върни „opacity: 0“. */
+.pl-ig-sheet.is-from { transform: translateY(40px); opacity: .4; transition: none; }
 
 .pl-ig-bar {
   position: sticky; top: 0; z-index: 4;

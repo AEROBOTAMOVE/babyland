@@ -314,7 +314,10 @@ header.hero.sky-night .cta-truth { color: #b0a8c5; }
   animation: ldNote 0.45s var(--bl-ease-spring);
   background: #fff3fa; color: #d1487f;
 }
-@keyframes ldNote { from { transform: scale(0.7); opacity: 0; } }
+/* 27.10 · ЗАКОНЪТ ЗА СКРИТИЯ ТАБ (комит 25f85ec): входът на съдържание (банерът с текст) тръгва от opacity .4,
+   не от 0 — роден в скрит таб/headless замръзва на първия кадър и текстът оставаше невидим.
+   ПЪТ НАЗАД: върни „opacity: 0“ в реда с бележка „27.10“. */
+@keyframes ldNote { from { transform: scale(0.7); opacity: .4; } /* 27.10: от .4 (скрит таб) */ }
 header.hero.sky-night .ld-banner.ld-note,
 [data-theme="dark"] .ld-banner.ld-note { background: #3a2b4a; color: #f7a8cb; }
 @media (prefers-reduced-motion: reduce) {

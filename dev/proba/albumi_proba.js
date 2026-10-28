@@ -60,7 +60,12 @@ const НАСТ = (арг.theme === 'dark' ? '_dark' : '') + (арг.reduce ? '_r
       x.fillStyle = '#1d2a5c'; x.font = 'bold 40px sans-serif'; x.textAlign = 'center'; x.fillText(t, 240, 300); return c.toDataURL('image/jpeg', .8); };
     const ph = {}; for (let m = 0; m < 8; m++) ph[m] = pic(m * 40, m + ' мес');
     localStorage.setItem('bl_photos', JSON.stringify(ph));
-    localStorage.setItem('bl_dayphoto', JSON.stringify({ '2026-10-27': pic(300, 'днес'), '2026-09-27': pic(200, 'преди месец'), '2025-10-27': pic(160, 'преди година'), '2026-10-05': pic(120, '5 окт'), '2026-08-14': pic(30, '14 авг') }));
+    // 🪞 28.10: датите бяха заковани за 27.10 — на другия ден „На този ден“ падаше. Сега са спрямо днес.
+    const дн = new Date(), ден = (г, м, д) => г + '-' + String(м + 1).padStart(2, '0') + '-' + String(д).padStart(2, '0');
+    const Г = дн.getFullYear(), М = дн.getMonth(), Д = дн.getDate();   // (на 29–31 миналият месец може да няма този ден)
+    const дни = {}; дни[ден(Г, М, дн.getDate())] = pic(300, 'днес'); дни[ден(М ? Г : Г - 1, (М + 11) % 12, Д)] = pic(200, 'преди месец'); дни[ден(Г - 1, М, Д)] = pic(160, 'преди година');
+    дни['2026-10-05'] = pic(120, '5 окт'); дни['2026-08-14'] = pic(30, '14 авг');
+    localStorage.setItem('bl_dayphoto', JSON.stringify(дни));
     localStorage.setItem('bl_food_faces', JSON.stringify([{ img: pic(90, 'броколи'), note: 'броколи', ts: Date.parse('2026-10-12T10:00:00') }]));
     localStorage.setItem('bl_bump', JSON.stringify({ 20: pic(330, '20 седм'), 32: pic(350, '32 седм') }));
     localStorage.setItem('bl_rash', JSON.stringify([{ img: pic(0, 'обрив'), note: '', ts: Date.now() }]));

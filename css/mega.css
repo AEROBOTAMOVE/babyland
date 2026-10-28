@@ -657,12 +657,16 @@
 
 /* Ш2: стъпаловидно влизане на картите */
 .jr-card.card-in { animation: cardIn 0.45s var(--bl-ease-out) backwards; }
-@keyframes cardIn { from { opacity: 0; transform: translateY(14px) scale(0.985); } to { opacity: 1; transform: none; } }
+/* 27.10 · ЗАКОНЪТ ЗА СКРИТИЯ ТАБ (комит 25f85ec): cardIn (картите, чиповете, точките на „Нашият ден“, възлите
+   на мрежата, „+“ менюто) и rvIn (редовете на реката) са входове на СЪДЪРЖАНИЕ → от opacity .4, не от 0 —
+   роден в скрит таб/headless входът замръзва на първия кадър. stBloom (цветчетата на дървото) остава от 0.
+   ПЪТ НАЗАД: върни „opacity: 0“ в редовете с бележка „27.10“. */
+@keyframes cardIn { from { opacity: .4; transform: translateY(14px) scale(0.985); } /* 27.10: от .4 (скрит таб) */ to { opacity: 1; transform: none; } }
 
 /* Ш2: реката тече, съзвездието се рисува, медалите блестят, конфети-емоджи */
 .rv-row { animation: rvIn 0.4s ease backwards; }
 .rv-row:nth-child(-n+14) { animation-delay: calc(var(--i, 0) * 0ms); }
-@keyframes rvIn { from { opacity: 0; transform: translateX(-8px); } to { opacity: 1; transform: none; } }
+@keyframes rvIn { from { opacity: .4; transform: translateX(-8px); } /* 27.10: от .4 (скрит таб) */ to { opacity: 1; transform: none; } }
 .cs-line { stroke-dasharray: 60; stroke-dashoffset: 60; animation: csDraw 1.6s ease forwards; }
 @keyframes csDraw { to { stroke-dashoffset: 0; } }
 .pd-top .pd-medal { animation: medalShine 3.5s ease-in-out infinite; }

@@ -255,7 +255,10 @@ html.pl-gl20 #plHome .pl-rooms::after {
 }
 @keyframes plGlSjaj { 0% { transform: translate3d(-130%, 0, 0) skewX(-12deg); } 22%, 100% { transform: translate3d(340%, 0, 0) skewX(-12deg); } }
 /* поява: арките изплуват веднъж, когато рафтът влезе в кадър (класът .pl-vh — js/premium-home.js) */
-html.pl-gl20-io #plHome .pl-shelf:not(.pl-vh) .pl-rooms .pl-room { opacity: 0; transform: translate3d(0, 12px, 0); }
+/* 27.10 · ЗАКОНЪТ ЗА СКРИТИЯ ТАБ (комит 25f85ec): арките са навигацията на началото. html.pl-gl20-io се слага ВЕДНАГА
+   (premium-home.js), а .pl-vh — чак от наблюдателя, който в скрит таб/headless не тръгва → арките стояха на 0.
+   Сега чакат на .4 (преходът до 1 си е същият). ПЪТ НАЗАД: върни „opacity: 0“. */
+html.pl-gl20-io #plHome .pl-shelf:not(.pl-vh) .pl-rooms .pl-room { opacity: .4; transform: translate3d(0, 12px, 0); }
 /* отметките на firstday.js върху арките: „сега е времето“ (злато) и „спи до раждането“ */
 html.pl-gl20 #plHome .pl-rooms .pl-room.pl-sega .pl-arch { box-shadow: 0 0 0 3px #fffaf3, 0 0 0 5.5px #e2b765, 0 0 18px rgba(226, 183, 101, .5), 0 6px 12px rgba(110, 76, 52, .16); }
 html.pl-gl20 #plHome .pl-rooms .pl-room.pl-sega::before, html.pl-gl20 #plHome .pl-rooms .pl-room.pl-spi-st::before {

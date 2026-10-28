@@ -82,7 +82,9 @@
 }
 .wm-tarot p { margin: 0; font-size: 14px; line-height: 1.55; }
 @keyframes wmFlip {
-  0%   { transform: rotateY(80deg) scale(0.9); opacity: 0; }
+  /* 27.10 · ЗАКОНЪТ ЗА СКРИТИЯ ТАБ (комит 25f85ec): картата с текста е съдържание → от opacity .4, не от 0.
+     ПЪТ НАЗАД: върни „opacity: 0“. */
+  0%   { transform: rotateY(80deg) scale(0.9); opacity: .4; }   /* 27.10: от .4 (скрит таб) */
   100% { transform: rotateY(0) scale(1); opacity: 1; }
 }
 .wm-seen { margin: 8px 0 0; font-size: 13px; }

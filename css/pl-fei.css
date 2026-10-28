@@ -206,7 +206,9 @@ html.pl-gl20 #plHome .pl-pers .pl-per[data-pl-fei] > .pl-fei-do {
   display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden;
 }
 /* поява: веднъж, когато лентата влезе в кадър (.pl-vh — js/premium-home.js) */
-html.pl-gl20-io #plHome .pl-pomosht:not(.pl-vh) .pl-pers .pl-per { opacity: 0; transform: translate3d(22px, 0, 0); }
+/* 27.10 · ЗАКОНЪТ ЗА СКРИТИЯ ТАБ (комит 25f85ec): феите са пипаемо съдържание. html.pl-gl20-io идва веднага, .pl-vh —
+   чак от наблюдателя, който в скрит таб/headless не тръгва → стояха на 0. Сега чакат на .4. ПЪТ НАЗАД: върни „opacity: 0“. */
+html.pl-gl20-io #plHome .pl-pomosht:not(.pl-vh) .pl-pers .pl-per { opacity: .4; transform: translate3d(22px, 0, 0); }
 /* нощем */
 html[data-theme="dark"].pl-gl20 #plHome .pl-pomosht .pl-ph { color: #fff; }
 html[data-theme="dark"].pl-gl20 #plHome .pl-pomosht .pl-panel-h small { color: #c9cbe3; }

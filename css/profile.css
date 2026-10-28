@@ -7,7 +7,10 @@
   display: flex; justify-content: center; align-items: flex-start;
   overflow-y: auto; padding: 14px 10px 90px; animation: profIn .22s ease;
 }
-@keyframes profIn { from { opacity: 0; } to { opacity: 1; } }
+/* 27.10 · ЗАКОНЪТ ЗА СКРИТИЯ ТАБ (комит 25f85ec): профилът е ЦЯЛ ЕКРАН (fixed, inset 0, z 240) — замръзне ли входът
+   на първия кадър (скрит таб/headless), щеше да е НЕВИДИМ слой, който спира всеки допир (и крие .prof-box вътре).
+   Затова от .4, не от 0. ПЪТ НАЗАД: върни „opacity: 0“. */
+@keyframes profIn { from { opacity: .4; } to { opacity: 1; } }
 .prof-box {
   position: relative; width: 100%; max-width: 520px;
   background: #fffdfa; border-radius: 22px; padding: 18px 16px 22px;
