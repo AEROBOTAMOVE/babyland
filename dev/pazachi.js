@@ -58,7 +58,10 @@ const БАВНИ = new Set(['dati.js', 'dupka.js', 'glasat.js', 'metachka.js', '
 // Не са пазачи: пускачи, хирурзи, прилагачи — те ПРОМЕНЯТ или само печатат.
 // 🪤 Някои уреди искат АРГУМЕНТ и без него гърмят (metachka2) — те не са
 //    пазачи, а инструменти. Стоят в БАВНИ, за да не вдигат фалшива тревога.
-const НЕ_СА_ПАЗАЧИ = /^(pazachi|vsichko|dvigatel|klyuch_hirurg|prilozhi_|popravi_|slej_|kavichki_bg|versii_po_sadarjanie|statichttp|raf_podporka|redni_popravka)/;
+// 🔴 28.10: korpus_stroi ПРЕСГЛОБЯВА dev/korpus350.json (изпита на korpus350) —
+//    всеки пробег на пазачите тихо сменяше мерилото (24 спешни въпроса други).
+//    Изпитът не се сменя заедно с матчъра: строи се само на ръка.
+const НЕ_СА_ПАЗАЧИ = /^(pazachi|vsichko|dvigatel|klyuch_hirurg|prilozhi_|popravi_|slej_|kavichki_bg|versii_po_sadarjanie|statichttp|raf_podporka|redni_popravka|korpus_stroi)/;
 
 const файлове = fs.readdirSync('dev')
   .filter(f => f.endsWith('.js') && !НЕ_СА_ПАЗАЧИ.test(f))
