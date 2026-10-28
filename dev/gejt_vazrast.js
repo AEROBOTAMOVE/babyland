@@ -31,8 +31,12 @@ const ден = д => { const x = new Date(Date.now() - д * 86400000); return x.
 const Р1 = ден(31), Р36 = ден(1096), Р11 = '2025-11-20';   // 11 м. = профилът на dev/prisada_zhivo.js
 
 const ГЕЙТ = "const б = (typeof load === 'function') ? load('bl_baby', {}) : null;";
+// 28.10: гейтът е отворен в самия helper.js (lsGet) — тогава ОТВОРЕН = ЖИВ и котвата я няма нарочно
 const отвори = src => {
-  if (src.indexOf(ГЕЙТ) < 0) throw new Error('котвата на гейта (възрастМесеци → load) я няма — helper.js е сменен, прегледай уреда');
+  if (src.indexOf(ГЕЙТ) < 0) {
+    if (src.indexOf("const б = lsGet('bl_baby', {});") > -1) return src;
+    throw new Error('котвата на гейта (възрастМесеци → load) я няма — helper.js е сменен, прегледай уреда');
+  }
   return src.replace(ГЕЙТ, "const б = lsGet('bl_baby', {});");
 };
 const мозък = (birth, вид) => zaredi(вид === 'отворен' ? отвори : null, { памет: { bl_baby: { birth } }, безВъзраст: вид === 'стар' });
