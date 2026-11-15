@@ -44,6 +44,10 @@ const пауза = ms => new Promise(r => setTimeout(r, ms));
   const kbПриТърсене = await изр('!!window.KB');
   if (kbПриТърсене) рез.push('⚠️ търсачката: знанието вече беше тук');
   else пр('търсачката преди знанието казва „секунда“ и не гърми', /Секунда/.test(търсиПреди || '') && !грешки.length, търсиПреди);
+  // пазачът (guard.js) на обикновено поле: тежко изречение ПРЕДИ знанието → лентата идва, щом знанието дойде
+  await изр(`(() => { const п = document.createElement('textarea'); п.id = 'probaPazach'; document.body.appendChild(п); п.value = 'не ми се живее вече'; if (!window.BL_GUARD) return 'няма BL_GUARD'; BL_GUARD.провери(п); п.value = ''; return 1; })()`);   // headless няма фокус → blur не идва; викаме същото, което вика blur
+  await пауза(400);
+  const лентаПреди = await изр("!!document.querySelector('.gd-band')");
   // деветте стаи без знание
   for (const с of ['Бременност', 'Моето бебе', 'Захранване', 'Здраве и SOS', 'Дневник на мама', 'Развитие и игри', 'Инструменти', 'Жената в мен', 'Лабораторията']) {
     await изр(`(() => { try { MamaHelper.open(${JSON.stringify(с)}); } catch (e) { return 'X ' + e.message; } return 1; })()`); await пауза(500);
@@ -67,6 +71,9 @@ const пауза = ms => new Promise(r => setTimeout(r, ms));
   пусниЗнанието();
   for (let i = 0; i < 900 && !(await изр('!!window.KB')); i++) await пауза(100);
   await пауза(2500);
+  // пазачът: полето е изчистено („скъсано“), но написаното преди знанието се проверява, щом то дойде
+  const лентаСлед = await изр("(() => { const л = document.querySelector('.gd-band'); return л ? (л.innerText || '').replace(/\\s+/g, ' ').slice(0, 60) : ''; })()");
+  пр('пазачът: тежко изречение преди знанието → лентата идва сама', !лентаПреди && !!лентаСлед, лентаПреди ? 'лентата беше още преди знанието (не мери)' : (лентаСлед || 'няма лента'));
   // търсачката (отворена ли е още) трябва сама да е дала 112, щом знанието дойде
   if (!kbПриТърсене) { const сл = await изр(`(() => { const ов = document.getElementById('searchOverlay'); const т = (document.getElementById('searchResults').innerText || '').replace(/\\s+/g, ' '); return (ов && !ов.hidden ? 'отворена · ' : 'затворена · ') + (/112/.test(т) ? '[112 ✓] ' : '[без 112] ') + т.slice(0, 60); })()`);
     if (/^затворена/.test(сл || '')) рез.push('⚠️ търсачката се затвори по пътя — „сама дава 112“ не е мерено');

@@ -4224,6 +4224,9 @@ function findEntry(text, room, exclude) {
     'Лабораторията': ['Как се прави опит?', 'Защо 7 вечери?', 'Кое НЕ се проверява?']
   };
 
+  // ⚡ 15.11 · чакащите въпроси (знанието още не е дошло) и номерът на посещението на стаята
+  //   (open/close/„назад“ го вдигат) — виж respond(). ПЪТ НАЗАД: заедно с блока в respond().
+  const ЧАКАЩИ = []; let ЧАКАЙ_ЗН = 0, ВИЗИТА = 0;
   // ── Композиторът: сглобява ЧОВЕШКИ отговор ──
   function respond(text, forcedId) {
     // ⚡ 14.11 · ЗНАНИЕТО СЕ ЗАРЕЖДА ОТДЕЛНО: js/kb.js (1,55 МБ) е async и вече не спира старта
@@ -4231,9 +4234,26 @@ function findEntry(text, room, exclude) {
     //   Попита ли мама, преди да е дошло — три точки, докато дойде, после отговорът сам. И спешните
     //   отговори живеят в KB (KB.dvAnswer…), затова чака всичко; бутонът SOS не зависи от него.
     //   ПЪТ НАЗАД: махни блока и върни `defer` на kb.js в index.html.
+    //   15.11 (одит, 4 търсачи + скептици): ЕДНО общо чакане, вързано за посещението на стаята —
+    //   отговорът не каца в друга стая; затворена ли е стаята, чакащото се пуска. Не дойде ли знанието
+    //   (onerror в index.html → BL_KB_PADNA) — казваме го, не въртим точки вечно; бавна връзка → една бележка.
     if (!window.KB) {
       typing(true);
-      const чакай = setInterval(() => { if (window.KB) { clearInterval(чакай); typing(false); respond(text, forcedId); } }, 120);
+      ЧАКАЩИ.push({ text: text, forcedId: forcedId, визита: ВИЗИТА });
+      if (!ЧАКАЙ_ЗН) {
+        const от = Date.now(); let казах = false;
+        ЧАКАЙ_ЗН = setInterval(() => {
+          if (!window.KB && !window.BL_KB_PADNA) {
+            if (!казах && Date.now() - от > 30000) { казах = true; typing(false); addMsg('bot', 'Връзката е бавна — още зареждам отговорите. Ей сега. 🤍'); typing(true); }
+            return;
+          }
+          clearInterval(ЧАКАЙ_ЗН); ЧАКАЙ_ЗН = 0; typing(false);
+          const тук = ЧАКАЩИ.splice(0).filter(ч => ч.визита === ВИЗИТА);
+          if (!тук.length) return;
+          if (!window.KB) { addMsg('bot', 'Отговорите не се заредиха — провери интернета и ме попитай пак. 🤍'); return; }
+          тук.forEach(ч => respond(ч.text, ч.forcedId));
+        }, 120);
+      }
       return;
     }
     // ═════════════════════════════════════════════════════════════════
@@ -5827,6 +5847,7 @@ function findEntry(text, room, exclude) {
     // (контекстът на последните 2 теми) — те са различни неща.
     if (currentRoom !== room) { lastEntry = null; lastEntries.length = 0; }
     currentRoom = room;
+    ВИЗИТА++;   // 15.11: чакащ отговор от предишното посещение не каца тук (виж respond)
     firstAnswer = true;
     мамаПиса = false;
     // 🚪 брои се СЛЕД ключалката (заключено влизане не е влизане) и ПРЕДИ
@@ -5976,6 +5997,7 @@ function findEntry(text, room, exclude) {
   }
 
   function close() {
+    ВИЗИТА++;   // 15.11: затворена стая — чакащият отговор не отива в скрития чат
     $('roomOverlay').hidden = true;
     document.body.style.overflow = '';
     document.documentElement.classList.remove('ro-otvorena');   // 🔋 задният двор пак живва
@@ -5990,6 +6012,7 @@ function findEntry(text, room, exclude) {
   window.addEventListener('popstate', () => {
     const ov = $('roomOverlay');
     if (ov && !ov.hidden) {
+      ВИЗИТА++;   // 15.11: както close()
       ov.hidden = true;
       document.body.style.overflow = '';
       document.title = 'Baby Land — вълшебният помощник на мама';

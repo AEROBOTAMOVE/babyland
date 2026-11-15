@@ -389,6 +389,23 @@ window.BL_ARTICLES_DATA = [
       fmt(a.body) + спешноHtml + relHtml +
       `<button class="art-ask" type="button" data-room="${a.room}">💬 Питай помощничката за това</button>`;
     $('artBody').querySelectorAll('[data-rel]').forEach(b => b.addEventListener('click', () => openArticle(b.dataset.rel)));
+    // ⚡ 15.11 (одит): преди знанието (kb.js е async) библиотеката мълчи → „Виж също“ липсваше до
+    //   следващото отваряне. Щом знанието дойде и същата статия е още отворена — добавя се на мястото си.
+    //   ПЪТ НАЗАД: махни този блок.
+    if (!relHtml && !window.KB && window.BL_LIB) {
+      const ид = a.id;
+      const т = setInterval(() => {
+        if (!window.KB && !window.BL_KB_PADNA) return; clearInterval(т);
+        const тяло = $('artBody');
+        if (!window.KB || window._blCurArt !== ид || !тяло || тяло.querySelector('.art-rel')) return;
+        const rel = BL_LIB.search(a.title, a.room, 4).filter(h => h.id !== ид).slice(0, 3);
+        if (!rel.length) return;
+        const д = document.createElement('div'); д.className = 'art-rel';
+        д.innerHTML = '<p class="art-relt">Виж също 📎</p>' + rel.map(h => `<button class="art-relb" type="button" data-rel="${h.id}">${h.e} ${h.t}</button>`).join('');
+        д.querySelectorAll('[data-rel]').forEach(b => b.addEventListener('click', () => openArticle(b.dataset.rel)));
+        const пит = тяло.querySelector('.art-ask'); if (пит) тяло.insertBefore(д, пит); else тяло.appendChild(д);
+      }, 200);
+    }
     // 📑 прескачане по съдържанието. Търси се ВЪТРЕ в тялото, не в document —
     //    четецът живее в наслагване и id-та могат да се повторят другаде.
     $('artBody').querySelectorAll('[data-toc]').forEach(b => b.addEventListener('click', () => {

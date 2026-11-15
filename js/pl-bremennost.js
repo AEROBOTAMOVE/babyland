@@ -548,6 +548,13 @@
     const банер = корен.querySelector(':scope > .pl-rhero');
     if (банер) { if (б.previousElementSibling !== банер || !б.isConnected) банер.after(б); }
     else if (корен.firstElementChild !== б) корен.insertBefore(б, корен.firstChild);
+    // ⚡ 15.11 (одит): блокът е направен ПРЕДИ знанието (kb.js е async) → картата „Тази седмица“ липсваше
+    //   завинаги, защото следващите обработки намират същия блок. Слага се, щом знанието дойде.
+    //   ПЪТ НАЗАД: махни този if и чакането във върви().
+    if (с.вид === 'седмица' && !нов && window.BL_PL_ZN && window.KB && !б.querySelector(':scope > .pl-zn')) {
+      const зн = BL_PL_ZN.карта({ ид: BL_PL_ZN.ид.седмица(с.w), етикет: 'Тази седмица', число: с.w, мярка: 'седмица', четец: редна(с.w) + ' седмица' });
+      if (зн) б.insertBefore(зн, б.firstChild);
+    }
     if (с.вид === 'седмица') {
       рисувайСедмица(б, false);
       if (нов) { центрирай(б, false); setTimeout(() => центрирай(б, false), 360); }
@@ -567,6 +574,8 @@
     // 20.10: беше `new MutationObserver(отложено)` — буди се само от важните промени (важно(), блокът 20.10)
     new MutationObserver(сп => { if (важно(сп)) отложено(); }).observe(ов, { childList: true, subtree: true, attributes: true, attributeFilter: ['class', 'hidden'] });
     обходи();
+    // 15.11: знанието идва async и след него DOM не се мени задължително → едно обхождане, щом дойде
+    if (!window.KB) { const т = setInterval(() => { if (!window.KB && !window.BL_KB_PADNA) return; clearInterval(т); if (window.KB) обходи(); }, 200); }
   }
   if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', върви); else върви();
   window.BL_PL_BREMENNOST = { обходи, състояние, записи };

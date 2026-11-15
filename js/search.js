@@ -179,7 +179,18 @@
       try {
         const чиста = история.filter(t => !BL_MOTHERFLAG(t));
         if (чиста.length !== история.length) { lsSet('bl_search_hist', чиста); история = чиста; }
-      } catch (e) {}
+      } catch (e) {
+        // 15.11 (одит): без знание пресяването не може да мине → без „Скоро търси“, не непресято;
+        //   щом знанието дойде и полето е още празно — поздравът се рисува наново, вече пресят.
+        if (!window.KB) {
+          история = [];
+          const т = setInterval(() => {
+            if (!window.KB && !window.BL_KB_PADNA) return; clearInterval(т);
+            const inp = $('searchInput'), ов = $('searchOverlay');
+            if (window.KB && inp && ов && !ов.hidden && !norm(inp.value).trim()) greet();
+          }, 200);
+        }
+      }
     }
     const скорошни = история.slice(-4).reverse();
     box.innerHTML = `
@@ -287,6 +298,12 @@
     _drawSig = '';
     if (_чакаЗнание) return;
     _чакаЗнание = setInterval(() => {
+      // 15.11 (одит): не дойде ли знанието (onerror в index.html) — казваме го, не чакаме вечно
+      if (!window.KB && window.BL_KB_PADNA) {
+        clearInterval(_чакаЗнание); _чакаЗнание = 0;
+        const б = $('searchResults'); if (б) б.innerHTML = '<div class="sf-answer sf-chat"><span class="sf-ava sf-ava-s"><svg viewBox="0 0 60 96"><use href="#balloonShape"/></svg></span><div class="sf-bub">Отговорите не се заредиха — провери интернета и опитай пак. 🤍</div></div>';
+        return;
+      }
       if (!window.KB) return;
       clearInterval(_чакаЗнание); _чакаЗнание = 0;
       const inp = $('searchInput'), ов = $('searchOverlay');
