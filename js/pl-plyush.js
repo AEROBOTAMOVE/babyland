@@ -398,7 +398,10 @@
         for (const е of ц) if (е.isConnected && !ц.some(д => д !== е && д.contains(е))) мини(е);
       }, 80);
     }
-    if (!чакаЦял) { чакаЦял = true; setTimeout(() => { чакаЦял = false; мини(document); }, 1500); }
+    // ⚡ 15.11 (одит): пълният обход (1,5 s) — само ако е дошъл нов ЕЛЕМЕНТ; смяна на текст не го буди.
+    //   ПЪТ НАЗАД: махни условието `елемент`.
+    const елемент = (записи || []).some(r => { for (const н of r.addedNodes || []) if (н.nodeType === 1) return true; return false; });
+    if (елемент && !чакаЦял) { чакаЦял = true; setTimeout(() => { чакаЦял = false; мини(document); }, 1500); }
   }
   function върви() {
     мини(document);

@@ -165,13 +165,15 @@
     // късни огледа като в js/izvan_ekrana.js.
     setTimeout(function () { бележи(document.body); }, 1200);
     setTimeout(function () { бележи(document.body); }, 3500);
+    var чакаИзч = 0;
     if (window.MutationObserver) {
       new MutationObserver(function (записи) {
         for (var i = 0; i < записи.length; i++) {
           var д = записи[i].addedNodes;
           for (var j = 0; j < д.length; j++) if (д[j].nodeType === 1) опашка.push(д[j]);
         }
-        if (!тихо && опашка.length) setTimeout(изчисти, 200);
+        // 15.11 (одит): един таймер, не по един на всяка промяна (новото се събира в опашка-та до изтичането му)
+        if (!тихо && опашка.length && !чакаИзч) чакаИзч = setTimeout(function () { чакаИзч = 0; изчисти(); }, 200);
       }).observe(document.body, { childList: true, subtree: true });
     }
   }

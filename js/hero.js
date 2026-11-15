@@ -521,5 +521,7 @@
     };
   }, 400));
 
-  document.addEventListener('DOMContentLoaded', () => setTimeout(build, 50));
+  // ⚡ 15.11 (одит на бързината): новото начало (pl-on) замества стария герой — да не го сглобяваме напразно
+  //   при всеки старт. ПЪТ НАЗАД: върни `setTimeout(build, 50)`.
+  document.addEventListener('DOMContentLoaded', () => setTimeout(() => { if (!document.documentElement.classList.contains('pl-on')) build(); }, 50));
 })();

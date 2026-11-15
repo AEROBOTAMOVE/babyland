@@ -332,6 +332,7 @@
     // шушукане: на ~7 сек някоя се обажда — една по една, никога хор
     let ред = Math.floor(Math.random() * бутони.length);
     setInterval(() => {
+      if (sec.classList.contains('pl-svit') && !sec.classList.contains('pl-svit-on')) return;   // 15.11: прибран ред — тишина
       const стая = document.getElementById('roomOverlay');
       if (!видимо || document.hidden || (стая && !стая.hidden)) return;
       if (sec.querySelector('.мур')) return;
@@ -740,7 +741,8 @@
         let i = 0;
         setTimeout(() => {
           show(0);
-          timer = setInterval(() => { if (!сиСтрува(sec)) return; i = (i + 1) % NET.length; show(i); }, 3400);
+          // 15.11 (одит): прибран ли е редът („Още за Бейби Ленд“) — не въртим нищо зад него
+          timer = setInterval(() => { if (sec.classList.contains('pl-svit') && !sec.classList.contains('pl-svit-on')) return; if (!сиСтрува(sec)) return; i = (i + 1) % NET.length; show(i); }, 3400);
         }, 1200);
       });
     }, { threshold: 0.25 });

@@ -78,7 +78,12 @@
   function върви() {
     мини(document);
     // само childList: `textContent = …` сменя възела (childList); characterData би будил всяка секунда от таймерите
-    new MutationObserver(отложено).observe(document.body, { childList: true, subtree: true });
+    // ⚡ 15.11 (одит на бързината, потвърден): смяната на текст (часовник, броячи) също е childList — будеше
+    //   обхода на целия документ на всеки тик. Сега: само при нов ЕЛЕМЕНТ или промяна вътре в наш бутон.
+    //   ПЪТ НАЗАД: върни `new MutationObserver(отложено)`.
+    const елем = з => з.some(r => { for (const н of r.addedNodes) if (н.nodeType === 1) return true; return false; });
+    new MutationObserver(з => { if (елем(з) || з.some(r => r.target.nodeType === 1 && r.target.closest(КЛАСОВЕ + ', .pl-soft, .pl-gel'))) отложено(); })
+      .observe(document.body, { childList: true, subtree: true });
   }
   // 🐣 подскокът на плюшената иконка при докосване — едно делегирано слушане за целия документ;
   //   класът се маха на animationend, за да може следващото докосване да подскочи пак.

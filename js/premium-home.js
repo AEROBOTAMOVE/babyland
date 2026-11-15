@@ -492,7 +492,7 @@
     if ('IntersectionObserver' in window) new IntersectionObserver(function (з) {
       наЕкрана = з.some(function (x) { return x.isIntersecting; });
       if (наЕкрана) пусни(); else спри();
-    }, { threshold: 0 }).observe(герой);
+    }, { threshold: 0 }).observe(кан);   // 15.11 (одит): самото платно — скрито ли е, цикълът спира (беше героят)
     document.addEventListener('visibilitychange', function () { вижда = !document.hidden; if (вижда) пусни(); else спри(); });
     new MutationObserver(function () { if (кт && послW) рисувай(кт, Math.round(N * .35), м, нощ()); }).observe(document.documentElement, { attributes: true, attributeFilter: ['data-theme'] });
     пусни();

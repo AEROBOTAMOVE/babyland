@@ -116,7 +116,9 @@
   // Рафтовете се рисуват при отваряне на профила/стаята — гледам тялото.
   document.addEventListener('DOMContentLoaded', () => {
     let чака = 0;
-    const наблюдавай = new MutationObserver(() => {
+    const наблюдавай = new MutationObserver((з) => {
+      // ⚡ 15.11 (одит): силуетите се рисуват на нови рафтове (елементи), не при смяна на текст
+      if (!з.some(r => { for (const н of r.addedNodes) if (н.nodeType === 1) return true; return false; })) return;
       if (чака) return;
       чака = requestAnimationFrame(() => { чака = 0; силуети(document.body); });
     });

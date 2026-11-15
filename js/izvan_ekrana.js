@@ -227,7 +227,11 @@
     сверѝГеометрично();   // новото съдържание веднага получава присъда
   }
   try {
-    new MutationObserver(function () {
+    new MutationObserver(function (з) {
+      // ⚡ 15.11 (одит): само нов ЕЛЕМЕНТ може да донесе безкрайна анимация — смяната на текст не буди прегледа
+      var елем = false;
+      for (var и = 0; и < з.length && !елем; и++) for (var й = 0; й < з[и].addedNodes.length; й++) if (з[и].addedNodes[й].nodeType === 1) { елем = true; break; }
+      if (!елем) return;
       if (чакаНов) return;
       var изчакай = Math.max(ПАУЗА, НАЙ_ЧЕСТО - (Date.now() - последенОбход));
       чакаНов = setTimeout(прегледайНовите, изчакай);

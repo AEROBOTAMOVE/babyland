@@ -562,11 +562,16 @@
     if (!tick || !tick.isConnected) {
       tick = el('span', 'sv-tick', '✓ запазено');
       t._blTick = tick;
-      t.insertAdjacentElement('afterend', tick);
+      // ⚡ 15.11 (одит на бързината, потвърден от скептик): в полето „Попитай“ (askfield.js) отметката влизаше
+      //   ВЪТРЕ в реда .ask-row (flex) и полето губеше ~70 px още на първия клавиш. Сега сяда под реда.
+      //   ПЪТ НАЗАД: върни `t.insertAdjacentElement('afterend', tick)`.
+      (t.closest('.ask-row') || t).insertAdjacentElement('afterend', tick);
     }
     // 🪤 Без свой клас в CSS нарочно: стиловете са чужд периметър, а червената
     //   дума не бива да чака съгласуване. Връща се в изходно при успех.
-    tick.textContent = паднал ? '⚠️ НЕ се запази' : '✓ запазено';
+    //   15.11: текстът се пише само при смяна — иначе всеки клавиш будеше наблюдателите на стаята.
+    const думата = паднал ? '⚠️ НЕ се запази' : '✓ запазено';
+    if (tick.textContent !== думата) tick.textContent = думата;
     tick.style.color = паднал ? '#c0392b' : '';
     tick.style.fontWeight = паднал ? '700' : '';
     tick.classList.add('on');
