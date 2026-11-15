@@ -42,7 +42,7 @@ const пауза = ms => new Promise(r => setTimeout(r, ms));
   await изр(`(() => { window.__bt = { мут: 0, кадри: [] };
     new MutationObserver(с => { __bt.мут += с.length; }).observe(document.documentElement, { childList: true, subtree: true, attributes: true, characterData: true });
     try { new PerformanceObserver(л => л.getEntries().forEach(е => { const с = (е.scripts || []).slice().sort((a, b) => b.duration - a.duration)[0];
-      __bt.кадри.push({ т: е.startTime, д: е.duration, рис: Math.round(е.startTime + е.duration - е.renderStart), скр: с ? ((с.sourceURL || '').replace(/^.*\\/(?=[^/]+$)/, '').replace(/\\?v=\\d+/, '') + ' ' + (с.sourceFunctionName || с.invoker) + ' ' + Math.round(с.duration) + 'ms/нас.' + Math.round(с.forcedStyleAndLayoutDuration)) : '' }); })).observe({ type: 'long-animation-frame' }); } catch (e) {}
+      __bt.кадри.push({ т: е.startTime, д: е.duration, рис: Math.round(е.startTime + е.duration - е.renderStart), скр: с ? ((с.sourceURL || '').replace(/^.*\\/(?=[^/]+$)/, '').replace(/\\?v=\\d+/, '') + ' ' + (с.sourceFunctionName || с.invoker) + ' ' + Math.round(с.duration) + 'ms (скрипт ' + Math.round(с.duration - (с.forcedStyleAndLayoutDuration || 0) - (с.pauseDuration || 0)) + ' · принуд. подреждане ' + Math.round(с.forcedStyleAndLayoutDuration || 0) + ')') : '' }); })).observe({ type: 'long-animation-frame' }); } catch (e) {}
     return 1; })()`);
 
   const ОПАСНО = /изтрий|изтриване|изчисти|нулирай|нулиране|махни всичко|забрави|излез|изход|отпиши|обади|звънни|сподели|изпрати|експорт|свали|изтегли|резервно копие|възстанови|внеси|печат|принтирай|^112$|112\b|SOS|ПИН|ключалк|заключи/i;

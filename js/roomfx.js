@@ -107,9 +107,16 @@
     }, { passive: true });
     // колан и тиранти: тих тик — някои webview-та цедят scroll-събитията;
     // сравнението с послПоз го прави безплатен, чисти се сам при откачане
+    // ⚡ 15.11 (одит на бързината, потвърден): тикът четеше scrollHeight/scrollTop и при затворена стая (на
+    //   началото), 1,4 пъти в секунда — всяко четене подрежда целия документ, ако има чакащи промени.
+    //   Сега: само при видима стая и в същия rAF слот като превъртането. ПЪТ НАЗАД: върни `обнови();`.
+    var ов = document.getElementById('roomOverlay');
     var тмр = setInterval(function () {
       if (!box.isConnected) { clearInterval(тмр); return; }
-      обнови();
+      if (document.hidden || box.hidden || (ов && ов.hidden)) return;
+      if (тик) return;
+      тик = true;
+      requestAnimationFrame(function () { тик = false; обнови(); });
     }, 700);
   }
 

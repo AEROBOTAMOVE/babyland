@@ -390,8 +390,15 @@
   //   ПЪТ НАЗАД: върни отложено() към „setTimeout(() => { чака = false; мини(document); }, 80)“.
   let чака = false, чакаЦял = false, целиТам = new Set();
   function отложено(записи) {
-    for (const з of записи || []) { const ц = з.target; if (ц && ц.nodeType === 1 && ц.isConnected) целиТам.add(ц); }
-    if (!чака) {
+    // ⚡ 15.11 (одит, потвърден): махане без добавяне не носи нищо ново; добавено направо в body/html (напр.
+    //   овърлеят на стая) → обхождаме самото добавено, не целия документ. ПЪТ НАЗАД: върни стария ред.
+    for (const з of записи || []) {
+      if (!з.addedNodes || !з.addedNodes.length) continue;
+      const ц = з.target;
+      if (ц === document.body || ц === document.documentElement) { for (const н of з.addedNodes) if (н.nodeType === 1 && н.isConnected) целиТам.add(н); }
+      else if (ц && ц.nodeType === 1 && ц.isConnected) целиТам.add(ц);
+    }
+    if (целиТам.size && !чака) {
       чака = true;
       setTimeout(() => {
         чака = false; const ц = [...целиТам]; целиТам = new Set();

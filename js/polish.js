@@ -271,8 +271,13 @@
   // ═══════════ Ш2+Ш3: стъпаловидно влизане + медальони ═══════════
 
   function stagger(cards) {
+    // ⚡ 15.11 (одит, потвърден): едно принудително подреждане за всички, не по едно на карта (беше
+    //   remove → offsetWidth → add в цикъла). Новите карти — нула принудени подреждания; закъсненията
+    //   са същите. ПЪТ НАЗАД: върни цикъла с `void c.offsetWidth` за всяка карта.
+    const имаха = cards.filter(c => c.classList.contains('card-in'));
+    имаха.forEach(c => c.classList.remove('card-in'));
+    if (имаха.length) void имаха[0].offsetWidth;
     cards.forEach((c, i) => {
-      c.classList.remove('card-in'); void c.offsetWidth;
       c.style.animationDelay = Math.min(i, 10) * 45 + 'ms';
       c.classList.add('card-in');
     });

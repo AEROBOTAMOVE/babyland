@@ -247,3 +247,39 @@ html body #blDostap#blDostap :is(p.bl-dg-small) { font-size: var(--bl-t-s) !impo
 html body #blDostap#blDostap :is(p.bl-dg-lead, button.bl-dg-switch, button.bl-dg-switch > b) { font-size: var(--bl-t-m) !important; }
 html body #onbOverlay#onbOverlay .onb-card p.onb-text { font-size: var(--bl-t-m) !important; }
 /* край 15.11 · прозорците */
+
+/* ═══════════════════════════════════════════════════════════════════════════════
+   ⏱️ 15.11 · КАДРИТЕ „БЕЗ СКРИПТ“ — две невидими анимации теглеха ВСИЧКИ анимации на главната нишка
+   МЕРЕНО (свой Chrome през CDP, следа devtools.timeline + invalidationTracking; калибровка в празна страница:
+   проста transform анимация = 0 преизчислявания на кадър, т.е. композирана — уредът мери вярно):
+     · една анимация, която не може да се композира, кара Chrome да тиктака на главната нишка всяка друга анимация
+       в документа — облаците, звездите, частиците, всеки кадър (стил + подреждане + слоеве);
+     · НАЧАЛОТО: виновникът е bnSosPulse (anim.css:635) върху ::before на SOS в долната лента. premium.css:266 направи
+       този ::before иконата на лентата с `transform: none !important; opacity: 1 !important` → пулсът и без това НЕ СЕ
+       ВИЖДА (!important бие анимацията), но върти безкрайно и не се композира. Само той изключен: кадрите със стил на
+       главната нишка 104–124 → 9–11 за 1.2 s, преизчисляванията 4300–5600 → 400–500 (два пъти, едно и също);
+     · СТАЯТА: виновникът е roBreath (rooms.css:859) — transform върху <svg> в балончето #roFab (SVG не се композира).
+       Само той изключен: 75–100 → 3 кадъра, 800 → 21 преизчислявания.
+   ПЪТ НАЗАД: махни този раздел (до „край 15.11 · кадрите“).
+   ═══════════════════════════════════════════════════════════════════════════════ */
+/* 1 · SOS пулсът — само анимацията (видът е същият: иконата и досега стоеше неподвижна) */
+html body .bottom-nav .bn-item[data-room="Здраве и SOS"]::before,
+html body .bottom-nav .bn-item.bn-sos::before { animation: none !important; }
+
+/* 2 · балончето в стаята „диша“ както преди, но върху бутона (scale — композира се заедно с fabBob), не върху <svg> */
+html body #roomOverlay #roFab.ro-fab .ro-balloon { animation: none !important; }
+html body #roomOverlay #roFab.ro-fab { animation: fabBob 3.4s ease-in-out infinite, plFabDiha 3.8s ease-in-out infinite; }
+@keyframes plFabDiha { 0%, 100% { scale: 1; } 50% { scale: 1.035; } }
+@media (prefers-reduced-motion: reduce) { html body #roomOverlay #roFab.ro-fab { animation: none !important; } }
+
+/* 3 · ПОД ОТВОРЕНАТА СТАЯ (телефон: панелът покрива целия екран — touch.css:700):
+   · размазването на фона (backdrop-filter, style.css:1146) се пресмята при всеки кадър, а не се вижда —
+     гаси се 0.45 s след отварянето (находката на главния чат, анализ 2; отварянето изглежда същото);
+   · небето (.sky, fixed) и сцената (#plScene, absolute) не се рисуват — размерът им не зависи от съдържанието,
+     нищо не мърда; main и футерът вече са скрити така (touch.css:728). */
+@media (max-width: 599px) {
+  .room-overlay:not([hidden]) { animation: plRoBezBlur 0s .45s both; }
+  @keyframes plRoBezBlur { to { -webkit-backdrop-filter: none; backdrop-filter: none; } }
+  html.ro-otvorena body > .sky, html.ro-otvorena body > #plScene { content-visibility: hidden; }
+}
+/* край 15.11 · кадрите */

@@ -86,9 +86,9 @@
       if (!e || e.__blVun || e.nodeType !== 1) continue;
       var т = еф.getTiming ? еф.getTiming() : null;
       if (!т || т.iterations !== Infinity) continue;
+      if (e.closest('.' + КЛАС)) continue;   // 15.11: евтината проверка преди getComputedStyle (одит)
       var cs = getComputedStyle(e);
       if (cs.position === 'fixed' || cs.position === 'sticky') { пропуснатиФиксирани++; e.__blVun = 1; continue; }
-      if (e.closest('.' + КЛАС)) continue;
       e.__blVun = 1;
       набл.observe(e);
       записаниЕл.push(e);
@@ -151,7 +151,7 @@
     if (document.hidden) return;
     var H = window.innerHeight || 0, W = window.innerWidth || 0;
     if (!H) return;
-    var живи = 0;
+    var живи = 0, спри = [], пусни = [];
     for (var i = 0; i < записаниЕл.length; i++) {
       var e = записаниЕл[i];
       if (!e || !e.isConnected) continue;
@@ -162,10 +162,16 @@
                   r.bottom < -ЗАПАС || r.top > H + ЗАПАС ||
                   r.right < -ЗАПАС || r.left > W + ЗАПАС;
       var има = e.classList.contains(КЛАС);
-      if (извън && !има) { e.classList.add(КЛАС); спрени++; }
-      else if (!извън && има) { e.classList.remove(КЛАС); спрени--; }
+      // ⚡ 15.11 (одит, потвърден): първо САМО четем всички кутии, класовете се пишат наведнъж след цикъла —
+      //   иначе всяко следващо getBoundingClientRect след смяна на клас подреждаше документа наново.
+      //   ПЪТ НАЗАД: върни add/remove тук.
+      if (извън && !има) спри.push(e);
+      else if (!извън && има) пусни.push(e);
     }
     записаниЕл.length = живи;
+    for (var j = 0; j < спри.length; j++) спри[j].classList.add(КЛАС);
+    for (var k = 0; k < пусни.length; k++) пусни[k].classList.remove(КЛАС);
+    спрени += спри.length - пусни.length;
   }
   var чакаСверка = null;
   function сверѝСкоро() {
