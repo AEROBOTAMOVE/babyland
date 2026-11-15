@@ -96,6 +96,24 @@
   }, { passive: true });
   document.addEventListener('animationend', e => { if (e.animationName === 'plHop' && e.target.classList) e.target.classList.remove('pl-hop'); }, true);
 
+  // 🔦 15.11 (чат „екрани“) · ЧИПЪТ НА РАЗДЕЛ ДА СЕ ВИЖДА, ЧЕ Е НАТИСНАТ. polish.js:101 само превърта до заглавието
+  //   (scrollIntoView). При последния раздел стаята често вече е в края и нищо не мърда, а и следенето (anim.js,
+  //   rootMargin −70%) не светва чипа, защото заглавието не стига горната трета — butoni_proba отчете „Спомени от
+  //   чакането“ в „Бременност“ като мъртъв. Сега: натиснатият чип светва, заглавието на раздела проблясва за миг.
+  //   Чип ↔ заглавие по реда (polish.js ги строи в един и същи ред). Без принудително подреждане: рестартът е през rAF.
+  //   ПЪТ НАЗАД: махни този блок (до „край 15.11“) и правилото .bl-sec-flash в css/pl-start.css.
+  document.addEventListener('click', e => {
+    const чип = e.target.closest && e.target.closest('#roRoom .sec-nav .sec-chip'); if (!чип) return;
+    const стая = document.getElementById('roRoom'); if (!стая) return;
+    const чипове = [...стая.querySelectorAll('.sec-nav .sec-chip')];
+    const глава = стая.querySelectorAll(':scope > .sec-head')[чипове.indexOf(чип)]; if (!глава) return;
+    чипове.forEach(ч => ч.classList.toggle('on', ч === чип));
+    глава.classList.remove('bl-sec-flash');
+    requestAnimationFrame(() => requestAnimationFrame(() => глава.classList.add('bl-sec-flash')));   // кадър без класа → анимацията тръгва отначало
+    clearTimeout(глава.__blFlash); глава.__blFlash = setTimeout(() => глава.classList.remove('bl-sec-flash'), 1400);
+  }, true);
+  // край 15.11
+
   if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', върви); else върви();
   window.BL_PL_UI = { мини };
 })();

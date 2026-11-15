@@ -1,5 +1,5 @@
 // Baby Land — service worker: кешира приложението за офлайн работа
-const CACHE = 'babyland-v926';   // 21.10 · достъп: v873 → v874 · ПЪТ НАЗАД: sw.js.PREDI_DOSTAP
+const CACHE = 'babyland-v927';   // 21.10 · достъп: v873 → v874 · ПЪТ НАЗАД: sw.js.PREDI_DOSTAP
 const ASSETS = [
   '.',
   'index.html',
@@ -214,6 +214,7 @@ const ASSETS = [
   'js/preg20.js',
   'js/roomhero.js',
   'js/anim.js',
+  'js/pl-topla.js',   // 15.11: затоплянето на картите
   'js/roomfx.js',
   'js/roommap.js',
   'js/tabs.js',

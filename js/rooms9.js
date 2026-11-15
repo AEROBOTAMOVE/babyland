@@ -162,6 +162,7 @@
   function refuseCard() {
     const c = card('Не иска да яде: 12 трика 🥄 ' + sub('отмятай кое е работило при ТВОЕТО'));
     const мои = load('bl_tricks_food', {});
+    const скрити = [];   // 15.11: редовете зад „Още“ (виж долу)
     ТРИКОВЕ.forEach(([т, защо], i) => {
       const r = el('div', 'tk-row' + (мои[i] === 1 ? ' tk-yes' : мои[i] === -1 ? ' tk-no' : ''));
       r.innerHTML = `<div class="tk-t">${esc(т)}<br><small>${esc(защо)}</small></div>`;
@@ -186,7 +187,24 @@
       });
       r.appendChild(g);
       c.appendChild(r);
+      // 🧹 15.11 (собственикът: „12 трика с Още“): 24 бутона наведнъж бяха стена. Видими са първите 4 и всеки,
+      //   който мама вече е оценила (нейният избор не се крие); останалите са зад „Още“. style.display, не hidden —
+      //   CSS на .tk-row (display:flex) би надвил атрибута. ПЪТ НАЗАД: махни този ред и блока „още“ отдолу.
+      if (i >= 4 && !мои[i]) { r.style.display = 'none'; скрити.push(r); }
     });
+    if (скрити.length) {
+      const надпис = () => 'Още ' + скрити.length + ' трика ▾';
+      const още = el('button', 'jr-chip tk-more', надпис()); още.type = 'button';
+      още.style.minHeight = '44px'; още.style.marginTop = '6px';
+      още.setAttribute('aria-expanded', 'false');
+      още.addEventListener('click', () => {
+        const отв = още.getAttribute('aria-expanded') !== 'true';
+        скрити.forEach(r => { r.style.display = отв ? '' : 'none'; });
+        още.setAttribute('aria-expanded', отв ? 'true' : 'false');
+        още.textContent = отв ? 'Скрий ▴' : надпис();
+      });
+      c.appendChild(още);
+    }
     c.appendChild(el('p', 'jr-privacy',
       'След месец ще видиш кои работят точно при него.'));
     return c;

@@ -302,3 +302,27 @@ html[data-theme="dark"] body #roomOverlay .ro-lav section.ck-card .ck-st::after 
 html body #roomOverlay .ro-lav section.ck-card .ck-st.picked::after { color: #9e2f5f; transform: translateX(-50%) scale(.86); }
 html[data-theme="dark"] body #roomOverlay .ro-lav section.ck-card .ck-st.picked::after { color: #ffc2d8; }
 /* край 15.11 · инструментите */
+
+/* ═══════════════════════════════════════════════════════════════════════════════
+   🔥🔦 15.11 · ЗАТОПЛЯНЕТО + ЧИПЪТ НА РАЗДЕЛ (пета порция)
+   · .bl-topla — js/pl-topla.js рисува истински ЕДНА спяща карта под видимото за два кадъра в безделие
+     (картите са content-visibility:auto, mega.css:336) → после пак заспива, но помни истинската си височина.
+   · .bl-sec-flash — js/pl-ui.js: заглавието на раздела проблясва при натиск на чипа (polish.js само превърта,
+     а при последния раздел често няма накъде). Нощем — по-тихо; намалено движение — неподвижен цвят, без анимация.
+   ПЪТ НАЗАД: махни този раздел (до „край 15.11 · затоплянето“). */
+html body #roomOverlay #roRoom > .jr-card.bl-topla { content-visibility: visible !important; }
+html body #roomOverlay #roRoom > .sec-head.bl-sec-flash { border-radius: 14px; animation: plSecFlash 1.2s ease-out both; }
+@keyframes plSecFlash {
+  0%, 35% { background-color: rgba(253, 230, 239, .95); box-shadow: 0 0 0 6px rgba(253, 230, 239, .95); }
+  100%    { background-color: rgba(253, 230, 239, 0);   box-shadow: 0 0 0 6px rgba(253, 230, 239, 0); }
+}
+html[data-theme="dark"] body #roomOverlay #roRoom > .sec-head.bl-sec-flash { animation-name: plSecFlashD; }
+@keyframes plSecFlashD {
+  0%, 35% { background-color: rgba(255, 194, 216, .18); box-shadow: 0 0 0 6px rgba(255, 194, 216, .18); }
+  100%    { background-color: rgba(255, 194, 216, 0);   box-shadow: 0 0 0 6px rgba(255, 194, 216, 0); }
+}
+@media (prefers-reduced-motion: reduce) {
+  html body #roomOverlay #roRoom > .sec-head.bl-sec-flash { animation: none !important; background-color: rgba(253, 230, 239, .95); box-shadow: 0 0 0 6px rgba(253, 230, 239, .95); }
+  html[data-theme="dark"] body #roomOverlay #roRoom > .sec-head.bl-sec-flash { background-color: rgba(255, 194, 216, .18); box-shadow: 0 0 0 6px rgba(255, 194, 216, .18); }
+}
+/* край 15.11 · затоплянето */

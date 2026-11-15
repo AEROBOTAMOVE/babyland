@@ -2079,7 +2079,7 @@ function findEntry(text, room, exclude) {
     const слято = q.replace(/\s+/g, '');
     const слятоБезЪ = безЪ(слято);
     for (let i = 0; i < списък.length; i++) {
-      const nf = normalize(списък[i]).replace(/\s+/g, '');
+      const nf = нормКеш(списък[i]).replace(/\s+/g, '');   // ⚡ 15.11 (одит): кеш, същият резултат
       if (nf.length < 6) continue;
       if (слято.indexOf(nf) > -1) return true;
       if (слятоБезЪ.indexOf(безЪ(nf)) > -1) return true;
@@ -3085,9 +3085,9 @@ function findEntry(text, room, exclude) {
     const qwИзписа = qИзписа.split(' ');
     return KB.redFlags.some(f => {
       const q = qИзписа, qw = qwИзписа;   // засенчване само за сравнението с флаговете
-      const nf = normalize(f);
+      const nf = нормКеш(f);   // ⚡ 15.11 (одит): същият резултат, без да се нормализират ~1100 флага на всеки въпрос
       if (преносно && ОМЕКОТИМИ.has(nf)) return false;
-      const fw = nf.split(' ').filter(Boolean);
+      const fw = думиКеш(f);   // само се чете (indexOf, for-of, every) — общият масив не се променя
       // една дума: искаме ЦЯЛА дума, не парче от друга дума
       // 🔤 19.08: Ъ пада първо, когато пръстите бързат — „крв" вместо „кръв".
       //   Правописната прошка иска дума над 5 букви, а „крв" е 3 и пада под прага.
