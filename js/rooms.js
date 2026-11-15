@@ -258,7 +258,16 @@
     saveBtn.type = 'button';
     saveBtn.addEventListener('click', () => {
       const m = c1._mood !== undefined ? c1._mood : (checkins[t] ? checkins[t].m : undefined);
-      if (m === undefined) { reply.textContent = 'Първо си избери личице 😊'; return; }
+      if (m === undefined) {
+        reply.textContent = 'Първо си избери личице 😊';
+        // 💜 15.11 (чат „екрани“): под тефтера „Днес за теб“ (pl-dnevnik.js) дъгата тук е скрита
+        //   (css/pl-start.css „ЕДИН РЕД ЛИЧИЦА“) — личицата са горе в тефтера → водим дотам.
+        //   Видима ли е дъгата (няма тефтер / правилото е махнато) — нищо не мърда, както преди.
+        //   ПЪТ НАЗАД: махни редовете от „💜 15.11“ до `if (тефтер) …` включително.
+        const тефтер = !arc.offsetWidth && c1.parentElement && c1.parentElement.querySelector(':scope > .pl-dn .pl-dn-moods');
+        if (тефтер) тефтер.scrollIntoView({ behavior: matchMedia('(prefers-reduced-motion: reduce)').matches ? 'auto' : 'smooth', block: 'center' });
+        return;
+      }
       checkins = load('bl_checkins', {});   // пресен прочит ПРЕДИ записа
       checkins[t] = { m, e: +range.value, w: word.value.trim() };
       // 🔴🔴 25.08 (ИЗМЕРЕНО с пълна памет): това е ЯДРОТО на приложението —
