@@ -490,7 +490,13 @@
       if (hits.length) {
         const dg = el('div', 'td-digest', '<strong>📖 Неделно четиво за вас:</strong> ');
         hits.forEach(h => {
-          const b = el('button', 'td-chip', h.e + ' ' + h.t.slice(0, 30) + '…'); b.type = 'button';
+          // ✂️ 15.11 (чат „екрани“): заглавието се режеше на 30-ия знак с „…“ (и късите получаваха „…“).
+          //   Сега е цялото, като текст (не HTML); css/pl-start.css (раздел 15.11) го събира в 2 реда.
+          //   ПЪТ НАЗАД: върни el('button', 'td-chip', h.e + ' ' + h.t.slice(0, 30) + '…').
+          const b = el('button', 'td-chip'); b.type = 'button';
+          const бЕ = el('span', 'td-dg-e'); бЕ.textContent = h.e;
+          const бТ = el('span', 'td-dg-t'); бТ.textContent = h.t;
+          b.append(бЕ, бТ);
           b.addEventListener('click', () => { if (window.BL_ARTICLES) BL_ARTICLES.open(h.id); });
           dg.appendChild(b);
         });

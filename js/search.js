@@ -200,7 +200,7 @@
       </div>
       ${скорошни.length ? `<p class="sf-lead">Скоро търси:</p>
       <div class="sf-ideas">${скорошни.map(t => `<button class="sf-idea sf-recent" type="button" data-q="${esc(t)}">🕐 ${esc(t)}</button>`).join('')}<button class="sf-idea sf-forget" type="button">✕ забрави ги</button></div>` : ''}
-      <p class="sf-lead">Не мисли за „ключови думи“ — пиши като на приятелка:</p>
+      <p class="sf-lead">Например:</p>
       <div class="sf-ideas">${поЧаса.concat(IDEAS.slice(5)).map(([e, t]) => `<button class="sf-idea" type="button" data-q="${t}">${e} ${t}</button>`).join('')}</div>`;
     box.querySelectorAll('.sf-idea:not(.sf-forget)').forEach(b => b.addEventListener('click', () => {
       $('searchInput').value = b.dataset.q;

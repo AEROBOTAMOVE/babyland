@@ -221,7 +221,7 @@
     const име = у === 'ios' ? '📱 На твоя iPhone' : у === 'android' ? '📱 На твоя Android' : '📱 Стъпките, една по една';
     c.innerHTML = `<h3 class="inst-h">${име}</h3>
       <ol class="inst-steps">${СТЪПКИ[у].map(s => `<li>${s}</li>`).join('')}</ol>
-      <p class="inst-note">Не се сваля от магазин, не заема място като приложение и не иска регистрация. Просто иконка, която отваря това.</p>`;
+      <p class="inst-note">Не се сваля от магазин и не заема място като приложение. Просто иконка, която го отваря.</p>`;
     if (у !== 'other') {
       const др = el('button', 'jr-chip', у === 'ios' ? 'Имам Android' : 'Имам iPhone');
       др.type = 'button';

@@ -318,7 +318,7 @@ window.BL_ARTICLES_DATA = [
     if (!a.body && a.load) {
       a.body = '⏳ Разгръщам страницата от Голямата библиотека…';
       a.load().then(b => {
-        a.body = b || 'Хм, страницата не се зареди. Провери интернета и опитай пак. 📚';
+        a.body = b || 'Страницата не се зареди. Провери интернета и опитай пак. 📚';
         const ov = $('artOverlay');
         if (ov && !ov.hidden && $('artHTitle').textContent === a.title) openArticle(id);
       }).catch(() => { a.body = null; });
@@ -476,7 +476,7 @@ window.BL_ARTICLES_DATA = [
     //    девет стаи, index.json), или четенето им не е успяло. Обещание за
     //    бъдеща доставка, което никой няма да изпълни, се сменя с истината и с
     //    единственото, което наистина помага: презареждане.
-    if (!arts.length) { container.appendChild(mk('p', 'jr-privacy', 'Рафтът още не се е отворил. Затвори стаята и я отвори пак — статиите се четат при първото пускане. 📚')); return; }
+    if (!arts.length) { container.appendChild(mk('p', 'jr-privacy', 'Статиите още се зареждат. Затвори стаята и я отвори пак. 📚')); return; }
     const search = mk('input', 'art-search');
     search.type = 'text'; search.placeholder = '🔍 Търси в статиите…';
     container.appendChild(search);

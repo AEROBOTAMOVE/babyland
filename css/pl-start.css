@@ -200,3 +200,50 @@ html body #roomOverlay .ro-panel #roFab.ro-fab { width: 46px !important; height:
 /* 7 · НОЩЕМ — последните бледи етикети в стаите */
 html[data-theme="dark"] body #roomOverlay #roRoom .bb-dipbox > .bb-diplbl { color: #c9cbe3 !important; }
 /* край 14.11 · екраните */
+
+/* ═══════════════════════════════════════════════════════════════════════════════
+   📐 15.11 · ЕКРАНИТЕ ИЗВЪН СТАИТЕ — запознаването, „Добави ме на телефона“, СОС центърът, „Неделно четиво“
+   МЕРЕНО ПРЕДИ (ekr_prozorci.js — същият одит като на стаите · 390 и 360 px · светло и тъмно):
+     · запознаване: „Готово 💜“ — бяло върху светлорозово, 2.35:1; подписите (.onb-lbl-soft) с opacity .68 → 3.1:1;
+     · „Добави ме на телефона“ нощем: „iPhone“ — тъмносиньо върху тъмносиньо, 1.08:1; „Android“ (избран) 1.82:1;
+       кръгчетата 1 · 2 · 3 в демото — бяло върху розово-лилаво, 2.17:1;
+     · СОС центърът: подписите на номерата 11.5–12.5 px;
+     · „Неделно четиво“: заглавията се режеха на 30-ия знак с „…“ (js/rooms5.js) и бяха 12.5 px.
+     Четецът на статии, търсачката и вратата: 0 под прага, 0 цели под 44 — непипнати. 360 px: нищо не излиза вдясно.
+   ПЪТ НАЗАД: махни този раздел (до „край 15.11 · прозорците“).
+   ═══════════════════════════════════════════════════════════════════════════════ */
+
+/* 1 · ЗАПОЗНАВАНЕТО: главният бутон е гелът (както навсякъде), подписите — плътни */
+html:not([data-theme="dark"]) body #onbOverlay#onbOverlay #onbSave {
+  background-color: var(--ui-gel) !important;
+  background-image:
+    radial-gradient(120% 70% at 50% -10%, rgba(255, 255, 255, .62) 0, rgba(255, 255, 255, .18) 38%, rgba(255, 255, 255, 0) 55%),
+    linear-gradient(180deg, var(--ui-gel-top) 0%, var(--ui-gel-mid) 32%, var(--ui-gel) 62%, var(--ui-gel-bot) 100%) !important;
+  text-shadow: 0 1px 0 rgba(120, 20, 60, .35);
+  box-shadow: inset 0 1.5px 0 rgba(255, 255, 255, .55), inset 0 -3px 0 rgba(120, 20, 60, .22), 0 3px 0 #a83566, 0 10px 20px rgba(200, 69, 122, .32) !important;
+}
+html body #onbOverlay#onbOverlay .onb-card .onb-lbl-soft { opacity: 1 !important; }
+html:not([data-theme="dark"]) body #onbOverlay#onbOverlay .onb-card .onb-lbl-soft { color: var(--pl-ink-soft) !important; }
+
+/* 2 · „ДОБАВИ МЕ НА ТЕЛЕФОНА“ */
+/* кръгчетата 1 · 2 · 3: #c4457a → #7a55b0 (бяло 4.7–5.6:1) */
+html.pl-on .install .mc strong { background: linear-gradient(135deg, #c4457a, #7a55b0) !important; color: #fff !important; }
+/* нощем: dark.css боядисва .pt-btn тъмно (!important), а premium.css пише тъмносин текст → невидим „iPhone“ */
+html[data-theme="dark"].pl-on body .install .pt-btn.pt-btn { background: rgba(255, 255, 255, .08) !important; color: #e3e5f5 !important; border-color: rgba(255, 255, 255, .24) !important; }
+html[data-theme="dark"].pl-on body .install .pt-btn.pt-btn.active { background: #fde6ef !important; color: #9e2f5f !important; border-color: #f0b7cd !important; }
+
+/* 3 · СОС ЦЕНТЪРЪТ: подписите под номерата → S */
+html body #sosOverlay#sosOverlay :is(.sos-big > span, .sos-nm > small, p.sos-tips, .sos-roomlink, .sos-edit) { font-size: var(--bl-t-s) !important; }
+
+/* 4 · „НЕДЕЛНО ЧЕТИВО“: цялото заглавие (js/rooms5.js вече не реже), до 2 реда, S; хапчето — цял ред */
+html.pl-on body #todaySection#todaySection .td-digest > .td-chip.td-chip {
+  flex: 1 1 100%; width: 100%; height: auto !important; min-height: 44px !important; justify-content: flex-start !important; align-items: center !important;
+  gap: 8px; padding: 8px 14px !important; text-align: left !important; white-space: normal !important; font-size: var(--bl-t-s) !important; line-height: 1.3 !important;
+}
+html.pl-on body #todaySection .td-digest .td-dg-e { flex: none; }
+html.pl-on body #todaySection .td-digest .td-dg-t { display: -webkit-box; -webkit-box-orient: vertical; -webkit-line-clamp: 2; overflow: hidden; min-width: 0; }
+/* 5 · ВРАТАТА и ЗАПОЗНАВАНЕТО — само скалата (контрастът и целите там вече минават): 13.5 → S, 15.5/16 → M */
+html body #blDostap#blDostap :is(p.bl-dg-small) { font-size: var(--bl-t-s) !important; }
+html body #blDostap#blDostap :is(p.bl-dg-lead, button.bl-dg-switch, button.bl-dg-switch > b) { font-size: var(--bl-t-m) !important; }
+html body #onbOverlay#onbOverlay .onb-card p.onb-text { font-size: var(--bl-t-m) !important; }
+/* край 15.11 · прозорците */

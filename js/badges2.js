@@ -63,6 +63,13 @@
          <button class="jr-btn md-ok" type="button">Благодаря 💜</button>
        </div>`;
     document.body.appendChild(слой);
+    // 🖐️ 15.11 (чат „екрани“) · ПЪРВИТЕ 450 ms ДОПИРЪТ НЕ Е ЗА МЕДАЛЬОНЧЕТО. То излиза само — след стартовия
+    //   екран, след запис, а следващото от опашката 260 ms след „Благодаря“ — точно под пръста, който вече
+    //   е тръгнал към друго (мерено: otklik_proba, тъмно — натискът по плочката на стая улучи .md-name;
+    //   второ медальонче се затваряше с втория допир, без да е прочетено). Натиск в първите 450 ms се
+    //   поглъща: медальончето остава, мама го затваря, когато го види. ПЪТ НАЗАД: махни двата реда с „роден“.
+    const роден = performance.now();
+    слой.addEventListener('click', e => { if (performance.now() - роден < 450) { e.stopPropagation(); e.preventDefault(); } }, true);
     requestAnimationFrame(() => слой.classList.add('on'));
     fx().chime();
     setTimeout(() => fx().confetti(слой.querySelector('.md-box')), 380);
