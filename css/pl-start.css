@@ -106,3 +106,97 @@ html.pl-on #todaySection .ch-emo.pl-pl { display: inline-block; width: 28px !imp
 /* „Минута за теб“ нощем губеше серифа (Nunito), а „Под ръка“ е Georgia — един почерк и нощем */
 html[data-theme="dark"].pl-on #todaySection .bn-txt strong { font-family: var(--pl-serif, Georgia, serif) !important; }
 /* край 6 */
+
+/* ═══════════════════════════════════════════════════════════════════════════════
+   📐 14.11 · ЕКРАНИТЕ — една скала за текста, четим контраст, по-малко шум (началото + 9-те стаи)
+   Собственикът (14.11): „мама за 3 секунди да разбира къде е и какво да натисне“.
+   МЕРЕНО ПРЕДИ (ekr_proba.js · 390×844 · светло и тъмно · по цялата височина на всеки екран):
+     · 15–25 различни размера на шрифта на екран; 197 текста на 11.5 px, 85 на 12, 113 на 12.5;
+     · бял текст върху розовия гел (главните бутони) — 3.7–4.2:1 точно под буквите (под 4.5);
+     · розовите „+“ и „›“ (покани за натискане) върху крема — 2.5–2.9:1;
+     · надписите на табовете 11.5 px, неактивните — избледнени (4.2:1); значката „99+“ на „Статии“
+       стои винаги (непрочетените статии са стотици) — вечна тревога, без нова информация;
+     · бутонът за тема (луна/слънце) е закован горе вдясно и при превъртане лежи върху картите на началото.
+   СКАЛАТА — три размера за текста в картите и лентите:
+     S 13 px · подписи, бележки, чипове, етикети   ·   M 15 px · текст и бутони   ·   L 18 px · заглавие на карта.
+     Над тях стоят само заглавията на разделите (20 px) и серифните заглавия на героите.
+   Тежестта: #roRoom#roRoom / #plHome#plHome (двоен id) — бие стайните правила (pl-*.css) без да ги пипа.
+   ПЪТ НАЗАД: махни този раздел (до „край 14.11 · екраните“). Копие на файла отпреди е в бележките на
+   сесията: ekrani_14-11/predi_css/pl-start.css.
+   ═══════════════════════════════════════════════════════════════════════════════ */
+:root { --bl-t-s: 13px; --bl-t-m: 15px; --bl-t-l: 18px; }
+
+/* 1 · ГЕЛЪТ (pl-ui.css § 1 — всички главни розови бутони): средата, където стоят буквите, е тон по-тъмна.
+   Бяло върху #c4457a = 4.7:1 (беше #d95a8e = 3.6:1). Бликът горе (#f39bbb), дъното и формата остават. */
+:root { --ui-gel-mid: #c4457a; --ui-gel: #b13a6c; --ui-gel-bot: #9c2f5e; }
+
+/* 2 · ПОКАНИТЕ ЗА НАТИСКАНЕ в розово („+“ в „Нашият ден“, „›“ на картите) — #c4457a = 4.6:1 върху крема.
+   Сърчицата ♡ до заглавията са украса, 22–30 px: #d4588b = 3.6:1 (прагът за едър знак е 3:1). */
+html:not([data-theme="dark"]).pl-on #plHome#plHome .pl-day-it:not(.on) .pl-day-t b { color: #c4457a !important; }
+html:not([data-theme="dark"]).pl-on #plHome#plHome :is(.pl-napomni, .pl-find) > em { color: #c4457a !important; }
+html:not([data-theme="dark"]).pl-on :is(#plHome h1 .pl-heart, .pl-krai figcaption span) { color: #d4588b !important; }
+html:not([data-theme="dark"]) body #roomOverlay #roRoom .pl-rhero-t b > i { color: #d4588b !important; }
+
+/* 3 · СКАЛАТА В СТАИТЕ — общите класове (jr-card, „Попитай“, плочките) са еднакви в 9-те стаи */
+html body #roomOverlay .ro-panel #roRoom#roRoom .jr-card .jr-title { font-size: var(--bl-t-l) !important; line-height: 1.22 !important; }
+html body #roomOverlay .ro-panel #roRoom#roRoom .jr-card .jr-sub { font-size: var(--bl-t-s) !important; font-weight: 600 !important; line-height: 1.35 !important; letter-spacing: 0 !important; }
+html body #roomOverlay .ro-panel #roRoom#roRoom :is(p.jr-privacy, p.jr-weekcap, .ask-line, .ask-live, .ask-chip, .pl-tl) { font-size: var(--bl-t-s) !important; }
+/* (чиповете „+“ в редовете за добавяне — .jr-addrow — си пазят едрия знак) */
+html body #roomOverlay .ro-panel #roRoom#roRoom :not(.jr-addrow) > .jr-chip:not(.pl-zm-plus) { font-size: var(--bl-t-s) !important; }
+html body #roomOverlay .ro-panel #roRoom#roRoom p.jr-privacy { line-height: 1.45 !important; }
+/* редовете-отметки („Бебето е около 6-месечно“, победите в дневника): 13.5 → S, като чиповете */
+html body #roomOverlay .ro-panel #roRoom#roRoom :is(.jr-win, .jr-winbtn) { font-size: var(--bl-t-s) !important; }
+/* подзаглавието на героя под серифното заглавие: 14 → M */
+html body #roomOverlay #roRoom#roRoom .pl-rhero-t span { font-size: var(--bl-t-m) !important; }
+/* кътчетата на стаята (плочките под героя): S; самотната хоризонтална плочка на последния ред — M */
+html body #roomOverlay .ro-panel #roRoom#roRoom .sec-nav .sec-chip[data-pl] { font-size: var(--bl-t-s) !important; }
+html body #roomOverlay .ro-panel #roRoom#roRoom .sec-nav .sec-chip[data-pl]:nth-child(3n+2):last-child,
+html body #roomOverlay .ro-panel #roRoom#roRoom .sec-nav .sec-chip[data-pl]:nth-child(3n+2):last-child .pl-tl { font-size: var(--bl-t-m) !important; }
+/* предупреждението в дъното на стаята: S, по-лек шрифт (беше 11.5/700) */
+html body #roomOverlay .ro-panel p.ro-disc.ro-disc { font-size: var(--bl-t-s) !important; font-weight: 600 !important; line-height: 1.3 !important; padding-top: 7px !important; padding-bottom: 7px !important; }
+
+/* 4 · ТАБОВЕТЕ НА СТАЯТА: надписът 12 px (по-широко не влиза в 47 px), неактивните не избледняват —
+   активният се познава по розовата капсула. Значката: точка без число (сигналът „има ново“ остава). */
+html body #roomOverlay #roTabs#roTabs .st-seg .st-n.st-n { font-size: 12px !important; letter-spacing: -.1px !important; }
+html body #roomOverlay #roTabs#roTabs .st-seg { opacity: 1 !important; }
+html:not([data-theme="dark"]) body #roomOverlay #roTabs#roTabs .st-seg:not(.on) { color: var(--pl-ink) !important; }
+html body #roomOverlay #roTabs#roTabs .st-dot {
+  font-size: 0 !important; min-width: 0 !important; width: 10px !important; height: 10px !important; padding: 0 !important;
+  border-radius: 50% !important; line-height: 0 !important;
+}
+
+/* 5 · НАЧАЛОТО */
+/* надписите под иконките в „Нашият ден“, помощничките, долната лента → S */
+html.pl-on #plHome#plHome .pl-day-it .pl-day-t small { font-size: var(--bl-t-s) !important; }
+html.pl-on #plHome#plHome .pl-pers .pl-fei-do { font-size: var(--bl-t-s) !important; line-height: 1.3 !important; }
+html.pl-on .bottom-nav .bn-item.bn-item { font-size: var(--bl-t-s) !important; }
+html.pl-on #todaySection :is(.fd-tq, .wk-foot) { font-size: var(--bl-t-s) !important; }
+html:not([data-theme="dark"]).pl-on #todaySection :is(.fd-tq, .ch-tih) { color: var(--pl-ink) !important; }
+html[data-theme="dark"].pl-on #todaySection :is(.fd-tq, .wk-foot, .ch-tih) { color: #c9cbe3 !important; }
+/* бутоните с 40 px височина → 44 (пръстът на майка с бебе на ръка); „Под ръка“ (premium.css 20.10) е с 1 id + 6 класа */
+html.pl-on :is(#plHome, #todaySection) .pl-vse { min-height: 44px !important; }
+html.pl-on body #todaySection#todaySection .td-chips .td-chip.td-chip { min-height: 44px !important; }
+/* помощничките: ролята под името („бременност“, „бебето“…) 11.5 → S; етикетът „СЕГА“ 11.5 → 12 (главни букви с разредка) */
+html.pl-on #plHome#plHome .pl-pers .pl-per > small { font-size: var(--bl-t-s) !important; }
+html.pl-on #plHome#plHome .pl-np-k { font-size: 12px !important; }
+/* бутонът за тема: горе вдясно на началото, но тръгва нагоре с него — не лежи върху картите отдолу */
+html.pl-on .theme-toggle { position: absolute !important; }
+/* подписите в „Днес“ бяха избледнени с opacity .72–.8 (мастилото ставаше ~#7a7c90 → 4.1:1): плътни, в тихия цвят */
+html.pl-on #todaySection :is(.ch-sub, .ch-legal, .fd-tq) { opacity: 1 !important; }
+html:not([data-theme="dark"]).pl-on #todaySection :is(.ch-sub, .ch-legal) { color: var(--pl-ink-soft) !important; }
+html[data-theme="dark"].pl-on #todaySection :is(.ch-sub, .ch-legal) { color: #c9cbe3 !important; }
+html.pl-on #todaySection .ch-sub { font-size: var(--bl-t-s) !important; }
+/* редовете „Светът на Бейби Ленд“: подписът и стрелката ▾ — по-плътни (5:1+) */
+html:not([data-theme="dark"]).pl-on .pl-svit .pl-svit-t > small { color: var(--pl-ink) !important; }
+html:not([data-theme="dark"]).pl-on .pl-svit .pl-svit-b > i { color: #85613d !important; }
+/* „+“ долу вляво (бързото добавяне): бяло върху светлото розово беше 2.2:1 → гелът отдолу (≥ 3.6:1 за знака) */
+html body #blPlus .plus-btn:not(.open) { background: linear-gradient(180deg, #d25486 0, #b13a6c 100%) !important; }
+
+/* 6 · БАЛОНЧЕТО-ПОМОЩНИЧКА (#roFab, долу вдясно в стаята): 58×74 лежеше върху края на картите (стрелки ›, текст)
+   при всяко спиране на превъртането. Помощничката е и в таба, и в „Попитай“ горе — балончето е третият вход:
+   остава, но е по-малко (46×58 — над 44 за пръст) и по-близо до ъгъла. Анимацията (fabBob) не се пипа. */
+html body #roomOverlay .ro-panel #roFab.ro-fab { width: 46px !important; height: 58px !important; right: 8px !important; }
+
+/* 7 · НОЩЕМ — последните бледи етикети в стаите */
+html[data-theme="dark"] body #roomOverlay #roRoom .bb-dipbox > .bb-diplbl { color: #c9cbe3 !important; }
+/* край 14.11 · екраните */
