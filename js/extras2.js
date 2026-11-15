@@ -328,7 +328,7 @@
     }
     c.appendChild(бележка);
     c.appendChild(grid);
-    c.appendChild(el('p', 'jr-privacy', '🔒 Снимките се смаляват и живеят само на телефона ти.'));
+    c.appendChild(el('p', 'jr-privacy', '🔒 Снимките се смаляват и стоят само на телефона ти.'));
     draw();
     return c;
   }
@@ -376,7 +376,7 @@
     }
   }
   function bubbleCard() {
-    const c = card('Пукни балончето 🎈 <span class="jr-sub">30 секунди глупаво и прекрасно анти-стрес</span>');
+    const c = card('Пукни балончето 🎈 <span class="jr-sub">30 секунди за разпускане</span>');
     const b = el('button', 'jr-btn', 'Играй! 🎈'); b.type = 'button';
     b.addEventListener('click', bubbleGame);
     c.appendChild(b);
@@ -391,7 +391,7 @@
     'Люлка люлчица 🌙': 'Люлка, люлчица,\nспинкай, детчица.\nМама е до теб,\nсънчо иде с лек посев.\n\nЗвездичките греят,\nприказки живеят.\nСпинкай, мило, спинкай ти —\nмама тук ще бди. 💜'
   };
   function lullabyCard() {
-    const c = card('Приспивни песнички 🎵 <span class="jr-sub">думите, когато умората ги е скрила</span>');
+    const c = card('Приспивни песнички 🎵 <span class="jr-sub">текстовете, ако си ги забравила</span>');
     const row = el('div', 'jr-quick');
     const out = el('div', 'lul-out');
     Object.keys(SONGS).forEach((name, i) => {

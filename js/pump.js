@@ -20,7 +20,7 @@
   const страна = s => s === 'left' ? 'Ляво' : s === 'right' ? 'Дясно' : 'Двете';
 
   function помпаКарта(root) {
-    const c = card('Дневник за помпене 🍼 <span class="jr-sub">кога и (по желание) колко изцеди — пазя ритъма ти</span>');
+    const c = card('Дневник за помпене 🍼 <span class="jr-sub">кога и колко изцеди · количеството не е задължително</span>');
     const out = el('p', 'bb-feed', '');
     const hist = el('p', 'bb-feed', ''); hist.style.opacity = '.85'; hist.style.fontSize = '.92em';
     c.appendChild(out);

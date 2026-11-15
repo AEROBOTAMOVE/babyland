@@ -217,7 +217,7 @@
       ov.onclick = e => { if (e.target === ov) ov.hidden = true; };
     }
     c.appendChild(addB); c.appendChild(file); c.appendChild(нотаРед); c.appendChild(бележка); c.appendChild(отмяна); c.appendChild(grid);
-    c.appendChild(el('p', 'jr-privacy', '🔒 Смалени, само на твоя телефон.'));
+    c.appendChild(el('p', 'jr-privacy', '🔒 Снимките се смаляват и стоят само на телефона ти.'));
     c.appendChild(въздух);
     addB.addEventListener('click', () => file.click());
     draw();
@@ -399,7 +399,7 @@
     });
     function draw() {
       items = load(key, []);   // пресен прочит при всяко рисуване
-      list.innerHTML = items.length ? '' : `<p class="jr-privacy">${opts.empty || 'Тук ще живеят малките звуци, които не искаш да забравиш. 🎙️'}</p>`;
+      list.innerHTML = items.length ? '' : `<p class="jr-privacy">${opts.empty || 'Тук ще са звуците, които не искаш да забравиш. 🎙️'}</p>`;
       // 🔴 26.08 (ИЗМЕРЕНО): същият дефект при гласовите записи — `it.label`
       //    върху null убиваше 5 карти в 4 стаи (гласова бележка, гласов
       //    дневник, песничка, писмо в корема, звуци на бебето).
@@ -432,7 +432,7 @@
       });
     }
     c.appendChild(recB); c.appendChild(бележка); c.appendChild(отмяна); c.appendChild(list);
-    c.appendChild(el('p', 'jr-privacy', '🔒 Записите живеят само на телефона ти (паметта е ограничена — кратки съкровища).'));
+    c.appendChild(el('p', 'jr-privacy', '🔒 Записите стоят само на телефона ти. Мястото е малко, затова са кратки.'));
     draw();
     return c;
   }

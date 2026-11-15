@@ -118,7 +118,7 @@
       let и = чети('bl_search_hist', []);
       if (!Array.isArray(и)) и = [];
       и = и.filter(т => typeof т === 'string' && т.trim() && т !== сегаQ);
-      if (window.BL_MOTHERFLAG) { try { и = и.filter(т => !BL_MOTHERFLAG(т)); } catch (e) {} }   // search.js:178
+      if (window.BL_MOTHERFLAG) { try { и = и.filter(т => !BL_MOTHERFLAG(т)); } catch (e) { if (!window.KB) и = []; } }   // search.js:178 · 14.11: без знание (kb.js async) — без историята, не непресята
       списък = и.slice(-4).reverse();
     }
     const подпис = JSON.stringify(списък);

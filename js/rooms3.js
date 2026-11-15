@@ -329,7 +329,7 @@
     // 05.08 (одит г06, №94): текстът обещаваше „дълго докосване", а слушателят
     // горе е обикновен click → мама чукваше стара снимка, за да я види, и ѝ
     // изскачаше „Да изтрия ли…". Текстът казва каквото кодът наистина прави.
-    c.appendChild(el('p', 'jr-privacy', '🔒 Смалени, само на телефона ти. Докосни стара снимка — питам, преди да я изтрия.'));
+    c.appendChild(el('p', 'jr-privacy', '🔒 Снимките се смаляват и стоят само на телефона ти. Докосни стара снимка, за да я изтриеш. Ще те питам преди това.'));
     draw();
     return c;
   }
@@ -450,7 +450,7 @@
       items = load('bl_pregw', [])
         .filter(x => x && typeof x.kg === 'number' && isFinite(x.kg));   // пресен прочит при всяко рисуване
       undo.hidden = !items.length;
-      if (!items.length) { box.innerHTML = '<p class="jr-privacy">Записвай колкото често ИСКАШ — кривата е за теб, не ти за нея. 🤍</p>'; return; }
+      if (!items.length) { box.innerHTML = '<p class="jr-privacy">Записвай, когато ти се иска. Няма задължителен ден. 🤍</p>'; return; }
       const last = items.slice(-14);
       const min = Math.min(...last.map(x => x.kg)) - 1, max = Math.max(...last.map(x => x.kg)) + 1;
       const X = i => 16 + i / Math.max(1, last.length - 1) * 288, Y = v => 96 - (v - min) / (max - min) * 78;
@@ -758,7 +758,7 @@
     inp.addEventListener('keydown', e => { if (e.key === 'Enter') { e.preventDefault(); добавиИме(); } });
     function draw() {
       items = load('bl_names_vote', []);   // пресен прочит при всяко рисуване
-      list.innerHTML = items.length ? '' : '<p class="jr-privacy">Добавете кандидатите — и нека сърцата решат. 💜</p>';
+      list.innerHTML = items.length ? '' : '<p class="jr-privacy">Добави имената, които харесвате. После гласувайте. 💜</p>';
       const подредени = items.slice().sort((a, b) => (b.m + b.t) - (a.m + a.t));
       подредени.forEach((it, място) => {
         const row = el('div', 'nm-row');
@@ -825,7 +825,7 @@
     inp.addEventListener('keydown', e => { if (e.key === 'Enter') { e.preventDefault(); добави(); } });
     function draw() {
       items = load('bl_playlist', []);   // пресен прочит при всяко рисуване
-      list.innerHTML = items.length ? '' : '<p class="jr-privacy">Първата песничка? Бебето слуша от ~16-та седмица. 🎵</p>';
+      list.innerHTML = items.length ? '' : '<p class="jr-privacy">Първата песничка? От около 24-та седмица бебето чува и музиката. 🎵</p>';
       items.slice().reverse().forEach((it, ri) => {
         const row = el('div', 'nt-row');
         row.innerHTML = `<div class="nt-txt">🎵 ${esc(it.t)}</div><div class="nt-meta"><span>${dstr(it.d)}</span><button class="nt-del" type="button" aria-label="Махни „${esc(it.t)}“ от списъка">🗑</button></div>`;
@@ -971,7 +971,7 @@
         `${it.s === 'Л' ? '🤱 ляво' : it.s === 'Д' ? '🤱 дясно' : '🍼 шише'} · <strong>${fmt(it.dur)}</strong> · ${new Date(it.ts).toLocaleTimeString('bg-BG', { hour: '2-digit', minute: '2-digit' })} ${dstr(it.ts)}`)));
     }
     c.appendChild(disp); c.appendChild(row); c.appendChild(каз); c.appendChild(hist);
-    c.appendChild(el('p', 'jr-privacy', 'Докосни същия бутон за стоп. Под 20 сек не записваме (случайно докосване).'));
+    c.appendChild(el('p', 'jr-privacy', 'Спри със същия бутон. Под 20 секунди не се записва.'));
     update(); drawHist();
     return c;
   }
@@ -1163,7 +1163,7 @@
     { n: 'Крем-супа броколи', e: '🥦', from: 7, ing: ['броколи', 'картоф'], how: 'Свари, пасирай с малко от бульона. Зелено чудо.' }
   ];
   function recipesCard() {
-    const c = card('Рецепти-карти 🃏 <span class="jr-sub">напиши какво имаш вкъщи — ще ти кажа какво става</span>');
+    const c = card('Рецепти-карти 🃏 <span class="jr-sub">напиши какво имаш вкъщи и ще ти предложа рецепта</span>');
     // 🔴 11.08 капанът на снимката (виж dayPhotoCard горе)
     let state = load('bl_recipes_state', {});
     const inp = el('input', 'jr-word'); inp.placeholder = '🧺 имам: морков, ориз…';
@@ -1300,7 +1300,7 @@
       //    реакции — прекрасно!“. Празният екран не е доказателство: на 7 месеца
       //    половината алергени още не са опитвани изобщо. Казваме какво ЗНАЕМ
       //    (нищо не е записано), не какво ПРЕДПОЛАГАМЕ (че няма алергия).
-      if (!auto.length && !manual.length) list.appendChild(el('p', 'jr-privacy', 'Тук още няма нищо записано. Празно не значи „няма алергия“ — значи, че още не сте се срещали с всичко. Добави ръчно, ако знаеш нещо.'));
+      if (!auto.length && !manual.length) list.appendChild(el('p', 'jr-privacy', 'Още няма записи. Празно не значи „няма алергия“, а че още не сте опитали всичко. Ако знаеш за алергия, добави я.'));
     }
     const addRow = el('div', 'jr-addrow');
     const inp = el('input', 'jr-word'); inp.placeholder = 'добави алерген ръчно…'; inp.maxLength = 30;
@@ -1379,7 +1379,7 @@
     });
     function draw() {
       const last = items.filter(x => Date.now() - x.ts < 7 * 86400000).slice(-20);
-      if (!last.length) { box.innerHTML = '<p class="jr-privacy">Записвай при мерене — тук се рисува посоката (спада ли, качва ли).</p>'; return; }
+      if (!last.length) { box.innerHTML = '<p class="jr-privacy">Записвай всяко мерене. Графиката показва дали спада, или се качва.</p>'; return; }
       const min = 36, max = 41;
       const X = i => 16 + i / Math.max(1, last.length - 1) * 288, Y = v => 92 - (Math.min(max, Math.max(min, v)) - min) / (max - min) * 74;
       let svg = `<svg viewBox="0 0 320 106" class="pw-svg">`;
@@ -1433,7 +1433,7 @@
         b.addEventListener('click', () => { items = load('bl_meds', []); items.push({ n, ts: Date.now() }); items = items.slice(-60); save('bl_meds', items); draw(); fx().buzz(10); });
         quick.appendChild(b);
       });
-      list.innerHTML = items.length ? '' : '<p class="jr-privacy">Тук НЕ даваме дози — записваме какво е дадено по лекарско, за да не се обърка при уморена глава. 💚</p>';
+      list.innerHTML = items.length ? '' : '<p class="jr-privacy">Тук не даваме дози. Записваш какво е дадено по лекарско предписание, за да не се объркаш с уморена глава. 💚</p>';
       items.slice(-8).reverse().forEach((it, ri) => {
         const idx = items.length - 1 - items.slice(-8).reverse().indexOf(it) - 0; // stable enough for delete-by-object
         const row = el('div', 'nt-row');
@@ -1524,7 +1524,7 @@
     inp.addEventListener('keydown', e => { if (e.key === 'Enter') { e.preventDefault(); добавиАпт(); } });
     function draw() {
       sync();   // 🔴 11.08: и рисуването тръгва от ПРЕСНИЯ склад, не от снимка
-      list.innerHTML = items.length ? '' : '<p class="jr-privacy">Серум, термометър, аспиратор… запиши какво имате — и никога не гадаеш в полунощ.</p>';
+      list.innerHTML = items.length ? '' : '<p class="jr-privacy">Запиши какво имате: серум, термометър, аспиратор… Нощем няма да гадаеш.</p>';
       items.forEach((it, idx) => {
         let expCls = '', expTxt = '';
         if (it.exp) {
@@ -1789,7 +1789,7 @@
     const освежи = () => {
       if (!сегашен) return;
       const бр = w[сегашен] || 0;
-      обобщение.innerHTML = `Сега сте ~размер <strong>${сегашен}</strong> — ${бр ? 'имате ' + бр + ' бр. от него.' : 'нямам записани бройки от него (може и да имате — просто не са броени тук).'}`;
+      обобщение.innerHTML = `Сега сте около размер <strong>${сегашен}</strong> — ${бр ? 'имате ' + бр + ' бр. от него.' : 'още няма записани дрехи в него.'}`;
     };
     ['50', '56', '62', '68', '74', '80', '86', '92'].forEach(sz => {
       const cell = el('div', 'wd-cell');

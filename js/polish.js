@@ -653,7 +653,7 @@
     // 🧱 памет-мениджърът: текстовете (localStorage) + медията (IndexedDB, стотици MB)
     const u = window.BL_STORE ? BL_STORE.usage() : { textsKB: 0, mediaKB: 0 };
     c.appendChild(el('p', 'jr-privacy',
-      `Памет: записки ~${u.textsKB} KB (таван ~5000 KB) · снимки и звуци ~${u.mediaKB > 1024 ? (u.mediaKB / 1024).toFixed(1) + ' MB' : u.mediaKB + ' KB'} (в големия склад — стотици MB място). Изтриване: от самите галерии. Ключалката 🔒 е в Дневника, архивът 💾 — по-горе в това кътче.`));
+      `Записки: ${u.textsKB} KB от около 5000 KB · снимки и звуци: ${u.mediaKB > 1024 ? (u.mediaKB / 1024).toFixed(1) + ' MB' : u.mediaKB + ' KB'} от стотици MB място. Снимките се трият от самите галерии. Ключалката 🔒 е в „Дневник на мама“, резервното копие 💾 е по-горе.`));
     return c;
   }
 

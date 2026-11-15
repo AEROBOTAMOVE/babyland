@@ -278,9 +278,26 @@
     }, 1200);
   }
 
+  // ⚡ 14.11 · kb.js е async (1,55 МБ вече не спира старта). Пише ли мама, преди знанието да е дошло —
+  //   кратко „секунда“ и търсенето се повтаря само, щом дойде. Иначе спешната проверка гърмеше
+  //   (BL_REDFLAG чете KB.redFlags) и полето оставаше празно. ПЪТ НАЗАД: махни този блок и реда в draw().
+  let _чакаЗнание = 0;
+  function чакайЗнанието(box) {
+    box.innerHTML = '<div class="sf-answer sf-chat"><span class="sf-ava sf-ava-s"><svg viewBox="0 0 60 96"><use href="#balloonShape"/></svg></span><div class="sf-bub">Секунда — зареждам отговорите… 🤍</div></div>';
+    _drawSig = '';
+    if (_чакаЗнание) return;
+    _чакаЗнание = setInterval(() => {
+      if (!window.KB) return;
+      clearInterval(_чакаЗнание); _чакаЗнание = 0;
+      const inp = $('searchInput'), ов = $('searchOverlay');
+      if (inp && ов && !ов.hidden) draw(inp.value);
+    }, 150);
+  }
+
   function draw(q) {
     const box = $('searchResults');
     if (!norm(q).trim() || norm(q).trim().length < 2) { greet(); return; }
+    if (!window.KB) { чакайЗнанието(box); return; }
     const res = search(q);
     // успешният въпрос изтрива своите недописани парчета от тефтера
     if (res.length) { clearTimeout(_миссЧас); изчистиНачалата(q); }

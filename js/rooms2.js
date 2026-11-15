@@ -501,7 +501,7 @@
     root.appendChild(c2);
 
     // 3. Хранене — кога беше последното
-    const c3 = card('Кога яде за последно? 🍼 <span class="jr-sub">бърз запис с 1 докосване (за мерене с време — кърмене-таймерът)</span>');
+    const c3 = card('Кога яде за последно? 🍼 <span class="jr-sub">запис с едно докосване · за време има „Кърмене-таймер“</span>');
     const feedOut = el('p', 'bb-feed', ''); c3.appendChild(feedOut);
     // проход 4: жива прогноза напред от НЕЙНИЯ ритъм — спира гадаенето в 13:00.
     const predOut = el('p', 'bb-feed bb-pred', ''); c3.appendChild(predOut);
@@ -683,7 +683,7 @@
     //    — а числото е само това, което мама е успяла да ЦЪКНЕ. Картата за съня
     //    в същата стая си го признава („броя само това, което си отбелязала“);
     //    тази — не. Празно поле не е доказателство.
-    c4.appendChild(el('p', 'jr-privacy', '6+ мокри пелени на ден = млякото стига. 💪 Броя само отбелязаните — пропуснато цъкане не е пропусната пелена.'));
+    c4.appendChild(el('p', 'jr-privacy', '6+ мокри пелени на ден = млякото стига. 💪 Броя само пелените, които отбележиш.'));
     root.appendChild(c4);
 
     // 5. Сън днес
@@ -796,7 +796,7 @@
     // 5б. проход 4 [36]: 24-часовият кръг — висцералният пулс на ЕДИН ден.
     // Точки = хранения, дъги = сън, стрелка = сега. С един поглед в 3 сутринта:
     // кога беше последното хранене, колко дълга беше дрямката, къде сме сега.
-    const cClock = card('Денят на един кръг 🕛 <span class="jr-sub">хранения, сън и „сега“ за днес</span>');
+    const cClock = card('Денят на един кръг 🕛 <span class="jr-sub">храненията и сънят днес, час по час</span>');
     const clockBox = el('div', 'bb-clockbox');
     cClock.appendChild(clockBox);
     const clockLeg = el('p', 'bb-clocklegend', '🍼 хранене · 🌙 сън · 📍 сега');
@@ -1349,7 +1349,7 @@
     root.appendChild(c2);
 
     // 3. Опитани + алергени
-    const c3 = card('Дневник на опитаното 📓 <span class="jr-sub">готов за консултацията с педиатъра</span>');
+    const c3 = card('Дневник на опитаното 📓 <span class="jr-sub">готов за педиатъра</span>');
     const triedOut = el('div', 'fd-triedlist'); c3.appendChild(triedOut);
     function drawTried() {
       const keys = Object.keys(load('bl_tried', {}));
@@ -1368,7 +1368,7 @@
     // интерактивната е функционален надмножество (проследява кое си въвела).
 
     // 5. Добави своя храна (къстъм!)
-    const c5 = card('Добави своя храна ➕ <span class="jr-sub">твоят календар, твоите храни</span>');
+    const c5 = card('Добави своя храна ➕ <span class="jr-sub">ако я няма в календара</span>');
     const nameI2 = el('input', 'jr-word'); nameI2.type = 'text'; nameI2.maxLength = 30; nameI2.placeholder = 'Име на храната… (напр. „Дюля“)';
     const monI = el('input', 'jr-word'); monI.type = 'number'; monI.min = 4; monI.max = 24; monI.placeholder = 'От кой месец…';
     const howI = el('input', 'jr-word'); howI.type = 'text'; howI.maxLength = 90; howI.placeholder = 'Как се поднася… (по желание)';
@@ -1465,7 +1465,7 @@
     }
 
     // 1. Етапи за възрастта
-    const c1 = card('Какво умее сега? 📈 <span class="jr-sub">прозорците са ШИРОКИ — не е състезание</span>');
+    const c1 = card('Какво умее сега? 📈 <span class="jr-sub">отбележи какво вече прави</span>');
     const ms = D.milestones;
     // 🤍 05.08 (скептик, №207 докрай): пазачът горе хващаше само БРЕМЕННАТА.
     //    Мама без попълнена рождена дата (нова, или изтрила я) пак получаваше
@@ -1548,7 +1548,7 @@
     //    снимка отгоре и трие първото отбелязано „първо нещо". Долу, при
     //    самия запис, четем ПРЯСНО и пипаме само своя ключ.
     const fdata = load('bl_firsts', {});
-    const c3 = card('Първите пъти 🌟 <span class="jr-sub">злато за спомените</span>');
+    const c3 = card('Първите пъти 🌟 <span class="jr-sub">усмивка, зъбче, дума, стъпка — с датата</span>');
     const fBox = el('div', 'dv-firsts');
     // 🔴 11.08 (обиколка по картите, ИЗМЕРЕНО): полето приемаше 2020 г. за
     //    „първа стъпка“ и 2030 г. за „първа усмивка“ — с конфети и вик „Първа
@@ -1625,7 +1625,7 @@
     root.appendChild(c1);
 
     // 2. Бебешки бюджет
-    const c2 = card('Бебешки бюджет 💰 <span class="jr-sub">честно и успокояващо</span>');
+    const c2 = card('Бебешки бюджет 💰 <span class="jr-sub">колко струва един месец</span>');
     // 💰 05.08: подразбирането беше {pel:80, other:60} и на празна памет
     //    картата посрещаше жената, която тъкмо смята дали ще се справи, с
     //    „~1680 лв за първата година“ — сметка, изречена като нейна, от числа,
@@ -2438,7 +2438,7 @@
         `<div class="td-inner td-welcome reveal">
           <div class="td-ava"><svg viewBox="0 0 60 96"><use href="#balloonShape"/></svg></div>
           <div class="td-whello">Здравей, мамо! 🌸</div>
-          <p class="td-wtext">Дай да те опозная — кажи ми мъничко за бебето и ще ти помагам лично: растеж, хранене, ваксини, съвети за деня.</p>
+          <p class="td-wtext">Кажи ми мъничко за бебето и съветите ще са точно за неговата възраст.</p>
           <button class="btn btn-pink td-onb" type="button"><span class="btn-shine"></span>✨ Запознай ме с бебето</button>
         </div>`;
       container.querySelector('.td-onb').addEventListener('click', () => { if (window.BL_ONBOARD) BL_ONBOARD.open(); });
@@ -2705,7 +2705,7 @@
       //    Броенето тръгва с първия ѝ отговор.
       prog.innerHTML = n
         ? ringSvg(n, ВЪПРОСИ.length) + `<span>${n} / ${ВЪПРОСИ.length} попълнени</span>`
-        : '<span class="jr-sub">Попълвай по едно, когато ти е кеф — няма срок и няма ред.</span>';
+        : '<span class="jr-sub">Попълвай по едно, когато искаш. Няма срок и няма ред.</span>';
     }
     upd();
     return c;

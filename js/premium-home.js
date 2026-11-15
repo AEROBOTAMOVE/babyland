@@ -192,7 +192,7 @@
           //   последна и „изскачаше“ след миг. Рафтът е най-горе на началото — зарежда се веднага.
           '<span class="pl-arch" aria-hidden="true"><img src="img/art/' + р.рис + '.webp" alt="" loading="eager" decoding="async" width="160" height="160"></span>' +
           '<span>' + esc(р.надпис) + '</span></button>').join('') +
-      '</div><button type="button" class="pl-vse" data-pl="vse" aria-expanded="false" aria-controls="plStaiVse">Всички стаи отблизо <i aria-hidden="true">▾</i></button>' +
+      '</div><button type="button" class="pl-vse" data-pl="vse" aria-expanded="false" aria-controls="plStaiVse">Виж всички стаи <i aria-hidden="true">▾</i></button>' +
         '<div class="pl-stai-vse" id="plStaiVse" hidden></div></div>' +
       // 🧸 деветте помощнички с ИСТИНСКИТЕ им лица (img/art/persony.webp, 3×3; клетка x = колона·50%, y = ред·50%).
       //    20.10: една лента за плъзгане (беше решетка 9 карти ≈ 1142 px); хорото долу е в „Още за Бейби Ленд“.
@@ -204,7 +204,7 @@
       '</div></div>' +
       '<button type="button" class="pl-mira" data-room="Моето бебе">' +
         '<i class="pl-art pl-mira-av" aria-hidden="true" style="background-image:url(img/art/ico-e.webp);background-position:33.333% 66.667%"></i>' +
-        '<span><b>Мира е до теб</b><small>Отговори, подкрепа и полезни съвети.</small></span>' +
+        '<span><b>Мира е до теб</b><small>Отговаря за съня, храненето и здравето.</small></span>' +
         '<em>Попитай ›</em>' +
       '</button>';
 
@@ -722,7 +722,7 @@
     var отв = typeof принудено === 'boolean' ? принудено : к.hidden;
     к.hidden = !отв;
     б.setAttribute('aria-expanded', String(отв));
-    б.innerHTML = отв ? 'Прибери стаите <i aria-hidden="true">▴</i>' : 'Всички стаи отблизо <i aria-hidden="true">▾</i>';
+    б.innerHTML = отв ? 'Прибери стаите <i aria-hidden="true">▴</i>' : 'Виж всички стаи <i aria-hidden="true">▾</i>';
     корен.classList.toggle('pl-stai-otv', отв);
     if (отв && с) [].forEach.call(с.querySelectorAll('.reveal'), function (е) { е.classList.add('shown'); });
   }
@@ -741,11 +741,11 @@
   // ── 4 · „ОЩЕ ЗА БЕЙБИ ЛЕНД“ ──
   var СТАРИ = [
     ['.netsec', 'Какво може Помощникът на мама', 'картата на всичко, което знае'],
-    ['.askme', 'Пробвай сега', 'попитай като приятелка'],
+    ['.askme', 'Попитай помощничката', 'пиши ѝ като на приятелка'],
     ['#помощничките', 'Хорото на помощничките', 'деветте феи, хванати за ръце'],
     ['#дневник', 'А ти как си днес?', 'пет личица за настроението'],
-    ['.faq', 'Питат ни често', 'кратки, честни отговори'],
-    ['#инсталирай', 'Добави ме на телефона', 'без Google Play — за 10 секунди']
+    ['.faq', 'Питат ни често', 'кратки отговори'],
+    ['#инсталирай', 'Добави ме на телефона', 'като приложение, без Google Play']
   ];
   function прибериСтарите() {
     var main = document.querySelector('main'); if (!main) return false;

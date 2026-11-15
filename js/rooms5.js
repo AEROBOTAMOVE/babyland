@@ -261,7 +261,7 @@
   // ═══════════ 🤒 Д3: БОЛНИЧНИЯТ ЕПИЗОД — всичко за болестта в една линия ═══════════
 
   function episodeCard(root) {
-    const c = card('Болничният епизод 🤒 <span class="jr-sub">температури + лекарства + бележки — една времева линия</span>');
+    const c = card('Болничният епизод 🤒 <span class="jr-sub">температури, лекарства и бележки подред</span>');
     const box = el('div', 'ep-box');
     function draw() {
       const cut = Date.now() - 7 * 86400000;

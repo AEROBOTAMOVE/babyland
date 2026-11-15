@@ -296,7 +296,7 @@
   }
 
   function wardrobeCard() {
-    const c = card('Гардеробът СЕГА 👗' + sub('тялото ти се промени. Дрехите се сменят, не тялото.'));
+    const c = card('Гардеробът СЕГА 👗' + sub('дрехи за тялото, което имаш сега'));
     const w = load('bl_wm_wardrobe', { sizes: {}, note: '' });
     if (!w.sizes || typeof w.sizes !== 'object') w.sizes = {};   // внесено/старо копие без полето
     const grid = el('div', 'wm-sizes');
@@ -409,7 +409,7 @@
   }
 
   function shoesCard() {
-    return listCard('Обувките 👠' + sub('и честният въпрос: кои са удобни с количка'),
+    return listCard('Обувките 👠' + sub('и кои са удобни с количка'),
       'bl_wm_shoes', ['удобни с количка', 'за когато съм ЖЕНА', 'чакат по-добри дни'],
       'кои обувки…', { empty: 'Разкажи ми за обувките си. Всяка има история. 👠' });
   }
@@ -843,7 +843,7 @@
   }
 
   function dreamsCard() {
-    const c = card('Мечтите ми — тогава и сега 🌠' + sub('понякога съвпадат · понякога не · и това е ок'));
+    const c = card('Мечтите ми — тогава и сега 🌠' + sub('понякога съвпадат · понякога не · и така е добре'));
     const d = load('bl_wm_dreams', { then: '', now: '' });
     const grid = el('div', 'wm-dreams');
     [['then', 'Преди да стана мама', '🌸'], ['now', 'Сега', '💜']].forEach(([k, t, e]) => {

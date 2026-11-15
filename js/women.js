@@ -637,7 +637,7 @@
   }
 
   function numeroCard() {
-    return зависима(card('Твоето число 🔢' + sub('смята се от рождената ти дата — затова е точно като аритметика')), c => {
+    return зависима(card('Твоето число 🔢' + sub('смята се от рождената ти дата')), c => {
       const me = load('bl_me', {});
       const lp = lifePath(me.birth), py = personalYear(me.birth);
       c.appendChild(el('div', 'wm-band', FUN));

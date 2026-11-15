@@ -1272,10 +1272,13 @@
     const баз = new Set();
     const яж = s => String(s || '').toLowerCase().split(/[^а-яё]+/).forEach(w => { if (w.length >= 3) баз.add(w); });
     try { (KB.entries || []).forEach(e => { (e.keys || []).forEach(яж); яж(e.title); }); } catch (e) {}
-    РЕЧНИК = new Set(баз);
-    баз.forEach(w => { if (!ДЕФ_ОКОНЧАНИЕ.test(w)) ОКОНЧАНИЯ.forEach(o => РЕЧНИК.add(w + o)); });
-    СЛУЖЕБНИ_ДУМИ.forEach(w => РЕЧНИК.add(w));
-    return РЕЧНИК;
+    const р = new Set(баз);
+    баз.forEach(w => { if (!ДЕФ_ОКОНЧАНИЕ.test(w)) ОКОНЧАНИЯ.forEach(o => р.add(w + o)); });
+    СЛУЖЕБНИ_ДУМИ.forEach(w => р.add(w));
+    // ⚡ 14.11 · kb.js е async: речник, построен ПРЕДИ знанието, е почти празен — не го пазим,
+    //   иначе би останал празен завинаги (тихо). ПЪТ НАЗАД: `РЕЧНИК = р` без условието.
+    if (window.KB && Array.isArray(KB.entries) && KB.entries.length) РЕЧНИК = р;
+    return р;
   }
   // ⚡ 05.09 · ИНДЕКСЪТ. Досега на ВСЕКИ въпрос се обхождаха всичките
   //   849 карти × 16 229 ключа. ИЗМЕРЕНО: 87 мс на въпрос — в телефона
@@ -4156,7 +4159,7 @@ function findEntry(text, room, exclude) {
     box.innerHTML = '';
     (list || []).forEach(item => {
       const label = typeof item === 'string'
-        ? (KB.entries.find(e => e.id === item) || {}).title
+        ? ((window.KB && Array.isArray(KB.entries) && KB.entries.find(e => e.id === item)) || {}).title   // 14.11: без знание — чипът се пропуска
         : item.label;
       if (!label) return;
       const b = el('button', 'ro-chip' + (item.art ? ' ro-chip-lib' : '') + (item.go ? ' ro-chip-go' : ''), label);
@@ -4202,6 +4205,10 @@ function findEntry(text, room, exclude) {
   }
 
   function roomChips(room, n) {
+    // ⚡ 14.11 · kb.js е async: стая, отворена преди знанието, гърмеше тук (ReferenceError в таймера на
+    //   поздрава → без чипове, без личните факти, без пренесения въпрос). Без знание — без тематичен чип.
+    //   Мерено: dev/proba/kb_async_proba.js. ПЪТ НАЗАД: махни реда с `if`.
+    if (!window.KB || !Array.isArray(KB.entries)) return [];
     return KB.entries.filter(e => e.room === room).slice(0, n || 3).map(e => e.id);
   }
   // 7.4.12: трите въпроса, с които всяка стая се представя при първо влизане
@@ -4219,6 +4226,16 @@ function findEntry(text, room, exclude) {
 
   // ── Композиторът: сглобява ЧОВЕШКИ отговор ──
   function respond(text, forcedId) {
+    // ⚡ 14.11 · ЗНАНИЕТО СЕ ЗАРЕЖДА ОТДЕЛНО: js/kb.js (1,55 МБ) е async и вече не спира старта
+    //   (мерено, dev/proba/kb_async_proba.js: при задържано знание началото чакаше 22,9 s при CPU ×4).
+    //   Попита ли мама, преди да е дошло — три точки, докато дойде, после отговорът сам. И спешните
+    //   отговори живеят в KB (KB.dvAnswer…), затова чака всичко; бутонът SOS не зависи от него.
+    //   ПЪТ НАЗАД: махни блока и върни `defer` на kb.js в index.html.
+    if (!window.KB) {
+      typing(true);
+      const чакай = setInterval(() => { if (window.KB) { clearInterval(чакай); typing(false); respond(text, forcedId); } }, 120);
+      return;
+    }
     // ═════════════════════════════════════════════════════════════════
     // 🚨 ПРИ ТРЕВОГА НЯМА ТЕАТЪР  (08.09)
     //
