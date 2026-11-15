@@ -31,7 +31,7 @@ html_handling = "none"
 [[d1_databases]]
 binding = "DB"
 database_name = "babyland"
-database_id = "ЗАМЕНИ_С_ID"
+database_id = "0ff959e0-4031-4867-98e0-df8f4a4eedfa"
 migrations_dir = "migrations"
 
 # ADMIN_EMAILS — по желание, в Cloudflare → Worker → Settings → Variables and Secrets

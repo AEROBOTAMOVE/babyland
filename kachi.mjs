@@ -149,7 +149,7 @@ if (bazataBeshe) {
   const ime = BAZA + "_" + sega.getFullYear() + "-" + dd(sega.getMonth() + 1) + "-" + dd(sega.getDate()) + "_" + dd(sega.getHours()) + "-" + dd(sega.getMinutes()) + ".sql";
   fs.mkdirSync(BACKUP, { recursive: true });
   const kade = path.join(BACKUP, ime);
-  const ex = wrangler(["d1", "export", BAZA, "--remote", "--output", kade]);
+  const ex = wrangler(["d1", "export", BAZA, "--remote", "--output", path.relative(TUK, kade)]);
   if (ex.kod !== 0 || !fs.existsSync(kade)) spri("резервно копие", "«wrangler d1 export " + BAZA + "» не мина — без копие не продължавам", ex.out);
   red("    ✓ резервно копие на данните · backup/" + ime + " (" + (fs.statSync(kade).size < 1024 ? fs.statSync(kade).size + " Б" : Math.round(fs.statSync(kade).size / 1024) + " КБ") + ")");
 } else red("    · резервно копие — не трябва (базата е нова, празна)");
