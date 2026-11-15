@@ -283,3 +283,22 @@ html body #roomOverlay #roFab.ro-fab { animation: fabBob 3.4s ease-in-out infini
   html.ro-otvorena body > .sky, html.ro-otvorena body > #plScene { content-visibility: hidden; }
 }
 /* край 15.11 · кадрите */
+
+/* ═══════════════════════════════════════════════════════════════════════════════
+   🧰 15.11 · ИНСТРУМЕНТИТЕ В СТАИТЕ — какво да натисна, без да гадая (четвърта порция, без проби в Chrome)
+   „Как си днес?“ в „Дневник на мама“ (rooms.js:182): петте личица на дъгата нямаха надпис — само aria-label
+   („много тежко“, „тъжно“, „горе-долу“, „добре“, „чудесно“). Горе в същата стая личицата са надписани
+   (pl-dnevnik.js — натискат СЪЩИТЕ бутони), а тук мама гадаеше. Надписът е собственият aria-label на бутона
+   (attr()) — нищо не се пише в JS. Дъгата расте с един ред (96 → 116 px); слотът е ~64 px, най-дългият надпис
+   „много тежко“ ~75 px, съседът му „тъжно“ е къс → не се застъпват.
+   ПЪТ НАЗАД: махни този раздел (до „край 15.11 · инструментите“). */
+html body #roomOverlay .ro-lav section.ck-card .ck-arc { height: 116px !important; }
+html body #roomOverlay .ro-lav section.ck-card .ck-st::after {
+  content: attr(aria-label); position: absolute; top: calc(100% + 4px); left: 50%; transform: translateX(-50%);
+  width: max-content; max-width: 84px; white-space: nowrap; pointer-events: none;
+  font: 700 12px/1.2 Nunito, Nunito-fallback, system-ui, sans-serif; color: var(--pl-ink-soft, #6a6682); text-align: center;
+}
+html[data-theme="dark"] body #roomOverlay .ro-lav section.ck-card .ck-st::after { color: #c9cbe3; }
+html body #roomOverlay .ro-lav section.ck-card .ck-st.picked::after { color: #9e2f5f; transform: translateX(-50%) scale(.86); }
+html[data-theme="dark"] body #roomOverlay .ro-lav section.ck-card .ck-st.picked::after { color: #ffc2d8; }
+/* край 15.11 · инструментите */
