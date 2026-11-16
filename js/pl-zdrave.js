@@ -362,7 +362,15 @@
   function върви() {
     const ов = document.getElementById('roomOverlay');
     if (!ов) return;
-    new MutationObserver(отложено).observe(ов, { childList: true, subtree: true, attributes: true, attributeFilter: ['class', 'hidden'] });
+    // ⚡ 16.11 (LoAF 360 px, „Спешно — сега“ в „Здраве и SOS“: кадър 704 ms, таймерът на този файл 123 ms):
+    //   кликът по кътчето сменя САМО класове ВЪТРЕ в #roRoom (.on на чиповете — pl-ui.js:110, anim.js:193;
+    //   .bl-sec-flash — pl-ui.js:111-112; .is-pending/.is-in — anim.js:122-123 при плавния скрол) и всеки
+    //   будеше сложи() → 8 четения + JSON.parse от склада (и bl_rash със снимките), без нито една промяна.
+    //   Блокът не зависи от класовете на децата на стаята: ro-green е на .ro-panel (предшественик), а нова
+    //   карта/запис идва като childList. Пакет САМО от атрибути на наследници на #roRoom се прескача.
+    //   ПЪТ НАЗАД: върни `new MutationObserver(отложено)` и махни реда със самоКласВСтаята.
+    const самоКласВСтаята = з => з.every(r => r.type === 'attributes' && r.target.parentElement && r.target.parentElement.closest('#roRoom'));
+    new MutationObserver(з => { if (!самоКласВСтаята(з)) отложено(); }).observe(ов, { childList: true, subtree: true, attributes: true, attributeFilter: ['class', 'hidden'] });
     сложи();
     // 🪤 снимките на обрив (bl_rash) са МЕДИЕН ключ: store.js:86 (MEDIA_KEYS) ги държи в IndexedDB и
     //   getItem ги връща от кеша (store.js:269-273) едва след init (store.js:281). Докато init върви, редът би казал „няма“ —
@@ -527,7 +535,13 @@
   function върви() {
     const ов = document.getElementById('roomOverlay');
     if (!ов) return;
-    new MutationObserver(отложено).observe(ов, { childList: true, subtree: true, attributes: true, attributeFilter: ['class', 'hidden'] });
+    // ⚡ 16.11 (LoAF, „Спешно — сега“): същото като в първия модул — смяната на класове вътре в стаята
+    //   (чипове .on, .bl-sec-flash, .is-pending/.is-in) будеше мини() → ~7 обхождания на цялата стая, които
+    //   нищо не пишат. Емоджитата идват с нови възли (childList), зелената стая е класът на .ro-panel
+    //   (вън от #roRoom) — те минават както досега.
+    //   ПЪТ НАЗАД: върни `new MutationObserver(отложено)` и махни реда със самоКласВСтаята.
+    const самоКласВСтаята = з => з.every(r => r.type === 'attributes' && r.target.parentElement && r.target.parentElement.closest('#roRoom'));
+    new MutationObserver(з => { if (!самоКласВСтаята(з)) отложено(); }).observe(ов, { childList: true, subtree: true, attributes: true, attributeFilter: ['class', 'hidden'] });
     мини();
   }
   if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', върви); else върви();

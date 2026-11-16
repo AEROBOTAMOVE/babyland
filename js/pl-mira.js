@@ -128,14 +128,22 @@
       }
 
       // 3) часът под новите балончета (#roTyping е „пише…“ — той не е съобщение)
-      const долу = чат.scrollHeight - чат.scrollTop - чат.clientHeight < 60;
-      let нови = 0;
-      чат.querySelectorAll(':scope > .msg:not([data-pl-mc-t])').forEach(р => {
-        if (р.id === 'roTyping') return;
-        р.setAttribute('data-pl-mc-t', часът()); нови++;
-      });
-      // часът добавя ред под балончето → helper-ът вече е превъртял до дъното; връщаме го там
-      if (нови && долу) чат.scrollTop = чат.scrollHeight;
+      // ⚡ 16.11 (LoAF 360 px, butoni_proba): таймерът се буди от ВСЯКА промяна в стаята (сгъване, SOS, чип,
+      //   запис) и четеше scrollHeight/scrollTop/clientHeight веднага след нея → принудено подреждане
+      //   39–589 ms („Сгъни „Бележка за прегледа““ 589, „Изпито днес“ 192, „Подреди мислите“ 168), а без нови
+      //   балончета резултатът отиваше на вятъра. Сега четем САМО ако има балонче без час — querySelector
+      //   не подрежда. С нови балончета — същият код, в същия миг (часът остава часът на пристигане).
+      //   ПЪТ НАЗАД: махни реда „if (чат.querySelector(…)) {“ и затварящата му „}“.
+      if (чат.querySelector(':scope > .msg:not([data-pl-mc-t]):not(#roTyping)')) {
+        const долу = чат.scrollHeight - чат.scrollTop - чат.clientHeight < 60;
+        let нови = 0;
+        чат.querySelectorAll(':scope > .msg:not([data-pl-mc-t])').forEach(р => {
+          if (р.id === 'roTyping') return;
+          р.setAttribute('data-pl-mc-t', часът()); нови++;
+        });
+        // часът добавя ред под балончето → helper-ът вече е превъртял до дъното; връщаме го там
+        if (нови && долу) чат.scrollTop = чат.scrollHeight;
+      }
 
       // 4) бутоните в отговорите: гел; палците: филцови кръгчета
       чат.querySelectorAll(':scope > .more-inline:not(.pl-gel)').forEach(б => б.classList.add('pl-gel'));

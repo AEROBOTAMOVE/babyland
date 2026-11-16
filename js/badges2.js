@@ -74,15 +74,29 @@
     fx().chime();
     setTimeout(() => fx().confetti(слой.querySelector('.md-box')), 380);
 
+    // ♿ 16.11 (мерено, potoci_proba + следене на history.*): медальончето излиза НАД отворена стая.
+    //   Esc затваряше И него, И стаята (helper.js слуша същия Esc на document и вика close() →
+    //   history.back()); следващото „Назад“ вече изкарваше от приложението (about:blank).
+    //   Сега: слушаме в ЗАХВАТ (преди helper.js) и слагаме маркера __blСлойПоет — протоколът на
+    //   приложението „този Esc е изяден от горния слой“ (articles.js, pl-igri.js, pl-hranene.js).
+    //   Слушателят се маха при ВСЯКО затваряне — преди оставаше след „Благодаря“/фона и с маркера
+    //   щеше да изяжда следващия Esc на стаята.
+    //   ПЪТ НАЗАД: върни `document.addEventListener('keydown', function esc2(e) { if (e.key === 'Escape') { затвори(); document.removeEventListener('keydown', esc2); } });` и махни esc2 от затвори().
+    let затворено = false;
     const затвори = () => {
+      if (затворено) return; затворено = true;
+      document.removeEventListener('keydown', esc2, true);
       слой.classList.remove('on');
       setTimeout(() => { слой.remove(); върви = false; ако(); }, 260);
     };
+    function esc2(e) {
+      if (e.key !== 'Escape') return;
+      e.__blСлойПоет = true;
+      затвори();
+    }
     слой.querySelector('.md-ok').addEventListener('click', затвори);
     слой.addEventListener('click', e => { if (e.target === слой) затвори(); });
-    document.addEventListener('keydown', function esc2(e) {
-      if (e.key === 'Escape') { затвори(); document.removeEventListener('keydown', esc2); }
-    });
+    document.addEventListener('keydown', esc2, true);
   }
 
   // Обвивам sweep-а: той сам решава кое е ново, аз само сменям ПОКАЗВАНЕТО.

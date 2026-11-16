@@ -176,7 +176,11 @@
   var чакаСверка = null;
   function сверѝСкоро() {
     if (чакаСверка) return;
-    чакаСверка = setTimeout(function () { чакаСверка = null; сверѝГеометрично(); }, 250);
+    // ⚡ 16.11 (LoAF 360 px): таймерът падаше веднага след натиск (напр. „Дневник — към кътчето“), преди кадъра,
+    //   и първото getBoundingClientRect насилваше подреждането на новото съдържание (до 184 ms). Сега чете СЛЕД
+    //   кадъра (rAF → setTimeout 0): подреждането вече е готово, присъдата и класовете са същите, най-много кадър по-късно.
+    //   ПЪТ НАЗАД: чакаСверка = setTimeout(function () { чакаСверка = null; сверѝГеометрично(); }, 250);
+    чакаСверка = setTimeout(function () { requestAnimationFrame(function () { setTimeout(function () { чакаСверка = null; сверѝГеометрично(); }, 0); }); }, 250);
   }
   // Плъзгачът е вътрешен → слушаме в ЗАХВАТ, за да чуем всеки контейнер.
   document.addEventListener('scroll', сверѝСкоро, true);
@@ -240,7 +244,10 @@
       if (!елем) return;
       if (чакаНов) return;
       var изчакай = Math.max(ПАУЗА, НАЙ_ЧЕСТО - (Date.now() - последенОбход));
-      чакаНов = setTimeout(прегледайНовите, изчакай);
+      // ⚡ 16.11 (LoAF 360 px): прегледайНовите (getComputedStyle + getBoundingClientRect) тичаше преди кадъра на
+      //   новото съдържание и насилваше стил/подреждане (100–184 ms). Сега след кадъра — същите записи и класове.
+      //   ПЪТ НАЗАД: чакаНов = setTimeout(прегледайНовите, изчакай);
+      чакаНов = setTimeout(function () { requestAnimationFrame(function () { setTimeout(прегледайНовите, 0); }); }, изчакай);
     }).observe(document.body, { childList: true, subtree: true });
   } catch (e) {}
 
