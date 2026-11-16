@@ -402,4 +402,18 @@ html body #roomOverlay .ro-lav .jr-card :is(input.jr-word, textarea.jr-paper)::p
   html body #roomOverlay .ro-lav .jr-card :is(input.jr-word, textarea.jr-paper)::placeholder { letter-spacing: -.3px !important; }
   html body #roomOverlay .ro-lav .jr-card input.jr-word { padding-right: 10px !important; }
 }
+/* 8 · БУТОНИТЕ — ЕДНА СИСТЕМА (мерено cv_butoni.js + q_cta.js по всички екрани). Трите нива вече ги има в pl-ui.css:
+       основно = розов гел, второстепенно = кремав филц, тихо = прозрачно/пунктир. Разминаванията бяха вътре в нивата:
+       · големият гел (героят на стаята): 54–60 px, 18–21 px, 700/800 („Добави хранене“ 60/21/700, „Пиши“ 58/20,
+         „Избери своя момент“ 58/19/700, „Да поиграем“ 54/19, „Започни опит“ 54/18.66) → 56 px · L 18 px · 800,
+         като „+ Добави момент“ (pl-cta, 56/18/800);
+       · запознаването „Готово 💜“: 56/18/800 само денем (premium.css:546), нощем 53/16/700 и съдържанието се режеше → и нощем;
+       · обикновеният гел: jr-btn 14.5 px (извън скалата), „Планирай“ 46/15/700, „Влез в…“ 47/15 → 50 px · M 15 px · 800;
+       · „Влез в…“, бутонът на „Попитай“ и „net-go“ — по-плоският стар гел (premium.css:1360) → общият гел (pl-ui.css, 1 · ред 36).
+       Шрифтът — на скалата (--bl-t-m 15 / --bl-t-l 18); по-специфичните правила с !important (напр. „😴 Заспа“ 18 px) остават. */
+html body :is(.pl-bb-cta, .pl-hr-cta, .pl-dn-write, .pl-ig-play, .pl-zm-go, .pl-lb-go, .pl-cta):is(button, a),
+html body #onbOverlay#onbOverlay #onbSave {
+  min-height: 56px !important; height: auto !important; font-size: var(--bl-t-l) !important; font-weight: 800 !important; border-radius: 999px !important;
+}
+html body :is(button.jr-btn, .pl-hr-go, .d24-go) { min-height: 50px !important; font-size: var(--bl-t-m) !important; font-weight: 800 !important; }
 /* край 16.11 · цветове и бутони */

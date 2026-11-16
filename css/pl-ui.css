@@ -33,7 +33,8 @@
 /* ═══ 1 · ГЛАВНОТО ДЕЙСТВИЕ — розов гел с блик, дъно и натискане ═══ */
 html body .jr-btn.jr-btn, html body .btn.btn-pink, html body .pl-cta.pl-cta, html body .pl-gel.pl-gel,
 html body #roomOverlay .ask-send.ask-send, html body #roForm button:last-child:not(#roMic),
-html body #onbOverlay #onbSave, html body .tour-next.tour-next {
+html body #onbOverlay #onbSave, html body .tour-next.tour-next,
+html body .d24-go.d24-go, html body .net-go.net-go, html body .askme-form button {   /* 16.11 (чат „екрани“): трите от premium.css:1360 — по-плоският стар гел; ПЪТ НАЗАД: махни този ред и този в :active */
   position: relative; isolation: isolate;
   background-color: var(--ui-gel) !important;
   background-image:
@@ -50,7 +51,8 @@ html body #onbOverlay #onbSave, html body .tour-next.tour-next {
 }
 html body .jr-btn.jr-btn:active, html body .btn.btn-pink:active, html body .pl-cta.pl-cta:active, html body .pl-gel.pl-gel:active,
 html body #roomOverlay .ask-send.ask-send:active, html body #roForm button:last-child:not(#roMic):active,
-html body #onbOverlay #onbSave:active, html body .tour-next.tour-next:active {
+html body #onbOverlay #onbSave:active, html body .tour-next.tour-next:active,
+html body .d24-go.d24-go:active, html body .net-go.net-go:active, html body .askme-form button:active {
   transform: translateY(3px) !important;
   box-shadow: inset 0 1.5px 0 rgba(255, 255, 255, .45), inset 0 -2px 0 rgba(120, 20, 60, .2), 0 0 0 #a83566, 0 4px 10px rgba(200, 69, 122, .28) !important;
 }

@@ -101,7 +101,7 @@ html[data-theme="dark"] #blSplash .bls-sos{color:#ffd0dc;background:rgba(255,255
 <link rel="stylesheet" href="css/anim.css?v=17">
 <link rel="stylesheet" href="css/tier.css?v=8">
 <link rel="stylesheet" href="css/premium.css?v=68">
-  <link rel="stylesheet" href="css/pl-ui.css?v=22">
+  <link rel="stylesheet" href="css/pl-ui.css?v=23">
   <link rel="stylesheet" href="css/pl-popravki.css?v=1">
   <link rel="stylesheet" href="css/pl-versiya.css?v=3">
   <link rel="stylesheet" href="css/pl-plyush.css?v=4">
@@ -130,7 +130,7 @@ html[data-theme="dark"] #blSplash .bls-sos{color:#ffd0dc;background:rgba(255,255
   <link rel="stylesheet" href="css/pl-profil.css?v=2">
   <link rel="stylesheet" href="css/pl-zdrave.css?v=4">
   <link rel="stylesheet" href="css/pl-bebe.css?v=5">
-  <link rel="stylesheet" href="css/pl-start.css?v=11">
+  <link rel="stylesheet" href="css/pl-start.css?v=12">
   <link rel="stylesheet" href="css/pl-dostap.css?v=6"><!-- 21.10 · достъп: врата, „Достъп“, изтекло, админ · ПЪТ НАЗАД: махни този ред (и index.html.PREDI_DOSTAP) -->
 <!-- 📶 силата на телефона: слага data-motion/data-quality ПРЕДИ рисуването.
      Нарочно БЕЗ defer и рано — с defer отметките идват след първото
@@ -1560,7 +1560,7 @@ html[data-theme="dark"] #blSplash .bls-sos{color:#ffd0dc;background:rgba(255,255
 </div>
 
 <!-- ═══════════════ ГЛОБАЛНА ТЪРСАЧКА ═══════════════ -->
-<div class="search-overlay" id="searchOverlay" hidden>
+<div class="search-overlay" id="searchOverlay" hidden role="dialog" aria-modal="true" aria-label="Търсене"><!-- 16.11 (чат „екрани“): role/aria — ПЪТ НАЗАД: махни трите атрибута -->
   <div class="search-panel">
     <div class="search-bar">
       <span class="search-ico">🔍</span>
@@ -1572,18 +1572,19 @@ html[data-theme="dark"] #blSplash .bls-sos{color:#ffd0dc;background:rgba(255,255
 </div>
 
 <!-- ═══════════════ ПЪРВО ЗАПОЗНАВАНЕ ═══════════════ -->
-<div class="onb-overlay" id="onbOverlay" hidden>
+<!-- 16.11 (чат „екрани“): role/aria-modal/етикетите — прозорецът се чете като прозорец, полетата имат имена. ПЪТ НАЗАД: махни role, aria-modal, aria-labelledby, id="onbTitle", aria-label на #onbName и for="onbDate". -->
+<div class="onb-overlay" id="onbOverlay" hidden role="dialog" aria-modal="true" aria-labelledby="onbTitle">
   <div class="onb-card">
-    <span class="onb-ava"><svg viewBox="0 0 60 96"><use href="#balloonShape"/></svg></span>
-    <h3 class="onb-title">Здравей, мамо! 🌸</h3>
+    <span class="onb-ava" aria-hidden="true"><svg viewBox="0 0 60 96"><use href="#balloonShape"/></svg></span>
+    <h3 class="onb-title" id="onbTitle">Здравей, мамо! 🌸</h3>
     <p class="onb-text">Няколко неща за бебето, всичките по желание. Остават само на твоя телефон. 🔒</p>
-    <input id="onbName" class="jr-word" type="text" maxlength="30" placeholder="Име на бебето (по желание)…">
-    <div class="onb-sex" id="onbSex">
+    <input id="onbName" class="jr-word" type="text" maxlength="30" placeholder="Име на бебето (по желание)…" aria-label="Име на бебето (по желание)">
+    <div class="onb-sex" id="onbSex" role="group" aria-label="Момиче, момче или още чакаш">
       <button class="onb-sexbtn on" type="button" data-sex="girl">👧 Момиче</button>
       <button class="onb-sexbtn" type="button" data-sex="boy">👦 Момче</button>
       <button class="onb-sexbtn" type="button" data-sex="wait">🤰 Още чакам</button>
     </div>
-    <label class="onb-lbl" id="onbDateLbl">Рождена дата:</label>
+    <label class="onb-lbl" id="onbDateLbl" for="onbDate">Рождена дата:</label>
     <input id="onbDate" class="jr-word" type="date">
     <div id="onbPretermWrap" hidden>
       <label class="onb-lbl onb-lbl-soft" for="onbPreterm">Роди се преди 37-ата седмица? Тогава мерим развитието по коригираната възраст.</label>
@@ -1604,7 +1605,7 @@ html[data-theme="dark"] #blSplash .bls-sos{color:#ffd0dc;background:rgba(255,255
 </div>
 
 <!-- ═══════════════ ЧЕТЕЦ НА СТАТИИ ═══════════════ -->
-<div class="art-overlay" id="artOverlay" hidden>
+<div class="art-overlay" id="artOverlay" hidden role="dialog" aria-modal="true" aria-labelledby="artHTitle"><!-- 16.11 (чат „екрани“): role/aria — ПЪТ НАЗАД: махни трите атрибута -->
   <article class="art-panel">
     <header class="art-head">
       <button class="ro-nav" id="artClose" aria-label="Затвори">←</button>
