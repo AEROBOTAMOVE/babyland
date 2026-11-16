@@ -67,6 +67,37 @@
     $('onbMeDate').max = днесНиз();
     $('onbOverlay').hidden = false;
     document.body.style.overflow = 'hidden';
+    // ♿ 16.11 (чатът „екрани“, мерено с Tab ×25 на 360/414): прозорецът не взимаше фокуса,
+    //    а Tab вървеше по началото ОТЗАД — нито едно спиране вътре. По образеца на profile.js:
+    //    помни откъде е мама, фокус вътре, Tab се върти в картата, Escape = като докосване на фона.
+    //    На телефон (груб показалец) фокусът е на КАРТАТА, не на полето — иначе клавиатурата
+    //    изскача върху поздрава (същата причина като ✕ в helper.js).
+    //    ПЪТ НАЗАД: махни този блок, onbKlavish() и двата реда „16.11“ в close().
+    if (!onbОтворен) { onbФокусПреди = document.activeElement; document.addEventListener('keydown', onbKlavish); }
+    onbОтворен = true;
+    setTimeout(() => {
+      try {
+        const груб = window.matchMedia && matchMedia('(pointer: coarse)').matches;
+        const карта = $('onbOverlay').querySelector('.onb-card');
+        if (груб && карта) { if (!карта.hasAttribute('tabindex')) карта.setAttribute('tabindex', '-1'); карта.focus({ preventScroll: true }); }
+        else $('onbName').focus({ preventScroll: true });
+      } catch (e) {}
+    }, 0);
+  }
+  let onbОтворен = false, onbФокусПреди = null;
+  function onbKlavish(e) {
+    const ов = $('onbOverlay');
+    if (!ов || ов.hidden) return;
+    if (e.key === 'Escape') { e.preventDefault(); close(); return; }
+    if (e.key !== 'Tab') return;
+    const ф = Array.prototype.filter.call(
+      ов.querySelectorAll('button, input, select, textarea, a[href], [tabindex]:not([tabindex="-1"])'),
+      x => !x.disabled && !x.closest('[hidden]') && x.getClientRects().length > 0);
+    if (!ф.length) return;
+    const първи = ф[0], последен = ф[ф.length - 1], а = document.activeElement;
+    const наСпирка = ф.indexOf(а) >= 0;   // фокусът на картата (tabindex -1) или извън прозореца → влиза в кръга
+    if (e.shiftKey && (а === първи || !наСпирка)) { e.preventDefault(); последен.focus(); }
+    else if (!e.shiftKey && (а === последен || !наСпирка)) { e.preventDefault(); първи.focus(); }
   }
   function close() {
     try { if (window.BL_GREET) BL_GREET(); } catch (e) {}   // поздравът става личен веднага
@@ -79,6 +110,8 @@
     try { if (window.BL_PROFILE && BL_PROFILE.refresh) BL_PROFILE.refresh(); } catch (e) {}
     $('onbOverlay').hidden = true;
     document.body.style.overflow = '';
+    document.removeEventListener('keydown', onbKlavish); onbОтворен = false;   // 16.11
+    try { if (onbФокусПреди && onbФокусПреди.isConnected && onbФокусПреди.focus) onbФокусПреди.focus({ preventScroll: true }); } catch (e) {} onbФокусПреди = null;   // 16.11
   }
   // ═══ 💬 ЕДИН ГЛАС, КОЙТО СТИГА ДО НЕЯ ═══
   // 🔴 19.08 (първата минута, ИЗМЕРЕНО): единственото съобщение за грешка тук

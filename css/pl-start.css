@@ -416,4 +416,42 @@ html body #onbOverlay#onbOverlay #onbSave {
   min-height: 56px !important; height: auto !important; font-size: var(--bl-t-l) !important; font-weight: 800 !important; border-radius: 999px !important;
 }
 html body :is(button.jr-btn, .pl-hr-go, .d24-go) { min-height: 50px !important; font-size: var(--bl-t-m) !important; font-weight: 800 !important; }
+/* 9 · ФИЛЦЪТ (второстепенното) — шрифтът на скалата. Мерено (cv_butoni.js): чиповете са 13 px, но шест вида бяха извън:
+       „+ 🌡️ Мерих температура“ (.ch-add-b) и „🌤️ добре“ (.fd-tb) 12 px — под S; „12 трика“ (.tk-b) 13.6; пол на бебето
+       (.bb-sexbtn) 13.5; чиповете на „Днес“ (.td-chip) 14 → S 13 px. „Прочети цялото…“ (.pl-zn-go) 15.5 и „Как се прави
+       честен опит“ (.pl-lb-how) 14.5 — по-едрите хапчета-покани → M 15 px. */
+html body #roomOverlay #roRoom#roRoom .tk-b, html body .ch-add .ch-add-b.ch-add-b,   /* „Мерих температура“ е в началото (.ch-card), не в стая */
+html body #todaySection#todaySection :is(.fd-tb, .td-chip),
+html body .bb-sexbtn.bb-sexbtn { font-size: var(--bl-t-s) !important; }
+html body :is(.pl-zn-go, .pl-lb-how).pl-soft.pl-soft { font-size: var(--bl-t-m) !important; }
+/* 10 · РАДИУСИТЕ НА ПЛОЧКИТЕ — три стъпки (мерено q_plochki.js, четирите ъгъла по вид, 360 px): клетките бяха 12/14,
+       редовете 16/18/20 (един и същ .jr-win — и трите), плочките 20/22/24/26 → S 14 · M 16 · L 22 (като картите, --pl-radius).
+       Нарочните форми не се пипат: арките (.pl-in-arch, .pl-lb-arch), табовете с прав долен ръб (.pl-ig-tab), овалът (.pl-bb-t),
+       обвивките с 0 (.pl-svit-b, .pl-hr-a). В стаите — 4 id (мерено: стайни правила с 2 id + !important държаха .jr-win 18,
+       .lb-card/.fd-card/.dv-msrow 18, .sec-chip 20); радиусът не мести нищо в подредбата. */
+:root { --bl-r-s: 14px; --bl-r-m: 16px; --bl-r-l: 22px; }
+html body #roomOverlay#roomOverlay #roRoom#roRoom :is(.mn-cell, .jr-day, .wk-item, .tk-b, .bb-sexbtn, .pl-ig-drawer),
+html body :is(#plHome#plHome, #todaySection#todaySection) :is(.mn-cell, .jr-day, .wk-item, .tk-b, .bb-sexbtn, .pl-ig-drawer) { border-radius: var(--bl-r-s) !important; }
+html body #roomOverlay#roomOverlay #roRoom#roRoom :is(.jr-win, .qd-row, .al-row, .vx-row, .gl-row, .nl-idea, .wm-lrow, .pl-zm-row, .pg20-calrow, .pl-day-it, .pl-zm-ph, .pl-hr-t, .pl-zd-row, .dv-msrow, .pl-dn-m, .pl-zd-baby, .fa-chip, .lb-card),
+html body :is(#plHome#plHome, #todaySection#todaySection) :is(.jr-win, .qd-row, .al-row, .vx-row, .gl-row, .nl-idea, .wm-lrow, .pl-zm-row, .pg20-calrow, .pl-day-it, .pl-zm-ph, .pl-hr-t, .pl-zd-row, .dv-msrow, .pl-dn-m, .pl-zd-baby, .fa-chip, .lb-card) { border-radius: var(--bl-r-m) !important; }
+html body #roomOverlay#roomOverlay #roRoom#roRoom :is(.sec-chip, .pl-baby, .pl-per, .pl-lb-tile, .pl-zm-play, .pl-ig-stage, .pl-mira, .pl-bb-id, .fd-card),
+html body :is(#plHome#plHome, #todaySection#todaySection) :is(.sec-chip, .pl-baby, .pl-per, .pl-lb-tile, .pl-zm-play, .pl-ig-stage, .pl-mira, .pl-bb-id, .fd-card) { border-radius: var(--bl-r-l) !important; }
+/* 11 · „ТВОЯТА СЕДМИЦА“ (Дневник): картата е 307 px на 360 → 7 дни по 44 (308) не влизат дори без процепи; денят е 37×44.
+       Зоната за пръст обаче покрива и процепа (2 px от всяка страна): докосване между два дни вече не пада в нищото —
+       стъпката е 41 px на 360 и ~43 на 390. Оставено 37 широко — седмицата се чете на един ред. */
+/* 12 · ДРЕБНИТЕ НАДПИСИ → S 13 px (вълна 2, мерено cv_drebni.js + q_tipo2.js, 360: кандидатът пробван в страницата —
+       35 вида, 0 преливат, плочките само стават по-високи). Не се пипат: имената на медалите в профила (на 13 px
+       „Малко приключение“/„Разобличител“ преливат), надписите на табовете на стаята (на 13 px „Малина“ прелива — остават 12),
+       текстът в SVG графиките (осите, циферблата — част от рисунката), „+“ с aria-label (едрите знаци), последната плочка
+       на „Първа помощ“ (нарочно 15 px). Чиповете в редовете за добавяне 13.5 → 13 (скалата на всички чипове).
+       Тройното :not(#…) е само за тежест — бие стайните правила с 2 id + !important. */
+html:not(#bl-x#bl-x#bl-x) body :is(.rg-n small, .prof-wlbl, .mn-day, .fa-chip:not(:last-child:nth-child(3n+1)) > span:not(.fa-e), .ev-t small,
+  .jr-addrow > .jr-chip:not([aria-label]), label.bb-lbl, p.bb-lbl, .dv-mslbl, .pl-zm-nl, .wk-l, .pl-lb-tile > span, .ch-legal, .bb-diplbl,
+  .pl-zm-rt small.is-empty, .pl-np-k, .pl-panel-h small, .footer-year, .sec-head .sec-n, .pl-bb-t1, .pl-bb-t2, .pl-zd-nm, .pl-zd-age, .sos-cap,
+  .pl-dn-ml, .pl-dn-meta, .pl-zn-eye, .pl-ig-eyebrow, .pl-lb-eyebrow, .pl-ig-drawer > span, .rg-leg, .bb-note, .pl-zm-sub, .pl-ver,
+  .fd-card .fd-tap, .fd-card .fd-from) {   /* картите в „Захранване“: „докосни: опитахме!“ става на 2 реда — 0 преливат (q_tipo3.js) */
+  font-size: var(--bl-t-s) !important;
+}
+html body #roomOverlay #roRoom .jr-week .jr-day { position: relative; }
+html body #roomOverlay #roRoom .jr-week .jr-day::after { content: ''; position: absolute; inset: -1px -3.5px; }   /* от вътрешния ръб: 1 px рамка + 2.5 px → процепът 4 px е покрит (мерено в покой, q_week.js) */
 /* край 16.11 · цветове и бутони */
