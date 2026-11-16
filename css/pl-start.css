@@ -142,7 +142,7 @@ html body #roomOverlay .ro-panel #roRoom#roRoom .jr-card .jr-title { font-size: 
 html body #roomOverlay .ro-panel #roRoom#roRoom .jr-card .jr-sub { font-size: var(--bl-t-s) !important; font-weight: 600 !important; line-height: 1.35 !important; letter-spacing: 0 !important; }
 html body #roomOverlay .ro-panel #roRoom#roRoom :is(p.jr-privacy, p.jr-weekcap, .ask-line, .ask-live, .ask-chip, .pl-tl) { font-size: var(--bl-t-s) !important; }
 /* (чиповете „+“ в редовете за добавяне — .jr-addrow — си пазят едрия знак) */
-html body #roomOverlay .ro-panel #roRoom#roRoom :not(.jr-addrow) > .jr-chip:not(.pl-zm-plus) { font-size: var(--bl-t-s) !important; }
+html body #roomOverlay .ro-panel #roRoom#roRoom :not(.jr-addrow):not(.sp-add) > .jr-chip:not(.pl-zm-plus) { font-size: var(--bl-t-s) !important; }   /* 16.11: + .sp-add („Разходите“ — „+“ беше 13 px) */
 html body #roomOverlay .ro-panel #roRoom#roRoom p.jr-privacy { line-height: 1.45 !important; }
 /* редовете-отметки („Бебето е около 6-месечно“, победите в дневника): 13.5 → S, като чиповете */
 html body #roomOverlay .ro-panel #roRoom#roRoom :is(.jr-win, .jr-winbtn) { font-size: var(--bl-t-s) !important; }
@@ -338,3 +338,68 @@ html[data-theme="dark"] body #roomOverlay #roRoom > .sec-head.bl-sec-flash { ani
    ПЪТ НАЗАД: махни това правило (и в js/rooms.js при „Първо си избери личице“ — редовете от „💜 15.11“ до `if (тефтер) …`). */
 html body #roomOverlay .ro-lav #roRoom > .pl-dn ~ section.ck-card > .ck-arc { display: none !important; }
 /* край 15.11 · един ред личица */
+
+/* ═══ 🎨 16.11 · ЦВЕТОВЕ И БУТОНИ (чат „екрани“) ═══
+   МЕРЕНО (cvetove.js: началото + 9-те стаи × 360/414 × светло/тъмно, getComputedStyle; Tab ×30 на екран):
+   контраст — 0 истински провала извън „+“ (звездите/искрите/точката са украса; линийката в „Растежа“ е
+   фалшива тревога на уреда: 5.97:1 светло, ~6.9:1 тъмно); хоризонтален скрол — 0 (скролерът е overflow-x: clip);
+   фокус от клавиатурата без видим знак — до 13 от 30 на екран: .ask-chip (светло: premium.css:345 с id и
+   !important сянка бие пръстена на pl-ui.css:88), .jr-chip/.ask-chip нощем (pl-ui.css:416 същото), полетата
+   нощем (pl-ui.css:429 бие :focus на pl-ui.css:115), .pl-zm-need/.pl-zm-row; отрязан текст — 2 места; 📍 — 36 px.
+   ПЪТ НАЗАД: махни целия раздел до „край 16.11 · цветове и бутони“ (+ „:not(.sp-add)“ в правилото за .jr-chip горе). */
+
+/* 1 · ФОКУСЪТ — ЕДИН знак за всичко, което се натиска: 3 px мастило с 2 px въздух. Светло #1d2a5c върху крема
+       13.15:1, тъмно #ffd6e5 върху нощното синьо 10.3–12.4:1 (изчислено). !important — иначе старите
+       „outline: none“ (pl-ui.css:57/88, pl-zamama.css:122) и сенките с id го гасят. Полетата са отделно (т. 2). */
+:root { --bl-focus: #1d2a5c; }
+html[data-theme="dark"] { --bl-focus: #ffd6e5; }
+html body :is(button, [role="button"], a[href], summary, select, input[type="checkbox"], input[type="radio"], input[type="range"], [tabindex]:not([tabindex="-1"])):focus-visible {
+  outline: 3px solid var(--bl-focus) !important; outline-offset: 2px !important;
+}
+/* 2 · ПОЛЕТАТА НОЩЕМ — розов ръб + пръстен при писане (денем pl-ui.css:115 работи); #f59cbb/#1b2554 = 7.2:1 */
+html[data-theme="dark"] body :is(.jr-word.jr-word, textarea.jr-paper, .lx-inp.lx-inp, textarea.jr-note, .ch-num.ch-num):focus,
+html[data-theme="dark"] body #roomOverlay .ask-inp.ask-inp:focus,
+html[data-theme="dark"] body #roomOverlay .ro-lav .jr-card :is(input.jr-word, textarea.jr-paper):focus {   /* дневникът — pl-dnevnik.css:381 бие общото */
+  border-color: #f59cbb !important; box-shadow: 0 0 0 3px rgba(245, 156, 187, .5), inset 0 2px 5px rgba(0, 0, 0, .35) !important; outline: none;
+}
+/* 3 · 📍 — пипаемата зона 36 → 44 широко (иконата не расте). ▾ до него сгъва и с цялото заглавие (polish.js:252),
+       а 📍 е отгоре (z-index 2) — центърът на ▾ (40 px от ръба) остава извън зоната му (0…31 px). */
+html body .jr-card .pin-btn::after { width: 44px; height: 44px; }
+/* 4 · „+“ в „Разходите“ и „Какво предстои“ — гелът на главните бутони: бяло върху #c4457a 4.69:1 (беше #e56d99 3.01:1) */
+html body #roomOverlay #roRoom#roRoom > .jr-card[data-blkey^="Инструменти|Какво предстои"] .jr-addrow > .jr-chip.jr-chip,
+html body #roomOverlay #roRoom#roRoom > .jr-card[data-blkey^="Инструменти|Разходите"] .sp-add > .jr-chip.jr-chip {
+  background: linear-gradient(180deg, var(--ui-gel-mid), var(--ui-gel-bot)) !important;
+}
+/* 5 · ОТРЯЗАНИЯТ ТЕКСТ
+     · помощничките в началото: „мери температурата, знае 112“ иска 3 реда при 13 px (мерено 34/51 px) → 3 реда
+     · „Захранване“, плочките „Опитани / Любими / Бележки“ на 360: колоната е 61 px, думите 65–67 → „Опита…“;
+       под 375 px — по-тесни отстояния (текстът става 71 px) */
+html.pl-gl20 #plHome#plHome .pl-pers .pl-per[data-pl-fei] > .pl-fei-do { -webkit-line-clamp: 3; }
+@media (max-width: 374px) {
+  html body #roomOverlay .pl-hr .pl-hr-t { grid-template-columns: 36px minmax(0, 1fr) 6px; gap: 4px; padding-right: 4px; }
+}
+/* 6 · ТАБОВЕТЕ НА СТАЯТА на 360 (мерено q_ph.js/q_kand.js): лентата е 62→232 px (premium.css:1048 left 62 / right 128),
+       табовете по 37 px, а „Стаята“/„Статии“ искат 39 → надписите се допираха („СтаятаСтатии“), целите < 44.
+       Под 375 px: главата с 12 px ръб и 4 px между SOS и ×, лентата 60→252 → табовете по 45 px; 4 px въздух от всяка страна. */
+@media (max-width: 374px) {
+  html body #roomOverlay .ro-panel .ro-head { padding-left: 12px !important; padding-right: 12px !important; column-gap: 4px !important; }
+  html body #roomOverlay .ro-panel .ro-head #roSos { margin-right: 0 !important; }   /* беше 6 px → лентата застъпваше SOS с 2 px (мерено) */
+  html body #roomOverlay .ro-panel #roTabs#roTabs { left: 60px !important; right: 108px !important; }
+}
+/* 7 · ПОДСКАЗКИТЕ В ПОЛЕТАТА НА ДНЕВНИКА (мерено canvas, 360 px): Georgia 14 получер курсив не се побира в 4 полета
+       („Една дума за деня… (по желание)“ 255 от 208 px, „Какво те разсмя днес?“ 172 от 115) — а на Android Georgia
+       няма и Noto Serif е друг на ширина. Подсказката минава на Nunito 13 курсив (уеб шрифтът — еднакъв навсякъде):
+       написаното си остава на серифа. Под 375 px (мерено след това, q_dn2.js): полето има полето-линия + отстояния 73 px,
+       значи в редовете за добавяне („Добави своя победа…“ 134 от 125, „Какво те разсмя днес?“ 137 от 115) полето пада на
+       цял ред под 210 px — и трите реда еднакво; „Бележка (болежка, какво помогна…)“ 224 от 220 → по-плътни букви
+       (−0.3 px) и 10 px отдясно. */
+html body #roomOverlay .ro-lav .jr-card :is(input.jr-word, textarea.jr-paper)::placeholder {
+  font-family: Nunito, 'Nunito-fallback', system-ui, sans-serif !important; font-size: 13px !important; font-weight: 600 !important; font-style: italic !important;
+}
+@media (max-width: 374px) {
+  html body #roomOverlay .ro-lav #roRoom .jr-addrow { flex-wrap: wrap !important; }
+  html body #roomOverlay .ro-lav #roRoom .jr-addrow > input.jr-word { flex: 1 1 210px !important; min-width: 0; }
+  html body #roomOverlay .ro-lav .jr-card :is(input.jr-word, textarea.jr-paper)::placeholder { letter-spacing: -.3px !important; }
+  html body #roomOverlay .ro-lav .jr-card input.jr-word { padding-right: 10px !important; }
+}
+/* край 16.11 · цветове и бутони */
