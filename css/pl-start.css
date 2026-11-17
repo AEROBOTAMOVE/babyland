@@ -233,7 +233,7 @@ html[data-theme="dark"].pl-on body .install .pt-btn.pt-btn { background: rgba(25
 html[data-theme="dark"].pl-on body .install .pt-btn.pt-btn.active { background: #fde6ef !important; color: #9e2f5f !important; border-color: #f0b7cd !important; }
 
 /* 3 · СОС ЦЕНТЪРЪТ: подписите под номерата → S */
-html body #sosOverlay#sosOverlay :is(.sos-big > span, .sos-nm > small, p.sos-tips, .sos-roomlink, .sos-edit) { font-size: var(--bl-t-s) !important; }
+html body #sosOverlay#sosOverlay :is(.sos-big > span:not(.pl-em), .sos-nm > small, p.sos-tips, .sos-roomlink, .sos-edit) { font-size: var(--bl-t-s) !important; }   /* 17.11: без .pl-em — хващаше и знака ☠️ на „Отрови“ (21 → 13 px) */
 
 /* 4 · „НЕДЕЛНО ЧЕТИВО“: цялото заглавие (js/rooms5.js вече не реже), до 2 реда, S; хапчето — цял ред */
 html.pl-on body #todaySection#todaySection .td-digest > .td-chip.td-chip {
@@ -598,4 +598,50 @@ html body .plus-wrap.plus-wrap { left: calc(14px + env(safe-area-inset-left, 0px
 html body .pl-hr .pl-hr-days { column-gap: 7px; }
 html body .pl-hr .pl-hr-days > .pl-hr-d.pl-hr-d { width: 100% !important; height: auto !important; min-height: 0 !important; aspect-ratio: 1 / 1; }
 /* край 18 */
+
+/* 19 · 17.11 · ВИЗУАЛНИЯТ ПРЕГЛЕД НА ТЕЛЕФОНА (360, светло+тъмно; q_vid.js + q_insp.js/q_insp2.js). Топ 10 по тежест.
+   ПЪТ НАЗАД: махни раздела до „край 19“ (всяка точка е отделна — може и поотделно). */
+/* 1 · ПРОФИЛЪТ: ✕ „Затвори“ е fixed (pl-profil.css:43), но се превърташе с листа (мерено: top 20 → −880 при превъртане 900)
+       и при отваряне стоеше отрязан горе. Причината: входът на листа plZh2List (pl-zhivo.css:227) е с fill-mode both и анимира
+       translate/scale → докато „виси“, листът е съдържащ блок за fixed. backwards: входът си е същият, след него — нищо. */
+html body .prof-overlay .prof-box.prof-box { animation-fill-mode: backwards; }
+/* 2 · ТРЕВОЖНИЯТ ЕКРАН (СОС): „Отрови“ е единствената без рисунка — дребен знак в бял (нощем прозрачен) кръг, другите са
+       рисунки на прасковен фон 44×44. Същият фон и голям знак. */
+html body #sosOverlay a.sos-big .pl-em:not(.pl-pl) { background-color: #fde5d8 !important; font-size: 24px !important; line-height: 1 !important; color: #6b3426 !important; }
+/* 3 · НАЧАЛОТО, „Влез в своята стая“: колоните бяха 98 / 91 / 96 px (1fr = minmax(auto, 1fr) → по съдържанието) → средната
+       арка по-малка и подписите ѝ 6–7 px по-високо. Три равни колони. */
+html.pl-gl20 body #plHome .pl-rooms.pl-rooms { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+/* 4 · НАЧАЛОТО, „За теб, мамо“: иконката в края на „Малката разходка за днес“ и на „Без бързане, без вина…“ падаше сама
+       на втори ред (мерено 2 бр.). Редът е гъвкав — текстът се пренася в своята кутия, иконката остава до него. */
+html body #todaySection :is(.wk-title, p.wk-foot):has(> .pl-em) { display: flex; align-items: center; gap: 6px; text-wrap: balance; }
+html body #todaySection :is(.wk-title, p.wk-foot) > .pl-em { flex: none; }
+/* 5 · „ЗАХРАНВАНЕ“, плочките до менюто на 360: „+ отбележи“ лягаше под „›“ (текстът по-широк от кутията си, „›“ на 5 px от ръба).
+       Плочката е flex (раздел 16, т. 5): иконката 36 → 32, разстоянията 6 → 4, вдясно 7 px → текстът печели ~7 px. */
+@media (max-width: 374px) {
+  html body #roomOverlay .pl-hr .pl-hr-t.pl-hr-t { column-gap: 4px; padding-left: 5px; padding-right: 7px; }
+  html body #roomOverlay .pl-hr .pl-hr-t > .pl-hr-ti { width: 32px; height: 32px; }
+  /* текстът остава 13 px (правилото „≥ 13 px“, pl-hranene.css:1074) — по-тесни са „+“ (22 → 19), „›“ (20 → 17) и буквите (−.2 px) */
+  html body #roomOverlay #roRoom .pl-hr .pl-hr-inv { letter-spacing: -.2px; gap: 2px; }
+  html body #roomOverlay #roRoom .pl-hr .pl-hr-inv > b { font-size: 19px; }
+  html body #roomOverlay .pl-hr .pl-hr-t.pl-hr-t > em { font-size: 17px; }
+}
+/* 6 · „РАЗВИТИЕ И ИГРИ“, чекмеджетата „Първите пъти ›“ / „Кутия за спомени ›“: „›“ на 4 px от текста и 5 px от ръба. */
+html body #roomOverlay #roRoom .pl-ig-drawer.pl-ig-drawer { padding-right: 12px; gap: 6px; }
+/* 7 · „ЗДРАВЕ И SOS“, двата бутона горе: „Нов здравен запис“ на 3 реда до „Контакти за помощ“ на 2 (текстът 83 px).
+       Кръгчето 36 → 30, по-тесни отстояния → текстът 93 px, двата на 2 реда. */
+html body #roRoom .pl-zd-pill.pl-zd-pill { gap: 6px; padding-left: 6px; padding-right: 8px; }
+html body #roRoom .pl-zd-pill.pl-zd-pill > i { width: 30px; height: 30px; }
+html body #roRoom .pl-zd-pill.pl-zd-pill > i svg { width: 17px; height: 17px; }
+@media (max-width: 374px) { html body #roRoom .pl-zd-pill.pl-zd-pill > b { font-size: 13.5px; } }
+/* 8 · ВИСЯЩИ ДУМИ: „С всяка седмица по- / близо“, „Малки вкусове. Големи / усмивки!“, „Малките задачи правят големи / дни.“,
+       „Мира е до / теб“, „Алекс е на 7 месеца и 28 / дни“. Заглавията — balance, подзаглавията — pretty. Думите не се пипат. */
+html body #roomOverlay #roRoom .pl-rhero-t > b, html.pl-gl20 body #plHome .pl-mira > span > b, html.pl-gl20 body #plHome .pl-np-t > b, html body #todaySection .td-age { text-wrap: balance; }
+html body #roomOverlay #roRoom .pl-rhero-t > span { text-wrap: pretty; }
+/* 9 · „БРЕМЕННОСТ“, спирките 8с…40с под пътеката: flex с обвиване от вграден стил (preg20.js:648) → редове 4 / 3 / 1.
+       Решетка 4 × 2 (!important — срещу вградения стил). */
+html body #roomOverlay #roRoom .pg20-mschips { display: grid !important; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 8px !important; }
+html body #roomOverlay #roRoom .pg20-mschips > .jr-chip { margin: 0 !important; min-width: 0; justify-content: center; text-align: center; }
+/* 10 · ЕДНАКВИТЕ БЕЛЕЖКИ .pg20-do: 12 px в едни стаи, 16 в други (мерено: 2 + 2) → 16 (--bl-r-m) навсякъде. */
+html body #roomOverlay #roRoom .pg20-do { border-radius: var(--bl-r-m, 16px) !important; }
+/* край 19 */
 /* край 16.11 · цветове и бутони */
