@@ -552,4 +552,19 @@ html body #roomOverlay #roRoom .jr-addrow > input.jr-word { flex: 1 1 150px; min
 /*    търсачката — заглавието „Какво търсим днес?“ ♡: пренася вместо да избута сърцето извън екрана */
 html body #searchOverlay .pl-ts-title.pl-felt { white-space: normal; text-wrap: balance; height: auto; min-height: 60px; }
 /* край 16 */
+/* 17 · 17.11 · БЕЗОПАСНИТЕ ЗОНИ (iPhone с вдлъбнатина и жест-лента). index.html има viewport-fit=cover → env(safe-area-inset-*) работи.
+       Мерено (q_bezopasni.js, Emulation.setSafeAreaInsetsOverride: iPhone 14 портрет 390×844, горе 47, долу 34):
+       · ← / SOS / × в стаята на 22→66 px — ПОД вдлъбнатината (а лентата с табовете до тях вече е на env + 20 → и разминаване);
+       · превключвачът на темата в началото на 14→58 px — под вдлъбнатината;
+       · бележката долу в стаята („Помощничките дават информация…“) до 844 — текстът под жест-лентата (810→844);
+       · „+“ в началото (bottom 84 px) — долната лента расте с env (premium.css:261) и „+“ лягаше върху нея;
+       · бутонът на помощничката (bottom 86 px) — щом бележката порасне с env, щеше да я застъпи.
+       Всичко е „старото + env(…)“ → на Android (env = 0) НИЩО не мърда (мерено 360 преди/след). ПЪТ НАЗАД: махни раздела до „край 17“. */
+html body .theme-toggle { top: calc(14px + env(safe-area-inset-top, 0px)) !important; }
+html body #roomOverlay .ro-panel .ro-head { padding-top: calc(14px + env(safe-area-inset-top, 0px)) !important; }
+html body #roomOverlay .ro-panel .ro-head.shrunk { padding-top: calc(7px + env(safe-area-inset-top, 0px)) !important; }
+html body #roomOverlay .ro-panel p.ro-disc.ro-disc { padding-bottom: calc(7px + env(safe-area-inset-bottom, 0px)) !important; }
+html body #roomOverlay .ro-panel #roFab.ro-fab { bottom: calc(86px + env(safe-area-inset-bottom, 0px)) !important; }
+html body .plus-wrap.plus-wrap { bottom: calc(84px + env(safe-area-inset-bottom, 0px)); }
+/* край 17 */
 /* край 16.11 · цветове и бутони */
