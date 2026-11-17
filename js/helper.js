@@ -895,13 +895,20 @@
   //   korpus350, 609-те и 609 + 257 — без нито една смяна.
   //   ПЪТ НАЗАД: махни реда с иаПоРечника в шльокавица и двете функции под този коментар.
   var _РЕЧНИК_АУ = null;
+  // ⚡ 17.11 · ЕДИН ИЗТОЧНИК, ДВА НАЧИНА: стъпките пълнят набора р; речникАУ() ги пуска наведнъж (както преди),
+  //   загряването в края на файла — на парчета в празното време (мерено от чат „session“: 631 ms при CPU ×4).
+  function _стъпкиАУ(р) {
+    var яж = function (x) { String(x || '').toLowerCase().split(/[^а-яё]+/).forEach(function (w) { if (w.length >= 3) р.add(w.replace(/[аъ]/g, 'у')); }); };
+    var с = [];
+    for (var i = 0; i < KB.entries.length; i += 40) (function (от) { с.push(function () { KB.entries.slice(от, от + 40).forEach(function (e) { (e.keys || []).forEach(яж); яж(e.title); яж(e.core); яж(e.tip); }); }); })(i);
+    с.push(function () { ['redFlags', 'pregFlags', 'dvFlags', 'motherFlags', 'heavyFlags', 'mamaBodyFlags', 'lossFlags'].forEach(function (к) { (KB[к] || []).forEach(яж); }); });
+    return с;
+  }
   function речникАУ() {
     if (_РЕЧНИК_АУ) return _РЕЧНИК_АУ;
     if (!window.KB || !Array.isArray(KB.entries) || !KB.entries.length) return null;
     var р = new Set();
-    var яж = function (x) { String(x || '').toLowerCase().split(/[^а-яё]+/).forEach(function (w) { if (w.length >= 3) р.add(w.replace(/[аъ]/g, 'у')); }); };
-    KB.entries.forEach(function (e) { (e.keys || []).forEach(яж); яж(e.title); яж(e.core); яж(e.tip); });
-    ['redFlags', 'pregFlags', 'dvFlags', 'motherFlags', 'heavyFlags', 'mamaBodyFlags', 'lossFlags'].forEach(function (с) { (KB[с] || []).forEach(яж); });
+    _стъпкиАУ(р).forEach(function (f) { f(); });
     return (_РЕЧНИК_АУ = р);
   }
   function иаПоРечника(лат, обичаен) {
@@ -6678,4 +6685,32 @@ function findEntry(text, room, exclude) {
     try { return етикетиНаМига(); } finally { влизането = пази; }
   };
   window.BL_PRIGLUSHI = приглуши;
+
+  // ⚡ 17.11 · ЗАГРЯВАНЕ СЛЕД ЗНАНИЕТО (чат „session“, предложение A; мерено с dev/proba/otgovor_skorost_proba.js, CPU ×4):
+  //   първият въпрос плащаше речникАУ ~631 ms + индекса ~162 ms + нормализацията. Щом KB дойде, всичко се строи на
+  //   парчета ≤ 12 ms в празното време — флаговете ПЪРВИ (кешът), после речникАУ (същите стъпки), индексите, ключовете.
+  //   Детерминистично спрямо KB → отговорите не се менят. Попита ли мама преди края — всичко се строи само, както преди.
+  //   ПЪТ НАЗАД: махни блока (и _стъпкиАУ може да остане — речникАУ работи с нея наведнъж).
+  (function загрей() {
+    try {
+      if (!window.KB || !Array.isArray(KB.entries) || !KB.entries.length) { if (!window.BL_KB_PADNA) setTimeout(загрей, 500); return; }
+      var ст = [];
+      ['redFlags', 'pregFlags', 'dvFlags', 'motherFlags', 'heavyFlags', 'mamaBodyFlags', 'lossFlags'].forEach(function (к) {
+        var л = KB[к] || []; for (var i = 0; i < л.length; i += 60) (function (от) { ст.push(function () { л.slice(от, от + 60).forEach(function (ф) { if (typeof ф === 'string') { нормКеш(ф); думиКеш(ф); } }); }); })(i);
+      });
+      var рАУ = new Set();
+      if (!_РЕЧНИК_АУ) { _стъпкиАУ(рАУ).forEach(function (f) { ст.push(f); }); ст.push(function () { if (!_РЕЧНИК_АУ) _РЕЧНИК_АУ = рАУ; }); }
+      ст.push(function () { индекс(); }, function () { индексАУ(); }, function () { речник(); });
+      for (var j = 0; j < KB.entries.length; j += 25) (function (от) { ст.push(function () { KB.entries.slice(от, от + 25).forEach(function (e) { (e.keys || []).forEach(function (k) { нормКеш(k); думиКеш(k); }); }); }); })(j);
+      var н = 0;
+      var сега = function () { return (typeof performance !== 'undefined' && performance.now) ? performance.now() : Date.now(); };
+      var тик = function () {
+        var край = сега() + 12;
+        try { while (н < ст.length && сега() < край) ст[н++](); } catch (e) { н = ст.length; }
+        if (н < ст.length) пусни();
+      };
+      var пусни = function () { if (window.requestIdleCallback) requestIdleCallback(тик, { timeout: 3000 }); else setTimeout(тик, 60); };
+      пусни();
+    } catch (e) {}
+  })();
 })();
