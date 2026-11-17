@@ -1,5 +1,5 @@
 // Baby Land — service worker: кешира приложението за офлайн работа
-const CACHE = 'babyland-v941';   // 21.10 · достъп: v873 → v874 · ПЪТ НАЗАД: sw.js.PREDI_DOSTAP
+const CACHE = 'babyland-v942';   // 21.10 · достъп: v873 → v874 · ПЪТ НАЗАД: sw.js.PREDI_DOSTAP
 const ASSETS = [
   '.',
   'index.html',
@@ -252,17 +252,11 @@ const ASSETS = [
   'lib/sezoni-1.json',
   'lib/igri-1.json',
   'manifest.webmanifest',
-  'img/logo.png',
   'img/art/hero-home.webp',
-  'img/art/rb-preg.webp',
-  'img/art/rb-baby.webp',
-  'img/art/rb-feed.webp',
-  'img/art/rb-health.webp',
-  'img/art/rb-diary.webp',
+  // 17.11: махнати 11 картинки, които нищо не зарежда (img/logo.png + 10× img/art/rb-*), ~703 KB при всяко първо
+  //   инсталиране (одит на чат „session“); добавена welcome.webp — фонът на вратата за достъп. ПЪТ НАЗАД: git show 2d9e791:sw.js
+  'img/art/welcome.webp',
   'img/art/rb-play.webp',
-  'img/art/rb-tools.webp',
-  'img/art/rb-mom.webp',
-  'img/art/rb-lab.webp',
   'img/art/ico-a.webp',
   'img/art/ico-b.webp',
   'img/art/ico-c.webp',
@@ -286,8 +280,6 @@ const ASSETS = [
   'img/art/lica.webp',
   'img/art/doma.webp',
   'img/art/felt.webp',
-  'img/art/rb-profile.webp',
-  'img/art/rb-search.webp',
   'img/scene/nachalo.webp',
   'img/scene/zdrave.webp',
   'img/scene/bebe.webp',
