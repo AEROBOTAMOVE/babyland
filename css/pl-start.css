@@ -464,4 +464,42 @@ html body #roomOverlay #roRoom .jr-week .jr-day::after { content: ''; position: 
 html body #roChips .ro-chip { text-wrap: balance; }
 html body #searchOverlay .sf-bub > strong:has(+ br) { display: block; text-wrap: balance; }
 html body #searchOverlay .sf-bub > strong + br { display: none; }
+/* 14 · 17.11 · ПЛАВНОСТ — „+“-овете в „Моето бебе“ дишат БЕЗ прерисуване
+       МЕРЕНО (plavnost.js / plav_bis.js, Chrome трасиране 3 s в покой, 360): „Моето бебе“ 1073 Paint · 238 стила;
+       спре ли се само plBbInvite (box-shadow, pl-bebe.css:402) → 0 Paint · 16 стила. Сянката не върви на видеокартата
+       и дърпа ВСИЧКИ анимации на стаята на главната нишка (урокът от 15.11: една некомпозитна стига).
+       Сега: същият пръстен е ::after на арката (.pl-bb-a — свободен), 46 px точно под „+“ (той е последното дете, долу
+       в средата), със СТАТИЧНА сянка 9 px; движи се само transform: scale(.72 → 1) + opacity — при .72 пръстенът е
+       изцяло под копчето (външният ръб = ръбът на копчето), при 1 е 9 px навън, както 0 → 9 px разтягането на сянката.
+       Същите кадри (0/70/100 % скрит, 85 % разтегнат и изтлял), същите закъснения, същото „тече само видимото“
+       (--bb-play). Под „+“ (z-index 1), над купола и надписа — както беше сянката. Намален ход: .pl-bb *::after → без
+       анимация (pl-bebe.css:516) → пръстенът не се вижда, копчето стои. ПЪТ НАЗАД: махни този раздел до „край 14“. */
+html body .pl-bb:has(.pl-bb-empty) .pl-bb-a.t-feed   .pl-bb-plus { animation: plBbPop .52s cubic-bezier(.3, 1.4, .5, 1) .46s both; }
+html body .pl-bb:has(.pl-bb-empty) .pl-bb-a.t-sleep  .pl-bb-plus { animation: plBbPop .52s cubic-bezier(.3, 1.4, .5, 1) .53s both; }
+html body .pl-bb:has(.pl-bb-empty) .pl-bb-a.t-diaper .pl-bb-plus { animation: plBbPop .52s cubic-bezier(.3, 1.4, .5, 1) .60s both; }
+/*    докато тече поканата, кадрите на plBbInvite ЗАМЕСТВАХА сянката на копчето (един розов ръб, без белия вътрешен — и в двете
+      теми); постоянната им част остава тук неподвижна, за да е видът същият (снимки plus_predi/sled_*.png) */
+html body .pl-bb:has(.pl-bb-empty) .pl-bb-plus { box-shadow: inset 0 0 0 3px #f2a8c4, 0 3px 0 #dba2b6, 0 7px 12px rgba(170, 118, 118, .28); }
+html body .pl-bb:has(.pl-bb-empty) .pl-bb-a::after {
+  content: ''; position: absolute; z-index: 0; left: 50%; bottom: 0; width: 46px; height: 46px; margin-left: -23px;
+  border-radius: 50%; box-shadow: 0 0 0 9px rgba(229, 109, 153, .38); pointer-events: none;
+  opacity: 0; transform: scale(.72); will-change: transform, opacity;
+  animation: plBbInviteR 3.4s ease-out infinite; animation-play-state: var(--bb-play, paused);
+}
+html body .pl-bb:has(.pl-bb-empty) .pl-bb-a.t-feed::after   { animation-delay: 1.4s; }
+html body .pl-bb:has(.pl-bb-empty) .pl-bb-a.t-sleep::after  { animation-delay: 2.2s; }
+html body .pl-bb:has(.pl-bb-empty) .pl-bb-a.t-diaper::after { animation-delay: 3.0s; }
+@keyframes plBbInviteR { 0%, 70%, 100% { transform: scale(.72); opacity: 1; } 85% { transform: scale(1); opacity: 0; } }
+/*    Бликът на „Нов запис“ (plBbGloss, background-position, pl-bebe.css:401): докато бутонът е в кадър — 78 Paint / 3 s
+      (мерено, plav_bis.js --skrol .pl-bb-cta). Същият градиент върху ивица 260 % широка (= background-size 260 %, значи
+      ъгълът и лентата са същите), плъзгана с translateX: background-position 132 % → −32 % = отместване −2.112W → +0.512W
+      = −81.23 % → +19.69 % от ширината на ивицата. Изрязва я самият бутон (overflow: hidden, хапчето). Височината остава 30 %
+      — над надписа (контрастът, pl-bebe.css:419). Намален ход: pl-bebe.css:517 крие ::after — непипнато. */
+html body .pl-bb-cta.pl-bb-cta { overflow: hidden; }
+html body .pl-bb-cta.pl-bb-cta::after {
+  right: auto; width: 260%; border-radius: 0; background-size: 100% 100%; background-position: 0 0;
+  transform: translateX(-81.23%); animation-name: plBbGlossT; will-change: transform;
+}
+@keyframes plBbGlossT { 0%, 62% { transform: translateX(-81.23%); } 100% { transform: translateX(19.69%); } }
+/* край 14 */
 /* край 16.11 · цветове и бутони */
