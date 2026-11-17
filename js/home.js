@@ -887,7 +887,8 @@
       try {
         var нямаБебе = !(JSON.parse(localStorage.getItem('bl_baby') || '{}').birth);
         var неОнбордван = !localStorage.getItem('bl_onboarded');
-        if (нямаБебе && неОнбордван && window.BL_ONBOARD) setTimeout(function () { BL_ONBOARD.open(); }, 700);
+        // 17.11: след вратата за достъп, не направо (onboard.js следДостъпа). ПЪТ НАЗАД: върни setTimeout(… open() …, 700).
+        if (нямаБебе && неОнбордван && window.BL_ONBOARD) { if (BL_ONBOARD.самичко) BL_ONBOARD.самичко(); else setTimeout(function () { BL_ONBOARD.open(); }, 700); }
       } catch (e) {}
     }
     draw();

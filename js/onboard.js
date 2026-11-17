@@ -353,9 +353,31 @@
     // самият тур пуска онбординга след себе си (home.js close()).
     let турГотов = false; try { турГотов = !!localStorage.getItem('bl_tour_done'); } catch (e) {}
     if (турГотов && !load('bl_onboarded', false) && !load('bl_baby', { birth: '' }).birth) {
-      setTimeout(open, 900);
+      следДостъпа(самоОтвори, 900);   // 17.11: беше setTimeout(open, 900) — виж следДостъпа
     }
   });
 
-  window.BL_ONBOARD = { open, close };
+  // 🔑 17.11 · РЕДЪТ ПРИ НОВ ЧОВЕК (решение на собственика): първо ВРАТАТА за достъп (pl-dostap.js), запознаването
+  //   чак СЛЕД като достъпът е даден — вратата се е затворила успешно, мама е вътре. Двата прозореца никога един
+  //   върху друг. Чака САМО самичкото отваряне (първото посещение тук и след обиколката, home.js); бутоните в
+  //   профила/стаята отварят веднага — тях мама натиска отвътре. Без pl-dostap.js или на localhost (вратата е
+  //   изключена, режим „без-сървър“) — както досега. ПЪТ НАЗАД: върни `setTimeout(open, 900)` горе и
+  //   `setTimeout(… BL_ONBOARD.open() …, 700)` в home.js, махни следДостъпа/самоОтвори/самичко.
+  function достъпДаден() {
+    const д = window.BL_DOSTAP;
+    if (!д || typeof д.вътре !== 'function') return true;
+    try { return !!д.вътре(); } catch (e) { return true; }
+  }
+  function следДостъпа(fn, пауза) {
+    if (достъпДаден()) { setTimeout(fn, пауза); return; }
+    const слушай = () => { if (!достъпДаден()) return; document.removeEventListener('bl:dostap', слушай); setTimeout(fn, пауза); };
+    document.addEventListener('bl:dostap', слушай);
+  }
+  // условията се гледат в МИГА на отварянето: докато е чакала вратата, мама може да е минала запознаването сама
+  function самоОтвори() {
+    if (load('bl_onboarded', false) || load('bl_baby', { birth: '' }).birth) return;
+    const ов = $('onbOverlay'); if (!ов || !ов.hidden) return;
+    open();
+  }
+  window.BL_ONBOARD = { open, close, самичко: () => следДостъпа(самоОтвори, 700) };
 })();
