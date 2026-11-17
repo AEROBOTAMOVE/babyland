@@ -522,4 +522,34 @@ html body #blDostap#blDostap .bl-dg-eye { grid-column: 3; grid-row: 2; padding: 
 html body #blDostap#blDostap .bl-dg-fld input::placeholder { font-size: var(--bl-t-m); }
 html body #blDostap#blDostap .bl-dg-cta { min-height: 56px; font-size: var(--bl-t-l); font-weight: 800; }
 /* край 15 */
+/* 16 · 17.11 · ГОЛЕМИЯТ ШРИФТ (увеличен текст на телефона). Мерено (cvetove_mash.js, 360, всеки изчислен font-size × 1.25/1.5 —
+       както „Мащаб на текста“ в Android, защото 1718 от 1836 размера са в px и коренът сам не ги мести): при 100 % — 0 нови;
+       при 125–150 % се режат „Алекс · 7 месеца“, „Обиколка“, „Опитани/Любими/Бележки“, „Какво ще има днес?“, „Хранене“ в
+       „Нашият ден“; бутон от реда за добавяне в „Бременност“ излиза вдясно; сърцето до „Какво търсим днес?“ — извън екрана.
+       Начинът: НЕ по-дребен шрифт, а пренасяне — само когато не се побира (при 100 % всичко пак е на един ред, мерено). */
+/*    „Нашият ден“ — надписът под иконката: многоточие → пренася; една дълга дума се вижда цяла */
+html.pl-on #plHome#plHome .pl-day-it .pl-day-t small { white-space: normal; overflow: visible; text-overflow: clip; text-wrap: balance; }
+/*    „Моето бебе“ — името и възрастта: многоточие → два реда при нужда */
+html body #roomOverlay #roRoom .pl-bb-idt b { white-space: normal; overflow: visible; text-overflow: clip; text-wrap: balance; }
+/*    „Захранване“ — „Какво ще има днес?“: 2 → 3 реда таван (при 100 % е на ≤ 2) */
+html body #roomOverlay #roRoom .pl-hr-dt { -webkit-line-clamp: 3; }
+/*    „Захранване“ — плочките: иконка | текст | ›; когато най-дългата дума не влиза до иконката, текстът слиза на цял ред под нея
+      (flex-wrap; текстът е flex 1 1 0 с min-width = най-дългата дума — при 100 % тя е 67 px от 71 → без промяна) */
+html body #roomOverlay #roRoom .pl-hr .pl-hr-t { display: flex !important; flex-wrap: wrap; align-items: center; column-gap: 6px; row-gap: 2px; }
+html body #roomOverlay #roRoom .pl-hr .pl-hr-t > .pl-hr-ti { flex: none; }
+html body #roomOverlay #roRoom .pl-hr .pl-hr-t > .pl-hr-tt { flex: 1 1 0; min-width: min-content; }
+html body #roomOverlay #roRoom .pl-hr .pl-hr-t > em { flex: none; margin-left: auto; }
+html body #roomOverlay #roRoom .pl-hr .pl-hr-tt > b { overflow: visible; text-overflow: clip; }
+/*    реда под заглавието („+отбележи“ — хапче) НЕ го броим в най-малката ширина (contain: inline-size), иначе плочката
+      се пренасяше и при 100 % (мерено q_bis16b.js: 2 от 3 пренесени) — решава само думата на заглавието */
+html body #roomOverlay #roRoom .pl-hr .pl-hr-tt > .pl-hr-tn { contain: inline-size; }
+/*    „Растеж“ — табовете Тегло / Ръст / Обиколка: същите пропорции, но колоната не става по-тясна от думата си */
+html body #roomOverlay #roRoom .pl-rz-seg { grid-template-columns: minmax(min-content, 1fr) minmax(min-content, .9fr) minmax(min-content, 1.3fr); }
+html body #roomOverlay #roRoom .pl-rz-tab > span:last-child { min-width: auto; overflow: visible; text-overflow: clip; }
+/*    редовете за добавяне (поле + бутон): бутонът слиза под полето само ако не се побира */
+html body #roomOverlay #roRoom .jr-addrow { flex-wrap: wrap; }
+html body #roomOverlay #roRoom .jr-addrow > input.jr-word { flex: 1 1 150px; min-width: 0; }
+/*    търсачката — заглавието „Какво търсим днес?“ ♡: пренася вместо да избута сърцето извън екрана */
+html body #searchOverlay .pl-ts-title.pl-felt { white-space: normal; text-wrap: balance; height: auto; min-height: 60px; }
+/* край 16 */
 /* край 16.11 · цветове и бутони */
