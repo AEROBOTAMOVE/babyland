@@ -75,6 +75,9 @@
     //    ПЪТ НАЗАД: махни този блок, onbKlavish() и двата реда „16.11“ в close().
     if (!onbОтворен) { onbФокусПреди = document.activeElement; document.addEventListener('keydown', onbKlavish); }
     onbОтворен = true;
+    // 📱 16.11: телефонното „Назад“ затваря запознаването (като докосване на фона), не стаята под него /
+    //   не излиза от приложението (store.js, BL_НАЗАД). ПЪТ НАЗАД: махни реда и този в close().
+    if (window.BL_НАЗАД) BL_НАЗАД.отвори('запознаване', close);
     setTimeout(() => {
       try {
         const груб = window.matchMedia && matchMedia('(pointer: coarse)').matches;
@@ -111,6 +114,7 @@
     $('onbOverlay').hidden = true;
     document.body.style.overflow = '';
     document.removeEventListener('keydown', onbKlavish); onbОтворен = false;   // 16.11
+    if (window.BL_НАЗАД) BL_НАЗАД.затворен('запознаване');   // 📱 16.11
     try { if (onbФокусПреди && onbФокусПреди.isConnected && onbФокусПреди.focus) onbФокусПреди.focus({ preventScroll: true }); } catch (e) {} onbФокусПреди = null;   // 16.11
   }
   // ═══ 💬 ЕДИН ГЛАС, КОЙТО СТИГА ДО НЕЯ ═══

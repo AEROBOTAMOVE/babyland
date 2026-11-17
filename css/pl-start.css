@@ -454,4 +454,14 @@ html:not(#bl-x#bl-x#bl-x) body :is(.rg-n small, .prof-wlbl, .mn-day, .fa-chip:no
 }
 html body #roomOverlay #roRoom .jr-week .jr-day { position: relative; }
 html body #roomOverlay #roRoom .jr-week .jr-day::after { content: ''; position: absolute; inset: -1px -3.5px; }   /* от вътрешния ръб: 1 px рамка + 2.5 px → процепът 4 px е покрит (мерено в покой, q_week.js) */
+/* 13 · 17.11 · НОВИТЕ ЗАГЛАВИЯ НА КАРТИТЕ (113, по-дълги — 23–39 знака) БЕЗ ДУМА-СИРАК
+       Мерено (q_zag3.js, 360, всяко заглавие в истинския #roChips и в истинската карта-отговор на търсачката): преливане 0,
+       „…“ 0 — но последният ред с ЕДНА дума: 📄 чиповете 62/104, „почти“ чиповете 56/104, търсачката 51/85
+       („Очите — виждат най-ясно на 25-30 / см“). Сравнени три начина: balance → сираци 0, разцепени думи с тире не повече
+       (3/1/2); pretty → 10–12 сираци и цепи диапазоните „25-30“, „2–4“. Избран balance.
+       В търсачката заглавието е <strong> + <br> в мехурчето → става блок (за да се балансира), <br>-ът след него се скрива
+       (иначе празен ред); същото е и в поздрава (search.js:199). ПЪТ НАЗАД: махни трите правила. */
+html body #roChips .ro-chip { text-wrap: balance; }
+html body #searchOverlay .sf-bub > strong:has(+ br) { display: block; text-wrap: balance; }
+html body #searchOverlay .sf-bub > strong + br { display: none; }
 /* край 16.11 · цветове и бутони */

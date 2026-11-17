@@ -4948,7 +4948,7 @@ function findEntry(text, room, exclude) {
         const почти = (findEntry.почти || []).filter(x => x && x.id);
         if (почти.length) {
           const чипове = почти.map(x => ({
-            label: (x.room === currentRoom ? '' : '↗ ') + (x.title || '').slice(0, 34),
+            label: (x.room === currentRoom ? '' : '↗ ') + късо(x.title, 40),   // 17.11: беше .slice(0, 34) — режеше новите заглавия посред думата („…на 25-30 с“)
             id: x.id
           }));
           const чужда = почти.find(x => x.room !== currentRoom && PERSONAS[x.room]);

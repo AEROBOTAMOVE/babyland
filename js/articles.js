@@ -426,6 +426,8 @@ window.BL_ARTICLES_DATA = [
     //     картата, от която мама е тръгнала)
     if (ov.hidden) артФокусПреди = document.activeElement;
     ov.hidden = false;
+    // 📱 16.11: телефонното „Назад“ затваря статията, не стаята под нея (store.js, BL_НАЗАД). ПЪТ НАЗАД: махни реда.
+    if (window.BL_НАЗАД) BL_НАЗАД.отвори('статия', затвориСтатия);
     $('artBody').scrollTop = 0;
     ov.querySelector('.art-panel').style.animation = 'none';
     void ov.offsetWidth;
@@ -433,6 +435,7 @@ window.BL_ARTICLES_DATA = [
     const askBtn = $('artBody').querySelector('.art-ask');
     if (askBtn) askBtn.addEventListener('click', () => {
       ov.hidden = true;
+      if (window.BL_НАЗАД) BL_НАЗАД.затворен('статия');   // 📱 16.11
       артФокусПреди = null;   // мама отива в чата — не я връщаме назад
       if (window.MamaHelper) { MamaHelper.showTab('chat'); MamaHelper.ask('Разкажи ми повече за „' + a.title + '“'); }
     });
@@ -445,6 +448,7 @@ window.BL_ARTICLES_DATA = [
     const ov = $('artOverlay');
     if (!ov || ov.hidden) return;
     ov.hidden = true;
+    if (window.BL_НАЗАД) BL_НАЗАД.затворен('статия');   // 📱 16.11
     try { speechSynthesis.cancel(); } catch (e) {}
     try { if (артФокусПреди && артФокусПреди.focus) артФокусПреди.focus({ preventScroll: true }); } catch (e) {}
     артФокусПреди = null;

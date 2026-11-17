@@ -424,6 +424,7 @@
     if (!слой) return;
     document.removeEventListener('keydown', наКлавиш);
     слой.remove(); слой = null;
+    if (window.BL_НАЗАД) BL_НАЗАД.затворен('профил');   // 📱 16.11
     try { if (фокусПреди && фокусПреди.focus) фокусПреди.focus(); } catch (e) {}
     фокусПреди = null;
   }
@@ -457,6 +458,8 @@
     document.addEventListener('keydown', наКлавиш);
     рисувайВ(кутия);
     document.body.appendChild(слой);
+    // 📱 16.11: телефонното „Назад“ затваря профила, не стаята под него (store.js, BL_НАЗАД). ПЪТ НАЗАД: махни реда и този в затвориСлоя.
+    if (window.BL_НАЗАД) BL_НАЗАД.отвори('профил', затвориСлоя);
     try { const x = кутия.querySelector('.prof-close'); if (x) x.focus(); } catch (e) {}
   }
   function рисувайВ(кутия) {

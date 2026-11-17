@@ -75,7 +75,9 @@
       </div>`;
     document.body.appendChild(слой);
     requestAnimationFrame(() => слой.classList.add('on'));
-    const махни = () => { слой.classList.remove('on'); setTimeout(() => слой.remove(), 220); };
+    // 📱 16.11: телефонното „Назад“ затваря избирача, не стаята под него (store.js, BL_НАЗАД). ПЪТ НАЗАД: махни двата израза с BL_НАЗАД.
+    const махни = () => { слой.classList.remove('on'); setTimeout(() => слой.remove(), 220); if (window.BL_НАЗАД) BL_НАЗАД.затворен('избирачът'); };
+    if (window.BL_НАЗАД) BL_НАЗАД.отвори('избирачът', махни);
     слой.addEventListener('click', e => { if (e.target === слой) махни(); });
     слой.querySelectorAll('.np-b').forEach(b => b.addEventListener('click', () => {
       махни();

@@ -386,8 +386,10 @@
     box.appendChild(list);
   }
 
-  function open() { $('searchOverlay').hidden = false; document.body.style.overflow = 'hidden'; $('searchInput').value = ''; draw(''); setTimeout(() => $('searchInput').focus(), 50); }
-  function close() { $('searchOverlay').hidden = true; document.body.style.overflow = ''; _drawSig = ''; }
+  // 📱 16.11: телефонното „Назад“ затваря търсачката, не стаята под нея / не излиза от приложението
+  //   (store.js, BL_НАЗАД). ПЪТ НАЗАД: махни двата израза с BL_НАЗАД.
+  function open() { $('searchOverlay').hidden = false; document.body.style.overflow = 'hidden'; $('searchInput').value = ''; draw(''); setTimeout(() => $('searchInput').focus(), 50); if (window.BL_НАЗАД) BL_НАЗАД.отвори('търсачка', close); }
+  function close() { $('searchOverlay').hidden = true; document.body.style.overflow = ''; _drawSig = ''; if (window.BL_НАЗАД) BL_НАЗАД.затворен('търсачка'); }
 
   document.addEventListener('DOMContentLoaded', () => {
     const trig = $('searchTrigger');

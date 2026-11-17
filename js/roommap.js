@@ -71,7 +71,9 @@
         </div></div>`;
     document.body.appendChild(слой);
     requestAnimationFrame(() => слой.classList.add('on'));
-    const махни = () => { слой.classList.remove('on'); setTimeout(() => слой.remove(), 220); };
+    // 📱 16.11: телефонното „Назад“ затваря картата, не стаята под нея (store.js, BL_НАЗАД). ПЪТ НАЗАД: махни двата израза с BL_НАЗАД.
+    const махни = () => { слой.classList.remove('on'); setTimeout(() => слой.remove(), 220); if (window.BL_НАЗАД) BL_НАЗАД.затворен('картата на стаята'); };
+    if (window.BL_НАЗАД) BL_НАЗАД.отвори('картата на стаята', махни);
     слой.querySelector('.rm-x').addEventListener('click', махни);
     слой.addEventListener('click', e => { if (e.target === слой) махни(); });
     document.addEventListener('keydown', function изх(e) { if (e.key === 'Escape') { махни(); document.removeEventListener('keydown', изх); } });

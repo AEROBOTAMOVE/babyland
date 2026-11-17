@@ -86,6 +86,7 @@
     const затвори = () => {
       if (затворено) return; затворено = true;
       document.removeEventListener('keydown', esc2, true);
+      if (window.BL_НАЗАД) BL_НАЗАД.затворен('медальонче');   // 📱 16.11
       слой.classList.remove('on');
       setTimeout(() => { слой.remove(); върви = false; ако(); }, 260);
     };
@@ -94,6 +95,8 @@
       e.__blСлойПоет = true;
       затвори();
     }
+    // 📱 16.11: телефонното „Назад“ затваря медальончето, не стаята под него (store.js, BL_НАЗАД). ПЪТ НАЗАД: махни реда и този в затвори().
+    if (window.BL_НАЗАД) BL_НАЗАД.отвори('медальонче', затвори);
     слой.querySelector('.md-ok').addEventListener('click', затвори);
     слой.addEventListener('click', e => { if (e.target === слой) затвори(); });
     document.addEventListener('keydown', esc2, true);

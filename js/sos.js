@@ -152,7 +152,10 @@
       //    педиатъра, затваря с ✕ — localStorage остава празен и приложението
       //    не казва нищо. В нощта, когато номерът наистина ѝ трябва, го няма.
       //    Сега се пази на всяко писане И на всеки изход от екрана.
-      const close = () => { if (editMode) collect(); ov.hidden = true; document.body.style.overflow = ''; };
+      const close = () => { if (editMode) collect(); ov.hidden = true; document.body.style.overflow = ''; if (window.BL_НАЗАД) BL_НАЗАД.затворен('SOS'); };
+      // 📱 16.11: телефонното „Назад“ затваря номерата, не стаята под тях (store.js, BL_НАЗАД); при
+      //   прерисуване (✏️ Настрой) отвори() само подменя затварянето. ПЪТ НАЗАД: махни двата израза с BL_НАЗАД.
+      if (window.BL_НАЗАД) BL_НАЗАД.отвори('SOS', close);
       ov.querySelectorAll('.sos-editrow input').forEach(inp => {
         inp.addEventListener('input', collect);
         inp.addEventListener('change', collect);
