@@ -141,7 +141,8 @@
     if (Number.isFinite(+d.access_days) && +d.access_days > 0) дниПробни = Math.trunc(+d.access_days);
   }
   const ПИШИ_НИ = 'Пиши ни — във Facebook, Instagram или на имейл.';
-  const продължение = () => 'За продължение — ' + цена + ' € на месец, колкото една салата.';
+  // 17.11 · решение на собственика: БЕЗ цена — само 14 дни безплатно, после ни пишат. ПЪТ НАЗАД: git show 1999437:js/pl-dostap.js
+  const продължение = () => 'Ще ти удължим достъпа с радост.';
   const текстИзтекло = u => ((u && u.proben && u.status !== 'locked') ? 'Пробният период свърши.' : 'Достъпът изтече.') + ' ' + продължение() + ' ' + ПИШИ_НИ;
 
   // ═══ 3 · СЪСТОЯНИЕТО ═══
@@ -273,7 +274,7 @@
       (рег
         ? '<h2 class="bl-dg-t" id="blDgT">' + дниПробни + ' дни безплатно</h2>' +
           '<p class="bl-dg-lead">Пробният период е с пълен достъп. Без карта и без обвързване.</p>' +
-          '<p class="bl-dg-small">После — ' + цена + ' € на месец, колкото една салата.</p>'
+          '<p class="bl-dg-small">След това ни пиши и ще удължим достъпа ти.</p>'
         : '<h2 class="bl-dg-t" id="blDgT">Добре дошла отново</h2>' +
           '<p class="bl-dg-lead">Влез с имейла и паролата си.</p>') +
       '<form class="bl-dg-form" novalidate autocomplete="on">' +
@@ -541,7 +542,7 @@
       '<div class="bl-dc-st"><span class="bl-badge bl-b-' + и.s + '">' + БАДЖ[и.s] + '</span>' + ст + '</div>' +
       (и.s === 'admin' ? '' :
         '<div class="bl-dc-kak"><p class="bl-dc-kh">Как продължава</p>' +
-        '<p class="bl-dc-cena">' + и.c + ' € на месец, колкото една салата. Пиши ни — във Facebook, Instagram или на имейл — и ние удължаваме достъпа.</p>' +
+        '<p class="bl-dc-cena">Пиши ни — във Facebook, Instagram или на имейл — и ние удължаваме достъпа.</p>' +
         контактиHtml('bl-kont-dc') + '</div>') +
       (и.a ? '<button type="button" class="bl-dc-b bl-dc-adm pl-gel" data-act="админ">' + икона(И.списък) + '<span>Администрация</span><span class="bl-dg-go" aria-hidden="true">›</span></button>' : '') +
       '<button type="button" class="bl-dc-b bl-dc-out pl-soft" data-act="изход">' + икона(И.врата) + '<span>Изход</span></button>' +

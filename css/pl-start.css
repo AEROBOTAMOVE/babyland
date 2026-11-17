@@ -567,4 +567,35 @@ html body #roomOverlay .ro-panel p.ro-disc.ro-disc { padding-bottom: calc(7px + 
 html body #roomOverlay .ro-panel #roFab.ro-fab { bottom: calc(86px + env(safe-area-inset-bottom, 0px)) !important; }
 html body .plus-wrap.plus-wrap { bottom: calc(84px + env(safe-area-inset-bottom, 0px)); }
 /* край 17 */
+
+/* 18 · 17.11 · ТАБЛЕТ И ХОРИЗОНТАЛНО (мерено q_tablet.js: 768×1024, 1024×768, 844×390 с вдлъбнатина 47 отстрани, 360×844).
+   ПЪТ НАЗАД: махни раздела до „край 18“. */
+/* (а) четимият ред. На ≥ 600 px стаята е 680 px и дребният текст (12,5–13,5 px) стигаше 77–92 знака на ред, бележката
+       под часовника в началото 86. 58ch ≈ 71 знака (в този шрифт 1ch ≈ 1,22 знака). Само изброените класове — никой от тях
+       няма свой max-width (grep). Подравнените вляво — само таван; центрираните — таван + margin-inline: auto (мерено q_ta.js). */
+@media (min-width: 600px) {
+  html body #roomOverlay .ro-panel #roRoom :is(.pg20-do, .jr-hint, .pl-rz-note, .sc-out, .chk-count, .rp-ing, .rp-how, .jr-sub, .fs-pt, .fs-foot, .al-rule, .cs-note),
+  html body #roomOverlay .ro-panel #roRoom :is(.sc-tips, .cm-row) > p, html body #roomOverlay .ro-panel #roRoom .fd-alrgchk > span,
+  html.pl-on body :is(#plHome, #todaySection) :is(.td-tip, .wk-foot, .ch-sub, .ch-pod, .ch-legal) { max-width: 58ch; }
+  html body #roomOverlay .ro-panel #roRoom :is(.jr-privacy, .bb-feed, .br-now, .bb-age, .bb-res, .fd-agenote, .rb-count),
+  html body #roomOverlay .ro-panel p.ro-disc.ro-disc { max-width: 58ch; margin-inline: auto !important; }
+}
+/* (б) вдлъбнатината отстрани (телефон хоризонтално: safe-area left/right 47): превключвачът на темата беше на 786→830
+       (вдлъбнатината от 797), „+“ на 14→70 (до 47). На изправен телефон и таблет env = 0 → нищо не мърда. */
+html body .theme-toggle { right: calc(14px + env(safe-area-inset-right, 0px)) !important; }
+html body .plus-wrap.plus-wrap { left: calc(14px + env(safe-area-inset-left, 0px)); }
+/* (в) прозорците на нисък хоризонтален екран (височина ≤ 500): стаята беше 343 от 390 px (88vh), търсачката — лист 219 px
+       с ~30 px за резултати (отдолу стоеше 40 px празно), запознаването — карта 256 px под 26vh отгоре. 112 и заглавието на
+       търсачката остават където са. */
+@media (orientation: landscape) and (max-height: 500px) {
+  html body #roomOverlay .ro-panel { height: calc(100% - 12px); }
+  html body #searchOverlay#searchOverlay[data-pl-ts] { padding-bottom: calc(env(safe-area-inset-bottom, 0px) + 10px); }
+  html body #onbOverlay#onbOverlay.onb-overlay { padding-top: 12px !important; }
+}
+/* (г) кръгчетата на дните в менюто („Захранване“): на 360 редът е 294 px, кръгът 44 в колона 42 → застъпени с 2 px.
+       Колоните си остават minmax(0, 44px) с space-between; разстояние 7 px и кръгът = колоната → на 360 кръг 36 с 7 px между
+       (пръстенът на избрания стърчи 4 → 3 px въздух); на широко колоните са 44 → както преди. */
+html body .pl-hr .pl-hr-days { column-gap: 7px; }
+html body .pl-hr .pl-hr-days > .pl-hr-d.pl-hr-d { width: 100% !important; height: auto !important; min-height: 0 !important; aspect-ratio: 1 / 1; }
+/* край 18 */
 /* край 16.11 · цветове и бутони */
