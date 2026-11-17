@@ -502,4 +502,24 @@ html body .pl-bb-cta.pl-bb-cta::after {
 }
 @keyframes plBbGlossT { 0%, 62% { transform: translateX(-81.23%); } 100% { transform: translateX(19.69%); } }
 /* край 14 */
+/* 15 · 17.11 · ВРАТАТА ЗА ДОСТЪП (първият екран за всеки нов човек на живо). Мерено (cvetove_pr.js + q_vrata.js, сървър с /api,
+       без регистрация, 360): контраст 0 провала, текстове ≥ 13 px, цели ≥ 44, JS грешки 0 — но:
+       · „Парола · поне 8 знака“ на 2 реда („знака“ сам), а подсказката „измисли си парола“ отрязана (154 от 129 px): в реда
+         [иконка][етикет+поле][Покажи 76 px] колоната остава 129 px. Сега полето е решетка: етикетът е на цял ред (над полето И над
+         „Покажи“), полето и „Покажи“ — на втория ред; .bl-dg-fb става display: contents (етикетът и полето — клетки на решетката).
+         Подсказките — 15 px (M; написаното остава 17).
+       · главният бутон „Започни 14-те дни“ 58 px · 19 px → скалата на големия гел 56 · 18 · 800 (т. 8).
+       Думите не са пипнати. ПЪТ НАЗАД: махни този раздел до „край 15“. */
+html body #blDostap#blDostap .bl-dg-fld {
+  display: grid; grid-template-columns: auto minmax(0, 1fr) auto; grid-template-rows: auto auto; column-gap: 10px; row-gap: 0; align-items: center;
+}
+html body #blDostap#blDostap .bl-dg-fld > :first-child { grid-column: 1; grid-row: 1 / span 2; }
+html body #blDostap#blDostap .bl-dg-fb { display: contents; }
+html body #blDostap#blDostap .bl-dg-l { grid-column: 2 / 4; grid-row: 1; }
+html body #blDostap#blDostap .bl-dg-fld input { grid-column: 2; grid-row: 2; }
+html body #blDostap#blDostap .bl-dg-fld:not(:has(.bl-dg-eye)) input { grid-column: 2 / 4; }
+html body #blDostap#blDostap .bl-dg-eye { grid-column: 3; grid-row: 2; padding: 0 6px; }   /* 76 → 68 px (≥ 44): подсказката 136 px влиза */
+html body #blDostap#blDostap .bl-dg-fld input::placeholder { font-size: var(--bl-t-m); }
+html body #blDostap#blDostap .bl-dg-cta { min-height: 56px; font-size: var(--bl-t-l); font-weight: 800; }
+/* край 15 */
 /* край 16.11 · цветове и бутони */
