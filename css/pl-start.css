@@ -644,4 +644,38 @@ html body #roomOverlay #roRoom .pg20-mschips > .jr-chip { margin: 0 !important; 
 /* 10 · ЕДНАКВИТЕ БЕЛЕЖКИ .pg20-do: 12 px в едни стаи, 16 в други (мерено: 2 + 2) → 16 (--bl-r-m) навсякъде. */
 html body #roomOverlay #roRoom .pg20-do { border-radius: var(--bl-r-m, 16px) !important; }
 /* край 19 */
+
+/* 20 · 18.11 · ЦЕЛИ, КОНТРАСТ, ГОЛЯМ ШРИФТ — вратата, запознаването, профилът, търсенето, статията, чатът на стаята, СОС, Дневник на мама
+   (360, светло+тъмно; q_v20.js: цели < 44, контраст от истинските пиксели, всеки шрифт × 1,3). ПЪТ НАЗАД: махни раздела до „край 20“. */
+/* 1 · ПРОФИЛЪТ, „Целите ми тази седмица“ при шрифт 130 %: дясната колона излизаше вдясно до 367 px (8 плочки, „2 следи
+       в лабораторията“) — 1fr = minmax(auto, 1fr) и дългата дума разпъва колоната. Колоните вече са ≥ 9,5em: на 100 % — две
+       (123 px), на 130 % — една (160 px > половината ред). */
+html body .prof-overlay .prof-gmenu.prof-gmenu { font-size: 13px; grid-template-columns: repeat(auto-fit, minmax(min(100%, 9.5em), 1fr)); }
+html body .prof-overlay .prof-gmenu.prof-gmenu > .prof-gadd { min-width: 0; overflow-wrap: break-word; }
+/* 2 · СВЕТЛО, заместващият текст в полетата на чата („Попитай ме нещо…“) и на „Попитай“ в стаите („Напиши на Луна…“):
+       #7a6f80 (pl-ui.css:121, сметнат 4,7 върху #fffdf9) — истинският фон на полето е по-тъмен → мерено 4,16:1. #6b6170 → ~5,1:1. */
+html:not([data-theme="dark"]) body :is(#roInput, .ask-inp)::placeholder { color: #6b6170 !important; }
+/* 3 · СВЕТЛО, ВРАТАТА: „ime@primer.bg“ и „измисли си парола“ — rgb(142,138,163) → мерено 2,91:1. Същият #6b6170 → ~5,1:1.
+       (Правилото е тук, не в pl-dostap.css — него го държи главният чат.) */
+html:not([data-theme="dark"]) body #blDostap :is(#blDgEmail, #blDgPass, input)::placeholder { color: #6b6170 !important; }
+/* 4 · СВЕТЛО, „ДНЕВНИК НА МАМА“: дребният сив текст 13 px (#6f6980 = --ink-soft) върху филца на картите — мерено 4,25–4,49:1
+       (19 бр.: .jr-privacy ×11, <strong> в тях ×4, .cs-note ×2, „Твоята седмица“, + p10 до 3,8 по шарката). #625c72 → ~5,2:1. */
+html:not([data-theme="dark"]) body #roomOverlay .ro-lav #roRoom :is(p.jr-privacy, p.cs-note, p.jr-weekcap, p.jr-weekcap > .jr-sub) { color: #625c72 !important; }
+/* край 20 */
+
+/* 21 · 18.11 · 412 px И ХОРИЗОНТАЛНО (q_v21.js: 412×915, 915×412, 844×390 с прореза; 8-те екрана от раздел 20). На 412 изправено —
+   нищо за поправяне (0 отрязани, 0 извън екрана, 0 под прореза). Хоризонтално (височина ≤ 500) — стаята е 400 px и чатът се губи.
+   ПЪТ НАЗАД: махни раздела до „край 21“. */
+@media (orientation: landscape) and (max-height: 500px) {
+  /* 1 · ЧАТЪТ НА СТАЯТА (915×412): от 400 px на панела разговорът получаваше 32 px (глава 86, „Мира е до теб“ 22, „Нашият
+         разговор“ 31, чипове 67, бързи плочки 60, поле 62+10, бележка 52) — един ред текст. Само в таб „чат“ и само легнало:
+         заглавието „Мира е до теб“ (името е и на таба) и трите бързи плочки (дублират „+“, стая „Инструменти“ и профила) се
+         скриват, отстъпите са по-плътни. Изправено — нищо не се променя. */
+  html body #roomOverlay .ro-panel[data-tab="chat"] #roChatWrap .pl-mc-hero, html body #roomOverlay .ro-panel[data-tab="chat"] #roChatWrap .pl-mc-tools { display: none !important; }
+  html body #roomOverlay .ro-panel[data-tab="chat"] #roChatWrap #roChips.ro-chips { padding-top: 4px !important; padding-bottom: 0 !important; }
+  html body #roomOverlay .ro-panel[data-tab="chat"] #roChatWrap #roForm.ro-inputbar { margin-top: 6px !important; margin-bottom: 6px !important; }
+  /* 2 · БЕЛЕЖКАТА ДОЛУ във всички табове: таванът 58ch (раздел 18) я чупеше на 2 реда в 680 px — хоризонтално на един ред. */
+  html body #roomOverlay .ro-panel p.ro-disc.ro-disc { max-width: none; padding-top: 4px !important; }
+}
+/* край 21 */
 /* край 16.11 · цветове и бутони */
