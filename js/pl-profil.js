@@ -436,7 +436,12 @@
     // сцената се затопля на празен ход — иначе на бавен телефон първото отваряне мига с плосък цвят
     // (снимка 22.09, ag2_profil_12_empty_d: сцената още не беше дошла). Файлът е в кеша на sw.js:204.
     const затопли = () => { try { const и = new Image(); и.decoding = 'async'; и.src = 'img/scene/profil.webp'; } catch (e) {} };
-    if ('requestIdleCallback' in window) requestIdleCallback(затопли, { timeout: 5000 }); else setTimeout(затопли, 3000);
+    // ⚡ 18.11 (trace на живия старт): празен ход на ГЛАВНАТА НИШКА идва, докато мрежата още сваля първия екран — и
+    //   затоплянето (73 KB) му отнемаше линията. Сега чака стартовият екран (#blSplash) да се махне, после празен ход.
+    //   ПЪТ НАЗАД: върни `if ('requestIdleCallback' in window) requestIdleCallback(затопли, { timeout: 5000 }); else setTimeout(затопли, 3000);`
+    const следЕкрана = () => { if (document.getElementById('blSplash')) return setTimeout(следЕкрана, 500);
+      if ('requestIdleCallback' in window) requestIdleCallback(затопли, { timeout: 5000 }); else setTimeout(затопли, 3000); };
+    следЕкрана();
   }
   if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', върви); else върви();
   window.BL_PL_PROFIL = { облечи, коеБебе };

@@ -329,7 +329,12 @@
       .observe(ов, { childList: true, subtree: true, attributes: true, attributeFilter: ['hidden'] });
     // сцената се затопля на празен ход — иначе на бавен телефон първото отваряне мига с плосък цвят
     const затопли = () => { try { const и = new Image(); и.decoding = 'async'; и.src = 'img/scene/tarsene.webp'; } catch (e) {} };
-    if ('requestIdleCallback' in window) requestIdleCallback(затопли, { timeout: 5000 }); else setTimeout(затопли, 3000);
+    // ⚡ 18.11 (trace на живия старт): празен ход на ГЛАВНАТА НИШКА идва, докато мрежата още сваля първия екран — и
+    //   затоплянето (67 KB) му отнемаше линията. Сега чака стартовият екран (#blSplash) да се махне, после празен ход.
+    //   ПЪТ НАЗАД: върни `if ('requestIdleCallback' in window) requestIdleCallback(затопли, { timeout: 5000 }); else setTimeout(затопли, 3000);`
+    const следЕкрана = () => { if (document.getElementById('blSplash')) return setTimeout(следЕкрана, 500);
+      if ('requestIdleCallback' in window) requestIdleCallback(затопли, { timeout: 5000 }); else setTimeout(затопли, 3000); };
+    следЕкрана();
   }
   // 🪤 search.js закача 🎤 с bar.insertBefore(mic, #searchClose) на DOMContentLoaded (search.js:384) —
   //   тук НЕ се мести нито лентата, нито ✕, затова редът на двата скрипта няма значение.

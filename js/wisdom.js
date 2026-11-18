@@ -545,7 +545,9 @@
     mountTrick(container, a);
   };
   // статиите се наливат след библиотеката (или веднага, ако тя вече е тук)
-  if (window.BL_LIB) BL_LIB.init().then(pourArticles);
+  // ⚡ 18.11 (trace на живия старт, Slow 4G): тук стоеше и ранно `BL_LIB.init()` — то теглеше lib/index.json (270 KB)
+  //   още докато мрежата сваля първия екран. Остават двете по-късни извиквания: редът долу (1,2 s след DOMContentLoaded)
+  //   и самият lib.js (800 ms след load, lib.js:447). ПЪТ НАЗАД: върни `if (window.BL_LIB) BL_LIB.init().then(pourArticles);` тук.
   document.addEventListener('DOMContentLoaded', () => setTimeout(() => { if (window.BL_LIB) BL_LIB.init().then(pourArticles); else pourArticles(); }, 1200));
 
   window.BL_WISDOM = { MYTHS, TRUTHS, TRICKS, MONTHS, трикЗа, roomEmoji };
