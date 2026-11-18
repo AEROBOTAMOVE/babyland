@@ -107,12 +107,15 @@
   async function апи(метод, път, тяло) {
     if (метод === 'GET') await чистиКеша(път);
     const ктрл = window.AbortController ? new AbortController() : null;
-    const т = setTimeout(() => { try { if (ктрл) ктрл.abort(); } catch (e) {} }, 15000);
+    // 🐢 18.11 · 2G: помним дали заявката я прекъсна НАШИЯТ таймер (бавна връзка), а не мрежова грешка —
+    //   провери() решава различно. ПЪТ НАЗАД: махни `изтече` (тук и в провери()).
+    let изтече = false;
+    const т = setTimeout(() => { изтече = true; try { if (ктрл) ктрл.abort(); } catch (e) {} }, 15000);
     const опц = { method: метод, credentials: 'same-origin', cache: 'no-store', headers: { Accept: 'application/json' } };
     if (ктрл) опц.signal = ктрл.signal;
     if (метод !== 'GET') { опц.headers['Content-Type'] = 'application/json'; опц.body = JSON.stringify(тяло || {}); }
     let р;
-    try { р = await fetch(API + път, опц); } catch (e) { clearTimeout(т); return { мрежа: false, код: 0, данни: null, json: false }; }
+    try { р = await fetch(API + път, опц); } catch (e) { clearTimeout(т); return { мрежа: false, изтече, код: 0, данни: null, json: false }; }
     clearTimeout(т);
     const тип = (р.headers && р.headers.get('content-type')) || '';
     let данни = null;
@@ -181,11 +184,26 @@
   }
 
   let проверява = null;
+  // 🐢 18.11 · 2G: /api/me не отговори за 15 s, но телефонът е „на линия“ и няма кеш → това е НОВ човек на бавна
+  //   връзка, не офлайн. Досега виждаше „Свържи се с интернет“, макар да е свързан; сега — вратата за регистрация
+  //   (там и без това всичко минава през сървъра) и тиха нова проверка след 8 s (най-много 3 пъти), която поправя
+  //   екрана, ако все пак има сесия. С кеш решава кешът, както досега; navigator.onLine === false = офлайн, както досега.
+  //   ПЪТ НАЗАД: върни `if (!р.мрежа) { офлайнРешение(); return режим; }` и махни бавнаВръзка/пакСлед.
+  let пакСлед = 0;
+  function бавнаВръзка() {
+    if (режим !== 'врата') вид = 'рег';
+    смени('врата');
+    if (пакСлед < 3) { пакСлед++; setTimeout(() => { if (режим === 'врата' && !сървър) провери(); }, 8000); }
+  }
   function провери() {
     if (проверява) return проверява;
     проверява = (async () => {
       const р = await апи('GET', 'me');
-      if (!р.мрежа) { офлайнРешение(); return режим; }
+      if (!р.мрежа) {
+        if (р.изтече && navigator.onLine !== false && !чети()) { бавнаВръзка(); return режим; }
+        офлайнРешение(); return режим;
+      }
+      пакСлед = 0;
       if (р.код === 200 && р.данни && р.данни.user) { приеми(р.данни); return режим; }
       if (р.код === 401) {
         приемиОбщото(р.данни);
