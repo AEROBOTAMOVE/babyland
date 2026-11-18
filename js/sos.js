@@ -124,7 +124,7 @@
         html += `<a class="sos-big sos-fast" href="tel:${esc(s.fastPhone)}">⭐ ЗВЪННИ: ${esc(s.fastName) || 'моят номер'}<span>${esc(s.fastPhone)}</span></a>`;
       }
       FIXED.forEach(f => {
-        html += `<a class="sos-big ${f.cls}" href="tel:${f.tel}">${f.e} ${f.n}<span>${f.sub}</span></a>`;
+        html += `<a class="sos-big ${f.cls}" href="tel:${f.tel}">${f.e} ${f.n}<span>${f.sub.replace(/ · /g, '\u00a0· ')}</span></a>`;
       });
       EDITABLE.forEach(([key, e, name, sub]) => {
         const ph = s[key + 'Phone'], nm = s[key + 'Name'];

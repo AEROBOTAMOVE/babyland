@@ -618,3 +618,16 @@ html body .prof-overlay .pl-row.pl-gel.pl-gel {
     linear-gradient(180deg, var(--ui-gel-top) 0%, var(--ui-gel-mid) 10%, var(--ui-gel) 24%, var(--ui-gel-bot) 100%) !important;
 }
 /* край 21.10 */
+
+/* 17.11 · собственикът: „SOS 112 много нападателен, дразнещ“ → ТИХ: без червен ръб и сянка, по-малък и прозрачен.
+   Остава горе вдясно (тефтерът е дълъг, 112 е и най-долу). ПЪТ НАЗАД: махни този блок. */
+html .prof-overlay .pl-p112-mini {
+  min-width: 44px; min-height: 44px; padding: 0 12px 0 10px; gap: 5px;
+  background: rgba(255, 255, 255, .7); border: 1px solid rgba(155, 58, 74, .22); color: #9b3a4a;
+  font: 700 14px/1 Nunito, 'Nunito-fallback', system-ui, sans-serif; box-shadow: none;
+  -webkit-backdrop-filter: blur(6px); backdrop-filter: blur(6px);
+}
+html .prof-overlay .pl-p112-mini > span { color: #b8475a; font-size: 13px; }
+html .prof-overlay .pl-p112-mini:active { box-shadow: none; }
+html[data-theme="dark"] .prof-overlay .pl-p112-mini { background: rgba(30, 36, 80, .7); border-color: rgba(255, 190, 200, .26); color: #f1c3cc; box-shadow: none; }
+html[data-theme="dark"] .prof-overlay .pl-p112-mini > span { color: #f3a5b3; }

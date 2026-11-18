@@ -265,7 +265,7 @@
           '</button>').join('') +
         '</div>' +
         // цифрите на Nunito: „старинните“ цифри на Georgia правят 112 на „ııƨ“
-        '<a class="pl-zd-112" href="tel:112"><i aria-hidden="true">' + КРЪСТ + '</i><span>Спешна помощ · <span class="pl-zd-num">112</span></span>' + СТРЕЛКА + '</a>' +
+        '<a class="pl-zd-112" href="tel:112"><i aria-hidden="true">' + КРЪСТ + '</i><span>Спешна помощ&nbsp;·&nbsp;<span class="pl-zd-num">112</span></span>' + СТРЕЛКА + '</a>' +
         '<p class="pl-zd-note"><span aria-hidden="true">' + ИНФО + '</span>Записките не заменят преглед.</p>' +
       '</div>';
 

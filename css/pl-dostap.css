@@ -405,3 +405,14 @@ html[data-theme="dark"] #blDostap .bl-dg-vit-l small { color: #c9cbe3; }
 .bl-dg-pill[hidden] { display: none !important; }
 html.bl-dg-on .bl-dg-pill, body:has(#roomOverlay:not([hidden])) .bl-dg-pill { display: none; }
 /* край витрина */
+
+/* 17.11 · собственикът: „SOS 112 много нападателен, дразнещ, постоянно виси“ → ТИХ: не закован (качва се с листа),
+   без червен ръб и сянка, по-малък. 112 остава на един допир горе вдясно. ПЪТ НАЗАД: махни този блок. */
+#blDostap .bl-dg-112 {
+  position: absolute; min-height: 44px; padding: 0 12px 0 10px; gap: 5px;
+  background: rgba(255, 255, 255, .55); border: 1px solid rgba(155, 58, 74, .22); color: #9b3a4a;
+  font: 700 14px/1 Nunito, 'Nunito-fallback', system-ui, sans-serif; box-shadow: none;
+}
+#blDostap .bl-dg-112 > span { color: #b8475a; font-size: 13px; }
+html[data-theme="dark"] #blDostap .bl-dg-112 { background: rgba(255, 255, 255, .07); border-color: rgba(255, 190, 200, .26); color: #f1c3cc; }
+html[data-theme="dark"] #blDostap .bl-dg-112 > span { color: #f3a5b3; }

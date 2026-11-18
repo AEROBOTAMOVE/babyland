@@ -310,7 +310,7 @@
       а = document.createElement('a');
       а.className = 'pl-p112'; а.href = 'tel:112';
       а.setAttribute('aria-label', 'Спешна помощ — обади се на 112');
-      а.innerHTML = '<span class="pl-p112-kr" aria-hidden="true">✚</span><span><b>Спешна помощ <span class="pl-num">· 112</span></b><small>денонощно, безплатно</small></span><span class="pl-rgo" aria-hidden="true">›</span>';
+      а.innerHTML = '<span class="pl-p112-kr" aria-hidden="true">✚</span><span><b>Спешна помощ&nbsp;<span class="pl-num">·&nbsp;112</span></b><small>денонощно, безплатно</small></span><span class="pl-rgo" aria-hidden="true">›</span>';
     }
     const правни = т.querySelectorAll(':scope > .prof-legal');
     const преди = правни.length ? правни[правни.length - 1] : null;
