@@ -711,4 +711,14 @@ body > main > section#стаите { contain-intrinsic-size: auto 2400px; }
 /* 3 · фокус от клавиатурата в запознаването: полето за името (.jr-word) беше без пръстен (outline: none) */
 html body #onbOverlay#onbOverlay :is(input, select, textarea):focus-visible, html body #onbOverlay#onbOverlay :is(input[type="date"], input[type="time"]):is(:focus, :focus-within) { outline: 3px solid var(--bl-focus, #1d2a5c) !important; outline-offset: 2px; }
 /* край 23 */
+
+/* 24 · 18.11 · ТАБЛЕТ (q_desk.js: 768×1024 и 1024×768, светло+тъмно; 9-те екрана + вратата). Подредбата държи: 0 преливащи,
+   0 прозорци извън екрана, 0 отрязан текст (сигналът за „Готово“ е движещият се блик в бутона). Фокусът на вратата е рамка с ореол
+   на полето (pl-dostap.css:115) — видим, уредът гледа самото <input>. Единственото: заглавието на СОС се чупеше „Спешни / номера“
+   при 367 px глава — трябват му 242, имаше 232 (мерено q_sosh.js). ПЪТ НАЗАД: махни раздела до „край 24“. */
+@media (min-width: 600px) {
+  html body #sosOverlay .sos-head { gap: 6px; }
+  html body #sosOverlay .sos-head h3 { white-space: nowrap; font-size: 22px !important; min-width: 0; }
+}
+/* край 24 */
 /* край 16.11 · цветове и бутони */
