@@ -695,4 +695,20 @@ body > main > section:not(#todaySection), body > main > h2 { content-visibility:
 body > main > section.day24 { contain-intrinsic-size: auto 690px; }
 body > main > section#стаите { contain-intrinsic-size: auto 2400px; }
 /* край 22 */
+
+/* 23 · 18.11 · КОМПЮТЪР (q_desk.js: 1440×900 и 1920×1080, светло+тъмно; началото, стая, чатът, статията, търсенето, профилът, СОС,
+   запознаването, вратата — истинска мишка през CDP, посочване + Tab). Подредбата държи: колона 650/680 px в средата, 0 преливащи,
+   0 извън екрана. Липсваше ОТКЛИК НА МИШКАТА: при посочване 50 от 82 бутона не се променяха изобщо (търсенето 11/11, профилът 5/5,
+   СОС 6/8, запознаването 4/4, табовете на стаите, „Нашият ден“…). Само при мишка (hover + pointer: fine) — на телефона нищо.
+   ПЪТ НАЗАД: махни раздела до „край 23“. */
+@media (hover: hover) and (pointer: fine) {
+  /* 1 · мек отклик при посочване: леко изсветляване (тъмно — повече), без да се пипат сенки, цветове или размери */
+  html body :is(.st-seg, .pl-ts-f, .pl-mc-tile, .sos-big, .pl-find, .pl-day-it, .pl-baby, .pl-all, .onb-sexbtn, .sos-x, .sos-edit, .sf-mic, .search-close, .prof-edit, .prof-close, .prof-avbtn, .pl-pv, .pl-bb-id, .pl-bb-a, .gr-open, .art-fsb, .pl-p112-mini, .text-button, .pl-cta, .pl-napomni, .search-res, .pl-ts-112, .sos-roomlink, .onb-skip, select):not(:disabled):hover { filter: brightness(1.05) saturate(1.06); }
+  html[data-theme="dark"] body :is(.st-seg, .pl-ts-f, .pl-mc-tile, .sos-big, .pl-find, .pl-day-it, .pl-baby, .pl-all, .onb-sexbtn, .sos-x, .sos-edit, .sf-mic, .search-close, .prof-edit, .prof-close, .prof-avbtn, .pl-pv, .pl-bb-id, .pl-bb-a, .gr-open, .art-fsb, .pl-p112-mini, .text-button, .pl-cta, .pl-napomni, .search-res, .pl-ts-112, .sos-roomlink, .onb-skip, select):not(:disabled):hover { filter: brightness(1.18); }
+  /* 2 · падащите менюта („Роди се преди 37-ата седмица?“) — ръка, като всеки бутон */
+  html body select:not(:disabled) { cursor: pointer; }
+}
+/* 3 · фокус от клавиатурата в запознаването: полето за името (.jr-word) беше без пръстен (outline: none) */
+html body #onbOverlay#onbOverlay :is(input, select, textarea):focus-visible, html body #onbOverlay#onbOverlay :is(input[type="date"], input[type="time"]):is(:focus, :focus-within) { outline: 3px solid var(--bl-focus, #1d2a5c) !important; outline-offset: 2px; }
+/* край 23 */
 /* край 16.11 · цветове и бутони */
