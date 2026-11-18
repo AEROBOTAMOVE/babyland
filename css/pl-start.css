@@ -678,4 +678,21 @@ html:not([data-theme="dark"]) body #roomOverlay .ro-lav #roRoom :is(p.jr-privacy
   html body #roomOverlay .ro-panel p.ro-disc.ro-disc { max-width: none; padding-top: 4px !important; }
 }
 /* край 21 */
+
+/* 22 · 18.11 · ТЕЖКОТО ПЪРВО ОФОРМЯНЕ НА НАЧАЛОТО (q_layout.js: 360×844, процесор ×4, медиана от 7, CSS вграден при първия байт).
+   Виновникът е <main> — старата витрина (896 елемента статична разметка, от тях #стаите 728 с 9 вградени SVG сцени): под стартовия екран
+   тя се оформя цялата и после js я крие. Проба „без <main>“: най-голямото оформяне 313 → 41 ms, всички 1008 → 202 ms.
+   content-visibility:auto сам НЕ помага (мерено: 392 / 296 ms) — при първото оформяне <main> е точно под ръба (hero = 100svh) и
+   браузърът го брои за видим. Затова: (1) докато стартовият екран е в страницата, <main> не се рисува (hidden, мястото му е пазено);
+   (2) след това секциите му са auto — вече са на 1800+ px под началото и се оформят чак при превъртане.
+   Мерено заедно: най-голямо оформяне 313 → 169 ms, всички 1008 → 488 ms, стил 929 → 465 ms.
+   Безопасно: падне ли js, стартовият екран се маха от резервата → :has вече не съвпада → <main> се показва.
+   ПЪТ НАЗАД: махни раздела до „край 22“. */
+html:has(> body > #blSplash) body > main { content-visibility: hidden; contain-intrinsic-size: auto 1200px; }
+/* мястото до първото рисуване = мерените височини на 360 (сгънатите редове „Още за Бейби Ленд“ 65–86 px, „Едно денонощие“ 689) —
+   иначе празното място скача при превъртане; „auto“ после помни истинската височина */
+body > main > section:not(#todaySection), body > main > h2 { content-visibility: auto; contain-intrinsic-size: auto 72px; }
+body > main > section.day24 { contain-intrinsic-size: auto 690px; }
+body > main > section#стаите { contain-intrinsic-size: auto 2400px; }
+/* край 22 */
 /* край 16.11 · цветове и бутони */
