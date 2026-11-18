@@ -1631,7 +1631,6 @@ html[data-theme="dark"] #blSplash .bls-sos{color:#ffd0dc;background:rgba(255,255
 <script src="js/sleephist.js?v=8" defer></script>
 <script src="js/expect.js?v=1" defer></script>
 <!-- ⚡ 14.11: знанието (1,55 МБ) е async — не спира старта; помощничката го изчаква (helper.js respond). ПЪТ НАЗАД: defer вместо async. -->
-<script src="js/kb.js?v=339" async onerror="window.BL_KB_PADNA=1"></script>
 <script src="js/data.js?v=15" defer></script>
 <script src="js/rooms.js?v=26" defer></script>
 <!-- 🛡️ ТОЧНО ТУК: след създателя на ROOM_FEATURES (rooms.js), преди всички
@@ -1770,5 +1769,12 @@ html[data-theme="dark"] #blSplash .bls-sos{color:#ffd0dc;background:rgba(255,255
      презаписва записаното от другото БЕЗШУМНО. Доказано на живо: 3 написани
      неща → 2 останали. Този файл не поправя причината, а маха тишината. -->
 <script src="js/dve_kopiya.js?v=3" defer></script>
+<script>/* ⚡ 18.11 · ЗНАНИЕТО СЛЕД ПЪРВИЯ ЕКРАН (чат „session“, мерено Slow 4G + CPU ×4, по 2 пробега): kb.js (1,7 MB) теглеше по
+   същата линия с 132-та скрипта на началото → първият екран 47 s; когато тръгне след DOMContentLoaded — 31 s. Спешното (112)
+   не чака знанието (helper.js, 17.11). ПЪТ НАЗАД: махни този <script> и върни стария async <script> за знанието (с версията) на мястото му. */
+(function () {
+  function пусни() { var e = document.createElement("script"); e.src="js/kb.js?v=339"; /* без интервали: sw.js версииОтСтраницата() чете src="…?v=" */ e.async = true; e.onerror = function () { window.BL_KB_PADNA = 1; }; document.body.appendChild(e); }
+  if (document.readyState === "loading") document.addEventListener("DOMContentLoaded", function () { setTimeout(пусни, 0); }); else пусни();
+})();</script>
 </body>
 </html>
