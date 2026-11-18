@@ -721,4 +721,35 @@ html body #onbOverlay#onbOverlay :is(input, select, textarea):focus-visible, htm
   html body #sosOverlay .sos-head h3 { white-space: nowrap; font-size: 22px !important; min-width: 0; }
 }
 /* край 24 */
+
+/* 25 · 18.11 · ЧЕТИРИ ГРОЗНИ МЕСТА В СТАИТЕ на 360 (списъкът от прегледа; т. 4 „сутиен“ е в js — на главния). Снимки преди/след:
+   side-session-notes/…/r25_18-11/. ПЪТ НАЗАД: махни раздела до „край 25“ (точките са отделни). */
+/* 1 · ЗАХРАНВАНЕ, „Календар на храните“: картите в ред са равни (grid), но „докосни: опитахме!“ стоеше на различна височина и под
+       по-късата зееше празно; ⚠ за алерген беше ту до името, ту на нов ред под него, ту насред описанието. Сега: „докосни“ — долу
+       във всяка карта; ⚠ на името — в горния десен ъгъл на картата, винаги; ⚠ вътре в описанието се скрива (думата „Алерген“ остава). */
+html body #roomOverlay .ro-panel.ro-carrot #roRoom .fd-card > .fd-tap { margin-top: auto; }
+html body #roomOverlay .ro-panel.ro-carrot #roRoom .fd-card > .fd-name > .pl-em { position: absolute; top: 12px; right: 12px; margin: 0 !important; }
+html body #roomOverlay .ro-panel.ro-carrot #roRoom .fd-card:has(> .fd-name > .pl-em) > .fd-how .pl-em { display: none !important; }
+/* 2 · МОЕТО БЕБЕ, картите „Сънят по месеци“ / „Неговият сън × твоят ден“ / „Ръстът на стената“ / „Какво му става сега“: иконката
+       беше след заглавието и стоеше където свърши текстът (213 / 293 / 220 px). Сега като картите с медал: иконка вляво, текстът до нея. */
+html body #roomOverlay .ro-panel.ro-sky #roRoom .jr-card > h4.jr-title:not(:has(.jr-medal)):has(> .pl-em) { display: grid; grid-template-columns: 34px minmax(0, 1fr); column-gap: 10px; align-items: center; }
+html body #roomOverlay .ro-panel.ro-sky #roRoom .jr-card > h4.jr-title:not(:has(.jr-medal)):has(> .pl-em) > .pl-em { grid-column: 1; grid-row: 1 / span 2; justify-self: center; margin: 0 !important; }
+html body #roomOverlay .ro-panel.ro-sky #roRoom .jr-card > h4.jr-title:not(:has(.jr-medal)):has(> .pl-em) > .jr-sub { grid-column: 2; }
+/*   2б · сгънатите карти с медал (h4.jr-title.foldable е flex с пренасяне): дълго заглавие („Неговият сън × твоят ден“) пада
+         под медала, късо („Сънят по месеци“) стои до него. Като в другите стаи: решетка — медал вляво, заглавие и подзаглавие до него. */
+html body #roomOverlay .ro-panel.ro-sky #roRoom .jr-card > h4.jr-title:has(> .jr-medal) { display: grid !important; grid-template-columns: 34px minmax(0, 1fr); column-gap: 10px; align-items: center; }
+html body #roomOverlay .ro-panel.ro-sky #roRoom .jr-card > h4.jr-title:has(> .jr-medal) > .jr-medal { grid-column: 1; grid-row: 1 / span 2; margin: 0 !important; }
+html body #roomOverlay .ro-panel.ro-sky #roRoom .jr-card > h4.jr-title:has(> .jr-medal) > .jr-sub { grid-column: 2; }
+/* 3 · РАЗВИТИЕ И ИГРИ, „+“ до уменията: 2 px розова рамка + двоен вътрешен пръстен, а знакът — дребен. По-лека рамка, едър „+“. */
+html body #roomOverlay #roRoom .rg-mark.rg-mark { border-width: 1.5px !important; box-shadow: 0 1px 0 rgba(231, 160, 189, .55) !important; font-size: 22px !important; line-height: 1 !important; font-weight: 700 !important; }
+/* 5 · ЗАХРАНВАНЕ, „Хранене навън“: рамка в рамка — шев на картата, филц + сянка + пунктир на всеки ред, пръстен на иконката.
+       Остава само рамката на картата; редовете се делят с тънка линия, иконката е само пастелен кръг. */
+html body #roomOverlay .ro-panel.ro-carrot #roRoom .jr-wins:has(> .jr-win > .ut-n) { gap: 0 !important; }
+html body #roomOverlay .ro-panel.ro-carrot #roRoom .jr-wins:has(> .jr-win > .ut-n) > .jr-win { background-color: transparent !important; background-image: none !important; box-shadow: none !important; border-radius: 0 !important; }
+html body #roomOverlay .ro-panel.ro-carrot #roRoom .jr-wins:has(> .jr-win > .ut-n) > .jr-win::after { display: none !important; }
+html body #roomOverlay .ro-panel.ro-carrot #roRoom .jr-wins:has(> .jr-win > .ut-n) > .jr-win + .jr-win { border-top: 1px solid rgba(196, 160, 124, .38) !important; }
+html[data-theme="dark"] body #roomOverlay .ro-panel.ro-carrot #roRoom .jr-wins:has(> .jr-win > .ut-n) > .jr-win + .jr-win { border-top-color: rgba(255, 255, 255, .14) !important; }
+html body #roomOverlay .ro-panel.ro-carrot #roRoom .jr-wins:has(> .jr-win > .ut-n) > .jr-win.done { background-color: rgba(120, 170, 130, .14) !important; }
+html body #roomOverlay .ro-panel.ro-carrot #roRoom .jr-wins:has(> .jr-win > .ut-n) > .jr-win > .ut-n > :is(.pl-em, .pl-hr-ue) { box-shadow: none !important; }
+/* край 25 */
 /* край 16.11 · цветове и бутони */
