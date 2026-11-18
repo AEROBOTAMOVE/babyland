@@ -50,6 +50,14 @@
 #blSplash .bls-logo{width:min(340px,86vw);height:auto;display:block;overflow:visible;transform-origin:50% 50%;transition:transform .7s cubic-bezier(.22,.9,.24,1)}
 #blSplash .bls-t{font-family:'Pacifico','Comfortaa',cursive;font-size:97px;paint-order:stroke fill;stroke:#fff;stroke-width:12px;stroke-linejoin:round;opacity:0;transition:opacity .3s ease}
 #blSplash.bls-f .bls-t{opacity:1}
+/* 18.11 · появата на логото (собственикът: „ултра яка, като предишната“): облакът изскача меко, „Baby“ и „Land“ се
+   надигат един след друг, щом шрифтът е тук. Само transform — замръзне ли кадърът, логото пак се вижда. Надписът се
+   показва и БЕЗ скрипт най-късно на 1,2 s (blsShow), дори главната нишка да е заета. ПЪТ НАЗАД: махни тези 5 реда и <g class="bls-tw…">. */
+#blSplash .bls-logo{animation:blsPop .7s cubic-bezier(.2,1.25,.35,1) backwards}
+#blSplash .bls-tw{transform-box:fill-box;transform-origin:50% 70%}
+#blSplash.bls-f .bls-tw{animation:blsRise .62s cubic-bezier(.2,1.35,.35,1) backwards}#blSplash.bls-f .bls-tw2{animation-delay:.11s}
+#blSplash .bls-t{animation:blsShow 1ms linear 1.2s forwards}
+@keyframes blsPop{from{transform:scale(.86)}}@keyframes blsRise{from{transform:translateY(26px) scale(.9)}}@keyframes blsShow{to{opacity:1}}
 #blSplash .bls-cloud{animation:blsBob 7s ease-in-out infinite}
 #blSplash .bls-bal{transform-origin:445px 60px;animation:blsBal 5.5s ease-in-out infinite}
 #blSplash .bls-face{transform-origin:322px 404px;animation:blsFace 6s ease-in-out infinite}
@@ -167,8 +175,8 @@ html[data-theme="dark"] #blSplash .bls-sos{color:#ffd0dc;background:rgba(255,255
     <g class="bls-cloud">
       <path class="bls-cl" d="M130 302 C 88 302 66 268 80 236 C 58 206 78 166 118 164 C 120 126 164 104 200 120 C 220 82 284 72 314 102 C 342 72 408 76 430 110 C 468 92 518 112 522 154 C 562 160 582 204 560 238 C 586 268 568 306 528 310 C 520 346 478 364 444 348 C 420 380 362 386 334 356 C 302 388 246 384 228 352 C 188 370 142 350 130 302 Z" fill="#ffffff" stroke="#f1eaf8" stroke-width="3"/>
       <path d="M120 300 C 160 330 250 344 330 340 C 420 344 500 326 536 300" fill="none" stroke="#e8eef9" stroke-width="10" stroke-linecap="round" opacity=".55"/>
-      <text class="bls-t" x="88" y="252" transform="rotate(-5 230 220)" fill="url(#blsTP)">Baby</text>
-      <text class="bls-t" x="286" y="342" transform="rotate(-3 420 310)" fill="url(#blsTB)">Land</text>
+      <g class="bls-tw"><text class="bls-t" x="88" y="252" transform="rotate(-5 230 220)" fill="url(#blsTP)">Baby</text></g>
+      <g class="bls-tw bls-tw2"><text class="bls-t" x="286" y="342" transform="rotate(-3 420 310)" fill="url(#blsTB)">Land</text></g>
       <use href="#blsSp" x="150" y="150" fill="#f2a9cc" class="bls-spk" transform="scale(0.9)"/>
       <use href="#blsSp" x="258" y="126" fill="#bfe0d4" class="bls-spk k2" transform="scale(0.65)"/>
       <use href="#blsSp" x="508" y="252" fill="#cfc0ec" class="bls-spk k3" transform="scale(0.8)"/>
