@@ -1773,7 +1773,7 @@ html[data-theme="dark"] #blSplash .bls-sos{color:#ffd0dc;background:rgba(255,255
    същата линия с 132-та скрипта на началото → първият екран 47 s; когато тръгне след DOMContentLoaded — 31 s. Спешното (112)
    не чака знанието (helper.js, 17.11). ПЪТ НАЗАД: махни този <script> и върни стария async <script> за знанието (с версията) на мястото му. */
 (function () {
-  function пусни() { var e = document.createElement("script"); e.src="js/kb.js?v=339"; /* без интервали: sw.js версииОтСтраницата() чете src="…?v=" */ e.async = true; e.onerror = function () { window.BL_KB_PADNA = 1; }; document.body.appendChild(e); }
+  function пусни() { var e = document.createElement("script"); e.src="js/kb.js?v=339"; /* без интервали около = : sw.js версииОтСтраницата() търси атрибута с версията */ e.async = true; e.onerror = function () { window.BL_KB_PADNA = 1; }; document.body.appendChild(e); }
   if (document.readyState === "loading") document.addEventListener("DOMContentLoaded", function () { setTimeout(пусни, 0); }); else пусни();
 })();</script>
 </body>
