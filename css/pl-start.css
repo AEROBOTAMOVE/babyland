@@ -737,9 +737,9 @@ html body #roomOverlay .ro-panel.ro-sky #roRoom .jr-card > h4.jr-title:not(:has(
 html body #roomOverlay .ro-panel.ro-sky #roRoom .jr-card > h4.jr-title:not(:has(.jr-medal)):has(> .pl-em) > .jr-sub { grid-column: 2; }
 /*   2б · сгънатите карти с медал (h4.jr-title.foldable е flex с пренасяне): дълго заглавие („Неговият сън × твоят ден“) пада
          под медала, късо („Сънят по месеци“) стои до него. Като в другите стаи: решетка — медал вляво, заглавие и подзаглавие до него. */
-html body #roomOverlay .ro-panel.ro-sky #roRoom .jr-card > h4.jr-title:has(> .jr-medal) { display: grid !important; grid-template-columns: 34px minmax(0, 1fr); column-gap: 10px; align-items: center; }
-html body #roomOverlay .ro-panel.ro-sky #roRoom .jr-card > h4.jr-title:has(> .jr-medal) > .jr-medal { grid-column: 1; grid-row: 1 / span 2; margin: 0 !important; }
-html body #roomOverlay .ro-panel.ro-sky #roRoom .jr-card > h4.jr-title:has(> .jr-medal) > .jr-sub { grid-column: 2; }
+html body #roomOverlay .ro-panel #roRoom .jr-card > h4.jr-title:has(> .jr-medal) { display: grid !important; grid-template-columns: 34px minmax(0, 1fr); column-gap: 10px; align-items: center; }
+html body #roomOverlay .ro-panel #roRoom .jr-card > h4.jr-title:has(> .jr-medal) > .jr-medal { grid-column: 1; grid-row: 1 / span 2; margin: 0 !important; }
+html body #roomOverlay .ro-panel #roRoom .jr-card > h4.jr-title:has(> .jr-medal) > .jr-sub { grid-column: 2; }
 /* 3 · РАЗВИТИЕ И ИГРИ, „+“ до уменията: 2 px розова рамка + двоен вътрешен пръстен, а знакът — дребен. По-лека рамка, едър „+“. */
 html body #roomOverlay #roRoom .rg-mark.rg-mark { border-width: 1.5px !important; box-shadow: 0 1px 0 rgba(231, 160, 189, .55) !important; font-size: 22px !important; line-height: 1 !important; font-weight: 700 !important; }
 /* 5 · ЗАХРАНВАНЕ, „Хранене навън“: рамка в рамка — шев на картата, филц + сянка + пунктир на всеки ред, пръстен на иконката.

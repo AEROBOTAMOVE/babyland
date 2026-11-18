@@ -48,7 +48,7 @@
 #blSplash{position:fixed;inset:0;z-index:2147483000;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:6px;padding:0 20px;text-align:center}
 #blSplash::before{content:'';position:absolute;inset:0;z-index:-1;background:linear-gradient(180deg,#fdf3f9 0%,#f3f2fc 45%,#ecf5fb 80%,#eaf7f2 100%);transition:opacity .55s ease}
 #blSplash .bls-logo{width:min(340px,86vw);height:auto;display:block;overflow:visible;transform-origin:50% 50%;transition:transform .7s cubic-bezier(.22,.9,.24,1)}
-#blSplash .bls-t{font-family:'Pacifico','Comfortaa',cursive;font-size:97px;paint-order:stroke fill;stroke:#fff;stroke-width:12px;stroke-linejoin:round;opacity:0;transition:opacity .3s ease}
+#blSplash .bls-t{font-family:'Pacifico','Comfortaa',cursive;font-size:97px;paint-order:stroke fill;stroke:#fff;stroke-width:12px;stroke-linejoin:round}
 #blSplash.bls-f .bls-t{opacity:1}
 /* 18.11 · появата на логото (собственикът: „ултра яка, като предишната“): облакът изскача меко, „Baby“ и „Land“ се
    надигат един след друг, щом шрифтът е тук. Само transform — замръзне ли кадърът, логото пак се вижда. Надписът се
@@ -139,7 +139,7 @@ html[data-theme="dark"] #blSplash .bls-sos{color:#ffd0dc;background:rgba(255,255
   <link rel="preload" as="style" onload="this.onload=null;this.rel='stylesheet'" href="css/pl-profil.css?v=3">
   <link rel="preload" as="style" onload="this.onload=null;this.rel='stylesheet'" href="css/pl-zdrave.css?v=4">
   <link rel="preload" as="style" onload="this.onload=null;this.rel='stylesheet'" href="css/pl-bebe.css?v=5">
-  <link rel="stylesheet" href="css/pl-start.css?v=25">
+  <link rel="stylesheet" href="css/pl-start.css?v=26">
   <link rel="stylesheet" href="css/pl-dostap.css?v=7"><!-- 21.10 · достъп: врата, „Достъп“, изтекло, админ · ПЪТ НАЗАД: махни този ред (и index.html.PREDI_DOSTAP) -->
 <!-- 📶 силата на телефона: слага data-motion/data-quality ПРЕДИ рисуването.
      Нарочно БЕЗ defer и рано — с defer отметките идват след първото
@@ -1659,14 +1659,14 @@ html[data-theme="dark"] #blSplash .bls-sos{color:#ffd0dc;background:rgba(255,255
 <script src="js/storage.js?v=15" defer></script>
 <script src="js/daily.js?v=20" defer></script>
 <script src="js/quickadd.js?v=4" defer></script>
-<script src="js/chasovnik.js?v=5" defer></script>
+<script src="js/chasovnik.js?v=6" defer></script>
 <script src="js/garch.js?v=5" defer></script>
 <script src="js/calm.js?v=7" defer></script>
 <script src="js/games2.js?v=8" defer></script>
 <script src="js/wisdom.js?v=20" defer></script>
 <script src="js/wisdom2.js?v=6" defer></script>
 <script src="js/expr.js?v=16" defer></script>
-<script src="js/rooms3.js?v=68" defer></script>
+<script src="js/rooms3.js?v=69" defer></script>
 <script src="js/rooms4.js?v=23" defer></script>
 <script src="js/river.js?v=20" defer></script>
 <script src="js/yearbook.js?v=12" defer></script>

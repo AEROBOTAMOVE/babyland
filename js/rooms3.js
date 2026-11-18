@@ -1405,7 +1405,7 @@
     // 🔴 11.08 капанът на снимката (виж dayPhotoCard горе)
     let items = load('bl_meds', []);
     const addRow = el('div', 'jr-addrow');
-    const inp = el('input', 'jr-word'); inp.placeholder = 'напр. „Нурофен по лекаря“…'; inp.maxLength = 50;
+    const inp = el('input', 'jr-word'); inp.placeholder = 'напр. „лекарство по лекаря“…'; inp.maxLength = 50;
     const add = el('button', 'jr-chip', '+ Сега'); add.type = 'button';
     addRow.appendChild(inp); addRow.appendChild(add);
     const quick = el('div', 'jr-quick');
