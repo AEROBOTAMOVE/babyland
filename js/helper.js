@@ -729,7 +729,7 @@
       }
       if (room === 'Инструменти') {
         const g = lsGet('bl_goal', null);
-        if (g && g.saved) f.push(`Касичката „${g.n}“: <strong>${g.saved}/${g.target} лв</strong> — пълни се! 🐷`);
+        if (g && g.saved) f.push(`Касичката „${g.n}“: <strong>${g.saved}/${g.target} €</strong> — пълни се! 🐷`);
       }
       // 7.4.11: Ния и Ема също ЗНАЯТ — от рождената дата на мама и от опита
       if (room === 'Жената в мен') {

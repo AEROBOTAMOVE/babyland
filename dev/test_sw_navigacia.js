@@ -187,7 +187,7 @@ const СЛУЧАИ = [
     const c = await с.ctx.caches.open(с.CACHE);
     const има = async u => !!(await c.match(u));
     return await има('js/kb.js?v=247') && await има('css/style.css?v=55') && await има('lib/index.json?v=108')
-      && await има('fonts/nunito-400-cyrillic.woff2') && !(await има('js/kb.js')) && !(await има('lib/index.json'));
+      && await има('fonts/nunito-700-cyrillic.woff2') && !(await има('js/kb.js')) && !(await има('lib/index.json'));
   }],
   ['4 · офлайн веднага след първата инсталация: точният адрес е в кеша', async с => {
     с.мрежа.карта['index.html'] = СТРАНИЦА_С_ВЕРСИИ;
