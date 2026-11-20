@@ -1683,7 +1683,7 @@
     if (g && (typeof g.saved !== 'number' || !isFinite(g.saved))) g.saved = 0;
     if (!g) {
       const inp = el('input', 'jr-word'); inp.placeholder = 'за какво събираме? (напр. столче за кола)'; inp.maxLength = 40;
-      const amt = el('input', 'jr-word'); amt.type = 'number'; amt.placeholder = 'колко лв са нужни?';
+      const amt = el('input', 'jr-word'); amt.type = 'number'; amt.placeholder = 'колко € са нужни?';
       const btn = el('button', 'jr-btn', 'Започни касичката 🐷'); btn.type = 'button';
       // 🔇 12.08 (мерено с натискане): празно → нула промяна в DOM и в паметта.
       //    Същото при „-50“. Два безмълвни отказа в един бутон.
@@ -1707,7 +1707,7 @@
     //    е по scaleX. ПЪТ НАЗАД: `style="width:${pct}%"` както преди.
     const pct = Math.min(100, Math.round(g.saved / g.target * 100));
     const тихо = (() => { try { return matchMedia('(prefers-reduced-motion: reduce)').matches; } catch (e) { return false; } })();
-    const bar = el('div', 'gl-bar', `<div class="gl-fill" style="width:100%;transform-origin:left center;transform:scaleX(${pct / 100});transition:${тихо ? 'none' : 'transform .5s cubic-bezier(.22,1,.36,1)'}"></div><span class="gl-txt">${g.saved} / ${g.target} лв · ${pct}%</span>`);
+    const bar = el('div', 'gl-bar', `<div class="gl-fill" style="width:100%;transform-origin:left center;transform:scaleX(${pct / 100});transition:${тихо ? 'none' : 'transform .5s cubic-bezier(.22,1,.36,1)'}"></div><span class="gl-txt">${g.saved} / ${g.target} € · ${pct}%</span>`);
     c.appendChild(el('p', 'cs-note', `Събираме за: <strong>${esc(g.n)}</strong> 🐷`));
     c.appendChild(bar);
     const мал = el('p', 'jr-hint');
@@ -1717,14 +1717,14 @@
     const обнови = () => {
       const p = Math.min(100, Math.round(g.saved / g.target * 100));
       const f = bar.querySelector('.gl-fill'); if (f) f.style.transform = 'scaleX(' + (p / 100) + ')';
-      const t = bar.querySelector('.gl-txt'); if (t) t.textContent = `${g.saved} / ${g.target} лв · ${p}%`;
+      const t = bar.querySelector('.gl-txt'); if (t) t.textContent = `${g.saved} / ${g.target} € · ${p}%`;
       мал.textContent = g.saved >= g.target
         ? (g.saved > g.target ? 'Събрахте ги — и още ' + (+(g.saved - g.target).toFixed(2)) + ' лв отгоре. 🎉' : 'Събрахте ги! 🎉')
-        : 'Остават ' + (+(g.target - g.saved).toFixed(2)) + ' лв.';
+        : 'Остават ' + (+(g.target - g.saved).toFixed(2)) + ' €.';
     };
     const quick = el('div', 'jr-quick');
     [5, 10, 20, 50].forEach(v => {
-      const b = el('button', 'jr-chip', '+' + v + ' лв'); b.type = 'button';
+      const b = el('button', 'jr-chip', '+' + v + ' €'); b.type = 'button';
       b.addEventListener('click', () => {
         // 🔴 11.08 капанът на снимката: `g` е прочетено при рисуване. Пресен
         //    прочит преди записа — иначе втора отворена касичка връща стар сбор.
