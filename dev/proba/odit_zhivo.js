@@ -26,6 +26,12 @@ const вземи = async п => { const r = await fetch(А + '/' + п + (п.inclu
   // ЦЕЛИЯТ цитат — началото често остава и в поправката
   let ост = []; for (const f of ф1) { const q = f.quote.replace(/^[„"]|[“"]$/g, '').trim(); if (q.length > 15 && (kb.includes(q) || lib.includes(q))) ост.push(f.id); }
   п('17-те факта от 18.11 — старите цитати ги няма', !ост.length, ост.length ? 'още на живо: ' + ост.join(', ') : ф1.length + ' проверени');
+  const ф2п = path.join(__dirname, 'FAKTI_POTVARDENI_2_20-11.json');
+  if (fs.existsSync(ф2п)) {
+    const ф2 = JSON.parse(fs.readFileSync(ф2п, 'utf8')); const о2 = [];
+    for (const f of ф2) { const q = f.quote.replace(/^[„"]|[“"]$/g, '').trim(); if (q.length > 15 && (kb.includes(q) || lib.includes(q))) о2.push(f.id); }
+    п('11-те факта от 20.11 — старите цитати ги няма', !о2.length, о2.length ? 'още на живо: ' + о2.join(', ') : ф2.length + ' проверени');
+  }
   // 2) остатъчни стари грешки (широки варианти)
   for (const [име, x] of [['„няколко литра“ кръв', /няколко литра повече/], ['„за сън се маха един“', /за сън се маха един/], ['540 °C', /540\s?°/]]) { const н = (kb + lib).match(new RegExp(x, 'g')); п(име + ' го няма', !н, н ? н.length + ' пъти' : ''); }
   // 3) нови неща
