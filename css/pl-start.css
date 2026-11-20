@@ -764,9 +764,11 @@ html body #roomOverlay .ro-panel.ro-carrot #roRoom .jr-wins:has(> .jr-win > .ut-
   html body #sosOverlay .sos-head .sos-edit { order: 3; }
 }
 /* 2 · КРАЯТ НА НАЧАЛОТО: между „Малки стъпки. Голям свят.“ и подписа — 46 px отстъп + балон 86 px + 10 px празно; а украсеният
-       балон от небето (fixed, зад всичко) прозираше през текста на подписа. По-плътно, а подписът е на фон в цвета на страницата. */
-html.pl-on body > footer.footer { padding-top: 14px; position: relative; background: linear-gradient(180deg, rgba(246, 237, 227, 0) 0, #f6ede3 48px); }
-html[data-theme="dark"].pl-on body > footer.footer { background: linear-gradient(180deg, rgba(22, 29, 69, 0) 0, #161d45 48px); }
+       балон от небето (fixed, зад всичко) прозираше през текста на подписа. По-плътно, а подписът е на фон в цвета на страницата.
+       20.11: фонът е ЕЛИПСА, не лента — на 1440 лентата режеше небето на права линия през целия екран (финален преглед, fin_20-11/podpis/).
+       Плътна зад текста, гасне встрани и преди горния ръб. ПЪТ НАЗАД за 20.11: linear-gradient(180deg, rgba(…, 0) 0, #цвят 48px). */
+html.pl-on body > footer.footer { padding-top: 14px; position: relative; background: radial-gradient(min(560px, 90vw) 55% at 50% 56%, #f6ede3 50%, rgba(246, 237, 227, 0) 100%); }
+html[data-theme="dark"].pl-on body > footer.footer { background: radial-gradient(min(560px, 90vw) 55% at 50% 56%, #161d45 50%, rgba(22, 29, 69, 0) 100%); }
 html.pl-on body > footer.footer > svg:first-child, html.pl-on body > footer.footer > .footer-balloon { width: 40px; height: auto; margin-bottom: 4px; }
 /* 3 · „ПРЕДИ КОЛКО ВРЕМЕ?“: стойността („—“, после „2 ч“) беше с пунктир отдолу — изглеждаше като празно, счупено поле.
        Сега е меко хапче — ясно бутон, не поле. */
