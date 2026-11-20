@@ -486,7 +486,11 @@
       if (!n) return;
       fab.appendChild(el('span', 'ro-fab-dot'));
       const hint = fab.querySelector('.ro-fab-hint');
-      if (hint) { hint.textContent = n; hint.classList.add('show'); setTimeout(() => hint.classList.remove('show'), 3200); }
+      // 20.11 (чат „екрани“, q_hint27): на компютър подсказката изскачаше сама върху картите („Бележки“ в Захранване) —
+      //   там излиза само при посочване (rooms.css :hover); точката на балона остава. Телефонът — както досега.
+      //   ПЪТ НАЗАД: махни условието с matchMedia.
+      const мишка = window.matchMedia && matchMedia('(hover: hover) and (pointer: fine)').matches;
+      if (hint) { hint.textContent = n; if (!мишка) { hint.classList.add('show'); setTimeout(() => hint.classList.remove('show'), 3200); } }
     }, 700);
   }
 
