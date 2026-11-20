@@ -32,7 +32,6 @@
      рисуването (по ~13 KB). Иначе мама вижда системен шрифт, после Nunito
      и Comfortaa го сменят и екранът подскача с 55 пиксела — точно докато
      посяга да натисне нещо. Останалите тежести идват сами, по-късно. -->
-<link rel="preload" href="fonts/nunito-400-cyrillic.woff2" as="font" type="font/woff2" crossorigin>
 <link rel="preload" href="fonts/nunito-700-cyrillic.woff2" as="font" type="font/woff2" crossorigin>
 <link rel="preload" href="fonts/comfortaa-700-cyrillic.woff2" as="font" type="font/woff2" crossorigin>
 <!-- ✨ 21.10 · СТАРТОВИЯТ ЕКРАН = СТАРОТО ЛОГО. Собственикът: „първо зареди тотално старата версия, после едва
@@ -94,7 +93,7 @@ html[data-theme="dark"] #blSplash .bls-sos{color:#ffd0dc;background:rgba(255,255
 @media (prefers-reduced-motion:reduce){#blSplash *,#blSplash::before{animation:none!important;transition:none!important}}
 </style>
 <!-- ⚡ 17.11 (чат „екрани“) · ПЪРВИЯТ ЕКРАН: 21 листа само за стаите/прозорците (0 правила за видимото начало и прозорците на първото пускане — мерено q_css_use.js, двете теми) се теглят с preload и стават stylesheet при onload — не спират първото рисуване; редът им в каскадата е същият (мястото на <link> не се мени). pl-dostap.css (вратата) остава блокиращ. ПЪТ НАЗАД: върни rel="stylesheet" на редовете с onload. -->
-<link rel="stylesheet" href="css/fonts.css?v=2">
+<link rel="stylesheet" href="css/fonts.css?v=3">
 <link rel="stylesheet" href="css/style.css?v=59">
 <link rel="stylesheet" href="css/rooms.css?v=94">
 <link rel="preload" as="style" onload="this.onload=null;this.rel='stylesheet'" href="css/extras.css?v=4">
@@ -114,7 +113,7 @@ html[data-theme="dark"] #blSplash .bls-sos{color:#ffd0dc;background:rgba(255,255
   <link rel="preload" as="style" onload="this.onload=null;this.rel='stylesheet'" href="css/pl-popravki.css?v=1">
   <link rel="preload" as="style" onload="this.onload=null;this.rel='stylesheet'" href="css/pl-versiya.css?v=3">
   <link rel="stylesheet" href="css/pl-plyush.css?v=4">
-  <link rel="preload" as="style" onload="this.onload=null;this.rel='stylesheet'" href="css/pl-statii.css?v=4">
+  <link rel="preload" as="style" onload="this.onload=null;this.rel='stylesheet'" href="css/pl-statii.css?v=5">
   <link rel="preload" as="style" onload="this.onload=null;this.rel='stylesheet'" href="css/pl-mira.css?v=2">
   <link rel="preload" as="style" onload="this.onload=null;this.rel='stylesheet'" href="css/pl-lab.css?v=3">
   <link rel="stylesheet" href="css/pl-krai.css?v=3">
@@ -128,7 +127,7 @@ html[data-theme="dark"] #blSplash .bls-sos{color:#ffd0dc;background:rgba(255,255
   <link rel="preload" as="style" onload="this.onload=null;this.rel='stylesheet'" href="css/pl-rastezh.css?v=2">
   <link rel="preload" as="style" onload="this.onload=null;this.rel='stylesheet'" href="css/pl-dnevnik.css?v=4">
   <link rel="stylesheet" href="css/pl-dobavi.css?v=3">
-  <link rel="preload" as="style" onload="this.onload=null;this.rel='stylesheet'" href="css/pl-tarsene.css?v=2">
+  <link rel="preload" as="style" onload="this.onload=null;this.rel='stylesheet'" href="css/pl-tarsene.css?v=3">
   <link rel="stylesheet" href="css/pl-figuri.css?v=7">
   <link rel="preload" as="style" onload="this.onload=null;this.rel='stylesheet'" href="css/pl-san.css?v=2">
   <link rel="preload" as="style" onload="this.onload=null;this.rel='stylesheet'" href="css/pl-bremennost.css?v=3">

@@ -1,25 +1,15 @@
 // Baby Land — service worker: кешира приложението за офлайн работа
-const CACHE = 'babyland-v979';   // 21.10 · достъп: v873 → v874 · ПЪТ НАЗАД: sw.js.PREDI_DOSTAP
+const CACHE = 'babyland-v980';   // 21.10 · достъп: v873 → v874 · ПЪТ НАЗАД: sw.js.PREDI_DOSTAP
 const ASSETS = [
   '.',
   'index.html',
   'css/fonts.css',
-  'fonts/comfortaa-400-cyrillic.woff2',
-  'fonts/comfortaa-400-latin.woff2',
-  'fonts/comfortaa-600-cyrillic.woff2',
-  'fonts/comfortaa-600-latin.woff2',
   'fonts/comfortaa-700-cyrillic.woff2',
   'fonts/comfortaa-700-latin.woff2',
-  'fonts/nunito-400-cyrillic.woff2',
-  'fonts/nunito-400-latin.woff2',
   'fonts/nunito-400i-cyrillic.woff2',
   'fonts/nunito-400i-latin.woff2',
-  'fonts/nunito-600-cyrillic.woff2',
-  'fonts/nunito-600-latin.woff2',
   'fonts/nunito-700-cyrillic.woff2',
   'fonts/nunito-700-latin.woff2',
-  'fonts/nunito-800-cyrillic.woff2',
-  'fonts/nunito-800-latin.woff2',
   'fonts/pacifico-400-cyrillic.woff2',
   'fonts/pacifico-400-latin.woff2',
   'css/style.css',
