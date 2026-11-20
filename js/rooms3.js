@@ -1719,7 +1719,7 @@
       const f = bar.querySelector('.gl-fill'); if (f) f.style.transform = 'scaleX(' + (p / 100) + ')';
       const t = bar.querySelector('.gl-txt'); if (t) t.textContent = `${g.saved} / ${g.target} € · ${p}%`;
       мал.textContent = g.saved >= g.target
-        ? (g.saved > g.target ? 'Събрахте ги — и още ' + (+(g.saved - g.target).toFixed(2)) + ' лв отгоре. 🎉' : 'Събрахте ги! 🎉')
+        ? (g.saved > g.target ? 'Събрахте ги — и още ' + (+(g.saved - g.target).toFixed(2)) + ' € отгоре. 🎉' : 'Събрахте ги! 🎉')
         : 'Остават ' + (+(g.target - g.saved).toFixed(2)) + ' €.';
     };
     const quick = el('div', 'jr-quick');
