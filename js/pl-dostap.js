@@ -272,7 +272,7 @@
   const ВИТРИНА = [
     [['ico-i', 3, 2, '#fde5d8'], '9 вълшебни стаи', 'бременност, бебето, захранване, здраве, игри, дневник, жената в теб, инструменти, лаборатория'],
     [['ico-i', 3, 1, '#fde6ef'], '9 помощнички', 'питаш с твои думи — денем и в 3 през нощта; отговарят спокойно и кратко'],
-    [['ico-h', 2, 0, '#dfeafb'], '1 900+ отговора и 265 статии', 'сверени с NHS, СЗО и българските наредби; без дози, без плашене'],
+    [['ico-h', 2, 0, '#dfeafb'], '1 900+ отговора и 265 статии', 'сверени с британската здравна служба (NHS), СЗО и българските наредби; без дози, без плашене'],
     [['ico-a', 1, 0, '#fde6ef'], 'Денят на бебето', 'хранене, сън, пелени, растеж, зъбки, ваксините по българския календар'],
     [['ico-f', 1, 3, '#fde6ef'], 'Дневник за теб', 'как си днес, снимка на деня, писма до бебето, медальончета'],
     [['ico-a', 1, 1, '#dfeafb'], 'Нощен режим', 'тъмно и тихо за нощните хранения — само се включва'],
@@ -302,7 +302,7 @@
           '<input id="blDgPass" name="password" type="password" autocomplete="' + (рег ? 'new-password' : 'current-password') + '" minlength="8" maxlength="200" placeholder="' + (рег ? 'измисли си парола' : 'твоята парола') + '"></span>' +
           '<button type="button" class="bl-dg-eye" data-act="око" aria-pressed="false" aria-label="Покажи паролата">Покажи</button></label>' +
         '<p class="bl-dg-err" role="alert" hidden></p>' +
-        '<button type="submit" class="bl-dg-cta pl-gel">' + (рег ? 'Започни ' + дниПробни + '-те дни' : 'Влез') + '</button>' +
+        '<button type="submit" class="bl-dg-cta pl-gel">' + (рег ? 'Започни ' + дниПробни + '-те дни' : 'Вход') + '</button>' +
       '</form>' +
       '<button type="button" class="bl-dg-switch" data-act="' + (рег ? 'вход-вид' : 'рег-вид') + '">' +
         (рег ? 'Вече имам профил · <b>Вход</b>' : 'Нямам профил · <b>' + дниПробни + ' дни безплатно</b>') + '</button>' +
@@ -327,7 +327,7 @@
       контактиHtml() +
       '<button type="button" class="bl-dg-cta2 pl-soft" data-act="провери">' + икона(И.наново) + 'Провери пак</button>' +
       '<p class="bl-dg-note" role="status">' + esc(бележка) + '</p>' +
-      '<button type="button" class="bl-dg-switch" data-act="друг">Влез с <b>друг профил</b></button>' +
+      '<button type="button" class="bl-dg-switch" data-act="друг">Вход с <b>друг профил</b></button>' +
       '<p class="bl-dg-priv">' + икона(И.сърце, 'bl-ic-s') + '<span>Записките ти са на този телефон и не се губят — всичко те чака.</span></p>' +
       '</div>' + sosРед();
   }
@@ -754,7 +754,7 @@
             (пита ? '' : '<button type="button" class="bl-adm-del" data-a="изтрий">Изтрий</button>') +
           '</div>' +
           (пита ? '<div class="bl-adm-confirm" role="alertdialog" aria-label="Потвърди изтриването"><p>Изтрий завинаги <b>' + esc(u.email) + '</b>? Профилът и достъпът изчезват. Записките на телефона ѝ остават при нея.</p>' +
-            '<div class="bl-adm-row"><button type="button" class="bl-adm-del bl-adm-del2" data-a="delete">Да, изтрий</button><button type="button" class="pl-soft" data-a="отказ">Отказ</button></div></div>' : '')) +
+            '<div class="bl-adm-row"><button type="button" class="bl-adm-del bl-adm-del2" data-a="delete">Да, изтрий</button><button type="button" class="pl-soft" data-a="отказ">Откажи</button></div></div>' : '')) +
         '</div>';
     }
     return '<article class="bl-adm-u' + (отв ? ' open' : '') + '" data-e="' + esc(u.email) + '">' +

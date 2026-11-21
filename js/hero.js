@@ -491,7 +491,7 @@
         <a href="#стаите" class="cta-main"><span class="btn-shine"></span>🏰 Разгледай всичко долу</a>
         <div class="cta-row">
           <a href="#инсталирай" class="cta-mini">📲 На моя телефон</a>
-          <button type="button" class="cta-sos" aria-label="Спешни номера">🆘 СОС</button>
+          <button type="button" class="cta-sos" aria-label="Спешни номера">🆘 SOS</button>
         </div>
         <p class="cta-truth">Отваря се от линк · живее на твоя телефон · работи и в самолетен режим</p>`;
       cta.querySelector('.cta-sos').addEventListener('click', () => { if (window.BL_SOS_CENTER) BL_SOS_CENTER.open(); });

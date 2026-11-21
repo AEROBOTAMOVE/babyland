@@ -37,7 +37,7 @@
         resolve(стойност);
       };
       if (opts.confirm) {
-        const не = el('button', 'jr-btn bl-ui-cancel', opts.cancelText || 'Отказ'); не.type = 'button';
+        const не = el('button', 'jr-btn bl-ui-cancel', opts.cancelText || 'Откажи'); не.type = 'button';
         const да = el('button', 'jr-btn bl-ui-ok' + (opts.danger ? ' bl-ui-danger' : ''), opts.okText || 'Да'); да.type = 'button';
         не.addEventListener('click', () => край(false));
         да.addEventListener('click', () => край(true));

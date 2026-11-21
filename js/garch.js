@@ -61,7 +61,7 @@
   function вдигниАларма(тяло) {
     тяло.classList.add('gr-alarm');
     const р = слой.querySelector('.gr-rule');
-    if (р) р.innerHTML = '<b>Мина 5 минути. Обади се на 112 сега.</b>';
+    if (р) р.innerHTML = '<b>Минаха 5 минути. Обади се на 112 сега.</b>';
     try { if (window.BL_FX && BL_FX.buzz) BL_FX.buzz(60); } catch (e) {}
   }
 
@@ -105,7 +105,7 @@
       + '    <li>Нищо за пиене, докато не е напълно будно.</li>'
       + '  </ul>'
       + '  <p class="gr-after" hidden></p>'
-      + '  <p class="gr-note">Текстът е от картите „Гърчът: кое НЕ се прави" и „Фебрилен гърч".</p>'
+      + '  <p class="gr-note">Текстът е от картите „Гърчът: кое НЕ се прави“ и „Фебрилен гърч“.</p>'
       + '</div>';
     document.body.appendChild(слой);
     document.body.style.overflow = 'hidden';

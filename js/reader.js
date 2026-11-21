@@ -156,7 +156,7 @@
     if (sh && a) {
       sh.onclick = async () => {
         const текст = a.emoji + ' ' + a.title + '\n\n' +
-          (a.summary || '').slice(0, 180) + '\n\n(от Помощникът на мама 🎈)';
+          (a.summary || '').slice(0, 180) + '\n\n(от Помощника на мама 🎈)';
         if (navigator.share) {
           try { await navigator.share({ text: текст }); return; } catch (e) { if (e.name === 'AbortError') return; }
         }

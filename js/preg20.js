@@ -311,7 +311,7 @@
     //    стоеше без име.
     dt.setAttribute('aria-label', 'Дата на следващия преглед');
     пръст(dt);
-    const зап = el('button', 'jr-chip', 'Запази датата'); зап.type = 'button'; пръст(зап);
+    const зап = el('button', 'jr-chip', 'Запиши датата'); зап.type = 'button'; пръст(зап);
     ред.appendChild(dt); ред.appendChild(зап);
     const инфо = el('p', 'cs-note', '');
     const махни = el('button', 'jr-chip', '↩ Махни датата'); махни.type = 'button'; пръст(махни); махни.hidden = true;

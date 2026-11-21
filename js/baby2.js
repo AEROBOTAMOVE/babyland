@@ -178,10 +178,10 @@
       c.appendChild(w);
       try { име.focus(); } catch (e) {}
     });
-    const ред2 = el('button', 'jr-chip', '🗑 Премахни'); ред2.type = 'button';
+    const ред2 = el('button', 'jr-chip', '🗑 Махни'); ред2.type = 'button';
     ред2.addEventListener('click', () => {
-      const питай = window.BL_UI ? BL_UI.confirm('Да премахна ли профила на ' + (b2.name || 'второто бебе') + '?', { title: 'Премахване', emoji: '🍼', okText: 'Премахни', cancelText: 'Остави', danger: true, text: 'Профилът се маха. Записите в стаите не се пипат.' })
-        : Promise.resolve(confirm('Да премахна ли профила на ' + (b2.name || 'второто бебе') + '?'));
+      const питай = window.BL_UI ? BL_UI.confirm('Да махна ли профила на ' + (b2.name || 'второто бебе') + '?', { title: 'Премахване', emoji: '🍼', okText: 'Махни', cancelText: 'Остави', danger: true, text: 'Профилът се маха. Записите в стаите не се пипат.' })
+        : Promise.resolve(confirm('Да махна ли профила на ' + (b2.name || 'второто бебе') + '?'));
       питай.then(да => { if (!да) return; localStorage.removeItem('bl_baby2'); c.replaceWith(картаВторо()); });
     });
     ред.appendChild(ред1); ред.appendChild(ред2);

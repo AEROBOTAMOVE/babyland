@@ -417,7 +417,7 @@
     ov.querySelectorAll('.rv-share').forEach(b => b.addEventListener('click', async e => {
       e.stopPropagation();
       const x = R[+b.dataset.i]; if (!x) return;
-      const текст = x.e + ' ' + x.txt + '\n' + new Date(x.ts).toLocaleDateString('bg-BG') + '\n\n(от Помощникът на мама 🎈)';
+      const текст = x.e + ' ' + x.txt + '\n' + new Date(x.ts).toLocaleDateString('bg-BG') + '\n\n(от Помощника на мама 🎈)';
       if (navigator.share) { try { await navigator.share({ text: текст }); return; } catch (err) { if (err.name === 'AbortError') return; } }
       try { await navigator.clipboard.writeText(текст); b.textContent = '✔'; setTimeout(() => b.textContent = '📤', 1500); } catch (err) {}
     }));
