@@ -729,7 +729,8 @@
       }
       if (room === 'Инструменти') {
         const g = lsGet('bl_goal', null);
-        if (g && g.saved) f.push(`Касичката „${g.n}“: <strong>${g.saved}/${g.target} €</strong> — пълни се! 🐷`);
+        // 21.11 (проба на инструментите, чат „session“): името е собствен вход → esc; пълната касичка не „се пълни“
+        if (g && g.saved) f.push(`Касичката „${esc(g.n)}“: <strong>${esc(g.saved)}/${esc(g.target)} €</strong> — ${(+g.saved >= +g.target && +g.target > 0) ? 'събрахте ги! 🎉' : 'пълни се! 🐷'}`);
       }
       // 7.4.11: Ния и Ема също ЗНАЯТ — от рождената дата на мама и от опита
       if (room === 'Жената в мен') {
