@@ -1775,6 +1775,9 @@ html[data-theme="dark"] #blSplash .bls-sos{color:#ffd0dc;background:rgba(255,255
   function пусни() { [].forEach.call(document.querySelectorAll("link[data-sled-ekrana]"), function (л) { л.removeAttribute("data-sled-ekrana"); л.rel = "stylesheet"; }); }
   var опити = 0;   /* предпазна мрежа (главният чат): най-късно след 8 s стиловете идват, каквото и да стане със стартовия екран */
   function чакай() { if (document.getElementById("blSplash") && ++опити < 32) return setTimeout(чакай, 250); пусни(); }
+  /* 21.11 (чат „екрани“, q_stai986): таймерът изоставаше 0,8–1,7 s след логото (нишката рисува началото) → наблюдател:
+     пуска стиловете в мига, в който #blSplash излезе от страницата. Таймерът остава като резерва. */
+  try { new MutationObserver(function (з, н) { if (!document.getElementById("blSplash")) { н.disconnect(); пусни(); } }).observe(document.body || document.documentElement, { childList: true }); } catch (e) {}
   if (document.readyState === "loading") document.addEventListener("DOMContentLoaded", чакай); else чакай();
 })();</script>
 </body>
