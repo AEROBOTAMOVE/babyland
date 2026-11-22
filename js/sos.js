@@ -121,7 +121,7 @@
         <div class="sos-list">`;
       // МОЯТ БЪРЗ НОМЕР — най-отгоре, най-голям (ако е настроен)
       if (s.fastPhone && !editMode) {
-        html += `<a class="sos-big sos-fast" href="tel:${esc(s.fastPhone)}">⭐ ЗВЪНИ: ${esc(s.fastName) || 'моят номер'}<span>${esc(s.fastPhone)}</span></a>`;
+        html += `<a class="sos-big sos-fast" href="tel:${esc(s.fastPhone)}">⭐ ЗВЪННИ: ${esc(s.fastName) || 'моят номер'}<span>${esc(s.fastPhone)}</span></a>`;
       }
       FIXED.forEach(f => {
         html += `<a class="sos-big ${f.cls}" href="tel:${f.tel}">${f.e} ${f.n}<span>${f.sub.replace(/ · /g, '\u00a0· ')}</span></a>`;
