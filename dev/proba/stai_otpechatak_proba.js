@@ -21,6 +21,7 @@ if (арг.sravni) {
   console.log(разлики ? '🔴 стаи с разлика: ' + разлики : '✅ всички стаи еднакви'); process.exit(разлики ? 1 : 0);
 }
 const АДРЕС = (арг.url || 'https://babyland.aaeromove.workers.dev').replace(/\/?$/, '/') + 'index.html';
+require('./pazach_zhivo.js')(АДРЕС);   // подменя /api → само местен адрес
 (async () => {
   await require('./slot.js')('chrome');
   const ПРОФИЛ = path.join(__dirname, 'chrome_pr_otp_' + Date.now()); const ПОРТ = 9200 + Math.floor(Math.random() * 700);

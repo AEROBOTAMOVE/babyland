@@ -12,6 +12,7 @@
 const { spawn } = require('child_process'); const path = require('path'); const fs = require('fs');
 const арг = {}; { const a = process.argv.slice(2); for (let i = 0; i < a.length; i++) if (a[i].startsWith('--')) { арг[a[i].slice(2)] = (a[i + 1] && !a[i + 1].startsWith('--')) ? a[++i] : '1'; } }
 const БАЗА = (арг.url || 'https://babyland.aaeromove.workers.dev').replace(/\/?$/, '/'), АДРЕС = БАЗА + 'index.html';
+require('./pazach_zhivo.js')(АДРЕС);   // подменя /api → само местен адрес
 const пауза = ms => new Promise(r => setTimeout(r, ms));
 const МРЕЖА = { offline: false, latency: 562.5, downloadThroughput: 180000, uploadThroughput: 84375 };
 (async () => {

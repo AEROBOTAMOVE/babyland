@@ -1665,8 +1665,13 @@
   }
 
   // 🐷 Касичка-цел
-  function goalCard() {
-    const c = card('Касичка-цел 🐷 <span class="jr-sub">събираме за нещо голямо</span>');
+  // 21.11 (instrumenti_funkc_proba): „Започни“ и „↺ нова цел“ сменяха цялата карта с
+  //    c.replaceWith(goalCard()) — новата нямаше data-blkey, ▾ и 📍 (polish ги слага само при
+  //    отваряне на стаята). Сега се пълни СЪЩАТА карта: заглавието (с украсата) остава,
+  //    сменя се само тялото под него. ПЪТ НАЗАД: goalCard() без аргумент + c.replaceWith.
+  function goalCard(c0) {
+    const c = c0 || card('Касичка-цел 🐷 <span class="jr-sub">събираме за нещо голямо</span>');
+    if (c0) [...c0.children].forEach(x => { if (!x.classList.contains('jr-title')) x.remove(); });
     // 🪤 26.08 (ИЗМЕРЕНО, dev/kriv_zapis.js — 9 форми на крив запис):
     //    подразбиращото се тук е `null`, тоест `load` НЯМА форма, с която да
     //    сравни, и пускаше всичко. Внесено копие с `bl_goal = {}` даваше
@@ -1696,7 +1701,7 @@
         // 🔴 25.08: при паднал запис картата се пресъздаваше празна и двете
         //    попълнени полета (за какво + колко) изчезваха.
         if (!save('bl_goal', { n, target: t, saved: 0 })) return;
-        c.replaceWith(goalCard());
+        goalCard(c);
       });
       c.appendChild(inp); c.appendChild(amt); c.appendChild(btn);
       return c;
@@ -1755,7 +1760,7 @@
       обнови(); fx().buzz(8);
     });
     const reset = el('button', 'jr-chip', '↺ нова цел'); reset.type = 'button';
-    reset.addEventListener('click', () => { (window.BL_UI ? BL_UI.confirm('Нова касичка? Старата се нулира.', { emoji: '🐷', okText: 'Нова', cancelText: 'Отказ' }) : Promise.resolve(confirm('Нова касичка? Старата се нулира.'))).then(да => { if (да) { save('bl_goal', null); c.replaceWith(goalCard()); } }); });
+    reset.addEventListener('click', () => { (window.BL_UI ? BL_UI.confirm('Нова касичка? Старата се нулира.', { emoji: '🐷', okText: 'Нова', cancelText: 'Откажи' }) : Promise.resolve(confirm('Нова касичка? Старата се нулира.'))).then(да => { if (да) { save('bl_goal', null); goalCard(c); } }); });
     quick.appendChild(назад);
     quick.appendChild(reset);
     c.appendChild(quick);

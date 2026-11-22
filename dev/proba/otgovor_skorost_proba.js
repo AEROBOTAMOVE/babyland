@@ -20,6 +20,7 @@
 const { spawn } = require('child_process'); const path = require('path'); const fs = require('fs');
 const арг = {}; { const a = process.argv.slice(2); for (let i = 0; i < a.length; i++) if (a[i].startsWith('--')) { арг[a[i].slice(2)] = (a[i + 1] && !a[i + 1].startsWith('--')) ? a[++i] : '1'; } }
 const АДРЕС = арг.url ? арг.url.replace(/\/?$/, '/') + 'index.html' : 'http://127.0.0.1:' + (арг.port || 8912) + '/index.html';
+require('./pazach_zhivo.js')(АДРЕС);   // подменя /api → само местен адрес
 const CPU = +(арг.cpu || 4);
 const пауза = ms => new Promise(r => setTimeout(r, ms));
 // ── изборът на въпросите: равномерно през всеки вид, детерминистично ──

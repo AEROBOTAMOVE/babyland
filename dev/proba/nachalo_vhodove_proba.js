@@ -4,6 +4,7 @@
 const { spawn } = require('child_process'); const path = require('path'); const fs = require('fs');
 const арг = {}; { const a = process.argv.slice(2); for (let i = 0; i < a.length; i++) if (a[i].startsWith('--')) { арг[a[i].slice(2)] = (a[i + 1] && !a[i + 1].startsWith('--')) ? a[++i] : '1'; } }
 const АДРЕС = (арг.url || 'https://babyland.aaeromove.workers.dev').replace(/\/?$/, '/') + 'index.html';
+require('./pazach_zhivo.js')(АДРЕС);   // подменя /api → само местен адрес
 const пауза = ms => new Promise(r => setTimeout(r, ms));
 (async () => {
   await require('./slot.js')('chrome');

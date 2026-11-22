@@ -6,6 +6,7 @@
 const { spawn } = require('child_process'); const path = require('path'); const fs = require('fs');
 const арг = {}; { const a = process.argv.slice(2); for (let i = 0; i < a.length; i++) if (a[i].startsWith('--')) { арг[a[i].slice(2)] = (a[i + 1] && !a[i + 1].startsWith('--')) ? a[++i] : '1'; } }
 const АДРЕС = арг.port ? 'http://127.0.0.1:' + арг.port + '/index.html' : (арг.url || 'https://babyland.aaeromove.workers.dev').replace(/\/?$/, '/') + 'index.html';
+require('./pazach_zhivo.js')(АДРЕС);   // подменя /api → само местен адрес
 const пауза = ms => new Promise(r => setTimeout(r, ms));
 const ИЗРЕЧЕНИЯ = ['здравей', 'какво можеш', '?', '😊', 'ok', 'kak si', 'бебето не диша', '123', 'а', 'кога да спра', '<b>x</b> & "кавички"', 'много дълъг въпрос '.repeat(15).trim()];
 (async () => {

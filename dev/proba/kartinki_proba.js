@@ -20,6 +20,7 @@ if (арг.sravni) {
   console.log(р ? '🔴 разлика на ' + р + ' места' : '✅ еднакви картинки навсякъде'); process.exit(р ? 1 : 0);
 }
 const АДРЕС = (арг.url || 'https://babyland.aaeromove.workers.dev').replace(/\/?$/, '/') + 'index.html';
+require('./pazach_zhivo.js')(АДРЕС);   // подменя /api → само местен адрес
 const СТАИ = ['Моето бебе', 'Жената в мен', 'Инструменти'];
 (async () => {
   await require('./slot.js')('chrome');
