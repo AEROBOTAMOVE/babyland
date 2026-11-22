@@ -180,7 +180,7 @@
     });
     const ред2 = el('button', 'jr-chip', '🗑 Махни'); ред2.type = 'button';
     ред2.addEventListener('click', () => {
-      const питай = window.BL_UI ? BL_UI.confirm('Да махна ли профила на ' + (b2.name || 'второто бебе') + '?', { title: 'Премахване', emoji: '🍼', okText: 'Махни', cancelText: 'Остави', danger: true, text: 'Профилът се маха. Записите в стаите не се пипат.' })
+      const питай = window.BL_UI ? BL_UI.confirm('Да махна ли профила на ' + (b2.name || 'второто бебе') + '?', { title: 'Да махна ли профила на ' + (b2.name || 'второто бебе') + '?', emoji: '🍼', okText: 'Махни', cancelText: 'Остави', danger: true, text: 'Профилът се маха. Записите в стаите не се пипат.' })
         : Promise.resolve(confirm('Да махна ли профила на ' + (b2.name || 'второто бебе') + '?'));
       питай.then(да => { if (!да) return; localStorage.removeItem('bl_baby2'); c.replaceWith(картаВторо()); });
     });

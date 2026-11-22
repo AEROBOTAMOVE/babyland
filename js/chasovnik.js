@@ -156,7 +156,7 @@
       р1.appendChild(л1); р1.appendChild(и1); р1.appendChild(л1б); р1.appendChild(л2); р1.appendChild(и2); р1.appendChild(л2б);
       настр.appendChild(р1);
       const бел = el('p', 'ch-set-warn'); настр.appendChild(бел);
-      const потв = el('button', 'ch-ok', 'Така е на кутията'); потв.type = 'button'; потв.style.minHeight = '44px';
+      const потв = el('button', 'ch-cancel', 'Така е на кутията'); потв.type = 'button'; потв.style.minHeight = '44px'; потв.style.marginTop = '8px';   // тих бутон: мама първо гледа кутията
       потв.setAttribute('aria-label', 'Така е на кутията: запиши числата за ' + р.ime); настр.appendChild(потв);
       // текстът на бележката се пише в опресниНастр(): „твои“ само ако мама ги е записала
       // 22.11 (чат „session“, instrumenti_funkc_proba): полетата се показваха само ПЪРВИЯ път — щом числото се
@@ -173,7 +173,7 @@
         зъб.setAttribute('aria-expanded', String(!настр.hidden));
         const няма = !(нн.h > 0) && !(нн.max > 0);
         if (няма) бел.innerHTML = '⚠️ Още няма числа. Запиши ги от кутията (или каквото ти каза педиатърът). Не са съвет и не заместват листовката.';
-        потв.hidden = няма || (нн.мояH && нн.мояM);   // няма числа или вече са нейни — няма какво да се потвърждава
+        потв.hidden = !((!нн.мояH && нн.h > 0) || (!нн.мояM && нн.max > 0));   // само ако има НЕЙНО за записване: число > 0, което още не е нейно
       };
       потв.addEventListener('click', () => {
         const ч = и => parseInt(String(и.value).replace(/[^0-9]/g, ''), 10); const a = ч(и1), b = ч(и2);

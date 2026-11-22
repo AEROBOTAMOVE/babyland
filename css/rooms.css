@@ -2414,7 +2414,9 @@ body:has(#onbOverlay:not([hidden])) .bo-bar.on { transform: none; }
 .ch-kolko.ch-warn { color: #b03a4a; }
 .ch-pod { grid-column: 1 / -1; margin: 0; font-size: 11.5px; opacity: .82; line-height: 1.45; }
 .ch-tih { opacity: .6; }
-.ch-red { display: inline-block; margin-top: 4px; color: #b03a4a; font-weight: 700; }
+/* 22.11 (chat session): 112 v tymno beshe 2,13:1 pri nuzhni 4,5; opacity .82 na .ch-pod ostava */
+.ch-red { display: inline-block; margin-top: 4px; color: #9c2c3c; font-weight: 700; font-size: 13px; }
+[data-theme="dark"] .ch-red { color: #ff9aa8; }
 .ch-fix, .ch-set { grid-column: 1 / -1; margin-top: 6px; padding: 8px 10px; border-radius: 10px;
   background: rgba(120,140,200,.09); }
 .ch-fix-t, .ch-set-t { display: block; font-size: 11.5px; font-weight: 700; margin-bottom: 6px; }
