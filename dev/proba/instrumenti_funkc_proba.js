@@ -198,11 +198,32 @@ const ПОМОЩ = `window.__П = {
     await сложиЖ({ h: 6 }, 420, 1); const ж4 = await живО(дума);
     пров('час-20 ' + дума + ' · записан 6 ч, минал срок', ж4.includes('Твоите 6 ч минаха.') && !/началните/i.test(ж4), ж4, 'Твоите 6 ч минаха.');
   }
-  // сведение: „Друго лекарство“ няма начални числа (h:0, max:0)
-  await изр("localStorage.setItem('bl_chas_vidimi', JSON.stringify(['nurofen', 'paracet', 'hrana', 'drugo'])), 1"); await чистРед('drugo'); await натисни(); const др = await бележка();
-  console.log('  ℹ️ Друго лекарство (без начални числа): полета „' + await изр("__П.ред().querySelector('input[aria-label=\"На колко часа\"]').value + '/' + __П.ред().querySelector('input[aria-label=\"Най-много дози за 24 часа\"]').value") + '“ · бележка: ' + др);
-  await пишиПоле('Най-много дози за 24 часа', '2'); await цък("__П.ред().querySelector('button.ch-hit')"); await цък("__П.ред().querySelector('button.ch-hit')"); await цък("__П.ред().querySelector('button.ch-hit')");
-  console.log('  ℹ️ Друго лекарство, записан само таван 2, дадени 3 дози: ' + await изр("__П.т(__П.ред().querySelector('.ch-pod'))"));
+  // ── „Така е на кутията“: потвърждава началните, без да се сменя число ──
+  const ПОТВ = "[...__П.ред().querySelectorAll('button')].find(b => b.textContent.trim() === 'Така е на кутията')";
+  const клик = async израз => { await изр("(async () => { const e = " + израз + "; e.scrollIntoView({ block: 'center', behavior: 'instant' }); let пр = null, ед = 0; for (let i = 0; i < 60 && ед < 5; i++) { await new Promise(r => setTimeout(r, 100)); const y = e.getBoundingClientRect().top; ед = y === пр ? ед + 1 : 0; пр = y; } return 1; })()"); const q = await изр("(() => { const e = " + израз + "; const r = e.getBoundingClientRect(); const x = r.left + r.width / 2, y = r.top + r.height / 2, г = document.elementFromPoint(x, y); return { x, y, w: r.width, h: r.height, отгоре: г === e || e.contains(г) ? 'бутонът' : (г && (г.id || г.className)) }; })()"); for (const type of ['mousePressed', 'mouseReleased']) await send('Input.dispatchMouseEvent', { type, x: q.x, y: q.y, button: 'left', clickCount: 1 }); await пауза(250); return q; };
+  for (const [ид, име, h0, m0] of [['nurofen', 'Ибупрофен', 6, 3], ['paracet', 'Парацетамол', 6, 4]]) {
+    await чистРед(ид); await цък("__П.ред().querySelector('button.ch-hit')"); const пр21 = await изр("({ p: __П.т(__П.ред().querySelector('.ch-pod')), видим: !!" + ПОТВ + " && " + ПОТВ + ".getBoundingClientRect().height, етикет: " + ПОТВ + " && " + ПОТВ + ".getAttribute('aria-label') })");
+    пров('час-21 ' + име + ' · „Така е на кутията“ се вижда, с етикет, докато числата са начални', пр21.видим >= 44 && пр21.етикет === 'Така е на кутията: запиши числата за ' + име && /началните/.test(пр21.p), пр21, 'видим, ≥ 44, етикет с името');
+    const q21 = await клик(ПОТВ); const сл21 = await изр("({ p: __П.т(__П.ред().querySelector('.ch-pod')), н: __П.ls('bl_chas_nastr'), вис: " + ПОТВ + " ? " + ПОТВ + ".getBoundingClientRect().height : 0, бел: __П.т(__П.ред().querySelector('.ch-set-warn')), дози: __П.ls('bl_chas')['" + ид + "'].hist.length })");
+    пров('час-21а ' + име + ' · натискане: записва ' + h0 + ' ч / ' + m0 + ' без нова доза, „твои“ и „твоята бележка“, бутонът изчезва', q21.отгоре === 'бутонът' && JSON.stringify(сл21.н) === JSON.stringify({ [ид]: { h: h0, max: m0 } }) && точно(сл21.бел, ТВОИ_Б) && /по твоята бележка следващата/.test(сл21.p) && !/началн/.test(сл21.p) && сл21.вис === 0 && сл21.дози === 1, { q21, сл21 }, h0 + ' / ' + m0 + ', твои, бутонът скрит');
+    await изр('window.refreshToday(), 1'); await пауза(400); await изр(ПОМОЩ); await натисни(); const п21 = await изр("({ бел: __П.т(__П.ред().querySelector('.ch-set-warn')), вис: " + ПОТВ + " ? " + ПОТВ + ".getBoundingClientRect().height : 0, p: __П.т(__П.ред().querySelector('.ch-pod')) })");
+    пров('час-21б ' + име + ' · след пререндер пак са нейни', точно(п21.бел, ТВОИ_Б) && п21.вис === 0 && /по твоята бележка/.test(п21.p), п21, 'твои');
+    await чистРед(ид); await натисни(); await пишиПоле('На колко часа', '8'); const ед21 = await изр("({ вис: " + ПОТВ + ".getBoundingClientRect().height })"); await клик(ПОТВ); const нн21 = await изр("__П.ls('bl_chas_nastr')");
+    пров('час-21в ' + име + ' · само интервалът записан: бутонът стои и записва и тавана', ед21.вис >= 44 && JSON.stringify(нн21) === JSON.stringify({ [ид]: { h: 8, max: m0 } }), { ед21, нн21 }, '8 / ' + m0);
+  }
+  // ── „Друго лекарство“ (няма начални числа), добавено през „+“ ──
+  await изр("localStorage.removeItem('bl_chas_vidimi'), 1"); await чистРед('nurofen');
+  await цък("[...document.querySelectorAll('#todaySection .ch-add-b')].find(b => /Друго лекарство/.test(b.textContent))", 300); await изр("window.__редИд = 'drugo', 1");
+  const др0 = await изр("({ има: !!__П.ред(), вид: __П.ls('bl_chas_vidimi') })"); await изр('window.refreshToday(), 1'); await пауза(400); await изр(ПОМОЩ);
+  пров('час-22 „Друго лекарство“ се добавя и остава след пререндер', др0.има && Array.isArray(др0.вид) && др0.вид.includes('drugo') && await изр('!!__П.ред()'), др0, 'редът е тук и след refreshToday');
+  if (await изр("(() => { const b = [...document.querySelectorAll('#todaySection .ch-add-b')].find(b => /Друго лекарство/.test(b.textContent)); if (!__П.ред() && b) b.click(); return !!__П.ред(); })()")) {
+    await натисни(); const др = await изр("({ h: __П.ред().querySelector('input[aria-label=\"На колко часа\"]').value, m: __П.ред().querySelector('input[aria-label=\"Най-много дози за 24 часа\"]').value, бел: __П.т(__П.ред().querySelector('.ch-set-warn')), потв: " + ПОТВ + " ? " + ПОТВ + ".getBoundingClientRect().height : 0 })");
+    console.log('  ℹ️ Друго лекарство (без начални числа): ' + JSON.stringify(др));
+    if (др.потв) { await клик(ПОТВ); console.log('  ℹ️ … „Така е на кутията“ при празни полета записва: ' + JSON.stringify(await изр("__П.ls('bl_chas_nastr')")) + ' · бележка: ' + await бележка()); }
+    await пишиПоле('Най-много дози за 24 часа', '2'); for (let k = 0; k < 3; k++) await цък("__П.ред().querySelector('button.ch-hit')");
+    console.log('  ℹ️ … записан само таван 2, дадени 3 дози: ' + await изр("__П.т(__П.ред().querySelector('.ch-pod'))"));
+    await пишиПоле('На колко часа', '6'); console.log('  ℹ️ … и интервал 6: ' + await изр("__П.т(__П.ред().querySelector('.ch-pod'))"));
+  }
   await изр("localStorage.removeItem('bl_chas_vidimi'); 1"); await чистРед('nurofen');
   await изр("localStorage.removeItem('bl_chas'); localStorage.removeItem('bl_chas_nastr'); refreshToday(); 1");
 
