@@ -97,10 +97,54 @@
     const ok = ts.filter(x => x > 0 && x <= Date.now() + 60000);
     return ok.length ? Math.max.apply(null, ok) : 0;
   }
+  // 💊 25.11 (одит G-02): „Дневник на даденото“ в Здраве (rooms3, bl_meds = [{ n, ts }]) и този часовник
+  //    бяха два отделни свята: Парацетамол, записан там, тук беше „Не знам — още не си отбелязвала“, а броят
+  //    за 24 ч не го виждаше. Сега часовникът ЧЕТЕ и дневника (по името), без да пише в него — така никоя
+  //    доза не се брои два пъти. Обратната посока: BL_LEK_DOZI() долу, четат я дневникът, епизодът и бележката.
+  //    ПЪТ НАЗАД: махни отДневника() и реда в запис() — часовникът пак гледа само bl_chas.
+  const ИМЕ_ЛЕК = {
+    nurofen: /(нурофен|ибупрофен|ибу(?![а-я])|advil|бруфен)/i,
+    paracet: /(парацетамол|панадол|ефералган|цефекон|paracetamol)/i,
+  };
+  function отДневника(id) {
+    const re = ИМЕ_ЛЕК[id]; if (!re) return [];
+    const м = load('bl_meds', []);
+    return м.filter(x => x && isFinite(x.ts) && re.test(String(x.n || ''))).map(x => +x.ts).filter(t => t > 0 && t <= Date.now() + 60000);
+  }
   function запис(вс, id) {
     const з = Object.assign({}, (вс[id] && typeof вс[id] === 'object') ? вс[id] : {});
     if (id === 'hrana') { const в = вънХранене(); if (в > (з.t || 0)) з.t = в; }
+    const д = отДневника(id);
+    if (д.length) {
+      const свои = Array.isArray(з.hist) ? з.hist : [];
+      з.hist = свои.concat(д.filter(t => свои.indexOf(t) < 0)).sort((a, b) => a - b);
+      const м = Math.max.apply(null, д); if (м > (з.t || 0)) з.t = м;
+    }
     return з;
+  }
+  // Дозите, записани ТУК (без тези от дневника — те си стоят там). За епизода, бележката и дневника.
+  function своиДози(откога) {
+    const вс = load(КЛЮЧ, {}); const out = [];
+    РЕДОВЕ.filter(р => р.lek).forEach(р => {
+      const з = вс[р.id]; const h = з && Array.isArray(з.hist) ? з.hist : (з && з.t ? [з.t] : []);
+      h.forEach(t => { if (typeof t === 'number' && t > (откога || 0)) out.push({ n: р.ime, ts: t, id: р.id, отЧасовника: true }); });
+    });
+    return out.sort((a, b) => a.ts - b.ts);
+  }
+  // ↺ 25.11 (одит G-01): махане на ЕДИН запис (последния или посочения). Температурата си взима и градусите.
+  function махниДоза(id, ts) {
+    const вс = load(КЛЮЧ, {}); const з = вс[id];
+    if (!з || typeof з !== 'object') return false;
+    const h = Array.isArray(з.hist) ? з.hist.slice() : (з.t ? [з.t] : []);
+    const i = h.lastIndexOf(ts); if (i < 0) return false;
+    h.splice(i, 1); з.hist = h;
+    if (h.length) з.t = Math.max.apply(null, h); else delete з.t;
+    if (!h.length && !з.t) delete вс[id]; else вс[id] = з;
+    if (!save(КЛЮЧ, вс)) return false;
+    if (id === 'temp') { const т = load('bl_temps', []); const ост = т.filter(x => !(x && x.ts === ts)); if (ост.length !== т.length) save('bl_temps', ост); }
+    document.querySelectorAll('#todaySection .ch-row').forEach(r => { if (r._опресни) r._опресни(); });
+    ['BL_TEMPS_REDRAW', 'BL_EPISODE_REDRAW'].forEach(f => { try { if (typeof window[f] === 'function') window[f](); } catch (e) {} });
+    return true;
   }
 
   // ── записът ────────────────────────────────────────────────────────────
@@ -134,6 +178,11 @@
     const поправка = el('div', 'ch-fix'); поправка.hidden = true;
 
     ред.appendChild(бут); ред.appendChild(дясно); ред.appendChild(под); ред.appendChild(поправка);
+    // 25.11 (одит G-01): „още една?“ при второ докосване до 60 s · „↺ Върни“ 10 s след запис · градусите (G-04)
+    const пак = el('div', 'ch-fix ch-pak'); пак.hidden = true; пак.setAttribute('role', 'alert');
+    const върни = el('div', 'ch-fix ch-varni'); върни.hidden = true; върни.setAttribute('aria-live', 'polite');
+    const град = р.id === 'temp' ? el('div', 'ch-fix ch-grad') : null; if (град) град.hidden = true;
+    ред.appendChild(пак); ред.appendChild(върни); if (град) ред.appendChild(град);
 
     // ── поправката: „не сега — беше в 03:00“ ──
     const вход = el('input', 'ch-time'); вход.type = 'time'; вход.setAttribute('aria-label', 'Час, в който беше');
@@ -142,6 +191,15 @@
     поправка.appendChild(el('span', 'ch-fix-t', 'Кога беше наистина?'));
     const редП = el('div', 'ch-fix-row'); редП.appendChild(вход); редП.appendChild(ок); редП.appendChild(отказ);
     поправка.appendChild(редП);
+    // 25.11 (одит G-01в): „Кога беше наистина?“ само местеше часа — сгрешеният запис нямаше как да се махне.
+    const махни = el('button', 'ch-cancel', 'Не беше · махни последния'); махни.type = 'button';
+    const редМ = el('div', 'ch-fix-row'); редМ.appendChild(махни); поправка.appendChild(редМ);
+    махни.addEventListener('click', () => {
+      const з = load(КЛЮЧ, {})[р.id] || {}; const h = Array.isArray(з.hist) ? з.hist : (з.t ? [з.t] : []);
+      if (!h.length) { под.innerHTML = '<span class="ch-tih">Тук няма какво да махна. Записаното в „Дневник на даденото“ се маха оттам (🗑).</span>'; поправка.hidden = true; return; }
+      if (!махниДоза(р.id, Math.max.apply(null, h))) { под.innerHTML = '<span class="ch-red">😕 Не успях да го махна — пробвай пак.</span>'; return; }
+      поправка.hidden = true; fx().buzz(8); опресни();
+    });
 
     // ── интервалът и максимумът: полета, не присъда ──
     let настр = null;
@@ -205,6 +263,10 @@
       кога.classList.remove('ch-warn', 'ch-soon');
       const н = настройка(р);
       let ред2 = 'в <b>' + часДумите(з.t) + '</b>';
+      if (р.id === 'temp') {   // 25.11 (G-04): градусите от същото мерене, ако ги има
+        const т = load('bl_temps', []).filter(x => x && isFinite(x.v) && Math.abs((+x.ts) - з.t) <= 120000).pop();
+        if (т) ред2 += ' · <b>' + String(т.v).replace('.', ',') + '°</b>';
+      }
       if (р.lek && н.h > 0) {
         const следв = з.t + н.h * 3600e3;
         if (сега < следв) {
@@ -230,11 +292,75 @@
     }
     ред._опресни = опресни;
 
-    бут.addEventListener('click', () => {
-      if (!отбележи(р.id, Date.now())) { под.innerHTML = '<span class="ch-red">😕 Паметта на телефона е пълна — часът НЕ е записан. Изтрий нещо и бутни пак.</span>'; return; }
+    // 🔴 25.11 (одит G-01, видяно: две докосвания през 150 ms = „2 дози за 24 ч“ и нищо за махане).
+    //    В 3 през нощта палецът трепва. Второ докосване до 60 s НЕ пише — пита „още една?“; всеки запис
+    //    има „↺ Върни“ за 10 s, а „Кога беше наистина?“ има „Не беше · махни“.
+    //    ПЪТ НАЗАД: върни стария слушател (отбележи + опресни) и махни пак/върни/град.
+    const ДВОЙНО_MS = 60000;
+    let таймерВ = null;
+    const чч = t => { const d = new Date(t); return String(d.getHours()).padStart(2, '0') + ':' + String(d.getMinutes()).padStart(2, '0'); };
+    function покажиВърни(t) {
+      върни.innerHTML = '';
+      върни.appendChild(el('span', 'ch-fix-t', 'Записах „' + esc(р.ime) + '“ в ' + чч(t) + '.'));
+      const рВ = el('div', 'ch-fix-row'); const б = el('button', 'ch-cancel', '↺ Върни'); б.type = 'button';
+      б.setAttribute('aria-label', 'Върни: махни записа „' + р.ime + '“ от ' + чч(t));
+      б.addEventListener('click', () => {
+        clearTimeout(таймерВ); върни.hidden = true; if (град) град.hidden = true;
+        if (!махниДоза(р.id, t)) { под.innerHTML = '<span class="ch-red">😕 Не успях да го махна — пробвай пак.</span>'; return; }
+        fx().buzz(8); опресни();
+      });
+      рВ.appendChild(б); върни.appendChild(рВ); върни.hidden = false;
+      clearTimeout(таймерВ); таймерВ = setTimeout(() => { върни.hidden = true; }, 10000);
+    }
+    function покажиГрадуси(t) {
+      if (!град) return;
+      град.innerHTML = '';
+      град.appendChild(el('span', 'ch-fix-t', 'Колко градуса? (по желание — отива и в „Температурен дневник“)'));
+      const рГ = el('div', 'ch-fix-row');
+      const вх = el('input', 'ch-num ch-grad-in'); вх.type = 'text'; вх.inputMode = 'decimal'; вх.maxLength = 4; вх.placeholder = '37,8';
+      вх.setAttribute('aria-label', 'Градуси (по желание)'); вх.style.width = '5.5em';
+      const ок2 = el('button', 'ch-ok', 'Запиши'); ок2.type = 'button';
+      const не2 = el('button', 'ch-cancel', 'Без градуси'); не2.type = 'button';
+      const каз = el('span', 'ch-fix-t'); каз.hidden = true;
+      const пиши = () => {
+        const v = parseFloat(String(вх.value || '').replace(',', '.'));
+        if (!(v >= 34 && v <= 43)) { каз.textContent = 'Напиши градусите като 37,8 (между 34 и 43).'; каз.hidden = false; вх.focus(); return; }
+        const т = load('bl_temps', []).filter(x => !(x && x.ts === t));
+        т.push({ v: Math.round(v * 10) / 10, ts: t });
+        if (!save('bl_temps', т.slice(-80))) { каз.textContent = '😕 Паметта е пълна — градусите НЕ са записани.'; каз.hidden = false; return; }
+        ['BL_TEMPS_REDRAW', 'BL_EPISODE_REDRAW'].forEach(f => { try { if (typeof window[f] === 'function') window[f](); } catch (e) {} });
+        град.hidden = true; fx().buzz(8); опресни();
+      };
+      ок2.addEventListener('click', пиши);
+      вх.addEventListener('keydown', e => { if (e.key === 'Enter') { e.preventDefault(); пиши(); } });
+      не2.addEventListener('click', () => { град.hidden = true; });
+      рГ.appendChild(вх); рГ.appendChild(ок2); рГ.appendChild(не2);
+      град.appendChild(рГ); град.appendChild(каз); град.hidden = false;
+    }
+    function запишиСега() {
+      const t = Date.now();
+      пак.hidden = true;
+      if (!отбележи(р.id, t)) { под.innerHTML = '<span class="ch-red">😕 Паметта на телефона е пълна — часът НЕ е записан. Изтрий нещо и бутни пак.</span>'; return; }
       fx().buzz(10); fx().pop && fx().pop(бут);
       опресни();
       if (р.lek && ред._настр && ред._настр.hidden && !load(КЛЮЧ_Н, {})[р.id]) { ред._настр.hidden = false; ред._опресниНастр(); } // първия път показваме полетата ВЕДНЪЖ (и бутонът знае, че са отворени)
+      покажиВърни(t); покажиГрадуси(t);
+    }
+    бут.addEventListener('click', () => {
+      const з = запис(load(КЛЮЧ, {}), р.id); const мин = Date.now() - (з.t || 0);
+      if (з.t && мин >= 0 && мин < ДВОЙНО_MS) {
+        пак.innerHTML = '';
+        пак.appendChild(el('span', 'ch-fix-t', '„' + esc(р.ime) + '“ е отбелязано преди ' + Math.max(1, Math.round(мин / 1000)) + ' сек. ' + (р.lek ? 'Още една доза ли е?' : 'Още веднъж ли е?')));
+        const рП = el('div', 'ch-fix-row');
+        const да = el('button', 'ch-ok', р.lek ? 'Да, още една доза' : 'Да, още веднъж'); да.type = 'button';
+        const не = el('button', 'ch-cancel', 'Не, същото е'); не.type = 'button';
+        да.addEventListener('click', запишиСега);
+        не.addEventListener('click', () => { пак.hidden = true; });
+        рП.appendChild(да); рП.appendChild(не); пак.appendChild(рП); пак.hidden = false;
+        try { не.focus({ preventScroll: true }); } catch (e) {}
+        return;
+      }
+      запишиСега();
     });
 
     кога.addEventListener('click', () => {
@@ -406,5 +532,7 @@
   window.BL_ZHIVI_OTGOVORI.push(живОтговор);
 
   // за проверчиците
-  window.BL_CHAS = { предиДумите: предиДумите, РЕДОВЕ: РЕДОВЕ, отбележи: отбележи, дозиЗа24: дозиЗа24, живОтговор: живОтговор };
+  window.BL_CHAS = { предиДумите: предиДумите, РЕДОВЕ: РЕДОВЕ, отбележи: отбележи, дозиЗа24: дозиЗа24, живОтговор: живОтговор, своиДози: своиДози, махниДоза: махниДоза };
+  // 25.11 (G-02): дневникът на даденото, болничният епизод и бележката за прегледа четат и дозите от часовника
+  window.BL_LEK_DOZI = своиДози;
 })();

@@ -73,7 +73,8 @@
       return { вид: 'бебе', т, корр, мес: а.devMonths, ym: а.ym };
     }
     // бременна (bl_preg, както го чете premium-home.js) или още без дата
-    if (зареди('bl_preg', null)) return { вид: 'бременност', т: 'Очакваме бебето', корр: 'към стаята „Бременност“', мес: null, ym: 0 };
+    // 25.11 (одит A-01): бременността е в bl_lmp (BL_EXPECT), не в bl_preg. ПЪТ НАЗАД: само `зареди('bl_preg', null)`.
+    if ((window.BL_EXPECT && BL_EXPECT.has ? (BL_EXPECT.has() && !BL_EXPECT.paused()) : !!зареди('bl_lmp', '')) || зареди('bl_preg', null)) return { вид: 'бременност', т: 'Очакваме бебето', корр: 'към стаята „Бременност“', мес: null, ym: 0 };
     return { вид: 'празно', т: 'Добави датата', корр: 'рождената — в „Моето бебе“', мес: null, ym: 0 };
   }
 
@@ -503,7 +504,7 @@
           '<div class="pl-ig-hero-t">' +
             '<h2 id="plIgT"></h2>' +
             '<span class="pl-ig-tag"></span>' +
-            '<p>Малките моменти създават големи усмивки <i aria-hidden="true">♡</i></p>' +
+            '<p>Избрана за днес по възрастта <i aria-hidden="true">♡</i></p>' +   // 25.11 (B-18): беше „Малките моменти създават големи усмивки“
           '</div>' +
         '</div>' +
         '<section class="pl-ig-book pl-felt" aria-labelledby="plIgB">' +
@@ -521,7 +522,7 @@
           '<button type="button" class="pl-ig-done pl-soft" data-ig="done" hidden>✔ Направихме я</button>' +
         '</div>' +
         '<button type="button" class="pl-ig-fav pl-soft" data-ig="fav" aria-pressed="false">' + SVG_СЪРЦЕ + '<span>Запази идеята</span></button>' +
-        '<p class="pl-ig-note">Времето е примерно — водете се по бебето. Любимите се пазят в „Какво да правим днес?“.</p>' +
+        '<p class="pl-ig-note">Времето е примерно — води се по бебето. Любимите се пазят в „Какво да правим днес?“.</p>' +
         '<p class="pl-ig-sr" aria-live="polite"></p>' +
       '</div>';
     в.addEventListener('click', e => {

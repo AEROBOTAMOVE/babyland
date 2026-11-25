@@ -39,7 +39,8 @@
   function режим() {
     const б = чети('bl_baby', {}) || {};
     if (б.birth) return 'бебе';
-    if (чети('bl_preg', null)) return 'бременна';
+    // 25.11 (одит A-01): бременността е в bl_lmp (BL_EXPECT), не в bl_preg. ПЪТ НАЗАД: само `чети('bl_preg', null)`.
+    if ((window.BL_EXPECT && BL_EXPECT.has ? (BL_EXPECT.has() && !BL_EXPECT.paused()) : !!чети('bl_lmp', '')) || чети('bl_preg', null)) return 'бременна';
     return 'празно';
   }
   // Таймерът — в чужда стая, и то в ТАЗИ, където картата наистина ще се нарисува:

@@ -1433,12 +1433,19 @@
         b.addEventListener('click', () => { items = load('bl_meds', []); items.push({ n, ts: Date.now() }); items = items.slice(-60); save('bl_meds', items); draw(); fx().buzz(10); });
         quick.appendChild(b);
       });
-      list.innerHTML = items.length ? '' : '<p class="jr-privacy">Тук не даваме дози. Записваш какво е дадено по лекарско предписание, за да не се объркаш с уморена глава. 💚</p>';
-      items.slice(-8).reverse().forEach((it, ri) => {
-        const idx = items.length - 1 - items.slice(-8).reverse().indexOf(it) - 0; // stable enough for delete-by-object
+      // 💊 25.11 (одит G-02): дозите, отбелязани в „⏳ Преди колко време?“ (bl_chas), вече стоят и тук —
+      //    един списък на даденото. Не се копират в bl_meds (иначе часовникът би ги броил два пъти);
+      //    🗑 на такъв ред маха дозата от часовника. ПЪТ НАЗАД: махни „отЧ“ — пак само bl_meds.
+      const отЧ = typeof window.BL_LEK_DOZI === 'function' ? window.BL_LEK_DOZI(Date.now() - 7 * 86400000) : [];
+      const всички = items.filter(x => x && isFinite(x.ts)).concat(отЧ).sort((a, b) => a.ts - b.ts);
+      list.innerHTML = всички.length ? '' : '<p class="jr-privacy">Тук не даваме дози. Записваш какво е дадено по лекарско предписание, за да не се объркаш с уморена глава. 💚</p>';
+      всички.slice(-8).reverse().forEach(it => {
         const row = el('div', 'nt-row');
-        row.innerHTML = `<div class="nt-txt">💊 ${esc(it.n)}</div><div class="nt-meta"><span>${new Date(it.ts).toLocaleString('bg-BG')}</span><button class="nt-del" type="button" aria-label="Махни записа „${esc(it.n)}“">🗑</button></div>`;
-        row.querySelector('.nt-del').addEventListener('click', () => { items = load('bl_meds', []); const i = items.findIndex(x => x && x.ts === it.ts && x.n === it.n); if (i > -1) items.splice(i, 1); save('bl_meds', items); draw(); });
+        row.innerHTML = `<div class="nt-txt">💊 ${esc(it.n)}${it.отЧасовника ? ' <span class="jr-sub">· от „Преди колко време?“</span>' : ''}</div><div class="nt-meta"><span>${new Date(it.ts).toLocaleString('bg-BG')}</span><button class="nt-del" type="button" aria-label="Махни записа „${esc(it.n)}“">🗑</button></div>`;
+        row.querySelector('.nt-del').addEventListener('click', () => {
+          if (it.отЧасовника) { if (window.BL_CHAS && BL_CHAS.махниДоза) BL_CHAS.махниДоза(it.id, it.ts); draw(); return; }
+          items = load('bl_meds', []); const i = items.findIndex(x => x && x.ts === it.ts && x.n === it.n); if (i > -1) items.splice(i, 1); save('bl_meds', items); draw();
+        });
         list.appendChild(цели(row));
       });
     }
@@ -1456,7 +1463,8 @@
       const baby = getBaby();
       const a = baby.birth && window.BL_AGE ? BL_AGE(baby.birth) : null;
       const temps = load('bl_temps', []).filter(x => Date.now() - x.ts < 3 * 86400000);
-      const meds = load('bl_meds', []).filter(x => Date.now() - x.ts < 7 * 86400000);
+      const meds = load('bl_meds', []).filter(x => Date.now() - x.ts < 7 * 86400000)   // 25.11 (G-02): + дозите от часовника
+        .concat(typeof window.BL_LEK_DOZI === 'function' ? window.BL_LEK_DOZI(Date.now() - 7 * 86400000) : []).sort((a, b) => a.ts - b.ts);
       const notes = load('bl_notes_health', []).slice(-4);
       const growth = load('bl_growth', []).slice(-1)[0];
       // 11.08: картата обещаваше „и въпросите ти“, а печаташе САМО полето отдолу —

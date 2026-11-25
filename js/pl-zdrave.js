@@ -240,9 +240,9 @@
     с.setAttribute('data-pl', 'zdrave');
     с.setAttribute('aria-label', 'Здравният дневник — накратко');
     с.innerHTML =
+      // 25.11 (одит A-08): „Контакти за помощ“ дублираше SOS горе и картата „При спешност“ — махнат (обработчикът data-zd="sos" остава безвреден).
+      //   ПЪТ НАЗАД: върни бутона data-zd="sos" и `grid-template-columns: 1fr 1fr` в css/pl-zdrave.css.
       '<div class="pl-zd-pills">' +
-        '<button type="button" class="pl-zd-pill pl-gel t-blue" data-zd="sos"><i aria-hidden="true">' + ТЕЛЕФОН + '</i><b>Контакти за помощ</b>' + СТРЕЛКА +
-          '<span class="pl-zd-sr"> — към картата „При спешност“ с номерата</span></button>' +
         '<button type="button" class="pl-zd-pill pl-gel t-pink" data-zd="new" aria-expanded="false" aria-controls="' + ид + '"><i aria-hidden="true">' + ЛИСТ + '</i><b>Нов здравен запис</b>' + СТРЕЛКА + '</button>' +
       '</div>' +
       '<div class="pl-zd-pick pl-felt" id="' + ид + '" hidden>' +

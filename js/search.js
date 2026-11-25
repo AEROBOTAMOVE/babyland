@@ -9,6 +9,34 @@
   const esc = s => String(s == null ? '' : s).replace(/[&<>"']/g, m => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[m]));
 
   // кратки пътища към инструментите
+  // 25.11 (одит G-05, видяно: „касичка“ и „помпене“ → 0 резултата; клик → стаята отгоре, картата 3406 px по-долу):
+  //   нови пътища за записващите инструменти · card: заглавието на картата → кликът отвежда ДО НЕЯ (разгъва и подсвети)
+  //   · preg: само при бременност (иначе „контракции“ лъжеше майка на 8-месечно бебе).
+  //   ПЪТ НАЗАД: махни ДОП_ПЪТИЩА и функцията отидиДоКарта (кликът пак само отваря стаята).
+  const ДОП_ПЪТИЩА = [
+    { kw: 'касичка спестявания спестяване цел събираме пари прасенце', label: 'Касичка-цел', room: 'Инструменти', e: '🐷', card: /Касичка-цел/ },
+    { kw: 'разходи харча похарчих сметки колко харчим', label: 'Разходите по месеци', room: 'Инструменти', e: '📊', card: /Разходите по месеци/ },
+    { kw: 'помпене помпа изцеждане изцедих изцедено', label: 'Дневник за помпене', room: 'Моето бебе', e: '🍼', card: /Дневник за помпене/ },
+    { kw: 'кърмене таймер гърда ляво дясно колко суче кърмих', label: 'Кърмене-таймер', room: 'Моето бебе', e: '🤱', card: /Кърмене-таймер/ },
+    { kw: 'лекарство лекарства доза дози нурофен ибупрофен парацетамол сироп свещичка кога дадох преди колко време', label: '⏳ Преди колко време? (лекарства, хранене)', room: null, e: '⏳', home: true },
+    { kw: 'лекарство лекарства дадено антибиотик сироп дневник', label: 'Дневник на даденото', room: 'Здраве и SOS', e: '💊', card: /Дневник на даденото/ },
+    { kw: 'температура температурен дневник мерене графика градуси', label: 'Температурен дневник', room: 'Здраве и SOS', e: '🌡️', card: /Температурен дневник/ },
+    { kw: 'болен болест епизод линия лекар', label: 'Болничният епизод', room: 'Здраве и SOS', e: '🤒', card: /Болничният епизод/ },
+    { kw: 'преглед педиатър бележка лекар въпроси', label: 'Бележка за прегледа', room: 'Здраве и SOS', e: '🩺', card: /Бележка за прегледа/ },
+    { kw: 'аптечка аптечката лекарства вкъщи срок годност', label: 'Аптечката', room: 'Здраве и SOS', e: '🧰', card: /Аптечка/ },
+    { kw: 'нощна лампа светлина тъмно нощем фенерче', label: 'Нощна лампа', room: 'Инструменти', e: '🔦', card: /Нощна лампа/ },
+    { kw: 'гардероб гардеробче дрешки бодита имаме', label: 'Гардеробчето', room: 'Инструменти', e: '👕', card: /Гардероб/ },
+    { kw: 'подаръци подарък пожелания', label: 'Списък за подаръци', room: 'Инструменти', e: '🎁', card: /Списък за подаръци/ },
+    { kw: 'списък списъци пазар бележка задачи', label: 'Моите списъци', room: 'Инструменти', e: '✍️', card: /Моите списъци/ },
+    { kw: 'изпито мл милилитри шише изпи', label: 'Изпито днес', room: 'Моето бебе', e: '🍼', card: /Изпито днес/ }
+  ];
+  const КАРТА_ЗА = {   // заглавията на старите пътища (сверени с card(...) в js/)
+    'Калкулатор на растежа': /Калкулатор на растежа/, 'Хранене — кога/колко': /Кога яде за последно/, 'Сънят на бебето': /Сънят днес/,
+    'Първите зъбки': /Първите зъбки/, 'Пелени днес': /Пелени днес/, 'Калкулатор на термина': /Кога е терминът/, 'Брояч на ритания': /Брояч на ритания/,
+    'Брояч на контракции': /Брояч на контракции/, 'Календар на храните': /Календар на храните/, 'Температурен ориентир': /Температурен ориентир/,
+    'Размер на дрешки': /Размер на дрешки/, 'Бебешки бюджет': /Бебешки бюджет/, 'Генератор на имена': /Генератор на имена/, 'Резервно копие': /Резервно копие/
+  };
+  const САМО_БРЕМЕННА = new Set(['Калкулатор на термина', 'Брояч на ритания', 'Брояч на контракции', 'Чанта за болницата']);
   const SHORTCUTS = [
     { kw: 'растеж тегло персентил крива сзо колко', label: 'Калкулатор на растежа', room: 'Моето бебе', e: '📏' },
     { kw: 'хранене мляко шише кърма колко яде', label: 'Хранене — кога/колко', room: 'Моето бебе', e: '🍼' },
@@ -48,7 +76,37 @@
     { kw: 'мит баба бабини деветини проверка', label: 'Митът на седмицата', room: 'Лабораторията', e: '👵' },
     { kw: 'защо буди се среднощ три часа улики', label: 'Защо се буди в 3?', room: 'Лабораторията', e: '🕵️' },
     { kw: 'какво се смени промяна проблем детектив', label: 'Какво се смени', room: 'Лабораторията', e: '🔍' }
-  ];
+  ].concat(ДОП_ПЪТИЩА);
+  SHORTCUTS.forEach(sc => { if (!sc.card && КАРТА_ЗА[sc.label]) sc.card = КАРТА_ЗА[sc.label]; if (САМО_БРЕМЕННА.has(sc.label)) sc.preg = true; });
+  // бременна ли е сега: има дата на последна менструация (или изобщо няма родено бебе)
+  const бременна = () => { try { if (window.BL_EXPECT && BL_EXPECT.lmp && BL_EXPECT.lmp()) return true; } catch (e) {} if (lsGet('bl_lmp', '')) return true; const б = lsGet('bl_baby', {}); return !(б && б.birth); };
+
+  // ➡️ 25.11 (G-05): отвежда до самата карта — както „Печатаемата кутия“ (printbox.js): отвори стаята, намери
+  //    картата по заглавието, разгъни я, моментален скрол (плавният се прекъсва от влизащите карти), втори опит
+  //    след влизането, подсвети (.pb-flash). Няма ли я — казва го, не мълчи.
+  function отидиДоКарта(r) {
+    if (r.home) {
+      try { if (window.MamaHelper) MamaHelper.close(); } catch (e) {}
+      setTimeout(() => { const к = document.querySelector('#todaySection .ch-card'); if (к) { к.scrollIntoView({ behavior: 'auto', block: 'start' }); к.classList.add('pb-flash'); setTimeout(() => к.classList.remove('pb-flash'), 1700); } }, 120);
+      return;
+    }
+    if (!window.MamaHelper) return;
+    MamaHelper.open(r.room);
+    if (!r.card) return;
+    let опити = 0, намерена = null;
+    const намери = () => [...document.querySelectorAll('#roRoom .jr-card:not(.toc-card)')].find(c => { const t = c.querySelector('.jr-title'); return t && r.card.test(t.textContent); });
+    const скочи = () => {
+      const к = намери(); if (!к) return false; намерена = к;
+      if (к.classList.contains('folded')) { const б = к.querySelector('.jr-title .fold-btn'); if (б) б.click(); }
+      к.scrollIntoView({ behavior: 'auto', block: 'start' }); return true;
+    };
+    const опит = () => {
+      if (скочи()) { setTimeout(() => { скочи(); if (намерена) { намерена.classList.add('pb-flash'); setTimeout(() => намерена.classList.remove('pb-flash'), 1700); } }, 450); return; }
+      if (++опити < 12) return setTimeout(опит, 200);
+      if (window.BL_FX && BL_FX.cheer) BL_FX.cheer('Картата е в тази стая — превърти надолу 👇');
+    };
+    setTimeout(опит, 60);
+  }
 
   const norm = s => (s || '').toLowerCase().replace(/[^\wа-яё\s]/gi, ' ');
 
@@ -114,19 +172,27 @@
         words.forEach(w => {
           if (w.length > 4 && хДуми.some(х => х.length > 4 && близо1(w, х))) sc += 1;
         });
+        if (sc) sc = -sc;   // 25.11 (G-05): отрицателно = „само прилича“ (виж долу)
       }
       return sc;
     };
     const out = [];
+    const _hit = hit;
+    // 25.11 (одит G-05: „колики“ връщаше колички): правописната прошка помага само когато НИЩО не съвпада
+    //    точно. Има ли поне един точен резултат, „прилика с една буква“ не се показва. ПЪТ НАЗАД: махни филтъра долу.
+    const точни = { има: false };
+    const hitЗапомни = hay => { const s = _hit(hay); if (s > 0) точни.има = true; return s; };
     // статии
-    (window.BL_ARTICLES_DATA || []).forEach(a => { const s = hit(a.title + ' ' + a.summary + ' ' + a.tags.join(' ') + ' ' + a.room); if (s) out.push({ s, type: 'article', id: a.id, label: a.title, sub: a.room, e: a.emoji }); });
+    const сложи = (s, о) => { if (s) out.push(Object.assign(о, { s: Math.abs(s) + (о.доп || 0), прилича: s < 0 })); };
+    (window.BL_ARTICLES_DATA || []).forEach(a => сложи(hitЗапомни(a.title + ' ' + a.summary + ' ' + a.tags.join(' ') + ' ' + a.room), { type: 'article', id: a.id, label: a.title, sub: a.room, e: a.emoji }));
     // храни
-    (window.BL_DATA ? BL_DATA.foods : []).forEach(f => { const s = hit(f.n + ' ' + f.cat + ' ' + f.how); if (s) out.push({ s: s + 0.5, type: 'room', room: 'Захранване', label: f.n, sub: 'Храна · от ' + f.from + ' м.', e: f.e }); });
-    // инструменти
-    SHORTCUTS.forEach(sc => { const s = hit(sc.kw + ' ' + sc.label); if (s) out.push({ s, type: 'room', room: sc.room, label: sc.label, sub: sc.room, e: sc.e }); });
+    (window.BL_DATA ? BL_DATA.foods : []).forEach(f => сложи(hitЗапомни(f.n + ' ' + f.cat + ' ' + f.how), { доп: 0.5, type: 'room', room: 'Захранване', label: f.n, sub: 'Храна · от ' + f.from + ' м.', e: f.e }));
+    // инструменти (25.11, G-05: +1,5 — търсеният бутон е над статиите за него; бременните — само при бременност)
+    const б = бременна();
+    SHORTCUTS.forEach(sc => { if (sc.preg && !б) return; сложи(hitЗапомни(sc.kw + ' ' + sc.label), { доп: 1.5, type: 'room', room: sc.room, label: sc.label, sub: (sc.room || 'Начало') + ' · инструмент', e: sc.e, card: sc.card, home: sc.home }); });
     // речникът на мама
-    (window.BL_DATA && BL_DATA.glossary ? BL_DATA.glossary : []).forEach(g => { const s = hit(g.t + ' ' + g.d); if (s) out.push({ s, type: 'room', room: 'Инструменти', label: g.t, sub: 'Речник на мама 📖', e: '📖' }); });
-    return out.sort((a, b) => b.s - a.s).slice(0, 18);
+    (window.BL_DATA && BL_DATA.glossary ? BL_DATA.glossary : []).forEach(g => сложи(hitЗапомни(g.t + ' ' + g.d), { type: 'room', room: 'Инструменти', label: g.t, sub: 'Речник на мама 📖', e: '📖' }));
+    return out.filter(r => !(точни.има && r.прилича)).sort((a, b) => b.s - a.s).slice(0, 18);
   }
 
   // ═══════════ 💬 ПРИЯТЕЛСКОТО ПОЛЕ — балончето те посреща и отговаря ═══════════
@@ -393,6 +459,7 @@
       b.addEventListener('click', () => {
         close();
         if (r.type === 'article' && window.BL_ARTICLES) BL_ARTICLES.open(r.id);
+        else if (r.card || r.home) отидиДоКарта(r);   // 25.11 (G-05): до самата карта
         else if (window.MamaHelper) MamaHelper.open(r.room);
       });
       list.appendChild(b);

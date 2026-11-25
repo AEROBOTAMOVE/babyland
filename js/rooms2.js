@@ -591,8 +591,14 @@
       undoChip.hidden = true; clearTimeout(undoTimer);
     });
     c3.appendChild(feedRow); c3.appendChild(undoChip); c3.appendChild(feedКаз);
+    // 🍼 25.11 (одит G-03, видяно): „Хранене“ от „⏳ Преди колко време?“ на Начало пишеше само в bl_chas, а тук
+    //    стоеше „Още няма отбелязано хранене“ — записала е, а приложението казва, че не е. Сега картата и
+    //    кръгът четат и часовника (без да пишат в него). ПЪТ НАЗАД: махни часовникХранене() и двете места.
+    const часовникХранене = () => { const ч = (load('bl_chas', {}) || {}).hrana; return ч && typeof ч === 'object' ? (Array.isArray(ч.hist) ? ч.hist : (ч.t ? [ч.t] : [])).filter(t => typeof t === 'number' && t > 0) : []; };
     function refreshFeed() {
-      const f = load('bl_feed', null);
+      let f = load('bl_feed', null);
+      const отЧ = часовникХранене(); const последноЧ = отЧ.length ? Math.max.apply(null, отЧ) : 0;
+      if (последноЧ && (!f || !(f.t >= последноЧ))) f = { t: последноЧ, s: 'chas' };
       if (!f) { feedOut.innerHTML = 'Още няма отбелязано хранене. Бутни отдолу при следващото. 👇'; predOut.innerHTML = ''; return; }
       // 🔴 11.08 (обиколка във времето): записът може да е в БЪДЕЩЕТО — в
       //    последната неделя на октомври часовникът се връща от 04:00 на 03:00
@@ -604,10 +610,10 @@
       const h = Math.floor(mins / 60), m = mins % 60;
       feedOut.innerHTML = изтекло < -60000
         ? `Последното хранене е записано с час <strong>напред</strong> (${new Date(f.t).toLocaleTimeString('bg-BG', { hour: '2-digit', minute: '2-digit' })}) — часовникът на телефона се е разминал. Отбележи наново при следващото. 💜`
-        : (isFinite(m) ? `Последно (${sideWord(f.s)}) преди <strong>${h ? h + ' ч ' : ''}${m} мин</strong>.`
+        : (isFinite(m) ? `Последно${f.s === 'chas' ? '' : ' (' + sideWord(f.s) + ')'} преди <strong>${h ? h + ' ч ' : ''}${m} мин</strong>.${f.s === 'chas' ? ' <span class="jr-sub">· от „Преди колко време?“</span>' : ''}`
                        : 'Записът за последното хранене не се чете. Следващото ще се брои нормално. 💜');   // 🔴 26.08 (ИЗМЕРЕНО): даваше „преди NaN мин"
       // проход 4: прогноза напред от медианния интервал (три извора, дедуп на близнаци <60с)
-      const ts = [...load('bl_nursing', []).map(x => x.ts), ...load('bl_feedlog', []), f.t].filter(Boolean).sort((a, b) => a - b);
+      const ts = [...load('bl_nursing', []).map(x => x.ts), ...load('bl_feedlog', []), ...отЧ, f.t].filter(Boolean).sort((a, b) => a - b);
       const uniq = ts.filter((x, i) => i === 0 || x - ts[i - 1] > 60000);
       if (uniq.length < 4) { predOut.innerHTML = 'Събирам ритъма ти — след няколко хранения ще подсказвам кога обикновено е следващото. 💜'; predOut.style.opacity = ''; return; }
       const ints = []; for (let i = 1; i < uniq.length; i++) ints.push(uniq[i] - uniq[i - 1]);
@@ -836,7 +842,9 @@
       // хранения — точки
       // 🔴 26.08 (ИЗМЕРЕНО): `[null]` в кърменето гърмеше на x.ts и гасеше
       //    денонощния кръг — картата, която показва деня на бебето.
-      const feeds = [...load('bl_nursing', []).filter(x => x).map(x => x.ts), ...load('bl_feedlog', []), (load('bl_feed', null) || {}).t].filter(x => x && днес(x));
+      const чХр = (load('bl_chas', {}) || {}).hrana;   // 25.11 (G-03): + храненията от „Преди колко време?“
+      const feeds = [...load('bl_nursing', []).filter(x => x).map(x => x.ts), ...load('bl_feedlog', []), (load('bl_feed', null) || {}).t,
+        ...(чХр && Array.isArray(чХр.hist) ? чХр.hist : [])].filter(x => typeof x === 'number' && x && днес(x));
       const uniq = [...new Set(feeds.map(x => Math.round(x / 300000)))].map(x => x * 300000);  // групирай на 5 мин
       uniq.forEach(ts => { const [x, y] = точка(ъгъл(ts), 58); svg += `<circle cx="${x.toFixed(1)}" cy="${y.toFixed(1)}" r="4" fill="#e56ba4" stroke="#fff" stroke-width="1.5"/>`; });
       // стрелка „сега"
@@ -1120,13 +1128,26 @@
         светниПръстен();
         if (window.BL_FX) BL_FX.buzz(6);   // проход 4: нежен тактилен цък (мама брои с очи затворени)
       }
+      kickNe.hidden = !(kickCount > 0 && kickCount < 10);
       kickBig.classList.add('pp'); setTimeout(() => kickBig.classList.remove('pp'), 200);
+    });
+    // 🟡 25.11 (одит G-20, видяно: само „👣 Ритна!“ — съседната „Кога рита най-много“ има „↩ не беше ритник“).
+    //    Сгрешено докосване вече се маха, преди да е влязло в десетката. ПЪТ НАЗАД: махни kickNe.
+    const kickNe = el('button', 'jr-chip', '↩ не беше ритник'); kickNe.type = 'button'; kickNe.hidden = true; kickNe.style.minHeight = '44px';
+    kickNe.addEventListener('click', () => {
+      if (!(kickCount > 0 && kickCount < 10)) { kickNe.hidden = true; return; }
+      kickCount--;
+      if (!kickCount) kickStart = 0;
+      kickOut.textContent = kickCount ? `${kickCount} / 10 движения…` : 'Махнах го. Броенето почва отначало при следващото движение.';
+      kickBig.querySelector('span').textContent = kickCount ? 'Ритна! (' + kickCount + ')' : 'Ритна!';
+      светниПръстен(); kickNe.hidden = !kickCount;
+      if (window.BL_FX) BL_FX.buzz(6);
     });
     if (с2сед > 0 && с2сед < 26) {
       kickOut.innerHTML = 'Броенето е за след <strong>~26-та седмица</strong> (ти си в ' + редна(с2сед) + '). Но усетиш ли пърхане — цъкни, ще го запомним като спомен. 🤍';
     }
     c2.appendChild(kickBig);
-    if (с2сед === 0 || с2сед >= 26) c2.appendChild(kickRing);   // пръстенът само в режим на броене
+    if (с2сед === 0 || с2сед >= 26) { c2.appendChild(kickRing); c2.appendChild(kickNe); }   // пръстенът само в режим на броене
     c2.appendChild(kickOut); c2.appendChild(kickHist);
     рисувайИстория();
     // 🤍 при раждане preg20 маха само bl_lmp. Пауза няма → досега родилата
@@ -1393,6 +1414,9 @@
     //    влизаше във филтъра „Алергени" — все едно приложението го е проверило.
     const alrgL = el('label', 'fd-alrgchk', '');
     const alrgI = el('input'); alrgI.type = 'checkbox';
+    // 🟡 25.11 (одит G-18: отметката е 24×24) — целият ред е зоната за докосване, поне 44 px висок
+    alrgL.style.display = 'flex'; alrgL.style.alignItems = 'center'; alrgL.style.gap = '8px'; alrgL.style.minHeight = '44px'; alrgL.style.cursor = 'pointer';
+    alrgI.style.width = '24px'; alrgI.style.height = '24px'; alrgI.style.flex = '0 0 auto';
     alrgL.appendChild(alrgI);
     alrgL.appendChild(el('span', '', ' ⚠️ Това е алерген (яйце, краве мляко, ядки, фъстък, риба, соя, пшеница, сусам)'));
     const бележка5 = el('p', 'jr-privacy fd-rule', ''); бележка5.hidden = true;
@@ -1737,7 +1761,11 @@
       });
     });
     drawFavs();
-    root.appendChild(c3);
+    // 🟡 25.11 (одит G-17, видяно при бебе на 8 месеца): генераторът на имена стоеше в Инструменти след раждането.
+    //    Роденото и наименувано бебе (bl_baby с минала рождена дата и име) не го вижда; любимите имена не се трият.
+    //    ПЪТ НАЗАД: върни голото root.appendChild(c3).
+    const бебеИме = (() => { try { const б = JSON.parse(localStorage.getItem('bl_baby') || 'null') || {}; return !!(б.name && String(б.name).trim() && б.birth && new Date(б.birth).getTime() <= Date.now()); } catch (e) { return false; } })();
+    if (!бебеИме) root.appendChild(c3);
 
     // 4. Чеклисти
     // 🔁 отметките се пазеха по НОМЕР на списъка (bl_chk_0/1/2). Добавен или

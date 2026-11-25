@@ -600,10 +600,10 @@
     const total = NET.reduce((s, n) => s + n.f.length, 0);
     const sec = el('section', 'netsec');
     sec.innerHTML = `
-      <h2 class="section-title reveal">Какво може <span class="net-name">Помощникът на мама</span></h2>
+      <h2 class="section-title reveal">Какво могат <span class="net-name">помощничките</span></h2>
       <p class="section-sub reveal"><strong>${total}</strong> теми, свързани в едно. Докосни кръгче, за да видиш връзките.</p>
       <div class="net-stage reveal">
-        <svg class="net-svg" viewBox="0 0 640 460" role="img" aria-label="Мрежата на Помощника на мама">
+        <svg class="net-svg" viewBox="0 0 640 460" role="img" aria-label="Мрежата на помощничките">
           <defs>
             <radialGradient id="netCore"><stop offset="0" stop-color="#fff"/><stop offset="1" stop-color="#f7a8cb"/></radialGradient>
             <filter id="netGlow"><feGaussianBlur stdDeviation="4" result="b"/><feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge></filter>
@@ -611,7 +611,7 @@
           <g class="net-links"></g><g class="net-leaves"></g><g class="net-nodes"></g>
         </svg>
         <div class="net-panel">
-          <div class="net-head"><span class="net-pe">🎈</span><div><strong class="net-pt">Помощникът на мама</strong><span class="net-ps">докосни възел от мрежата</span></div></div>
+          <div class="net-head"><span class="net-pe">🎈</span><div><strong class="net-pt">Помощничките</strong><span class="net-ps">докосни възел от мрежата</span></div></div>
           <div class="net-list" tabindex="0" role="region" aria-label="Темите на избрания възел"></div>
         </div>
       </div>`;
@@ -668,7 +668,7 @@
       svg.querySelectorAll('.net-node').forEach(n => n.classList.remove('on', 'dim'));
       svg.querySelectorAll('.net-link').forEach(l => l.classList.remove('on', 'dim'));
       gLeaves.innerHTML = '';
-      pe.textContent = '🎈'; pt.textContent = 'Помощникът на мама';
+      pe.textContent = '🎈'; pt.textContent = 'Помощничките';   // 25.11 (A-25): беше 'Помощникът на мама' (и в заглавието, aria и net-pt горе)
       ps.textContent = 'всичко, свързано в едно — докосни възел';
       list.innerHTML = NET_EXTRA.map(t => `<span class="net-chip net-chip-x">${t}</span>`).join('');
     }
@@ -837,7 +837,7 @@
   // не толкова, че мама да ги прескочи от досада. Всяка е прескачаема
   // и се вижда само първия път.
   const TOUR = [
-    ['🎈', 'Добре дошла у дома', 'Аз съм Помощникът на мама. С теб съм от бременността до третата годинка.'],
+    ['🎈', 'Добре дошла у дома', 'Тук сме девет помощнички — с теб от бременността до третата годинка.'],
     ['🏰', 'Девет вълшебни стаи', 'Всяка стая е за една грижа: бременността, бебето, храната, здравето, игрите и още четири.'],
     ['💬', 'Питай като приятелка', 'Във всяка стая живее помощничка. Тя отговаря човешки, помни твоето бебе и е будна и в 3 през нощта, когато никой друг не е.'],
     ['📔', 'Всичко се помни само', 'Реката на спомените, годишникът, снимките, първите пъти — трупат се сами от това, което правиш. Един ден имаш цяла книга, без да си я писала.'],

@@ -24,7 +24,7 @@
 .pl-zd-num { font-family: Nunito, Nunito-fallback, system-ui, sans-serif; font-weight: 900; font-variant-numeric: lining-nums tabular-nums; letter-spacing: .3px; }
 
 /* ── двете хапчета (гелът е от pl-ui.css .pl-gel) ── */
-.pl-zd-pills { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+.pl-zd-pills { display: grid; grid-template-columns: 1fr; gap: 10px; }   /* 25.11 (A-08): остана едно хапче — беше 1fr 1fr */
 #roRoom .pl-zd-pill {
   display: flex; align-items: center; gap: 7px; min-width: 0; min-height: 68px; margin: 0;
   padding: 7px 9px 7px 7px; border-radius: 999px; cursor: pointer; text-align: left;

@@ -277,8 +277,27 @@ html:not([data-theme="dark"]) .bottom-nav .bn-item.bn-active::after {
 .bottom-nav .bn-item[data-room="Дневник на мама"] { --pl-ico: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='1.8' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M5 4.5A1.5 1.5 0 0 1 6.5 3H19v15H6.5A1.5 1.5 0 0 0 5 19.5zM5 19.5A1.5 1.5 0 0 0 6.5 21H19M9 7.5h6M9 11h4'/%3E%3C/svg%3E"); }
 .bottom-nav .bn-item[data-room="Здраве и SOS"] { --pl-ico: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='1.8' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M12 20.5s-7.2-4.4-9.1-8.6C1.5 8.6 3.5 4.6 7.2 4.6c2 0 3.4 1.1 4.8 2.9 1.4-1.8 2.8-2.9 4.8-2.9 3.7 0 5.7 4 4.3 7.3-1.9 4.2-9.1 8.6-9.1 8.6z'/%3E%3Cpath d='M12 9.5v5M9.5 12h5'/%3E%3C/svg%3E"); }
 .bottom-nav #bnProfile { --pl-ico: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='1.8' stroke-linecap='round' stroke-linejoin='round'%3E%3Ccircle cx='12' cy='8' r='4'/%3E%3Cpath d='M4.5 21a7.5 7.5 0 0 1 15 0'/%3E%3C/svg%3E"); }
+/* 25.11 (одит A-02): „Чакаме“ (бременна) нямаше иконка → плътен квадрат от currentColor. Коремче в профил, същият почерк.
+   ПЪТ НАЗАД: махни реда. */
+.bottom-nav .bn-item[data-room="Бременност"] { --pl-ico: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='1.8' stroke-linecap='round' stroke-linejoin='round'%3E%3Ccircle cx='11' cy='4.5' r='2.2'/%3E%3Cpath d='M9.6 8.4c-1.9 1.3-2.3 4.2-1.8 7.1L8.4 21'/%3E%3Cpath d='M12.4 8.4c1.4.6 2.4 1.6 2.9 2.9 2.3.6 3.4 2.6 2.6 4.6-.7 1.8-2.8 2.6-4.9 2.1L13.6 21'/%3E%3C/svg%3E"); }
 /* спешното остава разпознаваемо: червеникаво, не розово като останалите */
 html:not([data-theme="dark"]) .bottom-nav .bn-item[data-room="Здраве и SOS"], html:not([data-theme="dark"]) .bottom-nav .bn-item.bn-sos { color: #b3263f !important; }   /* беше #d9536a = 3.8:1 */
+/* 25.11 (одит A-15): нощем SOS беше бял като другите — точно когато го търсят. Светлочервено. ПЪТ НАЗАД: махни реда. */
+html[data-theme="dark"] body .bottom-nav .bn-item[data-room="Здраве и SOS"]:not(.bn-active), html[data-theme="dark"] body .bottom-nav .bn-item.bn-sos:not(.bn-active) { color: #ff7a8f !important; }   /* надвива pl-ui.css:415 */
+/* 25.11 (одит A-09): бременна — денонощието на бебето („Тревога · 38.5°“, пелени) не е за нея; седмицата е горе (premium-home.js).
+   ПЪТ НАЗАД: махни двата реда. */
+html.pl-preg .day24 { display: none !important; }
+/* 25.11 (одит A-26): „Хорото на помощничките“ в „Още за Бейби Ленд“ повтаря помощничките, вече показани горе. ПЪТ НАЗАД: махни реда. */
+html.pl-on main > #помощничките { display: none !important; }
+/* 25.11 (одит A-39): „Едно денонощие“ — вечер в СВЕТЛА тема небето в кръга е тъмно (dsky-dusk/night), а часът (pl-chas.css,
+   text.pl-chas-vreme) оставаше тъмносин var(--pl-ink): нощните цветове там важат само при тъмна тема/тихи часове. Мерено: rgb(59,63,92)
+   върху тъмносиньо в 18:44. Сега следва небето на кръга — същите цветове като нощните в pl-chas.css:53–56. ПЪТ НАЗАД: махни двата реда. */
+html.pl-on .d24-svg.dsky-dusk text.pl-chas-vreme, html.pl-on .d24-svg.dsky-night text.pl-chas-vreme { fill: #f3ecff; stroke: rgba(20, 16, 40, .5); }
+html.pl-on .d24-svg.dsky-dusk text.pl-chas-chast, html.pl-on .d24-svg.dsky-night text.pl-chas-chast { fill: #ffb3cd; }
+/* 25.11 (одит G-19): докато полетата „Числата от кутията“ са отворени, „+“ се прибира (както при „Добави момент“, pl-cta-vis) —
+   стоеше върху „Така е на кутията“ на 360. Бутонът не се мести. ПЪТ НАЗАД: махни реда. */
+html:has(.ch-row .ch-set:not([hidden])) #blPlus .plus-btn:not(.open) { opacity: 0 !important; transform: scale(.6) !important; pointer-events: none !important; }
+#plHome .pl-preg-w .pl-preg-t { margin: 6px 4px 2px; font-size: 15px; line-height: 1.45; color: inherit; }
 
 /* ── „+“ — в палитрата, не лилаво (и денем, и нощем) ── */
 /* „+“ се скрива, докато „Добави момент“ е на екрана (premium-home.js пази html.pl-cta-vis) — застъпваше заглавието */

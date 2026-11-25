@@ -49,7 +49,9 @@
     const б = чети('bl_baby', {}) || {};
     const име = (б.name || '').trim();
     if (!б.birth) {
-      const бр = чети('bl_preg', null);
+      // 25.11 (одит A-01): bl_preg не го пише никой — запознаването пише bl_lmp (onboard.js:289). Питаме BL_EXPECT като nav2.js:34.
+      //   ПЪТ НАЗАД: `const бр = чети('bl_preg', null);`
+      const бр = (window.BL_EXPECT && BL_EXPECT.has ? (BL_EXPECT.has() && !BL_EXPECT.paused()) : !!чети('bl_lmp', '')) || !!чети('bl_preg', null);
       return { име: име || 'Нашето бебе', ред: бр ? 'очакваме те с любов' : 'разкажи ми за бебето', знак: бр ? '🤰' : '👶', бр: !!бр };
     }
     const р = new Date(б.birth), д = new Date();
@@ -147,8 +149,33 @@
   //   без id. „Добави момент“ не правеше НИЩО от етап 1 насам; хванато при сверката с референцията.
   function добави() { const б = document.querySelector('#blPlus .plus-btn') || document.querySelector('.plus-btn'); if (б) б.click(); }
 
+  // 25.11 (одит A-09): при бременна най-горе е седмицата, не „Хранене / Сън / Пелени“ (бебе още няма).
+  //   Сметката е същата като в rooms2.js:2444 („Днес“ на бременната): BL_PREG.седмица + BL_DATA.pregWeeks; над 45 с. — без число.
+  //   ПЪТ НАЗАД: махни седмицата(), доТеб() и двете условия в рисувай(); махни класа pl-preg в сложи().
+  function седмицата() {
+    try {
+      const л = window.BL_EXPECT && BL_EXPECT.lmp ? BL_EXPECT.lmp() : чети('bl_lmp', '');
+      const д = л ? new Date(л) : null; if (!д || isNaN(д)) return null;
+      const w = Math.max(1, window.BL_PREG ? BL_PREG.седмица(д) : Math.floor((Date.now() - д) / 604800000));
+      if (w > 45) return null;
+      const дни = Math.max(0, Math.ceil((д.getTime() + 280 * 864e5 - Date.now()) / 864e5));
+      const плод = ((window.BL_DATA || {}).pregWeeks || {})[Math.min(42, Math.max(4, w))] || null;
+      return { w, дни, плод };
+    } catch (e) { return null; }
+  }
+  // 25.11 (одит A-10): „Мира е до теб — сънят, храненето и здравето“ стоеше на всички. Сега — помощничката за сегашния етап
+  //   (същите граници като nav2.js стаятаЗаСега: 4,5 и 13 месеца). ПЪТ НАЗАД: върни твърдия бутон с Мира.
+  function доТеб(б) {
+    if (б.бр) return { име: 'Мила', стая: 'Бременност', т: 'Седмиците, ритниците, прегледите.' };
+    const р = (чети('bl_baby', {}) || {}).birth; const м = р ? (Date.now() - new Date(р)) / (30.4375 * 864e5) : NaN;
+    if (м >= 4.5 && м < 13) return { име: 'Малина', стая: 'Захранване', т: 'Първите лъжички.' };
+    if (м >= 13) return { име: 'Искра', стая: 'Развитие и игри', т: 'Игрите и първите думи.' };
+    return { име: 'Мира', стая: 'Моето бебе', т: р ? 'Сънят и храненето.' : 'Сънят, храненето и здравето.' };
+  }
   function рисувай() {
     const б = бебето();
+    const св = б.бр ? седмицата() : null;
+    const до = доТеб(б);
     const с = document.createElement('section');
     с.id = 'plHome';
     с.setAttribute('aria-label', 'Начало');
@@ -170,6 +197,11 @@
         '<i class="pl-art" aria-hidden="true" style="background-image:url(img/art/ico-c.webp);background-position:33.333% 100%"></i>' +
         '<span>Какво търсим днес?</span><em aria-hidden="true">›</em>' +
       '</button>' +
+      (б.бр ?
+      '<div class="pl-card pl-preg-w">' +
+        '<div class="pl-card-h"><i class="pl-art pl-sun" aria-hidden="true" style="background-image:url(img/art/ico-a.webp);background-position:0% 0%"></i> ' + (св ? 'Седмица ' + св.w + ' 🤰' : 'Чакаме бебето 🤰') + '<button type="button" class="pl-all" data-room="Бременност">Бременност ›</button></div>' +
+        (св ? '<p class="pl-preg-t">' + (св.плод ? 'Бебето е колкото ' + esc(св.плод[0]) + ' ' + esc(св.плод[1]) : 'Седмица по седмица') + (св.дни > 0 ? ' · още <b>' + св.дни + '</b> ' + (св.дни === 1 ? 'ден' : 'дни') + ' до срещата' : '') + '</p>' : '<p class="pl-preg-t">Седмица по седмица — в стаята „Бременност“.</p>') +
+      '</div>' :
       '<div class="pl-card">' +
         '<div class="pl-card-h"><i class="pl-art pl-sun" aria-hidden="true" style="background-image:url(img/art/ico-d.webp);background-position:0% 0%"></i> Нашият ден<button type="button" class="pl-all" data-room="Моето бебе">Виж всички ›</button></div>' +
         '<div class="pl-line" id="plLine" hidden></div>' +
@@ -178,7 +210,7 @@
           '<button type="button" class="pl-day-it t-sleep" data-room="Моето бебе"><i class="pl-art" aria-hidden="true" style="background-image:url(img/art/ico-a.webp);background-position:33.333% 33.333%"></i><span class="pl-day-t"><b id="plDaySleep" aria-live="polite">+</b><small>Сън</small></span></button>' +
           '<button type="button" class="pl-day-it t-diaper" data-room="Моето бебе"><i class="pl-art" aria-hidden="true" style="background-image:url(img/art/ico-f.webp);background-position:0% 0%"></i><span class="pl-day-t"><b id="plDayDiaper" aria-live="polite">+</b><small>Пелени</small></span></button>' +
         '</div>' +
-      '</div>' +
+      '</div>') +
       '<button type="button" class="pl-cta" data-pl="add"><b aria-hidden="true">+</b>Добави момент</button>' +
       // 20.10 · ЕДНО напомняне — най-важното от „Днес“ (ваксината първа); пълни го подредиДнес() долу
       '<button type="button" class="pl-napomni" id="plNapomni" hidden></button>' +
@@ -202,9 +234,9 @@
           '<i aria-hidden="true" style="background-position:' + (i % 3) * 50 + '% ' + Math.floor(i / 3) * 50 + '%"></i>' +
           '<b>' + esc(п.име) + '</b><small>' + esc(п.роля) + '</small></button>').join('') +
       '</div></div>' +
-      '<button type="button" class="pl-mira" data-room="Моето бебе">' +
+      '<button type="button" class="pl-mira" data-room="' + esc(до.стая) + '">' +
         '<i class="pl-art pl-mira-av" aria-hidden="true" style="background-image:url(img/art/ico-e.webp);background-position:33.333% 66.667%"></i>' +
-        '<span><b>Мира е до теб</b><small>Отговаря за съня, храненето и здравето.</small></span>' +
+        '<span><b>' + esc(до.име) + ' е до теб</b><small>' + esc(до.т) + '</small></span>' +
         '<em>Попитай ›</em>' +
       '</button>';
 
@@ -233,6 +265,8 @@
     const main = document.querySelector('main');
     if (!main || document.getElementById('plHome')) return;
     main.parentNode.insertBefore(рисувай(), main);
+    // 25.11 (одит A-09): бременна → css крие денонощието на бебето („Тревога · 38.5°“) — premium.css „pl-preg“
+    document.documentElement.classList.toggle('pl-preg', !!бебето().бр);
     // 🎬 сцената по референция 20 — неподвижна зад цялата страница (css #plScene)
     if (!document.getElementById('plScene')) { const сц = document.createElement('div'); сц.id = 'plScene'; сц.setAttribute('aria-hidden', 'true'); document.body.insertBefore(сц, document.body.firstChild); }
     document.documentElement.classList.add('pl-on');
@@ -740,8 +774,9 @@
 
   // ── 4 · „ОЩЕ ЗА БЕЙБИ ЛЕНД“ ──
   var СТАРИ = [
-    ['.netsec', 'Какво може Помощникът на мама', 'картата на всичко, което знае'],
+    ['.netsec', 'Какво могат помощничките', 'картата на всичко, което знаят'],   // 25.11 (A-25): беше 'Какво може Помощникът на мама', '…което знае'
     ['.askme', 'Попитай помощничката', 'пиши ѝ като на приятелка'],
+    // 25.11 (A-26): редът остава (иначе секцията стои РАЗГЪНАТА в <main>); скрита е в css/premium.css „#помощничките“
     ['#помощничките', 'Хорото на помощничките', 'деветте феи, хванати за ръце'],
     ['#дневник', 'А ти как си днес?', 'пет личица за настроението'],
     ['.faq', 'Питат ни често', 'кратки отговори'],

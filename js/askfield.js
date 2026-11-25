@@ -79,7 +79,7 @@
 
     const c = el('section', 'jr-card ask-card');
     c.innerHTML = `<div class="ask-head"><span class="ask-badge">${p.badge || '💬'}</span>
-      <div><p class="ask-name">${esc(p.name)} <span class="ask-live"><span class="dot">●</span> на линия</span></p>
+      <div><p class="ask-name">${esc(p.name)}</p>
       <p class="ask-line">${esc(ред)}</p></div></div>`;
 
     const ред2 = el('div', 'ask-row');

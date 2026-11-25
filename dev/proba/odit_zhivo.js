@@ -19,7 +19,10 @@ const вземи = async п => { const r = await fetch(А + '/' + п + (п.inclu
   const hl = await вземи('js/helper.js?v=' + вер('js/helper.js'));
   const fcss = await вземи('css/fonts.css?v=' + вер('css/fonts.css'));
   const редове = []; const п = (име, ок, д) => редове.push((ок ? '✅ ' : '🔴 ') + име + (д ? ' — ' + д : ''));
-  п('версия', true, (/babyland-v\d+/.exec(sw) || ['?'])[0] + ' · kb ?v=' + вер('js/kb.js') + ' · LV ' + LV);
+  // 25.11 (одит D): редът беше винаги ✅. Сега сверява живата версия с тази в проекта (sw.js на диска).
+  const живаВ = (/babyland-v\d+/.exec(sw) || ['?'])[0];
+  const проектВ = (/babyland-v\d+/.exec(fs.readFileSync(path.join(ПР, 'sw.js'), 'utf8')) || ['?'])[0];
+  п('версия', живаВ === проектВ, живаВ + (живаВ === проектВ ? '' : ' (проектът е ' + проектВ + ')') + ' · kb ?v=' + вер('js/kb.js') + ' · LV ' + LV);
   п('знанието е там', kb.length > 1e6, (kb.length / 1e6).toFixed(2) + ' MB');
   // 1) 17-те поправени факта от 18.11: старият цитат НЕ трябва да е на живо (нито в kb, нито в статиите)
   const ф1 = JSON.parse(fs.readFileSync(path.join(__dirname, 'FAKTI_POTVARDENI_18-11.json'), 'utf8'));
