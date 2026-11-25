@@ -99,8 +99,11 @@
     return { т: 'Запиши първото измерване', празно: true };
   }
   // ── 💊 ЛЕКАРСТВА: bl_meds = [{ n, ts }] (rooms3.js:1418-1422 и 1433) — пази до 60, последният е в края.
+  // 25.11 (вълна 2, т. 1): и дозите от часовника „Преди колко време?“ (chasovnik.js BL_LEK_DOZI → [{ n, ts }]) — иначе редът
+  //   казваше „Запиши какво е дадено“, а дозата стоеше в часовника. Последните 60 дни. ПЪТ НАЗАД: само bl_meds, както беше.
   function лекарства() {
-    const м = (чети('bl_meds', []) || []).filter(x => x && x.n != null && isFinite(x.ts));
+    const отЧ = typeof window.BL_LEK_DOZI === 'function' ? (window.BL_LEK_DOZI(Date.now() - 60 * 864e5) || []) : [];
+    const м = (чети('bl_meds', []) || []).concat(отЧ).filter(x => x && x.n != null && isFinite(x.ts)).sort((a, b) => a.ts - b.ts);
     if (!м.length) return { т: 'Запиши какво е дадено и кога', празно: true };
     return { т: брой(м.length, 'запис', 'записа') + ' · последно ' + кога(м[м.length - 1].ts), празно: false };
   }

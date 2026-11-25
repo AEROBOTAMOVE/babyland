@@ -298,6 +298,17 @@ html.pl-on .d24-svg.dsky-dusk text.pl-chas-chast, html.pl-on .d24-svg.dsky-night
    стоеше върху „Така е на кутията“ на 360. Бутонът не се мести. ПЪТ НАЗАД: махни реда. */
 html:has(.ch-row .ch-set:not([hidden])) #blPlus .plus-btn:not(.open) { opacity: 0 !important; transform: scale(.6) !important; pointer-events: none !important; }
 #plHome .pl-preg-w .pl-preg-t { margin: 6px 4px 2px; font-size: 15px; line-height: 1.45; color: inherit; }
+/* ── 25.11 · ВЪЛНА 2 (одит) — повторенията. Всичко е скриване (DOM-ът и действията остават); ПЪТ НАЗАД: махни реда. ── */
+/* A-22 „Как си днес?“ на началото: остава „Как да говорим днес?“; акордеонът „А ти как си днес? — пет личица“ се скрива */
+html.pl-on main > #дневник { display: none !important; }
+/* A-23 шест пътя за запис: „Нов запис“ под арката в „Моето бебе“ (арката „+“ и „+“ долу остават) */
+html body #roRoom .pl-bb-cta { display: none !important; }
+/* A-23 под чата: „Добави запис / Намери инструмент / Моят профил“ — нямат връзка с въпроса (pl-mira.js) */
+html body #roomOverlay .pl-mc-tools { display: none !important; }
+/* A-24 „Виж всички стаи“ разгъваше същите 9 стаи като огромни карти „Готова ⭐ Влез →“ — 9-те плочки са вече на екрана */
+html body #plHome [data-pl="vse"] { display: none !important; }
+/* A-36 „Помощничките дават информация…“ — за помощничките, т.е. за чата; в стаята стои бележката на картата */
+html body #roomOverlay .ro-panel:not([data-tab="chat"]) > p.ro-disc { display: none !important; }
 
 /* ── „+“ — в палитрата, не лилаво (и денем, и нощем) ── */
 /* „+“ се скрива, докато „Добави момент“ е на екрана (premium-home.js пази html.pl-cta-vis) — застъпваше заглавието */

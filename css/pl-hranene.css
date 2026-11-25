@@ -82,6 +82,9 @@ html body .pl-hr .pl-hr-sheet.pl-felt::after { border-radius: 19px; }
 
 /* ══ седемте дни ══ */
 .pl-hr-days { display: grid; grid-template-columns: repeat(7, minmax(0, 44px)); justify-content: space-between; margin: 10px 0 0; }
+/* 25.11 (одит G-18): на 390 дните бяха 40×40 — разстоянието 7 px (pl-start.css 18г) ядеше от кръга. От 380 px нагоре разстоянието
+   е колкото остане до 7×44 (мин. 2 px) → кръг 44. На 360 седем по 44 не се събират — там остава 18г. ПЪТ НАЗАД: махни блока. */
+@media (min-width: 380px) { html body .pl-hr .pl-hr-days.pl-hr-days { column-gap: clamp(2px, calc((100% - 308px) / 6), 7px); } }
 html body .pl-hr .pl-hr-d {
   position: relative; display: grid; place-items: center;
   width: 44px; height: 44px; padding: 0; border-radius: 50% !important; cursor: pointer;

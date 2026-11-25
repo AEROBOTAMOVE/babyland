@@ -114,7 +114,9 @@
     const след = оригМетене.apply(this, arguments);
     if (тихият) window.BL_FX.cheer = тихият;
     const нови = (BL_BADGES.list || []).filter(b => след[b.id] && !преди[b.id]);
-    нови.forEach(покажи);
+    // 25.11 (одит A-38): „Създаден профил“ (hello1) изскачаше със звън още при първото влизане — сега само тихо в профила.
+    //   ПЪТ НАЗАД: `нови.forEach(покажи);`
+    нови.filter(b => b.id !== 'hello1').forEach(покажи);
     return след;
   };
 

@@ -643,6 +643,15 @@
       box.appendChild(b);
     });
     c.appendChild(box);
+    // 25.11 (одит A-30): до 33 опита един под друг (стаята 10 101 px) → първите 6 + „Покажи всички“.
+    //   style.display, не hidden — .lb-card си има display. ПЪТ НАЗАД: махни този блок.
+    const всичкиОпити = [...box.children];
+    if (всичкиОпити.length > 6) {
+      всичкиОпити.slice(6).forEach(x => { x.style.display = 'none'; });
+      const още = el('button', 'jr-chip jr-chip-soft lb-more', 'Покажи всички ' + всичкиОпити.length + ' ›'); още.type = 'button';
+      още.addEventListener('click', () => { всичкиОпити.forEach(x => { x.style.display = ''; }); още.remove(); });
+      c.appendChild(още);
+    }
 
     // свой опит — тук е и стоп-правилото за медицинското
     const row = el('div', 'jr-addrow');
