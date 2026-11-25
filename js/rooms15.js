@@ -304,12 +304,17 @@
 
   // ── свързване ──
   const E = () => window.BL_EXPR;
+  // 🎙️ 25.11 (одит G-13): гласовият дневник и песничките вече се записват в ЕДНАТА карта
+  //    „Гласови бележки 🎙️“ (rooms3.js → expr.js voiceHubCard) — същите ключове
+  //    bl_voice_diary / bl_voice_songs, старите записи се виждат там. Кодът тук стои.
+  //    ПЪТ НАЗАД: window.BL_GLAS_EDIN = false → двете карти се връщат.
+  const единГлас = () => !!(window.BL_GLAS_EDIN && E() && E().voiceHubCard);
   const ПАКЕТИ = {
     'Дневник на мама': root => {
       root.appendChild(yearGridCard());
       root.appendChild(notListCard());
       // 4.5.6: гласовият дневник — 3 минути, защото в 3 сутринта не се пише
-      if (E()) root.appendChild(E().voiceCard(
+      if (E() && !единГлас()) root.appendChild(E().voiceCard(
         'Гласовият дневник 🎙️ ' + sub('в 3 сутринта не се пише — говори се'),
         'bl_voice_diary',
         { maxSec: 180, labels: ['днес', 'тежко', 'хубаво', 'за после'] }));
@@ -349,8 +354,8 @@
         { maxSec: 120, labels: ['писмо', 'песен', 'приказка'] }));
     },
     'Развитие и игри': root => {
-      // 4.6.12: песничките с гласа на мама
-      if (E()) root.appendChild(E().voiceCard(
+      // 4.6.12: песничките с гласа на мама (25.11 G-13: при BL_GLAS_EDIN — в „Гласови бележки“, с избор на песен)
+      if (E() && !единГлас()) root.appendChild(E().voiceCard(
         'Песничките с твоя глас 🎵 ' + sub('никой запис не звучи като мама'),
         'bl_voice_songs',
         { maxSec: 120, labels: ['приспивна', 'весела', 'наша'] }));

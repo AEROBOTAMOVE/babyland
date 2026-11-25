@@ -406,6 +406,10 @@
     ['От 6 мес.', ['Лепенки с картинки (болят по-малко)', 'Слънцезащитен крем за бебета']],
     ['От 12 мес.', ['Хладен компрес за цицини', 'Антисептик за рани — воден, не спиртен']]
   ];
+  // 25.11 (одит G-08 · три аптечки → една): „Аптечката вкъщи 🧸“ (rooms3) рисува този СЪЩИЯ списък —
+  //    bl_medkit пази отметките като 'кога|номер', затова се подава самият масив, не копие.
+  //    НЕ ПРЕНАРЕЖДАЙ и не вмъквай по средата — старите отметки ще сочат друго нещо. Само се чете.
+  window.BL_APTECHKA_SPISAK = АПТЕЧКА;
 
   function medkitCard() {
     const c = card('Аптечката 💊 ' + sub('какво да има вкъщи'));
@@ -549,9 +553,17 @@
       [contractionsCard, askDocCard, achesCard].forEach(f => { const c = f(); if (c) root.appendChild(c); });
     },
     'Моето бебе': root => {
-      [regressCard, breastCard, sitterCard].forEach(f => { const c = f(); if (c) root.appendChild(c); });
+      // 25.11 (одит G-07 · една истина за храненето): „Коя гърда е наред“ вече живее като ред в „Кога яде за
+      //    последно?“ (rooms2.js — чете и bl_breast). Кодът и ключът bl_breast остават непипнати.
+      //    ПЪТ НАЗАД: window.BL_G07_SLIV = false → картата пак се рисува.
+      // 25.11 (одит G-15 · листовете за бабата → една „Картичка за бабата“ в Инструменти): шестте полета на
+      //    bl_sitter се пишат там (същият ключ, същата форма). sitterCard и bl_sitter остават непипнати.
+      //    ПЪТ НАЗАД: window.BL_LIST_BABA = false → „Кой го гледа днес“ пак се рисува тук.
+      [regressCard, (window.BL_G07_SLIV === false ? breastCard : null), (window.BL_LIST_BABA ? null : sitterCard)].forEach(f => { if (!f) return; const c = f(); if (c) root.appendChild(c); });
     },
-    'Здраве и SOS': root => { root.appendChild(medkitCard()); },
+    // 25.11 (одит G-08): списъкът живее в „Аптечката вкъщи 🧸“ (rooms3). medkitCard и bl_medkit — непипнати.
+    //    ПЪТ НАЗАД: window.BL_APTECHKA_EDNA = false → картата пак се рисува.
+    'Здраве и SOS': root => { if (!window.BL_APTECHKA_EDNA) root.appendChild(medkitCard()); },
     'Захранване': root => { root.appendChild(allergensCard()); }
   };
 

@@ -472,11 +472,17 @@
     [14, 99, ['Расте ли по своята крива?', 'Речта в норма ли е?', 'Храненето — да се тревожа ли за избирателността?', 'Кога е следващият профилактичен?', 'Зъболекар — кога за първи път?']]
   ];
 
-  function askPedCard() {
+  function askPedCard(опц) {
     const a = age();
     if (!a) return null;
     const набор = ПИТАЙ.find(([x, y]) => a.months >= x && a.months < y) || ПИТАЙ[ПИТАЙ.length - 1];
-    const c = card('Какво да питам педиатъра ❓ ' + sub('за неговата възраст'));
+    // 25.11 (одит G-09): опц.вградена → не карта, а блок вътре в „Бележка за прегледа 🩺“ (rooms3.js).
+    //    Всичко останало е същото: същите 5 реда, същият ключ, същото еднократно пренасяне на bl_qped.
+    //    ПЪТ НАЗАД: без опц (или BL_ZA_PREGLEDA_VKL = false) — самостоятелната карта както досега.
+    const вградена = !!(опц && опц.вградена);
+    let c;
+    if (вградена) { c = el('div', 'qd-age'); c.appendChild(el('h5', 'jr-elabel', 'Въпросите за неговата възраст ❓')); }
+    else c = card('Какво да питам педиатъра ❓ ' + sub('за неговата възраст'));
     // 💭 11.08 (обиколка като майка): петте реда се отмятаха в bl_qped и оттам
     //    не мърдаха. В същата стая обаче стои „Какво искам да го попитам 💭“
     //    (checkups.js), която изрично обещава „Списъкът е един и същ навсякъде“,
@@ -542,10 +548,14 @@
       if (c.contains(e.target)) return;
       setTimeout(() => { if (c.isConnected) редове.forEach(f => f()); }, 0);
     }, true);
-    c.appendChild(el('p', 'jr-privacy', 'Отметнатото влиза в „Какво искам да го попитам 💭“ и в „Бележка за прегледа“.'));
+    c.appendChild(el('p', 'jr-privacy', вградена
+      ? 'Отметнатото влиза в списъка ти по-горе и в печата.'
+      : 'Отметнатото влиза в „Какво искам да го попитам 💭“ и в „Бележка за прегледа“.'));
     c.appendChild(el('p', 'jr-privacy', 'Няма глупав въпрос. Питай и за най-дребното.'));
     return c;
   }
+  // 25.11 (одит G-09): за „Бележка за прегледа 🩺“ (rooms3.js) — вградения блок. ПЪТ НАЗАД: BL_ZA_PREGLEDA_VKL = false.
+  window.BL_PITAY_PED = askPedCard;
 
   // ═══════════ 📅 4.5.2 НАЙ-ТЕЖКИЯТ ТИ ДЕН ═══════════
 
@@ -754,7 +764,9 @@
   const ПАКЕТИ = {
     'Бременност': root => { [fearsCard, kicksClockCard, buyCard].forEach(f => { const c = f(); if (c) root.appendChild(c); }); },
     'Моето бебе': root => { [doubleCard, diapersTotalCard].forEach(f => { const c = f(); if (c) root.appendChild(c); }); },
-    'Здраве и SOS': root => { const c = askPedCard(); if (c) root.appendChild(c); },
+    // 25.11 (одит G-09): петте реда стоят вътре в „Бележка за прегледа 🩺“ — тук не се лепи втора карта.
+    //    Лепи се пак, ако новата бележка я няма (стар кеширан rooms3.js). ПЪТ НАЗАД: BL_ZA_PREGLEDA_VKL = false.
+    'Здраве и SOS': root => { if (window.BL_ZA_PREGLEDA_VKL !== false && window.BL_ZA_PREGLEDA_SLIVA === true) return; const c = askPedCard(); if (c) root.appendChild(c); },
     'Дневник на мама': root => { const c = hardDayCard(); if (c) root.appendChild(c); },
     'Развитие и игри': root => { root.appendChild(screenCard()); root.appendChild(booksCard()); },
     'Инструменти': root => { root.appendChild(docsCard()); }

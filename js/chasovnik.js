@@ -97,6 +97,66 @@
     const ok = ts.filter(x => x > 0 && x <= Date.now() + 60000);
     return ok.length ? Math.max.apply(null, ok) : 0;
   }
+  // 🍼 25.11 (одит G-07 · една истина за храненето): „Хранене“ оттук пишеше САМО в bl_chas — помощничката,
+  //    „Нашият ден“, „Седмицата в картинка“ и „Спрямо вчера“ не го виждаха. Сега записът отива и в общия
+  //    дневник: bl_feedlog (времето) и bl_feed {t, s:'chas'} (последното — само ако там няма по-ново).
+  //    Страната от предишното бързо „Ляво/Дясно“ не се губи: пази се в bl_feed.lr / lrT (четат го rooms2).
+  //    ↺ / „махни последния“ / „Кога беше наистина?“ пипат и тях — само СВОЕТО време, а bl_feed само ако
+  //    е още нашият запис. bl_chas остава както беше. ПЪТ НАЗАД: window.BL_G07_SLIV = false.
+  const ЛОГ_ТАВАН = 200;          // същият таван като бързия запис в rooms2.js
+  const храненеПреди = {};        // ts → bl_feed отпреди нашия запис (само в паметта, за ↺)
+  const сливане = () => window.BL_G07_SLIV !== false;
+  function храненеВДневника(t) {
+    if (!сливане()) return true;
+    const пред = load('bl_feed', null);
+    храненеПреди[t] = пред;
+    const л = load('bl_feedlog', []); л.push(t);
+    let ok = save('bl_feedlog', л.slice(-ЛОГ_ТАВАН));
+    if (!(пред && typeof пред.t === 'number' && пред.t > t)) {
+      const нов = { t: t, s: 'chas' };
+      if (пред && (пред.s === 'left' || пред.s === 'right') && typeof пред.t === 'number') { нов.lr = пред.s; нов.lrT = пред.t; }
+      else if (пред && (пред.lr === 'left' || пред.lr === 'right') && typeof пред.lrT === 'number') { нов.lr = пред.lr; нов.lrT = пред.lrT; }
+      ok = save('bl_feed', нов) && ok;
+    }
+    return ok;
+  }
+  function храненеОтДневника(ts) {
+    if (!сливане()) return;
+    const л = load('bl_feedlog', []); const i = л.lastIndexOf(ts);
+    if (i >= 0) { л.splice(i, 1); save('bl_feedlog', л); }
+    const f = load('bl_feed', null);
+    if (f && f.t === ts && f.s === 'chas') {
+      const пред = храненеПреди[ts];
+      if (пред !== undefined) save('bl_feed', пред);
+      else {
+        // след презареждане снимката я няма: най-новото останало, със страна при близнаци до 60 s
+        const ост = [];
+        if ((f.lr === 'left' || f.lr === 'right') && typeof f.lrT === 'number') ост.push({ t: f.lrT, s: f.lr });
+        load('bl_nursing', []).forEach(x => { if (x && typeof x.ts === 'number' && x.ts > 0) ост.push({ t: x.ts, s: x.s === 'Л' ? 'left' : x.s === 'Д' ? 'right' : 'bottle' }); });
+        л.forEach(x => { if (typeof x === 'number' && x > 0) ост.push({ t: x, s: 'chas' }); });
+        const ок = ост.filter(x => x.t <= Date.now() + 60000);
+        if (ок.length) {
+          const макс = Math.max.apply(null, ок.map(x => x.t));
+          const близо = ок.filter(x => x.t >= макс - 60000);
+          save('bl_feed', близо.find(x => x.s !== 'chas') || близо.find(x => x.t === макс));
+        } else save('bl_feed', null);
+      }
+    }
+    delete храненеПреди[ts];
+  }
+  function храненеПоправи(старо, ново) {
+    if (!сливане() || typeof старо !== 'number') return;
+    const л = load('bl_feedlog', []); const i = л.lastIndexOf(старо);
+    if (i < 0) return;   // стар запис отпреди сливането — живее само в bl_chas, както преди
+    л[i] = ново; save('bl_feedlog', л);
+    const пред = храненеПреди[старо];
+    const f = load('bl_feed', null);
+    if (f && f.t === старо && f.s === 'chas') {
+      if (пред && typeof пред.t === 'number' && пред.t > ново) save('bl_feed', пред);
+      else save('bl_feed', Object.assign({}, f, { t: ново }));
+    }
+    if (пред !== undefined) { храненеПреди[ново] = пред; delete храненеПреди[старо]; }
+  }
   // 💊 25.11 (одит G-02): „Дневник на даденото“ в Здраве (rooms3, bl_meds = [{ n, ts }]) и този часовник
   //    бяха два отделни свята: Парацетамол, записан там, тук беше „Не знам — още не си отбелязвала“, а броят
   //    за 24 ч не го виждаше. Сега часовникът ЧЕТЕ и дневника (по името), без да пише в него — така никоя
@@ -142,6 +202,7 @@
     if (!h.length && !з.t) delete вс[id]; else вс[id] = з;
     if (!save(КЛЮЧ, вс)) return false;
     if (id === 'temp') { const т = load('bl_temps', []); const ост = т.filter(x => !(x && x.ts === ts)); if (ост.length !== т.length) save('bl_temps', ост); }
+    if (id === 'hrana') храненеОтДневника(ts);   // 25.11 (G-07): и от общия дневник — само това време
     document.querySelectorAll('#todaySection .ch-row').forEach(r => { if (r._опресни) r._опресни(); });
     ['BL_TEMPS_REDRAW', 'BL_EPISODE_REDRAW'].forEach(f => { try { if (typeof window[f] === 'function') window[f](); } catch (e) {} });
     return true;
@@ -341,10 +402,12 @@
       const t = Date.now();
       пак.hidden = true;
       if (!отбележи(р.id, t)) { под.innerHTML = '<span class="ch-red">😕 Паметта на телефона е пълна — часът НЕ е записан. Изтрий нещо и бутни пак.</span>'; return; }
+      const вДневника = р.id === 'hrana' ? храненеВДневника(t) : true;   // 25.11 (G-07): и в общия дневник на храненето
       fx().buzz(10); fx().pop && fx().pop(бут);
       опресни();
       if (р.lek && ред._настр && ред._настр.hidden && !load(КЛЮЧ_Н, {})[р.id]) { ред._настр.hidden = false; ред._опресниНастр(); } // първия път показваме полетата ВЕДНЪЖ (и бутонът знае, че са отворени)
       покажиВърни(t); покажиГрадуси(t);
+      if (!вДневника) върни.appendChild(el('span', 'ch-fix-t', '(Часът е тук, но „Кога яде за последно?“ може да не се обнови — паметта е пълна.)'));
     }
     бут.addEventListener('click', () => {
       const з = запис(load(КЛЮЧ, {}), р.id); const мин = Date.now() - (з.t || 0);
@@ -378,9 +441,12 @@
       if (d.getTime() > сега.getTime()) d.setDate(d.getDate() - 1);
       const вс = load(КЛЮЧ, {}); const з = (вс[р.id] && typeof вс[р.id] === 'object') ? вс[р.id] : {};
       const h = Array.isArray(з.hist) ? з.hist.slice() : [];
+      const старо = h.length ? h[h.length - 1] : null;   // 25.11 (G-07): кое време местим — за общия дневник
       if (h.length) h[h.length - 1] = d.getTime(); else h.push(d.getTime());   // поправяме ПОСЛЕДНИЯ, не добавяме нов
       з.t = d.getTime(); з.hist = h.sort((a, b) => a - b).slice(-60); вс[р.id] = з;
       if (!save(КЛЮЧ, вс)) { под.innerHTML = '<span class="ch-red">😕 Паметта е пълна — поправката НЕ е записана.</span>'; return; }
+      // 25.11 (G-07): храненето се мести и в bl_feedlog/bl_feed; ако е ново (празна история) — влиза в дневника
+      if (р.id === 'hrana') { if (старо != null) храненеПоправи(старо, d.getTime()); else храненеВДневника(d.getTime()); }
       поправка.hidden = true; fx().buzz(8); опресни();
     });
 

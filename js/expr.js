@@ -437,6 +437,232 @@
     return c;
   }
 
+  // ── 🎙️ ЕДИН гласов запис с ЦЕЛ — 25.11 (одит G-13 · сливане на гласовите карти) ──
+  // Маминият глас се записваше в няколко почти еднакви карти („Гласови бележки“,
+  // „Гласовият дневник“, „Песничките с твоя глас“…). Тази е ЕДНА: мама избира
+  // „за какво е“ (бележка · песен · писмо · миг) и записът отива в СТАРИЯ си ключ:
+  //   бележка → bl_voice_diary (180 с) · песен → bl_voice_songs (120 с, + коя песен)
+  //   писмо   → bl_voice_womb (120 с)  · миг   → bl_baby_sounds (20 с)
+  // НОВ КЛЮЧ НЯМА: store.js:86 (IndexedDB, архив, изтриване), storage.js:29 и
+  // river.js:94-98/148 четат същите ключове като досега. Списъкът показва и старите
+  // 30-секундни бележки от bl_voice, а записите от bl_lull_rec („Още песнички“) —
+  // САМО за слушане: там изтриването е без връщане по замисъл (games2.js:129-153),
+  // затова тук не се трият и не се пишат.
+  // 🤍 „писмо“ (bl_voice_womb) не се показва — нито бутон, нито редове, нито дума в
+  //    подзаглавието — щом очакването е спряно след загуба (пазачът от rooms15.js:325).
+  //    Записите ѝ не се пипат.
+  // ПЪТ НАЗАД: window.BL_GLAS_EDIN = false → старите карти (rooms3.js / rooms15.js) се
+  //    връщат както бяха; ключовете са същите, нищо не се губи.
+  const ЦЕЛИ_ГЛАС = [
+    { id: 'бележка', e: '📝', key: 'bl_voice_diary', labels: ['днес', 'тежко', 'хубаво', 'за после'], maxSec: 180 },
+    { id: 'песен', e: '🎵', key: 'bl_voice_songs', labels: ['приспивна', 'весела', 'наша'], maxSec: 120, песни: true },
+    { id: 'писмо', e: '🤰', key: 'bl_voice_womb', labels: ['писмо', 'песен', 'приказка'], maxSec: 120, корем: true },
+    { id: 'миг', e: '👶', key: 'bl_baby_sounds', labels: ['гукане', 'смях', 'дума', 'друго'], maxSec: 20 }
+  ];
+  // откъде чете списъкът (bl_voice = старите гласови бележки до 30 сек)
+  const ИЗВОРИ_ГЛАС = [
+    { key: 'bl_voice_diary', цел: 'бележка' },
+    { key: 'bl_voice', цел: 'бележка' },
+    { key: 'bl_voice_songs', цел: 'песен' },
+    { key: 'bl_voice_womb', цел: 'писмо', корем: true },
+    { key: 'bl_baby_sounds', цел: 'миг' }
+  ];
+  // песните по име: 7 от games2.js (BL_GAMES2.ПЕСНИ) + 3 от extras2.js:388-392 (SONGS не е изнесен)
+  const ПЕСНИ_EXTRAS2 = ['Зайченцето бяло 🐰', 'Пляс-пляс ръчички 👏', 'Люлка люлчица 🌙'];
+  const коремСпрян = () => { try { return !!(window.BL_EXPECT && BL_EXPECT.paused && BL_EXPECT.paused()); } catch (e) { return false; } };
+  const НА_СТРАНИЦА = 10;   // всеки ред носи dataURL в DOM — стари телефони
+
+  function voiceHubCard(title) {
+    // подзаглавието се смята ТУК, за да не каже „писмо“ на жена след загуба;
+    // първият текстов възел на заглавието остава байт по байт същият (blkey/забождания)
+    const сПод = /jr-sub/.test(String(title || '')) ? title
+      : String(title || '') + '<span class="jr-sub">' + (коремСпрян() ? 'бележка · песен · миг' : 'бележка · песен · писмо · миг') + ' — гласът ти на едно място</span>';
+    const c = card(сПод);
+    const видими = () => ЦЕЛИ_ГЛАС.filter(x => !(x.корем && коремСпрян()));
+    const емоджи = id => (ЦЕЛИ_ГЛАС.find(x => x.id === id) || {}).e || '🎙️';
+    let цел = ЦЕЛИ_ГЛАС[0];
+    const етикети = {};   // избраният етикет за всяка цел
+    ЦЕЛИ_ГЛАС.forEach(x => { етикети[x.id] = x.labels[0]; });
+    let песен = '';       // избраната песен — името ѝ става label
+    let филтър = 'всички', показани = НА_СТРАНИЦА;
+    const песниТекст = () => (window.BL_GAMES2 && BL_GAMES2.ПЕСНИ) || {};
+    const песни = () => {
+      const имена = Object.keys(песниТекст());
+      ПЕСНИ_EXTRAS2.forEach(п => { if (имена.indexOf(п) < 0) имена.push(п); });
+      return имена;
+    };
+    const текущЕтикет = () => (цел.песни && песен) ? песен : (етикети[цел.id] || '');
+
+    const надЦел = el('p', 'jr-hint', 'За какво е записът?');
+    const редЦел = el('div', 'jr-quick');
+    const редЕтикет = el('div', 'jr-quick');
+    const надПесен = el('p', 'jr-hint', 'Коя песен? (по избор)');
+    const редПесен = el('div', 'jr-quick');
+    const думи = el('details', 'jr-hint'); думи.hidden = true;
+    const надпис = () => '🎙️ Запиши ' + цел.id + ' (до ' + цел.maxSec + ' сек)';
+    const recB = el('button', 'jr-btn vc-rec', надпис()); recB.type = 'button';
+    const бележка = el('p', 'jr-reply'); бележка.hidden = true;
+    const отмяна = el('button', 'jr-chip', '↺ Върни записа'); отмяна.type = 'button'; отмяна.hidden = true;
+    const редФилтър = el('div', 'jr-quick');
+    const list = el('div', 'vc-list');
+    const ощеБ = el('button', 'jr-chip', 'покажи още'); ощеБ.type = 'button'; ощеБ.hidden = true;
+    let mr = null, chunks = [], timer = null, тик = null, зает = false, върнато = null;
+
+    const чип = (текст, вкл, наКлик) => {
+      const b = el('button', 'jr-chip' + (вкл ? ' on' : ''), текст); b.type = 'button';
+      b.setAttribute('aria-pressed', вкл ? 'true' : 'false');
+      b.addEventListener('click', наКлик);
+      return b;
+    };
+    function рисувайЦели() {
+      if (цел.корем && коремСпрян()) цел = ЦЕЛИ_ГЛАС[0];
+      редЦел.innerHTML = '';
+      видими().forEach(x => редЦел.appendChild(чип(x.e + ' ' + x.id, x === цел, () => { цел = x; рисувайЦели(); })));
+      редЕтикет.innerHTML = '';
+      цел.labels.forEach(lb => редЕтикет.appendChild(чип(esc(lb), lb === етикети[цел.id] && !(цел.песни && песен), () => { етикети[цел.id] = lb; песен = ''; рисувайЦели(); })));
+      надПесен.hidden = редПесен.hidden = !цел.песни;
+      редПесен.innerHTML = '';
+      if (цел.песни) песни().forEach(п => редПесен.appendChild(чип(esc(п), п === песен, () => { песен = (песен === п) ? '' : п; рисувайЦели(); })));
+      const текст = (цел.песни && песен && typeof песниТекст()[песен] === 'string') ? песниТекст()[песен] : '';
+      думи.hidden = !текст;
+      думи.innerHTML = текст ? '<summary>📜 думите на „' + esc(песен) + '“</summary>' + текст.split('\n').map(l => l ? '<p>' + esc(l) + '</p>' : '<br>').join('') : '';
+      if (!mr && !зает) recB.textContent = надпис();
+    }
+
+    отмяна.addEventListener('click', () => {
+      if (!върнато) { отмяна.hidden = true; return; }
+      const items = load(върнато.key, []);   // пресен прочит ПРЕДИ записа
+      items.splice(Math.min(върнато.i, items.length), 0, върнато.it);
+      if (!save(върнато.key, items)) { знак(бележка, '😕 Паметта е пълна — не мога да го върна.', 5000); return; }
+      върнато = null; отмяна.hidden = true; clearTimeout(отмяна._t);
+      draw(); fx().buzz(8); знак(бележка, '✔ Върнах записа');
+    });
+    recB.addEventListener('click', async () => {
+      if (mr) { mr.stop(); return; }
+      if (зает) return;   // 🔴 11.08 пазачът срещу три живи микрофона (виж voiceCard)
+      if (!navigator.mediaDevices || !window.MediaRecorder) {
+        recB.textContent = 'Този телефон не поддържа запис 😕';
+        setTimeout(() => { if (!mr) recB.textContent = надпис(); }, 3000);
+        return;
+      }
+      if (цел.корем && коремСпрян()) { рисувайЦели(); return; }
+      // целта, ключът, етикетът и таванът се хващат СЕГА: смяна на бутон по време
+      // на запис не бива да прати записа в друг ключ
+      const ц = цел, ключ = цел.key, етикет = текущЕтикет(), MAXS = цел.maxSec;
+      зает = true;
+      recB.textContent = '🎙️ Чакам позволение…';
+      try {
+        const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+        if (mr) { stream.getTracks().forEach(t => t.stop()); зает = false; return; }
+        chunks = [];
+        // 32 kbps × 180 сек ≈ 720 KB — под тавана от 900 KB (виж voiceCard, 11.08)
+        try { mr = new MediaRecorder(stream, { audioBitsPerSecond: 32000 }); }
+        catch (e) { mr = new MediaRecorder(stream); }
+        mr.ondataavailable = e => chunks.push(e.data);
+        mr.onstop = () => {
+          clearTimeout(timer); clearInterval(тик);
+          stream.getTracks().forEach(t => t.stop());
+          const blob = new Blob(chunks, { type: mr.mimeType || 'audio/webm' });
+          mr = null; зает = false;
+          recB.textContent = надпис(); recB.classList.remove('rec');
+          if (blob.size > 900 * 1024) { знак(бележка, '😊 Записът стана твърде дълъг — пробвай по-кратко.', 5000); fx().cheer('Записът стана твърде дълъг — пробвай по-кратко. 😊'); return; }
+          знак(бележка, '💜 Прибирам записа…', 6000);
+          const rd = new FileReader();
+          rd.onload = () => {
+            const items = load(ключ, []);   // пресен прочит ПРЕДИ записа
+            items.push({ a: rd.result, label: етикет, ts: Date.now() });
+            if (!save(ключ, items)) { знак(бележка, '😕 Паметта се напълни — изтрий стар запис.', 5000); fx().cheer('Паметта се напълни — изтрий стар запис. 😕'); }
+            else {
+              fx().buzz(12); fx().confetti(recB, 12); знак(бележка, '✔ Записът е прибран · ' + ц.id);
+              if (филтър !== 'всички' && филтър !== ц.id) { филтър = 'всички'; показани = НА_СТРАНИЦА; }
+            }
+            draw();
+          };
+          rd.onerror = () => { знак(бележка, '😕 Записът не се прочете — пробвай пак.', 5000); };
+          rd.readAsDataURL(blob);
+        };
+        mr.start();
+        зает = false;
+        let остават = MAXS;
+        recB.textContent = '⏹ Спри записа · ' + остават + 'с'; recB.classList.add('rec');
+        clearInterval(тик);
+        тик = setInterval(() => {
+          остават--;
+          if (mr && остават >= 0) recB.textContent = '⏹ Спри записа · ' + остават + 'с';
+        }, 1000);
+        timer = setTimeout(() => { if (mr) mr.stop(); }, MAXS * 1000);
+      } catch (e) {
+        зает = false;
+        recB.textContent = 'Нужно е позволение за микрофона 🎙️';
+        setTimeout(() => { if (!mr) recB.textContent = надпис(); }, 2500);
+      }
+    });
+    ощеБ.addEventListener('click', () => { показани += НА_СТРАНИЦА; draw(); });
+
+    function draw() {
+      const спрян = коремСпрян();
+      const редове = [];
+      ИЗВОРИ_ГЛАС.forEach(и => {
+        if (и.корем && спрян) return;
+        load(и.key, []).forEach(it => { if (it && it.a) редове.push({ key: и.key, цел: и.цел, it }); });   // пресен прочит
+      });
+      редове.sort((a, b) => (+b.it.ts || 0) - (+a.it.ts || 0));
+      const мамини = [];   // bl_lull_rec {песен: dataURL} — само за слушане, най-отдолу (нямат час)
+      const lr = load('bl_lull_rec', {});
+      Object.keys(lr).forEach(име => { if (typeof lr[име] === 'string' && lr[име]) мамини.push({ lull: true, цел: 'песен', име, a: lr[име] }); });
+      if (филтър !== 'всички' && !видими().some(x => x.id === филтър)) филтър = 'всички';
+      const брой = id => id === 'всички' ? редове.length + мамини.length
+        : редове.filter(r => r.цел === id).length + (id === 'песен' ? мамини.length : 0);
+      редФилтър.innerHTML = '';
+      if (редове.length + мамини.length) {
+        ['всички'].concat(видими().map(x => x.id)).forEach(id => {
+          редФилтър.appendChild(чип((id === 'всички' ? 'всички' : емоджи(id) + ' ' + id) + ' · ' + брой(id), id === филтър, () => { филтър = id; показани = НА_СТРАНИЦА; draw(); }));
+        });
+      }
+      const показ = редове.filter(r => филтър === 'всички' || r.цел === филтър)
+        .concat((филтър === 'всички' || филтър === 'песен') ? мамини : []);
+      list.innerHTML = показ.length ? '' : '<p class="jr-privacy">Тук ще е гласът ти — бележка за 3 през нощта, песничка, първото гукане. 🎙️</p>';
+      показ.slice(0, показани).forEach(r => {
+        const row = el('div', 'vc-row');
+        if (r.lull) {
+          row.innerHTML = `<span class="vc-lbl">🎵 песен · ${esc(r.име)}</span><audio controls preload="none" src="${esc(r.a)}"></audio>
+            <span class="vc-meta">от „Още песнички“</span>`;
+          list.appendChild(row);
+          return;
+        }
+        const it = r.it;
+        row.innerHTML = `<span class="vc-lbl">${емоджи(r.цел)} ${esc(r.цел)}${it.label ? ' · ' + esc(it.label) : ''}</span><audio controls preload="none" src="${esc(it.a)}"></audio>
+          <span class="vc-meta">${it.ts ? dstr(it.ts) : ''} <button class="nt-del" type="button" aria-label="Изтрий записа" style="min-width:44px">🗑</button></span>`;
+        row.querySelector('.nt-del').addEventListener('click', () => {
+          const items = load(r.key, []);   // пресен прочит ПРЕДИ записа
+          const k = items.findIndex(x => x && x.ts === it.ts && x.a === it.a);   // по ЧАС и запис, не по номер
+          if (k < 0) { draw(); знак(бележка, 'Този запис вече го няма тук.', 4000); return; }
+          const махнат = items.splice(k, 1)[0];
+          if (!save(r.key, items)) {
+            draw();
+            знак(бележка, '😕 Паметта е пълна — записът НЕ е изтрит. Още е тук.', 6000);
+            return;
+          }
+          върнато = { key: r.key, it: махнат, i: k };
+          draw();
+          отмяна.hidden = false;
+          clearTimeout(отмяна._t);
+          отмяна._t = setTimeout(() => { отмяна.hidden = true; върнато = null; }, 10000);
+          знак(бележка, '🗑 Махнах записа — можеш да го върнеш.', 10000);
+        });
+        list.appendChild(row);
+      });
+      ощеБ.hidden = показ.length <= показани;
+      if (!ощеБ.hidden) ощеБ.textContent = 'покажи още (' + (показ.length - показани) + ')';
+    }
+
+    [надЦел, редЦел, редЕтикет, надПесен, редПесен, думи, recB, бележка, отмяна, редФилтър, list, ощеБ].forEach(n => c.appendChild(n));
+    c.appendChild(el('p', 'jr-privacy', '🔒 Записите стоят само на телефона ти. Мястото е малко, затова са кратки.'));
+    рисувайЦели();
+    draw();
+    return c;
+  }
+
   // ── 🖨️ печатен оверлей: паспорти, бележки, картички, годишник ──
   function printOverlay(title, bodyHtml, opts) {
     opts = opts || {};
@@ -467,7 +693,11 @@
     ov.onclick = e => { if (e.target === ov) { ov.hidden = true; document.body.classList.remove('printing-open'); } };
   }
 
-  window.BL_EXPR = { photoListCard, voiceCard, printOverlay, shrinkImage, card, esc };
+  window.BL_EXPR = { photoListCard, voiceCard, voiceHubCard, printOverlay, shrinkImage, card, esc };
+  // 25.11 (одит G-13): една гласова карта с цел вместо „Гласовият дневник“ и
+  //   „Песничките с твоя глас“ (rooms15.js) — домакин е „Гласови бележки 🎙️“ (rooms3.js).
+  // ПЪТ НАЗАД: window.BL_GLAS_EDIN = false → старите карти и стария запис; ключовете са същите.
+  if (window.BL_GLAS_EDIN === undefined) window.BL_GLAS_EDIN = true;
 })();
 
 // ═══════════════════════════════════════════════════════════

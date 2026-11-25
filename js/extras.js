@@ -1065,7 +1065,7 @@
       const hit = all.find(x => x.n.toLowerCase() === baby.name.toLowerCase() && x.d === key);
       if (hit) html += `<button class="td-chip td-accent" data-x="nameday">🎉 Честит имен ден, ${esc(baby.name)}!</button>`;
     }
-    if (window.BL_INSTALL) html += `<button class="td-chip" data-x="install">📲 Добави ме на екрана си</button>`;
+    // 25.11 (одит A-26): чипът повтаряше акордеона „Добави ме на телефона“ — махнат. Обработката на data-x="install" остава. ПЪТ НАЗАД: върни реда с „📲 Добави ме на екрана си“.
     return html;
   };
   window.BL_TODAY_BIND = function (container, baby, a) {

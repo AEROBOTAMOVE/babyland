@@ -274,6 +274,9 @@
       'EU размерът е <strong>ръстът в сантиметри</strong>, не възрастта — затова е най-честният. Купувай по ръст, не по числото на етикета: марките се различават силно.'));
     return c;
   }
+  // 📏 25.11 (одит G-14): таблицата EU/UK/US се показва сгъната в „Размер на дрешки“ (rooms2).
+  //    ПЪТ НАЗАД: махни реда (rooms2 тогава не я слива и картата тук се рисува пак).
+  window.BL_RAZMERI_TABL = sizesCard;
 
   // ═══════════ ✈️ 4.7.7 ПЪТУВАНЕТО ═══════════
 
@@ -705,7 +708,10 @@
   const ПАКЕТИ = {
     'Здраве и SOS': root => { root.appendChild(erBagCard()); root.appendChild(thermoCard()); },
     'Захранване': root => { root.appendChild(refuseCard()); root.appendChild(freezerCard()); },
-    'Инструменти': root => { root.appendChild(sizesCard()); root.appendChild(travelCard()); },
+    // 📏 25.11 (одит G-14): „Размерите“ не се рисува, САМО ако rooms2 наистина я е сляла в „Размер на дрешки“
+    //    в това рисуване (BL_RAZMERI_SLYATO.tabl) — смесен кеш (стар rooms2) пак я показва. Кодът ѝ стои.
+    //    ПЪТ НАЗАД: window.BL_RAZMERI_EDNA = false.
+    'Инструменти': root => { const сл = window.BL_RAZMERI_SLYATO; if (!(window.BL_RAZMERI_EDNA && сл && сл.tabl)) root.appendChild(sizesCard()); root.appendChild(travelCard()); },
     'Развитие и игри': root => { root.appendChild(rotationCard()); },
     'Жената в мен': root => { root.appendChild(loadCard()); },
     'Бременност': root => { const c = partnerCard(); if (c) root.appendChild(c); }

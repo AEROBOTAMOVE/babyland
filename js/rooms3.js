@@ -406,7 +406,7 @@
     //    след загуба, но пазачът стоеше само на symptomCard. Жена, натиснала
     //    „Спри тихо броенето“, продължаваше да бъде посрещана с „чакаме него“.
     if (window.BL_EXPECT && BL_EXPECT.paused && BL_EXPECT.paused()) return null;
-    const c = card('Дневник на наддаването 📈 <span class="jr-sub">меко, без терор от кантара</span>');
+    const c = card('Дневник на наддаването 📈 <span class="jr-sub">меко, без натиск от кантара</span>');
     // 🔴 11.08 капанът на снимката (виж dayPhotoCard горе). „↩ Върни последното“
     //    отдолу вече четеше пресно; сега и „+ Запиши“ прави същото.
     let items = load('bl_pregw', []);
@@ -872,6 +872,39 @@
     });
     const hist = el('div', 'nr-hist');
     const каз = el('p', 'jr-hint'); // тихият ред „какво стана“ под таймера
+    // ↺ 25.11 (одит G-07): грешен стоп оставаше в дневника завинаги — нямаше път назад. Сега 10 s след
+    //    записа има „↺ Върни“. Стои ИЗВЪН .jr-quick (pl-bebe фокусира първия чип там). Маха САМО своя ред
+    //    (последния със същите ts + страна + време, никога по позиция), а bl_feed връща само ако суровият
+    //    запис е същият — иначе е писала друга карта и не я пипаме (като ↺ в rooms2 „Кога яде за последно?“).
+    //    ПЪТ НАЗАД: window.BL_G07_SLIV = false → бутонът не се показва.
+    const суровоLS = k => { try { return localStorage.getItem(k); } catch (e) { return null; } };
+    const върниБ = el('button', 'jr-chip nr-undo', '↺ Върни (махни този запис)'); върниБ.type = 'button'; върниБ.hidden = true;
+    let снимка = null, върниТ = null;
+    върниБ.addEventListener('click', () => {
+      const сн = снимка; снимка = null; clearTimeout(върниТ); върниБ.hidden = true;
+      if (!сн) return;
+      const items = load('bl_nursing', []);
+      let i = -1;
+      for (let j = items.length - 1; j >= 0; j--) { const x = items[j]; if (x && x.ts === сн.ts && x.s === сн.s && x.dur === сн.dur) { i = j; break; } }
+      if (i < 0) { каз.textContent = 'Този запис вече го няма — нищо не пипам.'; drawHist(); return; }
+      items.splice(i, 1);
+      if (!save('bl_nursing', items)) {
+        // пътят назад НЕ изчезва при провал — бутонът остава още 10 s
+        снимка = сн; върниБ.hidden = false;
+        върниТ = setTimeout(() => { върниБ.hidden = true; снимка = null; }, 10000);
+        каз.textContent = '⚠️ Паметта на телефона е пълна — не успях да го махна. Пробвай пак.';
+        return;
+      }
+      let бел = '↺ Махнах този запис.';
+      if (сн.feedWritten) {
+        if (суровоLS('bl_feed') === сн.feedRaw) {
+          if (!save('bl_feed', сн.feedPrev)) бел += ' (Началният екран може да не се обнови.)';
+        } else бел += ' Междувременно се записа друго хранене — него не го пипам. 💜';
+      }
+      fx().buzz(8);
+      каз.textContent = бел;
+      update(); drawHist();
+    });
     function stop() {
       const dur = Math.round((Date.now() - openS.t0) / 1000);
       const items = load('bl_nursing', []);
@@ -888,7 +921,18 @@
         // дневник. Затова провалът му НЕ обръща съобщението на не-записах — това
         // би било лъжа в обратната посока, щом редът вече е в дневника. Казва се
         // точно каквото е: записано е, но началният екран може да изостане.
-        const огледало = save('bl_feed', { t: openS.t0, s: openS.side === 'Л' ? 'left' : openS.side === 'Д' ? 'right' : 'bottle' });
+        // 25.11 (одит G-07): огледалото пишеше СЛЯПО — таймер 10:00→10:20 затриваше бързото „Ляво“ от 10:05
+        //    и „последно хранене“ тръгваше назад. Сега пише само ако в bl_feed няма по-ново хранене.
+        //    ПЪТ НАЗАД: window.BL_G07_SLIV = false → пак пише винаги.
+        const предF = load('bl_feed', null);
+        const поНово = window.BL_G07_SLIV !== false && !!(предF && typeof предF.t === 'number' && предF.t > openS.t0);
+        const огледало = поНово ? true : save('bl_feed', { t: openS.t0, s: openS.side === 'Л' ? 'left' : openS.side === 'Д' ? 'right' : 'bottle' });
+        // ↺ 25.11 (одит G-07): снимката за „↺ Върни“ — само при истински запис в дневника
+        снимка = (записано && window.BL_G07_SLIV !== false)
+          ? { ts: openS.t0, s: openS.side, dur, feedWritten: !поНово && огледало, feedPrev: предF, feedRaw: суровоLS('bl_feed') }
+          : null;
+        clearTimeout(върниТ); върниБ.hidden = !снимка;
+        if (снимка) върниТ = setTimeout(() => { върниБ.hidden = true; снимка = null; }, 10000);
         fx().buzz(записано ? 12 : 6);
         каз.textContent = записано
           ? '✔ Записах ' + fmt(dur) + '.' + (огледало ? '' : ' (Началният екран може да не се обнови.)')
@@ -970,7 +1014,7 @@
       items.forEach(it => hist.appendChild(el('p', 'nr-hrow',
         `${it.s === 'Л' ? '🤱 ляво' : it.s === 'Д' ? '🤱 дясно' : '🍼 шише'} · <strong>${fmt(it.dur)}</strong> · ${new Date(it.ts).toLocaleTimeString('bg-BG', { hour: '2-digit', minute: '2-digit' })} ${dstr(it.ts)}`)));
     }
-    c.appendChild(disp); c.appendChild(row); c.appendChild(каз); c.appendChild(hist);
+    c.appendChild(disp); c.appendChild(row); c.appendChild(каз); c.appendChild(върниБ); c.appendChild(hist);   // 25.11 (G-07): ↺ извън .jr-quick
     c.appendChild(el('p', 'jr-privacy', 'Спри със същия бутон. Под 20 секунди не се записва.'));
     update(); drawHist();
     return c;
@@ -1454,19 +1498,78 @@
   }
 
   // 🩺 Бележка за прегледа — авто-събрана, печатаема
-  function visitNoteCard() {
-    const c = card('Бележка за прегледа 🩺 <span class="jr-sub">всичко събрано — влизаш подготвена</span>');
-    const ta = el('textarea', 'jr-paper'); ta.rows = 2; ta.placeholder = 'Въпросите ми към лекаря…';
+  // 25.11 (одит G-09 · пет карти за прегледа → една): тук вече стоят и живите числа („Готова за
+  //    прегледа 📋“, checkups.js), списъкът „Какво искам да го попитам 💭“ (checkups.js) и петте
+  //    въпроса „за неговата възраст ❓“ (rooms10.js) — вградени, със СЪЩИТЕ ключове
+  //    (bl_doc_questions, bl_visit_q, bl_qped …). Нищо не се мести и не се трие; старите карти
+  //    само не се лепят (checkups.js / rooms10.js питат BL_ZA_PREGLEDA_SLIVA, вдигнат долу).
+  //    Заглавието (първият текст) е същото — значките/сгъването/търсенето/печатаемата кутия
+  //    го намират както досега. Нов е бутонът „📤 Сподели“ — само при докосване, към споделянето
+  //    на телефона или буфера; нищо не отива към сървър.
+  //    ПЪТ НАЗАД: window.BL_ZA_PREGLEDA_VKL = false → старата бележка + петте стари карти.
+  window.BL_ZA_PREGLEDA_SLIVA = true;
+  function visitNoteCard(root) {
+    const слята = window.BL_ZA_PREGLEDA_VKL !== false;
+    const c = card('Бележка за прегледа 🩺 <span class="jr-sub">' + (слята ? 'за прегледа — въпросите ти · за възрастта · числата · печат/сподели' : 'всичко събрано — влизаш подготвена') + '</span>');
+    let числа = null, вбокс = null;
+    if (слята) {
+      // (i) живите числа — същата кутия като „Готова за прегледа 📋“ + даденото за 7 дни
+      try {
+        числа = typeof window.BL_ZA_PREGLEDA_CHISLA === 'function' ? window.BL_ZA_PREGLEDA_CHISLA({ лекарства: true }) : null;
+        if (числа && числа.кутия) { c.appendChild(el('h5', 'jr-elabel', 'Числата ти — събрани сами 📋')); c.appendChild(числа.кутия); }
+        else числа = null;
+      } catch (e) { числа = null; }
+      // (ii) общият списък въпроси (bl_doc_questions)
+      try {
+        вбокс = typeof window.BL_VAPROSI_BOKS === 'function' ? window.BL_VAPROSI_BOKS({ самостоятелна: true, пример: 'напр. „Този обрив трябва ли да се гледа?“' }) : null;
+        if (вбокс) { c.appendChild(el('h5', 'jr-elabel', 'Какво искам да го попитам 💭')); c.appendChild(вбокс); }
+      } catch (e) { вбокс = null; }
+      // (iii) петте въпроса за възрастта (null без рождена дата — тогава блокът просто го няма)
+      try {
+        const възр = typeof window.BL_PITAY_PED === 'function' ? window.BL_PITAY_PED({ вградена: true }) : null;
+        if (възр) c.appendChild(възр);
+      } catch (e) {}
+      // Числата и списъкът се пишат с докосване в стаята (температура, лекарство, ✕ на въпрос) —
+      // пречертаваме след докосване, както checkups.js. ЕДИН слушател за двете; отвързва се сам,
+      // щом картата е откачена (#roRoom е един и същ елемент при всяко отваряне — иначе се трупат).
+      if (root && (числа || вбокс)) {
+        let чакай = null;
+        const приДокосване = () => {
+          if (!c.isConnected) { root.removeEventListener('click', приДокосване, true); clearTimeout(чакай); return; }
+          clearTimeout(чакай);
+          чакай = setTimeout(() => {
+            if (!c.isConnected) return;
+            try { if (числа) числа.рисувай(); } catch (e) {}
+            try { if (вбокс && typeof вбокс._пречертай === 'function') вбокс._пречертай(); } catch (e) {}
+          }, 350);
+        };
+        root.addEventListener('click', приДокосване, true);
+      }
+    }
+    const ta = el('textarea', 'jr-paper'); ta.rows = 2; ta.placeholder = слята ? 'Още нещо за лекаря — с твои думи…' : 'Въпросите ми към лекаря…';
     ta.dataset.draft = 'bl_visit_q'; ta.value = load('bl_visit_q', '');
     const btn = el('button', 'jr-btn', '🖨️ Събери бележката'); btn.type = 'button';
-    btn.addEventListener('click', () => {
+    // 25.11 (одит G-09): данните се събират в ЕДНА функция — печатът и „📤 Сподели“ четат едно и
+    //    също, за да не се разминат. Печатът е същият; при слятата бележка има и разликата в теглото.
+    const събери = () => {
       const baby = getBaby();
       const a = baby.birth && window.BL_AGE ? BL_AGE(baby.birth) : null;
       const temps = load('bl_temps', []).filter(x => Date.now() - x.ts < 3 * 86400000);
       const meds = load('bl_meds', []).filter(x => Date.now() - x.ts < 7 * 86400000)   // 25.11 (G-02): + дозите от часовника
         .concat(typeof window.BL_LEK_DOZI === 'function' ? window.BL_LEK_DOZI(Date.now() - 7 * 86400000) : []).sort((a, b) => a.ts - b.ts);
       const notes = load('bl_notes_health', []).slice(-4);
-      const growth = load('bl_growth', []).slice(-1)[0];
+      const растеж = load('bl_growth', []);
+      const growth = растеж.slice(-1)[0];
+      // 25.11 (G-09): „от предишното: +0.3 кг“ — същото правило като в „Готова за прегледа“ (checkups.js):
+      //    само валидни числа, иначе редът го няма. ПЪТ НАЗАД: BL_ZA_PREGLEDA_VKL = false.
+      let разлика = null;
+      if (слята && growth) {
+        const gv = растеж.filter(x => x && x.w != null && x.w !== '' && isFinite(Number(x.w)));
+        if (gv.length > 1 && gv[gv.length - 1] === growth) {
+          const р = Math.round((Number(growth.w) - Number(gv[gv.length - 2].w)) * 100) / 100;
+          if (!isNaN(р)) разлика = р;
+        }
+      }
       // 11.08: картата обещаваше „и въпросите ти“, а печаташе САМО полето отдолу —
       // въпросите от „Какво искам да го попитам“ (един и същ ключ навсякъде) оставаха
       // вкъщи. Сега влизат и те.
@@ -1482,8 +1585,13 @@
         .sort((x, y) => y - x);
       const tried = load('bl_tried', {});
       const alrg = Object.keys(tried).filter(k => String(tried[k] || '').includes('⚠️'));
+      return { baby, a, temps, meds, notes, growth, разлика, qs, vax, alrg };
+    };
+    const разликаТекст = р => р === null ? '' : 'от предишното: ' + (р >= 0 ? '+' : '') + р + ' кг';
+    btn.addEventListener('click', () => {
+      const { baby, a, temps, meds, notes, growth, разлика, qs, vax, alrg } = събери();
       BL_EXPR.printOverlay('Бележка за прегледа',
-        `<p class="pr-big">${esc(baby.name) || 'Бебето'}${a ? ' · ' + a.text : ''}${growth ? ' · ' + growth.w + ' кг (' + growth.d + ')' : ''}</p>
+        `<p class="pr-big">${esc(baby.name) || 'Бебето'}${a ? ' · ' + a.text : ''}${growth ? ' · ' + growth.w + ' кг (' + growth.d + ')' : ''}${разлика !== null ? ' · ' + разликаТекст(разлика) : ''}</p>
          ${temps.length ? `<h3>🌡️ Температури (72 ч)</h3><ul class="pr-list">${temps.map(t => `<li>${t.v}° — ${new Date(t.ts).toLocaleString('bg-BG')}</li>`).join('')}</ul>` : ''}
          ${meds.length ? `<h3>💊 Дадено (7 дни)</h3><ul class="pr-list">${meds.map(m => `<li>${esc(m.n)} — ${new Date(m.ts).toLocaleString('bg-BG')}</li>`).join('')}</ul>` : ''}
          ${vax.length ? `<h3>💉 Ваксина (14 дни)</h3><ul class="pr-list">${vax.map(t => `<li>${new Date(t).toLocaleDateString('bg-BG')}</li>`).join('')}</ul>` : ''}
@@ -1492,14 +1600,67 @@
          ${(qs.length || ta.value.trim()) ? `<h3>❓ Въпросите на мама</h3>${qs.length ? `<ul class="pr-list">${qs.map(q => `<li>${esc(q)}</li>`).join('')}</ul>` : ''}${ta.value.trim() ? `<p>${esc(ta.value)}</p>` : ''}` : ''}
          <p class="pr-note">Събрано от Бейби Ленд — данните са водени от родителя.</p>`);
     });
-    c.appendChild(ta); c.appendChild(btn);
-    c.appendChild(el('p', 'jr-privacy', 'Събира: температури (72 ч), лекарства (7 дни), отбелязана ваксина (14 дни), реакции, здравни бележки и въпросите ти.'));
+    if (!слята) {
+      c.appendChild(ta); c.appendChild(btn);
+      c.appendChild(el('p', 'jr-privacy', 'Събира: температури (72 ч), лекарства (7 дни), отбелязана ваксина (14 дни), реакции, здравни бележки и въпросите ти.'));
+      return c;
+    }
+    // 📤 25.11 (одит G-09): същото съдържание като печата, като обикновен текст — за Вайбър/имейл до
+    //    лекаря или до таткото. Тръгва САМО при докосване: към споделянето на телефона, а ако го няма —
+    //    в буфера (същият начин като polish.js „📤 Прати ги на екипа“). Никакъв сървър, нищо не се пише.
+    //    ПЪТ НАЗАД: BL_ZA_PREGLEDA_VKL = false (бутонът го няма).
+    const текстЗаСподеляне = () => {
+      const { baby, a, temps, meds, notes, growth, разлика, qs, vax, alrg } = събери();
+      const р = ['🩺 Бележка за прегледа',
+        (baby.name || 'Бебето') + (a ? ' · ' + a.text : '') + (growth ? ' · ' + growth.w + ' кг (' + growth.d + ')' : '') + (разлика !== null ? ' · ' + разликаТекст(разлика) : '')];
+      const блок = (з, редове) => { if (редове.length) { р.push('', з); редове.forEach(x => р.push('• ' + x)); } };
+      блок('🌡️ Температури (72 ч)', temps.map(t => t.v + '° — ' + new Date(t.ts).toLocaleString('bg-BG')));
+      блок('💊 Дадено (7 дни)', meds.map(m => String(m.n) + ' — ' + new Date(m.ts).toLocaleString('bg-BG')));
+      блок('💉 Ваксина (14 дни)', vax.map(t => new Date(t).toLocaleDateString('bg-BG')));
+      блок('⚠️ Реакции към храни', alrg.map(x => String(x)));
+      блок('📝 Бележки', notes.map(n => new Date(n.d).toLocaleDateString('bg-BG') + ': ' + String(n.t || '').slice(0, 160)));
+      const свободно = ta.value.trim();
+      if (qs.length || свободно) {
+        р.push('', '❓ Въпросите на мама');
+        qs.forEach(q => р.push('• ' + q));
+        if (свободно) р.push(свободно);
+      }
+      р.push('', 'Събрано от Бейби Ленд — данните са водени от родителя.');
+      return р.join('\n');
+    };
+    const спод = el('button', 'jr-chip', '📤 Сподели'); спод.type = 'button';
+    const споделиКажи = el('p', 'jr-hint', ''); споделиКажи.hidden = true; споделиКажи.setAttribute('aria-live', 'polite');
+    спод.addEventListener('click', async () => {
+      const текст = текстЗаСподеляне();
+      споделиКажи.hidden = true;
+      if (navigator.share) {
+        try { await navigator.share({ title: 'Бележка за прегледа', text: текст }); return; }
+        catch (e) { if (e && e.name === 'AbortError') return; }
+      }
+      try {
+        await navigator.clipboard.writeText(текст);
+        tick(спод, '✔ Копирах я — постави я където искаш', 2200); fx().buzz(8);
+      } catch (e) {
+        споделиКажи.textContent = 'Телефонът не ми даде да я копирам — ползвай „🖨️ Събери бележката“. 💜';
+        споделиКажи.hidden = false;
+      }
+    });
+    const бутони = el('div', 'jr-quick'); бутони.appendChild(спод);   // печатът стои както досега, „Сподели“ — под него
+    c.appendChild(ta); c.appendChild(btn); c.appendChild(бутони); c.appendChild(споделиКажи);
+    c.appendChild(el('p', 'jr-privacy', 'Печатът и „Сподели“ събират: тегло, температури (72 ч), дадено (7 дни, и от „Преди колко време?“), ваксина (14 дни), реакции към храни, здравни бележки и всичките ти въпроси. Остава в телефона, докато не го пратиш ти. 💜'));
     return c;
   }
 
   // 🧸 Аптечка вкъщи
   function pharmacyCard() {
-    const c = card('Аптечката вкъщи 🧸 <span class="jr-sub">какво имате и кога изтича</span>');
+    // 25.11 (одит G-08 · три аптечки → една): „Аптечка бърз старт 🧰“ (rooms4) и „Аптечката 💊“ (rooms8)
+    //    живеят ТУК като списък „какво да има“ с отметка „имам“. Пише се в bl_pharmacy ({n,exp}, както
+    //    досега — hero.js, polish.js и rooms5.js четат само него); bl_medkit ('кога|i' → true/false) се
+    //    чете за старите отметки и се пише огледално. Нищо не се мести, нито един ключ не се трие.
+    //    Първият текстов възел на заглавието е СЪЩИЯТ → data-blkey/пиновете/търсачката остават.
+    //    ПЪТ НАЗАД: window.BL_APTECHKA_EDNA = false → тази карта е както преди и двете стари се връщат.
+    const едно = !!window.BL_APTECHKA_EDNA && Array.isArray(window.BL_APTECHKA_SPISAK);
+    const c = card('Аптечката вкъщи 🧸 <span class="jr-sub">' + (едно ? 'какво да има · отметни „имам“ · срок по желание' : 'какво имате и кога изтича') + '</span>');
     const items = load('bl_pharmacy', []);
     const addRow = el('div', 'jr-addrow');
     const inp = el('input', 'jr-word'); inp.placeholder = 'напр. „физиологичен серум“'; inp.maxLength = 40;
@@ -1516,6 +1677,116 @@
     // „+“ го записваше отгоре — добавеното с бърз старт ИЗЧЕЗВАШЕ безшумно.
     // Същият капан беше оправен по-горе в tempCard; тук беше останал.
     const sync = () => { const cur = load('bl_pharmacy', []); items.length = 0; cur.forEach(x => items.push(x)); };
+    // ── 25.11 (одит G-08): списъкът „какво да има“ — групите и номерата са ТЕЗИ от rooms8 (АПТЕЧКА),
+    //    защото старите отметки в bl_medkit стоят на 'кога|номер'. Не се копира и не се пренарежда.
+    //    + трите неща, които имаше само бързият старт (rooms4 PHARMACY_START), отиват при „Винаги“.
+    //    Псевдонимите връзват имената, с които бързият старт е писал в bl_pharmacy. Сравнение без
+    //    главни букви и интервали по краищата — ръчно написан „термометър“ също се брои.
+    const норм = s => String(s == null ? '' : s).trim().toLowerCase();
+    const ПСЕВДО = {
+      'Термометър (за под мишница или челен)': ['Термометър'],
+      'Физиологичен разтвор на ампули': ['Физиологичен серум'],
+      'Аспиратор за нос': ['Назален аспиратор'],
+      'Стерилни марли и лепенки': ['Стерилни марли'],
+      'Крем за под пелената': ['Крем за подсичане']
+    };
+    const САМО_ЧИП = ['Пробиотик (по лекарско)', 'Спринцовка-дозатор', 'Пинсета за кърлежи'];
+    // ред = { име (на екрана), mk ('кога|i' в bl_medkit или null), зап (името, което се записва —
+    //    краткото от бързия старт, за да го познае и неговият чип по пътя назад), имена (за сравнение) }
+    const групи = едно ? window.BL_APTECHKA_SPISAK.map(([кога, неща]) => [кога, неща.map((н, i) => {
+      const alt = ПСЕВДО[н] || [];
+      return { име: н, mk: кога + '|' + i, зап: alt[0] || н, имена: [н].concat(alt).map(норм) };
+    })]) : [];
+    if (групи.length) { const винаги = групи.find(g => g[0] === 'Винаги') || групи[0]; САМО_ЧИП.forEach(н => винаги[1].push({ име: н, mk: null, зап: н, имена: [норм(н)] })); }
+    const всички = new Set(); групи.forEach(([, редове]) => редове.forEach(р => р.имена.forEach(н => всички.add(н))));
+    const вСписъка = it => !!(it && всички.has(норм(it.n)));
+    const съвпада = (р, it) => !!(it && р.имена.indexOf(норм(it.n)) > -1);
+    // показваме (и местим датата на) записа с най-ранен срок — същия, по който къщичката светва ⚠️
+    const главен = съв => { const сс = съв.filter(x => x.exp).sort((a, b) => String(a.exp).localeCompare(String(b.exp))); return сс[0] || съв[0] || null; };
+    const срокТекст = exp => {
+      if (!exp) return { cls: '', txt: 'без срок — сложи дата, ако има' };
+      const dl = Math.ceil((new Date(exp) - Date.now()) / 86400000);
+      if (dl < 0) return { cls: ' ph-exp', txt: '⚠️ ИЗТЕКЛО' };
+      if (dl < 30) return { cls: ' ph-soon', txt: '⏳ изтича до месец' };
+      return { cls: '', txt: 'до ' + new Date(exp).toLocaleDateString('bg-BG') };
+    };
+    const бел = едно ? el('p', 'jr-privacy', '⚠️ Тук пише <strong>какво</strong>, не <strong>колко</strong>. Никакво лекарство не се дава по интернет — дозата е по тегло и я казва педиатърът.') : null;
+    const спис = el('div', 'ph-spisak');
+    const твоиH = едно ? el('p', 'mk-h', 'Твои неща') : null;
+    // ↩ махането на отметка трие записите от bl_pharmacy (и датата в тях) → точно връщане
+    const отмени = wide(el('button', 'jr-chip', '↩ Върни последното')); отмени.type = 'button';
+    отмени.style.minHeight = '44px'; отмени.hidden = true;
+    let последно = null;
+    const покажиОтмяна = т => { последно = т; отмени.hidden = !т; };
+    отмени.addEventListener('click', () => {
+      if (!последно) return;
+      const сега = load('bl_pharmacy', []);   // пресен прочит ПРЕДИ записа
+      const старо = сега.slice();
+      последно.махнати.forEach(({ i, x }) => сега.splice(Math.min(i, сега.length), 0, x));
+      if (!save('bl_pharmacy', сега)) return;   // не мине ли записът — не казваме, че е върнато
+      if (последно.mk) {
+        const мк = load('bl_medkit', {});
+        if (последно.мкБеше === undefined) delete мк[последно.mk]; else мк[последно.mk] = последно.мкБеше;
+        if (!save('bl_medkit', мк)) { save('bl_pharmacy', старо); return; }
+      }
+      покажиОтмяна(null); fx().buzz(6); draw();
+    });
+    const отметни = р => {
+      const сега = load('bl_pharmacy', []);   // пресен прочит — другаде може да е писано
+      const мк = load('bl_medkit', {});
+      const съв = сега.filter(x => съвпада(р, x));
+      const имам = съв.length > 0 || (р.mk ? !!мк[р.mk] : false);
+      if (!имам) {
+        const старо = сега.slice();
+        сега.push({ n: р.зап, exp: '' });
+        if (!save('bl_pharmacy', сега)) return;     // без запис — без „✔“
+        if (р.mk) { мк[р.mk] = true; if (!save('bl_medkit', мк)) { save('bl_pharmacy', старо); return; } }
+        покажиОтмяна(null); fx().buzz(8); draw();
+        return;
+      }
+      // махане: САМО записите на този ред — свободно написаните „Твои неща“ не се пипат
+      const махнати = [], остават = [];
+      сега.forEach((x, i) => { if (съвпада(р, x)) махнати.push({ i, x }); else остават.push(x); });
+      const мкБеше = р.mk && Object.prototype.hasOwnProperty.call(мк, р.mk) ? мк[р.mk] : undefined;
+      if (!save('bl_pharmacy', остават)) return;
+      if (р.mk) { мк[р.mk] = false; if (!save('bl_medkit', мк)) { save('bl_pharmacy', сега); return; } }
+      покажиОтмяна({ махнати, mk: р.mk, мкБеше });
+      fx().buzz(6); draw();
+    };
+    const рисувайСпис = () => {
+      if (!едно) return;
+      const мк = load('bl_medkit', {});
+      спис.innerHTML = '';
+      групи.forEach(([кога, редове]) => {
+        спис.appendChild(el('p', 'mk-h', esc(кога)));
+        редове.forEach(р => {
+          const съв = items.filter(x => съвпада(р, x));   // items е пресен (sync в draw)
+          const имам = съв.length > 0 || (р.mk ? !!мк[р.mk] : false);
+          const b = el('button', 'qd-row' + (имам ? ' done' : '')); b.type = 'button'; b.style.minHeight = '44px';
+          b.setAttribute('aria-pressed', имам ? 'true' : 'false');
+          b.innerHTML = `<span class="jr-check">${имам ? '✔' : ''}</span><span>${esc(р.име)}</span>`;
+          b.addEventListener('click', () => отметни(р));
+          спис.appendChild(b);
+          if (!имам) return;
+          const гл = главен(съв);
+          const с = срокТекст(гл ? гл.exp : '');
+          const ред = el('div', 'nt-row' + с.cls);
+          ред.innerHTML = `<div class="nt-txt">${с.txt}</div><div class="nt-meta"></div>`;
+          const д = el('input', 'jr-word ph-date'); д.type = 'date'; д.value = гл && гл.exp ? гл.exp : '';
+          д.setAttribute('aria-label', 'Срок на „' + р.име + '“');
+          д.addEventListener('change', () => {
+            const сега = load('bl_pharmacy', []);
+            const цел = главен(сега.filter(x => съвпада(р, x)));
+            if (цел) цел.exp = д.value || ''; else сега.push({ n: р.зап, exp: д.value || '' });   // отметнато само в bl_medkit
+            if (!save('bl_pharmacy', сега)) { д.value = гл && гл.exp ? гл.exp : ''; return; }
+            fx().buzz(6); draw();
+          });
+          ред.querySelector('.nt-meta').appendChild(д);
+          спис.appendChild(ред);
+        });
+      });
+    };
+    if (едно) inp.placeholder = 'напр. „капки за нос“';
     // 🔇 12.08 (мерено): празно поле → нищо. Мама попълваше САМО датата (полето
     //    е до него) и натискаше „+“ — нула реакция, нула обяснение защо.
     const добавиАпт = () => {
@@ -1532,8 +1803,14 @@
     inp.addEventListener('keydown', e => { if (e.key === 'Enter') { e.preventDefault(); добавиАпт(); } });
     function draw() {
       sync();   // 🔴 11.08: и рисуването тръгва от ПРЕСНИЯ склад, не от снимка
-      list.innerHTML = items.length ? '' : '<p class="jr-privacy">Запиши какво имате: серум, термометър, аспиратор… Нощем няма да гадаеш.</p>';
-      items.forEach((it, idx) => {
+      рисувайСпис();   // 25.11 (G-08): списъкът горе — от същия пресен склад
+      // 25.11 (G-08): каквото е отметнато в списъка горе, не се повтаря тук — тук са само „Твои неща“
+      //    (ПЪТ НАЗАД: при BL_APTECHKA_EDNA = false `показ` е целият склад, както преди)
+      const показ = едно ? items.filter(it => !вСписъка(it)) : items;
+      list.innerHTML = показ.length ? '' : (едно
+        ? '<p class="jr-privacy">Нещо, което го няма горе? Запиши го тук — със срок, ако има.</p>'
+        : '<p class="jr-privacy">Запиши какво имате: серум, термометър, аспиратор… Нощем няма да гадаеш.</p>');
+      показ.forEach((it, idx) => {
         let expCls = '', expTxt = '';
         if (it.exp) {
           const dl = Math.ceil((new Date(it.exp) - Date.now()) / 86400000);
@@ -1549,6 +1826,8 @@
         list.appendChild(цели(row));
       });
     }
+    // 25.11 (G-08): бележката за дозата (от rooms8) · списъкът · ↩ · „Твои неща“ над свободния ред
+    if (едно) { c.appendChild(бел); c.appendChild(спис); c.appendChild(отмени); c.appendChild(твоиH); }
     c.appendChild(addRow); c.appendChild(list); draw();
     // 11.08: „Аптечка бърз старт“ (rooms4) пише в СЪЩИЯ bl_pharmacy и обещава
     // „Появяват се в „Аптечката вкъщи“ по-горе“ — а тук нищо не се появяваше до
@@ -1647,7 +1926,12 @@
 
   // 🔄 Конвертори
   function convCard() {
-    const c = card('Конвертори 🔄 <span class="jr-sub">мл ↔ унции · размери · вода за банята</span>');
+    // 📏 25.11 (одит G-14): размерите живеят в „Размер на дрешки“ (rooms2) — тук остават мл↔унции и водата.
+    //    Сменя се само подзаглавието (ключът „Инструменти|Конвертори 🔄“ е първият текстов възел — същият).
+    //    Редовете с размери мълчат само ако rooms2 наистина е сляла в това рисуване (BL_RAZMERI_SLYATO.ok).
+    //    ПЪТ НАЗАД: window.BL_RAZMERI_EDNA = false → подзаглавието и редовете както преди.
+    const размериСлети = !!(window.BL_RAZMERI_EDNA && window.BL_RAZMERI_SLYATO && window.BL_RAZMERI_SLYATO.ok);
+    const c = card('Конвертори 🔄 <span class="jr-sub">' + (размериСлети ? 'мл ↔ унции · вода за банята' : 'мл ↔ унции · размери · вода за банята') + '</span>');
     const r1 = el('div', 'cv-row');
     const ml = el('input', 'jr-word'); ml.type = 'number'; ml.placeholder = 'мл';
     ml.setAttribute('aria-label', 'Милилитри');
@@ -1659,8 +1943,10 @@
     oz.addEventListener('input', () => { ml.value = oz.value ? Math.round(oz.value * 29.5735) : ''; });
     r1.appendChild(ml); r1.appendChild(el('span', 'cv-eq', '↔')); r1.appendChild(oz);
     c.appendChild(el('p', 'jr-weekcap', '🍼 Мляко:')); c.appendChild(r1);
-    c.appendChild(el('p', 'jr-weekcap', '👕 Размери (по височина, см):'));
-    c.appendChild(el('p', 'cv-tbl', '56=0–1 м · 62=1–3 м · 68=3–6 м · 74=6–9 м · 80=9–12 м · 86=12–18 м · 92=18–24 м'));
+    if (!размериСлети) {
+      c.appendChild(el('p', 'jr-weekcap', '👕 Размери (по височина, см):'));
+      c.appendChild(el('p', 'cv-tbl', '56=0–1 м · 62=1–3 м · 68=3–6 м · 74=6–9 м · 80=9–12 м · 86=12–18 м · 92=18–24 м'));
+    }
     c.appendChild(el('p', 'jr-weekcap', '🛁 Вода:'));
     // 05.08 (одит г06, №312): „хладко" противоречеше на собствената база (kb.js:1889
     // „Топло, не горещо — капка на китката ти не бива да се усеща"). И конверторът
@@ -1778,7 +2064,9 @@
   }
 
   // 👕 Гардероб-инвентар
-  function wardrobeCard() {
+  // 📏 25.11 (одит G-14): незадължителният сегОтвън идва от „Размер на дрешки“ (rooms2) — размерът по ръст
+  //    или по коригирана възраст, същият, който картата там казва. Без него — както преди (по .months).
+  function wardrobeCard(сегОтвън) {
     const c = card('Гардеробчето 👕 <span class="jr-sub">какво имате по размери — да не купиш пак 62!</span>');
     // 🔴 11.08 капанът на снимката (виж dayPhotoCard горе)
     let w = load('bl_wardrobe', {});
@@ -1798,7 +2086,7 @@
     //    Числото се появяваше чак след презареждане. Сега редът се пресмята пак.
     const обобщение = el('p', 'jr-privacy', '');
     const a = window.BL_AGE ? BL_AGE(getBaby().birth) : null;
-    const сегашен = a ? (a.months < 1 ? '56' : a.months < 3 ? '62' : a.months < 6 ? '68' : a.months < 9 ? '74' : a.months < 12 ? '80' : a.months < 18 ? '86' : '92') : null;
+    const сегашен = сегОтвън || (a ? (a.months < 1 ? '56' : a.months < 3 ? '62' : a.months < 6 ? '68' : a.months < 9 ? '74' : a.months < 12 ? '80' : a.months < 18 ? '86' : '92') : null);
     const освежи = () => {
       if (!сегашен) return;
       const бр = w[сегашен] || 0;
@@ -1842,9 +2130,22 @@
     освежи(); c.appendChild(обобщение);
     return c;
   }
+  // 📏 25.11 (одит G-14): „Размер на дрешки“ (rooms2) мести решетката и реда от тази карта в себе си —
+  //    МЕСТИ, не клонира, затова слушателите ±, пресният прочит и записът на bl_wardrobe остават същите.
+  //    ПЪТ НАЗАД: махни реда (rooms2 тогава не слива и Гардеробчето се рисува самостоятелно).
+  window.BL_GARDEROB = wardrobeCard;
 
   // 👵 Картичка за бабата — авто-попълнена
+  // 25.11 (одит G-15 · листовете за бабата → един): ЕДИНСТВЕНИЯТ превключвател. Чете се при отваряне на стаята,
+  //    затова редът rooms3/rooms8/rooms19 в index.html няма значение. Включен → обединената картичка (листЗаБаба
+  //    отдолу), а „QR за бабата“ (rooms19) и „Кой го гледа днес“ (rooms8) не се закачат — кодът им стои.
+  //    ПЪТ НАЗАД: window.BL_LIST_BABA = false (или сложено false ПРЕДИ този файл) → трите карти, както преди.
+  if (window.BL_LIST_BABA === undefined) window.BL_LIST_BABA = true;
   function grannyCard() {
+    if (window.BL_LIST_BABA) {
+      // ако новата картичка гръмне (крив запис, липсващ модул) — старата, а не празно място
+      try { return листЗаБаба(); } catch (e) { try { console.warn('[G-15] листЗаБаба', e); } catch (_) {} }
+    }
     const c = card('Картичка за бабата 👵 <span class="jr-sub">всичко важно, когато бебето остава при някого</span>');
     const ta = el('textarea', 'jr-paper'); ta.rows = 2; ta.placeholder = 'Особености: „заспива само със зайчето“, „обича да гледа през прозореца“…';
     ta.dataset.draft = 'bl_granny_notes'; ta.value = load('bl_granny_notes', '');
@@ -1891,14 +2192,320 @@
     return c;
   }
 
+  // 👵 25.11 (одит G-15 · пет листа за бабата → една „Картичка за бабата“ от живите данни)
+  //    Пет карти печатаха парчета от един и същ лист за човека, който остава с бебето: „Кой го гледа днес“
+  //    (rooms8, bl_sitter), „QR за бабата“ (rooms19), старата картичка отгоре, „Алергия-паспорт“ и „Досието“.
+  //    И си противоречаха: квадратът наричаше бързия номер „Мама“ (а в SOS той е „човекът, на когото звъниш
+  //    първо“, sos.js), тук „последно хранене“ четеше само bl_feed (без таймера за кърмене, дневника и
+  //    часовника), алергиите се лепяха с повторения. Сега — ЕДИН лист:
+  //      · мама отмята какво да влезе (bl_list_baba — само предпочитание; връщане = отметни пак / махни ключа);
+  //      · шестте полета на bl_sitter се пишат тук — същият ключ, същата форма, същата присъда при пълна памет;
+  //      · алергии, хранене, сън, лекар, телефони се четат ПРЕСНО при всяко натискане (никакво копие);
+  //      · квадратът е от същия кодер (window.BL_QR, rooms19) и носи само животоспасяващото.
+  //    Алергия-паспортът и Досието остават по местата си — те са единственият писач на bl_allergy_manual и
+  //    единственият източник на bl_lab; тук само се четат. Заглавието е СЪЩОТО (blkey, printbox, pl-instrumenti).
+  //    Личният лекар (bl_sos.gp*) НЕ влиза: в SOS той е „твоят лекар“ — на мама, не на бебето.
+  //    ПЪТ НАЗАД: window.BL_LIST_BABA = false. Нито един ключ не е изтрит или преместен.
+  const ЛБ_ИЗБОР = [
+    // [ключ, етикет, по подразбиране]
+    ['alergii', '⚠️ Алергии', true], ['hranene', '🍼 Последно хранене', true], ['san', '😴 Сънят днес', true],
+    ['ritam', '🕐 Ритъм', true], ['yade', '🥣 Какво яде', true], ['zaspiva', '🌙 Как заспива', true],
+    ['uspokoyava', '🤗 Какво успокоява', true], ['zabrani', '🚫 Какво НЕ бива', true], ['belezhki', '📝 Особености', true],
+    ['telefoni', '📞 Телефони', true], ['lekar', '🩺 Педиатър', true],
+    ['pesen', '🎵 Песничка', false], ['otkritia', '🔬 Открития', false], ['qr', '🔳 QR на листа', true]
+  ];
+  // [поле в bl_sitter, отметка, етикет] — етикетите са думите на „Кой го гледа днес“ (rooms8)
+  const ЛБ_ПОЛЕТА = [
+    ['режим', 'ritam', 'Дневният ритъм (кога спи, кога яде)'],
+    ['яде', 'yade', 'Какво и колко яде'],
+    ['спи', 'zaspiva', 'Как заспива (ритуал)'],
+    ['успокоява', 'uspokoyava', 'Какво го успокоява, когато плаче'],
+    ['забрани', 'zabrani', 'Какво НЕ бива (храни, играчки, места)'],
+    ['тел', 'telefoni', 'Телефони при нужда']
+  ];
+  const ЛБ_ПРАЗЕН = () => ({ режим: '', яде: '', спи: '', успокоява: '', забрани: '', тел: '' });
+  const ЛБ_ПЪЛНА = '⚠️ Това НЕ се записа — паметта на телефона е пълна. Написаното ти стои в полето, не го трий: освободи място и пипни пак някоя буква.';
+
+  function листЗаБаба() {
+    const c = card('Картичка за бабата 👵 <span class="jr-sub">листът за баба · отметни какво да влезе · печат, QR, сподели</span>');
+    c.appendChild(el('p', 'jr-privacy', 'Един лист за човека, който остава с бебето. Алергиите, храненето, сънят и телефоните се взимат сами от приложението — в момента на печата. Попълваш само това, което приложението не знае.'));
+    const час = t => new Date(t).toLocaleTimeString('bg-BG', { hour: '2-digit', minute: '2-digit' });
+    const кога = t => (localDate(new Date(t)) === today() ? '' : new Date(t).toLocaleDateString('bg-BG', { day: 'numeric', month: 'numeric' }) + ' ') + час(t);
+    const ситър = () => Object.assign(ЛБ_ПРАЗЕН(), load('bl_sitter', {}));
+    const избор = () => {
+      const з = load('bl_list_baba', {});
+      const о = {};
+      ЛБ_ИЗБОР.forEach(([к, , д]) => { о[к] = typeof з[к] === 'boolean' ? з[к] : д; });
+      return о;
+    };
+
+    // ── всичко живо, прочетено СЕГА (не при рисуването на картата) ──
+    const данни = () => {
+      const baby = getBaby();
+      let a = null; try { a = baby.birth && window.BL_AGE ? BL_AGE(baby.birth) : null; } catch (e) { a = null; }
+      const sos = load('bl_sos', {});
+      const tried = load('bl_tried', {});
+      const реакции = Object.keys(tried).filter(k => String(tried[k] || '').includes('⚠️'));
+      // реакциите + ръчните от Алергия-паспорт, БЕЗ повторения (старата картичка ги лепеше двойно)
+      const видени = new Set();
+      const alrg = реакции.concat(load('bl_allergy_manual', [])).map(x => String(x == null ? '' : x).trim()).filter(x => {
+        const к = x.toLowerCase(); if (!к || видени.has(к)) return false; видени.add(к); return true;
+      });
+      // последно хранене = най-новото от всички следи (рецептата на chasovnik.js вънХранене + bl_chas.hrana)
+      const ts = [];
+      const f = load('bl_feed', null); if (f && f.t) ts.push(+f.t);
+      load('bl_nursing', []).forEach(x => { if (x && x.ts) ts.push(+x.ts); });
+      load('bl_feedlog', []).forEach(x => { if (x) ts.push(+x); });
+      const хр = (load('bl_chas', {}) || {}).hrana;
+      if (хр && typeof хр === 'object') { if (хр.t) ts.push(+хр.t); if (Array.isArray(хр.hist)) хр.hist.forEach(x => { if (x) ts.push(+x); }); }
+      const сега = Date.now();
+      const добри = ts.filter(x => isFinite(x) && x > 0 && x <= сега + 60000);
+      const хранене = добри.length ? Math.max.apply(null, добри) : 0;
+      // сънят — само днешният запис (bl_sleep {d, segs:[{s,e}], open}, rooms2)
+      let сън = '';
+      const сн = load('bl_sleep', null);
+      if (сн && typeof сн === 'object' && сн.d === today()) {
+        if (сн.open && isFinite(+сн.open)) сън = 'спи от ' + час(+сн.open);
+        else {
+          const краища = (Array.isArray(сн.segs) ? сн.segs : []).map(x => x && +x.e).filter(x => isFinite(x) && x > 0);
+          if (краища.length) сън = 'последно се събуди в ' + час(Math.max.apply(null, краища));
+        }
+      }
+      const лаб = load('bl_lab', {});
+      const открития = (Array.isArray(лаб.done) ? лаб.done : []).filter(x => x && typeof x === 'object' && x.t);
+      const song = (load('bl_playlist', [])[0] || {}).t;
+      return { baby, a, sos, alrg, хранене, сън, ситър: ситър(), открития, song };
+    };
+
+    // квадратът: само животоспасяващото (таванът е ~133 байта, кирилицата е по 2) — независимо от отметките
+    const qrРедове = д => {
+      const р = [];
+      if (д.baby.name) р.push(String(д.baby.name));
+      if (д.alrg.length) р.push('ВНИМАВАЙ С: ' + д.alrg.join(','));
+      // бързият номер е „човекът, на когото звъниш първо“ (sos.js) — не непременно мама
+      if (д.sos.fastPhone) р.push((д.sos.fastName || 'Бърз номер') + ': ' + д.sos.fastPhone);
+      else if (д.sos.closePhone) р.push((д.sos.closeName || 'Близък') + ': ' + д.sos.closePhone);
+      if (д.sos.pedPhone) р.push('Педиатър: ' + д.sos.pedPhone);
+      р.push('Спешно: 112');
+      return р;
+    };
+
+    // редовете на листа — {h: за печат, t: за „Сподели“ (null = само на хартия)}
+    const редове = (д, из, бел) => {
+      const р = [];
+      const ред = (h, t) => р.push({ h, t });
+      if (из.alergii) {
+        // празно значи „нямам записано“, не „няма“ (04.08, старата картичка) — никога зелена отметка
+        if (д.alrg.length) ред(`⚠️ ВНИМАВАЙ С: <strong>${д.alrg.map(esc).join(', ')}</strong>`, '⚠️ ВНИМАВАЙ С: ' + д.alrg.join(', '));
+        else ред('❔ За алергии <strong>питай мама</strong> — в приложението няма записани.', '❔ За алергии питай мама — в приложението няма записани.');
+      }
+      if (из.hranene && д.хранене) ред(`🍼 Последно хранене: <strong>${esc(кога(д.хранене))}</strong>`, '🍼 Последно хранене: ' + кога(д.хранене));
+      if (из.san && д.сън) ред(`😴 Сънят днес: ${esc(д.сън)}`, '😴 Сънят днес: ' + д.сън);
+      // „Попълни веднъж“: празното поле се печата „(не съм попълнила)“ — празно ≠ „няма забрани“ (rooms8, 11.08).
+      //   Ако мама не е пипнала нито едно — блокът не излиза изобщо (старата картичка го нямаше).
+      const пълни = ЛБ_ПОЛЕТА.some(([п]) => п !== 'тел' && String(д.ситър[п] || '').trim());
+      if (пълни) ЛБ_ПОЛЕТА.forEach(([п, к, л]) => {
+        if (п === 'тел' || !из[к]) return;
+        const v = String(д.ситър[п] || '').trim() || '(не съм попълнила)';
+        ред(`<strong>${esc(л)}:</strong> ${esc(v).replace(/\n/g, '<br>')}`, л + ': ' + v);
+      });
+      if (из.belezhki && бел) ред(`📝 ${esc(бел).replace(/\n/g, '<br>')}`, '📝 ' + бел);
+      if (из.pesen && д.song) ред(`🎵 Песничка от нашия списък: ${esc(д.song)}`, '🎵 Песничка от нашия списък: ' + д.song);
+      if (из.telefoni) {
+        const тел = String(д.ситър.тел || '').trim();
+        if (тел) ред(`📞 ${esc(тел).replace(/\n/g, '<br>')}`, '📞 ' + тел);
+        // своя номер приложението не знае — честно остава за ръка (05.08, старата картичка)
+        ред('📞 Мама: __________ <small>(попълни на ръка)</small>', null);
+        if (д.sos.fastPhone) ред(`⭐ ${esc(д.sos.fastName || 'Бърз номер')}: <strong>${esc(д.sos.fastPhone)}</strong>`, '⭐ ' + (д.sos.fastName || 'Бърз номер') + ': ' + д.sos.fastPhone);
+        if (д.sos.closePhone) ред(`💜 ${esc(д.sos.closeName || 'Близък човек')}: <strong>${esc(д.sos.closePhone)}</strong>`, '💜 ' + (д.sos.closeName || 'Близък човек') + ': ' + д.sos.closePhone);
+      }
+      if (из.lekar && д.sos.pedPhone) ред(`🩺 Педиатър${д.sos.pedName ? ' ' + esc(д.sos.pedName) : ''}: <strong>${esc(д.sos.pedPhone)}</strong>`, '🩺 Педиатър' + (д.sos.pedName ? ' ' + д.sos.pedName : '') + ': ' + д.sos.pedPhone);
+      ред('🚨 При спешност: <strong>112</strong>', '🚨 При спешност: 112');
+      return р;
+    };
+
+    // 📝 особеностите — същото поле, същият ключ, същият общ запис (data-draft → daily.js)
+    const ta = el('textarea', 'jr-paper'); ta.rows = 2; ta.placeholder = 'Особености: „заспива само със зайчето“, „обича да гледа през прозореца“…';
+    ta.dataset.draft = 'bl_granny_notes'; ta.value = load('bl_granny_notes', '');
+    c.appendChild(ta);
+
+    // ✏️ „Попълни веднъж“ — шестте полета на bl_sitter (бяха „Кой го гледа днес“ в „Моето бебе“)
+    const дет = el('details', 'cm-row lb-sitter');
+    const сум = el('summary', '');
+    дет.appendChild(сум);
+    const надпис = () => {
+      const п = ситър();
+      сум.textContent = '✏️ Попълни веднъж — ритъм, храна, заспиване, телефони (' + ЛБ_ПОЛЕТА.filter(([к]) => String(п[к] || '').trim()).length + ' от 6)';
+    };
+    надпис();
+    const п0 = ситър();
+    let окСитър = true;      // присъдата на последния запис — чете се от знака отдолу
+    ЛБ_ПОЛЕТА.forEach(([к, , л]) => {
+      const id = 'lbaba-sitter-' + к;
+      const лбл = el('label', 'bb-lbl'); лбл.textContent = л; лбл.setAttribute('for', id);
+      const t = el('textarea', 'jr-paper'); t.rows = 2; t.id = id; t.value = String(п0[к] || '');
+      t.addEventListener('input', () => {
+        // пресен прочит преди запис — ако „Кой го гледа днес“ е върната, пише същия ключ
+        const п = ситър(); п[к] = t.value; окСитър = save('bl_sitter', п);
+      });
+      дет.appendChild(лбл); дет.appendChild(t);
+    });
+    const прието = el('p', 'jr-privacy', ''); прието.hidden = true; прието.setAttribute('aria-live', 'polite');
+    дет.appendChild(прието);
+    c.appendChild(дет);
+
+    // ☑️ какво да влезе
+    c.appendChild(el('p', 'bb-lbl', 'Какво да влезе в листа'));
+    const отм = el('div', 'jr-quick lb-izbor');
+    const белИзбор = el('p', 'sp-warn', ''); белИзбор.hidden = true;
+    const из0 = избор();
+    ЛБ_ИЗБОР.forEach(([к, л]) => {
+      const lab = el('label', 'jr-chip');
+      const cb = el('input'); cb.type = 'checkbox'; cb.checked = !!из0[к]; cb.dataset.lb = к;
+      lab.appendChild(cb); lab.appendChild(document.createTextNode(' ' + л));
+      cb.addEventListener('change', () => {
+        const з = избор(); з[к] = cb.checked;
+        if (!save('bl_list_baba', з)) {
+          cb.checked = !cb.checked;      // отметката не лъже: каквото е в паметта, това излиза на листа
+          белИзбор.textContent = '⚠️ Изборът НЕ се записа — паметта на телефона е пълна. Листът ще излезе както преди.';
+          белИзбор.hidden = false; return;
+        }
+        белИзбор.hidden = true;
+      });
+      отм.appendChild(lab);
+    });
+    c.appendChild(отм); c.appendChild(белИзбор);
+
+    // ⚠️ алергиите — само четене; пишат се там, където се отбелязват реакциите
+    const алрг = el('p', 'jr-privacy', '');
+    const къмЗахр = el('button', 'jr-chip', '➕ Добави алерген → Захранване'); къмЗахр.type = 'button'; къмЗахр.style.minHeight = '44px';
+    къмЗахр.addEventListener('click', () => {
+      if (window.MamaHelper && MamaHelper.open) { MamaHelper.open('Захранване'); return; }
+      алрг.textContent = 'Алергените се пишат в стая „Захранване“ → „Алергия-паспорт 🛡️“.';
+    });
+    c.appendChild(алрг); c.appendChild(къмЗахр);
+
+    // 🔳 QR за бабата (бившата отделна карта, rooms19) — същият кодер, пресни данни
+    c.appendChild(el('p', 'bb-lbl', '🔳 QR за бабата — баба не сваля приложения, но снима с телефона'));
+    const кутия = el('div', 'qr-box');
+    const изход = el('p', 'qr-out', '');
+    const няма = el('p', 'sp-warn', '⚠️ Още нямаш записани номера. Сложи поне един — иначе квадратът носи само 112.');
+    const къмSOS = el('button', 'jr-chip', '🆘 Отвори SOS-центъра'); къмSOS.type = 'button'; къмSOS.style.minHeight = '44px';
+    const опресни = () => {
+      const д = данни();
+      алрг.innerHTML = д.alrg.length
+        ? '⚠️ Внимавай с: <strong>' + д.alrg.map(esc).join(', ') + '</strong> <small>(от „Захранване“)</small>'
+        : '❔ Няма записани алергени. На листа ще пише „питай мама“ — не „няма алергии“.';
+      const празно = !д.sos.fastPhone && !д.sos.closePhone && !д.sos.pedPhone;
+      няма.hidden = !празно; къмSOS.hidden = !празно;
+      const текст = qrРедове(д).join('\n');
+      if (!window.BL_QR || !BL_QR.svg) { кутия.innerHTML = ''; изход.textContent = 'Квадратът не се зареди в момента — листът се печата и без него. Затвори и отвори стаята.'; return; }
+      const s = BL_QR.svg(текст, 190);
+      if (!s) {
+        кутия.innerHTML = '';
+        изход.innerHTML = '⚠️ Текстът не се побира в един квадрат (' + new TextEncoder().encode(текст).length + ' от макс ' + BL_QR.MAX + ' байта). Нищо не е изпуснато — листът носи всичко. Ако искаш и квадрат, скъси името или някой от номерата.';
+        return;
+      }
+      кутия.innerHTML = s;
+      изход.innerHTML = 'Съдържа: <em>' + esc(текст.replace(/\n/g, ' · ')) + '</em>';
+    };
+    къмSOS.addEventListener('click', () => {
+      if (window.BL_SOS_CENTER) BL_SOS_CENTER.open();
+      else if (window.MamaHelper && MamaHelper.open) { MamaHelper.open('Здраве и SOS'); return; }
+      // същият пазач като rooms19 (12.08): 4 сек за отваряне, до 10 мин за затваряне, един часовник наведнъж
+      clearInterval(къмSOS._пази);
+      let видян = false, тик = 0;
+      къмSOS._пази = setInterval(() => {
+        const ов = document.getElementById('sosOverlay');
+        const отворен = !!ов && !ов.hidden;
+        if (отворен) видян = true;
+        тик++;
+        const край = !document.body.contains(кутия) || (!видян && тик >= 10) || (видян && !отворен) || тик >= 1500;
+        if (!край) return;
+        clearInterval(къмSOS._пази); къмSOS._пази = null;
+        if (document.body.contains(кутия)) опресни();
+      }, 400);
+    });
+    c.appendChild(кутия); c.appendChild(изход); c.appendChild(няма); c.appendChild(къмSOS);
+
+    // знакът под „Попълни веднъж“ — с полусекунда закъснение, за да не мига на всяка буква (rooms8, 12.08)
+    let _пт = 0;
+    дет.addEventListener('input', e => {
+      if (!e.target || e.target.tagName !== 'TEXTAREA') return;
+      clearTimeout(_пт);
+      _пт = setTimeout(() => {
+        прието.textContent = окСитър === false ? ЛБ_ПЪЛНА : '✔ Записано. Листът те чака тук.';
+        прието.hidden = false; надпис(); опресни();
+      }, 600);
+    });
+    // реакция, отбелязана в „Захранване“, влиза веднага (същото събитие като Алергия-паспорт)
+    const наРеакция = () => { if (!c.isConnected) { document.removeEventListener('bl:tried-changed', наРеакция); return; } опресни(); };
+    document.addEventListener('bl:tried-changed', наРеакция);
+    опресни();
+
+    // 🖨️ / 📤
+    const бел = el('p', 'jr-privacy', ''); бел.hidden = true; бел.setAttribute('aria-live', 'polite');
+    const покажи = т => { бел.textContent = т; бел.hidden = false; };
+    const ръчно = el('textarea', 'jr-paper'); ръчно.rows = 6; ръчно.readOnly = true; ръчно.hidden = true;
+    const откритияHtml = д => '<h3>🔬 Открития — проверено у дома</h3><ul class="pr-list">' +
+      д.открития.map(x => '<li><strong>' + esc(x.t) + '</strong>' + (x.q ? '<br><small>' + esc(x.q) + '</small>' : '') + '</li>').join('') + '</ul>';
+    const пр = el('button', 'jr-btn', '🖨️ Направи листа'); пр.type = 'button';
+    пр.addEventListener('click', () => {
+      опресни();
+      if (!window.BL_EXPR || !BL_EXPR.printOverlay) { покажи('⚠️ Печатницата не се зареди. Затвори и отвори стаята — листът те чака, нищо не се губи.'); return; }
+      const д = данни(); const из = избор();
+      const сQR = из.qr && window.BL_QR && BL_QR.svg;
+      const s = сQR ? BL_QR.svg(qrРедове(д).join('\n'), 260) : null;
+      const р = редове(д, из, ta.value.trim());
+      // няма квадрат — няма и изречение за квадрат (rooms19, 11.08)
+      const бележкаQR = s
+        ? '<p class="pr-note">Квадратът се снима с камерата на телефона — работи и без интернет. В него е само най-важното: име, алергии, един телефон, педиатър, 112.</p>'
+        : (сQR ? '<p class="pr-note">Квадрат няма — най-важното е твърде дълго за един. Нищо не е изпуснато: всичко е в списъка отгоре.</p>' : '');
+      BL_EXPR.printOverlay('Нашето бебе — наръчник за близките',
+        (s ? `<div class="pr-qr">${s}</div>` : '') +
+        `<p class="pr-big">${esc(д.baby.name) || 'Бебето'}${д.a && д.a.text ? ' · ' + esc(д.a.text) : ''}</p>
+         <ul class="pr-list">${р.map(x => '<li>' + x.h + '</li>').join('')}</ul>` +
+        (из.otkritia && д.открития.length ? откритияHtml(д) : '') +
+        бележкаQR +
+        '<p class="pr-note">Благодарим ти, че пазиш нашето съкровище! 💜</p>');
+    });
+    const сп = el('button', 'jr-btn', '📤 Сподели'); сп.type = 'button';
+    сп.addEventListener('click', async () => {
+      const д = данни(); const из = избор();
+      const р = редове(д, из, ta.value.trim()).filter(x => x.t);
+      const откр = из.otkritia && д.открития.length ? '\n\n🔬 Открития:\n' + д.открития.map(x => '• ' + x.t).join('\n') : '';
+      const text = '👵 ' + (д.baby.name || 'Бебето') + (д.a && д.a.text ? ' · ' + д.a.text : '') + '\n' +
+        р.map(x => x.t).join('\n') + откр + '\n\n(с обич, през Бейби Ленд 🎈)';
+      // моделът на „Сподели списъка“ (extras2.js): споделяне → клипборд → текст за ръчно копиране
+      if (navigator.share) { try { await navigator.share({ text }); покажи('✔ Пратих го нататък.'); return; } catch (e) { if (e && e.name === 'AbortError') { покажи('Добре — листът си стои тук. 💜'); return; } } }
+      try { await navigator.clipboard.writeText(text); покажи('✔ Копирах листа — постави го в съобщение до човека, който ще гледа бебето.'); return; } catch (e) {}
+      ръчно.value = text; ръчно.hidden = false;
+      покажи('Телефонът не дава „Сподели“ и копиране оттук — задръж пръст върху текста отдолу и избери „Копирай“.');
+    });
+    const ботуни = el('div', 'jr-quick'); ботуни.appendChild(пр); ботуни.appendChild(сп);
+    c.appendChild(ботуни); c.appendChild(бел); c.appendChild(ръчно);
+    c.appendChild(el('p', 'jr-privacy', '🔒 Нищо не се качва никъде — листът и квадратът се правят в телефона ти.'));
+    return c;
+  }
+
   // ═══════════════ регистрация по стаите ═══════════════
 
+  // 25.11 (одит G-08 · три аптечки → една): ЕДИНСТВЕНИЯТ превключвател. Чете се при отваряне на
+  //    стаята (не при зареждане), така че редът rooms3/rooms4/rooms8 в index.html няма значение.
+  //    rooms4 (бърз старт) и rooms8 (аптечката по възраст) не се закачат, докато е включен.
+  //    ПЪТ НАЗАД: window.BL_APTECHKA_EDNA = false (или сложено false ПРЕДИ този файл) → три карти, както преди.
+  if (window.BL_APTECHKA_EDNA === undefined) window.BL_APTECHKA_EDNA = true;
+
   const PACKS = {
-    'Дневник на мама': r => { r.appendChild(constellationCard()); r.appendChild(dayPhotoCard()); r.appendChild(wordCloudCard()); if (window.BL_EXPR) r.appendChild(BL_EXPR.voiceCard('Гласови бележки 🎙️ <span class="jr-sub">кажи го — за 3 през нощта, когато писането е много</span>', 'bl_voice', { maxSec: 30 })); const пс = lettersCard(); if (пс) r.appendChild(пс); },
+    // 🎙️ 25.11 (одит G-13): „Гласови бележки“ става ЕДИН запис с цел (бележка · песен · писмо · миг),
+    //    expr.js voiceHubCard — пише в старите ключове, показва и старите bl_voice записи.
+    //    Заглавието до подзаглавието е същото („Гласови бележки 🎙️ “) → blkey/забождания/секция jt не мърдат.
+    //    ПЪТ НАЗАД: window.BL_GLAS_EDIN = false → старата карта на bl_voice (30 сек), ред по ред както беше.
+    'Дневник на мама': r => { r.appendChild(constellationCard()); r.appendChild(dayPhotoCard()); r.appendChild(wordCloudCard()); if (window.BL_EXPR) r.appendChild((window.BL_GLAS_EDIN && BL_EXPR.voiceHubCard) ? BL_EXPR.voiceHubCard('Гласови бележки 🎙️ ') : BL_EXPR.voiceCard('Гласови бележки 🎙️ <span class="jr-sub">кажи го — за 3 през нощта, когато писането е много</span>', 'bl_voice', { maxSec: 30 })); const пс = lettersCard(); if (пс) r.appendChild(пс); },
     'Бременност': r => { [symptomCard(), pregWeightCard(), bumpCard(), letterToBabyCard(), namesCard(), playlistCard(), birthPlanCard()].forEach(c => c && r.appendChild(c)); },
     'Моето бебе': r => { r.appendChild(nursingCard()); r.appendChild(weekPicCard()); r.appendChild(recordsCard()); if (window.BL_EXPR) r.appendChild(BL_EXPR.voiceCard('Звукови мигове 🎙️ <span class="jr-sub">гукане, смях, първа дума — съкровища</span>', 'bl_baby_sounds', { labels: ['гукане', 'смях', 'дума', 'друго'], maxSec: 20 })); },
     'Захранване': r => { r.appendChild(rainbowCard()); r.appendChild(menuCard()); r.appendChild(recipesCard()); r.appendChild(allergyPassCard()); if (window.BL_EXPR) r.appendChild(BL_EXPR.photoListCard('Първата реакция 😋 <span class="jr-sub">гримасите при нова храна — злато</span>', 'bl_food_faces', { notePrompt: 'Коя храна беше?', empty: 'Първата гримаса при броколи си заслужава кадър. 😄' })); },
-    'Здраве и SOS': r => { r.appendChild(tempCard()); r.appendChild(medsCard()); r.appendChild(visitNoteCard()); if (window.BL_EXPR) r.appendChild(BL_EXPR.photoListCard('Фото на обрив 📷 <span class="jr-sub">снимай — показваш на лекаря как е изглеждало</span>', 'bl_rash', { notePrompt: 'Къде е обривът?', empty: 'Дано никога не потрябва. Но ако — снимай веднага.' })); r.appendChild(pharmacyCard()); },
+    'Здраве и SOS': r => { r.appendChild(tempCard()); r.appendChild(medsCard()); r.appendChild(visitNoteCard(r)); if (window.BL_EXPR) r.appendChild(BL_EXPR.photoListCard('Фото на обрив 📷 <span class="jr-sub">снимай — показваш на лекаря как е изглеждало</span>', 'bl_rash', { notePrompt: 'Къде е обривът?', empty: 'Дано никога не потрябва. Но ако — снимай веднага.' })); r.appendChild(pharmacyCard()); },
     // 05.08 (одит г06, №181): тук имаше втора галерия за рисунки — „Първите
     // драскулки 🎨“ на ключ bl_art, с ДУМА ПО ДУМА същото подзаглавие като
     // „Рисунките по месеци 🎨“ (rooms15.js:185) и с друга памет. Двете падаха
@@ -1907,7 +2514,9 @@
     // Остава по-новата (rooms15) — тя пита и за месеца. Старите снимки се
     // преливат веднъж по-долу; bl_art НЕ се трие (това е пътят назад).
     'Развитие и игри': r => { r.appendChild(skillTreeCard()); r.appendChild(booksCard()); },
-    'Инструменти': r => { r.appendChild(convCard()); r.appendChild(wardrobeCard()); r.appendChild(goalCard()); r.appendChild(grannyCard()); }
+    // 📏 25.11 (одит G-14): Гардеробчето не се рисува, САМО ако rooms2 наистина го е сляла в „Размер на дрешки“
+    //    в това рисуване (BL_RAZMERI_SLYATO.garderob) — смесен кеш пак го показва. ПЪТ НАЗАД: window.BL_RAZMERI_EDNA = false.
+    'Инструменти': r => { const сл = window.BL_RAZMERI_SLYATO; r.appendChild(convCard()); if (!(window.BL_RAZMERI_EDNA && сл && сл.garderob)) r.appendChild(wardrobeCard()); r.appendChild(goalCard()); r.appendChild(grannyCard()); }
   };
   Object.keys(PACKS).forEach(room => {
     const base = window.ROOM_FEATURES && window.ROOM_FEATURES[room];

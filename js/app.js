@@ -21,6 +21,13 @@ window.addEventListener('beforeinstallprompt', (e) => {
   window.BL_INSTALL = e;
   refreshToday();
 });
+// 25.11 (одит, вълна 2): чипът „Добави ме на екрана си“ е махнат → на Android едното докосване
+//   за инсталиране минава през бутона „📱 Добави ме на телефона“ (#инсталирай). Без подкана — към указанията.
+//   ПЪТ НАЗАД: махни този блок.
+document.addEventListener('click', (e) => {
+  const а = e.target && e.target.closest && e.target.closest('a[href="#инсталирай"]');
+  if (а && window.BL_INSTALL) { e.preventDefault(); try { BL_INSTALL.prompt(); } catch (x) {} window.BL_INSTALL = null; }
+});
 window.refreshToday = refreshToday;
 document.addEventListener('DOMContentLoaded', refreshToday);
 document.addEventListener('visibilitychange', () => { if (!document.hidden) refreshToday(); });

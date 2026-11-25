@@ -413,13 +413,15 @@ html body #roomOverlay #roRoom > .jr-card[data-blkey^="Инструменти|"]
 }
 
 /* ±-бутоните на „Гардеробчето“ — розово хапче с тъмна роза, Nunito */
-html body #roomOverlay #roRoom > .jr-card[data-blkey^="Инструменти|Гардероб"] .wd-ctl > button {
+html body #roomOverlay #roRoom > .jr-card[data-blkey^="Инструменти|Гардероб"] .wd-ctl > button,
+html body #roomOverlay #roRoom > .jr-card[data-blkey^="Инструменти|Размер на дрешки"] .wd-ctl > button {
   border-radius: 50% !important; border: 1.5px solid #f3c6d6 !important;
   background: #fde6ef !important; color: #8e2350 !important;
   font: 800 20px/1 Nunito, Nunito-fallback, system-ui, sans-serif !important;
   box-shadow: inset 0 1px 0 #fff, 0 2px 0 #ecc3d2 !important; cursor: pointer;
 }
-html body #roomOverlay #roRoom > .jr-card[data-blkey^="Инструменти|Гардероб"] .wd-ctl > button:active { transform: translateY(1.5px); box-shadow: inset 0 1px 0 #fff, 0 0 0 #ecc3d2 !important; }
+html body #roomOverlay #roRoom > .jr-card[data-blkey^="Инструменти|Гардероб"] .wd-ctl > button:active,
+html body #roomOverlay #roRoom > .jr-card[data-blkey^="Инструменти|Размер на дрешки"] .wd-ctl > button:active { transform: translateY(1.5px); box-shadow: inset 0 1px 0 #fff, 0 0 0 #ecc3d2 !important; }
 
 /* редовете в „Документите“ — топъл кант; стрелките в речника и конверторите — тъмна роза */
 html:not([data-theme="dark"]) body #roomOverlay #roRoom > .jr-card[data-blkey^="Инструменти|"] .qd-row { border-color: #efdccf !important; }
@@ -466,7 +468,8 @@ html[data-theme="dark"] body #roomOverlay #roRoom > .jr-card[data-blkey^="Инс
 html[data-theme="dark"] body #roomOverlay #roRoom > .jr-card[data-blkey^="Инструменти|"] :is(.gl-term, .pb-l, .ev-t, .cv-tbl strong) { color: #fff !important; }
 html[data-theme="dark"] body #roomOverlay #roRoom > .jr-card[data-blkey^="Инструменти|"] :is(.gl-arr, .cv-eq) { color: #f59cbb !important; }
 html[data-theme="dark"] body #roomOverlay #roRoom > .jr-card[data-blkey^="Инструменти|"] :is(.jr-sub, .jr-privacy, .bg-lv, .bb-note, .cv-tbl, .ev-t small, .pb-r, .gl-def) { color: #c9cbe3 !important; opacity: 1 !important; }
-html[data-theme="dark"] body #roomOverlay #roRoom > .jr-card[data-blkey^="Инструменти|Гардероб"] .wd-ctl > button {
+html[data-theme="dark"] body #roomOverlay #roRoom > .jr-card[data-blkey^="Инструменти|Гардероб"] .wd-ctl > button,
+html[data-theme="dark"] body #roomOverlay #roRoom > .jr-card[data-blkey^="Инструменти|Размер на дрешки"] .wd-ctl > button {
   background: #2b3872 !important; border-color: rgba(255, 255, 255, .18) !important; color: #fff !important;
   box-shadow: inset 0 1px 0 rgba(255, 255, 255, .10), 0 2px 0 #18214a !important;
 }
@@ -555,7 +558,8 @@ html[data-theme="dark"] body #roomOverlay #roRoom > .jr-card[data-blkey^="Инс
   background-color: #33428a !important; border-color: rgba(245, 156, 187, .6) !important; color: #fff !important;
   box-shadow: inset 0 0 0 1px rgba(245, 156, 187, .2), 0 2px 0 #18214a !important;
 }
-html[data-theme="dark"] body #roomOverlay #roRoom > .jr-card[data-blkey^="Инструменти|Гардероб"] .wd-sz { color: #ffb8d2 !important; }
+html[data-theme="dark"] body #roomOverlay #roRoom > .jr-card[data-blkey^="Инструменти|Гардероб"] .wd-sz,
+html[data-theme="dark"] body #roomOverlay #roRoom > .jr-card[data-blkey^="Инструменти|Размер на дрешки"] .wd-sz { color: #ffb8d2 !important; }
 
 /* 3 · „Майчинството накратко“: знамето е медал отпред (js 20.10); редовете — крем / нощно стъкло */
 html body #roomOverlay #roRoom > .jr-card[data-blkey^="Инструменти|Майчинството"] > h4.jr-title > .jr-medal.in20-zn { order: -1; }
@@ -612,6 +616,7 @@ html body #roomOverlay #roRoom > .jr-card[data-blkey^="Инструменти|К
 html[data-theme="dark"] body #roomOverlay #roRoom > .jr-card[data-blkey^="Инструменти|Конвертори"] .jr-weekcap { color: #e3e5f5 !important; }
 /* бележките — въздух под решетката/бутона */
 html body #roomOverlay #roRoom > .jr-card[data-blkey^="Инструменти|Гардероб"] .wd-grid + .jr-privacy,
+html body #roomOverlay #roRoom > .jr-card[data-blkey^="Инструменти|Размер на дрешки"] .wd-grid + .jr-privacy,
 html body #roomOverlay #roRoom > .jr-card[data-blkey^="Инструменти|Нощна лампа"] .jr-btn + .jr-privacy,
 html body #roomOverlay #roRoom > .jr-card[data-blkey^="Инструменти|Настройки"] .set-grid + .jr-privacy { margin-top: 12px !important; }
 /* микрофонът — вдясно, над десния ъгъл на листа (както в „Дневник на мама“, pl-dnevnik.css 43) */

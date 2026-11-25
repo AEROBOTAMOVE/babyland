@@ -5,6 +5,9 @@
 
 (function () {
   'use strict';
+  // 📏 25.11 (одит G-14 · една карта за размерите): ключът за сливането в „Размер на дрешки“.
+  //    ПЪТ НАЗАД: window.BL_RAZMERI_EDNA = false → всичко се рисува както преди (4 карти в Инструменти).
+  if (window.BL_RAZMERI_EDNA === undefined) window.BL_RAZMERI_EDNA = true;
 
   const D = window.BL_DATA;
   const load = (k, d) => { try { const v = JSON.parse(localStorage.getItem(k)); if (v == null) return d; if (Array.isArray(d) !== Array.isArray(v)) return d; if (d && typeof d === 'object' && (!v || typeof v !== 'object')) return d; return v; } catch (e) { return d; } };
@@ -523,7 +526,9 @@
     const predOut = el('p', 'bb-feed bb-pred', ''); c3.appendChild(predOut);
     const feedRow = el('div', 'jr-quick');
     // проход 3 T10: грешен тап в 3ч заместваше безвъзвратно реалното „преди 2ч, лявата".
-    const sideWord = s => s === 'left' ? 'лявата гърда' : s === 'right' ? 'дясната гърда' : 'шише';
+    // 25.11 (одит G-07): „Хранене“ от часовника на Начало вече се огледва тук със s:'chas' — непознатото
+    //    не е „шише“, а просто „хранене“. ПЪТ НАЗАД: върни „: 'шише'“ за всичко различно от left/right.
+    const sideWord = s => s === 'left' ? 'лявата гърда' : s === 'right' ? 'дясната гърда' : s === 'bottle' ? 'шише' : 'хранене';
     let undoPrev = null, undoTimer = null, undoБеляг = null;
     // 🔴 12.08 (тест за паметта, ред Д4 — ЖИВ дефект, губеше запис на майката):
     //    ↺ пазеше САМО стойността отпреди натискането и я връщаше СЛЯПО до 10
@@ -547,7 +552,9 @@
         //    прогнозата продължаваше — все едно храненето е записано. А после
         //    „последно хранене преди…“ показваше старото, без нито дума.
         if (!save('bl_feed', { t: Date.now(), s: v })) return;
-        const fl = load('bl_feedlog', []); fl.push(Date.now()); save('bl_feedlog', fl.slice(-16));  // ротиращ лог само с времена — за прогнозата
+        // 25.11 (одит G-07): таванът 16 покриваше под 2 дни, а „Седмицата в картинка“, „Спрямо вчера“ и
+        //    „Типичният ден“ четат 7. ПЪТ НАЗАД: window.BL_G07_SLIV = false → пак 16.
+        const fl = load('bl_feedlog', []); fl.push(Date.now()); save('bl_feedlog', fl.slice(window.BL_G07_SLIV === false ? -16 : -200));  // ротиращ лог само с времена — за прогнозата
         refreshFeed(); тикЧасовник();
         feedКаз.hidden = true;
         if (prev) {
@@ -590,7 +597,35 @@
       }
       undoChip.hidden = true; clearTimeout(undoTimer);
     });
-    c3.appendChild(feedRow); c3.appendChild(undoChip); c3.appendChild(feedКаз);
+    // 🤱 25.11 (одит G-07 · една истина за храненето): „Коя гърда е наред“ (rooms8) вече не се рисува —
+    //    същото „Ляво/Дясно“ тук казва и коя е наред. Чете трите следи: bl_feed (left/right), bl_nursing (Л/Д)
+    //    и старите bl_breast — отбелязаното там преди не се губи. Стои ИЗВЪН .jr-quick (pl-bebe фокусира първия
+    //    чип там). ПЪТ НАЗАД: window.BL_G07_SLIV = false → редът мълчи, а rooms8 пак рисува своята карта.
+    const гърдаКаз = el('p', 'br-now', ''); гърдаКаз.setAttribute('aria-live', 'polite'); гърдаКаз.hidden = true;
+    const гърдаНаРед = () => {
+      let най = null;
+      const f = load('bl_feed', null);
+      if (f && f.t && (f.s === 'left' || f.s === 'right')) най = { last: f.s === 'left' ? 'L' : 'R', ts: f.t };
+      // „Хранене“ от часовника (s:'chas') носи страната на предишното бързо „Ляво/Дясно“ в lr/lrT (chasovnik.js)
+      else if (f && (f.lr === 'left' || f.lr === 'right') && typeof f.lrT === 'number' && f.lrT > 0) най = { last: f.lr === 'left' ? 'L' : 'R', ts: f.lrT };
+      load('bl_nursing', []).forEach(x => {
+        if (!x || !x.ts || (x.s !== 'Л' && x.s !== 'Д')) return;
+        if (!най || x.ts > най.ts) най = { last: x.s === 'Л' ? 'L' : 'R', ts: x.ts };
+      });
+      const st = load('bl_breast', null);   // само се ЧЕТЕ — стар запис от скритата карта
+      if (st && (st.last === 'L' || st.last === 'R') && typeof st.ts === 'number' && st.ts > 0 && (!най || st.ts > най.ts)) най = { last: st.last, ts: st.ts };
+      return най;
+    };
+    function рисувайГърда() {
+      if (window.BL_G07_SLIV === false) { гърдаКаз.hidden = true; return; }
+      const т = гърдаНаРед();
+      if (!т) { гърдаКаз.hidden = true; return; }
+      const мин = Math.max(0, Math.round((Date.now() - т.ts) / 60000));
+      const кога = мин < 2 ? 'току-що' : (мин < 60 ? 'преди ' + мин + ' мин' : 'преди ' + Math.round(мин / 60) + ' ч');
+      гърдаКаз.innerHTML = `Сега е ред на <strong class="br-next">${т.last === 'L' ? 'ДЯСНАТА' : 'ЛЯВАТА'}</strong> гърда.<br><small>последно: ${т.last === 'L' ? 'лява' : 'дясна'}, ${кога}</small>`;
+      гърдаКаз.hidden = false;
+    }
+    c3.appendChild(feedRow); c3.appendChild(гърдаКаз); c3.appendChild(undoChip); c3.appendChild(feedКаз);
     // 🍼 25.11 (одит G-03, видяно): „Хранене“ от „⏳ Преди колко време?“ на Начало пишеше само в bl_chas, а тук
     //    стоеше „Още няма отбелязано хранене“ — записала е, а приложението казва, че не е. Сега картата и
     //    кръгът четат и часовника (без да пишат в него). ПЪТ НАЗАД: махни часовникХранене() и двете места.
@@ -599,6 +634,13 @@
       let f = load('bl_feed', null);
       const отЧ = часовникХранене(); const последноЧ = отЧ.length ? Math.max.apply(null, отЧ) : 0;
       if (последноЧ && (!f || !(f.t >= последноЧ))) f = { t: последноЧ, s: 'chas' };
+      // 25.11 (одит G-07): старите докосвания в „Коя гърда е наред“ (bl_breast) също са хранене — четат се,
+      //    не се пишат. ПЪТ НАЗАД: window.BL_G07_SLIV = false.
+      if (window.BL_G07_SLIV !== false) {
+        const гр = load('bl_breast', null);
+        if (гр && (гр.last === 'L' || гр.last === 'R') && typeof гр.ts === 'number' && гр.ts > 0 && (!f || !(f.t >= гр.ts))) f = { t: гр.ts, s: гр.last === 'L' ? 'left' : 'right' };
+      }
+      рисувайГърда();
       if (!f) { feedOut.innerHTML = 'Още няма отбелязано хранене. Бутни отдолу при следващото. 👇'; predOut.innerHTML = ''; return; }
       // 🔴 11.08 (обиколка във времето): записът може да е в БЪДЕЩЕТО — в
       //    последната неделя на октомври часовникът се връща от 04:00 на 03:00
@@ -1042,7 +1084,8 @@
 
     // 2. Брояч на ритания
     const c2 = card('Брояч на ритания 👣 <span class="jr-sub">твоят ритъм — не чуждо число</span>');
-    const kickBig = el('button', 'pg-kick', '👣<span>Ритна!</span>'); kickBig.type = 'button';
+    // 25.11: етикетът си има клас — pl-plyush увива 👣 в първия <span> и „Ритна! (2)“ се пишеше в иконата (видяно: „Ритна!Ритна!“)
+    const kickBig = el('button', 'pg-kick', '👣<span class="pg-kick-t">Ритна!</span>'); kickBig.type = 'button';
     const kickOut = el('p', 'bb-res', '');
     const kickHist = el('div', 'pg-kickhist', '');
     // проход 4 [24]: пръстен от 10 точици, който се пълни при всеки тап — кръг,
@@ -1116,7 +1159,7 @@
         дни.push({ ts: Date.now(), mins });
         if (!save('bl_kicks', дни.slice(-40))) { kickCount = 10; return; }
         kickOut.innerHTML = `🎉 10 движения за <strong>${mins} мин</strong>! Браво, бебче.`;
-        kickBig.querySelector('span').textContent = 'Отначало';
+        kickBig.querySelector('.pg-kick-t').textContent = 'Отначало';
         светниПръстен();                          // всичките 10 светят за миг
         kickRing.classList.add('full'); setTimeout(() => kickRing.classList.remove('full'), 1200);
         kickCount = 0;
@@ -1124,7 +1167,7 @@
         fx().confetti(kickOut);                  // Б8.4: 10-то ритниче се празнува
       } else {
         kickOut.textContent = `${kickCount} / 10 движения…`;
-        kickBig.querySelector('span').textContent = 'Ритна! (' + kickCount + ')';
+        kickBig.querySelector('.pg-kick-t').textContent = 'Ритна! (' + kickCount + ')';
         светниПръстен();
         if (window.BL_FX) BL_FX.buzz(6);   // проход 4: нежен тактилен цък (мама брои с очи затворени)
       }
@@ -1139,7 +1182,7 @@
       kickCount--;
       if (!kickCount) kickStart = 0;
       kickOut.textContent = kickCount ? `${kickCount} / 10 движения…` : 'Махнах го. Броенето почва отначало при следващото движение.';
-      kickBig.querySelector('span').textContent = kickCount ? 'Ритна! (' + kickCount + ')' : 'Ритна!';
+      kickBig.querySelector('.pg-kick-t').textContent = kickCount ? 'Ритна! (' + kickCount + ')' : 'Ритна!';
       светниПръстен(); kickNe.hidden = !kickCount;
       if (window.BL_FX) BL_FX.buzz(6);
     });
@@ -1645,13 +1688,44 @@
 
   function renderTools(root) {
     // 1. Размери дрешки
-    const c1 = card('Размер на дрешки 📏 <span class="jr-sub">по възраст (или по ръст)</span>');
+    // 📏 25.11 (одит G-14 · една карта за размерите): в Инструменти имаше четири карти за едно и също —
+    //    „Размер на дрешки“, „Гардеробчето“ (rooms3), „Размерите EU/UK/US“ (rooms9) и редът с размери в
+    //    „Конвертори“ — с ЧЕТИРИ различни таблици (тук 3 месеца → 62, там → 68). Тази карта остава ЕДИНСТВЕНАТА:
+    //    горе „по ръст“ (логиката на „Какво му става сега“, rooms16 — последното bl_growth_len), после полето за
+    //    месеци по ЕДНА таблица (rooms16, ръст→размер), после решетката на Гардеробчето (МЕСТЕНА, не клонирана —
+    //    слушателите и записът на bl_wardrobe са същите), накрая EU/UK/US сгънато. Заглавието (първият текстов
+    //    възел) е същото → ключът „Инструменти|Размер на дрешки 📏“, кабарчетата и търсенето остават живи.
+    //    Нито един ключ не се сменя и не се прелива. Липсва ли износ (стар кеш) — тази част просто не се слива и
+    //    другата карта се рисува сама: BL_RAZMERI_SLYATO казва на rooms3/rooms9 какво НАИСТИНА е слято сега.
+    //    ПЪТ НАЗАД: window.BL_RAZMERI_EDNA = false → картата и останалите три — както преди.
+    const слей = !!window.BL_RAZMERI_EDNA;
+    const сл = window.BL_RAZMERI_SLYATO = { ok: false, rast: false, garderob: false, tabl: false };
+    const c1 = card('Размер на дрешки 📏 <span class="jr-sub">' + (слей ? 'по ръст → какво му става → какво имаме' : 'по възраст (или по ръст)') + '</span>');
     const sizes = [[0, '50–56'], [1, '56'], [2, '62'], [4, '68'], [6, '74'], [9, '80'], [12, '86'], [18, '92'], [24, '98']];
+    // ЕДНАТА таблица (rooms16: {см, eu, възр}). „възр“ е '1-3 м.' или '2-3 г.' — годините ×12; [от, до).
+    const РАСТ = слей && Array.isArray(window.BL_RAZMERI_RAST) && window.BL_RAZMERI_RAST.length ? window.BL_RAZMERI_RAST : null;
+    const поВъзрастЕдна = m => {
+      for (const r of РАСТ) {
+        const [от, до] = String(r.възр).replace(/[^\d-]/g, '').split('-').map(Number);
+        const k = /г\./.test(r.възр) ? 12 : 1;
+        if (m >= (от || 0) * k && m < (до || 99) * k) return r.eu;
+      }
+      return m < 0 ? РАСТ[0].eu : РАСТ[РАСТ.length - 1].eu;
+    };
+    // (а) ПО РЪСТ — съдържанието на „Какво му става сега“ без заглавието му
+    if (слей && typeof window.BL_RAZMER_SEGA === 'function') {
+      try {
+        const s = window.BL_RAZMER_SEGA();
+        const парчета = [...s.children].filter(n => !n.classList.contains('jr-title'));
+        if (парчета.length) { c1.appendChild(el('p', 'jr-weekcap', '📏 По ръст — какво му става сега:')); парчета.forEach(n => c1.appendChild(n)); сл.rast = true; }
+      } catch (e) {}
+    }
+    if (слей) c1.appendChild(el('p', 'jr-weekcap', '🗓️ А на колко месеца? (за подарък — напред)'));
     const mI = el('input', 'jr-word'); mI.type = 'number'; mI.min = 0; mI.max = 36; mI.placeholder = 'Възраст в месеци…';
     const a = ageFromBirth(getBaby().birth); if (a) mI.value = Math.round(a.devMonths); // М1: коригирана
     c1.appendChild(mI);
     const sOut = el('p', 'bb-res', '');
-    function sizeFor(m) { let s = sizes[0][1]; sizes.forEach(([mm, ss]) => { if (m >= mm) s = ss; }); return s; }
+    function sizeFor(m) { if (РАСТ) return поВъзрастЕдна(m); let s = sizes[0][1]; sizes.forEach(([mm, ss]) => { if (m >= mm) s = ss; }); return s; }
     // 🟠 11.08 (измерено): „-5“ даваше размер 50–56, „999“ — размер 98. Числото
     //    беше извън всякакъв смисъл, а картата пак отговаряше уверено.
     function calcSize() {
@@ -1662,6 +1736,36 @@
     }
     mI.addEventListener('input', calcSize); calcSize();
     c1.appendChild(sOut);
+    // (в) КАКВО ИМАМЕ — решетката на Гардеробчето. „Сега сте около размер X“ е същото X като горе: по последния
+    //    ръст (bl_growth_len), иначе по коригираната възраст и ЕДНАТА таблица. Размер извън решетката (98) →
+    //    без подаване, Гардеробчето си смята само, както преди. bl_wardrobe — същата форма, същите записи.
+    if (слей && typeof window.BL_GARDEROB === 'function') {
+      try {
+        let текущ = null;
+        if (РАСТ) {
+          const посл = load('bl_growth_len', []).slice(-1)[0];
+          const v = посл ? +посл.v : NaN;
+          if (v > 0) текущ = (РАСТ.find(r => v <= r.см) || РАСТ[РАСТ.length - 1]).eu;
+          else if (a) текущ = поВъзрастЕдна(a.devMonths != null ? a.devMonths : a.months);
+        }
+        const g = window.BL_GARDEROB(['50', '56', '62', '68', '74', '80', '86', '92'].includes(текущ) ? текущ : undefined);
+        const парчета = [...g.children].filter(n => !n.classList.contains('jr-title'));
+        if (парчета.length) { c1.appendChild(el('p', 'jr-weekcap', '👕 Какво имаме по размери — да не купиш пак:')); парчета.forEach(n => c1.appendChild(n)); сл.garderob = true; }
+      } catch (e) {}
+    }
+    // (г) EU / UK / US — сгънато, тялото на „Размерите“ (rooms9) без заглавието ѝ
+    if (слей && typeof window.BL_RAZMERI_TABL === 'function') {
+      try {
+        const t = window.BL_RAZMERI_TABL();
+        const парчета = [...t.children].filter(n => !n.classList.contains('jr-title'));
+        if (парчета.length) {
+          const дет = el('details', 'rz-tabl');
+          const заг = el('summary', '', '🌍 EU / UK / US таблица'); заг.style.cssText = 'cursor:pointer;padding:12px 0;min-height:44px;font-weight:700;';
+          дет.appendChild(заг); парчета.forEach(n => дет.appendChild(n)); c1.appendChild(дет); сл.tabl = true;
+        }
+      } catch (e) {}
+    }
+    сл.ok = слей;
     root.appendChild(c1);
 
     // 2. Бебешки бюджет
@@ -2520,7 +2624,7 @@
     }
     const ci = load('bl_checkins', {})[today()];
     if (ci) chips += `<button class="td-chip" data-room="Дневник на мама">${['😩', '😔', '😐', '🙂', '🥰'][ci.m]} Минутката за теб — взета ✔</button>`;
-    else chips += `<button class="td-chip td-accent" data-room="Дневник на мама">💜 Как си днес?</button>`;
+    // 25.11 (екрани, А-обиколка): вторият „как си“ на началото — махнат; въпросът остава в „Дневник на мама“. ПЪТ НАЗАД: върни else-реда с „💜 Как си днес?“.
     if (window.BL_TODAY_EXTRAS) chips += BL_TODAY_EXTRAS(baby, a);
 
     // месечнина / рожден ден 🎉
@@ -2550,7 +2654,7 @@
       `<div class="td-inner reveal">
         <div class="td-top">
           ${bebeAva(a)}
-          <div><div class="td-hello">${hello} 🌸</div><div class="td-age">${esc(nm)} е на <strong>${esc(a.text)}</strong></div></div>
+          <div><div class="td-hello">${hello} 🌸</div></div>
         </div>
         ${banner}
         <div class="td-tip">💡 ${tip}</div>

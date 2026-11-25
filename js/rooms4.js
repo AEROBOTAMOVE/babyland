@@ -454,7 +454,10 @@
     'Бременност': r => сложи(r, waterCard()),
     'Моето бебе': r => сложи(r, mlCard()),
     'Захранване': r => сложи(r, lunchCard()),
-    'Здраве и SOS': r => сложи(r, pharmacyStartCard(r)),
+    // 25.11 (одит G-08 · три аптечки → една): осемте чипа са редове с отметка в „Аптечката вкъщи 🧸“
+    //    (rooms3). Скрива се САМО когато онази карта наистина рисува списъка (флагът + списъкът от rooms8).
+    //    pharmacyStartCard и PHARMACY_START — непипнати. ПЪТ НАЗАД: window.BL_APTECHKA_EDNA = false.
+    'Здраве и SOS': r => { if (!(window.BL_APTECHKA_EDNA && Array.isArray(window.BL_APTECHKA_SPISAK))) сложи(r, pharmacyStartCard(r)); },
     'Дневник на мама': r => сложи(r, monthStatsCard()),
     'Развитие и игри': r => сложи(r, prideCard()),
     'Инструменти': r => сложи(r, nightLampCard())

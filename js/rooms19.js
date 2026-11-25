@@ -314,6 +314,10 @@
     }
     return { svg, encode, MAX: MAXBYTES };
   })();
+  // 25.11 (одит G-15 · листовете за бабата → една „Картичка за бабата“): същият кодер, без копие —
+  //    rooms3 рисува квадрата в обединената картичка оттук. Само износ, нищо тук не се променя.
+  //    ПЪТ НАЗАД: махни реда (rooms3 тогава печата листа без квадрат и го казва).
+  window.BL_QR = QR;
 
   function qrCard() {
     const c = card('QR за бабата 🔳 ' + sub('баба не сваля приложения — но снима с телефона'));
@@ -459,7 +463,9 @@
   // ── свързване ──
   const ПАКЕТИ = {
     'Дневник на мама': root => { root.appendChild(sameDayCard()); },
-    'Инструменти': root => { root.appendChild(qrCard()); }
+    // 25.11 (одит G-15): квадратът вече живее в „Картичка за бабата“ (rooms3) — същият кодер, същите данни.
+    //    qrCard() стои непокътната. ПЪТ НАЗАД: window.BL_LIST_BABA = false → картата се връща.
+    'Инструменти': root => { if (!window.BL_LIST_BABA) root.appendChild(qrCard()); }
   };
   Object.keys(ПАКЕТИ).forEach(стая => {
     const база = window.ROOM_FEATURES && window.ROOM_FEATURES[стая];
