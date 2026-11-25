@@ -229,35 +229,6 @@
         изход.appendChild(записвачка(име, () => {
           b.textContent = име + (имаЗапис(име) ? ' 🎤' : '');
         }));
-        // 🔴 25.08 (обход „Игри и Лаборатория", ИЗМЕРЕНО живо: бутонът беше
-        //    един от двата НЕМИ в цялата стая): натискаш „Изпей я вместо мен"
-        //    в 3 през нощта — роботът почва да чете, а по бутона НИЩО не се
-        //    променя и НЯМА как да го спреш. Второто натискане само рестартира
-        //    от началото. Ако телефонът няма български глас (често), не става
-        //    абсолютно нищо и никой не ти го казва.
-        //    Точно това беше поправено на 11.08 в СЪСЕДНАТА карта (extras2.js,
-        //    приспивните) — близнакът тук остана. Един похват и на двете места:
-        //    ключе, което казва в кое положение е, и честна дума при липса.
-        //    ПЪТ НАЗАД: върни трите реда „speechSynthesis.cancel/speak" без
-        //    покой()/onend/onerror.
-        const ПОКОЙ = '🔊 Изпей я вместо мен';
-        const робот = el('button', 'jr-chip', ПОКОЙ); робот.type = 'button';
-        const покой = () => { робот.textContent = ПОКОЙ; };
-        const немоглИ = () => { покой(); fx().cheer('Този телефон не може да пее на глас — но думите са тук, за теб 💜'); };
-        робот.addEventListener('click', () => {
-          try {
-            if (speechSynthesis.speaking || speechSynthesis.pending) { speechSynthesis.cancel(); покой(); return; }
-            speechSynthesis.cancel();
-            const u = new SpeechSynthesisUtterance(ОЩЕ_ПЕСНИ[име].replace(/\n/g, ', '));
-            u.lang = 'bg-BG'; u.rate = 0.78; u.pitch = 1.15;
-            u.onend = покой; u.onerror = немоглИ;
-            speechSynthesis.speak(u);
-            робот.textContent = '⏹️ Спри пеенето';
-            // някои телефони нито почват, нито гърмят — ключето да не остане вдигнато
-            setTimeout(() => { try { if (!speechSynthesis.speaking && !speechSynthesis.pending) покой(); } catch (e) { покой(); } }, 1200);
-          } catch (e) { немоглИ(); }
-        });
-        изход.appendChild(робот);
       });
       ред.appendChild(b);
     });
@@ -330,11 +301,8 @@
         const з = b.dataset.z;
         ов.querySelector('#bgSay').textContent = з + '!';
         b.classList.add('pop'); setTimeout(() => b.classList.remove('pop'), 260);
-        try {
-          speechSynthesis.cancel();
-          const u = new SpeechSynthesisUtterance(з); u.lang = 'bg-BG'; u.rate = 0.75; u.pitch = 1.4;
-          speechSynthesis.speak(u);
-        } catch (e) {}
+        // 25.11: звуците на животните остават (по думата на собственика) — единственото говорене в приложението
+        if (window.BL_ZVUK) window.BL_ZVUK(з);
         fx().buzz(8);
       }));
       ов.querySelector('#bgX').addEventListener('click', () => ов.remove());

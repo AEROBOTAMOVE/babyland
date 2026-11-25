@@ -604,27 +604,7 @@
       // 🔒 22.07 (армия, RED): името на бебето (писано от мама, пазено сурово)
       //   влизаше направо в innerHTML. Екранираме ТУК, а не в parts —
       //   lastTxt отива в четенето на глас и трябва да остане чист текст.
-      out.innerHTML = `<div class="st-story pop">${parts.map(p => `<p>${esc(p)}</p>`).join('')}
-        <button class="jr-chip st-read" type="button">🔊 Прочети на глас</button></div>`;
-      // 🟠 11.08 (обиколка, ИЗМЕРЕНО): бутонът пускаше четенето и после нямаше
-      //    как да се спре — вторият натиск само рестартираше от началото, а
-      //    докато чете, нищо не личеше по бутона. Три абзаца на глас в 3 през
-      //    нощта, без спирачка. Сега е ключе, и казва в кое положение е.
-      //    Ако гласовете липсват (често на телефон), не мълчим — казваме го.
-      const rb = out.querySelector('.st-read');
-      const покой = () => { rb.textContent = '🔊 Прочети на глас'; };
-      rb.addEventListener('click', () => {
-        try {
-          if (speechSynthesis.speaking || speechSynthesis.pending) { speechSynthesis.cancel(); покой(); return; }
-          const u = new SpeechSynthesisUtterance(lastTxt);
-          u.lang = 'bg-BG'; u.rate = 0.92;
-          u.onend = покой; u.onerror = () => { покой(); fx().cheer('Този телефон не може да чете на глас — но приказката е тук, за теб 💜'); };
-          speechSynthesis.speak(u);
-          rb.textContent = '⏹️ Спри четенето';
-          // някои телефони нито почват, нито гърмят — да не остане ключето вдигнато
-          setTimeout(() => { if (!speechSynthesis.speaking && !speechSynthesis.pending) покой(); }, 1200);
-        } catch (e) { покой(); fx().cheer('Този телефон не може да чете на глас — но приказката е тук, за теб 💜'); }
-      });
+      out.innerHTML = `<div class="st-story pop">${parts.map(p => `<p>${esc(p)}</p>`).join('')}</div>`;   // 25.11: без четене на глас
     });
     c.appendChild(r1); c.appendChild(r2); c.appendChild(gen); c.appendChild(out);
     return c;

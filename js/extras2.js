@@ -400,39 +400,7 @@
         // смяна на песничка спира предишния глас — иначе двете се застъпват
         try { if (window.speechSynthesis) speechSynthesis.cancel(); } catch (e) {}
         row.querySelectorAll('.jr-chip').forEach(x => x.classList.remove('on')); b.classList.add('on');
-        out.innerHTML = `<div class="lul-text pop">${SONGS[name].split('\n').map(l => l ? `<p>${l}</p>` : '<br>').join('')}</div>
-          <button class="jr-chip" type="button">🔊 Изпей я вместо мен</button>`;
-        const говори = out.querySelector('button');
-        const покой = '🔊 Изпей я вместо мен';
-        // 🔴 11.08 (измерено): натиснато веднъж — speechSynthesis.speaking стана
-        //    true, а бутонът НЕ СЕ ПРОМЕНИ с нищо. Мама в 3 през нощта не знае
-        //    дали е тръгнало и НЯМА как да го спре — второто докосване само
-        //    започваше отначало. А на телефон без български глас не се случва
-        //    нищо и никой не ѝ го казва.
-        говори.addEventListener('click', () => {
-          const S = window.speechSynthesis;
-          if (!S || typeof window.SpeechSynthesisUtterance !== 'function') {
-            говори.textContent = '🤍 Този телефон не чете на глас — но думите са тук';
-            setTimeout(() => { говори.textContent = покой; }, 3500);
-            return;
-          }
-          if (S.speaking || S.pending) { S.cancel(); говори.textContent = покой; return; }
-          let тръгна = false;
-          try {
-            const u = new SpeechSynthesisUtterance(SONGS[name].replace(/\n/g, ', '));
-            u.lang = 'bg-BG'; u.rate = 0.78; u.pitch = 1.15;
-            u.onstart = () => { тръгна = true; говори.textContent = '⏹ Спри четенето'; };
-            u.onend = u.onerror = () => { говори.textContent = покой; };
-            S.speak(u);
-            говори.textContent = '⏹ Спри четенето';
-            setTimeout(() => {
-              if (!тръгна) { говори.textContent = '🤍 Гласът не тръгна — но думите са тук'; setTimeout(() => { говори.textContent = покой; }, 3500); }
-            }, 1400);
-          } catch (e) {
-            говори.textContent = '🤍 Гласът не тръгна — но думите са тук';
-            setTimeout(() => { говори.textContent = покой; }, 3500);
-          }
-        });
+        out.innerHTML = `<div class="lul-text pop">${SONGS[name].split('\n').map(l => l ? `<p>${l}</p>` : '<br>').join('')}</div>`;   // 25.11: без пеене от машината
       });
       row.appendChild(b);
     });

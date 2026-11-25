@@ -351,25 +351,8 @@ window.BL_ARTICLES_DATA = [
       if (window.BL_FX) BL_FX.buzz(10);
       try { document.dispatchEvent(new CustomEvent('bl:artfavs')); } catch (e) {}
     };
-    // 🔊 четене на глас (за мама с бебе на ръце)
-    let spk = $('artSpeak');
-    if (!spk) {
-      spk = document.createElement('button');
-      spk.id = 'artSpeak'; spk.className = 'ro-nav'; spk.type = 'button';
-      spk.setAttribute('aria-label', 'Прочети на глас'); spk.textContent = '🔊';
-      const head = document.querySelector('.art-head');
-      if (head) head.appendChild(spk);
-    }
-    spk.onclick = () => {
-      try {
-        if (speechSynthesis.speaking) { speechSynthesis.cancel(); spk.textContent = '🔊'; return; }
-        const plain = (a.title + '. ' + a.body).replace(/[#*🚨]/g, '').replace(/\n+/g, '. ');
-        const u = new SpeechSynthesisUtterance(plain);
-        u.lang = 'bg-BG'; u.rate = 0.95;
-        u.onend = () => { spk.textContent = '🔊'; };
-        speechSynthesis.speak(u); spk.textContent = '⏹';
-      } catch (e) {}
-    };
+    // 25.11: без четене на глас (собственикът не иска машинен глас). Стар бутон от предишна статия — махаме го.
+    { const стар = $('artSpeak'); if (стар) стар.remove(); }
     // 📎 „Виж също“ — 3 сродни статии по темата
     let relHtml = '';
     if (window.BL_LIB) {
