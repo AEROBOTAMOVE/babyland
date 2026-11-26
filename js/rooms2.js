@@ -2673,11 +2673,32 @@
   // форма на данните) и събаряше цялата стая. Сега приема всичко.
   const esc = s => String(s == null ? '' : s).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;').replace(/'/g, '&#39;').replace(/\n/g, '<br>');
 
+  // 25.11 (одит G-12 бележниците): ЕДИН бележник с етикети. Всяка карта-бележник
+  //   (бебе · храна · здраве · дом · свободна страница) получава ред с етикети и
+  //   отваря другите бележници на място. Всеки етикет чете и пише СВОЯ СТАР ключ
+  //   във СТАРАТА форма {t, d:число} — нищо не се мести и не се трие.
+  //   „Само за мен“ (bl_freepage) се рисува САМО в „Дневник на мама“ (стаята е
+  //   под ПИН — extras.js pinGate); от другите карти етикетът само отваря стаята.
+  //   Същото знаме крие „Само твое 🔒“ (rooms.js), „Изповедалнята“ (women2.js →
+  //   етикет в „Заключеното дневниче“) и вгнездява „3 минути свободно писане“ (women3.js).
+  //   ПЪТ НАЗАД: window.BL_BELEZHNIK_EDNO = false → всичките 11 карти както преди.
+  if (window.BL_BELEZHNIK_EDNO === undefined) window.BL_BELEZHNIK_EDNO = true;
+  const ЕТИКЕТИ = {
+    bl_notes_baby:   { l: 'бебе',   ph: 'Свободен текст — навици, смешки, наблюдения…' },
+    bl_notes_food:   { l: 'храна',  ph: 'Напр.: „Тиквичка + картоф = хит! Ябълката само печена.“' },
+    bl_notes_health: { l: 'здраве', ph: 'Дата, симптом, съвет на лекаря — да го имаш под ръка.' },
+    bl_notes_tools:  { l: 'дом',    ph: 'Свободен текст — твоето бяло поле…' },
+    bl_freepage:     { l: 'само за мен 🔒', ph: 'Пиши каквото ти е на сърцето…' }
+  };
+
   function notesCard(title, sub, key, ph) {
     const c = card(title + ' <span class="jr-sub">' + sub + '</span>');
+    // 25.11 (одит G-12): `ключ` е етикетът, който е избран сега; по подразбиране — собственият.
+    //   ПЪТ НАЗАД: със знаме false ключ === key завинаги.
+    let ключ = key;
     const ta = el('textarea', 'jr-paper'); ta.rows = 3; ta.placeholder = ph;
-    ta.dataset.draft = 'bl_draft_' + key;          // черновата се пази на мига (даже да затвориш)
-    ta.value = load('bl_draft_' + key, '');
+    ta.dataset.draft = 'bl_draft_' + ключ;          // черновата се пази на мига (даже да затвориш)
+    ta.value = load('bl_draft_' + ключ, '');
     const btn = el('button', 'jr-btn', 'Запази бележката 📌'); btn.type = 'button';
     // 🎤 диктовка направо в полето (за ръце, заети с бебе)
     const SR = window.SpeechRecognition || window.webkitSpeechRecognition;
@@ -2703,17 +2724,17 @@
     //    мълчаливо. Затова: пресен прочит и при рисуване, и точно преди запис.
     //    Триенето търси бележката по СЪДЪРЖАНИЕ, не по номер в реда — номерът
     //    важи за старата снимка, а складът може да е мръднал оттогава.
-    let notes = load(key, []);
+    let notes = load(ключ, []);
     // 15.09 (E2E „дете 2 г.“, dete2g-08): „Приказката е в „Мигове за спомен““ — а картата не я
     //   показваше до ново отваряне на стаята: приказката (dev.js) пише в същия ключ отвън. Кодът,
     //   който пише, пуска „bl:notes“ с ключа; картата на екрана се пре-рисува, откачената се маха.
     const _освежи = e => {
       if (!list.isConnected) { document.removeEventListener('bl:notes', _освежи); return; }
-      if (e && e.detail && e.detail.key === key) draw();
+      if (e && e.detail && e.detail.key === ключ) draw();
     };
     document.addEventListener('bl:notes', _освежи);
     function draw() {
-      notes = load(key, []);            // пресен прочит при всяко рисуване
+      notes = load(ключ, []);            // пресен прочит при всяко рисуване
       list.innerHTML = notes.length ? '' : '<p class="jr-privacy">Твоето бяло поле — пиши каквото искаш, колкото искаш. 🤍</p>';
       // 🔴 26.08 (ИЗМЕРЕНО): `[null]` тук гърмеше на `n.t` и убиваше БЯЛОТО
       //    ПОЛЕ — картата, в която мама пише свободно. Едно и също място
@@ -2721,11 +2742,12 @@
       notes.filter(x => x && x.t != null).slice().reverse().forEach((n, ri) => {
         const row = el('div', 'nt-row');
         row.innerHTML = `<div class="nt-txt">${esc(n.t)}</div><div class="nt-meta"><span>${new Date(n.d).toLocaleDateString('bg-BG')}</span><button class="nt-del" type="button" aria-label="Изтрий">🗑</button></div>`;
+        const кР = ключ;   // 25.11 (одит G-12): редът трие от ключа, от който е нарисуван
         row.querySelector('.nt-del').addEventListener('click', () => {
-          const сега = load(key, []);   // пресен прочит ПРЕДИ записа
+          const сега = load(кР, []);   // пресен прочит ПРЕДИ записа
           const i = сега.findIndex(x => x && x.d === n.d && x.t === n.t);
           if (i > -1) сега.splice(i, 1);
-          save(key, сега); draw();
+          save(кР, сега); draw();
         });
         list.appendChild(row);
       });
@@ -2743,30 +2765,74 @@
         return;
       }
       шът.hidden = true;
-      const сега = load(key, []);       // пресен прочит ПРЕДИ записа (виж капана горе)
+      const кЗ = ключ;                   // 25.11 (одит G-12): пише в избрания етикет, старата форма {t, d:число}
+      const сега = load(кЗ, []);       // пресен прочит ПРЕДИ записа (виж капана горе)
       сега.push({ t: v, d: Date.now() });
       // 🔴🔴 25.08 (ИЗМЕРЕНО): тази карта стои в ШЕСТ стаи. При пълна памет
       //    записът падаше мълчаливо, полето се изчистваше и бутонът пишеше
       //    „✔ Запазено“. Тоест написаното от мама изчезваше от екрана И от
       //    паметта, с потвърждение отгоре. Полето вече НЕ се чисти, преди
       //    записът да е минал наистина.
-      if (!save(key, сега)) {
+      if (!save(кЗ, сега)) {
         шът.textContent = ПЪЛНА;
         шът.hidden = false;
         btn.textContent = 'Не се побра 😕';
         clearTimeout(btn._t); btn._t = setTimeout(() => { if (btn.isConnected) btn.textContent = 'Запази бележката 📌'; }, 3200);
         return;
       }
-      ta.value = ''; save('bl_draft_' + key, '');
+      ta.value = ''; save('bl_draft_' + кЗ, '');
       draw();
       // тих знак, че е прието
       btn.textContent = '✔ Запазено';
       clearTimeout(btn._t); btn._t = setTimeout(() => { if (btn.isConnected) btn.textContent = 'Запази бележката 📌'; }, 1800);
       if (window.BL_FX) BL_FX.buzz(10);
-      if (key === 'bl_freepage' && window.refreshToday) refreshToday(); // разходката брои реда веднага
+      if (кЗ === 'bl_freepage' && window.refreshToday) refreshToday(); // разходката брои реда веднага
+      // 25.11 (одит G-12): друга карта на същия ключ (напр. „Домашен бележник“ + етикет „дом“
+      //   в „Моето бебе“) се пре-рисува — същият знак като dev.js:318. ПЪТ НАЗАД: знаме false.
+      if (window.BL_BELEZHNIK_EDNO && ЕТИКЕТИ[key]) { try { document.dispatchEvent(new CustomEvent('bl:notes', { detail: { key: кЗ } })); } catch (e) {} }
     });
     draw();
+    // 25.11 (одит G-12): редът с етикети — само при включено знаме и само за петте бележника.
+    //   „само за мен 🔒“ показва bl_freepage САМО в собствената карта (стаята „Дневник на мама“
+    //   е под ПИН); от другите карти той само отваря стаята → минава през BL_PIN.gate.
+    //   ПЪТ НАЗАД: window.BL_BELEZHNIK_EDNO = false → без ред, картата е както преди.
+    let редЕт = null;
+    if (window.BL_BELEZHNIK_EDNO && ЕТИКЕТИ[key]) {
+      редЕт = el('div', 'nt-labels');
+      редЕт.setAttribute('role', 'group'); редЕт.setAttribute('aria-label', 'Кой бележник');
+      редЕт.style.cssText = 'display:flex;flex-wrap:wrap;gap:6px;margin:6px 0 8px';
+      const бутони = [];
+      const отбележи = () => бутони.forEach(b => { const да = b.dataset.k === ключ; b.classList.toggle('on', да); b.setAttribute('aria-pressed', да ? 'true' : 'false'); });
+      const смени = k => {
+        if (k === ключ || !ЕТИКЕТИ[k]) return;
+        if (k === 'bl_freepage' && key !== 'bl_freepage') return;   // пазач: личното никога извън своята стая
+        try { save(ta.dataset.draft, ta.value); } catch (e) {}     // черновата на стария етикет остава при него
+        ключ = k;
+        ta.dataset.draft = 'bl_draft_' + ключ;
+        ta.value = load('bl_draft_' + ключ, '');
+        ta.placeholder = ключ === key ? ph : ЕТИКЕТИ[ключ].ph;
+        шът.hidden = true;
+        отбележи(); draw();
+      };
+      ['bl_notes_baby', 'bl_notes_food', 'bl_notes_health', 'bl_notes_tools'].concat(key === 'bl_freepage' ? ['bl_freepage'] : []).forEach(k => {
+        const b = el('button', 'jr-chip nt-lbl'); b.type = 'button'; b.dataset.k = k;
+        b.textContent = ЕТИКЕТИ[k].l;
+        b.addEventListener('click', () => смени(k));
+        бутони.push(b); редЕт.appendChild(b);
+      });
+      if (key !== 'bl_freepage') {
+        const b = el('button', 'jr-chip nt-lbl nt-lbl-go'); b.type = 'button';
+        b.textContent = '🔒 само за мен →';
+        b.setAttribute('aria-label', 'Свободна страница — отваря „Дневник на мама“');
+        b.addEventListener('click', () => { if (window.MamaHelper && MamaHelper.open) MamaHelper.open('Дневник на мама'); });
+        редЕт.appendChild(b);
+      }
+      отбележи();
+    }
+    if (редЕт) c.appendChild(редЕт);
     c.appendChild(ta); c.appendChild(btn); c.appendChild(шът); c.appendChild(list);
+    // 25.11 (одит G-12): обещанието от „Само твое 🔒“ (rooms.js, скрита със знамето) живее тук.
+    if (window.BL_BELEZHNIK_EDNO && key === 'bl_freepage') c.appendChild(el('p', 'jr-privacy', '🔒 Всичко тук живее само на твоя телефон. Никой друг не го вижда — дори ние.'));
     return c;
   }
 

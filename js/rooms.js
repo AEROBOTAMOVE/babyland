@@ -776,7 +776,9 @@
     //    два пъти в една карта. Казва се веднъж, с пълния глас.
     c9.appendChild(el('h4', 'jr-title', 'Само твое 🔒 <span class="jr-sub">тук пишеш свободно</span>'));
     c9.appendChild(el('p', 'jr-privacy', '🔒 Всичко тук живее само на твоя телефон. Никой друг не го вижда — дори ние.'));
-    root.appendChild(c9);
+    // 25.11 (одит G-12 бележниците): със знамето същото изречение стои в „Свободна страница ✍️“
+    //   (rooms2.js notesCard) — отделната карта се крие. ПЪТ НАЗАД: window.BL_BELEZHNIK_EDNO = false.
+    if (!window.BL_BELEZHNIK_EDNO) root.appendChild(c9);
   }
 
   // 🗑️ renderSos (45 реда) МАХНАТ — беше присвоен тук, но rooms2.js веднага

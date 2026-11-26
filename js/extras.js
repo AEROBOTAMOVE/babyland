@@ -18,6 +18,11 @@
   const сложи = (r, к) => { if (к) r.appendChild(к); };  // 04.08: карта, пазена от паузата след загуба, връща null
   const esc = s => String(s == null ? '' : s).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;').replace(/'/g, '&#39;');
   const fx = () => window.BL_FX || { confetti: () => {}, cheer: () => {}, buzz: () => {} };
+  // 25.11 (одит G-16 · двойниците → по една карта): ЕДНО знаме за трите двойки —
+  //    сън×настроение (rooms14), дъх 4-7-8 (тук, „Здраве и SOS“), витрината в „Първите пъти“ (rooms4).
+  //    Чете се при отваряне на стаята, не при зареждане — редът на скриптовете не пречи. Ключове не се пипат.
+  //    ПЪТ НАЗАД: window.BL_DVOYNICI_EDNO = false — и четирите карти се рисуват точно както преди.
+  if (window.BL_DVOYNICI_EDNO === undefined) window.BL_DVOYNICI_EDNO = true;
   const getBaby = () => load('bl_baby', { name: '', sex: '', birth: '' });
 
   // ═══════════ 📤 КАРТИЧКИ ЗА СПОДЕЛЯНЕ (canvas) ═══════════
@@ -126,7 +131,7 @@
     const blob = await new Promise(r => cv.toBlob(r, 'image/png'));
     const file = new File([blob], 'baby-land-kartichka.png', { type: 'image/png' });
     if (navigator.canShare && navigator.canShare({ files: [file] })) {
-      try { await navigator.share({ files: [file], title: 'Baby Land' }); return 'споделена'; }
+      try { await navigator.share({ files: [file], title: 'Бейби Ленд' }); return 'споделена'; }
       catch (e) { if (e.name === 'AbortError') return 'отказана'; }
     }
     const a = document.createElement('a');
@@ -158,7 +163,7 @@
     const firsts = load('bl_firsts', {});
     const opts = [];
     const a = window.BL_AGE ? BL_AGE(baby.birth) : null;
-    if (a && a.ym > 0) opts.push({ emoji: '🎂', title: nm + ' на ' + a.ym + (a.ym === 1 ? ' месец!' : ' месеца!'), sub: 'Расте с любов и Baby Land' });
+    if (a && a.ym > 0) opts.push({ emoji: '🎂', title: nm + ' на ' + a.ym + (a.ym === 1 ? ' месец!' : ' месеца!'), sub: 'Расте с любов и Бейби Ленд' });
     // 🔴 25.08 (обход „Игри и Лаборатория", ИЗМЕРЕНО): датата се вземаше без
     //    нито една проверка. Празна или крива стойност в bl_firsts → картичката
     //    излизаше с надпис „Invalid Date" — и мама я праща във Вайбър така.
@@ -192,7 +197,7 @@
           const св = getBaby(), име = св.name || 'Бебето';
           const въз = window.BL_AGE ? BL_AGE(св.birth) : null;
           if (o.emoji === '🎂' && въз && въз.ym > 0) {
-            return { emoji: '🎂', title: име + ' на ' + въз.ym + (въз.ym === 1 ? ' месец!' : ' месеца!'), sub: 'Расте с любов и Baby Land' };
+            return { emoji: '🎂', title: име + ' на ' + въз.ym + (въз.ym === 1 ? ' месец!' : ' месеца!'), sub: 'Расте с любов и Бейби Ленд' };
           }
           if (o.emoji === '💜') return { emoji: '💜', title: 'Обичаме те, ' + име + '!', sub: 'От мама, с цялото ѝ сърце' };
           return o;
@@ -213,7 +218,7 @@
     bb.addEventListener('click', () => {
       const t = ti.value.trim();
       if (!t) { ti.focus(); fx().buzz(8); fx().cheer('Напиши надписа в полето — или избери готов отгоре 💜'); return; }
-      shareFrom(bb, { emoji: '🎈', title: t, sub: 'Baby Land моменти' });
+      shareFrom(bb, { emoji: '🎈', title: t, sub: 'Бейби Ленд моменти' });
     });
     c.appendChild(ti); c.appendChild(bb);
     return c;
@@ -1104,7 +1109,10 @@
     // (по-новата, план 19). В „Здраве и SOS" breathCard си остава.
     'Дневник на мама': r => { r.appendChild(badgesCard()); r.appendChild(shareMemCard()); r.appendChild(pinCard()); },
     'Моето бебе': r => { r.appendChild(lenHeadCard()); r.appendChild(soundsCard()); },
-    'Здраве и SOS': r => сложи(r, breathCard()),
+    // 25.11 (одит G-16 · дъх 4-7-8): „Спокоен дъх 🌬️“ се скрива — същото 4-7-8 живее в „Дишай с формата 🫁“
+    //    (calm.js, Дневник). openBreath / window.BL_BREATH остават — pl-zamama.js го отваря отвън.
+    //    ПЪТ НАЗАД: window.BL_DVOYNICI_EDNO = false.
+    'Здраве и SOS': r => { if (!window.BL_DVOYNICI_EDNO) сложи(r, breathCard()); },
     'Развитие и игри': r => { r.appendChild(storyCard()); r.appendChild(shareMemCard()); }
   };
   Object.keys(EXTRAS2).forEach(room => {

@@ -702,7 +702,13 @@
 
   // ═══════════ 🕵️‍♀️ ТАЙНИТЕ ═══════════
 
-  function lockedNote(title, key, ph, hint) {
+  // 25.11 (одит G-12 бележниците): незадължителен 5-и параметър `етикети` =
+  //   [{k, l, ph, hint}] → ред с етикети; всеки чете/пише СВОЯ стар ключ във
+  //   формата {t, d:'YYYY-MM-DD'}. Подава го само diaryCard при знамето
+  //   window.BL_BELEZHNIK_EDNO — така „Изповедалнята“ живее като етикет вътре в
+  //   „Заключеното дневниче“ и остава зад катинара (secrets.js хваща заглавието).
+  //   ПЪТ НАЗАД: без 5-и параметър (знаме false) картата е байт по байт както преди.
+  function lockedNote(title, key, ph, hint, етикети) {
     const c = card(title);
     const list = el('div', 'wm-secrets');
     // 🔴 11.08 (обиколка по телефон · известният клас дефекти №6+№7+№8):
@@ -760,6 +766,33 @@
       ta.value = ''; draw(); fx().buzz(10);
       каз(b, '🔒 Заключено. Стои само на този телефон.');
     });
+    // 25.11 (одит G-12): етикетите. `key` се сменя на място; махнатото/отмяната се нулират,
+    //   защото важат за стария ключ. Недописаното в полето остава — мама избира къде да го заключи.
+    if (Array.isArray(етикети) && етикети.length > 1) {
+      const ред = el('div', 'wm-labels');
+      ред.setAttribute('role', 'group'); ред.setAttribute('aria-label', 'Къде да пиша');
+      ред.style.cssText = 'display:flex;flex-wrap:wrap;gap:6px;margin:6px 0 8px';
+      const бутони = [];
+      const отбележи = () => бутони.forEach(x => { const да = x.dataset.k === key; x.classList.toggle('on', да); x.setAttribute('aria-pressed', да ? 'true' : 'false'); });
+      const смени = k => {
+        const е = етикети.find(x => x.k === k);
+        if (!е || k === key) return;
+        key = k; ph = е.ph || ph; hint = е.hint || hint;
+        ta.placeholder = ph;
+        махнато = null; отмяна.hidden = true;
+        отбележи(); draw();
+      };
+      етикети.forEach(е => {
+        const x = el('button', 'jr-chip wm-lbl'); x.type = 'button'; x.dataset.k = е.k; пръст(x);
+        x.textContent = е.l;
+        x.addEventListener('click', () => смени(е.k));
+        бутони.push(x); ред.appendChild(x);
+      });
+      отбележи();
+      c.appendChild(ред);
+      // „3 минути свободно писане“ (women3.js), вгнездена тук, иска пре-рисуване на ключ k.
+      c._wmRedraw = k => { if (k && k !== key) смени(k); else draw(); };
+    }
     c.appendChild(list); c.appendChild(ta); c.appendChild(b); c.appendChild(отмяна); draw();
     // 🔁 дефект №8: картата не научаваше, че „3 минути свободно писане“ е
     //   писала в същия ключ. Върне ли се в кадър, се сверява с паметта.
@@ -773,8 +806,14 @@
   }
 
   function diaryCard() {
+    // 25.11 (одит G-12): при знамето изповедалнята е етикет тук (заглавието НЕ се пипа —
+    //   по него secrets.js:21/56 заключва и предлага ПИН). ПЪТ НАЗАД: window.BL_BELEZHNIK_EDNO = false.
+    const етикети = window.BL_BELEZHNIK_EDNO ? [
+      { k: 'bl_wm_diary', l: 'дневниче 🔒', ph: 'Днес…', hint: 'Празно е. Никой няма да го види освен теб. 🔒' },
+      { k: 'bl_wm_confess', l: 'изповед 🤫', ph: 'Нещото, което не смея да кажа на глас…', hint: 'Има неща, които не се казват на никого. Тук могат. 🤫' }
+    ] : undefined;
     return lockedNote('Заключеното дневниче 🔒' + sub('тук пиша каквото не казвам на никого'),
-      'bl_wm_diary', 'Днес…', 'Празно е. Никой няма да го види освен теб. 🔒');
+      'bl_wm_diary', 'Днес…', 'Празно е. Никой няма да го види освен теб. 🔒', етикети);
   }
   function confessCard() {
     return lockedNote('Изповедалнята 🤫' + sub('без съвети · без осъждане · само място'),
@@ -903,6 +942,11 @@
   const base = window.ROOM_FEATURES && window.ROOM_FEATURES['Жената в мен'];
   if (base) window.ROOM_FEATURES['Жената в мен'] = root => {
     base(root);
-    КАРТИ.forEach(f => { try { const c = f(); if (c) root.appendChild(c); } catch (e) {} });
+    КАРТИ.forEach(f => {
+      // 25.11 (одит G-12): „Изповедалнята“ е етикет в „Заключеното дневниче“ → отделната карта не се строи.
+      //   ПЪТ НАЗАД: window.BL_BELEZHNIK_EDNO = false.
+      if (window.BL_BELEZHNIK_EDNO && f === confessCard) return;
+      try { const c = f(); if (c) root.appendChild(c); } catch (e) {}
+    });
   };
 })();

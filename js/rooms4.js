@@ -459,7 +459,28 @@
     //    pharmacyStartCard и PHARMACY_START — непипнати. ПЪТ НАЗАД: window.BL_APTECHKA_EDNA = false.
     'Здраве и SOS': r => { if (!(window.BL_APTECHKA_EDNA && Array.isArray(window.BL_APTECHKA_SPISAK))) сложи(r, pharmacyStartCard(r)); },
     'Дневник на мама': r => сложи(r, monthStatsCard()),
-    'Развитие и игри': r => сложи(r, prideCard()),
+    // 25.11 (одит G-16 · витрината → в „Първите пъти“): „Витрина на гордостта 🏅“ е само поглед върху
+    //    bl_firsts + bl_ms_d + bl_teeth_d, а „Първите пъти 🌟“ (rooms2) е единственият, който пише bl_firsts.
+    //    При знамето пиедесталът се МЕСТИ (не копира) под седемте дати; заглавието на „Първите пъти“ не се пипа.
+    //    Няма ли я онази карта (пауза, бременност, стар кеш) — рисува се старата самостоятелна карта.
+    //    ПЪТ НАЗАД: window.BL_DVOYNICI_EDNO = false (знамето е в extras.js).
+    'Развитие и игри': r => {
+      const в = prideCard();
+      if (в && window.BL_DVOYNICI_EDNO) {
+        const пп = [...r.querySelectorAll(':scope > .jr-card')].find(к => {
+          const т = к.querySelector('.jr-title');
+          return т && /^Първите пъти/.test(т.textContent.replace(/^[^A-Za-zА-Яа-яЁё]+/, ''));
+        });
+        if (пп) {
+          const надпис = el('p', 'jr-weekcap', '🏅 Витрината — последните големи мигове');
+          надпис.setAttribute('data-g16', 'vitrina');
+          пп.appendChild(надпис);
+          [...в.children].filter(н => !н.classList.contains('jr-title')).forEach(н => пп.appendChild(н));
+          return;
+        }
+      }
+      сложи(r, в);
+    },
     'Инструменти': r => сложи(r, nightLampCard())
   };
   Object.keys(PACKS4).forEach(room => {

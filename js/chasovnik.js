@@ -29,9 +29,19 @@
   const esc = s => String(s == null ? '' : s).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;').replace(/'/g, '&#39;');
   const fx = () => window.BL_FX || { confetti() {}, cheer() {}, buzz() {}, pop() {} };
 
-  const КЛЮЧ = 'bl_chas';          // { id: { t: epoch, hist: [epoch…] } }
-  const КЛЮЧ_Н = 'bl_chas_nastr';  // { id: { h: часа, max: брой } }
-  const КЛЮЧ_В = 'bl_chas_vidimi'; // [id…] — кои редчета мама е пуснала
+  // 🍼🍼 25.11 (решение на собственика, вълна 3): „Преди колко време?“ е ОТДЕЛНО за всяко дете. Първото дете
+  //    остава на СТАРИТЕ ключове (bl_chas, bl_chas_nastr, bl_chas_vidimi) — нищо не се мести и не се губи;
+  //    второто (BL_BABY2) е на същите с „@2“. Кое е активно: bl_chas_dete (1|2), избира се горе в картата.
+  //    Градусите на второто дете отиват в bl_temps@2 (стаите са на първото — решение от baby2.js).
+  //    ПЪТ НАЗАД: bl_chas_dete = 1 (или без второ дете) — всичко е точно както преди.
+  const има2 = () => !!(window.BL_BABY2 && BL_BABY2.has && BL_BABY2.has());
+  const дете = () => { if (!има2()) return 1; try { return JSON.parse(localStorage.getItem('bl_chas_dete')) === 2 ? 2 : 1; } catch (e) { return 1; } };
+  const суф = д => ((д || дете()) === 2 ? '@2' : '');
+  const КЛЮЧ = д => 'bl_chas' + суф(д);          // { id: { t: epoch, hist: [epoch…] } }
+  const КЛЮЧ_Н = д => 'bl_chas_nastr' + суф(д);  // { id: { h: часа, max: брой } }
+  const КЛЮЧ_В = д => 'bl_chas_vidimi' + суф(д); // [id…] — кои редчета мама е пуснала
+  const ТЕМП = д => 'bl_temps' + суф(д);
+  const имеДете = д => (д || дете()) === 2 ? (((window.BL_BABY2 && BL_BABY2.име) ? BL_BABY2.име('') : '') || 'второто') : (((load('bl_baby', {}) || {}).name || '').trim() || 'първото');
 
   // ⚠️ Числата тук са ОТПРАВНА ТОЧКА от кутията, не наше предписание.
   //    Мама ги сменя с едно докосване; педиатърът има последната дума.
@@ -69,20 +79,20 @@
   // 22.11 (сверено с NHS на 22.11.2026): парацетамол за деца ≥ 4 ч между дозите, до 4 за 24 ч; при 2–3 мес. — до 2.
   //    Ибупрофен: на 6–8 ч, до 3 за 24 ч; под 3 мес. не. Затова под 3 месеца (известна рождена дата) НЯМА начални числа.
   //    ПЪТ НАЗАД: махни подТриМесеца() и „мл“ по-долу.
-  function подТриМесеца() {
-    try { const b = load('bl_baby', {}); if (!b || !b.birth) return false; const д = new Date(b.birth + 'T00:00:00'); const м = (Date.now() - д.getTime()) / 86400e3 / 30.44; return isFinite(м) && м >= 0 && м < 3; } catch (e) { return false; }
+  function подТриМесеца(д) {
+    try { const b = (д || дете()) === 2 ? ((window.BL_BABY2 && BL_BABY2.get) ? BL_BABY2.get() : {}) : load('bl_baby', {}); if (!b || !b.birth) return false; const д = new Date(b.birth + 'T00:00:00'); const м = (Date.now() - д.getTime()) / 86400e3 / 30.44; return isFinite(м) && м >= 0 && м < 3; } catch (e) { return false; }
   }
-  function настройка(р) {
-    const н = load(КЛЮЧ_Н, {})[р.id] || {};
-    const мл = р.lek && подТриМесеца();   // без начални числа при най-малките
+  function настройка(р, д) {
+    const н = load(КЛЮЧ_Н(д), {})[р.id] || {};
+    const мл = р.lek && подТриМесеца(д);   // без начални числа при най-малките
     // 22.11 · мояH/мояM: записано ли е от НЕЯ — началните числа не са „твоята бележка“ и картата не бива да го казва
     return { h: (typeof н.h === 'number' ? н.h : (мл ? 0 : р.h)), max: (typeof н.max === 'number' ? н.max : (мл ? 0 : р.max)), мояH: typeof н.h === 'number', мояM: typeof н.max === 'number' };
   }
   function пишиНастройка(id, поле, стойност) {
-    const вс = load(КЛЮЧ_Н, {});
+    const вс = load(КЛЮЧ_Н(), {});
     const мое = (вс[id] && typeof вс[id] === 'object') ? вс[id] : {};
     мое[поле] = стойност; вс[id] = мое;
-    return save(КЛЮЧ_Н, вс);
+    return save(КЛЮЧ_Н(), вс);
   }
 
   // 🍼 15.09 (E2E „родила“, RODILA-3): „Преди колко време? · Хранене — Още нищо“, а в
@@ -166,15 +176,16 @@
     nurofen: /(нурофен|ибупрофен|ибу(?![а-я])|advil|бруфен)/i,
     paracet: /(парацетамол|панадол|ефералган|цефекон|paracetamol)/i,
   };
-  function отДневника(id) {
+  function отДневника(id, д) {
     const re = ИМЕ_ЛЕК[id]; if (!re) return [];
-    const м = load('bl_meds', []);
-    return м.filter(x => x && isFinite(x.ts) && re.test(String(x.n || ''))).map(x => +x.ts).filter(t => t > 0 && t <= Date.now() + 60000);
+    const м = load('bl_meds', []); const дд = д || дете();
+    return м.filter(x => x && isFinite(x.ts) && re.test(String(x.n || '')) && (дд === 2 ? x.dete === 2 : x.dete !== 2)).map(x => +x.ts).filter(t => t > 0 && t <= Date.now() + 60000);
   }
-  function запис(вс, id) {
+  function запис(вс, id, дт) {
+    const дд = дт || дете();
     const з = Object.assign({}, (вс[id] && typeof вс[id] === 'object') ? вс[id] : {});
-    if (id === 'hrana') { const в = вънХранене(); if (в > (з.t || 0)) з.t = в; }
-    const д = отДневника(id);
+    if (id === 'hrana' && дд === 1) { const в = вънХранене(); if (в > (з.t || 0)) з.t = в; }   // стаите са на първото дете
+    const д = отДневника(id, дд);
     if (д.length) {
       const свои = Array.isArray(з.hist) ? з.hist : [];
       з.hist = свои.concat(д.filter(t => свои.indexOf(t) < 0)).sort((a, b) => a - b);
@@ -183,26 +194,30 @@
     return з;
   }
   // Дозите, записани ТУК (без тези от дневника — те си стоят там). За епизода, бележката и дневника.
-  function своиДози(откога) {
-    const вс = load(КЛЮЧ, {}); const out = [];
-    РЕДОВЕ.filter(р => р.lek).forEach(р => {
-      const з = вс[р.id]; const h = з && Array.isArray(з.hist) ? з.hist : (з && з.t ? [з.t] : []);
-      h.forEach(t => { if (typeof t === 'number' && t > (откога || 0)) out.push({ n: р.ime, ts: t, id: р.id, отЧасовника: true }); });
+  function своиДози(откога, д) {
+    const деца = (д === 1 || д === 2) ? [д] : (има2() ? [1, 2] : [1]); const out = [];
+    деца.forEach(дд => {
+      const вс = load(КЛЮЧ(дд), {});
+      РЕДОВЕ.filter(р => р.lek).forEach(р => {
+        const з = вс[р.id]; const h = з && Array.isArray(з.hist) ? з.hist : (з && з.t ? [з.t] : []);
+        h.forEach(t => { if (typeof t === 'number' && t > (откога || 0)) out.push({ n: р.ime + (има2() ? ' · ' + имеДете(дд) : ''), ts: t, id: р.id, дете: дд, отЧасовника: true }); });
+      });
     });
     return out.sort((a, b) => a.ts - b.ts);
   }
   // ↺ 25.11 (одит G-01): махане на ЕДИН запис (последния или посочения). Температурата си взима и градусите.
-  function махниДоза(id, ts) {
-    const вс = load(КЛЮЧ, {}); const з = вс[id];
+  function махниДоза(id, ts, дт) {
+    const д = дт || дете();
+    const вс = load(КЛЮЧ(д), {}); const з = вс[id];
     if (!з || typeof з !== 'object') return false;
     const h = Array.isArray(з.hist) ? з.hist.slice() : (з.t ? [з.t] : []);
     const i = h.lastIndexOf(ts); if (i < 0) return false;
     h.splice(i, 1); з.hist = h;
     if (h.length) з.t = Math.max.apply(null, h); else delete з.t;
     if (!h.length && !з.t) delete вс[id]; else вс[id] = з;
-    if (!save(КЛЮЧ, вс)) return false;
-    if (id === 'temp') { const т = load('bl_temps', []); const ост = т.filter(x => !(x && x.ts === ts)); if (ост.length !== т.length) save('bl_temps', ост); }
-    if (id === 'hrana') храненеОтДневника(ts);   // 25.11 (G-07): и от общия дневник — само това време
+    if (!save(КЛЮЧ(д), вс)) return false;
+    if (id === 'temp') { const т = load(ТЕМП(д), []); const ост = т.filter(x => !(x && x.ts === ts)); if (ост.length !== т.length) save(ТЕМП(д), ост); }
+    if (id === 'hrana' && д === 1) храненеОтДневника(ts);   // 25.11 (G-07): и от общия дневник — само това време
     document.querySelectorAll('#todaySection .ch-row').forEach(r => { if (r._опресни) r._опресни(); });
     ['BL_TEMPS_REDRAW', 'BL_EPISODE_REDRAW'].forEach(f => { try { if (typeof window[f] === 'function') window[f](); } catch (e) {} });
     return true;
@@ -210,7 +225,7 @@
 
   // ── записът ────────────────────────────────────────────────────────────
   function отбележи(id, кога) {
-    const вс = load(КЛЮЧ, {});
+    const вс = load(КЛЮЧ(), {});
     const з = (вс[id] && typeof вс[id] === 'object') ? вс[id] : {};
     з.t = кога;
     // 🧹 История САМО за брояча на 24-те часа (за разлика от дневника, който
@@ -218,7 +233,7 @@
     const h = Array.isArray(з.hist) ? з.hist : [];
     h.push(кога); з.hist = h.filter(x => typeof x === 'number').sort((a, b) => a - b).slice(-60);
     вс[id] = з;
-    return save(КЛЮЧ, вс);
+    return save(КЛЮЧ(), вс);
   }
   const дозиЗа24 = (з, сега) => (Array.isArray(з && з.hist) ? з.hist : []).filter(t => сега - t < 24 * 3600e3).length;
 
@@ -256,7 +271,7 @@
     const махни = el('button', 'ch-cancel', 'Не беше · махни последния'); махни.type = 'button';
     const редМ = el('div', 'ch-fix-row'); редМ.appendChild(махни); поправка.appendChild(редМ);
     махни.addEventListener('click', () => {
-      const з = load(КЛЮЧ, {})[р.id] || {}; const h = Array.isArray(з.hist) ? з.hist : (з.t ? [з.t] : []);
+      const з = load(КЛЮЧ(), {})[р.id] || {}; const h = Array.isArray(з.hist) ? з.hist : (з.t ? [з.t] : []);
       if (!h.length) { под.innerHTML = '<span class="ch-tih">Тук няма какво да махна. Записаното в „Дневник на даденото“ се маха оттам (🗑).</span>'; поправка.hidden = true; return; }
       if (!махниДоза(р.id, Math.max.apply(null, h))) { под.innerHTML = '<span class="ch-red">😕 Не успях да го махна — пробвай пак.</span>'; return; }
       поправка.hidden = true; fx().buzz(8); опресни();
@@ -311,7 +326,7 @@
 
     // ── опресняване (СМЯТА, не помни) ──
     function опресни() {
-      const вс = load(КЛЮЧ, {}); const з = запис(вс, р.id); const сега = Date.now();
+      const вс = load(КЛЮЧ(), {}); const з = запис(вс, р.id); const сега = Date.now();
       if (!з.t) {
         кога.textContent = '—';
         кога.classList.remove('ch-warn', 'ch-soon');
@@ -325,7 +340,7 @@
       const н = настройка(р);
       let ред2 = 'в <b>' + часДумите(з.t) + '</b>';
       if (р.id === 'temp') {   // 25.11 (G-04): градусите от същото мерене, ако ги има
-        const т = load('bl_temps', []).filter(x => x && isFinite(x.v) && Math.abs((+x.ts) - з.t) <= 120000).pop();
+        const т = load(ТЕМП(), []).filter(x => x && isFinite(x.v) && Math.abs((+x.ts) - з.t) <= 120000).pop();
         if (т) ред2 += ' · <b>' + String(т.v).replace('.', ',') + '°</b>';
       }
       if (р.lek && н.h > 0) {
@@ -386,9 +401,9 @@
       const пиши = () => {
         const v = parseFloat(String(вх.value || '').replace(',', '.'));
         if (!(v >= 34 && v <= 43)) { каз.textContent = 'Напиши градусите като 37,8 (между 34 и 43).'; каз.hidden = false; вх.focus(); return; }
-        const т = load('bl_temps', []).filter(x => !(x && x.ts === t));
+        const т = load(ТЕМП(), []).filter(x => !(x && x.ts === t));
         т.push({ v: Math.round(v * 10) / 10, ts: t });
-        if (!save('bl_temps', т.slice(-80))) { каз.textContent = '😕 Паметта е пълна — градусите НЕ са записани.'; каз.hidden = false; return; }
+        if (!save(ТЕМП(), т.slice(-80))) { каз.textContent = '😕 Паметта е пълна — градусите НЕ са записани.'; каз.hidden = false; return; }
         ['BL_TEMPS_REDRAW', 'BL_EPISODE_REDRAW'].forEach(f => { try { if (typeof window[f] === 'function') window[f](); } catch (e) {} });
         град.hidden = true; fx().buzz(8); опресни();
       };
@@ -402,15 +417,15 @@
       const t = Date.now();
       пак.hidden = true;
       if (!отбележи(р.id, t)) { под.innerHTML = '<span class="ch-red">😕 Паметта на телефона е пълна — часът НЕ е записан. Изтрий нещо и бутни пак.</span>'; return; }
-      const вДневника = р.id === 'hrana' ? храненеВДневника(t) : true;   // 25.11 (G-07): и в общия дневник на храненето
+      const вДневника = (р.id === 'hrana' && дете() === 1) ? храненеВДневника(t) : true;   // 25.11 (G-07): и в общия дневник на храненето
       fx().buzz(10); fx().pop && fx().pop(бут);
       опресни();
-      if (р.lek && ред._настр && ред._настр.hidden && !load(КЛЮЧ_Н, {})[р.id]) { ред._настр.hidden = false; ред._опресниНастр(); } // първия път показваме полетата ВЕДНЪЖ (и бутонът знае, че са отворени)
+      if (р.lek && ред._настр && ред._настр.hidden && !load(КЛЮЧ_Н(), {})[р.id]) { ред._настр.hidden = false; ред._опресниНастр(); } // първия път показваме полетата ВЕДНЪЖ (и бутонът знае, че са отворени)
       покажиВърни(t); покажиГрадуси(t);
       if (!вДневника) върни.appendChild(el('span', 'ch-fix-t', '(Часът е тук, но „Кога яде за последно?“ може да не се обнови — паметта е пълна.)'));
     }
     бут.addEventListener('click', () => {
-      const з = запис(load(КЛЮЧ, {}), р.id); const мин = Date.now() - (з.t || 0);
+      const з = запис(load(КЛЮЧ(), {}), р.id); const мин = Date.now() - (з.t || 0);
       if (з.t && мин >= 0 && мин < ДВОЙНО_MS) {
         пак.innerHTML = '';
         пак.appendChild(el('span', 'ch-fix-t', '„' + esc(р.ime) + '“ е отбелязано преди ' + Math.max(1, Math.round(мин / 1000)) + ' сек. ' + (р.lek ? 'Още една доза ли е?' : 'Още веднъж ли е?')));
@@ -427,7 +442,7 @@
     });
 
     кога.addEventListener('click', () => {
-      const вс = load(КЛЮЧ, {}); const з = вс[р.id] || {};
+      const вс = load(КЛЮЧ(), {}); const з = вс[р.id] || {};
       поправка.hidden = !поправка.hidden;
       if (!поправка.hidden) { const d = new Date(з.t || Date.now()); вход.value = String(d.getHours()).padStart(2, '0') + ':' + String(d.getMinutes()).padStart(2, '0'); вход.focus(); }
     });
@@ -439,14 +454,14 @@
       d.setHours(parseInt(m[1], 10), parseInt(m[2], 10), 0, 0);
       // ⏪ Ако часът е В БЪДЕЩЕТО, тя говори за ВЧЕРА (в 23:40, а сега е 01:10).
       if (d.getTime() > сега.getTime()) d.setDate(d.getDate() - 1);
-      const вс = load(КЛЮЧ, {}); const з = (вс[р.id] && typeof вс[р.id] === 'object') ? вс[р.id] : {};
+      const вс = load(КЛЮЧ(), {}); const з = (вс[р.id] && typeof вс[р.id] === 'object') ? вс[р.id] : {};
       const h = Array.isArray(з.hist) ? з.hist.slice() : [];
       const старо = h.length ? h[h.length - 1] : null;   // 25.11 (G-07): кое време местим — за общия дневник
       if (h.length) h[h.length - 1] = d.getTime(); else h.push(d.getTime());   // поправяме ПОСЛЕДНИЯ, не добавяме нов
       з.t = d.getTime(); з.hist = h.sort((a, b) => a - b).slice(-60); вс[р.id] = з;
-      if (!save(КЛЮЧ, вс)) { под.innerHTML = '<span class="ch-red">😕 Паметта е пълна — поправката НЕ е записана.</span>'; return; }
+      if (!save(КЛЮЧ(), вс)) { под.innerHTML = '<span class="ch-red">😕 Паметта е пълна — поправката НЕ е записана.</span>'; return; }
       // 25.11 (G-07): храненето се мести и в bl_feedlog/bl_feed; ако е ново (празна история) — влиза в дневника
-      if (р.id === 'hrana') { if (старо != null) храненеПоправи(старо, d.getTime()); else храненеВДневника(d.getTime()); }
+      if (р.id === 'hrana' && дете() === 1) { if (старо != null) храненеПоправи(старо, d.getTime()); else храненеВДневника(d.getTime()); }
       поправка.hidden = true; fx().buzz(8); опресни();
     });
 
@@ -463,11 +478,29 @@
     const c = el('div', 'ch-card');
     c.innerHTML = '<span class="ch-title">⏳ Преди колко време?</span>'
       + '<p class="ch-sub">Едно докосване сега — сигурен отговор в 3 през нощта.</p>';
+    // 🍼🍼 25.11 (вълна 3): при второ дете — избор „за кого“. Всяко дете има свой часовник; смяната пренарежда картата.
+    if (има2()) {
+      const деца = el('div', 'ch-fix-row ch-deca'); деца.setAttribute('role', 'group'); деца.setAttribute('aria-label', 'За кое дете е часовникът');
+      деца.style.margin = '6px 0 2px';
+      деца.appendChild(el('span', 'ch-fix-t', 'За кого:'));
+      [1, 2].forEach(д => {
+        const б = el('button', д === дете() ? 'ch-ok' : 'ch-cancel', esc(имеДете(д))); б.type = 'button';
+        б.setAttribute('aria-pressed', String(д === дете())); б.dataset.dete = String(д); б.style.minHeight = '44px';
+        б.addEventListener('click', () => {
+          if (д === дете()) return;
+          save('bl_chas_dete', д);
+          c.remove(); try { mountChasovnik(container); } catch (e) {}
+          const нова = container.querySelector('.ch-card .ch-deca button[data-dete="' + д + '"]'); if (нова) try { нова.focus({ preventScroll: true }); } catch (e) {}
+        });
+        деца.appendChild(б);
+      });
+      c.appendChild(деца);
+    }
     const тяло = el('div', 'ch-body');
     c.appendChild(тяло);
 
-    const видими = load(КЛЮЧ_В, []);   // 22.11: беше null → load() отхвърляше масива и добавеното изчезваше
-    const записи = load(КЛЮЧ, {});
+    const видими = load(КЛЮЧ_В(), []);   // 22.11: беше null → load() отхвърляше масива и добавеното изчезваше
+    const записи = load(КЛЮЧ(), {});
     // ПЪРВО пускане: показваме двете лекарства + храненето. Останалите чакат.
     const пуснати = видими.length ? видими : ['nurofen', 'paracet', 'hrana'];
     const редове = [];
@@ -480,9 +513,9 @@
       още.forEach(р => {
         const b = el('button', 'ch-add-b', '+ ' + р.emo + ' ' + esc(р.ime)); b.type = 'button';
         b.addEventListener('click', () => {
-          const сп = load(КЛЮЧ_В, []); const нов = сп.length ? сп.slice() : ['nurofen', 'paracet', 'hrana'];
+          const сп = load(КЛЮЧ_В(), []); const нов = сп.length ? сп.slice() : ['nurofen', 'paracet', 'hrana'];
           if (нов.indexOf(р.id) < 0) нов.push(р.id);
-          save(КЛЮЧ_В, нов);
+          save(КЛЮЧ_В(), нов);
           b.remove();
           редове.push(рисувайРед(р, тяло));
           if (!тяло.parentNode.querySelector('.ch-add-b')) добави.remove();
@@ -491,6 +524,29 @@
       });
       c.appendChild(добави);
     }
+
+    // 🔔 25.11 (вълна 3, по желание — изключено по подразбиране): тихо известие, щом минат НЕЙНИТЕ часове от кутията.
+    //    Само записаното от нея (мояH) — началните числа не будят никого. Честно: работи, докато приложението е
+    //    отворено или скоро ползвано; не е будилник. ПЪТ НАЗАД: bl_chas_napomni = false (или махни този блок).
+    const нап = el('div', 'ch-fix ch-napomni');
+    const нБ = el('button', 'ch-cancel', ''); нБ.type = 'button'; нБ.style.minHeight = '44px';
+    const нК = el('span', 'ch-fix-t'); нК.style.fontWeight = '400';
+    const нарисувайН = (каз) => {
+      const вкл = load('bl_chas_napomni', false) === true;
+      нБ.textContent = вкл ? '🔔 Тихо напомняне: включено' : '🔕 Тихо напомняне: изключено';
+      нБ.setAttribute('aria-pressed', String(вкл));
+      нК.textContent = каз || 'Когато минат ТВОИТЕ часове от кутията (само ако си ги записала), телефонът ти казва тихо. Работи, докато приложението е отворено или скоро ползвано — не е будилник.';
+    };
+    нБ.addEventListener('click', () => {
+      if (load('bl_chas_napomni', false) === true) { save('bl_chas_napomni', false); нарисувайН(); return; }
+      if (!('Notification' in window)) { нарисувайН('Този телефон не позволява известия от приложението. Часовникът тук си показва всичко както досега.'); return; }
+      const включи = () => { save('bl_chas_napomni', true); нарисувайН(); провериНапомняния(); };
+      if (Notification.permission === 'granted') return включи();
+      if (Notification.permission === 'denied') { нарисувайН('Известията са спрени в настройките на телефона за това приложение — пусни ги оттам и натисни пак.'); return; }
+      try { Promise.resolve(Notification.requestPermission()).then(п => { if (п === 'granted') включи(); else нарисувайН('Без разрешение за известия не мога да ти кажа. Часовникът тук си показва всичко както досега.'); }); } catch (e) { нарисувайН('Не успях да поискам разрешение за известия.'); }
+    });
+    нап.appendChild(нБ); нап.appendChild(нК); нарисувайН();
+    c.appendChild(нап);
 
     c.appendChild(el('p', 'ch-legal', 'Приложението пази <b>часа</b>. Дозата — колко и как — е на кутията и при твоя педиатър. Ако детето е много зле, не чакай часовника: <b>112</b>.'));
 
@@ -525,6 +581,43 @@
     const приВръщане = () => { if (!document.hidden) опресниВсички(); };
     document.addEventListener('visibilitychange', приВръщане);
   }
+
+  // ═══ 25.11 (вълна 3): следващата доза по НЕЙНИТЕ числа · тихото напомняне ═══
+  //   следващи(д) — за картата „Нощта с болно дете“ (rooms5.js): само лекарствата с отбелязан час; „следв“ има
+  //   САМО когато интервалът е записан от нея (мояH). Без наши интервали.
+  function следващи(д) {
+    const дд = д || дете(); const вс = load(КЛЮЧ(дд), {}); const сега = Date.now();
+    return РЕДОВЕ.filter(р => р.lek).map(р => {
+      const з = запис(вс, р.id, дд); if (!з.t) return null;
+      const н = настройка(р, дд);
+      return { id: р.id, ime: р.ime, дете: дд, t: з.t, бр24: дозиЗа24(з, сега), max: н.max, мояM: н.мояM, h: н.h, мояH: н.мояH, следв: н.мояH && н.h > 0 ? з.t + н.h * 3600e3 : null };
+    }).filter(Boolean);
+  }
+  const РОДИТЕЛЕН = { nurofen: 'Ибупрофена', paracet: 'Парацетамола', drugo: 'другото лекарство' };
+  function покажиИзвестие(заглавие, тяло, таг) {
+    const оп = { body: тяло, tag: таг, silent: true, icon: 'icons/icon-192.png' };
+    try {
+      if (navigator.serviceWorker && navigator.serviceWorker.getRegistration) {
+        return navigator.serviceWorker.getRegistration().then(reg => { if (reg && reg.showNotification) return reg.showNotification(заглавие, оп); new Notification(заглавие, оп); }).catch(() => { try { new Notification(заглавие, оп); } catch (e) {} });
+      }
+      new Notification(заглавие, оп);
+    } catch (e) {}
+  }
+  function провериНапомняния() {
+    if (load('bl_chas_napomni', false) !== true) return;
+    if (!('Notification' in window) || Notification.permission !== 'granted') return;
+    const сега = Date.now(); const пратени = load('bl_chas_napomneno', {}); let смяна = false;
+    (има2() ? [1, 2] : [1]).forEach(д => следващи(д).forEach(x => {
+      if (!x.следв || сега < x.следв || сега - x.следв > 6 * 3600e3) return;   // само скоро минало — не будим за вчерашното
+      const кл = д + '|' + x.id + '|' + x.t; if (пратени[кл]) return;
+      покажиИзвестие('Бейби Ленд · ⏳', 'Минаха ' + x.h + ' ч от ' + (РОДИТЕЛЕН[x.id] || x.ime) + ' (по твоята бележка). Провери кутията.' + (има2() ? ' · ' + имеДете(д) : ''), 'bl-chas-' + кл);
+      пратени[кл] = сега; смяна = true;
+    }));
+    if (смяна) { Object.keys(пратени).forEach(к => { if (сега - пратени[к] > 3 * 86400e3) delete пратени[к]; }); save('bl_chas_napomneno', пратени); }
+  }
+  setInterval(провериНапомняния, 30000);
+  document.addEventListener('visibilitychange', () => { if (!document.hidden) провериНапомняния(); });
+  setTimeout(провериНапомняния, 4000);
 
   // ── свързване: СЪЩАТА верига ───────────────────────────────────────────
   const предишното = window.BL_TODAY_BIND;
@@ -570,16 +663,19 @@
     if (/(може ли|трябва ли|как да|защо|колко пъти на ден|на колко часа може)/i.test(t)) return null;
 
     const р = наИме[цел.id];
-    const вс = load(КЛЮЧ, {}); const з = запис(вс, цел.id);
+    // 25.11 (две деца): питането по име на детето води до неговия часовник; иначе — активното
+    let дд = дете(); if (има2()) { const и1 = имеДете(1).toLowerCase(), и2 = имеДете(2).toLowerCase(); if (и2 && и2 !== 'второто' && t.includes(и2)) дд = 2; else if (и1 && и1 !== 'първото' && t.includes(и1)) дд = 1; }
+    const вс = load(КЛЮЧ(дд), {}); const з = запис(вс, цел.id, дд);
+    const чие = има2() ? '<b>' + esc(имеДете(дд)) + ':</b> ' : '';
     if (!з || !з.t) {
-      return 'Не знам — още не си отбелязвала „' + esc(р.ime) + '“. '
+      return чие + 'Не знам — още не си отбелязвала „' + esc(р.ime) + '“. '
         + 'На екрана „Днес“ има карта <b>⏳ Преди колко време?</b> — едно докосване, щом стане, '
         + 'и следващия път ще ти кажа точния час.';
     }
     const сега = Date.now();
-    let ред = '<b>' + предиДумите(сега - з.t) + '</b> — в ' + часДумите(з.t) + '.';
+    let ред = чие + '<b>' + предиДумите(сега - з.t) + '</b> — в ' + часДумите(з.t) + '.';
     if (р.lek) {
-      const н = настройка(р);
+      const н = настройка(р, дд);
       if (н.h > 0) {
         const следв = з.t + н.h * 3600e3;
         ред += сега < следв
@@ -598,7 +694,9 @@
   window.BL_ZHIVI_OTGOVORI.push(живОтговор);
 
   // за проверчиците
-  window.BL_CHAS = { предиДумите: предиДумите, РЕДОВЕ: РЕДОВЕ, отбележи: отбележи, дозиЗа24: дозиЗа24, живОтговор: живОтговор, своиДози: своиДози, махниДоза: махниДоза };
+  window.BL_CHAS = { предиДумите: предиДумите, РЕДОВЕ: РЕДОВЕ, отбележи: отбележи, дозиЗа24: дозиЗа24, живОтговор: живОтговор, своиДози: своиДози, махниДоза: махниДоза, следващи: следващи, дете: дете, има2: има2, имеДете: имеДете, провериНапомняния: провериНапомняния };
   // 25.11 (G-02): дневникът на даденото, болничният епизод и бележката за прегледа четат и дозите от часовника
   window.BL_LEK_DOZI = своиДози;
+  // 25.11 (вълна 3): запис от bl_meds с името на детето, щом децата са две (dete:2 = второто, без поле = първото)
+  window.BL_MEDS_IME = x => (x && има2()) ? Object.assign({}, x, { n: x.n + ' · ' + имеДете(x.dete === 2 ? 2 : 1) }) : x;
 })();

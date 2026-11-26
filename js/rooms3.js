@@ -1454,13 +1454,20 @@
     addRow.appendChild(inp); addRow.appendChild(add);
     const quick = el('div', 'jr-quick');
     const list = el('div', 'nt-list');
+    // 🍼🍼 25.11 (вълна 3, решение на собственика): при второ дете дневникът е по дете — същото „активно дете“ като
+    //    „⏳ Преди колко време?“ (bl_chas_dete). Старите записи (без поле dete) са на първото; новите за второто носят dete:2.
+    //    ПЪТ НАЗАД: без второ дете всичко е както преди; полето dete другите четци го пренебрегват.
+    const Ч = () => window.BL_CHAS || {}; const две = () => !!(Ч().има2 && Ч().има2()); const дт = () => (две() && Ч().дете) ? Ч().дете() : 1;
+    const заДете = x => (дт() === 2 ? x.dete === 2 : x.dete !== 2);
+    const сДете = о => (две() && дт() === 2 ? Object.assign(о, { dete: 2 }) : о);
+    const децаРед = el('div', 'jr-quick md-deca'); децаРед.setAttribute('role', 'group'); децаРед.setAttribute('aria-label', 'За кое дете');
     // 🔇 12.08 (мерено): празно поле → нула ред в списъка, нула в паметта.
     const добавиЛек = () => {
       const v = inp.value.trim();
       if (!v) { nudge(addRow, 'Напиши какво е дадено (както го е казал лекарят). 💚', inp); return; }
       clearHint(addRow);
       items = load('bl_meds', []);   // пресен прочит ПРЕДИ записа
-      items.push({ n: v, ts: Date.now() }); items = items.slice(-60);
+      items.push(сДете({ n: v, ts: Date.now() })); items = items.slice(-60);
       // 🔴 25.08: дневникът на даденото пази мама от двойна доза при уморена
       //    глава. „✔ Записано“ без запис е точно грешката, която той предотвратява.
       if (!save('bl_meds', items)) return;
@@ -1471,29 +1478,31 @@
     inp.addEventListener('keydown', e => { if (e.key === 'Enter') { e.preventDefault(); добавиЛек(); } });
     function draw() {
       items = load('bl_meds', []);   // пресен прочит при всяко рисуване
+      децаРед.innerHTML = ''; децаРед.hidden = !две();
+      if (две()) [1, 2].forEach(д => { const б = el('button', 'jr-chip' + (д === дт() ? ' on' : ''), esc(Ч().имеДете(д))); б.type = 'button'; б.setAttribute('aria-pressed', String(д === дт())); б.addEventListener('click', () => { save('bl_chas_dete', д); draw(); }); децаРед.appendChild(б); });
       quick.innerHTML = '';
-      [...new Set(items.slice(-10).map(x => x.n))].slice(0, 3).forEach(n => {
+      [...new Set(items.filter(заДете).slice(-10).map(x => x.n))].slice(0, 3).forEach(n => {
         const b = el('button', 'jr-chip', '↻ ' + esc(n)); b.type = 'button';
-        b.addEventListener('click', () => { items = load('bl_meds', []); items.push({ n, ts: Date.now() }); items = items.slice(-60); save('bl_meds', items); draw(); fx().buzz(10); });
+        b.addEventListener('click', () => { items = load('bl_meds', []); items.push(сДете({ n, ts: Date.now() })); items = items.slice(-60); save('bl_meds', items); draw(); fx().buzz(10); });
         quick.appendChild(b);
       });
       // 💊 25.11 (одит G-02): дозите, отбелязани в „⏳ Преди колко време?“ (bl_chas), вече стоят и тук —
       //    един списък на даденото. Не се копират в bl_meds (иначе часовникът би ги броил два пъти);
       //    🗑 на такъв ред маха дозата от часовника. ПЪТ НАЗАД: махни „отЧ“ — пак само bl_meds.
-      const отЧ = typeof window.BL_LEK_DOZI === 'function' ? window.BL_LEK_DOZI(Date.now() - 7 * 86400000) : [];
-      const всички = items.filter(x => x && isFinite(x.ts)).concat(отЧ).sort((a, b) => a.ts - b.ts);
+      const отЧ = typeof window.BL_LEK_DOZI === 'function' ? window.BL_LEK_DOZI(Date.now() - 7 * 86400000, дт()) : [];
+      const всички = items.filter(x => x && isFinite(x.ts) && заДете(x)).concat(отЧ).sort((a, b) => a.ts - b.ts);
       list.innerHTML = всички.length ? '' : '<p class="jr-privacy">Тук не даваме дози. Записваш какво е дадено по лекарско предписание, за да не се объркаш с уморена глава. 💚</p>';
       всички.slice(-8).reverse().forEach(it => {
         const row = el('div', 'nt-row');
         row.innerHTML = `<div class="nt-txt">💊 ${esc(it.n)}${it.отЧасовника ? ' <span class="jr-sub">· от „Преди колко време?“</span>' : ''}</div><div class="nt-meta"><span>${new Date(it.ts).toLocaleString('bg-BG')}</span><button class="nt-del" type="button" aria-label="Махни записа „${esc(it.n)}“">🗑</button></div>`;
         row.querySelector('.nt-del').addEventListener('click', () => {
-          if (it.отЧасовника) { if (window.BL_CHAS && BL_CHAS.махниДоза) BL_CHAS.махниДоза(it.id, it.ts); draw(); return; }
+          if (it.отЧасовника) { if (window.BL_CHAS && BL_CHAS.махниДоза) BL_CHAS.махниДоза(it.id, it.ts, it.дете); draw(); return; }
           items = load('bl_meds', []); const i = items.findIndex(x => x && x.ts === it.ts && x.n === it.n); if (i > -1) items.splice(i, 1); save('bl_meds', items); draw();
         });
         list.appendChild(цели(row));
       });
     }
-    c.appendChild(addRow); c.appendChild(quick); c.appendChild(list); draw();
+    c.appendChild(децаРед); c.appendChild(addRow); c.appendChild(quick); c.appendChild(list); draw();
     return c;
   }
 
@@ -1555,7 +1564,7 @@
       const baby = getBaby();
       const a = baby.birth && window.BL_AGE ? BL_AGE(baby.birth) : null;
       const temps = load('bl_temps', []).filter(x => Date.now() - x.ts < 3 * 86400000);
-      const meds = load('bl_meds', []).filter(x => Date.now() - x.ts < 7 * 86400000)   // 25.11 (G-02): + дозите от часовника
+      const meds = load('bl_meds', []).filter(x => Date.now() - x.ts < 7 * 86400000).map((window.BL_MEDS_IME || (x => x)))   // 25.11 (G-02): + дозите от часовника
         .concat(typeof window.BL_LEK_DOZI === 'function' ? window.BL_LEK_DOZI(Date.now() - 7 * 86400000) : []).sort((a, b) => a.ts - b.ts);
       const notes = load('bl_notes_health', []).slice(-4);
       const растеж = load('bl_growth', []);

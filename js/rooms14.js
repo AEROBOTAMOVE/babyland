@@ -306,7 +306,10 @@
   const ПАКЕТИ = {
     'Моето бебе': root => {
       root.appendChild(sleepCurveCard());
-      root.appendChild(sleepMoodCard(false));
+      // 25.11 (одит G-16 · сън×настроение): същата сметка остава само в „Дневник на мама“
+      //    („Сънят му × настроението ти 💜“, до „Кога си най-добре“). Тук не се рисува; ключове само се четат.
+      //    ПЪТ НАЗАД: window.BL_DVOYNICI_EDNO = false (знамето е в extras.js).
+      if (!window.BL_DVOYNICI_EDNO) root.appendChild(sleepMoodCard(false));
       root.appendChild(wallCard());
     },
     'Дневник на мама': root => {

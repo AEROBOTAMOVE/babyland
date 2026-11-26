@@ -162,7 +162,7 @@
       const nm = getBaby().name || 'бебето';
       const open = items.filter(i => !i.done);
       if (!open.length) { fx().cheer('Списъкът е празен или всичко е купено! 🎉'); return; }
-      const text = `🎁 Списък за подаръци за ${nm}:\n` + open.map(i => '• ' + i.t).join('\n') + '\n\n(с обич, през Baby Land 🎈)';
+      const text = `🎁 Списък за подаръци за ${nm}:\n` + open.map(i => '• ' + i.t).join('\n') + '\n\n(с обич, през Бейби Ленд 🎈)';
       if (navigator.share) { try { await navigator.share({ text }); знак(бележка, '✔ Пратих го нататък'); return; } catch (e) { if (e.name === 'AbortError') { знак(бележка, 'Добре — списъкът си стои тук. 💜', 2200); return; } } }
       try { await navigator.clipboard.writeText(text); fx().cheer('Копирано! Прати го на когото искаш 📤'); знак(бележка, '✔ Копирах списъка'); return; } catch (e) {}
       // 🔴 11.08 (измерено): при телефон без „Сподели" И със забранен клипборд

@@ -12,3 +12,7 @@
   color: #8d879d; letter-spacing: .2px; font-variant-numeric: tabular-nums;
 }
 html[data-theme="dark"] .prof-overlay > .pl-ver { color: #a9adcd; }
+/* 25.11 (вълна 3): вместо печата — бутон „🔄 Обнови приложението“ и ред със състоянието под него. ПЪТ НАЗАД: махни трите реда. */
+.prof-overlay > .pl-ver { display: flex; flex-direction: column; align-items: center; gap: 6px; font-size: 13px; }
+.prof-overlay > .pl-ver .pl-ver-b { min-height: 44px; padding: 0 18px; font-size: 15px; }
+.prof-overlay > .pl-ver .pl-ver-s:empty { display: none; }

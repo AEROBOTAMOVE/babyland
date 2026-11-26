@@ -44,20 +44,24 @@
   //    двоеточие). Без вдигане на номера върналата се майка чете старите от
   //    кеша. ПЪТ НАЗАД: '45' + файловете .BAK_TANKITE_20260811 в lib/.
   const LV = '173';            // версия на библиотеката (кеш-бюст)
+  // 25.11 (одит D): версия ПО ФАЙЛ — поправка в една статия тегли само нейния файл, не всичките 18 (~2 MB).
+  //   Пише я САМО dev/proba/lv_karta.js (md5 на съдържанието); build.js спира качването, ако не съвпада.
+  //   Липсващ файл в картата → LV. ПЪТ НАЗАД: LVF = {} (всичко пак по LV).
+  const LVF = {"baby-1.json":"da313078","dev-1.json":"3fc4fb2c","feed-1.json":"b12fb8d4","feed-2.json":"06438a39","health-1.json":"7b3d78e8","health-2.json":"5ca4dcec","health-3.json":"6ba1d4a2","igri-1.json":"598e0768","index.json":"f2cdeda5","lab-1.json":"060d472e","mama-1.json":"fcc4034b","modern-1.json":"5c84c8ef","modern-2.json":"043bc22c","preg-1.json":"19e9e71f","sezoni-1.json":"7060cfdb","tools-1.json":"b075494e","women-1.json":"150011af"};
   let index = null;          // items от lib/index.json
   const bundles = {};        // име на пакет → Promise<{id: body}>
   let loading = null;
 
   function fetchBundle(f) {
     if (!bundles[f]) {
-      bundles[f] = fetch('lib/' + f + '?v=' + LV).then(r => r.json()).catch(() => { delete bundles[f]; return {}; });
+      bundles[f] = fetch('lib/' + f + '?v=' + (LVF[f] || LV)).then(r => r.json()).catch(() => { delete bundles[f]; return {}; });
     }
     return bundles[f];
   }
 
   function init() {
     if (loading) return loading;
-    loading = fetch('lib/index.json?v=' + LV)
+    loading = fetch('lib/index.json?v=' + (LVF['index.json'] || LV))
       .then(r => r.json())
       .then(data => {
         index = data.items || [];

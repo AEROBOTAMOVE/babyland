@@ -6212,7 +6212,7 @@ function findEntry(text, room, exclude) {
     $('roomOverlay').hidden = true;
     document.body.style.overflow = '';
     document.documentElement.classList.remove('ro-otvorena');   // 🔋 задният двор пак живва
-    document.title = 'Baby Land — вълшебният помощник на мама';   // 12.10.5
+    document.title = 'Бейби Ленд — вълшебните помощнички на мама';   // 12.10.5
     махниКапан();
     // 12.10.6: затворено с ✕ → нашето състояние си отива от историята,
     // за да не трябва две „назад“ после
@@ -6226,7 +6226,7 @@ function findEntry(text, room, exclude) {
       ВИЗИТА++;   // 15.11: както close()
       ov.hidden = true;
       document.body.style.overflow = '';
-      document.title = 'Baby Land — вълшебният помощник на мама';
+      document.title = 'Бейби Ленд — вълшебните помощнички на мама';
       махниКапан();
       if (window.refreshToday) window.refreshToday();
     }

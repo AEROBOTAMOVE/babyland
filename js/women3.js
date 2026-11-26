@@ -488,6 +488,14 @@
       // 🔵 11.08: women2.js вече сверява „Заключеното дневниче“ с паметта, щом
       //    картата се върне в кадър — обещанието „чак при следващото отваряне“
       //    вече не е вярно. Текстът се изравнява с истината.
+      // 25.11 (одит G-12 бележниците): вгнездена в „Заключеното дневниче“ (знамето
+      //   BL_BELEZHNIK_EDNO, виж КАРТИ долу) → дневничето се пре-рисува на етикета си
+      //   и думата казва истината: списъкът е точно над нея. ПЪТ НАЗАД: знаме false.
+      if (c._домакин && c._гнездо) {
+        try { if (c._домакин._wmRedraw) c._домакин._wmRedraw('bl_wm_diary'); } catch (e) {}
+        if (!c._гнездо.querySelector('.wm-kept')) c._гнездо.appendChild(el('p', 'jr-privacy wm-kept',
+          'Записано ✔ — вече е в списъка горе. 💜'));
+      } else
       if (!c.querySelector('.wm-kept')) c.appendChild(el('p', 'jr-privacy wm-kept',
         'Записано е в „Заключеното дневниче 🔒“ по-горе — скролни нагоре и е там. 💜'));
       fx().buzz(10);
@@ -1011,6 +1019,28 @@
   const base = window.ROOM_FEATURES && window.ROOM_FEATURES['Жената в мен'];
   if (base) window.ROOM_FEATURES['Жената в мен'] = root => {
     base(root);
-    КАРТИ.forEach(f => { try { const c = f(); if (c) root.appendChild(c); } catch (e) {} });
+    КАРТИ.forEach(f => { try {
+      const c = f(); if (!c) return;
+      // 25.11 (одит G-12 бележниците): „3 минути свободно писане“ пише в bl_wm_diary →
+      //   при знамето живее вътре в „Заключеното дневниче 🔒“ като разгъваемо <details>
+      //   (тоест зад катинара — secrets.js хваща заглавието на дневничето). Ключ, форма
+      //   {t, d:'YYYY-MM-DD'} и огънят с отмяна са непокътнати. Няма ли дневниче —
+      //   картата си стои отделно, както преди. ПЪТ НАЗАД: window.BL_BELEZHNIK_EDNO = false.
+      if (window.BL_BELEZHNIK_EDNO && f === freeWriteCard) {
+        const домакин = Array.from(root.querySelectorAll('.jr-card')).find(k => {
+          const з = k.querySelector('.jr-title');
+          return з && /Заключеното дневниче/.test(з.textContent);
+        });
+        if (домакин) {
+          const гн = el('details', 'wm-3min');
+          гн.appendChild(el('summary', '', '⏱️ 3 минути свободно писане'));
+          Array.from(c.childNodes).forEach(n => { if (!(n.classList && n.classList.contains('jr-title'))) гн.appendChild(n); });
+          c._домакин = домакин; c._гнездо = гн;
+          домакин.appendChild(гн);
+          return;
+        }
+      }
+      root.appendChild(c);
+    } catch (e) {} });
   };
 })();

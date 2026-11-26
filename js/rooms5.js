@@ -290,7 +290,7 @@
       const cut = Date.now() - 7 * 86400000;
       const items = []
         .concat(load('bl_temps', []).filter(x => x.ts > cut).map(x => ({ ts: x.ts, e: '🌡️', t: x.v + '°', hot: x.v >= 38 })))
-        .concat(load('bl_meds', []).filter(x => x.ts > cut).map(x => ({ ts: x.ts, e: '💊', t: x.n })))
+        .concat(load('bl_meds', []).filter(x => x.ts > cut).map((window.BL_MEDS_IME || (x => x))).map(x => ({ ts: x.ts, e: '💊', t: x.n })))
         // 25.11 (одит G-02): дозите от „⏳ Преди колко време?“ — мама, натискала на Начало, вече не носи празна линия
         .concat((typeof window.BL_LEK_DOZI === 'function' ? window.BL_LEK_DOZI(cut) : []).map(x => ({ ts: x.ts, e: '💊', t: x.n })))
         .concat(load('bl_notes_health', []).filter(x => x.d > cut).map(x => ({ ts: x.d, e: '📝', t: String(x.t).slice(0, 60) })))
@@ -315,6 +315,106 @@
     // секционирането пренарежда картите → „Бележка за прегледа" вече е ПОД тази
     // (в „🩺 За лекаря"), не над нея (одит-флот П23, проход 2 №18)
     c.appendChild(el('p', 'jr-privacy', 'Печатният вариант е в „Бележка за прегледа“ по-долу.'));
+    return c;
+  }
+
+  // ═══════════ 🌙 25.11 (вълна 3, ъпгрейд на собственика): НОЩТА С БОЛНО ДЕТЕ ═══════════
+  //   ЕДНА лента за последните 24 ч: дозите (часовникът + дневникът на даденото), градусите, храненията,
+  //   пелените и здравните бележки. Отгоре — кога е следващата доза САМО по НЕЙНИТЕ числа от кутията
+  //   (BL_CHAS.следващи: без записан интервал не казваме нищо). Долу — „📋 Покажи на лекаря“ (печат) и
+  //   „📤 Сподели“. Само събира записаното; нищо не тълкува и не съветва. При второ дете — по дете (храненията и
+  //   пелените са в стаите на първото). ПЪТ НАЗАД: window.BL_NOSHT_VKL = false — картата не се лепи.
+  function nightCard(root) {
+    if (window.BL_NOSHT_VKL === false) return null;
+    const c = card('Нощта с болно дете 🌙 <span class="jr-sub">последните 24 часа на една лента — за теб и за лекаря</span>');
+    const Ч = () => window.BL_CHAS || {};
+    const две = () => !!(Ч().има2 && Ч().има2());
+    const дт = () => (две() && Ч().дете) ? Ч().дете() : 1;
+    const чч = t => { const d = new Date(t); return String(d.getHours()).padStart(2, '0') + ':' + String(d.getMinutes()).padStart(2, '0'); };
+    const децаРед = el('div', 'jr-quick nk-deca'); децаРед.setAttribute('role', 'group'); децаРед.setAttribute('aria-label', 'За кое дете');
+    const горе = el('div', 'nk-next'); горе.setAttribute('aria-live', 'polite');
+    const лента = el('div', 'ep-box nk-lenta');
+    const бут = el('div', 'jr-quick');
+    const покажи = el('button', 'jr-btn', '📋 Покажи на лекаря'); покажи.type = 'button';
+    const сподели = el('button', 'jr-chip', '📤 Сподели'); сподели.type = 'button'; сподели.style.minHeight = '44px';
+    const каз = el('p', 'jr-hint'); каз.hidden = true;
+    бут.appendChild(сподели);
+
+    function събери() {
+      const д = дт(), сега = Date.now(), cut = сега - 24 * 3600e3, ред = [];
+      const ок = t => typeof t === 'number' && t > cut && t <= сега + 60000;
+      // 💊 дозите: от часовника (само за това дете) + дневника на даденото (dete:2 = второто, без поле = първото)
+      (typeof window.BL_LEK_DOZI === 'function' ? window.BL_LEK_DOZI(cut, д) : []).forEach(x => { if (ок(x.ts)) ред.push({ ts: x.ts, e: '💊', t: x.n.replace(/ · .*$/, '') }); });
+      load('bl_meds', []).forEach(x => { if (x && ок(+x.ts) && (д === 2 ? x.dete === 2 : x.dete !== 2)) ред.push({ ts: +x.ts, e: '💊', t: String(x.n || '') }); });
+      // 🌡️ градусите (второто дете: bl_temps@2 — пишат се от неговия часовник)
+      load(д === 2 ? 'bl_temps@2' : 'bl_temps', []).forEach(x => { if (x && ок(+x.ts) && isFinite(x.v)) ред.push({ ts: +x.ts, e: '🌡️', t: String(x.v).replace('.', ',') + '°', hot: x.v >= 38 }); });
+      let пел = null;
+      if (д === 1) {
+        // 🍼 храненията: един момент се брои веднъж (близнаци до 60 s — бързият запис, таймерът и часовникът)
+        const хр = [];
+        load('bl_nursing', []).forEach(x => { if (x && ок(+x.ts)) хр.push({ ts: +x.ts, т: (x.s === 'Л' ? 'лява' : x.s === 'Д' ? 'дясна' : x.s === 'Ш' ? 'шише' : 'кърмене') + (x.dur ? ' · ' + Math.round(x.dur / 60) + ' мин' : '') }); });
+        const f = load('bl_feed', null); if (f && ок(+f.t)) хр.push({ ts: +f.t, т: f.s === 'left' ? 'лява' : f.s === 'right' ? 'дясна' : f.s === 'bottle' ? 'шише' : '' });
+        load('bl_feedlog', []).forEach(t => { if (ок(+t)) хр.push({ ts: +t, т: '' }); });
+        const чх = (load('bl_chas', {}) || {}).hrana; ((чх && Array.isArray(чх.hist)) ? чх.hist : []).forEach(t => { if (ок(+t)) хр.push({ ts: +t, т: '' }); });
+        хр.sort((a, b) => a.ts - b.ts).forEach(x => {
+          const бл = ред.find(y => y.e === '🍼' && Math.abs(y.ts - x.ts) <= 60000);
+          if (бл) { if (!бл.t.includes('·') && x.т) бл.t = 'Хранене · ' + x.т; return; }
+          ред.push({ ts: x.ts, e: '🍼', t: 'Хранене' + (x.т ? ' · ' + x.т : '') });
+        });
+        // 💧 пелените: броят се за деня, без часове — затова отделен ред, не на лентата
+        const дн = new Date(); const кл = дн.getFullYear() + '-' + String(дн.getMonth() + 1).padStart(2, '0') + '-' + String(дн.getDate()).padStart(2, '0');
+        const pd = (load('bl_diapers', {}) || {})[кл]; if (pd && (pd.wet || pd.dirty)) пел = { мокри: +pd.wet || 0, каки: +pd.dirty || 0 };
+        // 📝 здравните бележки
+        load('bl_notes_health', []).forEach(x => { if (x && ок(+x.d)) ред.push({ ts: +x.d, e: '📝', t: String(x.t || '').slice(0, 80) }); });
+      }
+      ред.sort((a, b) => b.ts - a.ts);
+      const следв = (typeof Ч().следващи === 'function' ? Ч().следващи(д) : []);
+      return { д, ред, пел, следв, сега };
+    }
+
+    function draw() {
+      const { д, ред, пел, следв, сега } = събери();
+      децаРед.innerHTML = ''; децаРед.hidden = !две();
+      if (две()) [1, 2].forEach(дд => { const б = el('button', 'jr-chip' + (дд === д ? ' on' : ''), esc(Ч().имеДете(дд))); б.type = 'button'; б.setAttribute('aria-pressed', String(дд === д)); б.addEventListener('click', () => { save('bl_chas_dete', дд); draw(); }); децаРед.appendChild(б); });
+      // ⏳ следващата доза — само по НЕЙНИТЕ числа
+      const нейни = следв.filter(x => x.следв);
+      const други = следв.filter(x => !x.следв && сега - x.t < 24 * 3600e3);
+      горе.innerHTML = нейни.map(x => '<p class="cs-note">💊 <strong>' + esc(x.ime) + '</strong>: ' + (сега < x.следв
+        ? 'следващата най-рано в <strong>' + чч(x.следв) + '</strong> <span class="jr-sub">(по твоята бележка: на ' + x.h + ' ч)</span>'
+        : 'твоите ' + x.h + ' ч минаха в ' + чч(x.следв) + '') + '</p>').join('')
+        + (други.length ? '<p class="jr-privacy">Запиши числата от кутията в „⏳ Преди колко време?“ (⚙) — тогава тук ще стои кога е следващата.</p>' : '');
+      лента.innerHTML = (пел ? '<p class="jr-privacy">💧 Пелени днес: ' + пел.мокри + ' мокри · ' + пел.каки + ' каки <span class="jr-sub">(броят се за деня, без часове)</span></p>' : '')
+        + (ред.length ? ред.slice(0, 40).map(x => '<div class="ep-row' + (x.hot ? ' hot' : '') + '"><span class="ep-e">' + x.e + '</span><span class="ep-t">' + esc(x.t) + '</span><span class="ep-d">' + чч(x.ts) + '</span></div>').join('')
+          : '<p class="jr-privacy">Последните 24 часа са празни. Каквото отбележиш — доза, градуси, хранене — идва тук само.</p>');
+      покажи.disabled = !ред.length && !пел;
+    }
+    function текст() {
+      const { д, ред, пел, следв } = събери(); const име = две() ? Ч().имеДете(д) : (getBaby().name || '');
+      const редове = ред.slice().reverse().map(x => new Date(x.ts).toLocaleString('bg-BG', { day: 'numeric', month: 'numeric', hour: '2-digit', minute: '2-digit' }) + ' — ' + x.e + ' ' + x.t);
+      return { д, име, ред, пел, следв, редове };
+    }
+    покажи.addEventListener('click', () => {
+      const т = текст(); if (!т.ред.length && !т.пел) return;
+      const тяло = (т.име ? '<p><strong>' + esc(т.име) + '</strong></p>' : '')
+        + (т.пел ? '<p>Пелени днес: ' + т.пел.мокри + ' мокри · ' + т.пел.каки + ' каки</p>' : '')
+        + '<ul class="pr-list">' + т.редове.map(р => '<li>' + esc(р) + '</li>').join('') + '</ul>'
+        + '<p><small>Записано от мама в Бейби Ленд: какво и кога. Дозите са по лекар/кутия; тук няма препоръки.</small></p>';
+      if (window.BL_EXPR && BL_EXPR.printOverlay) BL_EXPR.printOverlay('Последните 24 часа', тяло);
+      else { каз.textContent = 'Печатът не е зареден — пробвай „📤 Сподели“.'; каз.hidden = false; }
+    });
+    сподели.addEventListener('click', async () => {
+      const т = текст(); const тх = 'Последните 24 часа' + (т.име ? ' · ' + т.име : '') + '\n' + (т.пел ? 'Пелени днес: ' + т.пел.мокри + ' мокри · ' + т.пел.каки + ' каки\n' : '') + т.редове.join('\n');
+      каз.hidden = false;
+      try {
+        if (navigator.share) { await navigator.share({ title: 'Последните 24 часа', text: тх }); каз.textContent = '✔ Споделено.'; return; }
+        if (navigator.clipboard && navigator.clipboard.writeText) { await navigator.clipboard.writeText(тх); каз.textContent = '✔ Копирано — постави го в съобщение до лекаря.'; return; }
+        каз.textContent = 'Този телефон не може да сподели оттук — ползвай „📋 Покажи на лекаря“.';
+      } catch (e) { каз.textContent = 'Не се сподели (отказано или прекъснато).'; }
+    });
+    c.appendChild(децаРед); c.appendChild(горе); c.appendChild(лента); c.appendChild(покажи); c.appendChild(бут); c.appendChild(каз);
+    draw();
+    window.BL_NOSHT_REDRAW = draw;
+    if (root && root.addEventListener) root.addEventListener('click', () => setTimeout(draw, 90));
     return c;
   }
 
@@ -552,7 +652,7 @@
   const PACKS5 = {
     'Инструменти': r => сложи(r, calendarCard()),
     // 'Бременност' няма ред: единствената ѝ карта тук беше мъртва (виж 🪦 горе).
-    'Здраве и SOS': r => сложи(r, episodeCard(r)),
+    'Здраве и SOS': r => { сложи(r, episodeCard(r)); сложи(r, nightCard(r)); },   // 25.11: + „Нощта с болно дете“
     'Захранване': r => сложи(r, shopListCard()),
     'Дневник на мама': r => сложи(r, monthLetterCard()),
     'Моето бебе': r => nightNursing(r),

@@ -414,6 +414,12 @@ function главна() {
   }
   console.log('   пътища в index.html: ' + пътища.size + ' · липсващи: ' + липсват);
   if (липсват) { console.log('🔴 ПАКЕТЪТ Е СЧУПЕН'); process.exit(1); }
+  // 25.11: версиите на статиите по файл (LVF в js/lib.js) трябва да съвпадат със съдържанието,
+  //   иначе майката остава със старата статия от кеша. ПЪТ НАЗАД: махни тези 4 реда.
+  try {
+    const гр = require(path.join(КОРЕН, 'dev', 'proba', 'lv_karta.js')).провери(КОРЕН);
+    if (гр.length) { console.log('🔴 LVF НЕ СЪВПАДА СЪС СТАТИИТЕ — пусни node dev/proba/lv_karta.js\n   ' + гр.join('\n   ')); process.exit(1); }
+  } catch (e) { if (e && e.code !== 'MODULE_NOT_FOUND') throw e; }
   console.log('✅ пакетът е пълен');
 
   if (!ЗА_ДЖАМП || САМО_ПРОВЕРКА) return;

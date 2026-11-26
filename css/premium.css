@@ -307,6 +307,9 @@ html body #roRoom .pl-bb-cta { display: none !important; }
 html body #roomOverlay .pl-mc-tools { display: none !important; }
 /* A-24 „Виж всички стаи“ разгъваше същите 9 стаи като огромни карти „Готова ⭐ Влез →“ — 9-те плочки са вече на екрана */
 html body #plHome [data-pl="vse"] { display: none !important; }
+/* 25.11 (вълна 3, одит A-14): на компютър „+“ висеше на x 25–59, а колоната почва от 373 (мерено 1440) — 314 px празно между тях.
+   Само от 900 px нагоре: 20 px вляво от колоната (680 px в средата). Телефонът — без промяна. ПЪТ НАЗАД: махни реда. */
+@media (min-width: 900px) { html body .plus-wrap.plus-wrap.plus-wrap { left: max(14px, calc(50% - 340px - 76px)); } }
 /* A-36 „Помощничките дават информация…“ — за помощничките, т.е. за чата; в стаята стои бележката на картата */
 html body #roomOverlay .ro-panel:not([data-tab="chat"]) > p.ro-disc { display: none !important; }
 

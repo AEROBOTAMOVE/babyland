@@ -288,7 +288,7 @@
       if (о9.лекарства) {
         const от7 = Date.now() - 7 * 86400000;
         const чч = ts => { const d = new Date(ts); return String(d.getHours()).padStart(2, '0') + ':' + String(d.getMinutes()).padStart(2, '0'); };
-        const лек = load('bl_meds', []).filter(x => x && x.n && isFinite(x.ts) && x.ts >= от7)
+        const лек = load('bl_meds', []).filter(x => x && x.n && isFinite(x.ts) && x.ts >= от7).map((window.BL_MEDS_IME || (x => x)))
           .concat(typeof window.BL_LEK_DOZI === 'function' ? (function () { try { return window.BL_LEK_DOZI(от7) || []; } catch (e) { return []; } })() : [])
           .filter(x => x && x.n && isFinite(x.ts))
           .sort((a2, b2) => a2.ts - b2.ts).slice(-5).reverse();
